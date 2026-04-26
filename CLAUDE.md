@@ -6,7 +6,11 @@ Guidance for Claude Code (and other AI agents) working in this repo.
 
 **Math Dash** — a free, open, cross-platform mobile math game for kids ages 6–14.
 - Product scope: see [prd.md](prd.md) — read this before suggesting any feature.
-- Execution plan and current phase: see [plan.md](plan.md) — read this before suggesting any code.
+- Execution plan: see [plan.md](plan.md) — read this before suggesting any code.
+
+## Where we are right now
+
+The **Status block at the top of [plan.md](plan.md)** is the source of truth for current phase, last action, and next action. Read it first at the start of every session — it tells you what's in scope right now and what isn't.
 
 ## Tech stack (locked — see plan.md "Locked Decisions" for rationale)
 

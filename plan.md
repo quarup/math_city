@@ -23,6 +23,7 @@
 | **Local persistence** | [Drift](https://pub.dev/packages/drift) (SQLite + compile-time-safe queries) | Best-supported in 2026 (Hive and Isar are now community-maintained after author stepped away); SQL is great for filtering questions by skill+difficulty band; predictable migrations |
 | **Audio** | [`flame_audio`](https://pub.dev/packages/flame_audio) (wrapper over `audioplayers`) | Natural fit with Flame; supports SFX pools and background music |
 | **Cloud save** | [`games_services`](https://pub.dev/packages/games_services) package — Google Play Games (Android) + Game Center / iCloud (iOS) | Only solution that satisfies the PRD's "no custom server" requirement on both platforms with a single API. Last updated Dec 2025 |
+| **Skill granularity** | Track proficiency at **sub-skill** level (e.g. "2-digit addition with carry"), not at category level. Roll up to category for display only | Otherwise the adaptive wheel is too coarse: a kid who's mastered single-digit addition would falsely look ready for multi-digit. See PRD's Skill System section for the category→skill taxonomy |
 | **Repo plan doc** | `plan.md` at repo root | Simple, greppable, lives next to `prd.md` |
 | **AI agent doc** | `CLAUDE.md` at repo root | Emerging convention; auto-loaded by Claude Code each session |
 
@@ -56,10 +57,13 @@ SkillProficiency
   playerId, skillId, proficiency (0.0–1.0), lastUpdatedAt
   questionsAnswered, questionsCorrect
 
-Skill (static catalog)
-  id, name, category, gradeRange, description
+Skill (static catalog) — sub-skill granularity (e.g. "2-digit addition with carry")
+  id, name, categoryId, gradeRange, description
 
-Question (static catalog, seeded into Drift on first run)
+SkillCategory (static catalog) — display grouping only (e.g. "Addition & subtraction")
+  id, name, displayOrder
+
+Question (static catalog for non-arithmetic skills; arithmetic generated at runtime)
   id, skillId, difficultyBand (comfortable | challenging),
   prompt (text or template), correctAnswer,
   distractors (for multiple-choice), explanation (for wrong-answer screen)
@@ -71,8 +75,9 @@ Item (static catalog — cosmetics)
 Milestone (static catalog)
   index, starThreshold, unlockedAt (per-player, in PlayerProgress table)
 
-GameSession (in-memory only, optional persist for streak)
+GameSession (in-memory only)
   startedAt, players (list), roundsPlayed
+  // Streak lives on Player, not here
 ```
 
 ---
@@ -144,7 +149,12 @@ Each phase ends with something demonstrable. We do **not** start a phase until t
 - [ ] `ResultScreen` with star award + simple animation + wrong-answer explanation
 - [ ] Loop: home → spin → question → result → home, with star counter persisted in memory
 - [ ] Basic SFX (spin, correct, wrong) and one looping background track
-- [ ] **Exit criteria:** Test with a real kid for 15+ minutes. Did they want to keep playing? **If no, stop and rethink before Phase 2.**
+- [ ] **Exit criteria:** Test with a real kid in the target age range. Concrete signals to look for:
+  - Did they spin at least 10 times without prompting?
+  - Did they ask to play again, or come back to it the next day unprompted?
+  - Did they react positively to correct-answer celebrations (smiles, "yes!")?
+  - When they got a wrong answer, did they read the explanation, or just tap through?
+  - **Hard gate:** if they put the device down within 5 minutes and didn't come back, stop and rethink the loop before Phase 2.
 
 ### Phase 2 — Adaptive Skill System (target: ~2–3 weeks)
 - [ ] Drift schema for `Player`, `SkillProficiency`, `Question` (catalog seeding)
@@ -225,6 +235,8 @@ These are not blockers for Phase 0 or 1 but need to be resolved by the phase not
 | `games_services` package abandonment | Low | Medium | If it goes stale, fall back to platform-specific packages (`cloud_kit` for iOS, `googleapis` Drive for Android) |
 | Hive/Isar abandonment pattern repeats with Drift | Low | Low | Drift is built on SQLite; worst-case migration to raw `sqflite` is straightforward |
 | COPPA / children's-app compliance | Medium | High (could block store submission) | No data collection; address this explicitly in Phase 8 with a minimal privacy policy and store-listing kids-category settings |
+| Apple Developer Program ($99/yr) and Play Console ($25 one-time) fees | Certain | Low–Medium | Real ongoing cost for a "free hobby project." If the Apple membership lapses, the iOS build is delisted from the App Store. Budget accordingly; consider whether one platform-only launch buys more time |
+| Sub-skill catalog explosion | Medium | Medium | The category→skill taxonomy in PRD lists ~40+ skills already; full K–8 could push past 100. Mitigate by defining only what's needed per phase (Phase 1: 2 skills; Phase 2: ~10; Phase 6+: full) and keeping the schema flexible |
 
 ---
 

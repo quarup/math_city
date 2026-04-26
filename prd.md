@@ -4,9 +4,15 @@
 
 **Target audience:** Kids ages 6–14, with math content spanning grades K–8.
 
-**Platform:** [To confirm: Flutter recommended for cross-platform coverage]
+**Platform:** Cross-platform mobile (iOS + Android), built with Flutter and the Flame game engine.
 
 **Business model:** Completely free — no ads, no in-app purchases, no subscriptions. All content, assets, and libraries used must be compatible with free, non-commercial educational use (open licenses preferred).
+
+**Compliance:** Designed for ages 6–14, the app must satisfy children's-app requirements on both stores: no third-party tracking, no data collection beyond local profiles, no behavioral advertising. Privacy policy required. Apple "Made for Kids" and Google "Designed for Families" guidelines apply.
+
+**Accessibility:** Baseline a11y is in scope from the start — color-blind-safe palette (the wheel relies heavily on color, so segments must also be distinguishable by shape/icon), readable type at small sizes, audio cues for key feedback (so a 6-year-old who isn't yet reading fluently can play), respect for OS-level text-size settings. Optional dyslexia-friendly font (e.g. OpenDyslexic) toggle is a stretch goal for Phase 6.
+
+**Localization:** v1 ships English-only. All user-facing strings must be externalized (no hardcoded text in widgets) so future translation is mechanical, not a rewrite.
 
 ---
 
@@ -59,8 +65,9 @@ Input method is tied to the player's proficiency band for that skill:
 
 This means the same player might type answers for skills they've mastered and pick from options for skills they're still developing.
 
-### Timer [To confirm]
-[Assumption: no hard timer by default, but a soft "thinking" animation plays after ~20 seconds to gently nudge the player. Confirm whether a countdown timer mode should exist as a toggle.]
+### Timer
+
+No hard timer in v1. After ~20 seconds of inactivity, the character plays a gentle "thinking" animation as a nudge — but the player can take as long as they need. A timed-mode toggle is out of scope for v1 (see *Out of Scope*).
 
 ### Multiplayer Turn Structure
 When multiple players share a device, they **alternate rounds** in a single session (Player A spins → Player B spins → ...). Each player's stars and skill data update independently. A per-session leaderboard shows how many stars each player earned this session.
@@ -69,24 +76,35 @@ When multiple players share a device, they **alternate rounds** in a single sess
 
 ## Skill System & Adaptive Difficulty
 
-The game tracks each player's proficiency **per skill** independently. A player's grade level is just the starting point — actual skill levels diverge over time.
+The game tracks proficiency at the **sub-skill** level — not at broad category level — because a kid who's mastered single-digit addition has not necessarily mastered multi-digit addition, and the wheel needs to surface the right granularity.
 
-### Skill Categories (examples — full list TBD)
-- **Number sense:** counting, place value, comparing numbers
-- **Addition & subtraction:** single-digit, multi-digit, mental math
-- **Multiplication & division:** times tables, long multiplication/division
-- **Fractions:** identifying, comparing, adding, multiplying
-- **Decimals & percentages**
-- **Geometry:** shapes, area, perimeter, angles
-- **Measurement:** time, length, weight, volume
-- **Word problems:** single-step, multi-step
-- **Algebra basics:** patterns, simple equations, variables (grades 6–8)
+### Two-level taxonomy: Categories → Skills
+
+**Categories** are how proficiency is *displayed* to the player (and how the wheel groups options visually). **Skills** are what proficiency is *tracked* against and what the wheel selects. One category contains many skills.
+
+Example category → skills decomposition (full catalog defined in Phase 2):
+
+| Category | Example skills (each tracked independently) |
+|---|---|
+| **Number sense** | counting to 20, counting to 100, place value (tens), place value (hundreds), comparing 2-digit numbers, comparing 3-digit numbers |
+| **Addition & subtraction** | single-digit addition, single-digit subtraction, 2-digit addition (no carry), 2-digit addition (with carry), 2-digit subtraction (no borrow), 2-digit subtraction (with borrow), 3-digit addition, 3-digit subtraction, mental addition |
+| **Multiplication & division** | times tables 2–5, times tables 6–9, times tables 10–12, 2-digit × 1-digit, long multiplication, simple division, long division |
+| **Fractions** | identifying fractions, comparing fractions (same denominator), comparing fractions (different denominators), adding fractions, multiplying fractions |
+| **Decimals & percentages** | reading decimals, adding/subtracting decimals, converting fractions to decimals, finding percentages of numbers |
+| **Geometry** | naming 2D shapes, naming 3D shapes, perimeter of rectangles, area of rectangles, area of triangles, angles |
+| **Measurement** | reading clocks (hour), reading clocks (minute), length conversions, weight conversions, volume conversions |
+| **Word problems** | single-step (addition/subtraction), single-step (multiplication/division), multi-step |
+| **Algebra basics** (grades 6–8) | patterns, simple equations (one variable), evaluating expressions |
+
+The wheel surfaces individual **skills** (e.g. "2-digit addition with carry"), not categories. The Player Progress screen rolls skill data up to **categories** for a digestible at-a-glance view, with drill-down to see the per-skill detail.
 
 ### Adaptive Logic
 
 Each skill has a **proficiency level** (e.g. 0.0–1.0) per player, updated after every answer:
 - Correct answer → proficiency increases
 - Wrong answer → proficiency decreases slightly (floor at 0)
+
+The exact update formula is an implementation detail (TBD in Phase 2). It should produce stable behavior with small N (e.g. doesn't swing wildly after one wrong answer).
 
 Based on proficiency, each skill is classified into one of four bands:
 
@@ -101,15 +119,12 @@ The wheel at any given round contains a **mix of comfortable + challenging** ski
 
 ### Question Generation
 
-Questions must feel **infinite and varied** — repetitive or mechanical questions erode engagement. Two approaches to evaluate (not mutually exclusive):
+Questions must feel **infinite and varied**. The strategy is hybrid, chosen per skill:
 
-**Option A — Large open-licensed dataset:**
-Use an existing corpus of 1,000+ pre-authored questions (e.g. from open educational resources like Khan Academy's open content, OpenStax, or similar CC-licensed math question banks). Pros: questions feel human-crafted and interesting. Cons: finite; kids who play a lot will eventually see repeats.
+- **Pure-arithmetic skills** (e.g. single-digit addition, times tables) → **algorithmic generation** at runtime. Random operands within the skill's defined range, with templated wording variation. Effectively infinite, no storage cost. Wrong-answer explanations are likewise templated.
+- **Word problems and concept-rich skills** (e.g. multi-step word problems, geometry, fractions) → **curated + batch AI-generated**, shipped as static data. We seed from open-licensed datasets (GSM8K, MathDataset-ElementarySchool, Illustrative Mathematics) and supplement with offline batch LLM generation. Each question carries a hand-authored or AI-authored step-by-step explanation.
 
-**Option B — Batch AI-generated questions:**
-Generate a large bank of questions (e.g. 5,000+) offline using an LLM, organized by skill and difficulty. Store them bundled with the app or as a downloadable pack. Questions are **not generated at runtime** — no cloud API calls during play. The batch can be periodically refreshed via app updates. Pros: effectively infinite variety, can be made fun/contextual (word problems with interesting scenarios). Cons: requires an offline generation pipeline.
-
-**Recommended:** Combine both — start with an open licensed dataset for bootstrapping, and supplement with batch AI-generated questions to fill gaps and add variety. For wrong-answer explanations, these too are pre-generated (one explanation per question or per question template).
+**Critical constraint:** No cloud LLM calls at runtime. All AI-generated content is produced offline, reviewed for quality, and shipped bundled with the app or as a periodically-updated content pack. This keeps the app free, offline-capable, and avoids per-user API costs.
 
 ---
 
@@ -188,15 +203,12 @@ First-time experience:
 
 ## Saving User Data
 
-All player data (profiles, proficiency levels, star counts, milestones, equipped items) must be:
-- **Stored locally** on the device with no account required for basic use
-- **Backed up and restorable** across devices without a custom server
+All player data (profiles, proficiency levels, star counts, milestones, equipped items) is:
 
-**Recommended approach:** Use platform-native cloud storage:
-- **iOS:** iCloud (via `NSUbiquitousKeyValueStore` for small data, or CloudKit for structured data)
-- **Android:** Google Play Games Services saved games, or Google Drive App Data
+- **Stored locally** on the device with no account required for basic use.
+- **Optionally backed up and restored** via the platform's own game services — Game Center (iOS, tied to the user's iCloud) and Google Play Games (Android). The user signs in with their existing Apple or Google account; the app does not run a backend or store any data on our infrastructure.
 
-This piggybacks on the user's existing Apple/Google account — no custom auth, no custom server needed. If neither is available, local-only storage is the fallback.
+If the user is not signed in to their platform's game service, local-only storage is the fallback — the app remains fully playable, just without cross-device backup.
 
 ---
 
@@ -212,6 +224,16 @@ All third-party content, assets, and libraries must be compatible with free non-
 
 ---
 
+## Edge Cases
+
+- **Player masters all v1 content.** If every available skill drops into the "mastered" band, the wheel falls back to a celebration message ("You've mastered everything! New skills coming soon.") and offers a free-play mode that randomly samples from mastered skills (no stars awarded — keeps it from being a grind for trivial points).
+- **Mid-question abandonment.** If the player closes the app or switches profiles before answering, the question is discarded with no proficiency change and no stars. It does not count as wrong.
+- **Profile deletion.** Players can delete their own profile from the profile picker (with a confirmation prompt). All local data for that profile is removed; cloud-save data for that profile is also removed on next sync if signed in.
+- **Two players want to play simultaneously.** Not supported — gameplay is turn-based on a single device. The "alternate rounds" structure is the v1 multiplayer model.
+- **Grade-level advancement.** A player's stored grade level is the *starting point* for the adaptive system, not a moving target. The system adapts based on actual proficiency, so a player who advances grades in real life will naturally see harder skills enter their wheel without any manual update. A "change grade" option is available in settings if a parent wants to recalibrate.
+
+---
+
 ## Out of Scope (v1)
 
 - Real-time multiplayer over the internet
@@ -219,3 +241,4 @@ All third-party content, assets, and libraries must be compatible with free non-
 - Timed quiz mode
 - Leaderboards beyond the per-session summary
 - Push notifications (v2)
+- In-app analytics or crash reporting (revisit if needed; would require privacy disclosure)
