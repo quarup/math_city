@@ -19,8 +19,12 @@ class WheelSegment {
 /// Spinning wheel Flame component.
 ///
 /// The wheel fills its [size] area. A fixed pointer triangle sits at the
-/// top; whichever segment is under the pointer when spinning stops is
+/// top; whichever segment is under the pointer when the free spin stops is
 /// reported via [onLanded].
+///
+/// Interaction is driven by the enclosing game:
+///   - [rotateBy] applies a drag delta while the user's finger is down.
+///   - [startSpinWithVelocity] launches the free spin on release.
 class SpinWheelComponent extends PositionComponent {
   SpinWheelComponent({
     required this.segments,
@@ -34,15 +38,18 @@ class SpinWheelComponent extends PositionComponent {
   double _angularVelocity = 0;
   bool _isSpinning = false;
   bool _hasReported = false;
-  final _random = math.Random();
 
-  /// Called by the game when the user taps the canvas.
-  void startSpin() {
-    if (_isSpinning) return;
+  bool get isSpinning => _isSpinning;
+
+  /// Apply an incremental rotation during a drag gesture.
+  void rotateBy(double delta) => _rotation += delta;
+
+  /// Begin free-spin deceleration at [angularVelocity] (radians/second).
+  /// Positive = clockwise; negative = counter-clockwise.
+  void startSpinWithVelocity(double angularVelocity) {
     _isSpinning = true;
     _hasReported = false;
-    // 15–25 rad/s → ~3–5 s of deceleration at exp(-1.5·t) decay
-    _angularVelocity = 15 + _random.nextDouble() * 10;
+    _angularVelocity = angularVelocity;
   }
 
   @override
@@ -55,7 +62,7 @@ class SpinWheelComponent extends PositionComponent {
     _rotation += _angularVelocity * effectiveDt;
     _angularVelocity *= math.exp(-1.5 * effectiveDt);
 
-    if (_angularVelocity < 0.05 && !_hasReported) {
+    if (_angularVelocity.abs() < 0.05 && !_hasReported) {
       _isSpinning = false;
       _hasReported = true;
       onLanded(segments[_selectedSegmentIndex].conceptId);

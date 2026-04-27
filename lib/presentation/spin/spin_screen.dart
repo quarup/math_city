@@ -54,7 +54,7 @@ class _SpinScreenState extends State<SpinScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16),
               child: Text(
-                'Tap the wheel to spin!',
+                'Swipe the wheel to spin!',
                 style: theme.textTheme.titleMedium?.copyWith(
                   color: theme.colorScheme.onSurfaceVariant,
                 ),
