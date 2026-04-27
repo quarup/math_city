@@ -82,6 +82,54 @@ GameSession (in-memory only)
 
 ---
 
+## Domain Specs (set during Phase 0)
+
+### Initial skill scope for Phase 1
+
+Phase 1 ships **two skills**, both pure single-digit arithmetic:
+
+| Skill ID | Description | Operand range | Result range |
+|---|---|---|---|
+| `add_1digit` | Single-digit addition | a, b ∈ [0, 9] | sum ∈ [0, 18] |
+| `sub_1digit` | Single-digit subtraction (no negatives) | minuend ∈ [0, 18], subtrahend ∈ [0, 9], a ≥ b | diff ∈ [0, 18] |
+
+Both are algorithmically generated at runtime (no curated dataset needed). Distractors for multiple-choice are constructed from common mistakes: off-by-one (±1), swapped operands, and a randomly-chosen value within ±5 of the correct answer.
+
+Why these two: universally familiar across the entire 6–14 target age, trivially generatable, and two-skills-on-the-wheel is enough to make the spin feel like a real choice without needing the full catalog.
+
+### Proficiency update formula (sketch — refine in Phase 2)
+
+Proficiency `p` per (player, skill) lives in [0.0, 1.0]. After each answer:
+
+```
+p_new = clamp(p_old + α · (target - p_old), 0.0, 1.0)
+```
+
+where `target = 1.0` on correct, `target = 0.0` on wrong, and `α` is a learning rate. Proposed initial `α = 0.1`.
+
+Properties of this update:
+- Stable: one wrong answer can't tank a player's score
+- Asymptotic toward target — quick at first, slows near 0 or 1
+- O(1), no history needed
+- Easy to unit-test (deterministic, monotonic)
+
+**Band thresholds (initial, tunable in Phase 2):**
+
+| p range | Band | Action |
+|---|---|---|
+| `p < 0.2` | not yet | Excluded from wheel |
+| `0.2 ≤ p < 0.5` | challenging | On wheel; correct = 5 stars; multiple choice |
+| `0.5 ≤ p < 0.85` | comfortable | On wheel; correct = 3 stars; typed input |
+| `p ≥ 0.85` | mastered | Excluded from wheel |
+
+**Initial value** when a player first encounters a skill:
+- Skill grade ≤ player's stated grade: start at `p = 0.4` (challenging band)
+- Skill grade > player's stated grade: start at `p = 0.05` (not yet, off the wheel)
+
+Open Phase 2 knobs: tune `α`, asymmetric reward/penalty (e.g. wrong answers move p down faster than right answers move it up), threshold values, and whether to consider time-since-last-attempt (proficiency decays if not practiced).
+
+---
+
 ## Project Structure (planned)
 
 ```
@@ -141,9 +189,9 @@ Each phase ends with something demonstrable. We do **not** start a phase until t
 - [ ] **Exit criteria:** `flutter run` launches an empty app with our brand color scheme on the iOS simulator AND an Android emulator; CI passes on a no-op PR
 
 ### Phase 1 — Vertical Slice (target: ~2–3 weeks) [the most important phase]
-**Goal: prove the core loop is fun.** Hardcoded single player, two skills, no persistence beyond runtime.
-- [ ] Skill registry with two skills (addition, subtraction)
-- [ ] Algorithmic question generator for those skills (with grade-1–3 number ranges)
+**Goal: prove the core loop is fun.** Hardcoded single player, two skills, no persistence beyond runtime. Skills and proficiency math are specified in *Domain Specs* above.
+- [ ] Skill registry with the two Phase 1 skills (`add_1digit`, `sub_1digit`)
+- [ ] Algorithmic question generator with operand ranges per spec; distractor strategy per spec
 - [ ] `SpinWheel` Flame component (4–6 segments, tap-to-spin animation, lands on a skill)
 - [ ] `QuestionScreen` with 4-option multiple choice
 - [ ] `ResultScreen` with star award + simple animation + wrong-answer explanation

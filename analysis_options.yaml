@@ -1,0 +1,14 @@
+include: package:very_good_analysis/analysis_options.yaml
+
+analyzer:
+  exclude:
+    - "**/*.g.dart"        # generated drift / future codegen
+    - "**/*.freezed.dart"  # in case we add freezed later
+    - build/**
+
+linter:
+  rules:
+    # Allow print() during prototyping. Tighten later if we add proper logging.
+    avoid_print: false
+    # Public members in app code don't need docs (libraries would).
+    public_member_api_docs: false
