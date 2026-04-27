@@ -7,11 +7,11 @@
 
 ## Status
 
-- **Phase:** Phase 0 complete (Android verified). Phase 1 not yet started.
+- **Phase:** Phase 1 core loop complete. Pending: audio assets + kid test.
 - **Last updated:** 2026-04-27
-- **Last action:** Verified the Math Dash placeholder runs on the Android emulator (Pixel 7, API 34) via `flutter run`. CI pushed and live.
-- **Next action:** Begin Phase 1 — start with the skill registry and the algorithmic question generator for `add_1digit` and `sub_1digit` (see *Domain Specs* and *Phase 1* below).
-- **Deferred:** iOS verification (Path B). Xcode install + CocoaPods + iOS run still pending; revisit before Phase 7 (cloud save) at the latest.
+- **Last action:** Built full Phase 1 vertical slice — concept registry, arithmetic generator, SpinWheel Flame component, HomeScreen/SpinScreen/QuestionScreen/ResultScreen, in-memory star counter via Riverpod. `flutter analyze` clean; 6 tests pass.
+- **Next action:** Run on Android emulator to verify the game loop end-to-end, then test with a real kid (Phase 1 exit criteria). Audio assets (CC0) deferred to Phase 6.
+- **Deferred:** Audio SFX + background music (CC0 assets not sourced yet — stub in place). iOS verification. Both revisit before Phase 7 at latest.
 
 ---
 
@@ -22,10 +22,10 @@
 | **Framework** | Flutter (stable channel) + [Flame](https://flame-engine.org/) game engine | Single codebase for iOS+Android; Flame actively maintained in 2026 (Flame Game Jam 2026 ran in March); BSD-licensed; provides sprite/animation/gesture primitives we need for the spin wheel and avatar |
 | **Language** | Dart 3.x | Required by Flutter |
 | **State management** | [Riverpod](https://riverpod.dev/) 3.x | Recommended default for new Flutter projects in 2026; compile-time safety, low boilerplate, great testability |
-| **Local persistence** | [Drift](https://pub.dev/packages/drift) (SQLite + compile-time-safe queries) | Best-supported in 2026 (Hive and Isar are now community-maintained after author stepped away); SQL is great for filtering questions by skill+difficulty band; predictable migrations |
+| **Local persistence** | [Drift](https://pub.dev/packages/drift) (SQLite + compile-time-safe queries) | Best-supported in 2026 (Hive and Isar are now community-maintained after author stepped away); SQL is great for filtering questions by concept+difficulty band; predictable migrations |
 | **Audio** | [`flame_audio`](https://pub.dev/packages/flame_audio) (wrapper over `audioplayers`) | Natural fit with Flame; supports SFX pools and background music |
 | **Cloud save** | [`games_services`](https://pub.dev/packages/games_services) package — Google Play Games (Android) + Game Center / iCloud (iOS) | Only solution that satisfies the PRD's "no custom server" requirement on both platforms with a single API. Last updated Dec 2025 |
-| **Skill granularity** | Track proficiency at **sub-skill** level (e.g. "2-digit addition with carry"), not at category level. Roll up to category for display only | Otherwise the adaptive wheel is too coarse: a kid who's mastered single-digit addition would falsely look ready for multi-digit. See PRD's Skill System section for the category→skill taxonomy |
+| **Concept granularity** | Track proficiency at **sub-concept** level (e.g. "2-digit addition with carry"), not at category level. Roll up to category for display only | Otherwise the adaptive wheel is too coarse: a kid who's mastered single-digit addition would falsely look ready for multi-digit. See PRD's Concept System section for the category→concept taxonomy |
 | **Repo plan doc** | `plan.md` at repo root | Simple, greppable, lives next to `prd.md` |
 | **AI agent doc** | `CLAUDE.md` at repo root | Emerging convention; auto-loaded by Claude Code each session |
 
@@ -37,7 +37,7 @@ Four layers, top to bottom:
 
 1. **Presentation (Flutter widgets)** — screens, navigation, forms (player creation, shop, progress screen, settings).
 2. **Game (Flame components)** — spin wheel, avatar render, question presentation, animations, audio cues.
-3. **Domain (pure Dart)** — game rules: skill-band classification, proficiency updates, wheel selection logic, milestone unlocks, star math. **No Flutter or Flame imports here** — keeps it unit-testable and portable.
+3. **Domain (pure Dart)** — game rules: concept-band classification, proficiency updates, wheel selection logic, milestone unlocks, star math. **No Flutter or Flame imports here** — keeps it unit-testable and portable.
 4. **Data (Drift + cloud-save)** — local SQLite for player profiles, proficiency records, owned items; question catalog as a read-only seeded table; cloud-save bridge for backup/restore.
 
 State management (Riverpod) sits at the boundary between presentation and domain — providers expose domain objects to widgets reactively.
@@ -55,18 +55,18 @@ Player
   ownedItems (list of itemIds)
   equippedItems (map of slot → itemId)
 
-SkillProficiency
-  playerId, skillId, proficiency (0.0–1.0), lastUpdatedAt
+ConceptProficiency
+  playerId, conceptId, proficiency (0.0–1.0), lastUpdatedAt
   questionsAnswered, questionsCorrect
 
-Skill (static catalog) — sub-skill granularity (e.g. "2-digit addition with carry")
+Concept (static catalog) — sub-concept granularity (e.g. "2-digit addition with carry")
   id, name, categoryId, gradeRange, description
 
-SkillCategory (static catalog) — display grouping only (e.g. "Addition & subtraction")
+ConceptCategory (static catalog) — display grouping only (e.g. "Addition & subtraction")
   id, name, displayOrder
 
-Question (static catalog for non-arithmetic skills; arithmetic generated at runtime)
-  id, skillId, difficultyBand (comfortable | challenging),
+Question (static catalog for non-arithmetic concepts; arithmetic generated at runtime)
+  id, conceptId, difficultyBand (comfortable | challenging),
   prompt (text or template), correctAnswer,
   distractors (for multiple-choice), explanation (for wrong-answer screen)
   source (algorithmic | curated | ai_generated), license
@@ -86,22 +86,22 @@ GameSession (in-memory only)
 
 ## Domain Specs (set during Phase 0)
 
-### Initial skill scope for Phase 1
+### Initial concept scope for Phase 1
 
-Phase 1 ships **two skills**, both pure single-digit arithmetic:
+Phase 1 ships **two concepts**, both pure single-digit arithmetic:
 
-| Skill ID | Description | Operand range | Result range |
+| Concept ID | Description | Operand range | Result range |
 |---|---|---|---|
 | `add_1digit` | Single-digit addition | a, b ∈ [0, 9] | sum ∈ [0, 18] |
 | `sub_1digit` | Single-digit subtraction (no negatives) | minuend ∈ [0, 18], subtrahend ∈ [0, 9], a ≥ b | diff ∈ [0, 18] |
 
 Both are algorithmically generated at runtime (no curated dataset needed). Distractors for multiple-choice are constructed from common mistakes: off-by-one (±1), swapped operands, and a randomly-chosen value within ±5 of the correct answer.
 
-Why these two: universally familiar across the entire 6–14 target age, trivially generatable, and two-skills-on-the-wheel is enough to make the spin feel like a real choice without needing the full catalog.
+Why these two: universally familiar across the entire 6–14 target age, trivially generatable, and two-concepts-on-the-wheel is enough to make the spin feel like a real choice without needing the full catalog.
 
 ### Proficiency update formula (sketch — refine in Phase 2)
 
-Proficiency `p` per (player, skill) lives in [0.0, 1.0]. After each answer:
+Proficiency `p` per (player, concept) lives in [0.0, 1.0]. After each answer:
 
 ```
 p_new = clamp(p_old + α · (target - p_old), 0.0, 1.0)
@@ -124,9 +124,9 @@ Properties of this update:
 | `0.5 ≤ p < 0.85` | comfortable | On wheel; correct = 3 stars; typed input |
 | `p ≥ 0.85` | mastered | Excluded from wheel |
 
-**Initial value** when a player first encounters a skill:
-- Skill grade ≤ player's stated grade: start at `p = 0.4` (challenging band)
-- Skill grade > player's stated grade: start at `p = 0.05` (not yet, off the wheel)
+**Initial value** when a player first encounters a concept:
+- Concept grade ≤ player's stated grade: start at `p = 0.4` (challenging band)
+- Concept grade > player's stated grade: start at `p = 0.05` (not yet, off the wheel)
 
 Open Phase 2 knobs: tune `α`, asymmetric reward/penalty (e.g. wrong answers move p down faster than right answers move it up), threshold values, and whether to consider time-since-last-attempt (proficiency decays if not practiced).
 
@@ -155,7 +155,7 @@ math_dash/
 │   │   ├── question_view/
 │   │   └── effects/
 │   ├── domain/            # pure Dart: rules, no Flutter imports
-│   │   ├── skills/
+│   │   ├── concepts/
 │   │   ├── proficiency/
 │   │   ├── questions/
 │   │   ├── milestones/
@@ -186,20 +186,20 @@ Each phase ends with something demonstrable. We do **not** start a phase until t
 - [x] Locked dependencies installed: `flame`, `flutter_riverpod`, `riverpod_annotation`, `drift`, `sqlite3_flutter_libs`, `path_provider`, `path`, `flame_audio`, `games_services`; dev deps `build_runner`, `drift_dev`, `very_good_analysis`. Skipped `riverpod_generator` + `riverpod_lint` + `custom_lint` due to a Riverpod-3 / analyzer incompatibility — revisit when ecosystem catches up
 - [x] Linting (`very_good_analysis`); `dart format` clean
 - [x] GitHub Actions CI: format check + analyze + test on push/PR (`.github/workflows/ci.yml`)
-- [x] Initial skill scope for Phase 1 decided — see *Domain Specs* above
+- [x] Initial concept scope for Phase 1 decided — see *Domain Specs* above
 - [x] Proficiency-update math sketched — see *Domain Specs* above
 - [x] **Exit criteria (Path B — Android only):** `flutter run` launched the placeholder Math Dash app on the Android emulator (Pixel 7, API 34) successfully. iOS verification deferred to Phase 7
 - [ ] iOS exit criteria — deferred until Xcode is installed (no later than Phase 7)
 
 ### Phase 1 — Vertical Slice (target: ~2–3 weeks) [the most important phase]
-**Goal: prove the core loop is fun.** Hardcoded single player, two skills, no persistence beyond runtime. Skills and proficiency math are specified in *Domain Specs* above.
-- [ ] Skill registry with the two Phase 1 skills (`add_1digit`, `sub_1digit`)
-- [ ] Algorithmic question generator with operand ranges per spec; distractor strategy per spec
-- [ ] `SpinWheel` Flame component (4–6 segments, tap-to-spin animation, lands on a skill)
-- [ ] `QuestionScreen` with 4-option multiple choice
-- [ ] `ResultScreen` with star award + simple animation + wrong-answer explanation
-- [ ] Loop: home → spin → question → result → home, with star counter persisted in memory
-- [ ] Basic SFX (spin, correct, wrong) and one looping background track
+**Goal: prove the core loop is fun.** Hardcoded single player, two concepts, no persistence beyond runtime. Concepts and proficiency math are specified in *Domain Specs* above.
+- [x] Concept registry with the two Phase 1 concepts (`add_1digit`, `sub_1digit`)
+- [x] Algorithmic question generator with operand ranges per spec; distractor strategy per spec
+- [x] `SpinWheel` Flame component (4 segments, tap-to-spin animation, lands on a concept)
+- [x] `QuestionScreen` with 4-option multiple choice
+- [x] `ResultScreen` with star award + wrong-answer explanation
+- [x] Loop: home → spin → question → result → home, with star counter persisted in memory
+- [ ] Basic SFX (spin, correct, wrong) and one looping background track — deferred to Phase 6 (CC0 assets not sourced; stub in place)
 - [ ] **Exit criteria:** Test with a real kid in the target age range. Concrete signals to look for:
   - Did they spin at least 10 times without prompting?
   - Did they ask to play again, or come back to it the next day unprompted?
@@ -207,14 +207,14 @@ Each phase ends with something demonstrable. We do **not** start a phase until t
   - When they got a wrong answer, did they read the explanation, or just tap through?
   - **Hard gate:** if they put the device down within 5 minutes and didn't come back, stop and rethink the loop before Phase 2.
 
-### Phase 2 — Adaptive Skill System (target: ~2–3 weeks)
-- [ ] Drift schema for `Player`, `SkillProficiency`, `Question` (catalog seeding)
+### Phase 2 — Adaptive Concept System (target: ~2–3 weeks)
+- [ ] Drift schema for `Player`, `ConceptProficiency`, `Question` (catalog seeding)
 - [ ] Proficiency update logic (correct → up, wrong → down with floor); unit tests
 - [ ] Band classifier (mastered / comfortable / challenging / not yet) with grade-aware thresholds
 - [ ] Wheel selection: weighted sample of comfortable + challenging bands only
-- [ ] Typed-input mode for comfortable-band skills
-- [ ] Expand to ~5 skill categories (add multiplication, fractions, geometry — start with placeholder questions)
-- [ ] **Exit criteria:** A returning player sees the wheel adapt — easy skills disappear, harder ones appear, typed input shows up for skills they've practiced
+- [ ] Typed-input mode for comfortable-band concepts
+- [ ] Expand to ~5 concept categories (add multiplication, fractions, geometry — start with placeholder questions)
+- [ ] **Exit criteria:** A returning player sees the wheel adapt — easy concepts disappear, harder ones appear, typed input shows up for concepts they've practiced
 
 ### Phase 3 — Player Profiles & Avatar (target: ~2 weeks)
 - [ ] Player creation flow (name, grade, basic avatar)
@@ -232,7 +232,7 @@ Each phase ends with something demonstrable. We do **not** start a phase until t
 - [ ] **Exit criteria:** A kid can earn stars, hit a milestone, choose a category, buy something, and see it on their character
 
 ### Phase 5 — Player Progress Screen (target: ~1 week)
-- [ ] Skill proficiency visualization (radar chart or color grid)
+- [ ] Concept proficiency visualization (radar chart or color grid)
 - [ ] Strengths and growing edges sections with positive framing
 - [ ] Milestone timeline
 - [ ] **Exit criteria:** Player can see and feel proud of their own progress
@@ -267,7 +267,7 @@ Each phase ends with something demonstrable. We do **not** start a phase until t
 These are not blockers for Phase 0 or 1 but need to be resolved by the phase noted:
 
 - **By Phase 2:** What's the exact proficiency update formula? Bayesian update? Simple exponential moving average? Pick simplest that works.
-- **By Phase 2:** Question dataset sourcing strategy — for arithmetic skills, algorithmic generation is fine. For word problems, do we curate from [GSM8K](https://github.com/openai/grade-school-math) (MIT license) and [MathDataset-ElementarySchool](https://github.com/RamonKaspar/MathDataset-ElementarySchool), or generate via batch LLM? Probably both — start with curation.
+- **By Phase 2:** Question dataset sourcing strategy — for arithmetic concepts, algorithmic generation is fine. For word problems, do we curate from [GSM8K](https://github.com/openai/grade-school-math) (MIT license) and [MathDataset-ElementarySchool](https://github.com/RamonKaspar/MathDataset-ElementarySchool), or generate via batch LLM? Probably both — start with curation.
 - **By Phase 3:** Avatar art source — commission, find on [OpenGameArt.org](https://opengameart.org/), or generate? Constrains visual style.
 - **By Phase 6:** Music + SFX sourcing (CC0 from Freesound.org and OpenGameArt.org).
 - **By Phase 7:** Are we OK requiring the user to sign in to Game Center / Play Games for cloud save? Otherwise local-only is the only option.
@@ -287,7 +287,7 @@ These are not blockers for Phase 0 or 1 but need to be resolved by the phase not
 | Hive/Isar abandonment pattern repeats with Drift | Low | Low | Drift is built on SQLite; worst-case migration to raw `sqflite` is straightforward |
 | COPPA / children's-app compliance | Medium | High (could block store submission) | No data collection; address this explicitly in Phase 8 with a minimal privacy policy and store-listing kids-category settings |
 | Apple Developer Program ($99/yr) and Play Console ($25 one-time) fees | Certain | Low–Medium | Real ongoing cost for a "free hobby project." If the Apple membership lapses, the iOS build is delisted from the App Store. Budget accordingly; consider whether one platform-only launch buys more time |
-| Sub-skill catalog explosion | Medium | Medium | The category→skill taxonomy in PRD lists ~40+ skills already; full K–8 could push past 100. Mitigate by defining only what's needed per phase (Phase 1: 2 skills; Phase 2: ~10; Phase 6+: full) and keeping the schema flexible |
+| Sub-concept catalog explosion | Medium | Medium | The category→concept taxonomy in PRD lists ~40+ concepts already; full K–8 could push past 100. Mitigate by defining only what's needed per phase (Phase 1: 2 concepts; Phase 2: ~10; Phase 6+: full) and keeping the schema flexible |
 
 ---
 

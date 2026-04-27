@@ -20,11 +20,11 @@
 
 These focus on learning outcomes, not time-on-app:
 
-- **Skill progression:** % of players who advance at least one skill from "challenging" to "comfortable" within their first 5 sessions
-- **Accuracy improvement:** wrong-answer rate per skill decreases over successive attempts (player is actually learning, not just guessing)
-- **Breadth of practice:** average number of distinct skill categories practiced per week (kids are exploring, not grinding one skill)
+- **Concept progression:** % of players who advance at least one concept from "challenging" to "comfortable" within their first 5 sessions
+- **Accuracy improvement:** wrong-answer rate per concept decreases over successive attempts (player is actually learning, not just guessing)
+- **Breadth of practice:** average number of distinct concept categories practiced per week (kids are exploring, not grinding one concept)
 - **Challenge engagement:** % of correct answers that are 5-star (challenging-band) questions — higher = player is being appropriately stretched
-- **Retention through learning:** D14 retention among players who advanced at least one skill level (learning = reason to return)
+- **Retention through learning:** D14 retention among players who advanced at least one concept level (learning = reason to return)
 
 ---
 
@@ -48,8 +48,8 @@ Multiple player profiles can exist on one device with no login required. [Assump
 Each **round** follows this sequence:
 
 1. **Player select** — The current player can hand the device to another player at the start of any round.
-2. **Spin the wheel** — A colorful wheel displays 4–8 math skills (selected from a larger pool, weighted toward skills the player needs to practice). Player taps to spin.
-3. **Answer a question** — A question in the landed skill category appears at the player's current level for that skill.
+2. **Spin the wheel** — A colorful wheel displays 4–8 math concepts (selected from a larger pool, weighted toward concepts the player needs to practice). Player taps to spin.
+3. **Answer a question** — A question in the landed concept category appears at the player's current level for that concept.
 4. **Result:**
    - **Correct answer at regular difficulty:** +3 stars, celebratory animation/sound.
    - **Correct answer at challenge difficulty** (near the edge of their ability): +5 stars, bigger celebration.
@@ -58,33 +58,33 @@ Each **round** follows this sequence:
 
 ### Answer Input
 
-Input method is tied to the player's proficiency band for that skill:
+Input method is tied to the player's proficiency band for that concept:
 
 - **Challenging band** → **Multiple choice** (4 options). Distractors are plausible (e.g. off-by-one, common conceptual mistakes). Reduces friction when the concept is unfamiliar.
 - **Comfortable band** → **Typed numeric answer**. No hints from distractors; tests genuine recall and reinforces fluency.
 
-This means the same player might type answers for skills they've mastered and pick from options for skills they're still developing.
+This means the same player might type answers for concepts they've mastered and pick from options for concepts they're still developing.
 
 ### Timer
 
 No hard timer in v1. After ~20 seconds of inactivity, the character plays a gentle "thinking" animation as a nudge — but the player can take as long as they need. A timed-mode toggle is out of scope for v1 (see *Out of Scope*).
 
 ### Multiplayer Turn Structure
-When multiple players share a device, they **alternate rounds** in a single session (Player A spins → Player B spins → ...). Each player's stars and skill data update independently. A per-session leaderboard shows how many stars each player earned this session.
+When multiple players share a device, they **alternate rounds** in a single session (Player A spins → Player B spins → ...). Each player's stars and concept data update independently. A per-session leaderboard shows how many stars each player earned this session.
 
 ---
 
-## Skill System & Adaptive Difficulty
+## Concept System & Adaptive Difficulty
 
-The game tracks proficiency at the **sub-skill** level — not at broad category level — because a kid who's mastered single-digit addition has not necessarily mastered multi-digit addition, and the wheel needs to surface the right granularity.
+The game tracks proficiency at the **sub-concept** level — not at broad category level — because a kid who's mastered single-digit addition has not necessarily mastered multi-digit addition, and the wheel needs to surface the right granularity.
 
-### Two-level taxonomy: Categories → Skills
+### Two-level taxonomy: Categories → Concepts
 
-**Categories** are how proficiency is *displayed* to the player (and how the wheel groups options visually). **Skills** are what proficiency is *tracked* against and what the wheel selects. One category contains many skills.
+**Categories** are how proficiency is *displayed* to the player (and how the wheel groups options visually). **Concepts** are what proficiency is *tracked* against and what the wheel selects. One category contains many concepts.
 
-Example category → skills decomposition (full catalog defined in Phase 2):
+Example category → concepts decomposition (full catalog defined in Phase 2):
 
-| Category | Example skills (each tracked independently) |
+| Category | Example concepts (each tracked independently) |
 |---|---|
 | **Number sense** | counting to 20, counting to 100, place value (tens), place value (hundreds), comparing 2-digit numbers, comparing 3-digit numbers |
 | **Addition & subtraction** | single-digit addition, single-digit subtraction, 2-digit addition (no carry), 2-digit addition (with carry), 2-digit subtraction (no borrow), 2-digit subtraction (with borrow), 3-digit addition, 3-digit subtraction, mental addition |
@@ -96,17 +96,17 @@ Example category → skills decomposition (full catalog defined in Phase 2):
 | **Word problems** | single-step (addition/subtraction), single-step (multiplication/division), multi-step |
 | **Algebra basics** (grades 6–8) | patterns, simple equations (one variable), evaluating expressions |
 
-The wheel surfaces individual **skills** (e.g. "2-digit addition with carry"), not categories. The Player Progress screen rolls skill data up to **categories** for a digestible at-a-glance view, with drill-down to see the per-skill detail.
+The wheel surfaces individual **concepts** (e.g. "2-digit addition with carry"), not categories. The Player Progress screen rolls concept data up to **categories** for a digestible at-a-glance view, with drill-down to see the per-concept detail.
 
 ### Adaptive Logic
 
-Each skill has a **proficiency level** (e.g. 0.0–1.0) per player, updated after every answer:
+Each concept has a **proficiency level** (e.g. 0.0–1.0) per player, updated after every answer:
 - Correct answer → proficiency increases
 - Wrong answer → proficiency decreases slightly (floor at 0)
 
 The exact update formula is an implementation detail (TBD in Phase 2). It should produce stable behavior with small N (e.g. doesn't swing wildly after one wrong answer).
 
-Based on proficiency, each skill is classified into one of four bands:
+Based on proficiency, each concept is classified into one of four bands:
 
 | Band | Condition | Action |
 |---|---|---|
@@ -115,14 +115,14 @@ Based on proficiency, each skill is classified into one of four bands:
 | **Challenging** | Noticeably above current level | Included with lower probability; correct = 5 stars |
 | **Not yet** | Far above current level | Excluded from wheel (e.g. calculus for grade 4) |
 
-The wheel at any given round contains a **mix of comfortable + challenging** skills so the player always has a chance to earn 5-star questions but isn't overwhelmed.
+The wheel at any given round contains a **mix of comfortable + challenging** concepts so the player always has a chance to earn 5-star questions but isn't overwhelmed.
 
 ### Question Generation
 
-Questions must feel **infinite and varied**. The strategy is hybrid, chosen per skill:
+Questions must feel **infinite and varied**. The strategy is hybrid, chosen per concept:
 
-- **Pure-arithmetic skills** (e.g. single-digit addition, times tables) → **algorithmic generation** at runtime. Random operands within the skill's defined range, with templated wording variation. Effectively infinite, no storage cost. Wrong-answer explanations are likewise templated.
-- **Word problems and concept-rich skills** (e.g. multi-step word problems, geometry, fractions) → **curated + batch AI-generated**, shipped as static data. We seed from open-licensed datasets (GSM8K, MathDataset-ElementarySchool, Illustrative Mathematics) and supplement with offline batch LLM generation. Each question carries a hand-authored or AI-authored step-by-step explanation.
+- **Pure-arithmetic concepts** (e.g. single-digit addition, times tables) → **algorithmic generation** at runtime. Random operands within the concept's defined range, with templated wording variation. Effectively infinite, no storage cost. Wrong-answer explanations are likewise templated.
+- **Reasoning-heavy concepts** (e.g. multi-step word problems, geometry, fractions) → **curated + batch AI-generated**, shipped as static data. We seed from open-licensed datasets (GSM8K, MathDataset-ElementarySchool, Illustrative Mathematics) and supplement with offline batch LLM generation. Each question carries a hand-authored or AI-authored step-by-step explanation.
 
 **Critical constraint:** No cloud LLM calls at runtime. All AI-generated content is produced offline, reviewed for quality, and shipped bundled with the app or as a periodically-updated content pack. This keeps the app free, offline-capable, and avoids per-user API costs.
 
@@ -171,7 +171,7 @@ A persistent "Shop" or "Wardrobe" screen where players can:
 ## Engagement Mechanics
 
 - **Daily streak:** Playing at least one round per day maintains a streak. Streak milestones award bonus stars.
-- **Daily challenge:** One special skill challenge per day with a bonus star reward.
+- **Daily challenge:** One special concept challenge per day with a bonus star reward.
 - Push notifications for streak reminders (v2, requires parental consent flow on iOS/Android).
 
 ---
@@ -181,9 +181,9 @@ A persistent "Shop" or "Wardrobe" screen where players can:
 Each player can view their own progress from their profile — the goal is to **empower the player** to understand where they shine and what they can improve, not to report to an adult.
 
 The screen shows:
-- **Skill proficiency chart** — visual breakdown of current level per skill category (e.g. a radar/spider chart or color-coded grid)
-- **Strengths** — skills currently in the "comfortable" band, highlighted positively
-- **Growing edges** — skills in the "challenging" band, framed as exciting opportunities ("You're leveling up in fractions!")
+- **Concept proficiency chart** — visual breakdown of current level per concept category (e.g. a radar/spider chart or color-coded grid)
+- **Strengths** — concepts currently in the "comfortable" band, highlighted positively
+- **Growing edges** — concepts in the "challenging" band, framed as exciting opportunities ("You're leveling up in fractions!")
 - **Stars earned** — total and recent history
 - **Sessions and questions answered** — simple stats the player can feel proud of
 - **Milestones reached** — visual timeline of milestone badges unlocked
@@ -226,11 +226,11 @@ All third-party content, assets, and libraries must be compatible with free non-
 
 ## Edge Cases
 
-- **Player masters all v1 content.** If every available skill drops into the "mastered" band, the wheel falls back to a celebration message ("You've mastered everything! New skills coming soon.") and offers a free-play mode that randomly samples from mastered skills (no stars awarded — keeps it from being a grind for trivial points).
+- **Player masters all v1 content.** If every available concept drops into the "mastered" band, the wheel falls back to a celebration message ("You've mastered everything! New concepts coming soon.") and offers a free-play mode that randomly samples from mastered concepts (no stars awarded — keeps it from being a grind for trivial points).
 - **Mid-question abandonment.** If the player closes the app or switches profiles before answering, the question is discarded with no proficiency change and no stars. It does not count as wrong.
 - **Profile deletion.** Players can delete their own profile from the profile picker (with a confirmation prompt). All local data for that profile is removed; cloud-save data for that profile is also removed on next sync if signed in.
 - **Two players want to play simultaneously.** Not supported — gameplay is turn-based on a single device. The "alternate rounds" structure is the v1 multiplayer model.
-- **Grade-level advancement.** A player's stored grade level is the *starting point* for the adaptive system, not a moving target. The system adapts based on actual proficiency, so a player who advances grades in real life will naturally see harder skills enter their wheel without any manual update. A "change grade" option is available in settings if a parent wants to recalibrate.
+- **Grade-level advancement.** A player's stored grade level is the *starting point* for the adaptive system, not a moving target. The system adapts based on actual proficiency, so a player who advances grades in real life will naturally see harder concepts enter their wheel without any manual update. A "change grade" option is available in settings if a parent wants to recalibrate.
 
 ---
 
