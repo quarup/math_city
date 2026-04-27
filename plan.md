@@ -7,9 +7,11 @@
 
 ## Status
 
-- **Phase:** Phase 0 — Foundation (not yet started)
+- **Phase:** Phase 0 complete (Android verified). Phase 1 not yet started.
 - **Last updated:** 2026-04-27
-- **Next action:** Set up Flutter project skeleton
+- **Last action:** Verified the Math Dash placeholder runs on the Android emulator (Pixel 7, API 34) via `flutter run`. CI pushed and live.
+- **Next action:** Begin Phase 1 — start with the skill registry and the algorithmic question generator for `add_1digit` and `sub_1digit` (see *Domain Specs* and *Phase 1* below).
+- **Deferred:** iOS verification (Path B). Xcode install + CocoaPods + iOS run still pending; revisit before Phase 7 (cloud save) at the latest.
 
 ---
 
@@ -179,14 +181,15 @@ math_dash/
 
 Each phase ends with something demonstrable. We do **not** start a phase until the previous one is "done enough" to ship internally.
 
-### Phase 0 — Foundation (target: ~1 week)
-- [ ] Confirm Flutter SDK installed; create `flutter create math_dash` skeleton in this repo
-- [ ] Add locked dependencies (`flame`, `flutter_riverpod`, `drift`, `flame_audio`, `games_services`)
-- [ ] Set up linting (`flutter_lints` or `very_good_analysis`) and `dart format` defaults
-- [ ] Set up GitHub Actions CI: format check, analyze, test
-- [ ] Decide initial skill scope for Phase 1 (proposed: addition + subtraction at grades 1–3)
-- [ ] Sketch the proficiency-update math (formula for moving 0.0→1.0 on correct/wrong)
-- [ ] **Exit criteria:** `flutter run` launches an empty app with our brand color scheme on the iOS simulator AND an Android emulator; CI passes on a no-op PR
+### Phase 0 — Foundation (complete)
+- [x] Flutter SDK installed (3.41.7); `flutter create` scaffold for iOS+Android with org `com.quarup`
+- [x] Locked dependencies installed: `flame`, `flutter_riverpod`, `riverpod_annotation`, `drift`, `sqlite3_flutter_libs`, `path_provider`, `path`, `flame_audio`, `games_services`; dev deps `build_runner`, `drift_dev`, `very_good_analysis`. Skipped `riverpod_generator` + `riverpod_lint` + `custom_lint` due to a Riverpod-3 / analyzer incompatibility — revisit when ecosystem catches up
+- [x] Linting (`very_good_analysis`); `dart format` clean
+- [x] GitHub Actions CI: format check + analyze + test on push/PR (`.github/workflows/ci.yml`)
+- [x] Initial skill scope for Phase 1 decided — see *Domain Specs* above
+- [x] Proficiency-update math sketched — see *Domain Specs* above
+- [x] **Exit criteria (Path B — Android only):** `flutter run` launched the placeholder Math Dash app on the Android emulator (Pixel 7, API 34) successfully. iOS verification deferred to Phase 7
+- [ ] iOS exit criteria — deferred until Xcode is installed (no later than Phase 7)
 
 ### Phase 1 — Vertical Slice (target: ~2–3 weeks) [the most important phase]
 **Goal: prove the core loop is fun.** Hardcoded single player, two skills, no persistence beyond runtime. Skills and proficiency math are specified in *Domain Specs* above.
