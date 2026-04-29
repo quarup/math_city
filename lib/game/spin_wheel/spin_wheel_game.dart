@@ -1,31 +1,40 @@
+import 'dart:async';
+
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:math_dash/domain/concepts/concept_registry.dart';
+import 'package:math_dash/game/spin_wheel/burst_component.dart';
 import 'package:math_dash/game/spin_wheel/spin_wheel_component.dart';
+import 'package:math_dash/game/spin_wheel/warp_background.dart';
 
 /// Minimal FlameGame that hosts the [SpinWheelComponent].
 ///
 /// Drag gesture physics:
-///   - While dragging, the wheel rotates with the finger (using the
-///     cross-product formula to convert linear delta → angular delta).
-///   - On release, [DragEndEvent.velocity] (px/s) is converted to an
-///     angular velocity (rad/s). Throws below [_minAngularVelocity] are
-///     ignored — the wheel just stops where it is.
+///   - While dragging, the wheel rotates with the finger.
+///   - On release, velocity is converted to angular velocity (rad/s).
+///   - Strong throws (≥ [_minSelectVelocity]): wheel spins, warp activates,
+///     concept is selected on landing.
+///   - Weak throws (< [_minSelectVelocity]): wheel still spins (boosted to
+///     [_minBoostVelocity]) but no concept is selected — prevents "cheating"
+///     by nudging the wheel to a desired segment.
 ///   - Throws above [_maxAngularVelocity] are clamped.
 class SpinWheelGame extends FlameGame with DragCallbacks {
   SpinWheelGame({required this.onConceptSelected});
 
   final void Function(String conceptId) onConceptSelected;
   late SpinWheelComponent _wheel;
+  late WarpBackground _warp;
 
   /// Position of the last drag event, in canvas coordinates.
   Vector2 _lastDragPos = Vector2.zero();
 
-  /// Minimum throw speed (rad/s). Below this the spin is not counted.
-  /// ∫₀^∞ ω·exp(−1.5t) dt = ω/1.5 → min 10 rad/s ≈ 1 full rotation.
-  static const _minAngularVelocity = 10.0;
-  static const _maxAngularVelocity = 30.0;
+  /// Minimum throw speed (rad/s) required to select a concept.
+  static const double _minSelectVelocity = 10;
+
+  /// Floor velocity applied to weak throws so the wheel always spins.
+  static const double _minBoostVelocity = 3;
+  static const double _maxAngularVelocity = 30;
 
   // 4 segments: each concept appears twice so the wheel looks full.
   static final _segments = [
@@ -54,23 +63,50 @@ class SpinWheelGame extends FlameGame with DragCallbacks {
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-    _wheel =
-        SpinWheelComponent(segments: _segments, onLanded: onConceptSelected)
-          ..size = size
-          ..position = Vector2.zero();
+    _warp = WarpBackground()
+      ..size = size
+      ..position = Vector2.zero();
+    add(_warp);
+    _wheel = SpinWheelComponent(
+      segments: _segments,
+      onLanded: _onWheelLanded,
+    )
+      ..size = size
+      ..position = Vector2.zero()
+      ..priority = 1;
     add(_wheel);
   }
+
+  Future<void> _onWheelLanded(String conceptId) async {
+    _warp.deactivate();
+    final index = _wheel.currentSelectedIndex;
+    _wheel.landedIndex = index;
+    final burst = BurstComponent(
+      burstPosition: _wheel.labelPositionFor(index),
+    );
+    await add(burst);
+    unawaited(
+      Future<void>.delayed(
+        const Duration(milliseconds: 1500),
+        () => onConceptSelected(conceptId),
+      ),
+    );
+  }
+
+  /// True when the current spin is locked (selecting) and can't be interrupted.
+  bool get _spinLocked => _wheel.isSpinning && _wheel.willSelect;
 
   @override
   void onDragStart(DragStartEvent event) {
     super.onDragStart(event);
-    if (_wheel.isSpinning) return;
+    if (_spinLocked) return;
+    if (_wheel.isSpinning) _wheel.cancelSpin();
     _lastDragPos = event.canvasPosition;
   }
 
   @override
   void onDragUpdate(DragUpdateEvent event) {
-    if (_wheel.isSpinning) return;
+    if (_spinLocked) return;
 
     // Convert linear drag delta to angular delta using cross-product formula:
     //   dθ = (r × delta) / |r|²
@@ -92,23 +128,37 @@ class SpinWheelGame extends FlameGame with DragCallbacks {
   @override
   void onDragEnd(DragEndEvent event) {
     super.onDragEnd(event);
-    if (_wheel.isSpinning) return;
+    if (_spinLocked) return;
 
     final center = size / 2;
     final r = _lastDragPos - center;
     final rLen2 = r.x * r.x + r.y * r.y;
-    if (rLen2 == 0) return;
+
+    // Degenerate case: tap exactly at centre — idle spin, no selection.
+    if (rLen2 == 0) {
+      _wheel.startSpinWithVelocity(_minBoostVelocity, selects: false);
+      return;
+    }
 
     // Angular velocity from throw: ω = (r × v) / |r|²
     final v = event.velocity; // px/s
-    final omega = (r.x * v.y - r.y * v.x) / rLen2;
+    final rawOmega = (r.x * v.y - r.y * v.x) / rLen2;
+    final absOmega = rawOmega.abs();
 
-    if (omega.abs() >= _minAngularVelocity) {
+    if (absOmega >= _minSelectVelocity) {
+      // Strong throw: spin, activate warp, and select a concept on landing.
       _wheel.startSpinWithVelocity(
-        omega.clamp(-_maxAngularVelocity, _maxAngularVelocity),
+        rawOmega.clamp(-_maxAngularVelocity, _maxAngularVelocity),
       );
+      _warp.activate();
+    } else {
+      // Weak throw: spin for feel (with boost) but do not select.
+      final sign = rawOmega >= 0 ? 1.0 : -1.0;
+      final boosted = absOmega < _minBoostVelocity
+          ? _minBoostVelocity * sign
+          : rawOmega;
+      _wheel.startSpinWithVelocity(boosted, selects: false);
     }
-    // Below minimum: wheel stays wherever the drag left it; user retries.
   }
 
   // onDragCancel: default super implementation is sufficient.

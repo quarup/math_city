@@ -7,10 +7,10 @@
 
 ## Status
 
-- **Phase:** Phase 1 core loop complete. Pending: audio assets + kid test.
-- **Last updated:** 2026-04-27
-- **Last action:** Built full Phase 1 vertical slice — concept registry, arithmetic generator, SpinWheel Flame component, HomeScreen/SpinScreen/QuestionScreen/ResultScreen, in-memory star counter via Riverpod. `flutter analyze` clean; 6 tests pass.
-- **Next action:** Run on Android emulator to verify the game loop end-to-end, then test with a real kid (Phase 1 exit criteria). Audio assets (CC0) deferred to Phase 6.
+- **Phase:** Phase 1 complete. Ready for Phase 2.
+- **Last updated:** 2026-04-29
+- **Last action:** Added unit tests for ConceptRegistry, Question.allChoices, and TotalStarsNotifier. Fixed lint warning in warp_background.dart. Real-kid play test passed.
+- **Next action:** Start Phase 2 — Drift schema, proficiency update logic, band classifier, adaptive wheel.
 - **Deferred:** Audio SFX + background music (CC0 assets not sourced yet — stub in place). iOS verification. Both revisit before Phase 7 at latest.
 
 ---
@@ -200,12 +200,7 @@ Each phase ends with something demonstrable. We do **not** start a phase until t
 - [x] `ResultScreen` with star award + wrong-answer explanation
 - [x] Loop: home → spin → question → result → home, with star counter persisted in memory
 - [ ] Basic SFX (spin, correct, wrong) and one looping background track — deferred to Phase 6 (CC0 assets not sourced; stub in place)
-- [ ] **Exit criteria:** Test with a real kid in the target age range. Concrete signals to look for:
-  - Did they spin at least 10 times without prompting?
-  - Did they ask to play again, or come back to it the next day unprompted?
-  - Did they react positively to correct-answer celebrations (smiles, "yes!")?
-  - When they got a wrong answer, did they read the explanation, or just tap through?
-  - **Hard gate:** if they put the device down within 5 minutes and didn't come back, stop and rethink the loop before Phase 2.
+- [x] **Exit criteria:** Test with a real kid in the target age range — passed.
 
 ### Phase 2 — Adaptive Concept System (target: ~2–3 weeks)
 - [ ] Drift schema for `Player`, `ConceptProficiency`, `Question` (catalog seeding)

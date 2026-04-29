@@ -38,17 +38,47 @@ class SpinWheelComponent extends PositionComponent {
   double _angularVelocity = 0;
   bool _isSpinning = false;
   bool _hasReported = false;
+  bool _willSelect = false;
+  int? _landedIndex;
 
   bool get isSpinning => _isSpinning;
+  bool get willSelect => _willSelect;
+  int get currentSelectedIndex => _selectedSegmentIndex;
+
+  /// Cancel a non-selecting free spin so the player can try again.
+  void cancelSpin() {
+    _isSpinning = false;
+    _angularVelocity = 0;
+    _hasReported = true;
+  }
+
+  int? get landedIndex => _landedIndex;
+  set landedIndex(int index) => _landedIndex = index;
+
+  /// Returns the canvas position of the label for [index] (game coordinates).
+  Vector2 labelPositionFor(int index) {
+    final sweep = 2 * math.pi / segments.length;
+    final midAngle = _rotation + (index + 0.5) * sweep;
+    final radius = math.min(size.x, size.y) / 2 - 8;
+    final labelR = radius * 0.62;
+    return Vector2(
+      size.x / 2 + math.cos(midAngle) * labelR,
+      size.y / 2 + math.sin(midAngle) * labelR,
+    );
+  }
 
   /// Apply an incremental rotation during a drag gesture.
   void rotateBy(double delta) => _rotation += delta;
 
   /// Begin free-spin deceleration at [angularVelocity] (radians/second).
   /// Positive = clockwise; negative = counter-clockwise.
-  void startSpinWithVelocity(double angularVelocity) {
+  /// Begin free-spin deceleration. When [selects] is false the wheel spins
+  /// freely but does not fire [onLanded] — used for low-force throws.
+  void startSpinWithVelocity(double angularVelocity, {bool selects = true}) {
     _isSpinning = true;
     _hasReported = false;
+    _willSelect = selects;
+    _landedIndex = null;
     _angularVelocity = angularVelocity;
   }
 
@@ -65,7 +95,7 @@ class SpinWheelComponent extends PositionComponent {
     if (_angularVelocity.abs() < 0.05 && !_hasReported) {
       _isSpinning = false;
       _hasReported = true;
-      onLanded(segments[_selectedSegmentIndex].conceptId);
+      if (_willSelect) onLanded(segments[_selectedSegmentIndex].conceptId);
     }
   }
 
@@ -90,23 +120,24 @@ class SpinWheelComponent extends PositionComponent {
 
     for (var i = 0; i < segments.length; i++) {
       final start = _rotation + i * sweep;
+      final isSelected = _landedIndex == i;
+      final dimmed = _landedIndex != null && !isSelected;
+      final segColor = dimmed
+          ? segments[i].color.withValues(alpha: 0.2)
+          : segments[i].color;
       canvas
-        ..drawArc(
-          rect,
-          start,
-          sweep,
-          true,
-          Paint()..color = segments[i].color,
-        )
+        ..drawArc(rect, start, sweep, true, Paint()..color = segColor)
         ..drawArc(
           rect,
           start,
           sweep,
           true,
           Paint()
-            ..color = Colors.white
+            ..color = isSelected
+                ? Colors.amber.withValues(alpha: 0.9)
+                : Colors.white
             ..style = PaintingStyle.stroke
-            ..strokeWidth = 2,
+            ..strokeWidth = isSelected ? 5 : 2,
         );
     }
 
@@ -114,6 +145,7 @@ class SpinWheelComponent extends PositionComponent {
     for (var i = 0; i < segments.length; i++) {
       final midAngle = _rotation + (i + 0.5) * sweep;
       final labelR = radius * 0.62;
+      final dimmed = _landedIndex != null && _landedIndex != i;
       _drawLabel(
         canvas,
         segments[i].label,
@@ -121,6 +153,7 @@ class SpinWheelComponent extends PositionComponent {
           center.dx + math.cos(midAngle) * labelR,
           center.dy + math.sin(midAngle) * labelR,
         ),
+        dimmed: dimmed,
       );
     }
 
@@ -161,15 +194,24 @@ class SpinWheelComponent extends PositionComponent {
       );
   }
 
-  void _drawLabel(Canvas canvas, String text, Offset center) {
+  void _drawLabel(
+    Canvas canvas,
+    String text,
+    Offset center, {
+    bool dimmed = false,
+  }) {
+    final color =
+        dimmed ? Colors.white.withValues(alpha: 0.3) : Colors.white;
     final tp = TextPainter(
       text: TextSpan(
         text: text,
-        style: const TextStyle(
-          color: Colors.white,
+        style: TextStyle(
+          color: color,
           fontSize: 14,
           fontWeight: FontWeight.bold,
-          shadows: [Shadow(color: Color(0x99000000), blurRadius: 3)],
+          shadows: dimmed
+              ? null
+              : const [Shadow(color: Color(0x99000000), blurRadius: 3)],
         ),
       ),
       textDirection: TextDirection.ltr,
