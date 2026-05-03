@@ -83,6 +83,22 @@ class AppDatabase extends _$AppDatabase {
     return getPlayerById(id);
   }
 
+  Future<void> updatePlayer(
+    int playerId, {
+    String? name,
+    int? gradeLevel,
+    String? avatarConfigJson,
+  }) => (update(players)..where((t) => t.id.equals(playerId))).write(
+    PlayersCompanion(
+      name: name != null ? Value(name) : const Value.absent(),
+      gradeLevel:
+          gradeLevel != null ? Value(gradeLevel) : const Value.absent(),
+      avatarConfig: avatarConfigJson != null
+          ? Value(avatarConfigJson)
+          : const Value.absent(),
+    ),
+  );
+
   Future<void> updatePlayerStars(int playerId, int totalStars) =>
       (update(players)..where((t) => t.id.equals(playerId))).write(
         PlayersCompanion(totalStars: Value(totalStars)),

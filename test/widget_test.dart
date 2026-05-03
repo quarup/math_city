@@ -6,7 +6,7 @@ import 'package:math_dash/data/database.dart';
 import 'package:math_dash/state/player_provider.dart';
 
 void main() {
-  testWidgets('app launches and shows launcher screen', (tester) async {
+  testWidgets('app launches and shows home screen', (tester) async {
     final db = AppDatabase(NativeDatabase.memory());
 
     await tester.pumpWidget(
@@ -17,7 +17,9 @@ void main() {
     );
     await tester.pump(); // let FutureProvider resolve
 
-    // With no players, the launcher shows the creation screen.
-    expect(find.text('New Player'), findsOneWidget);
+    // HomeScreen always shows the title.
+    expect(find.text('Math Dash'), findsOneWidget);
+    // With no players, the empty-state prompt is shown.
+    expect(find.text('Create Player'), findsOneWidget);
   });
 }

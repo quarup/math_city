@@ -48,6 +48,7 @@ class AvatarConfig {
   const AvatarConfig({
     this.skinToneIndex = 0,
     this.hairColorIndex = 0,
+    this.hairStyleIndex = 0,
     this.eyeColorIndex = 0,
     this.topColorIndex = 0,
     this.bottomColorIndex = 0,
@@ -58,6 +59,7 @@ class AvatarConfig {
     return AvatarConfig(
       skinToneIndex: (m['s'] as int?) ?? 0,
       hairColorIndex: (m['h'] as int?) ?? 0,
+      hairStyleIndex: (m['hs'] as int?) ?? 0,
       eyeColorIndex: (m['e'] as int?) ?? 0,
       topColorIndex: (m['t'] as int?) ?? 0,
       bottomColorIndex: (m['b'] as int?) ?? 0,
@@ -66,6 +68,10 @@ class AvatarConfig {
 
   final int skinToneIndex;
   final int hairColorIndex;
+
+  /// 0 = short, 1 = long.
+  final int hairStyleIndex;
+
   final int eyeColorIndex;
   final int topColorIndex;
   final int bottomColorIndex;
@@ -84,6 +90,7 @@ class AvatarConfig {
   String toJsonString() => jsonEncode(<String, int>{
     's': skinToneIndex,
     'h': hairColorIndex,
+    'hs': hairStyleIndex,
     'e': eyeColorIndex,
     't': topColorIndex,
     'b': bottomColorIndex,
@@ -92,12 +99,14 @@ class AvatarConfig {
   AvatarConfig copyWith({
     int? skinToneIndex,
     int? hairColorIndex,
+    int? hairStyleIndex,
     int? eyeColorIndex,
     int? topColorIndex,
     int? bottomColorIndex,
   }) => AvatarConfig(
     skinToneIndex: skinToneIndex ?? this.skinToneIndex,
     hairColorIndex: hairColorIndex ?? this.hairColorIndex,
+    hairStyleIndex: hairStyleIndex ?? this.hairStyleIndex,
     eyeColorIndex: eyeColorIndex ?? this.eyeColorIndex,
     topColorIndex: topColorIndex ?? this.topColorIndex,
     bottomColorIndex: bottomColorIndex ?? this.bottomColorIndex,
@@ -109,6 +118,7 @@ class AvatarConfig {
       other is AvatarConfig &&
           skinToneIndex == other.skinToneIndex &&
           hairColorIndex == other.hairColorIndex &&
+          hairStyleIndex == other.hairStyleIndex &&
           eyeColorIndex == other.eyeColorIndex &&
           topColorIndex == other.topColorIndex &&
           bottomColorIndex == other.bottomColorIndex;
@@ -117,6 +127,7 @@ class AvatarConfig {
   int get hashCode => Object.hash(
     skinToneIndex,
     hairColorIndex,
+    hairStyleIndex,
     eyeColorIndex,
     topColorIndex,
     bottomColorIndex,

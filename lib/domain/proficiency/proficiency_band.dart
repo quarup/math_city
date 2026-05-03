@@ -38,4 +38,4 @@ double updateProficiency(double p, {required bool correct}) {
 /// [conceptGrade]: the grade at which the concept is introduced.
 /// [playerGrade]: the player's stated grade level.
 double initialProficiency(int conceptGrade, int playerGrade) =>
-    conceptGrade <= playerGrade ? 0.4 : 0.05;
+    conceptGrade <= (playerGrade < 1 ? 1 : playerGrade) ? 0.4 : 0.05;

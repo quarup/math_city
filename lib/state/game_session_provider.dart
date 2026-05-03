@@ -22,8 +22,12 @@ class TotalStarsNotifier extends Notifier<int> {
     state += stars;
     final playerId = ref.read(activePlayerIdProvider);
     if (playerId != null) {
+      final db = ref.read(appDatabaseProvider);
       unawaited(
-        ref.read(appDatabaseProvider).updatePlayerStars(playerId, state),
+        db.updatePlayerStars(playerId, state).then((_) {
+          // Invalidate so the player chips on HomeScreen show the new total.
+          ref.invalidate(allPlayersProvider);
+        }),
       );
     }
   }
