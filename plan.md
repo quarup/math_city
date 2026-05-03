@@ -7,10 +7,10 @@
 
 ## Status
 
-- **Phase:** Phase 3 complete. Ready for Phase 4.
-- **Last updated:** 2026-05-03
-- **Last action:** Refactored Phase 4+ roadmap and PRD cosmetics design. The old "Stars, Milestones, Shop" phase splits into: Phase 4 (persistent stars + avatar accessories via off-the-shelf library), Phase 5 (city-builder foundations), Phase 6 (city-builder depth). Milestone-threshold system dropped — replaced by per-item star prices and total-stars-earned unlocks. Phase 3's CustomPainter avatar will be replaced by an off-the-shelf library (DiceBear / Multiavatar / avatar_maker — picked in Phase 4 spike).
-- **Next action:** Phase 4, step 1 — spike: evaluate DiceBear, Multiavatar, and avatar_maker for full-body avatar with multi-slot accessory support; pick one.
+- **Phase:** Phase 4 spike complete. Ready for Phase 4 implementation.
+- **Last updated:** 2026-05-04
+- **Last action:** Phase 4 spike findings: Multiavatar disqualified (identicon generator, not a dress-up avatar). DiceBear and avatar_maker are both bust-only — no library combines full-body rendering with the planned accessory slots (hat / costume / shoes / backpack). Decision: drop avatar accessories entirely; stars are now spent only on the city builder. Avatar locked to **DiceBear Adventurer** style; player customizes a curated subset of slots (hair, eyes, mouth, glasses, etc.) and can re-edit anytime — no purchasable cosmetics on the avatar.
+- **Next action:** Phase 4, step 1 — add `dice_bear` and `flutter_svg` dependencies; design `AdventurerConfig` domain object wrapping the curated slot subset.
 - **Deferred:** Audio SFX + background music (CC0 assets not sourced yet — stub in place). iOS verification. Both revisit before Phase 9 at latest.
 
 ---
@@ -26,8 +26,8 @@
 | **Audio** | [`flame_audio`](https://pub.dev/packages/flame_audio) (wrapper over `audioplayers`) | Natural fit with Flame; supports SFX pools and background music |
 | **Cloud save** | [`games_services`](https://pub.dev/packages/games_services) package — Google Play Games (Android) + Game Center / iCloud (iOS) | Only solution that satisfies the PRD's "no custom server" requirement on both platforms with a single API. Last updated Dec 2025 |
 | **Concept granularity** | Track proficiency at **sub-concept** level (e.g. "2-digit addition with carry"), not at category level. Roll up to category for display only | Otherwise the adaptive wheel is too coarse: a kid who's mastered single-digit addition would falsely look ready for multi-digit. See PRD's Concept System section for the category→concept taxonomy |
-| **Cosmetics economy** | Two sinks for stars: (a) avatar accessories, (b) city builder. Player chooses how to balance | Two distinct goal types — short-term ("buy a hat now") and long-arc ("grow my city over months") — keeps motivation varied for kids |
-| **Avatar rendering** | Off-the-shelf library (DiceBear / Multiavatar / avatar_maker — final pick in Phase 4 spike). Replaces Phase 3 CustomPainter | Libraries provide rich accessory variety for free; Phase 3 painter was always a placeholder ("avatar art source TBD") |
+| **Cosmetics economy** | Single sink for stars: **city builder only**. Avatar is free to customize and not tied to the economy | Phase 4 spike found no Flutter avatar library combines full-body rendering with rich accessory slots — building hat/costume/shoes/backpack overlays on top of a bust-only library was more work than the variety it would buy. City builder alone is plenty of long-arc motivation |
+| **Avatar rendering** | **DiceBear Adventurer** style via the [`dice_bear`](https://pub.dev/packages/dice_bear) package. Player picks from a curated subset of slots (hair style/color, skin, eyes, mouth, glasses, earrings, optional features); free to re-edit anytime | Cleanest off-the-shelf option with a friendly illustrated look for kids. Bust-only (no torso/legs) — but accessories are dropped, so this is fine. Adventurer doesn't have hijab/turban; Avataaars does, switch styles later if cultural head-covering options become important |
 | **City rendering** | Isometric tiles, fixed grid, **auto-generated roads** between buildings | Mobile-friendly: tile-snap + auto-roads avoid fiddly placement; established CC0 isometric packs (e.g. Kenney City Kit) cover the style |
 | **Milestones** | **Removed.** Replaced by per-item star prices and total-stars-earned thresholds for unlocking new building types and themed maps | Milestones were dead weight once the city builder provides natural long-arc progression — every land expansion or new building tier *is* a milestone moment |
 | **Repo plan doc** | `plan.md` at repo root | Simple, greppable, lives next to `prd.md` |
@@ -39,9 +39,9 @@
 
 Four layers, top to bottom:
 
-1. **Presentation (Flutter widgets)** — screens, navigation, forms (player creation, shop, progress screen, settings).
-2. **Game (Flame components)** — spin wheel, avatar render, question presentation, animations, audio cues.
-3. **Domain (pure Dart)** — game rules: concept-band classification, proficiency updates, wheel selection logic, milestone unlocks, star math. **No Flutter or Flame imports here** — keeps it unit-testable and portable.
+1. **Presentation (Flutter widgets)** — screens, navigation, forms (player creation, avatar editor, progress screen, settings, city screen).
+2. **Game (Flame components)** — spin wheel, question presentation, animations, audio cues, isometric city renderer.
+3. **Domain (pure Dart)** — game rules: concept-band classification, proficiency updates, wheel selection logic, star math, city growth model. **No Flutter or Flame imports here** — keeps it unit-testable and portable.
 4. **Data (Drift + cloud-save)** — local SQLite for player profiles, proficiency records, owned items; question catalog as a read-only seeded table; cloud-save bridge for backup/restore.
 
 State management (Riverpod) sits at the boundary between presentation and domain — providers expose domain objects to widgets reactively.
@@ -53,7 +53,7 @@ State management (Riverpod) sits at the boundary between presentation and domain
 ```
 Player
   id, name, gradeLevel, createdAt
-  avatarConfig          // library-specific avatar parameters (replaces Phase 3 chibi config in Phase 4)
+  avatarConfig          // JSON: DiceBear Adventurer slot picks (hair, skin, eyes, mouth, glasses, etc.)
   currentStars          // spendable balance
   lifetimeStarsEarned   // never decreases — drives progressive unlocks
   currentStreak, lastPlayedDate
@@ -73,16 +73,6 @@ Question (static catalog for non-arithmetic concepts; arithmetic generated at ru
   prompt (text or template), correctAnswer,
   distractors (for multiple-choice), explanation (for wrong-answer screen)
   source (algorithmic | curated | ai_generated), license
-
-// --- Avatar accessories (Phase 4) ---
-
-AvatarAccessory (static catalog)
-  id, slot (hat | glasses | costume | shoes | backpack | cape | prop | facePaint),
-  name, starCost,
-  libraryRef            // parameters for the chosen avatar library
-
-OwnedAccessory
-  playerId, accessoryId, equipped (bool)
 
 // --- City builder (Phase 5+) ---
 
@@ -114,7 +104,7 @@ GameSession (in-memory only)
 ```
 
 **Notes:**
-- `Item` and `Milestone` from earlier sketches are removed. The cosmetics system splits into `AvatarAccessory` and city tables.
+- `Item`, `Milestone`, and `AvatarAccessory` from earlier sketches are removed. The only star sink is the city builder; the avatar is free to customize.
 - `currentStars` vs. `lifetimeStarsEarned`: spending stars decreases `currentStars`; both correct *and* spent stars count toward `lifetimeStarsEarned` for unlock gating (so spending doesn't lock players out of progression).
 - `serviceProvision` lets the city growth model use simple aggregate ratios (e.g. "1 school per 50 residents") rather than per-building dependency graphs.
 
@@ -194,14 +184,12 @@ math_dash/
 │   ├── app.dart
 │   ├── presentation/      # Flutter widgets: screens, navigation
 │   │   ├── home/
-│   │   ├── player/
-│   │   ├── shop/          # avatar-accessory shop (Phase 4)
+│   │   ├── player/        # includes avatar editor (DiceBear slot pickers)
 │   │   ├── city/          # city-builder screen (Phase 5+)
 │   │   ├── progress/
 │   │   └── settings/
 │   ├── game/              # Flame components
 │   │   ├── spin_wheel/
-│   │   ├── avatar/
 │   │   ├── city/          # isometric city renderer (Phase 5+)
 │   │   ├── question_view/
 │   │   └── effects/
@@ -210,7 +198,7 @@ math_dash/
 │   │   ├── proficiency/
 │   │   ├── questions/
 │   │   ├── stars/
-│   │   ├── accessories/   # accessory catalog, equip rules (Phase 4)
+│   │   ├── avatar/        # AdventurerConfig + curated slot catalogs
 │   │   └── city/          # buildings, growth model, population math (Phase 5+)
 │   ├── data/              # Drift schema, repositories, cloud-save bridge
 │   │   ├── database.dart
@@ -278,23 +266,36 @@ Each phase ends with something demonstrable. We do **not** start a phase until t
 
 **Open question resolved:** Avatar art sourced as pure Flutter CustomPainter (no external sprites). Simple geometric "chibi" style — works at all sizes, zero asset licensing burden.
 
-### Phase 4 — Persistent Stars + Avatar Accessories (target: ~2–3 weeks)
+### Phase 4 — DiceBear Avatar + Persistent Stars (target: ~3–5 days)
 
-**Goal:** Stars persist across app restarts. Player can spend them on visible avatar accessories.
+**Goal:** Replace the Phase 3 CustomPainter chibi with a DiceBear Adventurer avatar that the player can edit anytime. Stars persist across app restarts so they're meaningful as a Phase 5 city-builder currency.
 
-- [ ] **Spike (first day or two):** Build throwaway prototypes of DiceBear, Multiavatar, and `avatar_maker` with the same target outfit (skin + hair + hat + glasses + costume). Pick one based on: full-body coverage, slot variety, license, render perf on Android emulator. Document the choice in *Locked Decisions*.
-- [ ] Drift schema migration (v3): split `totalStars` into `currentStars` + `lifetimeStarsEarned`; add `OwnedAccessory` table; replace `avatarConfig` shape with library-specific parameters
-- [ ] Replace Phase 3 CustomPainter avatar with the chosen library (delete `lib/game/avatar/` chibi painter once new path is wired)
-- [ ] `AvatarAccessory` static catalog seeded from JSON: ~5 items per slot for v1 (hat, glasses, costume, shoes, backpack — propsl/cape/face paint can wait)
-- [ ] Star-award flow writes through to Drift on each round (no more in-memory star total)
-- [ ] Shop screen: browse all accessories, filter to affordable, "buy" (debits `currentStars`), "equip"/"unequip"
-- [ ] Live avatar preview while browsing the shop
-- [ ] Avatar (with equipped accessories) visible on home screen, spin screen, and result screen
-- [ ] **Exit criteria:** Kid plays a round, earns stars, opens the shop, buys a hat, equips it, returns to the spin screen and sees the hat on their avatar. Closes app, reopens — stars and equipped hat are still there.
+**Spike outcome (already done):** DiceBear chosen — Adventurer style. Multiavatar disqualified (identicon, not dress-up). avatar_maker rejected (no real advantage over DiceBear, same bust-only limitation). Avatar accessory shop dropped from scope — see *Locked Decisions* for rationale.
 
-**Open questions for Phase 4:**
-- Which library? (Spike output)
-- If the chosen library doesn't cover all 8 slots, do we drop the missing slots from v1 or augment with sprite overlays? Decide after spike.
+**Curated slot subset (v1 — tunable in this phase):**
+- Hair style: ~8 options (mix of short + long picks from adventurer's 45)
+- Hair color: ~6 options
+- Skin color: 4 options (DiceBear default palette)
+- Eyes: ~5 variants
+- Mouth: ~5 variants
+- Glasses: 5 variants + none
+- Earrings: 4 variants + none
+- Optional features: blush, freckles (toggles)
+
+(Eyebrows, mustache, birthmark deliberately skipped — too granular for kids; keep the picker tight.)
+
+**Tasks:**
+- [ ] Add deps: `dice_bear` (DiceBear adventurer SVG generator) and `flutter_svg` (SVG renderer). Pin to current stable versions
+- [ ] `domain/avatar/AdventurerConfig` — pure Dart record of the curated slot picks; serializes to JSON for storage
+- [ ] `domain/avatar/adventurer_catalog.dart` — the curated lists of slot values (the "~8 hair styles, ~5 eye variants" sets)
+- [ ] `presentation/player/adventurer_avatar.dart` — widget that renders an `AdventurerConfig` via the dice_bear package
+- [ ] Drift schema migration (v3): drop the old `avatarConfig` JSON shape; split `totalStars` → `currentStars` + `lifetimeStarsEarned` (no migration of old values — wipe local DB on first launch is acceptable for this hobby project)
+- [ ] On first launch after upgrade, seed every existing player with a random `AdventurerConfig` (deterministic from `player.id`); they can edit later
+- [ ] Avatar editor screen: per-slot pickers (carousel or grid), live preview at the top; reachable from profile picker (edit existing) and from new-player creation
+- [ ] Star-award flow writes `currentStars` and `lifetimeStarsEarned` to Drift on each correct answer
+- [ ] Render the new avatar on home, spin, and result screens (delete the old `lib/presentation/player/avatar_widget.dart` CustomPainter and `lib/domain/avatar/avatar_config.dart` once the new path is wired everywhere)
+- [ ] Tests: `AdventurerConfig` serialization round-trip; star-persistence repository test (earn → close DB → reopen → still there); golden test the avatar renders without throwing for a few sample configs
+- [ ] **Exit criteria:** Player creates a profile, picks an adventurer look, plays a round, sees the avatar on every screen, earns stars, kills and reopens the app — same avatar, same stars. From the profile picker they can re-open the editor and change their hair, and the new look shows up everywhere.
 
 ---
 
@@ -362,7 +363,7 @@ Each phase ends with something demonstrable. We do **not** start a phase until t
 ### Phase 9 — Cloud Save (target: ~1–2 weeks)
 - [ ] Integrate `games_services` save game API
 - [ ] Sign-in flow (Game Center / Play Games) — graceful skip if signed out
-- [ ] Save-on-meaningful-event (round end, accessory purchase, building placed, map unlocked)
+- [ ] Save-on-meaningful-event (round end, avatar edit, building placed, map unlocked)
 - [ ] Load on app start; conflict resolution (prefer most recent)
 - [ ] iOS verification (deferred from Phase 0 — `flutter run` on iOS simulator must succeed before this phase ships)
 - [ ] **Exit criteria:** Install on a second device, sign in, see same player data including avatar, stars, and city state
@@ -391,8 +392,7 @@ These are not blockers for Phase 0 or 1 but need to be resolved by the phase not
 
 - **By Phase 2 (resolved):** Proficiency update formula — using simple exponential moving average; see *Domain Specs*.
 - **By Phase 2:** Question dataset sourcing strategy for non-arithmetic concepts — curate from [GSM8K](https://github.com/openai/grade-school-math) (MIT license) and [MathDataset-ElementarySchool](https://github.com/RamonKaspar/MathDataset-ElementarySchool), or generate via batch LLM? Probably both — start with curation. Defer to Phase 6+ when fractions/word problems are added.
-- **By Phase 4:** **Avatar library pick** — DiceBear (which styles? does any one style cover all our slots?), Multiavatar, or `avatar_maker`? First action of Phase 4 is the spike that answers this.
-- **By Phase 4 (after spike):** If chosen library doesn't cover all 8 accessory slots, drop missing slots from v1 *or* layer sprite overlays from a CC0 pack. Decide based on spike.
+- **By Phase 4 (resolved):** Avatar library pick — DiceBear Adventurer chosen; avatar accessory shop dropped. See *Locked Decisions*.
 - **By Phase 5:** Specific isometric-asset packs — Kenney's [City Kit Industrial](https://kenney.nl/assets/city-kit-industrial) is a strong starting point but coverage is limited. Identify supplementary packs (Kenney's other city packs, [OpenGameArt isometric tag](https://opengameart.org/art-search-advanced?keys=isometric)) before catalog work begins.
 - **By Phase 6:** Specific list of building types and their service-ratio numbers (residents-per-school, etc.) — can only be tuned by play-testing.
 - **By Phase 8:** Music + SFX sourcing (CC0 from Freesound.org and OpenGameArt.org).
@@ -407,7 +407,7 @@ These are not blockers for Phase 0 or 1 but need to be resolved by the phase not
 |---|---|---|---|
 | Core loop isn't fun for kids | Medium | Critical | Phase 1 explicitly tested this with a real kid before any further investment — passed |
 | Question dataset gap | Medium | High | Algorithmic generation handles arithmetic; for everything else, multiple datasets identified (GSM8K, MathDataset-ElementarySchool, Illustrative Mathematics) |
-| Avatar library doesn't cover all 8 slots | Medium | Medium | Spike at start of Phase 4 evaluates 3 candidates; fallback is to drop sparse slots from v1 or layer sprite overlays |
+| ~~Avatar library doesn't cover all 8 slots~~ | — | — | Resolved: avatar accessories dropped from scope after Phase 4 spike — single star sink is the city builder |
 | City UX on small screens (placement, panning, zoom on a phone) | Medium | High | Auto-roads (no precision needed); tile-snap with generous tap targets; pinch-zoom + pan; play-test on smallest target device early in Phase 5 |
 | Isometric asset coverage gap | Medium | Medium | Kenney's City Kit packs are the starting point but limited; identify 1–2 supplementary CC0 packs in early Phase 5. If coverage is still sparse, narrow the v1 building catalog rather than ship inconsistent art |
 | Population growth model feels arbitrary or unmotivating | Medium | Medium | Keep model simple (aggregate ratios, not per-building dependency graphs); tune via play-testing. Vague-but-themed feedback messages keep the player oriented even if numbers shift |
@@ -444,11 +444,10 @@ Since this is a two-person project (you + Claude), some norms to keep us efficie
 - [games_services package](https://pub.dev/packages/games_services)
 - [flame_audio package](https://pub.dev/packages/flame_audio)
 
-**Avatar library candidates (Phase 4 spike)**
-- [DiceBear](https://www.dicebear.com/) — CC0 designs, MIT code; check accessory coverage per style
-- [`dice_bear` Flutter package](https://pub.dev/packages/dice_bear)
-- [Multiavatar](https://multiavatar.com/) (via [`avatar_plus` package](https://pub.dev/packages/avatar_plus))
-- [`avatar_maker` package](https://pub.dev/packages/avatar_maker)
+**Avatar library (chosen)**
+- [DiceBear Adventurer style](https://www.dicebear.com/styles/adventurer/) — CC0 designs, MIT code
+- [`dice_bear` Flutter package](https://pub.dev/packages/dice_bear) — Dart wrapper for the DiceBear API; renders SVG locally or via URL
+- [`flutter_svg` package](https://pub.dev/packages/flutter_svg) — required to render the SVG output
 
 **City builder asset candidates (Phase 5)**
 - [Kenney City Kit Industrial](https://kenney.nl/assets/city-kit-industrial) — CC0 isometric
