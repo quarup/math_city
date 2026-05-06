@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_dash/data/database.dart';
-import 'package:math_dash/presentation/player/avatar_widget.dart';
+import 'package:math_dash/presentation/player/adventurer_avatar_widget.dart';
 import 'package:math_dash/presentation/player/player_creation_screen.dart';
 import 'package:math_dash/presentation/spin/spin_screen.dart';
 import 'package:math_dash/state/game_session_provider.dart';
@@ -219,7 +219,7 @@ class _PlayerChip extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  AvatarWidget(config: player.avatar, size: 52),
+                  AdventurerAvatarWidget(config: player.avatar, size: 52),
                   const SizedBox(height: 4),
                   Text(
                     player.name,
@@ -241,7 +241,7 @@ class _PlayerChip extends StatelessWidget {
                       ),
                       const SizedBox(width: 2),
                       Text(
-                        '${player.totalStars}',
+                        '${player.currentStars}',
                         style: theme.textTheme.labelSmall,
                       ),
                     ],

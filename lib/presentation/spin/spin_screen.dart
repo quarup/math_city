@@ -4,11 +4,11 @@ import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_dash/data/database.dart';
-import 'package:math_dash/domain/avatar/avatar_config.dart';
+import 'package:math_dash/domain/avatar/adventurer_config.dart';
 import 'package:math_dash/domain/concepts/concept.dart';
 import 'package:math_dash/game/spin_wheel/spin_wheel_component.dart';
 import 'package:math_dash/game/spin_wheel/spin_wheel_game.dart';
-import 'package:math_dash/presentation/player/avatar_widget.dart';
+import 'package:math_dash/presentation/player/adventurer_avatar_widget.dart';
 import 'package:math_dash/presentation/question/question_screen.dart';
 import 'package:math_dash/state/game_session_provider.dart';
 import 'package:math_dash/state/player_provider.dart';
@@ -115,7 +115,7 @@ class _SpinScreenState extends ConsumerState<SpinScreen>
 
     final playerName = playerAsync.asData?.value.name ?? '';
     final avatarConfig =
-        playerAsync.asData?.value.avatar ?? const AvatarConfig();
+        playerAsync.asData?.value.avatar ?? const AdventurerConfig();
 
     // Create the game once, the first build where concepts are available.
     final concepts = wheelAsync.asData?.value;
@@ -137,7 +137,7 @@ class _SpinScreenState extends ConsumerState<SpinScreen>
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              AvatarWidget(config: avatarConfig, size: 32),
+              AdventurerAvatarWidget(config: avatarConfig, size: 32),
               const SizedBox(width: 8),
               Text(playerName, style: theme.textTheme.titleMedium),
             ],

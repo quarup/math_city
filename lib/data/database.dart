@@ -1,8 +1,9 @@
+// ignore_for_file: lines_longer_than_80_chars // column defaults are verbose
 import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
-import 'package:math_dash/domain/avatar/avatar_config.dart';
+import 'package:math_dash/domain/avatar/adventurer_config.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
@@ -16,16 +17,17 @@ class Players extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get name => text().withLength(min: 1, max: 50)();
   IntColumn get gradeLevel => integer()();
-  IntColumn get totalStars => integer().withDefault(const Constant(0))();
+  IntColumn get currentStars => integer().withDefault(const Constant(0))();
+  IntColumn get lifetimeStarsEarned => integer().withDefault(const Constant(0))();
   DateTimeColumn get createdAt => dateTime()();
   // Stored as JSON string; null = default avatar.
   TextColumn get avatarConfig => text().nullable()();
 }
 
 extension PlayerAvatarExt on Player {
-  AvatarConfig get avatar => avatarConfig != null
-      ? AvatarConfig.fromJsonString(avatarConfig!)
-      : const AvatarConfig();
+  AdventurerConfig get avatar => avatarConfig != null
+      ? AdventurerConfig.fromJsonString(avatarConfig!)
+      : const AdventurerConfig();
 }
 
 class ConceptProficiencies extends Table {
@@ -49,14 +51,16 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onUpgrade: (m, from, to) async {
-      if (from < 2) {
-        await m.addColumn(players, players.avatarConfig);
-      }
+      // v3: replaced totalStars with currentStars + lifetimeStarsEarned;
+      // wipe is acceptable for a hobby project at this stage.
+      await customStatement('DROP TABLE IF EXISTS concept_proficiencies');
+      await customStatement('DROP TABLE IF EXISTS players');
+      await m.createAll();
     },
   );
 
@@ -99,10 +103,16 @@ class AppDatabase extends _$AppDatabase {
     ),
   );
 
-  Future<void> updatePlayerStars(int playerId, int totalStars) =>
-      (update(players)..where((t) => t.id.equals(playerId))).write(
-        PlayersCompanion(totalStars: Value(totalStars)),
-      );
+  Future<void> updatePlayerStars(
+    int playerId, {
+    required int currentStars,
+    required int lifetimeStarsEarned,
+  }) => (update(players)..where((t) => t.id.equals(playerId))).write(
+    PlayersCompanion(
+      currentStars: Value(currentStars),
+      lifetimeStarsEarned: Value(lifetimeStarsEarned),
+    ),
+  );
 
   // ---- Proficiency helpers ----
 

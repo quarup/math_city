@@ -45,12 +45,23 @@ class $PlayersTable extends Players with TableInfo<$PlayersTable, Player> {
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _totalStarsMeta = const VerificationMeta(
-    'totalStars',
+  static const VerificationMeta _currentStarsMeta = const VerificationMeta(
+    'currentStars',
   );
   @override
-  late final GeneratedColumn<int> totalStars = GeneratedColumn<int>(
-    'total_stars',
+  late final GeneratedColumn<int> currentStars = GeneratedColumn<int>(
+    'current_stars',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _lifetimeStarsEarnedMeta =
+      const VerificationMeta('lifetimeStarsEarned');
+  @override
+  late final GeneratedColumn<int> lifetimeStarsEarned = GeneratedColumn<int>(
+    'lifetime_stars_earned',
     aliasedName,
     false,
     type: DriftSqlType.int,
@@ -84,7 +95,8 @@ class $PlayersTable extends Players with TableInfo<$PlayersTable, Player> {
     id,
     name,
     gradeLevel,
-    totalStars,
+    currentStars,
+    lifetimeStarsEarned,
     createdAt,
     avatarConfig,
   ];
@@ -119,10 +131,22 @@ class $PlayersTable extends Players with TableInfo<$PlayersTable, Player> {
     } else if (isInserting) {
       context.missing(_gradeLevelMeta);
     }
-    if (data.containsKey('total_stars')) {
+    if (data.containsKey('current_stars')) {
       context.handle(
-        _totalStarsMeta,
-        totalStars.isAcceptableOrUnknown(data['total_stars']!, _totalStarsMeta),
+        _currentStarsMeta,
+        currentStars.isAcceptableOrUnknown(
+          data['current_stars']!,
+          _currentStarsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('lifetime_stars_earned')) {
+      context.handle(
+        _lifetimeStarsEarnedMeta,
+        lifetimeStarsEarned.isAcceptableOrUnknown(
+          data['lifetime_stars_earned']!,
+          _lifetimeStarsEarnedMeta,
+        ),
       );
     }
     if (data.containsKey('created_at')) {
@@ -163,9 +187,13 @@ class $PlayersTable extends Players with TableInfo<$PlayersTable, Player> {
         DriftSqlType.int,
         data['${effectivePrefix}grade_level'],
       )!,
-      totalStars: attachedDatabase.typeMapping.read(
+      currentStars: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
-        data['${effectivePrefix}total_stars'],
+        data['${effectivePrefix}current_stars'],
+      )!,
+      lifetimeStarsEarned: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}lifetime_stars_earned'],
       )!,
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
@@ -188,14 +216,16 @@ class Player extends DataClass implements Insertable<Player> {
   final int id;
   final String name;
   final int gradeLevel;
-  final int totalStars;
+  final int currentStars;
+  final int lifetimeStarsEarned;
   final DateTime createdAt;
   final String? avatarConfig;
   const Player({
     required this.id,
     required this.name,
     required this.gradeLevel,
-    required this.totalStars,
+    required this.currentStars,
+    required this.lifetimeStarsEarned,
     required this.createdAt,
     this.avatarConfig,
   });
@@ -205,7 +235,8 @@ class Player extends DataClass implements Insertable<Player> {
     map['id'] = Variable<int>(id);
     map['name'] = Variable<String>(name);
     map['grade_level'] = Variable<int>(gradeLevel);
-    map['total_stars'] = Variable<int>(totalStars);
+    map['current_stars'] = Variable<int>(currentStars);
+    map['lifetime_stars_earned'] = Variable<int>(lifetimeStarsEarned);
     map['created_at'] = Variable<DateTime>(createdAt);
     if (!nullToAbsent || avatarConfig != null) {
       map['avatar_config'] = Variable<String>(avatarConfig);
@@ -218,7 +249,8 @@ class Player extends DataClass implements Insertable<Player> {
       id: Value(id),
       name: Value(name),
       gradeLevel: Value(gradeLevel),
-      totalStars: Value(totalStars),
+      currentStars: Value(currentStars),
+      lifetimeStarsEarned: Value(lifetimeStarsEarned),
       createdAt: Value(createdAt),
       avatarConfig: avatarConfig == null && nullToAbsent
           ? const Value.absent()
@@ -235,7 +267,10 @@ class Player extends DataClass implements Insertable<Player> {
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       gradeLevel: serializer.fromJson<int>(json['gradeLevel']),
-      totalStars: serializer.fromJson<int>(json['totalStars']),
+      currentStars: serializer.fromJson<int>(json['currentStars']),
+      lifetimeStarsEarned: serializer.fromJson<int>(
+        json['lifetimeStarsEarned'],
+      ),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       avatarConfig: serializer.fromJson<String?>(json['avatarConfig']),
     );
@@ -247,7 +282,8 @@ class Player extends DataClass implements Insertable<Player> {
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
       'gradeLevel': serializer.toJson<int>(gradeLevel),
-      'totalStars': serializer.toJson<int>(totalStars),
+      'currentStars': serializer.toJson<int>(currentStars),
+      'lifetimeStarsEarned': serializer.toJson<int>(lifetimeStarsEarned),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'avatarConfig': serializer.toJson<String?>(avatarConfig),
     };
@@ -257,14 +293,16 @@ class Player extends DataClass implements Insertable<Player> {
     int? id,
     String? name,
     int? gradeLevel,
-    int? totalStars,
+    int? currentStars,
+    int? lifetimeStarsEarned,
     DateTime? createdAt,
     Value<String?> avatarConfig = const Value.absent(),
   }) => Player(
     id: id ?? this.id,
     name: name ?? this.name,
     gradeLevel: gradeLevel ?? this.gradeLevel,
-    totalStars: totalStars ?? this.totalStars,
+    currentStars: currentStars ?? this.currentStars,
+    lifetimeStarsEarned: lifetimeStarsEarned ?? this.lifetimeStarsEarned,
     createdAt: createdAt ?? this.createdAt,
     avatarConfig: avatarConfig.present ? avatarConfig.value : this.avatarConfig,
   );
@@ -275,9 +313,12 @@ class Player extends DataClass implements Insertable<Player> {
       gradeLevel: data.gradeLevel.present
           ? data.gradeLevel.value
           : this.gradeLevel,
-      totalStars: data.totalStars.present
-          ? data.totalStars.value
-          : this.totalStars,
+      currentStars: data.currentStars.present
+          ? data.currentStars.value
+          : this.currentStars,
+      lifetimeStarsEarned: data.lifetimeStarsEarned.present
+          ? data.lifetimeStarsEarned.value
+          : this.lifetimeStarsEarned,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       avatarConfig: data.avatarConfig.present
           ? data.avatarConfig.value
@@ -291,7 +332,8 @@ class Player extends DataClass implements Insertable<Player> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('gradeLevel: $gradeLevel, ')
-          ..write('totalStars: $totalStars, ')
+          ..write('currentStars: $currentStars, ')
+          ..write('lifetimeStarsEarned: $lifetimeStarsEarned, ')
           ..write('createdAt: $createdAt, ')
           ..write('avatarConfig: $avatarConfig')
           ..write(')'))
@@ -299,8 +341,15 @@ class Player extends DataClass implements Insertable<Player> {
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, name, gradeLevel, totalStars, createdAt, avatarConfig);
+  int get hashCode => Object.hash(
+    id,
+    name,
+    gradeLevel,
+    currentStars,
+    lifetimeStarsEarned,
+    createdAt,
+    avatarConfig,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -308,7 +357,8 @@ class Player extends DataClass implements Insertable<Player> {
           other.id == this.id &&
           other.name == this.name &&
           other.gradeLevel == this.gradeLevel &&
-          other.totalStars == this.totalStars &&
+          other.currentStars == this.currentStars &&
+          other.lifetimeStarsEarned == this.lifetimeStarsEarned &&
           other.createdAt == this.createdAt &&
           other.avatarConfig == this.avatarConfig);
 }
@@ -317,14 +367,16 @@ class PlayersCompanion extends UpdateCompanion<Player> {
   final Value<int> id;
   final Value<String> name;
   final Value<int> gradeLevel;
-  final Value<int> totalStars;
+  final Value<int> currentStars;
+  final Value<int> lifetimeStarsEarned;
   final Value<DateTime> createdAt;
   final Value<String?> avatarConfig;
   const PlayersCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.gradeLevel = const Value.absent(),
-    this.totalStars = const Value.absent(),
+    this.currentStars = const Value.absent(),
+    this.lifetimeStarsEarned = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.avatarConfig = const Value.absent(),
   });
@@ -332,7 +384,8 @@ class PlayersCompanion extends UpdateCompanion<Player> {
     this.id = const Value.absent(),
     required String name,
     required int gradeLevel,
-    this.totalStars = const Value.absent(),
+    this.currentStars = const Value.absent(),
+    this.lifetimeStarsEarned = const Value.absent(),
     required DateTime createdAt,
     this.avatarConfig = const Value.absent(),
   }) : name = Value(name),
@@ -342,7 +395,8 @@ class PlayersCompanion extends UpdateCompanion<Player> {
     Expression<int>? id,
     Expression<String>? name,
     Expression<int>? gradeLevel,
-    Expression<int>? totalStars,
+    Expression<int>? currentStars,
+    Expression<int>? lifetimeStarsEarned,
     Expression<DateTime>? createdAt,
     Expression<String>? avatarConfig,
   }) {
@@ -350,7 +404,9 @@ class PlayersCompanion extends UpdateCompanion<Player> {
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (gradeLevel != null) 'grade_level': gradeLevel,
-      if (totalStars != null) 'total_stars': totalStars,
+      if (currentStars != null) 'current_stars': currentStars,
+      if (lifetimeStarsEarned != null)
+        'lifetime_stars_earned': lifetimeStarsEarned,
       if (createdAt != null) 'created_at': createdAt,
       if (avatarConfig != null) 'avatar_config': avatarConfig,
     });
@@ -360,7 +416,8 @@ class PlayersCompanion extends UpdateCompanion<Player> {
     Value<int>? id,
     Value<String>? name,
     Value<int>? gradeLevel,
-    Value<int>? totalStars,
+    Value<int>? currentStars,
+    Value<int>? lifetimeStarsEarned,
     Value<DateTime>? createdAt,
     Value<String?>? avatarConfig,
   }) {
@@ -368,7 +425,8 @@ class PlayersCompanion extends UpdateCompanion<Player> {
       id: id ?? this.id,
       name: name ?? this.name,
       gradeLevel: gradeLevel ?? this.gradeLevel,
-      totalStars: totalStars ?? this.totalStars,
+      currentStars: currentStars ?? this.currentStars,
+      lifetimeStarsEarned: lifetimeStarsEarned ?? this.lifetimeStarsEarned,
       createdAt: createdAt ?? this.createdAt,
       avatarConfig: avatarConfig ?? this.avatarConfig,
     );
@@ -386,8 +444,11 @@ class PlayersCompanion extends UpdateCompanion<Player> {
     if (gradeLevel.present) {
       map['grade_level'] = Variable<int>(gradeLevel.value);
     }
-    if (totalStars.present) {
-      map['total_stars'] = Variable<int>(totalStars.value);
+    if (currentStars.present) {
+      map['current_stars'] = Variable<int>(currentStars.value);
+    }
+    if (lifetimeStarsEarned.present) {
+      map['lifetime_stars_earned'] = Variable<int>(lifetimeStarsEarned.value);
     }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
@@ -404,7 +465,8 @@ class PlayersCompanion extends UpdateCompanion<Player> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('gradeLevel: $gradeLevel, ')
-          ..write('totalStars: $totalStars, ')
+          ..write('currentStars: $currentStars, ')
+          ..write('lifetimeStarsEarned: $lifetimeStarsEarned, ')
           ..write('createdAt: $createdAt, ')
           ..write('avatarConfig: $avatarConfig')
           ..write(')'))
@@ -876,7 +938,8 @@ typedef $$PlayersTableCreateCompanionBuilder =
       Value<int> id,
       required String name,
       required int gradeLevel,
-      Value<int> totalStars,
+      Value<int> currentStars,
+      Value<int> lifetimeStarsEarned,
       required DateTime createdAt,
       Value<String?> avatarConfig,
     });
@@ -885,7 +948,8 @@ typedef $$PlayersTableUpdateCompanionBuilder =
       Value<int> id,
       Value<String> name,
       Value<int> gradeLevel,
-      Value<int> totalStars,
+      Value<int> currentStars,
+      Value<int> lifetimeStarsEarned,
       Value<DateTime> createdAt,
       Value<String?> avatarConfig,
     });
@@ -947,8 +1011,13 @@ class $$PlayersTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<int> get totalStars => $composableBuilder(
-    column: $table.totalStars,
+  ColumnFilters<int> get currentStars => $composableBuilder(
+    column: $table.currentStars,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get lifetimeStarsEarned => $composableBuilder(
+    column: $table.lifetimeStarsEarned,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -1012,8 +1081,13 @@ class $$PlayersTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get totalStars => $composableBuilder(
-    column: $table.totalStars,
+  ColumnOrderings<int> get currentStars => $composableBuilder(
+    column: $table.currentStars,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get lifetimeStarsEarned => $composableBuilder(
+    column: $table.lifetimeStarsEarned,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -1048,8 +1122,13 @@ class $$PlayersTableAnnotationComposer
     builder: (column) => column,
   );
 
-  GeneratedColumn<int> get totalStars => $composableBuilder(
-    column: $table.totalStars,
+  GeneratedColumn<int> get currentStars => $composableBuilder(
+    column: $table.currentStars,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get lifetimeStarsEarned => $composableBuilder(
+    column: $table.lifetimeStarsEarned,
     builder: (column) => column,
   );
 
@@ -1119,14 +1198,16 @@ class $$PlayersTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<String> name = const Value.absent(),
                 Value<int> gradeLevel = const Value.absent(),
-                Value<int> totalStars = const Value.absent(),
+                Value<int> currentStars = const Value.absent(),
+                Value<int> lifetimeStarsEarned = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<String?> avatarConfig = const Value.absent(),
               }) => PlayersCompanion(
                 id: id,
                 name: name,
                 gradeLevel: gradeLevel,
-                totalStars: totalStars,
+                currentStars: currentStars,
+                lifetimeStarsEarned: lifetimeStarsEarned,
                 createdAt: createdAt,
                 avatarConfig: avatarConfig,
               ),
@@ -1135,14 +1216,16 @@ class $$PlayersTableTableManager
                 Value<int> id = const Value.absent(),
                 required String name,
                 required int gradeLevel,
-                Value<int> totalStars = const Value.absent(),
+                Value<int> currentStars = const Value.absent(),
+                Value<int> lifetimeStarsEarned = const Value.absent(),
                 required DateTime createdAt,
                 Value<String?> avatarConfig = const Value.absent(),
               }) => PlayersCompanion.insert(
                 id: id,
                 name: name,
                 gradeLevel: gradeLevel,
-                totalStars: totalStars,
+                currentStars: currentStars,
+                lifetimeStarsEarned: lifetimeStarsEarned,
                 createdAt: createdAt,
                 avatarConfig: avatarConfig,
               ),

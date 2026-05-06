@@ -1,10 +1,12 @@
+// ignore_for_file: lines_longer_than_80_chars // picker callbacks are verbose
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_dash/data/database.dart';
-import 'package:math_dash/domain/avatar/avatar_config.dart';
-import 'package:math_dash/presentation/player/avatar_widget.dart';
+import 'package:math_dash/domain/avatar/adventurer_catalog.dart';
+import 'package:math_dash/domain/avatar/adventurer_config.dart';
+import 'package:math_dash/presentation/player/adventurer_avatar_widget.dart';
 import 'package:math_dash/state/player_provider.dart';
 
 /// Pass [initialPlayer] to edit an existing player; null = create a new one.
@@ -22,7 +24,7 @@ class PlayerCreationScreen extends ConsumerStatefulWidget {
 
 class _PlayerCreationScreenState extends ConsumerState<PlayerCreationScreen> {
   late final TextEditingController _nameController;
-  late AvatarConfig _config;
+  late AdventurerConfig _config;
   late int _grade;
   bool _saving = false;
 
@@ -32,7 +34,7 @@ class _PlayerCreationScreenState extends ConsumerState<PlayerCreationScreen> {
     final p = widget.initialPlayer;
     _nameController = TextEditingController(text: p?.name ?? '');
     _grade = p?.gradeLevel ?? 2;
-    _config = p?.avatar ?? const AvatarConfig();
+    _config = p?.avatar ?? const AdventurerConfig();
   }
 
   @override
@@ -92,11 +94,13 @@ class _PlayerCreationScreenState extends ConsumerState<PlayerCreationScreen> {
             Container(
               color: theme.colorScheme.surfaceContainerLowest,
               padding: const EdgeInsets.symmetric(vertical: 16),
-              child: Center(child: AvatarWidget(config: _config, size: 120)),
+              child: Center(
+                child: AdventurerAvatarWidget(config: _config, size: 120),
+              ),
             ),
             const Divider(height: 1),
 
-            // ---- Scrollable form fields ----
+            // ---- Scrollable form ----
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
@@ -140,77 +144,118 @@ class _PlayerCreationScreenState extends ConsumerState<PlayerCreationScreen> {
                     ),
                     const SizedBox(height: 20),
 
-                    // Colour pickers
-                    _colorRow(
-                      'Skin',
-                      kSkinTones,
-                      _config.skinToneIndex,
-                      (i) => setState(
-                        () => _config = _config.copyWith(skinToneIndex: i),
-                      ),
+                    // Skin color
+                    _sectionLabel('Skin', theme),
+                    _colorSwatches(
+                      count: kSkinColors.length,
+                      swatch: skinColorSwatch,
+                      selectedIndex: _config.skinColorIndex,
+                      onSelect: (i) =>
+                          setState(() => _config = _config.copyWith(skinColorIndex: i)),
                     ),
-                    _colorRow(
-                      'Hair',
-                      kHairColors,
-                      _config.hairColorIndex,
-                      (i) => setState(
-                        () => _config = _config.copyWith(hairColorIndex: i),
-                      ),
+                    const SizedBox(height: 16),
+
+                    // Hair style
+                    _sectionLabel('Hair Style', theme),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 4,
+                      children: List.generate(kHairStyles.length, (i) {
+                        return ChoiceChip(
+                          label: Text(kHairStyleLabels[i]),
+                          selected: _config.hairIndex == i,
+                          onSelected: (_) =>
+                              setState(() => _config = _config.copyWith(hairIndex: i)),
+                        );
+                      }),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 6),
-                      child: Row(
-                        children: [
-                          const SizedBox(
-                            width: 46,
-                            child: Text(
-                              'Style',
-                              style: TextStyle(fontSize: 13),
-                            ),
-                          ),
-                          ChoiceChip(
-                            label: const Text('Short'),
-                            selected: _config.hairStyleIndex == 0,
-                            onSelected: (_) => setState(
-                              () => _config =
-                                  _config.copyWith(hairStyleIndex: 0),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          ChoiceChip(
-                            label: const Text('Long'),
-                            selected: _config.hairStyleIndex == 1,
-                            onSelected: (_) => setState(
-                              () => _config =
-                                  _config.copyWith(hairStyleIndex: 1),
-                            ),
-                          ),
-                        ],
-                      ),
+                    const SizedBox(height: 12),
+
+                    // Hair color
+                    _sectionLabel('Hair Color', theme),
+                    _colorSwatches(
+                      count: kHairColors.length,
+                      swatch: hairColorSwatch,
+                      selectedIndex: _config.hairColorIndex,
+                      onSelect: (i) =>
+                          setState(() => _config = _config.copyWith(hairColorIndex: i)),
                     ),
-                    _colorRow(
-                      'Eyes',
-                      kEyeColors,
-                      _config.eyeColorIndex,
-                      (i) => setState(
-                        () => _config = _config.copyWith(eyeColorIndex: i),
-                      ),
+                    const SizedBox(height: 16),
+
+                    // Eyes
+                    _sectionLabel('Eyes', theme),
+                    Wrap(
+                      spacing: 8,
+                      children: List.generate(kEyeVariants.length, (i) {
+                        return ChoiceChip(
+                          label: Text('${i + 1}'),
+                          selected: _config.eyesIndex == i,
+                          onSelected: (_) =>
+                              setState(() => _config = _config.copyWith(eyesIndex: i)),
+                        );
+                      }),
                     ),
-                    _colorRow(
-                      'Top',
-                      kTopColors,
-                      _config.topColorIndex,
-                      (i) => setState(
-                        () => _config = _config.copyWith(topColorIndex: i),
-                      ),
+                    const SizedBox(height: 16),
+
+                    // Mouth
+                    _sectionLabel('Mouth', theme),
+                    Wrap(
+                      spacing: 8,
+                      children: List.generate(kMouthVariants.length, (i) {
+                        return ChoiceChip(
+                          label: Text('${i + 1}'),
+                          selected: _config.mouthIndex == i,
+                          onSelected: (_) =>
+                              setState(() => _config = _config.copyWith(mouthIndex: i)),
+                        );
+                      }),
                     ),
-                    _colorRow(
-                      'Pants',
-                      kBottomColors,
-                      _config.bottomColorIndex,
-                      (i) => setState(
-                        () => _config = _config.copyWith(bottomColorIndex: i),
-                      ),
+                    const SizedBox(height: 16),
+
+                    // Glasses
+                    _sectionLabel('Glasses', theme),
+                    Wrap(
+                      spacing: 8,
+                      children: List.generate(kGlassesOptions.length, (i) {
+                        return ChoiceChip(
+                          label: Text(i == 0 ? 'None' : '$i'),
+                          selected: _config.glassesIndex == i,
+                          onSelected: (_) =>
+                              setState(() => _config = _config.copyWith(glassesIndex: i)),
+                        );
+                      }),
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Earrings
+                    _sectionLabel('Earrings', theme),
+                    Wrap(
+                      spacing: 8,
+                      children: List.generate(kEarringsOptions.length, (i) {
+                        return ChoiceChip(
+                          label: Text(i == 0 ? 'None' : '$i'),
+                          selected: _config.earringsIndex == i,
+                          onSelected: (_) =>
+                              setState(() => _config = _config.copyWith(earringsIndex: i)),
+                        );
+                      }),
+                    ),
+                    const SizedBox(height: 8),
+
+                    // Blush + Freckles
+                    SwitchListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: const Text('Blush'),
+                      value: _config.blush,
+                      onChanged: (v) =>
+                          setState(() => _config = _config.copyWith(blush: v)),
+                    ),
+                    SwitchListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: const Text('Freckles'),
+                      value: _config.freckles,
+                      onChanged: (v) =>
+                          setState(() => _config = _config.copyWith(freckles: v)),
                     ),
                     const SizedBox(height: 8),
                   ],
@@ -218,7 +263,7 @@ class _PlayerCreationScreenState extends ConsumerState<PlayerCreationScreen> {
               ),
             ),
 
-            // ---- Sticky save button at bottom ----
+            // ---- Sticky save button ----
             const Divider(height: 1),
             Padding(
               padding: const EdgeInsets.fromLTRB(24, 12, 24, 12),
@@ -247,49 +292,42 @@ class _PlayerCreationScreenState extends ConsumerState<PlayerCreationScreen> {
   }
 }
 
-Widget _colorRow(
-  String label,
-  List<Color> colors,
-  int selectedIndex,
-  ValueChanged<int> onSelect,
-) {
+Widget _sectionLabel(String label, ThemeData theme) {
   return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 6),
-    child: Row(
-      children: [
-        SizedBox(
-          width: 46,
-          child: Text(label, style: const TextStyle(fontSize: 13)),
-        ),
-        ...List.generate(colors.length, (i) {
-          final selected = i == selectedIndex;
-          return GestureDetector(
-            onTap: () => onSelect(i),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 150),
-              margin: const EdgeInsets.symmetric(horizontal: 4),
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                color: colors[i],
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: selected ? Colors.white : Colors.black12,
-                  width: selected ? 3 : 1,
-                ),
-                boxShadow: selected
-                    ? [
-                        const BoxShadow(
-                          color: Color(0x55000000),
-                          blurRadius: 6,
-                        ),
-                      ]
-                    : null,
-              ),
+    padding: const EdgeInsets.only(bottom: 8),
+    child: Text(label, style: theme.textTheme.labelLarge),
+  );
+}
+
+Widget _colorSwatches({
+  required int count,
+  required Color Function(int) swatch,
+  required int selectedIndex,
+  required ValueChanged<int> onSelect,
+}) {
+  return Wrap(
+    spacing: 8,
+    children: List.generate(count, (i) {
+      final selected = i == selectedIndex;
+      return GestureDetector(
+        onTap: () => onSelect(i),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          width: 32,
+          height: 32,
+          decoration: BoxDecoration(
+            color: swatch(i),
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: selected ? Colors.white : Colors.black12,
+              width: selected ? 3 : 1,
             ),
-          );
-        }),
-      ],
-    ),
+            boxShadow: selected
+                ? [const BoxShadow(color: Color(0x55000000), blurRadius: 6)]
+                : null,
+          ),
+        ),
+      );
+    }),
   );
 }

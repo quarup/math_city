@@ -15,7 +15,7 @@ class TotalStarsNotifier extends Notifier<int> {
   @override
   int build() {
     final playerAsync = ref.watch(activePlayerProvider);
-    return playerAsync.asData?.value.totalStars ?? 0;
+    return playerAsync.asData?.value.currentStars ?? 0;
   }
 
   void add(int stars) {
@@ -23,8 +23,14 @@ class TotalStarsNotifier extends Notifier<int> {
     final playerId = ref.read(activePlayerIdProvider);
     if (playerId != null) {
       final db = ref.read(appDatabaseProvider);
+      final player = ref.read(activePlayerProvider).asData?.value;
+      final lifetime = (player?.lifetimeStarsEarned ?? 0) + stars;
       unawaited(
-        db.updatePlayerStars(playerId, state).then((_) {
+        db.updatePlayerStars(
+          playerId,
+          currentStars: state,
+          lifetimeStarsEarned: lifetime,
+        ).then((_) {
           // Invalidate so the player chips on HomeScreen show the new total.
           ref.invalidate(allPlayersProvider);
         }),

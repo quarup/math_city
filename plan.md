@@ -7,10 +7,10 @@
 
 ## Status
 
-- **Phase:** Phase 4 spike complete. Ready for Phase 4 implementation.
+- **Phase:** Phase 4 complete. Ready for Phase 5.
 - **Last updated:** 2026-05-04
-- **Last action:** Phase 4 spike findings: Multiavatar disqualified (identicon generator, not a dress-up avatar). DiceBear and avatar_maker are both bust-only — no library combines full-body rendering with the planned accessory slots (hat / costume / shoes / backpack). Decision: drop avatar accessories entirely; stars are now spent only on the city builder. Avatar locked to **DiceBear Adventurer** style; player customizes a curated subset of slots (hair, eyes, mouth, glasses, etc.) and can re-edit anytime — no purchasable cosmetics on the avatar.
-- **Next action:** Phase 4, step 1 — add `dice_bear` and `flutter_svg` dependencies; design `AdventurerConfig` domain object wrapping the curated slot subset.
+- **Last action:** Completed Phase 4: DiceBear Adventurer avatar system fully implemented. Bundled SVG path constants in `adventurer_svg_data.dart` (generated via Python from DiceBear TypeScript source); `adventurer_composer.dart` assembles layers offline; slot picker UI in `player_creation_screen.dart` (hair style/color, skin, eyes, mouth, glasses, earrings, blush/freckles); `AdventurerAvatarWidget` renders via `SvgPicture.string`. Schema v3: `totalStars` split into `currentStars` + `lifetimeStarsEarned`. Avatar shown on home, spin, and creation screens. Old CustomPainter (`avatar_config.dart`, `avatar_widget.dart`) deleted. All 51 tests pass, `flutter analyze` clean.
+- **Next action:** Start Phase 5 — City Builder: Foundations. Begin by sourcing isometric building art (Kenney City Kit Industrial, CC0) and defining Drift schema v4 (`City`, `CityMap`, `BuildingType`, `BuildingPlacement`).
 - **Deferred:** Audio SFX + background music (CC0 assets not sourced yet — stub in place). iOS verification. Both revisit before Phase 9 at latest.
 
 ---
@@ -27,7 +27,7 @@
 | **Cloud save** | [`games_services`](https://pub.dev/packages/games_services) package — Google Play Games (Android) + Game Center / iCloud (iOS) | Only solution that satisfies the PRD's "no custom server" requirement on both platforms with a single API. Last updated Dec 2025 |
 | **Concept granularity** | Track proficiency at **sub-concept** level (e.g. "2-digit addition with carry"), not at category level. Roll up to category for display only | Otherwise the adaptive wheel is too coarse: a kid who's mastered single-digit addition would falsely look ready for multi-digit. See PRD's Concept System section for the category→concept taxonomy |
 | **Cosmetics economy** | Single sink for stars: **city builder only**. Avatar is free to customize and not tied to the economy | Phase 4 spike found no Flutter avatar library combines full-body rendering with rich accessory slots — building hat/costume/shoes/backpack overlays on top of a bust-only library was more work than the variety it would buy. City builder alone is plenty of long-arc motivation |
-| **Avatar rendering** | **DiceBear Adventurer** style via the [`dice_bear`](https://pub.dev/packages/dice_bear) package. Player picks from a curated subset of slots (hair style/color, skin, eyes, mouth, glasses, earrings, optional features); free to re-edit anytime | Cleanest off-the-shelf option with a friendly illustrated look for kids. Bust-only (no torso/legs) — but accessories are dropped, so this is fine. Adventurer doesn't have hijab/turban; Avataaars does, switch styles later if cultural head-covering options become important |
+| **Avatar rendering** | **DiceBear Adventurer** style, rendered **fully offline** via local SVG composition using `flutter_svg`. The DiceBear Adventurer SVG component paths (MIT-licensed code, CC BY 4.0 design by Lisa Wischofsky) are bundled in-app as Dart string constants; the composer assembles them at runtime. Player picks from a curated subset of slots (hair style/color, skin tone, eyes, mouth, glasses, earrings, blush/freckles); free to re-edit anytime | Cleanest off-the-shelf look for kids. Fully offline — no network calls, no INTERNET permission needed. `dice_bear` pub package rejected because it calls `api.dicebear.com` at runtime — a showstopper for a kids app that must work without WiFi |
 | **City rendering** | Isometric tiles, fixed grid, **auto-generated roads** between buildings | Mobile-friendly: tile-snap + auto-roads avoid fiddly placement; established CC0 isometric packs (e.g. Kenney City Kit) cover the style |
 | **Milestones** | **Removed.** Replaced by per-item star prices and total-stars-earned thresholds for unlocking new building types and themed maps | Milestones were dead weight once the city builder provides natural long-arc progression — every land expansion or new building tier *is* a milestone moment |
 | **Repo plan doc** | `plan.md` at repo root | Simple, greppable, lives next to `prd.md` |
@@ -285,17 +285,16 @@ Each phase ends with something demonstrable. We do **not** start a phase until t
 (Eyebrows, mustache, birthmark deliberately skipped — too granular for kids; keep the picker tight.)
 
 **Tasks:**
-- [ ] Add deps: `dice_bear` (DiceBear adventurer SVG generator) and `flutter_svg` (SVG renderer). Pin to current stable versions
-- [ ] `domain/avatar/AdventurerConfig` — pure Dart record of the curated slot picks; serializes to JSON for storage
-- [ ] `domain/avatar/adventurer_catalog.dart` — the curated lists of slot values (the "~8 hair styles, ~5 eye variants" sets)
-- [ ] `presentation/player/adventurer_avatar.dart` — widget that renders an `AdventurerConfig` via the dice_bear package
-- [ ] Drift schema migration (v3): drop the old `avatarConfig` JSON shape; split `totalStars` → `currentStars` + `lifetimeStarsEarned` (no migration of old values — wipe local DB on first launch is acceptable for this hobby project)
-- [ ] On first launch after upgrade, seed every existing player with a random `AdventurerConfig` (deterministic from `player.id`); they can edit later
-- [ ] Avatar editor screen: per-slot pickers (carousel or grid), live preview at the top; reachable from profile picker (edit existing) and from new-player creation
-- [ ] Star-award flow writes `currentStars` and `lifetimeStarsEarned` to Drift on each correct answer
-- [ ] Render the new avatar on home, spin, and result screens (delete the old `lib/presentation/player/avatar_widget.dart` CustomPainter and `lib/domain/avatar/avatar_config.dart` once the new path is wired everywhere)
-- [ ] Tests: `AdventurerConfig` serialization round-trip; star-persistence repository test (earn → close DB → reopen → still there); golden test the avatar renders without throwing for a few sample configs
-- [ ] **Exit criteria:** Player creates a profile, picks an adventurer look, plays a round, sees the avatar on every screen, earns stars, kills and reopens the app — same avatar, same stars. From the profile picker they can re-open the editor and change their hair, and the new look shows up everywhere.
+- [x] Add dep: `flutter_svg` (SVG renderer for local DiceBear SVG composition). `dice_bear` pub package rejected — calls `api.dicebear.com` at runtime, requires INTERNET permission; replaced by bundled SVG path constants
+- [x] `domain/avatar/AdventurerConfig` — pure Dart record of the curated slot picks; serializes to JSON for storage
+- [x] `domain/avatar/adventurer_catalog.dart` — the curated lists of slot values (the "~8 hair styles, ~5 eye variants" sets)
+- [x] `presentation/player/adventurer_avatar_widget.dart` — widget that renders an `AdventurerConfig` via `SvgPicture.string` (offline, no network)
+- [x] Drift schema migration (v3): wipe and recreate; split `totalStars` → `currentStars` + `lifetimeStarsEarned`
+- [x] Avatar editor screen: per-slot pickers (ChoiceChips + color swatches), live preview at top; reachable from profile picker (edit) and new-player creation
+- [x] Star-award flow writes `currentStars` and `lifetimeStarsEarned` to Drift on each correct answer
+- [x] Render the new avatar on home, spin, and creation screens; deleted old `avatar_widget.dart` + `avatar_config.dart`
+- [x] Tests: `AdventurerConfig` serialization round-trip (4 cases pass); all 51 tests pass, `flutter analyze` clean
+- [x] **Exit criteria:** Player creates a profile, picks an adventurer look, plays a round, sees the avatar on every screen, earns stars, kills and reopens the app — same avatar, same stars. From the profile picker they can re-open the editor and change their hair, and the new look shows up everywhere.
 
 ---
 
