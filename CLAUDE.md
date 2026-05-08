@@ -7,6 +7,7 @@ Guidance for Claude Code (and other AI agents) working in this repo.
 **Math Dash** — a free, open, cross-platform mobile math game for kids ages 6–14.
 - Product scope: see [prd.md](prd.md) — read this before suggesting any feature.
 - Execution plan: see [plan.md](plan.md) — read this before suggesting any code.
+- Curriculum / concept catalog: see [curriculum.md](curriculum.md) — canonical K–8 sub-concept taxonomy with prereq DAG, source strategy, and diagram needs. Read this before adding/modifying questions or generators.
 
 ## Where we are right now
 
@@ -49,8 +50,9 @@ dart format .          # format
 - **No new dependencies without discussion.** Every package added is licensing surface area (this is a free-software project — see PRD's "Content & Licensing" section).
 - **Domain layer stays pure.** No Flutter, Flame, or platform imports under `lib/domain/`. If you need to test logic, that's where it goes.
 - **Tests live in `test/`, mirroring `lib/` structure.** Bias heavily toward unit-testing the domain layer; widget/integration tests are higher cost.
-- **Question content is data, not code.** Curated and AI-generated questions ship as JSON in `assets/data/`, seeded into Drift on first run.
-- **Asset licensing.** Every art/audio/font asset must be CC0, CC-BY, or equivalent. Track sources in a `LICENSES_THIRD_PARTY.md` (to be created in Phase 6).
+- **Question content is mostly algorithmic, not bundled data.** Per [curriculum.md](curriculum.md), ~85% of K–8 content comes from parameterized Dart generators in `lib/domain/questions/` with procedural diagram widgets in `lib/presentation/diagrams/`. The remaining ~10% is bundled curated dataset content in `assets/data/` (seeded into Drift on first run). **No runtime LLM calls; no offline LLM batch generation in v1.**
+- **Diagrams are pure-Flutter widgets, parameterized.** `lib/domain/` emits `DiagramSpec` value types (a sealed family); `lib/presentation/diagrams/` dispatches to widgets. This preserves the "no Flutter imports under `lib/domain/`" rule.
+- **Asset & content licensing.** Every art/audio/font asset must be CC0, CC-BY, or equivalent. Every math dataset must be MIT / Apache 2.0 / CC-BY / CC0 — **CC-BY-NC and CC-BY-NC-SA are excluded** because app-store distribution carries non-zero commercial-use risk. Track sources in `LICENSES_THIRD_PARTY.md` (to be created in Phase 6 alongside dataset ingestion).
 - **Don't speculate features.** Stay within the current phase scope in `plan.md`. Future phases are aspirational, not a TODO list.
 
 ## Working incrementally
@@ -67,4 +69,4 @@ This is a hobby project being built in small sessions. Optimize for "next sessio
 - Don't propose Firebase / Supabase / a custom backend for save data. We use platform cloud save (`games_services`).
 - Don't add complexity for hypothetical future features.
 - Don't write defensive code for impossible inputs in internal APIs.
-- Don't create new top-level docs without discussion. `prd.md`, `plan.md`, and this file are the canonical set.
+- Don't create new top-level docs without discussion. `prd.md`, `plan.md`, `curriculum.md`, and this file are the canonical set.

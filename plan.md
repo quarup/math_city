@@ -7,11 +7,11 @@
 
 ## Status
 
-- **Phase:** Phase 4 complete. Ready for Phase 5.
-- **Last updated:** 2026-05-04
-- **Last action:** Completed Phase 4: DiceBear Adventurer avatar system fully implemented. Bundled SVG path constants in `adventurer_svg_data.dart` (generated via Python from DiceBear TypeScript source); `adventurer_composer.dart` assembles layers offline; slot picker UI in `player_creation_screen.dart` (hair style/color, skin, eyes, mouth, glasses, earrings, blush/freckles); `AdventurerAvatarWidget` renders via `SvgPicture.string`. Schema v3: `totalStars` split into `currentStars` + `lifetimeStarsEarned`. Avatar shown on home, spin, and creation screens. Old CustomPainter (`avatar_config.dart`, `avatar_widget.dart`) deleted. All 51 tests pass, `flutter analyze` clean.
-- **Next action:** Start Phase 5 — City Builder: Foundations. Begin by sourcing isometric building art (Kenney City Kit Industrial, CC0) and defining Drift schema v4 (`City`, `CityMap`, `BuildingType`, `BuildingPlacement`).
-- **Deferred:** Audio SFX + background music (CC0 assets not sourced yet — stub in place). iOS verification. Both revisit before Phase 9 at latest.
+- **Phase:** Phase 5 — Curriculum & Generator Framework. Research and `curriculum.md` complete; implementation pending.
+- **Last updated:** 2026-05-08
+- **Last action:** Completed Phase 5 research. Produced [curriculum.md](curriculum.md) — a 12-category, ~361-sub-concept K–8 taxonomy anchored on US Common Core State Standards, with per-sub-concept question-source strategy, diagram requirements, and prereq DAG. Identified 5 GREEN-licensed datasets (DeepMind `mathematics_dataset`, GSM8K, MathDataset-ElementarySchool, MathQA, SVAMP) and a 16-generator priority list backed by 8 high-ROI diagram widgets that unlock ~85% of K–8 content. Three parallel research subagents (CCSS curriculum scaffold, public-dataset survey, algorithmic-generation feasibility) produced the source material, synthesized into `curriculum.md`.
+- **Next action:** Begin Phase 5 implementation. (1) Drift schema v4: replace the 6-row hardcoded concept registry with the full ~361-row catalog from `curriculum.md`, including the prereq DAG and grade tags. (2) Wire the "introduce next" engine that walks the DAG when a sub-concept reaches `mastered`. (3) Build the `GeneratedQuestion` + `DiagramSpec` architecture (pure Dart in `lib/domain/`). (4) Migrate Phase 1–2 generators (`add_1digit`, `sub_1digit`, `mul_1digit`, `div_1digit`, `add_2digit`, `sub_2digit`) into the new framework. (5) Build the first 3 high-ROI diagram widgets: `FractionBar`, `NumberLine`, `Clock`.
+- **Deferred:** Audio SFX + background music (CC0 assets not sourced yet — stub in place). iOS verification. Both revisit before Phase 11 at latest.
 
 ---
 
@@ -30,6 +30,10 @@
 | **Avatar rendering** | **DiceBear Adventurer** style, rendered **fully offline** via local SVG composition using `flutter_svg`. The DiceBear Adventurer SVG component paths (MIT-licensed code, CC BY 4.0 design by Lisa Wischofsky) are bundled in-app as Dart string constants; the composer assembles them at runtime. Player picks from a curated subset of slots (hair style/color, skin tone, eyes, mouth, glasses, earrings, blush/freckles); free to re-edit anytime | Cleanest off-the-shelf look for kids. Fully offline — no network calls, no INTERNET permission needed. `dice_bear` pub package rejected because it calls `api.dicebear.com` at runtime — a showstopper for a kids app that must work without WiFi |
 | **City rendering** | Isometric tiles, fixed grid, **auto-generated roads** between buildings | Mobile-friendly: tile-snap + auto-roads avoid fiddly placement; established CC0 isometric packs (e.g. Kenney City Kit) cover the style |
 | **Milestones** | **Removed.** Replaced by per-item star prices and total-stars-earned thresholds for unlocking new building types and themed maps | Milestones were dead weight once the city builder provides natural long-arc progression — every land expansion or new building tier *is* a milestone moment |
+| **Curriculum standard** | US Common Core State Standards (CCSS) for Mathematics, K–8 | Most thoroughly documented free K–8 standard; aligned to most public datasets; the resulting taxonomy stays standard-agnostic enough to work for kids on UK/IB/other systems. Full taxonomy in [curriculum.md](curriculum.md) |
+| **Diagram strategy** | Mostly procedural SVG / `CustomPainter` widgets, parameterized by question params. Text-only fallback where rendering cost is prohibitive (3D nets, long-division layouts) | A small set of 8 high-ROI widgets (FractionBar, NumberLine, Clock, BarChart, RectangleArea, CoordinatePlane, Angle, Spinner) unlocks ~70% of non-arithmetic K–8 content. Cleaner than bundled images; works at any size; fits the "feels infinite" goal |
+| **Question source mix** | ~85% algorithmic (with procedural diagrams) + ~10% bundled curated datasets + ~5% deferred. **No runtime LLM calls; no offline LLM batch generation in v1.** | Generators store compactly and feel limitless. Datasets fill rich-word-problem gaps where templates produce nonsense. Offline LLM batch is deferred to see how far the first two get us. See [curriculum.md §8](curriculum.md) |
+| **Curriculum reference** | [curriculum.md](curriculum.md) is the canonical source of the concept catalog (taxonomy, prereq DAG, source strategy per sub-concept, diagram widget catalog, dataset inventory). plan.md only references it | Avoids duplication; keeps plan.md focused on phase execution |
 | **Repo plan doc** | `plan.md` at repo root | Simple, greppable, lives next to `prd.md` |
 | **AI agent doc** | `CLAUDE.md` at repo root | Emerging convention; auto-loaded by Claude Code each session |
 
@@ -74,11 +78,11 @@ Question (static catalog for non-arithmetic concepts; arithmetic generated at ru
   distractors (for multiple-choice), explanation (for wrong-answer screen)
   source (algorithmic | curated | ai_generated), license
 
-// --- City builder (Phase 5+) ---
+// --- City builder (Phase 7+) ---
 
 City (per player, per map)
   id, playerId, mapId,
-  gridWidth, gridHeight,         // grows on land expansion (Phase 6)
+  gridWidth, gridHeight,         // grows on land expansion (Phase 8)
   population
 
 CityMap (static catalog)
@@ -136,7 +140,7 @@ Why these two: universally familiar across the entire 6–14 target age, trivial
 
 All four are algorithmically generated at runtime. Distractors use the same strategy as Phase 1 (off-by-one, operand swap, random ±5).
 
-Fractions, geometry, and word problems are deferred to Phase 6.
+Fractions, geometry, and word problems are introduced in Phase 5/6 (Curriculum & Question Bank — see [curriculum.md](curriculum.md)).
 
 ### Proficiency update formula (sketch — refine in Phase 2)
 
@@ -185,12 +189,12 @@ math_dash/
 │   ├── presentation/      # Flutter widgets: screens, navigation
 │   │   ├── home/
 │   │   ├── player/        # includes avatar editor (DiceBear slot pickers)
-│   │   ├── city/          # city-builder screen (Phase 5+)
+│   │   ├── city/          # city-builder screen (Phase 7+)
 │   │   ├── progress/
 │   │   └── settings/
 │   ├── game/              # Flame components
 │   │   ├── spin_wheel/
-│   │   ├── city/          # isometric city renderer (Phase 5+)
+│   │   ├── city/          # isometric city renderer (Phase 7+)
 │   │   ├── question_view/
 │   │   └── effects/
 │   ├── domain/            # pure Dart: rules, no Flutter imports
@@ -199,7 +203,7 @@ math_dash/
 │   │   ├── questions/
 │   │   ├── stars/
 │   │   ├── avatar/        # AdventurerConfig + curated slot catalogs
-│   │   └── city/          # buildings, growth model, population math (Phase 5+)
+│   │   └── city/          # buildings, growth model, population math (Phase 7+)
 │   ├── data/              # Drift schema, repositories, cloud-save bridge
 │   │   ├── database.dart
 │   │   ├── repositories/
@@ -228,8 +232,8 @@ Each phase ends with something demonstrable. We do **not** start a phase until t
 - [x] GitHub Actions CI: format check + analyze + test on push/PR (`.github/workflows/ci.yml`)
 - [x] Initial concept scope for Phase 1 decided — see *Domain Specs* above
 - [x] Proficiency-update math sketched — see *Domain Specs* above
-- [x] **Exit criteria (Path B — Android only):** `flutter run` launched the placeholder Math Dash app on the Android emulator (Pixel 7, API 34) successfully. iOS verification deferred to Phase 7
-- [ ] iOS exit criteria — deferred until Xcode is installed (no later than Phase 7)
+- [x] **Exit criteria (Path B — Android only):** `flutter run` launched the placeholder Math Dash app on the Android emulator (Pixel 7, API 34) successfully. iOS verification deferred to Phase 11
+- [ ] iOS exit criteria — deferred until Xcode is installed (no later than Phase 11)
 
 ### Phase 1 — Vertical Slice (target: ~2–3 weeks) [the most important phase]
 **Goal: prove the core loop is fun.** Hardcoded single player, two concepts, no persistence beyond runtime. Concepts and proficiency math are specified in *Domain Specs* above.
@@ -239,7 +243,7 @@ Each phase ends with something demonstrable. We do **not** start a phase until t
 - [x] `QuestionScreen` with 4-option multiple choice
 - [x] `ResultScreen` with star award + wrong-answer explanation
 - [x] Loop: home → spin → question → result → home, with star counter persisted in memory
-- [ ] Basic SFX (spin, correct, wrong) and one looping background track — deferred to Phase 6 (CC0 assets not sourced; stub in place)
+- [ ] Basic SFX (spin, correct, wrong) and one looping background track — deferred to Phase 10 (CC0 assets not sourced; stub in place)
 - [x] **Exit criteria:** Test with a real kid in the target age range — passed.
 
 ### Phase 2 — Adaptive Concept System (target: ~2–3 weeks)
@@ -247,7 +251,7 @@ Each phase ends with something demonstrable. We do **not** start a phase until t
 **Design decisions (locked):**
 - **Player:** A single default player is seeded into Drift on first launch. Full player creation / profile picker is Phase 3.
 - **Numeric input UX:** Comfortable-band questions use an on-screen number pad (calculator-style) with an explicit submit button. Device keyboard not used. Text-answer question types deferred.
-- **Concept expansion:** Only algorithmically generatable concepts added this phase (see *Domain Specs — Phase 2 concepts* below). Fractions, geometry, and word problems deferred to Phase 6.
+- **Concept expansion:** Only algorithmically generatable concepts added this phase (see *Domain Specs — Phase 2 concepts* below). Fractions, geometry, and word problems deferred to Phase 5/6 (Curriculum & Question Bank).
 
 - [x] Drift schema for `Player` and `ConceptProficiency`; seed default player on first launch
 - [x] Proficiency update logic (correct → up, wrong → down with floor); unit tests
@@ -268,7 +272,7 @@ Each phase ends with something demonstrable. We do **not** start a phase until t
 
 ### Phase 4 — DiceBear Avatar + Persistent Stars (target: ~3–5 days)
 
-**Goal:** Replace the Phase 3 CustomPainter chibi with a DiceBear Adventurer avatar that the player can edit anytime. Stars persist across app restarts so they're meaningful as a Phase 5 city-builder currency.
+**Goal:** Replace the Phase 3 CustomPainter chibi with a DiceBear Adventurer avatar that the player can edit anytime. Stars persist across app restarts so they're meaningful as a Phase 7 city-builder currency.
 
 **Spike outcome (already done):** DiceBear chosen — Adventurer style. Multiavatar disqualified (identicon, not dress-up). avatar_maker rejected (no real advantage over DiceBear, same bust-only limitation). Avatar accessory shop dropped from scope — see *Locked Decisions* for rationale.
 
@@ -298,7 +302,49 @@ Each phase ends with something demonstrable. We do **not** start a phase until t
 
 ---
 
-### Phase 5 — City Builder: Foundations (target: ~3–4 weeks)
+### Phase 5 — Curriculum & Generator Framework (target: ~3–4 weeks)
+
+**Goal:** Wire the [curriculum.md](curriculum.md) catalog into the app and build the foundational architecture for question generators and diagram widgets. Migrate Phase 1–2 content into the new framework. Cover ~30 sub-concepts in the K–3 range broadly.
+
+**Research outcome (already done — see Status block):** [curriculum.md](curriculum.md) defines the 12-category, ~361-sub-concept K–8 taxonomy with per-sub-concept question-source strategy, diagram requirements, and prereq DAG.
+
+**Tasks:**
+- [ ] Drift schema v4: replace the hardcoded 6-row concept registry with the full ~361-row catalog from `curriculum.md` (`categoryId`, `primaryGrade`, `prereqIds`, `sourceStrategy`, `diagramRequirement`)
+- [ ] Generate `assets/data/concepts.json` from `curriculum.md` tables (script in `tools/curriculum/`); seed Drift on first run / migration
+- [ ] DAG-based "introduce next" engine in `lib/domain/concepts/`: when a sub-concept hits `mastered`, mark DAG children as eligible-but-not-yet-introduced; surface them on the wheel with grade-aware initial proficiency. **No cross-domain gating** — independently per branch
+- [ ] `GeneratedQuestion` + `DiagramSpec` architecture in `lib/domain/questions/` (pure Dart, no Flutter imports). Sealed `DiagramSpec` family with one variant per widget
+- [ ] Migrate Phase 1–2 generators (`add_1digit`, `sub_1digit`, `mul_1digit`, `div_1digit`, `add_2digit`, `sub_2digit`) into the new framework with the universal distractor library + step-by-step explanation templates
+- [ ] Build first 3 high-ROI diagram widgets in `lib/presentation/diagrams/`: `FractionBar`, `NumberLine`, `Clock`. Each unit-tested for parameterized rendering
+- [ ] Build first 3 high-ROI new generator families per [curriculum.md §5.1](curriculum.md): multi-digit ± with regrouping (extends Phase 2 to arbitrary digit count), fraction generators (introduces the fractions category), time-telling (uses the new `Clock` widget)
+- [ ] Word-problem framework in `lib/domain/questions/word_problems/`: bundled name pool (~25 culturally diverse names), item pool (~20 countables), verb pool (~10 contexts); template engine for 1-step word problems; covers `add_word_problems_within_100` and similar
+- [ ] Update wheel-selection logic to use the expanded catalog; expand from 4 segments to 4–8 segments as the catalog grows
+- [ ] Tests: framework unit tests, DAG engine tests, generator equivalence tests for the migrated Phase 1–2 generators (must produce same distribution as before for those concepts)
+- [ ] **Exit criteria:** a returning player sees a wheel surfacing ~30 sub-concepts spanning add/sub/mult/div/fractions/time; the DAG drives "what's next" introductions; the 3 new diagram widgets render correctly across phone screen sizes; all Phase 1–2 functionality preserved (existing tests still pass).
+
+---
+
+### Phase 6 — Full Question Bank (target: ~4–6 weeks)
+
+**Goal:** Round out coverage to the full K–8 catalog. Build remaining diagram widgets and generators. Ingest bundled datasets for word problems and conceptual judgment items.
+
+**Tasks:**
+- [ ] Remaining high-priority diagram widgets: `BarChart`, `RectangleArea`, `CoordinatePlane` (Q1 + Q4), `Angle`, `IntersectingLines`, `Spinner`, `Dice`, `Polygon`, `Shape`, `TapeDiagram`, `DoubleNumberLine`, `Circle`, `Protractor`, `Ruler`, `Money`, `BoxPlot`, `ScatterPlot`, `TwoWayTable`, `TreeDiagram`, `BaseTenBlocks`, `Box3D`, `Histogram`, `DotPlot`, `LinePlot`. Defer: `Net3D`, `ColumnArithmetic` (text-only explanations OK in v1)
+- [ ] Remaining algorithmic generators per [curriculum.md §5.1](curriculum.md) priority list (#6 onward): signed-number arithmetic, coordinate-plane, order-of-operations / expression evaluation, percent / unit-rate / proportion, area / perimeter, one-/two-step equations, angles, Pythagorean theorem, probability, place-value / rounding / scientific notation, summary statistics
+- [ ] Dataset ingestion pipeline (build-time only) in `tools/question_generation/`. For each GREEN dataset: fetch, transform to bundled JSON format, sub-concept-tag, write to `assets/data/`:
+  - DeepMind `mathematics_dataset` — generate per-module batches (arithmetic, algebra, comparison, measurement, numbers, polynomials, probability), filter to K–8 difficulty, target ~50K items
+  - GSM8K — filter to grades 3–6, sub-concept-tag via operator/keyword analysis
+  - MathDataset-ElementarySchool — re-tag and dedupe; preserve `source` provenance
+  - MathQA — filter `category` to grade-appropriate; keep `linear_formula` for distractor generation + answer verification
+  - SVAMP — provenance-audit (drop ASDiv-derived items per agent-2 license analysis)
+- [ ] Hand-curate ~1500 gap-fill questions targeting the §7.6 dataset gaps: K–2 word problems, K–5 geometry referencing procedural diagrams, statistical-question recognition (~30 items), qualitative graph descriptions (~50 items), grade-7 ratio real-world scenarios, grade-8 function items
+- [ ] Create `LICENSES_THIRD_PARTY.md`: attribution to every ingested dataset, plus the (eventual) art/audio assets
+- [ ] Adaptive system tuning: refine band thresholds per-grade-band, refine `α` learning rate based on playtesting, add asymmetric reward/penalty if data supports it
+- [ ] Validate the full catalog with kids in grades K, 2, 4, 6, 8 — at least one per band — and tune
+- [ ] **Exit criteria:** ~85% K–8 CCSS coverage live in the app; a kid in any grade K–8 can play continuously and see appropriate-difficulty content; no "no eligible concepts" dead ends; every wrong-answer screen shows a kid-readable step-by-step explanation.
+
+---
+
+### Phase 7 — City Builder: Foundations (target: ~3–4 weeks)
 
 **Goal:** Each player has their own persistent isometric city. They spend stars to place buildings; population grows when the right mix is built.
 
@@ -318,7 +364,7 @@ Each phase ends with something demonstrable. We do **not** start a phase until t
 
 ---
 
-### Phase 6 — City Builder: Depth (target: ~2–3 weeks)
+### Phase 8 — City Builder: Depth (target: ~2–3 weeks)
 
 **Goal:** City has long-arc progression — bigger land, more building types, themed maps, events.
 
@@ -334,7 +380,7 @@ Each phase ends with something demonstrable. We do **not** start a phase until t
 
 ---
 
-### Phase 7 — Player Progress Screen (target: ~1 week)
+### Phase 9 — Player Progress Screen (target: ~1 week)
 - [ ] Concept proficiency visualization (radar chart or color grid) — rolled up to category
 - [ ] Strengths and growing edges sections with positive framing
 - [ ] Lifetime stats: stars earned, sessions, questions answered
@@ -342,7 +388,7 @@ Each phase ends with something demonstrable. We do **not** start a phase until t
 
 ---
 
-### Phase 8 — Sound, Polish, Engagement (target: ~2–3 weeks)
+### Phase 10 — Sound, Polish, Engagement (target: ~2–3 weeks)
 - [ ] Final SFX library (CC0/royalty-free); per-event audio (spin, correct, wrong, building-placed, level-up)
 - [ ] Background music (looping, with mute toggle)
 - [ ] Animation polish (character reactions on correct/wrong; screen transitions)
@@ -359,7 +405,7 @@ Each phase ends with something demonstrable. We do **not** start a phase until t
 
 ---
 
-### Phase 9 — Cloud Save (target: ~1–2 weeks)
+### Phase 11 — Cloud Save (target: ~1–2 weeks)
 - [ ] Integrate `games_services` save game API
 - [ ] Sign-in flow (Game Center / Play Games) — graceful skip if signed out
 - [ ] Save-on-meaningful-event (round end, avatar edit, building placed, map unlocked)
@@ -369,7 +415,7 @@ Each phase ends with something demonstrable. We do **not** start a phase until t
 
 ---
 
-### Phase 10 — Beta + Store Submission (ongoing)
+### Phase 12 — Beta + Store Submission (ongoing)
 - [ ] **Apple Developer Program** enrollment ($99/yr) — only when ready to submit; not blocking earlier work
 - [ ] **Google Play Console** enrollment ($25 one-time)
 - [ ] App Store Connect: register bundle ID, fill listing metadata, age rating questionnaire, kids-category settings ("Made for Kids")
@@ -390,13 +436,16 @@ Each phase ends with something demonstrable. We do **not** start a phase until t
 These are not blockers for Phase 0 or 1 but need to be resolved by the phase noted:
 
 - **By Phase 2 (resolved):** Proficiency update formula — using simple exponential moving average; see *Domain Specs*.
-- **By Phase 2:** Question dataset sourcing strategy for non-arithmetic concepts — curate from [GSM8K](https://github.com/openai/grade-school-math) (MIT license) and [MathDataset-ElementarySchool](https://github.com/RamonKaspar/MathDataset-ElementarySchool), or generate via batch LLM? Probably both — start with curation. Defer to Phase 6+ when fractions/word problems are added.
 - **By Phase 4 (resolved):** Avatar library pick — DiceBear Adventurer chosen; avatar accessory shop dropped. See *Locked Decisions*.
-- **By Phase 5:** Specific isometric-asset packs — Kenney's [City Kit Industrial](https://kenney.nl/assets/city-kit-industrial) is a strong starting point but coverage is limited. Identify supplementary packs (Kenney's other city packs, [OpenGameArt isometric tag](https://opengameart.org/art-search-advanced?keys=isometric)) before catalog work begins.
-- **By Phase 6:** Specific list of building types and their service-ratio numbers (residents-per-school, etc.) — can only be tuned by play-testing.
-- **By Phase 8:** Music + SFX sourcing (CC0 from Freesound.org and OpenGameArt.org).
-- **By Phase 9:** Are we OK requiring the user to sign in to Game Center / Play Games for cloud save? Otherwise local-only is the only option.
-- **By Phase 10:** Privacy policy text — minimal since we collect ~nothing, but COPPA considerations for under-13 audience need legal review or a template.
+- **By Phase 5 (resolved):** K–8 curriculum scope, taxonomy, and source strategy — see [curriculum.md](curriculum.md). 12 categories, ~361 sub-concepts; ~85% reachable algorithmically, ~10% via bundled GREEN-licensed datasets, ~5% deferred. No runtime LLM; no offline LLM batch in v1.
+- **By Phase 5 (resolved):** Question dataset sourcing strategy — curate from GREEN-licensed datasets only (DeepMind `mathematics_dataset`, GSM8K, MathDataset-ElementarySchool, MathQA, SVAMP). CC-BY-NC content excluded. See [curriculum.md §7](curriculum.md).
+- **By Phase 5:** Open taxonomy questions — see [curriculum.md §9](curriculum.md) (12 items needing human review during implementation: counting/place-value boundary, fluency tier modeling, geometry hierarchy duplication, word-problem axis, etc.).
+- **By Phase 6:** Hand-curation budget for the ~1500 gap-fill items (K–2 word problems, K–5 geometry, statistical-question recognition, etc.) — author in-house? Recruit volunteers? See `curriculum.md §7.6` for the gap list.
+- **By Phase 7:** Specific isometric-asset packs — Kenney's [City Kit Industrial](https://kenney.nl/assets/city-kit-industrial) is a strong starting point but coverage is limited. Identify supplementary packs (Kenney's other city packs, [OpenGameArt isometric tag](https://opengameart.org/art-search-advanced?keys=isometric)) before catalog work begins.
+- **By Phase 8:** Specific list of building types and their service-ratio numbers (residents-per-school, etc.) — can only be tuned by play-testing.
+- **By Phase 10:** Music + SFX sourcing (CC0 from Freesound.org and OpenGameArt.org).
+- **By Phase 11:** Are we OK requiring the user to sign in to Game Center / Play Games for cloud save? Otherwise local-only is the only option.
+- **By Phase 12:** Privacy policy text — minimal since we collect ~nothing, but COPPA considerations for under-13 audience need legal review or a template.
 
 ---
 
@@ -407,16 +456,16 @@ These are not blockers for Phase 0 or 1 but need to be resolved by the phase not
 | Core loop isn't fun for kids | Medium | Critical | Phase 1 explicitly tested this with a real kid before any further investment — passed |
 | Question dataset gap | Medium | High | Algorithmic generation handles arithmetic; for everything else, multiple datasets identified (GSM8K, MathDataset-ElementarySchool, Illustrative Mathematics) |
 | ~~Avatar library doesn't cover all 8 slots~~ | — | — | Resolved: avatar accessories dropped from scope after Phase 4 spike — single star sink is the city builder |
-| City UX on small screens (placement, panning, zoom on a phone) | Medium | High | Auto-roads (no precision needed); tile-snap with generous tap targets; pinch-zoom + pan; play-test on smallest target device early in Phase 5 |
-| Isometric asset coverage gap | Medium | Medium | Kenney's City Kit packs are the starting point but limited; identify 1–2 supplementary CC0 packs in early Phase 5. If coverage is still sparse, narrow the v1 building catalog rather than ship inconsistent art |
+| City UX on small screens (placement, panning, zoom on a phone) | Medium | High | Auto-roads (no precision needed); tile-snap with generous tap targets; pinch-zoom + pan; play-test on smallest target device early in Phase 7 |
+| Isometric asset coverage gap | Medium | Medium | Kenney's City Kit packs are the starting point but limited; identify 1–2 supplementary CC0 packs in early Phase 7. If coverage is still sparse, narrow the v1 building catalog rather than ship inconsistent art |
 | Population growth model feels arbitrary or unmotivating | Medium | Medium | Keep model simple (aggregate ratios, not per-building dependency graphs); tune via play-testing. Vague-but-themed feedback messages keep the player oriented even if numbers shift |
 | City save state migration as schema evolves across phases | Medium | Medium | Drift migrations are version-checked; player's city is purely cosmetic so a wipe is a survivable last resort. Bias toward additive schema changes |
-| Cloud save platform divergence | Low (single package) | Medium | `games_services` abstracts both — but test on both platforms early in Phase 9 |
+| Cloud save platform divergence | Low (single package) | Medium | `games_services` abstracts both — but test on both platforms early in Phase 11 |
 | `games_services` package abandonment | Low | Medium | If it goes stale, fall back to platform-specific packages (`cloud_kit` for iOS, `googleapis` Drive for Android) |
 | Hive/Isar abandonment pattern repeats with Drift | Low | Low | Drift is built on SQLite; worst-case migration to raw `sqflite` is straightforward |
-| COPPA / children's-app compliance | Medium | High (could block store submission) | No data collection; address this explicitly in Phase 10 with a minimal privacy policy and store-listing kids-category settings |
+| COPPA / children's-app compliance | Medium | High (could block store submission) | No data collection; address this explicitly in Phase 12 with a minimal privacy policy and store-listing kids-category settings |
 | Apple Developer Program ($99/yr) and Play Console ($25 one-time) fees | Certain | Low–Medium | Real ongoing cost for a "free hobby project." If the Apple membership lapses, the iOS build is delisted from the App Store. Budget accordingly; consider whether one platform-only launch buys more time |
-| Sub-concept catalog explosion | Medium | Medium | The category→concept taxonomy in PRD lists ~40+ concepts already; full K–8 could push past 100. Mitigate by defining only what's needed per phase (Phase 1: 2 concepts; Phase 2: ~10; Phase 8+: full) and keeping the schema flexible |
+| Sub-concept catalog explosion | Medium | Low (mitigated) | Mitigated as of Phase 5: the full ~361-sub-concept K–8 catalog is now defined in [curriculum.md](curriculum.md) with prereq DAG. The progressive rollout is: Phase 1: 2 concepts; Phase 2: 6 concepts; Phase 5: ~30 concepts (K–3 broad); Phase 6: full K–8 catalog (~85% coverage live). Schema designed for full catalog from Phase 5 onward — no further migrations needed for catalog growth |
 
 ---
 
@@ -448,16 +497,20 @@ Since this is a two-person project (you + Claude), some norms to keep us efficie
 - [`dice_bear` Flutter package](https://pub.dev/packages/dice_bear) — Dart wrapper for the DiceBear API; renders SVG locally or via URL
 - [`flutter_svg` package](https://pub.dev/packages/flutter_svg) — required to render the SVG output
 
-**City builder asset candidates (Phase 5)**
+**City builder asset candidates (Phase 7)**
 - [Kenney City Kit Industrial](https://kenney.nl/assets/city-kit-industrial) — CC0 isometric
 - [Kenney all assets](https://kenney.nl/assets) — search "city" / "isometric"
 - [OpenGameArt isometric tag](https://opengameart.org/art-search-advanced?keys=isometric) — CC0 / CC-BY mix
 
-**Math content sources**
-- [GSM8K dataset](https://github.com/openai/grade-school-math) (MIT)
-- [MathDataset-ElementarySchool](https://github.com/RamonKaspar/MathDataset-ElementarySchool)
-- [Illustrative Mathematics](https://illustrativemathematics.org/math-curriculum/) (CC BY-NC)
-- [Open Up Resources 6–8 Math](https://openupresources.org/) (CC BY-NC 4.0)
+**Curriculum & math content** (full inventory + licensing in [curriculum.md](curriculum.md) §7)
+- [curriculum.md](curriculum.md) — canonical K–8 taxonomy, generator priority, diagram widget catalog, dataset inventory
+- [Common Core State Standards — Mathematics](https://www.thecorestandards.org/Math/) — primary curriculum source
+- [DeepMind `mathematics_dataset`](https://github.com/google-deepmind/mathematics_dataset) — Apache 2.0; procedurally generated arithmetic/algebra
+- [GSM8K](https://github.com/openai/grade-school-math) — MIT; grade-school word problems with rationales
+- [MathDataset-ElementarySchool](https://github.com/RamonKaspar/MathDataset-ElementarySchool) — MIT; pre-aggregated K–5 catalog
+- [MathQA](https://math-qa.github.io/) — Apache 2.0; cleaned algebra MC for grades 6–8
+- [SVAMP](https://github.com/arkilpatel/SVAMP) — MIT; curated grades 2–4 word problems
+- [Open Up Resources 6–8 Math (1st/2nd ed)](https://openupresources.org/) — CC-BY 4.0; the only OER curriculum that's app-store-distribution-safe (the newer California editions are CC-BY-NC = excluded)
 
 **Audio / general assets**
 - [OpenGameArt.org](https://opengameart.org/) — CC0/CC-BY art assets

@@ -10,7 +10,7 @@
 
 **Compliance:** Designed for ages 6–14, the app must satisfy children's-app requirements on both stores: no third-party tracking, no data collection beyond local profiles, no behavioral advertising. Privacy policy required. Apple "Made for Kids" and Google "Designed for Families" guidelines apply.
 
-**Accessibility:** Baseline a11y is in scope from the start — color-blind-safe palette (the wheel relies heavily on color, so segments must also be distinguishable by shape/icon), readable type at small sizes, audio cues for key feedback (so a 6-year-old who isn't yet reading fluently can play), respect for OS-level text-size settings. Optional dyslexia-friendly font (e.g. OpenDyslexic) toggle is a stretch goal for Phase 6.
+**Accessibility:** Baseline a11y is in scope from the start — color-blind-safe palette (the wheel relies heavily on color, so segments must also be distinguishable by shape/icon), readable type at small sizes, audio cues for key feedback (so a 6-year-old who isn't yet reading fluently can play), respect for OS-level text-size settings. Optional dyslexia-friendly font (e.g. OpenDyslexic) toggle is a stretch goal for Phase 10 (polish).
 
 **Localization:** v1 ships English-only. All user-facing strings must be externalized (no hardcoded text in widgets) so future translation is mechanical, not a rewrite.
 
@@ -82,49 +82,43 @@ The game tracks proficiency at the **sub-concept** level — not at broad catego
 
 **Categories** are how proficiency is *displayed* to the player (and how the wheel groups options visually). **Concepts** are what proficiency is *tracked* against and what the wheel selects. One category contains many concepts.
 
-Example category → concepts decomposition (full catalog defined in Phase 2):
+The full K–8 taxonomy — 12 top-level categories and ~361 sub-concepts, anchored on the US Common Core State Standards for Mathematics — lives in **[curriculum.md](curriculum.md)**. That document is the canonical source for concept IDs, prerequisite relationships, target grade, question-source strategy, and diagram requirements.
 
-| Category | Example concepts (each tracked independently) |
-|---|---|
-| **Number sense** | counting to 20, counting to 100, place value (tens), place value (hundreds), comparing 2-digit numbers, comparing 3-digit numbers |
-| **Addition & subtraction** | single-digit addition, single-digit subtraction, 2-digit addition (no carry), 2-digit addition (with carry), 2-digit subtraction (no borrow), 2-digit subtraction (with borrow), 3-digit addition, 3-digit subtraction, mental addition |
-| **Multiplication & division** | times tables 2–5, times tables 6–9, times tables 10–12, 2-digit × 1-digit, long multiplication, simple division, long division |
-| **Fractions** | identifying fractions, comparing fractions (same denominator), comparing fractions (different denominators), adding fractions, multiplying fractions |
-| **Decimals & percentages** | reading decimals, adding/subtracting decimals, converting fractions to decimals, finding percentages of numbers |
-| **Geometry** | naming 2D shapes, naming 3D shapes, perimeter of rectangles, area of rectangles, area of triangles, angles |
-| **Measurement** | reading clocks (hour), reading clocks (minute), length conversions, weight conversions, volume conversions |
-| **Word problems** | single-step (addition/subtraction), single-step (multiplication/division), multi-step |
-| **Algebra basics** (grades 6–8) | patterns, simple equations (one variable), evaluating expressions |
+Top-level categories: Counting & Number Sense; Place Value & Number Properties; Addition & Subtraction; Multiplication & Division; Fractions; Decimals & Percentages; Ratios & Proportions; Measurement, Time & Money; Geometry & Shapes; Integers & Rational Numbers; Pre-Algebra (Expressions, Equations, Functions); Data, Statistics & Probability.
 
-The wheel surfaces individual **concepts** (e.g. "2-digit addition with carry"), not categories. The Player Progress screen rolls concept data up to **categories** for a digestible at-a-glance view, with drill-down to see the per-concept detail.
+The wheel surfaces individual **sub-concepts** (e.g. "2-digit addition with carry"), not categories. The Player Progress screen rolls sub-concept data up to **categories** for a digestible at-a-glance view, with drill-down to see the per-sub-concept detail.
 
 ### Adaptive Logic
 
-Each concept has a **proficiency level** (e.g. 0.0–1.0) per player, updated after every answer:
+Each sub-concept has a **proficiency level** (e.g. 0.0–1.0) per player, updated after every answer:
 - Correct answer → proficiency increases
 - Wrong answer → proficiency decreases slightly (floor at 0)
 
-The exact update formula is an implementation detail (TBD in Phase 2). It should produce stable behavior with small N (e.g. doesn't swing wildly after one wrong answer).
+**Grade is for initialization only.** A player's stated grade level seeds initial proficiency for sub-concepts at and below that grade. After initialization, the system advances the player along the **prerequisite DAG defined in [curriculum.md](curriculum.md)** — when a sub-concept reaches `mastered`, its DAG children become eligible to surface on the wheel. There is **no cross-domain gating**: a kid who's advanced in arithmetic but behind in geometry will see both branches advance independently. Kids who excel at visual concepts but struggle with word problems (or vice versa) progress at their own pace per branch.
 
-Based on proficiency, each concept is classified into one of four bands:
+Based on proficiency, each sub-concept is classified into one of four bands:
 
 | Band | Condition | Action |
 |---|---|---|
-| **Mastered** | Way above current level | Excluded from wheel (e.g. counting for a grade 5 player) |
-| **Comfortable** | At or slightly above level | Included; correct = 3 stars |
-| **Challenging** | Noticeably above current level | Included with lower probability; correct = 5 stars |
-| **Not yet** | Far above current level | Excluded from wheel (e.g. calculus for grade 4) |
+| **Mastered** | Player has demonstrated reliable correctness | Excluded from wheel; DAG children become eligible to surface |
+| **Comfortable** | At fluency, but not yet mastered | Included; correct = 3 stars; typed numeric input |
+| **Challenging** | Newly introduced or partially understood | Included with lower probability; correct = 5 stars; multiple choice |
+| **Not yet** | Prerequisites not yet mastered, OR concept is far from the player's current frontier | Excluded from wheel |
 
-The wheel at any given round contains a **mix of comfortable + challenging** concepts so the player always has a chance to earn 5-star questions but isn't overwhelmed.
+The wheel at any given round contains a **mix of comfortable + challenging** concepts across whichever branches the player is currently advancing on, so the player always has a chance to earn 5-star questions but isn't overwhelmed.
 
 ### Question Generation
 
-Questions must feel **infinite and varied**. The strategy is hybrid, chosen per concept:
+Questions must feel **infinite and varied**. The strategy is hybrid, chosen per sub-concept (see [curriculum.md](curriculum.md) for the per-sub-concept assignment):
 
-- **Pure-arithmetic concepts** (e.g. single-digit addition, times tables) → **algorithmic generation** at runtime. Random operands within the concept's defined range, with templated wording variation. Effectively infinite, no storage cost. Wrong-answer explanations are likewise templated.
-- **Reasoning-heavy concepts** (e.g. multi-step word problems, geometry, fractions) → **curated + batch AI-generated**, shipped as static data. We seed from open-licensed datasets (GSM8K, MathDataset-ElementarySchool, Illustrative Mathematics) and supplement with offline batch LLM generation. Each question carries a hand-authored or AI-authored step-by-step explanation.
+- **Algorithmic generators** — bounded random parameters, computed answers, templated wording variation, deterministic step-by-step explanations. Covers ~85% of K–8 content (all arithmetic, fractions, percent, equations, signed numbers, etc.). Effectively infinite, near-zero storage cost.
+- **Procedural diagram widgets** — for geometry, fractions-as-shapes, clocks, coordinate planes, etc., a small set of parameterized Flutter widgets (`FractionBar`, `Clock`, `CoordinatePlane`, etc.) renders the figure on the fly from the question's parameters. Diagrams are not bundled images.
+- **Curated bundled datasets** — for reasoning-heavy content where templates would produce nonsense (multi-step real-world word problems, statistical-question recognition, qualitative graph descriptions). Sourced exclusively from permissively-licensed datasets (MIT / Apache 2.0 / CC-BY): DeepMind `mathematics_dataset`, GSM8K, MathDataset-ElementarySchool, MathQA, SVAMP. CC-BY-NC content is excluded (commercial-distribution risk on app stores).
+- **Hand-curated gap-fills** — ~1500 items authored by humans to fill gaps where no open dataset has age-appropriate K–2 coverage or specific edge cases.
 
-**Critical constraint:** No cloud LLM calls at runtime. All AI-generated content is produced offline, reviewed for quality, and shipped bundled with the app or as a periodically-updated content pack. This keeps the app free, offline-capable, and avoids per-user API costs.
+Each question carries a step-by-step explanation shown on wrong answers — algorithmically templated for generators, hand-or-AI-authored for dataset items.
+
+**Critical constraint:** No cloud LLM calls at runtime. **Offline batch LLM generation is also off the table for v1** — first see how far algorithmic generation + datasets get us. This keeps the app free, offline-capable, and avoids per-user API costs.
 
 ---
 
@@ -155,7 +149,7 @@ Each player has their own persistent city, accessed from a dedicated **"My City"
 - Resident "mood" feedback variety beyond the basic service-ratio messages.
 - Sharing screenshots of cities with friends.
 
-(Detailed star prices, building unlock thresholds, and growth formulas are tuned in Phases 4–6 — see [plan.md](plan.md).)
+(Detailed star prices, building unlock thresholds, and growth formulas are tuned in Phases 7–8 — see [plan.md](plan.md).)
 
 ---
 
@@ -216,7 +210,7 @@ If the user is not signed in to their platform's game service, local-only storag
 
 All third-party content, assets, and libraries must be compatible with free non-commercial educational distribution:
 
-- **Math questions:** Open educational resources (OER) preferred — Creative Commons licensed datasets, Khan Academy open content, OpenStax, or similar. AI-batch-generated content is acceptable if generated offline and does not require an ongoing paid API subscription for players.
+- **Math questions:** Permissively licensed only — MIT / Apache 2.0 / CC-BY / CC0. **CC-BY-NC and CC-BY-NC-SA content is excluded** because app-store distribution of free apps is generally treated as commercial channel use, and the legal-risk floor is non-zero for NC licensors. This excludes EngageNY/Eureka, OpenStax K–12, Khan Academy, CK-12, and Illustrative Mathematics v.360 — all of which are NC-family. Approved sources are inventoried in [curriculum.md §7](curriculum.md). v1 does not use offline LLM batch generation.
 - **Art assets:** CC0 or CC-BY licensed sprite sheets and icons, or custom-created.
 - **Music & sound effects:** CC0 or royalty-free with no attribution required (e.g. OpenGameArt.org, Freesound.org with appropriate licenses).
 - **Fonts:** OFL (SIL Open Font License) or equivalent.
