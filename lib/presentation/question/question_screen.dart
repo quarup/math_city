@@ -90,18 +90,29 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Spacer(),
-              if (_question.diagram != null) ...[
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: Center(
-                    child: DiagramRenderer(spec: _question.diagram!),
+              Expanded(
+                child: Center(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        if (_question.diagram != null) ...[
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: Center(
+                              child: DiagramRenderer(spec: _question.diagram!),
+                            ),
+                          ),
+                          const SizedBox(height: 24),
+                        ],
+                        _PromptCard(prompt: _question.prompt),
+                      ],
+                    ),
                   ),
                 ),
-                const SizedBox(height: 24),
-              ],
-              _PromptCard(prompt: _question.prompt),
-              const Spacer(),
+              ),
+              const SizedBox(height: 16),
               if (useNumberPad)
                 NumberPadWidget(
                   onSubmit: _onAnswerSubmitted,
@@ -117,7 +128,6 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen> {
                     ),
                   ),
                 ),
-              const SizedBox(height: 16),
             ],
           ),
         ),
