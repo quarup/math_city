@@ -31,10 +31,14 @@ const _allCatalogIds = [
   'time_to_5_min',
 ];
 
-Future<int> _seedGrade5Player(AppDatabase db) async {
+Future<int> _seedFrontierPlayer(AppDatabase db) async {
+  // Grade-1 player: K (1 below = comfortable) + G1 (at-grade = challenging)
+  // gives ≥4 implemented frontier concepts so the starter pack reaches its
+  // default size of 4. Tests 2 and 3 below override proficiency directly,
+  // so they don't depend on the player's grade.
   final p = await db.createPlayer(
-    name: 'high_grade_tester',
-    gradeLevel: 5,
+    name: 'frontier_tester',
+    gradeLevel: 1,
     avatarConfigJson: '{}',
   );
   return p.id;
@@ -57,7 +61,7 @@ void main() {
   group('wheelConceptsProvider', () {
     test('starter wheel has 4 concepts for a fresh player', () async {
       final db = AppDatabase(NativeDatabase.memory());
-      final pid = await _seedGrade5Player(db);
+      final pid = await _seedFrontierPlayer(db);
 
       final container = await _setupContainer(db, pid);
       addTearDown(container.dispose);
@@ -70,7 +74,7 @@ void main() {
       'wheel caps at 8 segments and surfaces a different sample over rounds',
       () async {
         final db = AppDatabase(NativeDatabase.memory());
-        final pid = await _seedGrade5Player(db);
+        final pid = await _seedFrontierPlayer(db);
 
         // Manually seed 12 introduced concepts, all in the challenging band
         // (proficiency = 0.4) so they all qualify.
@@ -112,7 +116,7 @@ void main() {
 
     test('wheel surfaces all eligible when count is between 4 and 8', () async {
       final db = AppDatabase(NativeDatabase.memory());
-      final pid = await _seedGrade5Player(db);
+      final pid = await _seedFrontierPlayer(db);
 
       // Introduce 6 concepts (between min=4 and max=8).
       for (final id in _allCatalogIds.take(6)) {

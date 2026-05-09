@@ -58,14 +58,32 @@ void main() {
       _c(id: 'mult_facts', grade: 3, category: 'mult_div', row: 3),
     ];
 
-    test('starter pack: 4 easiest implemented at-or-below grade', () {
+    test('starter pack: 4 easiest implemented at the frontier', () {
       final reg = _registryFor(['add_5', 'sub_5', 'add_10', 'add_20']);
       final engine = DripFeedEngine(registry: reg, catalog: synthetic);
-      final pack = engine.pickStarterPack(2);
-      final ids = pack.map((c) => c.id).toList();
-      // (grade ascending, then categoryRowOrder ascending)
+      // Grade-1 player: G0 concepts sit 1 below (comfortable), G1 is at-grade
+      // (challenging). All four are at the frontier; result sorted by
+      // (grade ascending, then categoryRowOrder ascending).
       // synthetic rows: add_5=0, sub_5=1, add_10=2, add_20=7
-      expect(ids, ['add_5', 'sub_5', 'add_10', 'add_20']);
+      final pack = engine.pickStarterPack(1);
+      expect(
+        pack.map((c) => c.id).toList(),
+        ['add_5', 'sub_5', 'add_10', 'add_20'],
+      );
+    });
+
+    test('starter pack excludes content well below player grade', () {
+      // frac_a_b (G3) is registered so the implemented ceiling is G3 and
+      // effectiveGradeFor(2) is a no-op (2 < 3 → 2).
+      final reg =
+          _registryFor(['add_5', 'sub_5', 'add_10', 'add_20', 'frac_a_b']);
+      final engine = DripFeedEngine(registry: reg, catalog: synthetic);
+      // Grade-2 player: G0 concepts (add_5, sub_5, add_10) sit ≥2 below →
+      // initial p=0.95, mastered, off the wheel. frac_a_b (G3) is above
+      // grade → notYet, off the wheel. Only add_20 (G1, one below) remains
+      // at the frontier.
+      final pack = engine.pickStarterPack(2);
+      expect(pack.map((c) => c.id).toList(), ['add_20']);
     });
 
     test('starter pack respects player grade', () {
@@ -76,24 +94,34 @@ void main() {
         'mult_facts',
       ]);
       final engine = DripFeedEngine(registry: reg, catalog: synthetic);
-      // Grade 0 player: only G0 implemented concepts are eligible.
+      // Grade 0 player: only G0 implemented concepts are eligible. G3
+      // concepts are above-grade (notYet, off wheel).
       final pack = engine.pickStarterPack(0);
       expect(pack.map((c) => c.id).toList(), ['add_5', 'sub_5']);
     });
 
-    test('starter pack only includes implemented concepts', () {
-      // Simulate that sub_5 has no generator yet.
-      final reg = _registryFor(['add_5']);
-      final engine = DripFeedEngine(registry: reg, catalog: synthetic);
-      final pack = engine.pickStarterPack(2);
-      expect(pack.map((c) => c.id), contains('add_5'));
-      expect(pack.map((c) => c.id), isNot(contains('sub_5')));
-    });
+    test(
+      'starter pack falls back to easiest at-or-below grade when nothing '
+      'in-band is implemented',
+      () {
+        // Grade-2 player would normally need G1 or G2 frontier concepts.
+        // Only add_5 (G0, ≥2 below = mastered) is implemented here, so
+        // the in-band filter yields nothing and the fallback kicks in.
+        final reg = _registryFor(['add_5']);
+        final engine = DripFeedEngine(registry: reg, catalog: synthetic);
+        final pack = engine.pickStarterPack(2);
+        expect(pack.map((c) => c.id), ['add_5']);
+      },
+    );
 
     test('pickNext returns null when nothing is eligible', () {
       final reg = _registryFor([]);
       final engine = DripFeedEngine(registry: reg, catalog: synthetic);
-      final next = engine.pickNext(introduced: const {}, profMap: const {});
+      final next = engine.pickNext(
+        introduced: const {},
+        profMap: const {},
+        playerGrade: 0,
+      );
       expect(next, isNull);
     });
 
@@ -104,6 +132,7 @@ void main() {
       final next = engine.pickNext(
         introduced: {'add_5'},
         profMap: const {'add_5': 0.5},
+        playerGrade: 0,
       );
       expect(next, isNull);
     });
@@ -114,9 +143,34 @@ void main() {
       final next = engine.pickNext(
         introduced: {'add_5'},
         profMap: const {'add_5': 0.9},
+        playerGrade: 0,
       );
       expect(next?.id, 'add_10');
     });
+
+    test(
+      'pickNext auto-satisfies prereqs that are well below the player grade',
+      () {
+        // High-grade player should not have to manually master grade-K
+        // concepts before grade-1 ones unlock. add_10 has prereq add_5;
+        // for a grade-2 player, add_5 starts at p=0.95 (mastered) via
+        // initialProficiency, so add_10's prereq is satisfied without any
+        // recorded proficiency for add_5.
+        //
+        // frac_a_b (G3) is registered so the implemented ceiling is G3 and
+        // effectiveGradeFor(2) is a no-op.
+        final reg = _registryFor(['add_10', 'frac_a_b']);
+        final engine = DripFeedEngine(registry: reg, catalog: synthetic);
+        final next = engine.pickNext(
+          introduced: const {},
+          profMap: const {},
+          playerGrade: 2,
+        );
+        // Both add_10 and frac_a_b are eligible (no prereqs / mastered
+        // prereqs). Lowest-grade wins: add_10 (G0) over frac_a_b (G3).
+        expect(next?.id, 'add_10');
+      },
+    );
 
     test(
       'pickNext prefers a category with fewer active concepts (tiebreak)',
@@ -130,6 +184,7 @@ void main() {
         final next = engine.pickNext(
           introduced: {'add_5'},
           profMap: const {'add_5': 0.4},
+          playerGrade: 0,
         );
         expect(next?.id, 'stats_root');
       },
@@ -141,6 +196,7 @@ void main() {
       final next = engine.pickNext(
         introduced: {'add_5'},
         profMap: const {'add_5': 0.95},
+        playerGrade: 0,
       );
       expect(next?.id, 'sub_5'); // add_5 is already in
     });
@@ -152,6 +208,7 @@ void main() {
       final next = engine.pickNext(
         introduced: const {},
         profMap: const {},
+        playerGrade: 0,
       );
       expect(next, isNull);
     });
@@ -177,6 +234,43 @@ void main() {
     );
 
     test(
+      'high-grade player on partial catalog sees frontier content, not K',
+      () {
+        // The implemented catalog currently tops out at G4. A grade-8
+        // player should see G3/G4 frontier content (the closest implemented
+        // material to their stated grade), NOT K-level add/sub.
+        final engine = DripFeedEngine(
+          registry: GeneratorRegistry.defaultRegistry(),
+        );
+        final pack = engine.pickStarterPack(8);
+        expect(pack, isNotEmpty);
+        // No K-grade or grade-1 concepts should appear.
+        for (final c in pack) {
+          expect(
+            c.primaryGrade,
+            greaterThanOrEqualTo(3),
+            reason:
+                'grade-8 player should never see G0–G2 in the starter pack '
+                'when the catalog has G3+ implemented; '
+                'got ${c.id} (G${c.primaryGrade})',
+          );
+        }
+      },
+    );
+
+    test('effectiveGradeFor clamps stated grade to catalog ceiling', () {
+      final engine = DripFeedEngine(
+        registry: GeneratorRegistry.defaultRegistry(),
+      );
+      // The implemented ceiling is currently G4 (e.g. add_multidigit_…,
+      // add_fractions_like_denom). Clamping is min(stated, ceiling).
+      expect(engine.effectiveGradeFor(8), 4);
+      expect(engine.effectiveGradeFor(4), 4);
+      expect(engine.effectiveGradeFor(2), 2);
+      expect(engine.effectiveGradeFor(0), 0);
+    });
+
+    test(
       'mastery of add_within_5 unlocks add_within_10 next on real catalog',
       () {
         final engine = DripFeedEngine(
@@ -185,6 +279,7 @@ void main() {
         final next = engine.pickNext(
           introduced: {'add_within_5', 'sub_within_5'},
           profMap: const {'add_within_5': 0.9, 'sub_within_5': 0.4},
+          playerGrade: 0,
         );
         // sub_within_5 isn't mastered, so its child sub_within_10 isn't
         // eligible. add_within_5 is mastered, so add_within_10 (its child)
@@ -203,6 +298,7 @@ void main() {
         (_) => engine.pickNext(
           introduced: {'add_within_5', 'sub_within_5'},
           profMap: const {'add_within_5': 0.9},
+          playerGrade: 0,
         ),
       );
       expect(results.map((c) => c?.id).toSet(), hasLength(1));

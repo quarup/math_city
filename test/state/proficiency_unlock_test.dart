@@ -8,9 +8,12 @@ import 'package:math_dash/state/player_provider.dart';
 import 'package:math_dash/state/proficiency_provider.dart';
 
 Future<int> _seedPlayer(AppDatabase db) async {
+  // Grade-K player so K-grade starter-pack expectations below stay valid
+  // under graded-init proficiency (G0 concepts at challenging band, not
+  // already-mastered).
   final p = await db.createPlayer(
     name: 'tester',
-    gradeLevel: 2,
+    gradeLevel: 0,
     avatarConfigJson: '{}',
   );
   return p.id;
@@ -163,6 +166,59 @@ void main() {
         expect(persisted, hasLength(4));
       },
     );
+  });
+
+  group('resetSkillsForPlayer', () {
+    test(
+      'wipes proficiency + introduced rows; next read re-seeds starter pack',
+      () async {
+        final db = AppDatabase(NativeDatabase.memory());
+        final pid = await _seedPlayer(db);
+
+        // Build initial state: starter pack + a recorded proficiency.
+        final container = await _setupContainer(db, pid);
+        addTearDown(container.dispose);
+        await container.read(introducedConceptsProvider.future);
+        await db.upsertProficiency(pid, 'add_within_5', 0.92, correct: true);
+
+        expect(await db.introducedConceptIdsForPlayer(pid), hasLength(4));
+        expect(
+          (await db.proficiencyMapForPlayer(pid)).keys,
+          contains('add_within_5'),
+        );
+
+        await db.resetSkillsForPlayer(pid);
+
+        expect(await db.introducedConceptIdsForPlayer(pid), isEmpty);
+        expect(await db.proficiencyMapForPlayer(pid), isEmpty);
+
+        // Reading the provider again re-seeds the starter pack (DAG drip-
+        // feed bootstraps from empty introduced).
+        container
+          ..invalidate(introducedConceptsProvider)
+          ..invalidate(proficiencyProvider);
+        final reseeded = await container.read(
+          introducedConceptsProvider.future,
+        );
+        expect(reseeded, hasLength(4));
+      },
+    );
+
+    test('does not touch player stars or avatar', () async {
+      final db = AppDatabase(NativeDatabase.memory());
+      final pid = await _seedPlayer(db);
+      await db.updatePlayerStars(
+        pid,
+        currentStars: 42,
+        lifetimeStarsEarned: 99,
+      );
+
+      await db.resetSkillsForPlayer(pid);
+
+      final p = await db.getPlayerById(pid);
+      expect(p.currentStars, 42);
+      expect(p.lifetimeStarsEarned, 99);
+    });
   });
 }
 

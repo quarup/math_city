@@ -2,12 +2,23 @@ import 'package:flutter/material.dart';
 
 /// On-screen number pad for numeric answer entry.
 ///
-/// Displays the current input and a submit button.  The caller receives the
+/// Displays the current input and a submit button. The caller receives the
 /// submitted string via [onSubmit]; empty input is ignored.
+///
+/// [extraChars]: optional non-digit characters the answer may contain
+/// (e.g. `/` for fractions, `:` for time). Each is rendered as a button
+/// above the digit grid. Pass an empty list (the default) to keep the pad
+/// digits-only — important so younger players doing pure arithmetic don't
+/// see symbols that don't belong to their question type.
 class NumberPadWidget extends StatefulWidget {
-  const NumberPadWidget({required this.onSubmit, super.key});
+  const NumberPadWidget({
+    required this.onSubmit,
+    this.extraChars = const [],
+    super.key,
+  });
 
   final void Function(String value) onSubmit;
+  final List<String> extraChars;
 
   @override
   State<NumberPadWidget> createState() => _NumberPadWidgetState();
@@ -16,12 +27,13 @@ class NumberPadWidget extends StatefulWidget {
 class _NumberPadWidgetState extends State<NumberPadWidget> {
   String _input = '';
 
-  // Phase 2 max answer is 3 digits (add_2digit sum ≤ 198).
-  static const _maxLength = 3;
+  // 7 covers the worst case in v1: a 3-digit/3-digit fraction like
+  // `100/123` or a 4-character time like `12:55`.
+  static const _maxLength = 7;
 
-  void _digit(String d) {
+  void _append(String c) {
     if (_input.length >= _maxLength) return;
-    setState(() => _input += d);
+    setState(() => _input += c);
   }
 
   void _backspace() {
@@ -42,10 +54,43 @@ class _NumberPadWidgetState extends State<NumberPadWidget> {
       children: [
         _InputDisplay(input: _input, theme: theme),
         const SizedBox(height: 12),
-        _PadGrid(onDigit: _digit, onBackspace: _backspace, onSubmit: _submit),
+        if (widget.extraChars.isNotEmpty) ...[
+          _ExtraCharsRow(chars: widget.extraChars, onTap: _append),
+          const SizedBox(height: 4),
+        ],
+        _PadGrid(onDigit: _append, onBackspace: _backspace, onSubmit: _submit),
       ],
     );
   }
+}
+
+// ---------------------------------------------------------------------------
+// Extra-chars row (only shown when needed)
+// ---------------------------------------------------------------------------
+
+class _ExtraCharsRow extends StatelessWidget {
+  const _ExtraCharsRow({required this.chars, required this.onTap});
+
+  final List<String> chars;
+  final void Function(String) onTap;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 4),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        for (final c in chars)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: SizedBox(
+              width: 80,
+              child: _DigitButton(label: c, onTap: () => onTap(c)),
+            ),
+          ),
+      ],
+    ),
+  );
 }
 
 // ---------------------------------------------------------------------------

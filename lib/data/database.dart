@@ -227,6 +227,26 @@ class AppDatabase extends _$AppDatabase {
           introducedAt: DateTime.now(),
         ),
       );
+
+  /// Wipes a player's recorded proficiencies AND introduced-concept set,
+  /// returning them to the "fresh player" state. The next read of
+  /// [introducedConceptIdsForPlayer] will be empty, which causes the
+  /// drip-feed to seed a new starter pack at the player's *current* grade.
+  ///
+  /// Stars (current and lifetime) are intentionally NOT touched — those
+  /// represent earned currency, not curriculum state.
+  ///
+  /// Called when a player's grade is changed so the wheel recalibrates
+  /// to the new grade rather than continuing to surface stale lower-grade
+  /// content from the prior grade's introduced set.
+  Future<void> resetSkillsForPlayer(int playerId) async {
+    await (delete(
+      conceptProficiencies,
+    )..where((t) => t.playerId.equals(playerId))).go();
+    await (delete(
+      introducedConcepts,
+    )..where((t) => t.playerId.equals(playerId))).go();
+  }
 }
 
 // ---------------------------------------------------------------------------

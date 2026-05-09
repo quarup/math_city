@@ -38,9 +38,11 @@ class ProficiencyNotifier extends AsyncNotifier<Map<String, double>> {
     final db = ref.read(appDatabaseProvider);
 
     final concept = findConceptById(conceptId)!;
+    final engine = ref.read(dagEngineProvider);
+    final effectiveGrade = engine.effectiveGradeFor(player.gradeLevel);
     final current =
         state.asData?.value[conceptId] ??
-        initialProficiency(concept.primaryGrade, player.gradeLevel);
+        initialProficiency(concept.primaryGrade, effectiveGrade);
     final updated = updateProficiency(current, correct: correct);
 
     await db.upsertProficiency(
@@ -56,10 +58,10 @@ class ProficiencyNotifier extends AsyncNotifier<Map<String, double>> {
       // Run drip-feed against the *post-update* state.
       final freshProf = await db.proficiencyMapForPlayer(player.id);
       final introduced = await db.introducedConceptIdsForPlayer(player.id);
-      final engine = ref.read(dagEngineProvider);
       final next = engine.pickNext(
         introduced: introduced,
         profMap: freshProf,
+        playerGrade: player.gradeLevel,
       );
       if (next != null) {
         await ref
@@ -100,12 +102,14 @@ final wheelConceptsProvider = FutureProvider<List<Concept>>((ref) async {
   final introduced = await ref.watch(introducedConceptsProvider.future);
   final registry = ref.watch(generatorRegistryProvider);
   final player = await ref.watch(activePlayerProvider.future);
+  final engine = ref.watch(dagEngineProvider);
+  final effectiveGrade = engine.effectiveGradeFor(player.gradeLevel);
 
   bool eligible(Concept c) {
     if (!introduced.contains(c.id)) return false;
     if (!registry.isImplemented(c.id)) return false;
     final p =
-        profMap[c.id] ?? initialProficiency(c.primaryGrade, player.gradeLevel);
+        profMap[c.id] ?? initialProficiency(c.primaryGrade, effectiveGrade);
     final band = bandForProficiency(p);
     return band == ProficiencyBand.challenging ||
         band == ProficiencyBand.comfortable;

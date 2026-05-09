@@ -103,7 +103,10 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen> {
               _PromptCard(prompt: _question.prompt),
               const Spacer(),
               if (useNumberPad)
-                NumberPadWidget(onSubmit: _onAnswerSubmitted)
+                NumberPadWidget(
+                  onSubmit: _onAnswerSubmitted,
+                  extraChars: _extraCharsFor(_question.correctAnswer),
+                )
               else
                 ..._shuffledChoices.map(
                   (choice) => Padding(
@@ -121,6 +124,21 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen> {
       ),
     );
   }
+}
+
+/// Returns the non-digit characters present in [answer], in the order
+/// they appear, deduplicated. The number pad surfaces these so younger
+/// players doing pure arithmetic see only digits, while fraction (`/`)
+/// and time (`:`) answers expose the symbols they need.
+List<String> _extraCharsFor(String answer) {
+  const digits = '0123456789';
+  final seen = <String>{};
+  final out = <String>[];
+  for (final c in answer.split('')) {
+    if (digits.contains(c)) continue;
+    if (seen.add(c)) out.add(c);
+  }
+  return out;
 }
 
 // ---------------------------------------------------------------------------

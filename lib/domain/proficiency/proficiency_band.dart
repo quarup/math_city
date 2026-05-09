@@ -35,7 +35,20 @@ double updateProficiency(double p, {required bool correct}) {
 
 /// Starting proficiency when a player first encounters a concept.
 ///
-/// [conceptGrade]: the grade at which the concept is introduced.
-/// [playerGrade]: the player's stated grade level.
-double initialProficiency(int conceptGrade, int playerGrade) =>
-    conceptGrade <= (playerGrade < 1 ? 1 : playerGrade) ? 0.4 : 0.05;
+/// Graded by how far below the player's stated grade the concept sits, so
+/// a higher-grade player isn't forced to grind through years of content
+/// they already know. Buckets:
+///
+///   offset ≥ 2  → 0.95  mastered    (off wheel; satisfies prereqs)
+///   offset = 1  → 0.70  comfortable (number-pad; fluency check)
+///   offset = 0  → 0.40  challenging (multiple-choice; the frontier)
+///   offset < 0  → 0.05  notYet      (off wheel until a prereq path opens)
+///
+/// where `offset = playerGrade − conceptGrade`.
+double initialProficiency(int conceptGrade, int playerGrade) {
+  final offset = playerGrade - conceptGrade;
+  if (offset >= 2) return 0.95;
+  if (offset == 1) return 0.70;
+  if (offset == 0) return 0.40;
+  return 0.05;
+}

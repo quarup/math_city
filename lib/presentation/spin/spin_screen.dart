@@ -11,6 +11,7 @@ import 'package:math_dash/game/spin_wheel/spin_wheel_game.dart';
 import 'package:math_dash/presentation/player/adventurer_avatar_widget.dart';
 import 'package:math_dash/presentation/question/question_screen.dart';
 import 'package:math_dash/state/game_session_provider.dart';
+import 'package:math_dash/state/introduced_concepts_provider.dart';
 import 'package:math_dash/state/player_provider.dart';
 import 'package:math_dash/state/proficiency_provider.dart';
 
@@ -104,9 +105,11 @@ class _SpinScreenState extends ConsumerState<SpinScreen>
       if (!mounted) return;
 
       final profMap = ref.read(proficiencyProvider).asData?.value ?? {};
-      final playerGrade =
+      final statedGrade =
           ref.read(activePlayerProvider).asData?.value.gradeLevel ?? 2;
-      final band = bandForConcept(conceptId, profMap, playerGrade);
+      final engine = ref.read(dagEngineProvider);
+      final effectiveGrade = engine.effectiveGradeFor(statedGrade);
+      final band = bandForConcept(conceptId, profMap, effectiveGrade);
 
       unawaited(
         Navigator.of(context).pushReplacement(

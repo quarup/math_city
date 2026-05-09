@@ -109,22 +109,33 @@ void main() {
   });
 
   group('initialProficiency', () {
-    test('concept grade ≤ player grade → 0.4 (challenging band)', () {
-      expect(initialProficiency(1, 2), 0.4);
+    test('at the player grade → 0.4 (challenging band)', () {
+      expect(initialProficiency(0, 0), 0.4);
       expect(initialProficiency(2, 2), 0.4);
-      expect(initialProficiency(1, 5), 0.4);
+      expect(initialProficiency(8, 8), 0.4);
     });
 
-    test('concept grade > player grade → 0.05 (notYet band)', () {
+    test('1 grade below player → 0.7 (comfortable band)', () {
+      expect(initialProficiency(1, 2), 0.7);
+      expect(initialProficiency(7, 8), 0.7);
+    });
+
+    test('≥2 grades below player → 0.95 (mastered band)', () {
+      expect(initialProficiency(0, 2), 0.95);
+      expect(initialProficiency(1, 5), 0.95);
+      expect(initialProficiency(0, 8), 0.95);
+    });
+
+    test('above player grade → 0.05 (notYet band)', () {
       expect(initialProficiency(3, 2), 0.05);
       expect(initialProficiency(4, 1), 0.05);
+      expect(initialProficiency(8, 0), 0.05);
     });
 
-    test('initial 0.4 is in challenging band', () {
+    test('initial values map to expected bands', () {
       expect(bandForProficiency(0.4), ProficiencyBand.challenging);
-    });
-
-    test('initial 0.05 is in notYet band', () {
+      expect(bandForProficiency(0.7), ProficiencyBand.comfortable);
+      expect(bandForProficiency(0.95), ProficiencyBand.mastered);
       expect(bandForProficiency(0.05), ProficiencyBand.notYet);
     });
   });
