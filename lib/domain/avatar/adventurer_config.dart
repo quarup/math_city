@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/foundation.dart';
+import 'package:math_dash/domain/avatar/adventurer_catalog.dart';
 
 @immutable
 class AdventurerConfig {
@@ -28,6 +30,27 @@ class AdventurerConfig {
       earringsIndex: (m['er'] as int?) ?? 0,
       blush: (m['bl'] as bool?) ?? false,
       freckles: (m['fr'] as bool?) ?? false,
+    );
+  }
+
+  /// Builds a uniformly-random config across every slot.
+  ///
+  /// Used to seed the avatar editor for new players so the default look
+  /// varies. Glasses/earrings include a "none" option (index 0) and are
+  /// uniformly sampled; blush/freckles flip independently at ~30% so most
+  /// avatars stay uncluttered.
+  factory AdventurerConfig.random({Random? random}) {
+    final r = random ?? Random();
+    return AdventurerConfig(
+      hairIndex: r.nextInt(kHairStyles.length),
+      hairColorIndex: r.nextInt(kHairColors.length),
+      skinColorIndex: r.nextInt(kSkinColors.length),
+      eyesIndex: r.nextInt(kEyeVariants.length),
+      mouthIndex: r.nextInt(kMouthVariants.length),
+      glassesIndex: r.nextInt(kGlassesOptions.length),
+      earringsIndex: r.nextInt(kEarringsOptions.length),
+      blush: r.nextDouble() < 0.3,
+      freckles: r.nextDouble() < 0.3,
     );
   }
 

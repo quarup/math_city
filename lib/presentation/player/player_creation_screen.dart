@@ -34,7 +34,9 @@ class _PlayerCreationScreenState extends ConsumerState<PlayerCreationScreen> {
     final p = widget.initialPlayer;
     _nameController = TextEditingController(text: p?.name ?? '');
     _grade = p?.gradeLevel ?? 2;
-    _config = p?.avatar ?? const AdventurerConfig();
+    // New players get a randomly-rolled avatar; the editor below lets them
+    // tweak it.
+    _config = p?.avatar ?? AdventurerConfig.random();
   }
 
   @override
