@@ -6,7 +6,6 @@ import 'package:math_dash/data/database.dart';
 import 'package:math_dash/presentation/player/adventurer_avatar_widget.dart';
 import 'package:math_dash/presentation/player/player_creation_screen.dart';
 import 'package:math_dash/presentation/spin/spin_screen.dart';
-import 'package:math_dash/state/game_session_provider.dart';
 import 'package:math_dash/state/player_provider.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -16,7 +15,6 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final allAsync = ref.watch(allPlayersProvider);
     final activeId = ref.watch(activePlayerIdProvider);
-    final stars = ref.watch(totalStarsProvider);
     final theme = Theme.of(context);
 
     return allAsync.when(
@@ -64,62 +62,28 @@ class HomeScreen extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  SizedBox(
-                    height: 130,
-                    child: players.isEmpty
-                        ? _EmptyPlayerPrompt(
-                            onAdd: () => _openCreation(context),
-                          )
-                        : ListView.separated(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: players.length + 1, // +1 for Add chip
-                            separatorBuilder: (_, _) =>
-                                const SizedBox(width: 10),
-                            itemBuilder: (_, i) {
-                              if (i == players.length) {
-                                return _AddChip(
-                                  onTap: () => _openCreation(context),
-                                );
-                              }
-                              final p = players[i];
-                              return _PlayerChip(
-                                player: p,
-                                isSelected: p.id == activeId,
-                                onTap: () => ref
-                                    .read(activePlayerIdProvider.notifier)
-                                    .selected = p.id,
-                                onEdit: () => _openEdit(context, p),
-                              );
-                            },
-                          ),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  // ---- Star counter for active player ----
-                  if (activeId != null)
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                  if (players.isEmpty)
+                    SizedBox(
+                      height: 130,
+                      child: _EmptyPlayerPrompt(
+                        onAdd: () => _openCreation(context),
+                      ),
+                    )
+                  else
+                    Wrap(
+                      spacing: 10,
+                      runSpacing: 10,
                       children: [
-                        const Icon(
-                          Icons.star_rounded,
-                          color: Colors.amber,
-                          size: 32,
-                        ),
-                        const SizedBox(width: 6),
-                        Text(
-                          '$stars',
-                          style: theme.textTheme.headlineMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
+                        for (final p in players)
+                          _PlayerChip(
+                            player: p,
+                            isSelected: p.id == activeId,
+                            onTap: () => ref
+                                .read(activePlayerIdProvider.notifier)
+                                .selected = p.id,
+                            onEdit: () => _openEdit(context, p),
                           ),
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          'stars',
-                          style: theme.textTheme.bodyLarge?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant,
-                          ),
-                        ),
+                        _AddChip(onTap: () => _openCreation(context)),
                       ],
                     ),
 
@@ -199,6 +163,7 @@ class _PlayerChip extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         width: 96,
+        height: 120,
         decoration: BoxDecoration(
           color: isSelected
               ? theme.colorScheme.primaryContainer
@@ -291,7 +256,8 @@ class _AddChip extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 72,
+        width: 96,
+        height: 120,
         decoration: BoxDecoration(
           color: theme.colorScheme.surfaceContainer,
           borderRadius: BorderRadius.circular(14),
