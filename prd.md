@@ -1,6 +1,6 @@
-# Math Dash — Product Requirements Document
+# Math City — Product Requirements Document
 
-**Math Dash** is a mobile game for Android and iOS that makes math practice fun for kids. Multiple players can share a single device, each with their own profile and progress.
+**Math City** is a mobile game for Android and iOS that makes math practice fun for kids. Multiple players can share a single device, each with their own profile and progress.
 
 **Target audience:** Kids ages 6–14, with math content spanning grades K–8.
 

@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:math_dash/domain/questions/distractors.dart';
+import 'package:math_city/domain/questions/distractors.dart';
 
 void main() {
   final rand = Random(7);

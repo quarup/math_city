@@ -2,14 +2,14 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:math_dash/domain/concepts/concept_registry.dart';
-import 'package:math_dash/domain/proficiency/proficiency_band.dart';
-import 'package:math_dash/domain/questions/generated_question.dart';
-import 'package:math_dash/presentation/diagrams/diagram_renderer.dart';
-import 'package:math_dash/presentation/question/number_pad_widget.dart';
-import 'package:math_dash/presentation/result/result_screen.dart';
-import 'package:math_dash/state/introduced_concepts_provider.dart';
-import 'package:math_dash/state/proficiency_provider.dart';
+import 'package:math_city/domain/concepts/concept_registry.dart';
+import 'package:math_city/domain/proficiency/proficiency_band.dart';
+import 'package:math_city/domain/questions/generated_question.dart';
+import 'package:math_city/presentation/diagrams/diagram_renderer.dart';
+import 'package:math_city/presentation/question/number_pad_widget.dart';
+import 'package:math_city/presentation/result/result_screen.dart';
+import 'package:math_city/state/introduced_concepts_provider.dart';
+import 'package:math_city/state/proficiency_provider.dart';
 
 class QuestionScreen extends ConsumerStatefulWidget {
   const QuestionScreen({

@@ -3,17 +3,17 @@ import 'dart:async';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:math_dash/data/database.dart';
-import 'package:math_dash/domain/avatar/adventurer_config.dart';
-import 'package:math_dash/domain/concepts/concept.dart';
-import 'package:math_dash/game/spin_wheel/spin_wheel_component.dart';
-import 'package:math_dash/game/spin_wheel/spin_wheel_game.dart';
-import 'package:math_dash/presentation/player/adventurer_avatar_widget.dart';
-import 'package:math_dash/presentation/question/question_screen.dart';
-import 'package:math_dash/state/game_session_provider.dart';
-import 'package:math_dash/state/introduced_concepts_provider.dart';
-import 'package:math_dash/state/player_provider.dart';
-import 'package:math_dash/state/proficiency_provider.dart';
+import 'package:math_city/data/database.dart';
+import 'package:math_city/domain/avatar/adventurer_config.dart';
+import 'package:math_city/domain/concepts/concept.dart';
+import 'package:math_city/game/spin_wheel/spin_wheel_component.dart';
+import 'package:math_city/game/spin_wheel/spin_wheel_game.dart';
+import 'package:math_city/presentation/player/adventurer_avatar_widget.dart';
+import 'package:math_city/presentation/question/question_screen.dart';
+import 'package:math_city/state/game_session_provider.dart';
+import 'package:math_city/state/introduced_concepts_provider.dart';
+import 'package:math_city/state/player_provider.dart';
+import 'package:math_city/state/proficiency_provider.dart';
 
 // ---------------------------------------------------------------------------
 // Concept → wheel colour (presentation concern; not in domain layer).

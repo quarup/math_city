@@ -9,7 +9,7 @@
 // the drip-feed engine. Gaps in the numbering (skipped concepts) are
 // intentional and harmless — only the relative order matters.
 
-import 'package:math_dash/domain/concepts/concept.dart';
+import 'package:math_city/domain/concepts/concept.dart';
 
 const List<Concept> allConcepts = [
   // ----------------------------------------------------------------------

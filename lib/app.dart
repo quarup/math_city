@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:math_dash/presentation/home/home_screen.dart';
+import 'package:math_city/presentation/home/home_screen.dart';
 
-class MathDashApp extends StatelessWidget {
-  const MathDashApp({super.key});
+class MathCityApp extends StatelessWidget {
+  const MathCityApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Math Dash',
+      title: 'Math City',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange),
         useMaterial3: true,

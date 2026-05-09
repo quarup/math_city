@@ -1,10 +1,10 @@
 import 'dart:math';
 
-import 'package:math_dash/domain/concepts/concept.dart';
-import 'package:math_dash/domain/concepts/concept_category.dart';
-import 'package:math_dash/domain/concepts/concept_registry.dart';
-import 'package:math_dash/domain/proficiency/proficiency_band.dart';
-import 'package:math_dash/domain/questions/generator_registry.dart';
+import 'package:math_city/domain/concepts/concept.dart';
+import 'package:math_city/domain/concepts/concept_category.dart';
+import 'package:math_city/domain/concepts/concept_registry.dart';
+import 'package:math_city/domain/proficiency/proficiency_band.dart';
+import 'package:math_city/domain/questions/generator_registry.dart';
 
 /// Threshold at which a concept counts as `mastered` (mirrors the cutoff
 /// in proficiency_band.dart). Local const for readability at the call sites.

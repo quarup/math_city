@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
-import 'package:math_dash/domain/avatar/adventurer_config.dart';
-import 'package:math_dash/domain/concepts/concept.dart' as dom;
-import 'package:math_dash/domain/concepts/concept_registry.dart' as dom;
+import 'package:math_city/domain/avatar/adventurer_config.dart';
+import 'package:math_city/domain/concepts/concept.dart' as dom;
+import 'package:math_city/domain/concepts/concept_registry.dart' as dom;
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
@@ -287,7 +287,7 @@ String _diagramToString(dom.DiagramRequirement d) => switch (d) {
 AppDatabase openAppDatabase() => AppDatabase(
   LazyDatabase(() async {
     final dir = await getApplicationDocumentsDirectory();
-    final file = File(p.join(dir.path, 'math_dash.sqlite'));
+    final file = File(p.join(dir.path, 'math_city.sqlite'));
     return NativeDatabase.createInBackground(file);
   }),
 );

@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
-import 'package:math_dash/domain/avatar/adventurer_catalog.dart';
+import 'package:math_city/domain/avatar/adventurer_catalog.dart';
 
 @immutable
 class AdventurerConfig {

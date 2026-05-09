@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:math_dash/domain/proficiency/proficiency_band.dart';
+import 'package:math_city/domain/proficiency/proficiency_band.dart';
 
 void main() {
   group('bandForProficiency', () {

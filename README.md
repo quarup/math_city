@@ -1,4 +1,4 @@
-# math_dash
+# math_city
 
 A free math practice game for kids ages 6-14
 

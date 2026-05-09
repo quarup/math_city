@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:math_dash/domain/questions/diagram_spec.dart';
+import 'package:math_city/domain/questions/diagram_spec.dart';
 
 /// Renders a [ClockSpec] as an analog clock face.
 class Clock extends StatelessWidget {

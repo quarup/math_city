@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:math_dash/domain/concepts/dag_engine.dart';
-import 'package:math_dash/domain/questions/generator_registry.dart';
-import 'package:math_dash/state/player_provider.dart';
+import 'package:math_city/domain/concepts/dag_engine.dart';
+import 'package:math_city/domain/questions/generator_registry.dart';
+import 'package:math_city/state/player_provider.dart';
 
 /// Singleton generator registry. Plain provider (override in tests if
 /// you want a different generator set).

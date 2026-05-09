@@ -1,8 +1,8 @@
 import 'dart:math';
 
-import 'package:math_dash/domain/questions/diagram_spec.dart';
-import 'package:math_dash/domain/questions/distractors.dart';
-import 'package:math_dash/domain/questions/generated_question.dart';
+import 'package:math_city/domain/questions/diagram_spec.dart';
+import 'package:math_city/domain/questions/distractors.dart';
+import 'package:math_city/domain/questions/generated_question.dart';
 
 String _formatTime(int hour, int minute) {
   final mm = minute.toString().padLeft(2, '0');

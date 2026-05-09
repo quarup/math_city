@@ -2,12 +2,12 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:math_dash/domain/concepts/concept.dart';
-import 'package:math_dash/domain/concepts/concept_registry.dart';
-import 'package:math_dash/domain/concepts/dag_engine.dart';
-import 'package:math_dash/domain/proficiency/proficiency_band.dart';
-import 'package:math_dash/state/introduced_concepts_provider.dart';
-import 'package:math_dash/state/player_provider.dart';
+import 'package:math_city/domain/concepts/concept.dart';
+import 'package:math_city/domain/concepts/concept_registry.dart';
+import 'package:math_city/domain/concepts/dag_engine.dart';
+import 'package:math_city/domain/proficiency/proficiency_band.dart';
+import 'package:math_city/state/introduced_concepts_provider.dart';
+import 'package:math_city/state/player_provider.dart';
 
 // ---------------------------------------------------------------------------
 // Proficiency map — conceptId → p value for the active player.

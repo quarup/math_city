@@ -2,10 +2,10 @@ import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:math_dash/data/database.dart';
-import 'package:math_dash/state/introduced_concepts_provider.dart';
-import 'package:math_dash/state/player_provider.dart';
-import 'package:math_dash/state/proficiency_provider.dart';
+import 'package:math_city/data/database.dart';
+import 'package:math_city/state/introduced_concepts_provider.dart';
+import 'package:math_city/state/player_provider.dart';
+import 'package:math_city/state/proficiency_provider.dart';
 
 Future<int> _seedPlayer(AppDatabase db) async {
   // Grade-K player so K-grade starter-pack expectations below stay valid

@@ -2,13 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:math_dash/data/database.dart';
-import 'package:math_dash/domain/avatar/adventurer_catalog.dart';
-import 'package:math_dash/domain/avatar/adventurer_config.dart';
-import 'package:math_dash/presentation/player/adventurer_avatar_widget.dart';
-import 'package:math_dash/state/introduced_concepts_provider.dart';
-import 'package:math_dash/state/player_provider.dart';
-import 'package:math_dash/state/proficiency_provider.dart';
+import 'package:math_city/data/database.dart';
+import 'package:math_city/domain/avatar/adventurer_catalog.dart';
+import 'package:math_city/domain/avatar/adventurer_config.dart';
+import 'package:math_city/presentation/player/adventurer_avatar_widget.dart';
+import 'package:math_city/state/introduced_concepts_provider.dart';
+import 'package:math_city/state/player_provider.dart';
+import 'package:math_city/state/proficiency_provider.dart';
 
 /// Pass [initialPlayer] to edit an existing player; null = create a new one.
 class PlayerCreationScreen extends ConsumerStatefulWidget {

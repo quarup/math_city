@@ -1,4 +1,4 @@
-# Math Dash — Implementation Plan
+# Math City — Implementation Plan
 
 > Living document. Update as decisions are made and phases progress.
 > Source of truth for product scope: [prd.md](prd.md).
@@ -178,7 +178,7 @@ Open Phase 2 knobs: tune `α`, asymmetric reward/penalty (e.g. wrong answers mov
 ## Project Structure (planned)
 
 ```
-math_dash/
+math_city/
 ├── prd.md
 ├── plan.md
 ├── CLAUDE.md
@@ -232,7 +232,7 @@ Each phase ends with something demonstrable. We do **not** start a phase until t
 - [x] GitHub Actions CI: format check + analyze + test on push/PR (`.github/workflows/ci.yml`)
 - [x] Initial concept scope for Phase 1 decided — see *Domain Specs* above
 - [x] Proficiency-update math sketched — see *Domain Specs* above
-- [x] **Exit criteria (Path B — Android only):** `flutter run` launched the placeholder Math Dash app on the Android emulator (Pixel 7, API 34) successfully. iOS verification deferred to Phase 11
+- [x] **Exit criteria (Path B — Android only):** `flutter run` launched the placeholder Math City app on the Android emulator (Pixel 7, API 34) successfully. iOS verification deferred to Phase 11
 - [ ] iOS exit criteria — deferred until Xcode is installed (no later than Phase 11)
 
 ### Phase 1 — Vertical Slice (target: ~2–3 weeks) [the most important phase]

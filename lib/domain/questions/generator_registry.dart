@@ -1,10 +1,10 @@
 import 'dart:math';
 
-import 'package:math_dash/domain/questions/generated_question.dart';
-import 'package:math_dash/domain/questions/generators/add_sub_generators.dart';
-import 'package:math_dash/domain/questions/generators/fraction_generators.dart';
-import 'package:math_dash/domain/questions/generators/mult_div_generators.dart';
-import 'package:math_dash/domain/questions/generators/time_generators.dart';
+import 'package:math_city/domain/questions/generated_question.dart';
+import 'package:math_city/domain/questions/generators/add_sub_generators.dart';
+import 'package:math_city/domain/questions/generators/fraction_generators.dart';
+import 'package:math_city/domain/questions/generators/mult_div_generators.dart';
+import 'package:math_city/domain/questions/generators/time_generators.dart';
 
 /// A pure function that produces one question for a given concept.
 typedef QuestionGenerator = GeneratedQuestion Function(Random rand);

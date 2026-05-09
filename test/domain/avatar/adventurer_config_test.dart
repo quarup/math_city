@@ -1,8 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:math_dash/domain/avatar/adventurer_catalog.dart';
-import 'package:math_dash/domain/avatar/adventurer_config.dart';
+import 'package:math_city/domain/avatar/adventurer_catalog.dart';
+import 'package:math_city/domain/avatar/adventurer_config.dart';
 
 void main() {
   group('AdventurerConfig serialization', () {

@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:math_dash/data/database.dart';
+import 'package:math_city/data/database.dart';
 
 // ---------------------------------------------------------------------------
 // Database provider — overridden in main() with the real AppDatabase instance.

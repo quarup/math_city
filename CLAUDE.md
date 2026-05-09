@@ -4,7 +4,7 @@ Guidance for Claude Code (and other AI agents) working in this repo.
 
 ## What this project is
 
-**Math Dash** — a free, open, cross-platform mobile math game for kids ages 6–14.
+**Math City** — a free, open, cross-platform mobile math game for kids ages 6–14.
 - Product scope: see [prd.md](prd.md) — read this before suggesting any feature.
 - Execution plan: see [plan.md](plan.md) — read this before suggesting any code.
 - Curriculum / concept catalog: see [curriculum.md](curriculum.md) — canonical K–8 sub-concept taxonomy with prereq DAG, source strategy, and diagram needs. Read this before adding/modifying questions or generators.

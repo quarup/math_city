@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:math_dash/domain/concepts/concept.dart';
-import 'package:math_dash/domain/concepts/concept_category.dart';
-import 'package:math_dash/domain/concepts/concept_registry.dart';
-import 'package:math_dash/domain/questions/generator_registry.dart';
+import 'package:math_city/domain/concepts/concept.dart';
+import 'package:math_city/domain/concepts/concept_category.dart';
+import 'package:math_city/domain/concepts/concept_registry.dart';
+import 'package:math_city/domain/questions/generator_registry.dart';
 
 void main() {
   group('Concept catalog invariants', () {

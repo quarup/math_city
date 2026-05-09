@@ -1,6 +1,6 @@
-# Math Dash — Curriculum Reference
+# Math City — Curriculum Reference
 
-> Canonical reference for the K–8 math content in Math Dash.
+> Canonical reference for the K–8 math content in Math City.
 > Anchored on the US **Common Core State Standards (CCSS) for Mathematics, K–8**.
 > Companion to: [prd.md](prd.md) (product scope) and [plan.md](plan.md) (execution).
 

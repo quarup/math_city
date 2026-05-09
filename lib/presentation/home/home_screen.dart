@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:math_dash/data/database.dart';
-import 'package:math_dash/presentation/player/adventurer_avatar_widget.dart';
-import 'package:math_dash/presentation/player/player_creation_screen.dart';
-import 'package:math_dash/presentation/spin/spin_screen.dart';
-import 'package:math_dash/state/player_provider.dart';
+import 'package:math_city/data/database.dart';
+import 'package:math_city/presentation/player/adventurer_avatar_widget.dart';
+import 'package:math_city/presentation/player/player_creation_screen.dart';
+import 'package:math_city/presentation/spin/spin_screen.dart';
+import 'package:math_city/state/player_provider.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -45,7 +45,7 @@ class HomeScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
-                    'Math Dash',
+                    'Math City',
                     style: theme.textTheme.displaySmall?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: theme.colorScheme.primary,

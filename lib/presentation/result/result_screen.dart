@@ -3,10 +3,10 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:math_dash/domain/concepts/dag_engine.dart';
-import 'package:math_dash/domain/questions/generated_question.dart';
-import 'package:math_dash/presentation/spin/spin_screen.dart';
-import 'package:math_dash/state/game_session_provider.dart';
+import 'package:math_city/domain/concepts/dag_engine.dart';
+import 'package:math_city/domain/questions/generated_question.dart';
+import 'package:math_city/presentation/spin/spin_screen.dart';
+import 'package:math_city/state/game_session_provider.dart';
 
 class ResultScreen extends ConsumerStatefulWidget {
   const ResultScreen({

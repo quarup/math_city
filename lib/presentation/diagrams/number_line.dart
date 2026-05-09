@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:math_dash/domain/questions/diagram_spec.dart';
+import 'package:math_city/domain/questions/diagram_spec.dart';
 
 /// Renders a [NumberLineSpec] with tick marks, labels, marked points,
 /// and optional hop arcs.

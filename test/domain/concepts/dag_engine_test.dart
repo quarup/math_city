@@ -1,10 +1,10 @@
 import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:math_dash/domain/concepts/concept.dart';
-import 'package:math_dash/domain/concepts/dag_engine.dart';
-import 'package:math_dash/domain/questions/generated_question.dart';
-import 'package:math_dash/domain/questions/generator_registry.dart';
+import 'package:math_city/domain/concepts/concept.dart';
+import 'package:math_city/domain/concepts/dag_engine.dart';
+import 'package:math_city/domain/questions/generated_question.dart';
+import 'package:math_city/domain/questions/generator_registry.dart';
 
 GeneratedQuestion _stub(String id) => GeneratedQuestion(
   conceptId: id,

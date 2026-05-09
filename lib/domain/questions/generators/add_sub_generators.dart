@@ -1,8 +1,8 @@
 import 'dart:math';
 
-import 'package:math_dash/domain/questions/distractors.dart';
-import 'package:math_dash/domain/questions/generated_question.dart';
-import 'package:math_dash/domain/questions/generator_registry.dart';
+import 'package:math_city/domain/questions/distractors.dart';
+import 'package:math_city/domain/questions/generated_question.dart';
+import 'package:math_city/domain/questions/generator_registry.dart';
 
 const _minus = '−'; // U+2212 minus sign
 

@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import 'package:math_dash/domain/questions/diagram_spec.dart';
-import 'package:math_dash/domain/questions/generated_question.dart';
+import 'package:math_city/domain/questions/diagram_spec.dart';
+import 'package:math_city/domain/questions/generated_question.dart';
 
 /// "What fraction is shaded?" — shows a fraction bar and asks for a/b.
 ///

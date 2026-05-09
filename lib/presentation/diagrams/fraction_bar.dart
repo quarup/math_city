@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:math_dash/domain/questions/diagram_spec.dart';
+import 'package:math_city/domain/questions/diagram_spec.dart';
 
 /// Renders a [FractionBarSpec]: a horizontal bar with `denominator` equal
 /// segments, the first `numerator` of which are shaded.

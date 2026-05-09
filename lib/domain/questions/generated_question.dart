@@ -1,4 +1,4 @@
-import 'package:math_dash/domain/questions/diagram_spec.dart';
+import 'package:math_city/domain/questions/diagram_spec.dart';
 
 /// A single question presented to the player.
 ///

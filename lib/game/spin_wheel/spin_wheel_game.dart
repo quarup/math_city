@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
-import 'package:math_dash/game/spin_wheel/burst_component.dart';
-import 'package:math_dash/game/spin_wheel/spin_wheel_component.dart';
-import 'package:math_dash/game/spin_wheel/warp_background.dart';
+import 'package:math_city/game/spin_wheel/burst_component.dart';
+import 'package:math_city/game/spin_wheel/spin_wheel_component.dart';
+import 'package:math_city/game/spin_wheel/warp_background.dart';
 
 /// Minimal FlameGame that hosts the [SpinWheelComponent].
 ///

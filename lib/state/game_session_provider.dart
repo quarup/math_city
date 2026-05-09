@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:math_dash/state/player_provider.dart';
+import 'package:math_city/state/player_provider.dart';
 
 // ---------------------------------------------------------------------------
 // Total stars for the active player.

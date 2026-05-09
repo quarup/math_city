@@ -1,7 +1,7 @@
 // ignore_for_file: lines_longer_than_80_chars // long lines are SVG constants
-import 'package:math_dash/domain/avatar/adventurer_catalog.dart';
-import 'package:math_dash/domain/avatar/adventurer_config.dart';
-import 'package:math_dash/domain/avatar/adventurer_svg_data.dart';
+import 'package:math_city/domain/avatar/adventurer_catalog.dart';
+import 'package:math_city/domain/avatar/adventurer_config.dart';
+import 'package:math_city/domain/avatar/adventurer_svg_data.dart';
 
 // Hair styles whose length covers the earring position.
 const _kEarringBlockedStyles = {
