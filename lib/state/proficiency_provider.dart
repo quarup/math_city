@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_dash/domain/concepts/concept.dart';
@@ -83,11 +84,16 @@ final proficiencyProvider =
 
 // ---------------------------------------------------------------------------
 // Wheel concepts — introduced ∩ generator-registered, in challenging or
-// comfortable band, capped at 8 segments. Sorted ascending by difficulty
-// so spin layout is stable as the catalog grows.
+// comfortable band, sized between [kMinWheelSegments] and [kMaxWheelSegments].
+//
+// Below the max, every eligible concept is on the wheel (sorted ascending
+// by difficulty for a stable layout). At or above the max, we randomly
+// sample [kMaxWheelSegments] each round so the player gets variety
+// without a 12-segment wheel becoming unreadable on a phone.
 // ---------------------------------------------------------------------------
 
 const int kMaxWheelSegments = 8;
+const int kMinWheelSegments = 4;
 
 final wheelConceptsProvider = FutureProvider<List<Concept>>((ref) async {
   final profMap = await ref.watch(proficiencyProvider.future);
@@ -108,20 +114,26 @@ final wheelConceptsProvider = FutureProvider<List<Concept>>((ref) async {
   final concepts = allConcepts.where(eligible).toList()
     ..sort(compareConceptDifficulty);
 
-  // Wheel cap: take the *easiest* up to kMaxWheelSegments — the player
-  // sees their currently-relevant concepts, not their hardest unlocked ones.
-  final capped = concepts.take(kMaxWheelSegments).toList();
-
   // Fallback: if no concepts qualify (e.g. all introduced are mastered),
   // surface the full introduced+implemented set so the wheel still spins.
-  if (capped.isEmpty) {
+  if (concepts.isEmpty) {
     return allConcepts
         .where((c) =>
             introduced.contains(c.id) && registry.isImplemented(c.id))
         .toList()
       ..sort(compareConceptDifficulty);
   }
-  return capped;
+
+  // ≤ kMaxWheelSegments: surface them all in difficulty order.
+  if (concepts.length <= kMaxWheelSegments) return concepts;
+
+  // > kMaxWheelSegments: random-sample kMaxWheelSegments each round so the
+  // player sees variety. The provider rebuilds whenever proficiency or the
+  // introduced set changes — i.e., once per answered question — which is
+  // also when we want a fresh sample.
+  final shuffled = List<Concept>.of(concepts)..shuffle(Random());
+  return shuffled.take(kMaxWheelSegments).toList()
+    ..sort(compareConceptDifficulty);
 });
 
 // ---------------------------------------------------------------------------

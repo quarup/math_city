@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:math_dash/domain/concepts/concept.dart';
-import 'package:math_dash/domain/concepts/concept_registry.dart' as catalog;
 import 'package:math_dash/domain/concepts/dag_engine.dart';
 import 'package:math_dash/domain/questions/generated_question.dart';
 import 'package:math_dash/domain/questions/generator_registry.dart';
@@ -39,7 +38,7 @@ Concept _c({
 void main() {
   group('DripFeedEngine — synthetic catalog', () {
     final synthetic = <Concept>[
-      _c(id: 'add_5', grade: 0, category: 'add_sub', row: 0),
+      _c(id: 'add_5', grade: 0, category: 'add_sub'),
       _c(
         id: 'add_10',
         grade: 0,
@@ -59,13 +58,14 @@ void main() {
       _c(id: 'mult_facts', grade: 3, category: 'mult_div', row: 3),
     ];
 
-    test('starter pack picks 2 easiest implemented K-grade roots', () {
-      final reg = _registryFor(['add_5', 'sub_5']);
+    test('starter pack: 4 easiest implemented at-or-below grade', () {
+      final reg = _registryFor(['add_5', 'sub_5', 'add_10', 'add_20']);
       final engine = DripFeedEngine(registry: reg, catalog: synthetic);
-      final pack = engine.pickStarterPack(0);
+      final pack = engine.pickStarterPack(2);
       final ids = pack.map((c) => c.id).toList();
       // (grade ascending, then categoryRowOrder ascending)
-      expect(ids, ['add_5', 'sub_5']);
+      // synthetic rows: add_5=0, sub_5=1, add_10=2, add_20=7
+      expect(ids, ['add_5', 'sub_5', 'add_10', 'add_20']);
     });
 
     test('starter pack respects player grade', () {
@@ -76,7 +76,7 @@ void main() {
         'mult_facts',
       ]);
       final engine = DripFeedEngine(registry: reg, catalog: synthetic);
-      // Grade 0 player: only K-grade roots eligible.
+      // Grade 0 player: only G0 implemented concepts are eligible.
       final pack = engine.pickStarterPack(0);
       expect(pack.map((c) => c.id).toList(), ['add_5', 'sub_5']);
     });
@@ -159,18 +159,19 @@ void main() {
 
   group('DripFeedEngine — real catalog', () {
     test(
-      'starter pack on the real catalog gives 2 implemented add_sub roots',
+      'starter pack on the real catalog gives 4 K-grade add_sub roots',
       () {
         final engine = DripFeedEngine(
           registry: GeneratorRegistry.defaultRegistry(),
         );
         final pack = engine.pickStarterPack(0);
-        expect(pack, hasLength(2));
-        // First two by (grade, row order) at K-grade are add_within_5 (row 0)
-        // and sub_within_5 (row 1).
+        expect(pack, hasLength(4));
+        // First four by (grade, row order) at K-grade are
+        // add_within_5 (row 0), sub_within_5 (row 1),
+        // add_within_10 (row 2), sub_within_10 (row 3).
         expect(
           pack.map((c) => c.id).toList(),
-          ['add_within_5', 'sub_within_5'],
+          ['add_within_5', 'sub_within_5', 'add_within_10', 'sub_within_10'],
         );
       },
     );
@@ -210,7 +211,7 @@ void main() {
 }
 
 final _extraStatsCatalog = <Concept>[
-  _c(id: 'stats_root', grade: 0, category: 'stats', row: 0),
+  _c(id: 'stats_root', grade: 0, category: 'stats'),
 ];
 
 // Reference to suppress unused-import warning when we add randomness later.

@@ -1,4 +1,4 @@
-import 'package:drift/drift.dart' hide isNull, isNotNull;
+import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -56,12 +56,15 @@ void main() {
 
         expect(unlock, isNotNull);
         expect(unlock!.masteredConcept?.id, 'add_within_5');
-        // First DAG child of add_within_5 should be add_within_10.
-        expect(unlock.newConcept.id, 'add_within_10');
+        // The starter pack of 4 already includes all add_within_5's DAG
+        // children (sub_within_5, add_within_10, sub_within_10), so the
+        // drip-feed picks the lowest-grade root concept that *isn't* yet
+        // introduced — `time_to_hour_half` (G1, no prereqs).
+        expect(unlock.newConcept.id, 'time_to_hour_half');
 
         // The newly-unlocked concept is now persisted as introduced.
         final introduced = await db.introducedConceptIdsForPlayer(pid);
-        expect(introduced, contains('add_within_10'));
+        expect(introduced, contains('time_to_hour_half'));
       },
     );
 
@@ -82,9 +85,10 @@ void main() {
 
         expect(unlock, isNull);
 
-        // No new concept introduced (only the starter pack).
+        // No new concept introduced beyond the 4-concept starter pack.
         final introduced = await db.introducedConceptIdsForPlayer(pid);
-        expect(introduced, isNot(contains('add_within_10')));
+        expect(introduced, hasLength(4));
+        expect(introduced, isNot(contains('time_to_hour_half')));
       },
     );
 
@@ -132,7 +136,7 @@ void main() {
 
   group('Starter pack', () {
     test(
-      'a fresh player gets two introduced concepts on first read',
+      'a fresh player gets four introduced concepts on first read',
       () async {
         final db = AppDatabase(NativeDatabase.memory());
         final pid = await _seedPlayer(db);
@@ -143,13 +147,20 @@ void main() {
         final introduced = await container.read(
           introducedConceptsProvider.future,
         );
-        expect(introduced, hasLength(2));
-        expect(introduced, contains('add_within_5'));
-        expect(introduced, contains('sub_within_5'));
+        expect(introduced, hasLength(4));
+        expect(
+          introduced,
+          containsAll([
+            'add_within_5',
+            'sub_within_5',
+            'add_within_10',
+            'sub_within_10',
+          ]),
+        );
 
         // Persisted to DB.
         final persisted = await db.introducedConceptIdsForPlayer(pid);
-        expect(persisted, hasLength(2));
+        expect(persisted, hasLength(4));
       },
     );
   });

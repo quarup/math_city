@@ -47,10 +47,13 @@ class DripFeedEngine {
   /// Picks the starter pack for a brand-new player: up to [size] concepts
   /// at-or-below [playerGrade], sorted by difficulty.
   ///
+  /// Default of 4 keeps the wheel feeling like a real choice from round one
+  /// (matches `kMinWheelSegments` in proficiency_provider.dart).
+  ///
   /// Prereqs are ignored here on purpose — a fresh player needs *something*
   /// on the wheel from round one, even if it would normally be "downstream"
   /// in the DAG. Subsequent unlocks via [pickNext] do honor the DAG.
-  List<Concept> pickStarterPack(int playerGrade, {int size = 2}) {
+  List<Concept> pickStarterPack(int playerGrade, {int size = 4}) {
     final eligible = catalog
         .where(
           (c) =>
