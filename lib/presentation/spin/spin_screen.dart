@@ -16,24 +16,36 @@ import 'package:math_dash/state/proficiency_provider.dart';
 
 // ---------------------------------------------------------------------------
 // Concept → wheel colour (presentation concern; not in domain layer).
+//
+// Per-category palette — same category always wins the same colour family,
+// so a kid quickly associates "orange = addition" / "purple = fractions"
+// regardless of which sub-concept the wheel currently surfaces.
 // ---------------------------------------------------------------------------
 
-Color _colorForConcept(String conceptId) => switch (conceptId) {
-  'add_1digit' => Colors.orange.shade600,
-  'sub_1digit' => Colors.blue.shade600,
-  'add_2digit' => Colors.green.shade600,
-  'sub_2digit' => Colors.purple.shade600,
-  'mul_1digit' => Colors.red.shade600,
-  'div_1digit' => Colors.teal.shade600,
-  _ => Colors.grey.shade600,
+const _categoryColors = <String, Color>{
+  'counting': Color(0xFFFFA000), // amber
+  'place_value': Color(0xFFEF6C00), // orange-deep
+  'add_sub': Color(0xFFFB8C00), // orange
+  'mult_div': Color(0xFFE53935), // red
+  'fractions': Color(0xFF8E24AA), // purple
+  'decimals_percent': Color(0xFF6A1B9A), // deep purple
+  'ratios': Color(0xFF1565C0), // blue-deep
+  'measurement': Color(0xFF1E88E5), // blue
+  'geometry': Color(0xFF00897B), // teal
+  'rationals': Color(0xFF2E7D32), // green-deep
+  'prealgebra': Color(0xFF43A047), // green
+  'stats': Color(0xFF6D4C41), // brown
 };
+
+Color _colorForConcept(Concept c) =>
+    _categoryColors[c.categoryId] ?? Colors.grey.shade600;
 
 List<WheelSegment> _buildSegments(List<Concept> concepts) => concepts
     .map(
       (c) => WheelSegment(
         conceptId: c.id,
         label: c.shortLabel,
-        color: _colorForConcept(c.id),
+        color: _colorForConcept(c),
       ),
     )
     .toList();

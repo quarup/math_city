@@ -917,12 +917,882 @@ class ConceptProficienciesCompanion
   }
 }
 
+class $IntroducedConceptsTable extends IntroducedConcepts
+    with TableInfo<$IntroducedConceptsTable, IntroducedConcept> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $IntroducedConceptsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _playerIdMeta = const VerificationMeta(
+    'playerId',
+  );
+  @override
+  late final GeneratedColumn<int> playerId = GeneratedColumn<int>(
+    'player_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES players (id)',
+    ),
+  );
+  static const VerificationMeta _conceptIdMeta = const VerificationMeta(
+    'conceptId',
+  );
+  @override
+  late final GeneratedColumn<String> conceptId = GeneratedColumn<String>(
+    'concept_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _introducedAtMeta = const VerificationMeta(
+    'introducedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> introducedAt = GeneratedColumn<DateTime>(
+    'introduced_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [playerId, conceptId, introducedAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'introduced_concepts';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<IntroducedConcept> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('player_id')) {
+      context.handle(
+        _playerIdMeta,
+        playerId.isAcceptableOrUnknown(data['player_id']!, _playerIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_playerIdMeta);
+    }
+    if (data.containsKey('concept_id')) {
+      context.handle(
+        _conceptIdMeta,
+        conceptId.isAcceptableOrUnknown(data['concept_id']!, _conceptIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_conceptIdMeta);
+    }
+    if (data.containsKey('introduced_at')) {
+      context.handle(
+        _introducedAtMeta,
+        introducedAt.isAcceptableOrUnknown(
+          data['introduced_at']!,
+          _introducedAtMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_introducedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {playerId, conceptId};
+  @override
+  IntroducedConcept map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return IntroducedConcept(
+      playerId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}player_id'],
+      )!,
+      conceptId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}concept_id'],
+      )!,
+      introducedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}introduced_at'],
+      )!,
+    );
+  }
+
+  @override
+  $IntroducedConceptsTable createAlias(String alias) {
+    return $IntroducedConceptsTable(attachedDatabase, alias);
+  }
+}
+
+class IntroducedConcept extends DataClass
+    implements Insertable<IntroducedConcept> {
+  final int playerId;
+  final String conceptId;
+  final DateTime introducedAt;
+  const IntroducedConcept({
+    required this.playerId,
+    required this.conceptId,
+    required this.introducedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['player_id'] = Variable<int>(playerId);
+    map['concept_id'] = Variable<String>(conceptId);
+    map['introduced_at'] = Variable<DateTime>(introducedAt);
+    return map;
+  }
+
+  IntroducedConceptsCompanion toCompanion(bool nullToAbsent) {
+    return IntroducedConceptsCompanion(
+      playerId: Value(playerId),
+      conceptId: Value(conceptId),
+      introducedAt: Value(introducedAt),
+    );
+  }
+
+  factory IntroducedConcept.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return IntroducedConcept(
+      playerId: serializer.fromJson<int>(json['playerId']),
+      conceptId: serializer.fromJson<String>(json['conceptId']),
+      introducedAt: serializer.fromJson<DateTime>(json['introducedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'playerId': serializer.toJson<int>(playerId),
+      'conceptId': serializer.toJson<String>(conceptId),
+      'introducedAt': serializer.toJson<DateTime>(introducedAt),
+    };
+  }
+
+  IntroducedConcept copyWith({
+    int? playerId,
+    String? conceptId,
+    DateTime? introducedAt,
+  }) => IntroducedConcept(
+    playerId: playerId ?? this.playerId,
+    conceptId: conceptId ?? this.conceptId,
+    introducedAt: introducedAt ?? this.introducedAt,
+  );
+  IntroducedConcept copyWithCompanion(IntroducedConceptsCompanion data) {
+    return IntroducedConcept(
+      playerId: data.playerId.present ? data.playerId.value : this.playerId,
+      conceptId: data.conceptId.present ? data.conceptId.value : this.conceptId,
+      introducedAt: data.introducedAt.present
+          ? data.introducedAt.value
+          : this.introducedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('IntroducedConcept(')
+          ..write('playerId: $playerId, ')
+          ..write('conceptId: $conceptId, ')
+          ..write('introducedAt: $introducedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(playerId, conceptId, introducedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is IntroducedConcept &&
+          other.playerId == this.playerId &&
+          other.conceptId == this.conceptId &&
+          other.introducedAt == this.introducedAt);
+}
+
+class IntroducedConceptsCompanion extends UpdateCompanion<IntroducedConcept> {
+  final Value<int> playerId;
+  final Value<String> conceptId;
+  final Value<DateTime> introducedAt;
+  final Value<int> rowid;
+  const IntroducedConceptsCompanion({
+    this.playerId = const Value.absent(),
+    this.conceptId = const Value.absent(),
+    this.introducedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  IntroducedConceptsCompanion.insert({
+    required int playerId,
+    required String conceptId,
+    required DateTime introducedAt,
+    this.rowid = const Value.absent(),
+  }) : playerId = Value(playerId),
+       conceptId = Value(conceptId),
+       introducedAt = Value(introducedAt);
+  static Insertable<IntroducedConcept> custom({
+    Expression<int>? playerId,
+    Expression<String>? conceptId,
+    Expression<DateTime>? introducedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (playerId != null) 'player_id': playerId,
+      if (conceptId != null) 'concept_id': conceptId,
+      if (introducedAt != null) 'introduced_at': introducedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  IntroducedConceptsCompanion copyWith({
+    Value<int>? playerId,
+    Value<String>? conceptId,
+    Value<DateTime>? introducedAt,
+    Value<int>? rowid,
+  }) {
+    return IntroducedConceptsCompanion(
+      playerId: playerId ?? this.playerId,
+      conceptId: conceptId ?? this.conceptId,
+      introducedAt: introducedAt ?? this.introducedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (playerId.present) {
+      map['player_id'] = Variable<int>(playerId.value);
+    }
+    if (conceptId.present) {
+      map['concept_id'] = Variable<String>(conceptId.value);
+    }
+    if (introducedAt.present) {
+      map['introduced_at'] = Variable<DateTime>(introducedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('IntroducedConceptsCompanion(')
+          ..write('playerId: $playerId, ')
+          ..write('conceptId: $conceptId, ')
+          ..write('introducedAt: $introducedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ConceptsTable extends Concepts
+    with TableInfo<$ConceptsTable, CatalogConcept> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ConceptsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _shortLabelMeta = const VerificationMeta(
+    'shortLabel',
+  );
+  @override
+  late final GeneratedColumn<String> shortLabel = GeneratedColumn<String>(
+    'short_label',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _categoryIdMeta = const VerificationMeta(
+    'categoryId',
+  );
+  @override
+  late final GeneratedColumn<String> categoryId = GeneratedColumn<String>(
+    'category_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _primaryGradeMeta = const VerificationMeta(
+    'primaryGrade',
+  );
+  @override
+  late final GeneratedColumn<int> primaryGrade = GeneratedColumn<int>(
+    'primary_grade',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _prereqIdsCsvMeta = const VerificationMeta(
+    'prereqIdsCsv',
+  );
+  @override
+  late final GeneratedColumn<String> prereqIdsCsv = GeneratedColumn<String>(
+    'prereq_ids_csv',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _sourceStrategyMeta = const VerificationMeta(
+    'sourceStrategy',
+  );
+  @override
+  late final GeneratedColumn<String> sourceStrategy = GeneratedColumn<String>(
+    'source_strategy',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _diagramRequirementMeta =
+      const VerificationMeta('diagramRequirement');
+  @override
+  late final GeneratedColumn<String> diagramRequirement =
+      GeneratedColumn<String>(
+        'diagram_requirement',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _categoryRowOrderMeta = const VerificationMeta(
+    'categoryRowOrder',
+  );
+  @override
+  late final GeneratedColumn<int> categoryRowOrder = GeneratedColumn<int>(
+    'category_row_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    shortLabel,
+    categoryId,
+    primaryGrade,
+    prereqIdsCsv,
+    sourceStrategy,
+    diagramRequirement,
+    categoryRowOrder,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'concepts';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CatalogConcept> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('short_label')) {
+      context.handle(
+        _shortLabelMeta,
+        shortLabel.isAcceptableOrUnknown(data['short_label']!, _shortLabelMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_shortLabelMeta);
+    }
+    if (data.containsKey('category_id')) {
+      context.handle(
+        _categoryIdMeta,
+        categoryId.isAcceptableOrUnknown(data['category_id']!, _categoryIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_categoryIdMeta);
+    }
+    if (data.containsKey('primary_grade')) {
+      context.handle(
+        _primaryGradeMeta,
+        primaryGrade.isAcceptableOrUnknown(
+          data['primary_grade']!,
+          _primaryGradeMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_primaryGradeMeta);
+    }
+    if (data.containsKey('prereq_ids_csv')) {
+      context.handle(
+        _prereqIdsCsvMeta,
+        prereqIdsCsv.isAcceptableOrUnknown(
+          data['prereq_ids_csv']!,
+          _prereqIdsCsvMeta,
+        ),
+      );
+    }
+    if (data.containsKey('source_strategy')) {
+      context.handle(
+        _sourceStrategyMeta,
+        sourceStrategy.isAcceptableOrUnknown(
+          data['source_strategy']!,
+          _sourceStrategyMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_sourceStrategyMeta);
+    }
+    if (data.containsKey('diagram_requirement')) {
+      context.handle(
+        _diagramRequirementMeta,
+        diagramRequirement.isAcceptableOrUnknown(
+          data['diagram_requirement']!,
+          _diagramRequirementMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_diagramRequirementMeta);
+    }
+    if (data.containsKey('category_row_order')) {
+      context.handle(
+        _categoryRowOrderMeta,
+        categoryRowOrder.isAcceptableOrUnknown(
+          data['category_row_order']!,
+          _categoryRowOrderMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_categoryRowOrderMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CatalogConcept map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CatalogConcept(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      shortLabel: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}short_label'],
+      )!,
+      categoryId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}category_id'],
+      )!,
+      primaryGrade: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}primary_grade'],
+      )!,
+      prereqIdsCsv: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}prereq_ids_csv'],
+      )!,
+      sourceStrategy: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source_strategy'],
+      )!,
+      diagramRequirement: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}diagram_requirement'],
+      )!,
+      categoryRowOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}category_row_order'],
+      )!,
+    );
+  }
+
+  @override
+  $ConceptsTable createAlias(String alias) {
+    return $ConceptsTable(attachedDatabase, alias);
+  }
+}
+
+class CatalogConcept extends DataClass implements Insertable<CatalogConcept> {
+  final String id;
+  final String name;
+  final String shortLabel;
+  final String categoryId;
+  final int primaryGrade;
+
+  /// Comma-separated list of prereq concept IDs. Empty string = root node.
+  final String prereqIdsCsv;
+  final String sourceStrategy;
+  final String diagramRequirement;
+  final int categoryRowOrder;
+  const CatalogConcept({
+    required this.id,
+    required this.name,
+    required this.shortLabel,
+    required this.categoryId,
+    required this.primaryGrade,
+    required this.prereqIdsCsv,
+    required this.sourceStrategy,
+    required this.diagramRequirement,
+    required this.categoryRowOrder,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['name'] = Variable<String>(name);
+    map['short_label'] = Variable<String>(shortLabel);
+    map['category_id'] = Variable<String>(categoryId);
+    map['primary_grade'] = Variable<int>(primaryGrade);
+    map['prereq_ids_csv'] = Variable<String>(prereqIdsCsv);
+    map['source_strategy'] = Variable<String>(sourceStrategy);
+    map['diagram_requirement'] = Variable<String>(diagramRequirement);
+    map['category_row_order'] = Variable<int>(categoryRowOrder);
+    return map;
+  }
+
+  ConceptsCompanion toCompanion(bool nullToAbsent) {
+    return ConceptsCompanion(
+      id: Value(id),
+      name: Value(name),
+      shortLabel: Value(shortLabel),
+      categoryId: Value(categoryId),
+      primaryGrade: Value(primaryGrade),
+      prereqIdsCsv: Value(prereqIdsCsv),
+      sourceStrategy: Value(sourceStrategy),
+      diagramRequirement: Value(diagramRequirement),
+      categoryRowOrder: Value(categoryRowOrder),
+    );
+  }
+
+  factory CatalogConcept.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CatalogConcept(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      shortLabel: serializer.fromJson<String>(json['shortLabel']),
+      categoryId: serializer.fromJson<String>(json['categoryId']),
+      primaryGrade: serializer.fromJson<int>(json['primaryGrade']),
+      prereqIdsCsv: serializer.fromJson<String>(json['prereqIdsCsv']),
+      sourceStrategy: serializer.fromJson<String>(json['sourceStrategy']),
+      diagramRequirement: serializer.fromJson<String>(
+        json['diagramRequirement'],
+      ),
+      categoryRowOrder: serializer.fromJson<int>(json['categoryRowOrder']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String>(name),
+      'shortLabel': serializer.toJson<String>(shortLabel),
+      'categoryId': serializer.toJson<String>(categoryId),
+      'primaryGrade': serializer.toJson<int>(primaryGrade),
+      'prereqIdsCsv': serializer.toJson<String>(prereqIdsCsv),
+      'sourceStrategy': serializer.toJson<String>(sourceStrategy),
+      'diagramRequirement': serializer.toJson<String>(diagramRequirement),
+      'categoryRowOrder': serializer.toJson<int>(categoryRowOrder),
+    };
+  }
+
+  CatalogConcept copyWith({
+    String? id,
+    String? name,
+    String? shortLabel,
+    String? categoryId,
+    int? primaryGrade,
+    String? prereqIdsCsv,
+    String? sourceStrategy,
+    String? diagramRequirement,
+    int? categoryRowOrder,
+  }) => CatalogConcept(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    shortLabel: shortLabel ?? this.shortLabel,
+    categoryId: categoryId ?? this.categoryId,
+    primaryGrade: primaryGrade ?? this.primaryGrade,
+    prereqIdsCsv: prereqIdsCsv ?? this.prereqIdsCsv,
+    sourceStrategy: sourceStrategy ?? this.sourceStrategy,
+    diagramRequirement: diagramRequirement ?? this.diagramRequirement,
+    categoryRowOrder: categoryRowOrder ?? this.categoryRowOrder,
+  );
+  CatalogConcept copyWithCompanion(ConceptsCompanion data) {
+    return CatalogConcept(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      shortLabel: data.shortLabel.present
+          ? data.shortLabel.value
+          : this.shortLabel,
+      categoryId: data.categoryId.present
+          ? data.categoryId.value
+          : this.categoryId,
+      primaryGrade: data.primaryGrade.present
+          ? data.primaryGrade.value
+          : this.primaryGrade,
+      prereqIdsCsv: data.prereqIdsCsv.present
+          ? data.prereqIdsCsv.value
+          : this.prereqIdsCsv,
+      sourceStrategy: data.sourceStrategy.present
+          ? data.sourceStrategy.value
+          : this.sourceStrategy,
+      diagramRequirement: data.diagramRequirement.present
+          ? data.diagramRequirement.value
+          : this.diagramRequirement,
+      categoryRowOrder: data.categoryRowOrder.present
+          ? data.categoryRowOrder.value
+          : this.categoryRowOrder,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CatalogConcept(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('shortLabel: $shortLabel, ')
+          ..write('categoryId: $categoryId, ')
+          ..write('primaryGrade: $primaryGrade, ')
+          ..write('prereqIdsCsv: $prereqIdsCsv, ')
+          ..write('sourceStrategy: $sourceStrategy, ')
+          ..write('diagramRequirement: $diagramRequirement, ')
+          ..write('categoryRowOrder: $categoryRowOrder')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    name,
+    shortLabel,
+    categoryId,
+    primaryGrade,
+    prereqIdsCsv,
+    sourceStrategy,
+    diagramRequirement,
+    categoryRowOrder,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CatalogConcept &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.shortLabel == this.shortLabel &&
+          other.categoryId == this.categoryId &&
+          other.primaryGrade == this.primaryGrade &&
+          other.prereqIdsCsv == this.prereqIdsCsv &&
+          other.sourceStrategy == this.sourceStrategy &&
+          other.diagramRequirement == this.diagramRequirement &&
+          other.categoryRowOrder == this.categoryRowOrder);
+}
+
+class ConceptsCompanion extends UpdateCompanion<CatalogConcept> {
+  final Value<String> id;
+  final Value<String> name;
+  final Value<String> shortLabel;
+  final Value<String> categoryId;
+  final Value<int> primaryGrade;
+  final Value<String> prereqIdsCsv;
+  final Value<String> sourceStrategy;
+  final Value<String> diagramRequirement;
+  final Value<int> categoryRowOrder;
+  final Value<int> rowid;
+  const ConceptsCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.shortLabel = const Value.absent(),
+    this.categoryId = const Value.absent(),
+    this.primaryGrade = const Value.absent(),
+    this.prereqIdsCsv = const Value.absent(),
+    this.sourceStrategy = const Value.absent(),
+    this.diagramRequirement = const Value.absent(),
+    this.categoryRowOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ConceptsCompanion.insert({
+    required String id,
+    required String name,
+    required String shortLabel,
+    required String categoryId,
+    required int primaryGrade,
+    this.prereqIdsCsv = const Value.absent(),
+    required String sourceStrategy,
+    required String diagramRequirement,
+    required int categoryRowOrder,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       name = Value(name),
+       shortLabel = Value(shortLabel),
+       categoryId = Value(categoryId),
+       primaryGrade = Value(primaryGrade),
+       sourceStrategy = Value(sourceStrategy),
+       diagramRequirement = Value(diagramRequirement),
+       categoryRowOrder = Value(categoryRowOrder);
+  static Insertable<CatalogConcept> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<String>? shortLabel,
+    Expression<String>? categoryId,
+    Expression<int>? primaryGrade,
+    Expression<String>? prereqIdsCsv,
+    Expression<String>? sourceStrategy,
+    Expression<String>? diagramRequirement,
+    Expression<int>? categoryRowOrder,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (shortLabel != null) 'short_label': shortLabel,
+      if (categoryId != null) 'category_id': categoryId,
+      if (primaryGrade != null) 'primary_grade': primaryGrade,
+      if (prereqIdsCsv != null) 'prereq_ids_csv': prereqIdsCsv,
+      if (sourceStrategy != null) 'source_strategy': sourceStrategy,
+      if (diagramRequirement != null) 'diagram_requirement': diagramRequirement,
+      if (categoryRowOrder != null) 'category_row_order': categoryRowOrder,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ConceptsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? name,
+    Value<String>? shortLabel,
+    Value<String>? categoryId,
+    Value<int>? primaryGrade,
+    Value<String>? prereqIdsCsv,
+    Value<String>? sourceStrategy,
+    Value<String>? diagramRequirement,
+    Value<int>? categoryRowOrder,
+    Value<int>? rowid,
+  }) {
+    return ConceptsCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      shortLabel: shortLabel ?? this.shortLabel,
+      categoryId: categoryId ?? this.categoryId,
+      primaryGrade: primaryGrade ?? this.primaryGrade,
+      prereqIdsCsv: prereqIdsCsv ?? this.prereqIdsCsv,
+      sourceStrategy: sourceStrategy ?? this.sourceStrategy,
+      diagramRequirement: diagramRequirement ?? this.diagramRequirement,
+      categoryRowOrder: categoryRowOrder ?? this.categoryRowOrder,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (shortLabel.present) {
+      map['short_label'] = Variable<String>(shortLabel.value);
+    }
+    if (categoryId.present) {
+      map['category_id'] = Variable<String>(categoryId.value);
+    }
+    if (primaryGrade.present) {
+      map['primary_grade'] = Variable<int>(primaryGrade.value);
+    }
+    if (prereqIdsCsv.present) {
+      map['prereq_ids_csv'] = Variable<String>(prereqIdsCsv.value);
+    }
+    if (sourceStrategy.present) {
+      map['source_strategy'] = Variable<String>(sourceStrategy.value);
+    }
+    if (diagramRequirement.present) {
+      map['diagram_requirement'] = Variable<String>(diagramRequirement.value);
+    }
+    if (categoryRowOrder.present) {
+      map['category_row_order'] = Variable<int>(categoryRowOrder.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ConceptsCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('shortLabel: $shortLabel, ')
+          ..write('categoryId: $categoryId, ')
+          ..write('primaryGrade: $primaryGrade, ')
+          ..write('prereqIdsCsv: $prereqIdsCsv, ')
+          ..write('sourceStrategy: $sourceStrategy, ')
+          ..write('diagramRequirement: $diagramRequirement, ')
+          ..write('categoryRowOrder: $categoryRowOrder, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $PlayersTable players = $PlayersTable(this);
   late final $ConceptProficienciesTable conceptProficiencies =
       $ConceptProficienciesTable(this);
+  late final $IntroducedConceptsTable introducedConcepts =
+      $IntroducedConceptsTable(this);
+  late final $ConceptsTable concepts = $ConceptsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -930,6 +1800,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   List<DatabaseSchemaEntity> get allSchemaEntities => [
     players,
     conceptProficiencies,
+    introducedConcepts,
+    concepts,
   ];
 }
 
@@ -980,6 +1852,30 @@ final class $$PlayersTableReferences
 
     final cache = $_typedResult.readTableOrNull(
       _conceptProficienciesRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$IntroducedConceptsTable, List<IntroducedConcept>>
+  _introducedConceptsRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.introducedConcepts,
+        aliasName: $_aliasNameGenerator(
+          db.players.id,
+          db.introducedConcepts.playerId,
+        ),
+      );
+
+  $$IntroducedConceptsTableProcessedTableManager get introducedConceptsRefs {
+    final manager = $$IntroducedConceptsTableTableManager(
+      $_db,
+      $_db.introducedConcepts,
+    ).filter((f) => f.playerId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _introducedConceptsRefsTable($_db),
     );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
@@ -1047,6 +1943,31 @@ class $$PlayersTableFilterComposer
           }) => $$ConceptProficienciesTableFilterComposer(
             $db: $db,
             $table: $db.conceptProficiencies,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> introducedConceptsRefs(
+    Expression<bool> Function($$IntroducedConceptsTableFilterComposer f) f,
+  ) {
+    final $$IntroducedConceptsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.introducedConcepts,
+      getReferencedColumn: (t) => t.playerId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$IntroducedConceptsTableFilterComposer(
+            $db: $db,
+            $table: $db.introducedConcepts,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -1165,6 +2086,32 @@ class $$PlayersTableAnnotationComposer
         );
     return f(composer);
   }
+
+  Expression<T> introducedConceptsRefs<T extends Object>(
+    Expression<T> Function($$IntroducedConceptsTableAnnotationComposer a) f,
+  ) {
+    final $$IntroducedConceptsTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.introducedConcepts,
+          getReferencedColumn: (t) => t.playerId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$IntroducedConceptsTableAnnotationComposer(
+                $db: $db,
+                $table: $db.introducedConcepts,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$PlayersTableTableManager
@@ -1180,7 +2127,10 @@ class $$PlayersTableTableManager
           $$PlayersTableUpdateCompanionBuilder,
           (Player, $$PlayersTableReferences),
           Player,
-          PrefetchHooks Function({bool conceptProficienciesRefs})
+          PrefetchHooks Function({
+            bool conceptProficienciesRefs,
+            bool introducedConceptsRefs,
+          })
         > {
   $$PlayersTableTableManager(_$AppDatabase db, $PlayersTable table)
     : super(
@@ -1237,37 +2187,66 @@ class $$PlayersTableTableManager
                 ),
               )
               .toList(),
-          prefetchHooksCallback: ({conceptProficienciesRefs = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [
-                if (conceptProficienciesRefs) db.conceptProficiencies,
-              ],
-              addJoins: null,
-              getPrefetchedDataCallback: (items) async {
-                return [
-                  if (conceptProficienciesRefs)
-                    await $_getPrefetchedData<
-                      Player,
-                      $PlayersTable,
-                      ConceptProficiency
-                    >(
-                      currentTable: table,
-                      referencedTable: $$PlayersTableReferences
-                          ._conceptProficienciesRefsTable(db),
-                      managerFromTypedResult: (p0) => $$PlayersTableReferences(
-                        db,
-                        table,
-                        p0,
-                      ).conceptProficienciesRefs,
-                      referencedItemsForCurrentItem: (item, referencedItems) =>
-                          referencedItems.where((e) => e.playerId == item.id),
-                      typedResults: items,
-                    ),
-                ];
+          prefetchHooksCallback:
+              ({
+                conceptProficienciesRefs = false,
+                introducedConceptsRefs = false,
+              }) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (conceptProficienciesRefs) db.conceptProficiencies,
+                    if (introducedConceptsRefs) db.introducedConcepts,
+                  ],
+                  addJoins: null,
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (conceptProficienciesRefs)
+                        await $_getPrefetchedData<
+                          Player,
+                          $PlayersTable,
+                          ConceptProficiency
+                        >(
+                          currentTable: table,
+                          referencedTable: $$PlayersTableReferences
+                              ._conceptProficienciesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$PlayersTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).conceptProficienciesRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.playerId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (introducedConceptsRefs)
+                        await $_getPrefetchedData<
+                          Player,
+                          $PlayersTable,
+                          IntroducedConcept
+                        >(
+                          currentTable: table,
+                          referencedTable: $$PlayersTableReferences
+                              ._introducedConceptsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$PlayersTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).introducedConceptsRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.playerId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
               },
-            );
-          },
         ),
       );
 }
@@ -1284,7 +2263,10 @@ typedef $$PlayersTableProcessedTableManager =
       $$PlayersTableUpdateCompanionBuilder,
       (Player, $$PlayersTableReferences),
       Player,
-      PrefetchHooks Function({bool conceptProficienciesRefs})
+      PrefetchHooks Function({
+        bool conceptProficienciesRefs,
+        bool introducedConceptsRefs,
+      })
     >;
 typedef $$ConceptProficienciesTableCreateCompanionBuilder =
     ConceptProficienciesCompanion Function({
@@ -1651,6 +2633,595 @@ typedef $$ConceptProficienciesTableProcessedTableManager =
       ConceptProficiency,
       PrefetchHooks Function({bool playerId})
     >;
+typedef $$IntroducedConceptsTableCreateCompanionBuilder =
+    IntroducedConceptsCompanion Function({
+      required int playerId,
+      required String conceptId,
+      required DateTime introducedAt,
+      Value<int> rowid,
+    });
+typedef $$IntroducedConceptsTableUpdateCompanionBuilder =
+    IntroducedConceptsCompanion Function({
+      Value<int> playerId,
+      Value<String> conceptId,
+      Value<DateTime> introducedAt,
+      Value<int> rowid,
+    });
+
+final class $$IntroducedConceptsTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $IntroducedConceptsTable,
+          IntroducedConcept
+        > {
+  $$IntroducedConceptsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $PlayersTable _playerIdTable(_$AppDatabase db) =>
+      db.players.createAlias(
+        $_aliasNameGenerator(db.introducedConcepts.playerId, db.players.id),
+      );
+
+  $$PlayersTableProcessedTableManager get playerId {
+    final $_column = $_itemColumn<int>('player_id')!;
+
+    final manager = $$PlayersTableTableManager(
+      $_db,
+      $_db.players,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_playerIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$IntroducedConceptsTableFilterComposer
+    extends Composer<_$AppDatabase, $IntroducedConceptsTable> {
+  $$IntroducedConceptsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get conceptId => $composableBuilder(
+    column: $table.conceptId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get introducedAt => $composableBuilder(
+    column: $table.introducedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$PlayersTableFilterComposer get playerId {
+    final $$PlayersTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.playerId,
+      referencedTable: $db.players,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PlayersTableFilterComposer(
+            $db: $db,
+            $table: $db.players,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$IntroducedConceptsTableOrderingComposer
+    extends Composer<_$AppDatabase, $IntroducedConceptsTable> {
+  $$IntroducedConceptsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get conceptId => $composableBuilder(
+    column: $table.conceptId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get introducedAt => $composableBuilder(
+    column: $table.introducedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$PlayersTableOrderingComposer get playerId {
+    final $$PlayersTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.playerId,
+      referencedTable: $db.players,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PlayersTableOrderingComposer(
+            $db: $db,
+            $table: $db.players,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$IntroducedConceptsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $IntroducedConceptsTable> {
+  $$IntroducedConceptsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get conceptId =>
+      $composableBuilder(column: $table.conceptId, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get introducedAt => $composableBuilder(
+    column: $table.introducedAt,
+    builder: (column) => column,
+  );
+
+  $$PlayersTableAnnotationComposer get playerId {
+    final $$PlayersTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.playerId,
+      referencedTable: $db.players,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PlayersTableAnnotationComposer(
+            $db: $db,
+            $table: $db.players,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$IntroducedConceptsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $IntroducedConceptsTable,
+          IntroducedConcept,
+          $$IntroducedConceptsTableFilterComposer,
+          $$IntroducedConceptsTableOrderingComposer,
+          $$IntroducedConceptsTableAnnotationComposer,
+          $$IntroducedConceptsTableCreateCompanionBuilder,
+          $$IntroducedConceptsTableUpdateCompanionBuilder,
+          (IntroducedConcept, $$IntroducedConceptsTableReferences),
+          IntroducedConcept,
+          PrefetchHooks Function({bool playerId})
+        > {
+  $$IntroducedConceptsTableTableManager(
+    _$AppDatabase db,
+    $IntroducedConceptsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$IntroducedConceptsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$IntroducedConceptsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$IntroducedConceptsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> playerId = const Value.absent(),
+                Value<String> conceptId = const Value.absent(),
+                Value<DateTime> introducedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => IntroducedConceptsCompanion(
+                playerId: playerId,
+                conceptId: conceptId,
+                introducedAt: introducedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required int playerId,
+                required String conceptId,
+                required DateTime introducedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => IntroducedConceptsCompanion.insert(
+                playerId: playerId,
+                conceptId: conceptId,
+                introducedAt: introducedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$IntroducedConceptsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({playerId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (playerId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.playerId,
+                                referencedTable:
+                                    $$IntroducedConceptsTableReferences
+                                        ._playerIdTable(db),
+                                referencedColumn:
+                                    $$IntroducedConceptsTableReferences
+                                        ._playerIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$IntroducedConceptsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $IntroducedConceptsTable,
+      IntroducedConcept,
+      $$IntroducedConceptsTableFilterComposer,
+      $$IntroducedConceptsTableOrderingComposer,
+      $$IntroducedConceptsTableAnnotationComposer,
+      $$IntroducedConceptsTableCreateCompanionBuilder,
+      $$IntroducedConceptsTableUpdateCompanionBuilder,
+      (IntroducedConcept, $$IntroducedConceptsTableReferences),
+      IntroducedConcept,
+      PrefetchHooks Function({bool playerId})
+    >;
+typedef $$ConceptsTableCreateCompanionBuilder =
+    ConceptsCompanion Function({
+      required String id,
+      required String name,
+      required String shortLabel,
+      required String categoryId,
+      required int primaryGrade,
+      Value<String> prereqIdsCsv,
+      required String sourceStrategy,
+      required String diagramRequirement,
+      required int categoryRowOrder,
+      Value<int> rowid,
+    });
+typedef $$ConceptsTableUpdateCompanionBuilder =
+    ConceptsCompanion Function({
+      Value<String> id,
+      Value<String> name,
+      Value<String> shortLabel,
+      Value<String> categoryId,
+      Value<int> primaryGrade,
+      Value<String> prereqIdsCsv,
+      Value<String> sourceStrategy,
+      Value<String> diagramRequirement,
+      Value<int> categoryRowOrder,
+      Value<int> rowid,
+    });
+
+class $$ConceptsTableFilterComposer
+    extends Composer<_$AppDatabase, $ConceptsTable> {
+  $$ConceptsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get shortLabel => $composableBuilder(
+    column: $table.shortLabel,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get categoryId => $composableBuilder(
+    column: $table.categoryId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get primaryGrade => $composableBuilder(
+    column: $table.primaryGrade,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get prereqIdsCsv => $composableBuilder(
+    column: $table.prereqIdsCsv,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sourceStrategy => $composableBuilder(
+    column: $table.sourceStrategy,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get diagramRequirement => $composableBuilder(
+    column: $table.diagramRequirement,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get categoryRowOrder => $composableBuilder(
+    column: $table.categoryRowOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ConceptsTableOrderingComposer
+    extends Composer<_$AppDatabase, $ConceptsTable> {
+  $$ConceptsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get shortLabel => $composableBuilder(
+    column: $table.shortLabel,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get categoryId => $composableBuilder(
+    column: $table.categoryId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get primaryGrade => $composableBuilder(
+    column: $table.primaryGrade,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get prereqIdsCsv => $composableBuilder(
+    column: $table.prereqIdsCsv,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sourceStrategy => $composableBuilder(
+    column: $table.sourceStrategy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get diagramRequirement => $composableBuilder(
+    column: $table.diagramRequirement,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get categoryRowOrder => $composableBuilder(
+    column: $table.categoryRowOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ConceptsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ConceptsTable> {
+  $$ConceptsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get shortLabel => $composableBuilder(
+    column: $table.shortLabel,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get categoryId => $composableBuilder(
+    column: $table.categoryId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get primaryGrade => $composableBuilder(
+    column: $table.primaryGrade,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get prereqIdsCsv => $composableBuilder(
+    column: $table.prereqIdsCsv,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get sourceStrategy => $composableBuilder(
+    column: $table.sourceStrategy,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get diagramRequirement => $composableBuilder(
+    column: $table.diagramRequirement,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get categoryRowOrder => $composableBuilder(
+    column: $table.categoryRowOrder,
+    builder: (column) => column,
+  );
+}
+
+class $$ConceptsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ConceptsTable,
+          CatalogConcept,
+          $$ConceptsTableFilterComposer,
+          $$ConceptsTableOrderingComposer,
+          $$ConceptsTableAnnotationComposer,
+          $$ConceptsTableCreateCompanionBuilder,
+          $$ConceptsTableUpdateCompanionBuilder,
+          (
+            CatalogConcept,
+            BaseReferences<_$AppDatabase, $ConceptsTable, CatalogConcept>,
+          ),
+          CatalogConcept,
+          PrefetchHooks Function()
+        > {
+  $$ConceptsTableTableManager(_$AppDatabase db, $ConceptsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ConceptsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ConceptsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ConceptsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> shortLabel = const Value.absent(),
+                Value<String> categoryId = const Value.absent(),
+                Value<int> primaryGrade = const Value.absent(),
+                Value<String> prereqIdsCsv = const Value.absent(),
+                Value<String> sourceStrategy = const Value.absent(),
+                Value<String> diagramRequirement = const Value.absent(),
+                Value<int> categoryRowOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ConceptsCompanion(
+                id: id,
+                name: name,
+                shortLabel: shortLabel,
+                categoryId: categoryId,
+                primaryGrade: primaryGrade,
+                prereqIdsCsv: prereqIdsCsv,
+                sourceStrategy: sourceStrategy,
+                diagramRequirement: diagramRequirement,
+                categoryRowOrder: categoryRowOrder,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String name,
+                required String shortLabel,
+                required String categoryId,
+                required int primaryGrade,
+                Value<String> prereqIdsCsv = const Value.absent(),
+                required String sourceStrategy,
+                required String diagramRequirement,
+                required int categoryRowOrder,
+                Value<int> rowid = const Value.absent(),
+              }) => ConceptsCompanion.insert(
+                id: id,
+                name: name,
+                shortLabel: shortLabel,
+                categoryId: categoryId,
+                primaryGrade: primaryGrade,
+                prereqIdsCsv: prereqIdsCsv,
+                sourceStrategy: sourceStrategy,
+                diagramRequirement: diagramRequirement,
+                categoryRowOrder: categoryRowOrder,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ConceptsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ConceptsTable,
+      CatalogConcept,
+      $$ConceptsTableFilterComposer,
+      $$ConceptsTableOrderingComposer,
+      $$ConceptsTableAnnotationComposer,
+      $$ConceptsTableCreateCompanionBuilder,
+      $$ConceptsTableUpdateCompanionBuilder,
+      (
+        CatalogConcept,
+        BaseReferences<_$AppDatabase, $ConceptsTable, CatalogConcept>,
+      ),
+      CatalogConcept,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -1659,4 +3230,8 @@ class $AppDatabaseManager {
       $$PlayersTableTableManager(_db, _db.players);
   $$ConceptProficienciesTableTableManager get conceptProficiencies =>
       $$ConceptProficienciesTableTableManager(_db, _db.conceptProficiencies);
+  $$IntroducedConceptsTableTableManager get introducedConcepts =>
+      $$IntroducedConceptsTableTableManager(_db, _db.introducedConcepts);
+  $$ConceptsTableTableManager get concepts =>
+      $$ConceptsTableTableManager(_db, _db.concepts);
 }

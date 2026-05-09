@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_dash/domain/concepts/concept_registry.dart';
 import 'package:math_dash/domain/proficiency/proficiency_band.dart';
-import 'package:math_dash/domain/questions/arithmetic_generator.dart';
-import 'package:math_dash/domain/questions/question.dart';
+import 'package:math_dash/domain/questions/generated_question.dart';
+import 'package:math_dash/presentation/diagrams/diagram_renderer.dart';
 import 'package:math_dash/presentation/question/number_pad_widget.dart';
 import 'package:math_dash/presentation/result/result_screen.dart';
+import 'package:math_dash/state/introduced_concepts_provider.dart';
 import 'package:math_dash/state/proficiency_provider.dart';
 
 class QuestionScreen extends ConsumerStatefulWidget {
@@ -28,14 +29,15 @@ class QuestionScreen extends ConsumerStatefulWidget {
 }
 
 class _QuestionScreenState extends ConsumerState<QuestionScreen> {
-  late final Question _question;
+  late final GeneratedQuestion _question;
   late final List<String> _shuffledChoices;
   bool _answered = false;
 
   @override
   void initState() {
     super.initState();
-    _question = ArithmeticGenerator().generateForConcept(widget.conceptId);
+    final registry = ref.read(generatorRegistryProvider);
+    _question = registry.generate(widget.conceptId);
     _shuffledChoices = List.of(_question.allChoices)..shuffle();
   }
 
@@ -45,8 +47,8 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen> {
 
     final isCorrect = answer == _question.correctAnswer;
 
-    // Persist proficiency update before navigating.
-    await ref
+    // Persist proficiency update (and possibly trigger drip-feed unlock).
+    final unlock = await ref
         .read(proficiencyProvider.notifier)
         .recordAnswer(widget.conceptId, correct: isCorrect);
 
@@ -60,6 +62,7 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen> {
             selectedAnswer: answer,
             isCorrect: isCorrect,
             starsEarned: isCorrect ? starsForBand(widget.band) : 0,
+            unlockEvent: isCorrect ? unlock : null,
           ),
         ),
       ),
@@ -88,6 +91,15 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const Spacer(),
+              if (_question.diagram != null) ...[
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Center(
+                    child: DiagramRenderer(spec: _question.diagram!),
+                  ),
+                ),
+                const SizedBox(height: 24),
+              ],
               _PromptCard(prompt: _question.prompt),
               const Spacer(),
               if (useNumberPad)
@@ -126,10 +138,10 @@ class _PromptCard extends StatelessWidget {
     return Card(
       elevation: 4,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 24),
+        padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
         child: Text(
           prompt,
-          style: theme.textTheme.displayMedium?.copyWith(
+          style: theme.textTheme.displaySmall?.copyWith(
             fontWeight: FontWeight.bold,
           ),
           textAlign: TextAlign.center,

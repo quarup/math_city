@@ -8,7 +8,7 @@
 
 ## Status
 
-- **Last updated:** 2026-05-08
+- **Last updated:** 2026-05-09
 - **Curriculum standard:** US Common Core State Standards (CCSS) for Mathematics, K–8
 - **Categories:** 12
 - **Sub-concepts:** ~361
@@ -29,6 +29,7 @@ These are locked-in decisions that shape everything else in this document.
 5. **Procedural diagrams over bundled images.** Geometry, fractions, clocks, coordinate planes, etc. are rendered by parameterized Flutter widgets (using `flutter_svg` or `CustomPainter`). A small set of high-leverage widgets (§6) unlocks most non-arithmetic content. Where rendering is prohibitive (e.g., complex 3D nets), fall back to text-only or defer.
 6. **Bundled datasets, not runtime LLM calls.** Open-licensed datasets (MIT / Apache 2.0 / CC-BY) are ingested at build time into the bundled question catalog. The PRD's "no cloud LLM calls at runtime" constraint is absolute. **Offline LLM batch generation is also deferred for v1** — first see how far datasets + generators get us.
 7. **License hygiene.** Every datum or asset shipped is permissively licensed (MIT / Apache 2.0 / CC-BY / CC0). CC-BY-NC and CC-BY-NC-SA content is treated as red-flagged for app-store distribution; we don't bundle it in v1. Attribution accumulates in `LICENSES_THIRD_PARTY.md` as we go.
+8. **Difficulty ordering is within-category only.** Each `### 3.x` table is sorted by within-grade difficulty (after `Grade`); the row order within a category is the curated difficulty signal that the drip-feed engine uses as a tiebreaker. **No global cross-category difficulty order exists or is needed** — `Grade` is the coarse cross-category signal, the DAG handles cross-category prereqs, and the drip-feed uses a cheap policy ("introduce into the category the player has the fewest active concepts in") for cross-category tiebreaks. Adding or rearranging concepts within one category never requires touching another.
 
 ---
 
@@ -70,6 +71,8 @@ The columns:
   - `algorithmic+dataset` — mostly generator, dataset for edge cases
   - `deferred` — out of v1; kept in catalog for later phases
 - **Diagram** — `none` / `optional` / `required:<kind>` (see §6 for widget catalog).
+
+**Row order within each table is meaningful.** Per design principle 8, rows are sorted by `Grade` ascending and then by within-grade difficulty (curated). The drip-feed engine uses this row order as the within-category tiebreaker when introducing the next concept. When adding or editing a concept, place it at the row position that reflects its difficulty relative to siblings *in this category only* — no need to consider other categories.
 
 ### 3.1 Counting & Number Sense (`counting`)
 

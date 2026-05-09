@@ -3,7 +3,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:math_dash/domain/questions/question.dart';
+import 'package:math_dash/domain/concepts/dag_engine.dart';
+import 'package:math_dash/domain/questions/generated_question.dart';
 import 'package:math_dash/presentation/spin/spin_screen.dart';
 import 'package:math_dash/state/game_session_provider.dart';
 
@@ -13,13 +14,19 @@ class ResultScreen extends ConsumerStatefulWidget {
     required this.selectedAnswer,
     required this.isCorrect,
     required this.starsEarned,
+    this.unlockEvent,
     super.key,
   });
 
-  final Question question;
+  final GeneratedQuestion question;
   final String selectedAnswer;
   final bool isCorrect;
   final int starsEarned;
+
+  /// Drip-feed unlock to celebrate. Caller is responsible for ensuring
+  /// this is null on wrong answers — the result screen does not double-
+  /// check (we trust the caller per plan.md Phase 5).
+  final UnlockEvent? unlockEvent;
 
   @override
   ConsumerState<ResultScreen> createState() => _ResultScreenState();
@@ -137,6 +144,10 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                   ),
                 ),
               ],
+              if (isCorrect && widget.unlockEvent != null) ...[
+                const SizedBox(height: 24),
+                _UnlockCard(event: widget.unlockEvent!),
+              ],
               if (!isCorrect) ...[
                 const SizedBox(height: 24),
                 _ExplanationCard(
@@ -194,7 +205,7 @@ class _ExplanationCard extends StatelessWidget {
   });
 
   final String selectedAnswer;
-  final String explanation;
+  final List<String> explanation;
 
   @override
   Widget build(BuildContext context) {
@@ -212,11 +223,67 @@ class _ExplanationCard extends StatelessWidget {
                 color: Colors.red.shade700,
               ),
             ),
-            const SizedBox(height: 8),
-            Text(
-              explanation,
-              style: theme.textTheme.bodyLarge?.copyWith(
-                fontWeight: FontWeight.bold,
+            const SizedBox(height: 12),
+            for (final step in explanation)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 6),
+                child: Text(
+                  step,
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _UnlockCard extends StatelessWidget {
+  const _UnlockCard({required this.event});
+
+  final UnlockEvent event;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Card(
+      color: Colors.amber.shade50,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: Colors.amber.shade400, width: 2),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(18),
+        child: Row(
+          children: [
+            const Icon(
+              Icons.lock_open_rounded,
+              color: Colors.amber,
+              size: 36,
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'New concept unlocked!',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.amber.shade900,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    event.newConcept.name,
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],

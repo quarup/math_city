@@ -7,10 +7,10 @@
 
 ## Status
 
-- **Phase:** Phase 5 — Curriculum & Generator Framework. Research and `curriculum.md` complete; implementation pending.
-- **Last updated:** 2026-05-08
-- **Last action:** Completed Phase 5 research. Produced [curriculum.md](curriculum.md) — a 12-category, ~361-sub-concept K–8 taxonomy anchored on US Common Core State Standards, with per-sub-concept question-source strategy, diagram requirements, and prereq DAG. Identified 5 GREEN-licensed datasets (DeepMind `mathematics_dataset`, GSM8K, MathDataset-ElementarySchool, MathQA, SVAMP) and a 16-generator priority list backed by 8 high-ROI diagram widgets that unlock ~85% of K–8 content. Three parallel research subagents (CCSS curriculum scaffold, public-dataset survey, algorithmic-generation feasibility) produced the source material, synthesized into `curriculum.md`.
-- **Next action:** Begin Phase 5 implementation. (1) Drift schema v4: replace the 6-row hardcoded concept registry with the full ~361-row catalog from `curriculum.md`, including the prereq DAG and grade tags. (2) Wire the "introduce next" engine that walks the DAG when a sub-concept reaches `mastered`. (3) Build the `GeneratedQuestion` + `DiagramSpec` architecture (pure Dart in `lib/domain/`). (4) Migrate Phase 1–2 generators (`add_1digit`, `sub_1digit`, `mul_1digit`, `div_1digit`, `add_2digit`, `sub_2digit`) into the new framework. (5) Build the first 3 high-ROI diagram widgets: `FractionBar`, `NumberLine`, `Clock`.
+- **Phase:** Phase 5 — Curriculum & Generator Framework. **Implementation complete.** Ready to play-test the new wheel + drip-feed in the simulator.
+- **Last updated:** 2026-05-09
+- **Last action:** Shipped Phase 5. Highlights: (a) New `Concept` model with full curriculum metadata (category, prereqs, source, diagram requirement, within-category row order). (b) Catalog of 22 implemented sub-concepts spanning add/sub (14), mult/div (2), fractions (4), time (2). (c) `GeneratedQuestion` + sealed `DiagramSpec` architecture (FractionBarSpec/NumberLineSpec/ClockSpec) in `lib/domain/questions/`. (d) Universal `integerDistractors` library + per-generator misconception variants. (e) `GeneratorRegistry` (in-memory map) replaces the old switch; wheel filters via `isImplemented`. (f) 22 generators across 6 families: add/sub within N (incl. forced-carry/borrow), multi-digit ±, mult/div facts, 4 fraction generators, 2 time-telling. (g) `DripFeedEngine` with `pickStarterPack` (2 easiest at-or-below grade) + `pickNext` (3-step policy: lowest grade → fewest-active-category → row order). (h) `UnlockEvent` flows from `ProficiencyNotifier.recordAnswer` only on correct answers that cross 0.85 (wrong answers can't reach mastery — drift-toward-0). (i) 3 diagram widgets — FractionBar (segmented row), NumberLine (CustomPainter with ticks/labels/marked points/arc hops), Clock (analog face with hour/minute hands). (j) Drift schema v4: `Concepts` (catalog, seeded from Dart const), `IntroducedConcepts` per-player set; wipe-and-recreate migration. (k) Wheel selection updated: introduced ∩ generator-registered ∩ in-band, capped at 8 segments, per-category palette. (l) ResultScreen renders an "🔓 New concept unlocked!" amber card on correct-answer unlocks, multi-step procedural explanations on wrong answers. (m) 91 tests passing (catalog invariants, distractors, every generator family, DAG drip-feed semantics, ProficiencyNotifier × UnlockEvent matrix); `flutter analyze` clean. **Deviation from plan**: catalog authored as a Dart const (not `assets/data/concepts.json` + parser) — see Open Questions / Phase 6 follow-up. Word-problem framework deferred to Phase 6 as planned.
+- **Next action:** Manual play-test on the Android emulator (run a few rounds, verify the unlock card surfaces only on correct mastery, exercise fractions + time-telling flows). Then begin Phase 6: word-problem framework + remaining diagram widgets + dataset ingestion. Pre-Phase-6 cleanup item: convert the Dart-const catalog into a generated artifact from `curriculum.md` (parser script in `tools/curriculum/`) so the full ~361-row K–8 taxonomy can be seeded without hand-authoring.
 - **Deferred:** Audio SFX + background music (CC0 assets not sourced yet — stub in place). iOS verification. Both revisit before Phase 11 at latest.
 
 ---
@@ -302,32 +302,65 @@ Each phase ends with something demonstrable. We do **not** start a phase until t
 
 ---
 
-### Phase 5 — Curriculum & Generator Framework (target: ~3–4 weeks)
+### Phase 5 — Curriculum & Generator Framework (target: one Claude Code conversation)
 
-**Goal:** Wire the [curriculum.md](curriculum.md) catalog into the app and build the foundational architecture for question generators and diagram widgets. Migrate Phase 1–2 content into the new framework. Cover ~30 sub-concepts in the K–3 range broadly.
+**Goal:** Wire the [curriculum.md](curriculum.md) catalog into the app and build the foundational architecture for question generators and diagram widgets. Throw out Phase 1–2 generators wholesale and rewrite as curriculum-aligned decompositions. Cover ~20 sub-concepts in the K–3 range broadly. Wire DAG-based drip-feed introduction with an unlock celebration.
 
 **Research outcome (already done — see Status block):** [curriculum.md](curriculum.md) defines the 12-category, ~361-sub-concept K–8 taxonomy with per-sub-concept question-source strategy, diagram requirements, and prereq DAG.
 
+**Locked design decisions for this phase:**
+- **Generator migration: full rewrite, not rename.** The existing 6 Phase 1–2 generators (`add_1digit`, `sub_1digit`, `mul_1digit`, `div_1digit`, `add_2digit`, `sub_2digit`) are deleted from code and tests. Replaced with curriculum-aligned decompositions (e.g. `add_1digit` → `add_within_5` + `add_within_10` + `add_within_20`).
+- **Catalog vs implemented: clean schema.** All ~361 concepts are seeded as plain rows; no `is_implemented` column. Wheel eligibility checks an in-memory generator registry. Known limitation: a player can in theory hit `mastered` on a leaf whose DAG children aren't yet implemented; that branch's growth pauses until Phase 6 fills the gap. Acceptable trade-off.
+- **DAG drip-feed semantics.** New player starts with 2 implemented concepts (lowest grade, lowest within-category row order). One new concept is introduced per mastery event. A concept is eligible for introduction only when all its DAG prereqs are `mastered` *and* its generator is registered. **No cross-domain gating** — independently per branch. **Pick policy:**
+  1. Among eligible concepts, pick the lowest `Grade` first.
+  2. Tiebreak by category: prefer the category in which the player currently has the *fewest active concepts* (introduced-but-not-mastered) — keeps the wheel balanced across math domains.
+  3. Within the chosen category, pick the lowest row position in the [curriculum.md](curriculum.md) §3.x table for that category. Per `curriculum.md` design principle 8, that row order is the curated within-grade difficulty signal. **No global cross-category difficulty order exists** — re-sorting one category never touches another.
+- **Unlock UI moment.** A "New concept unlocked!" celebration card is shown after the result screen, but only on correct answers that triggered either a mastery event or a queue advance. Never on wrong answers — this avoids the confusing scenario where a kid gets a question wrong but sees a celebratory unlock.
+- **Word-problem framework: deferred to Phase 6.** This phase already covers schema migration + framework architecture + ~12 migrated + ~10 new generators + 3 diagram widgets + DAG engine + unlock UI. The word-problem framework (name/item/verb pools + 1-step template engine) and its first dataset-tagged sub-concept moved to Phase 6.
+- **Drift v4: wipe-and-recreate.** No real users yet, so the existing v3 migration pattern is fine. A proper additive-migration implementation is now a prerequisite task in Phase 11 (Cloud Save) — once player data lives off-device, wipes destroy real data.
+- **Wheel segment count.** Fixed cap at 8. The wheel renders `min(introducedConceptCount, 8)` segments and never more.
+
 **Tasks:**
-- [ ] Drift schema v4: replace the hardcoded 6-row concept registry with the full ~361-row catalog from `curriculum.md` (`categoryId`, `primaryGrade`, `prereqIds`, `sourceStrategy`, `diagramRequirement`)
-- [ ] Generate `assets/data/concepts.json` from `curriculum.md` tables (script in `tools/curriculum/`); seed Drift on first run / migration
-- [ ] DAG-based "introduce next" engine in `lib/domain/concepts/`: when a sub-concept hits `mastered`, mark DAG children as eligible-but-not-yet-introduced; surface them on the wheel with grade-aware initial proficiency. **No cross-domain gating** — independently per branch
-- [ ] `GeneratedQuestion` + `DiagramSpec` architecture in `lib/domain/questions/` (pure Dart, no Flutter imports). Sealed `DiagramSpec` family with one variant per widget
-- [ ] Migrate Phase 1–2 generators (`add_1digit`, `sub_1digit`, `mul_1digit`, `div_1digit`, `add_2digit`, `sub_2digit`) into the new framework with the universal distractor library + step-by-step explanation templates
-- [ ] Build first 3 high-ROI diagram widgets in `lib/presentation/diagrams/`: `FractionBar`, `NumberLine`, `Clock`. Each unit-tested for parameterized rendering
-- [ ] Build first 3 high-ROI new generator families per [curriculum.md §5.1](curriculum.md): multi-digit ± with regrouping (extends Phase 2 to arbitrary digit count), fraction generators (introduces the fractions category), time-telling (uses the new `Clock` widget)
-- [ ] Word-problem framework in `lib/domain/questions/word_problems/`: bundled name pool (~25 culturally diverse names), item pool (~20 countables), verb pool (~10 contexts); template engine for 1-step word problems; covers `add_word_problems_within_100` and similar
-- [ ] Update wheel-selection logic to use the expanded catalog; expand from 4 segments to 4–8 segments as the catalog grows
-- [ ] Tests: framework unit tests, DAG engine tests, generator equivalence tests for the migrated Phase 1–2 generators (must produce same distribution as before for those concepts)
-- [ ] **Exit criteria:** a returning player sees a wheel surfacing ~30 sub-concepts spanning add/sub/mult/div/fractions/time; the DAG drives "what's next" introductions; the 3 new diagram widgets render correctly across phone screen sizes; all Phase 1–2 functionality preserved (existing tests still pass).
+- [x] Drift schema v4: `Concepts` table (catalog with `categoryId`, `primaryGrade`, `prereqIdsCsv`, `sourceStrategy`, `diagramRequirement`, `categoryRowOrder`) + `IntroducedConcepts` table. Wipe-and-recreate migration
+- [x] ~~Generate `assets/data/concepts.json`~~ — **shipped as a Dart const** in `lib/domain/concepts/concept_registry.dart` (22 implemented + ancestor concepts). Drift seeds from this on first run via `_seedConceptCatalog`. Authoring the JSON pipeline + parser is queued as a Phase 6 cleanup item so the full ~361-row catalog can be ingested
+- [x] `GeneratedQuestion` + `DiagramSpec` architecture in `lib/domain/questions/` (pure Dart, no Flutter imports). Sealed `DiagramSpec` family: `FractionBarSpec`, `NumberLineSpec`, `ClockSpec`
+- [x] `GeneratorRegistry` — in-memory `Map<String, QuestionGenerator>` keyed by `conceptId`. Wheel-eligibility filter and DAG drip-feed both consult it
+- [x] **Replaced** the existing 6 Phase 1–2 generators wholesale (old files + tests deleted):
+  - `add_within_5`, `add_within_10`, `add_within_20`
+  - `sub_within_5`, `sub_within_10`, `sub_within_20`
+  - `mult_facts_within_100`
+  - `div_facts_within_100`
+  - `add_within_100`, `add_2digit_carry` (forced-carry constraint)
+  - `sub_within_100`, `sub_2digit_borrow` (forced-borrow constraint)
+  - Each uses the `integerDistractors` library + procedural step-by-step explanation template
+- [x] DAG drip-feed engine in `lib/domain/concepts/dag_engine.dart`. On a mastery event picks the next concept whose DAG prereqs are all `mastered` and whose generator is registered, and adds it to introduced. Returns an `UnlockEvent` so the UI can react. Pick policy: lowest grade → category with fewest active concepts → row order
+- [x] Starter-pack initialization: 2 easiest implemented concepts at-or-below the player's grade. Lazily populated on first read of `introducedConceptsProvider`
+- [x] "New concept unlocked!" UI moment: amber card on the result screen after a correct answer that produced an `UnlockEvent`. Suppressed on wrong answers (the caller passes `unlockEvent: null` when `!isCorrect`)
+- [x] First 3 high-ROI new generator families per [curriculum.md §5.1](curriculum.md):
+  - **Multi-digit ± with regrouping** — `add_within_1000`, `sub_within_1000`, `add_multidigit_standard_alg`, `sub_multidigit_standard_alg`
+  - **Fraction generators** — `fraction_a_over_b`, `equivalent_fractions_visual`, `compare_fractions_same_denom`, `add_fractions_like_denom` (uses `FractionBar`)
+  - **Time-telling** — `time_to_hour_half`, `time_to_5_min` (uses `Clock`)
+- [x] First 3 diagram widgets in `lib/presentation/diagrams/`: `FractionBar`, `NumberLine`, `Clock`, plus a `DiagramRenderer` dispatcher that switches on the sealed `DiagramSpec`. Each is parameterised; question screen places the diagram above the prompt card when `q.diagram != null`
+- [x] Updated `wheelConceptsProvider`: filters to `introduced ∩ generator-registered ∩ in-band`, takes the easiest `min(n, 8)`. Sorted by difficulty so wheel layout is stable. Per-category color palette in `spin_screen.dart`
+- [x] Tests (91 total, all passing):
+  - Catalog invariants (unique IDs, prereq references resolve, prereq grade ≤ dependent grade, every concept's category resolves)
+  - `integerDistractors` + `integerDistractorsWith` + `stringDistractorsFromPool`
+  - Per-generator parameter range + answer correctness + distractor uniqueness (≥200 iterations each)
+  - `add_2digit_carry` always forces ones-sum ≥ 10; `sub_2digit_borrow` always forces minuend ones < subtrahend ones
+  - `DripFeedEngine` starter pack + pickNext semantics (synthetic catalog + real catalog)
+  - `ProficiencyNotifier.recordAnswer` × `UnlockEvent` matrix: returns event only when correct answer crosses 0.85; null on wrong answer (even at 0.84); null on correct that doesn't cross; null on already-mastered
+  - Starter pack persistence: fresh player gets `add_within_5` + `sub_within_5` introduced on first read, stored in DB
+- [x] **Exit criteria:** code complete; manual play-test on the Android emulator pending. From the test suite, the unlock-card flow is verified (suppressed on wrong answers, fired only on correct mastery transitions); the 3 diagram widgets compile and analyze clean; old `add_1digit`-style generators are gone from code and tests.
 
 ---
 
 ### Phase 6 — Full Question Bank (target: ~4–6 weeks)
 
-**Goal:** Round out coverage to the full K–8 catalog. Build remaining diagram widgets and generators. Ingest bundled datasets for word problems and conceptual judgment items.
+**Goal:** Round out coverage to the full K–8 catalog. Build the word-problem framework (deferred from Phase 5). Build remaining diagram widgets and generators. Ingest bundled datasets for word problems and conceptual judgment items.
 
 **Tasks:**
+- [ ] **Pre-Phase-6 cleanup (carried over from Phase 5):** convert the Dart-const concept catalog in `lib/domain/concepts/concept_registry.dart` into a generated artifact. Write `tools/curriculum/build_catalog.dart` that parses `curriculum.md` §3.x tables and emits the catalog (either as Dart or JSON loaded by the data layer). Output committed; runs only when `curriculum.md` changes. Unblocks seeding the full ~361-row catalog without hand-authoring each row
+- [ ] Word-problem framework in `lib/domain/questions/word_problems/` (deferred from Phase 5): bundled name pool (~25 culturally diverse names), item pool (~20 countables), verb pool (~10 contexts); template engine for 1-step word problems; first generators cover `add_word_problems_within_100` and `add_sub_2step_word_problems`
 - [ ] Remaining high-priority diagram widgets: `BarChart`, `RectangleArea`, `CoordinatePlane` (Q1 + Q4), `Angle`, `IntersectingLines`, `Spinner`, `Dice`, `Polygon`, `Shape`, `TapeDiagram`, `DoubleNumberLine`, `Circle`, `Protractor`, `Ruler`, `Money`, `BoxPlot`, `ScatterPlot`, `TwoWayTable`, `TreeDiagram`, `BaseTenBlocks`, `Box3D`, `Histogram`, `DotPlot`, `LinePlot`. Defer: `Net3D`, `ColumnArithmetic` (text-only explanations OK in v1)
 - [ ] Remaining algorithmic generators per [curriculum.md §5.1](curriculum.md) priority list (#6 onward): signed-number arithmetic, coordinate-plane, order-of-operations / expression evaluation, percent / unit-rate / proportion, area / perimeter, one-/two-step equations, angles, Pythagorean theorem, probability, place-value / rounding / scientific notation, summary statistics
 - [ ] Dataset ingestion pipeline (build-time only) in `tools/question_generation/`. For each GREEN dataset: fetch, transform to bundled JSON format, sub-concept-tag, write to `assets/data/`:
@@ -406,6 +439,7 @@ Each phase ends with something demonstrable. We do **not** start a phase until t
 ---
 
 ### Phase 11 — Cloud Save (target: ~1–2 weeks)
+- [ ] **Prerequisite:** Replace the wipe-and-recreate Drift migration pattern (used through v3 and v4) with proper additive migrations. Once player data lives off-device, schema wipes destroy real data — this must land *before* the cloud-save round-trip is enabled
 - [ ] Integrate `games_services` save game API
 - [ ] Sign-in flow (Game Center / Play Games) — graceful skip if signed out
 - [ ] Save-on-meaningful-event (round end, avatar edit, building placed, map unlocked)
@@ -465,7 +499,7 @@ These are not blockers for Phase 0 or 1 but need to be resolved by the phase not
 | Hive/Isar abandonment pattern repeats with Drift | Low | Low | Drift is built on SQLite; worst-case migration to raw `sqflite` is straightforward |
 | COPPA / children's-app compliance | Medium | High (could block store submission) | No data collection; address this explicitly in Phase 12 with a minimal privacy policy and store-listing kids-category settings |
 | Apple Developer Program ($99/yr) and Play Console ($25 one-time) fees | Certain | Low–Medium | Real ongoing cost for a "free hobby project." If the Apple membership lapses, the iOS build is delisted from the App Store. Budget accordingly; consider whether one platform-only launch buys more time |
-| Sub-concept catalog explosion | Medium | Low (mitigated) | Mitigated as of Phase 5: the full ~361-sub-concept K–8 catalog is now defined in [curriculum.md](curriculum.md) with prereq DAG. The progressive rollout is: Phase 1: 2 concepts; Phase 2: 6 concepts; Phase 5: ~30 concepts (K–3 broad); Phase 6: full K–8 catalog (~85% coverage live). Schema designed for full catalog from Phase 5 onward — no further migrations needed for catalog growth |
+| Sub-concept catalog explosion | Medium | Low (mitigated) | Mitigated as of Phase 5: the full ~361-sub-concept K–8 catalog is now defined in [curriculum.md](curriculum.md) with prereq DAG. The progressive rollout is: Phase 1: 2 concepts; Phase 2: 6 concepts; Phase 5: ~20 concepts (K–3 broad — 12 from Phase 1–2 decomposition + ~8 new across multi-digit ±, fractions, time); Phase 6: full K–8 catalog (~85% coverage live). Schema seeds the full catalog from Phase 5 onward — no further schema migrations needed for catalog growth |
 
 ---
 

@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_dash/domain/concepts/concept.dart';
 import 'package:math_dash/domain/concepts/concept_registry.dart';
+import 'package:math_dash/domain/concepts/dag_engine.dart';
 import 'package:math_dash/domain/proficiency/proficiency_band.dart';
+import 'package:math_dash/state/introduced_concepts_provider.dart';
 import 'package:math_dash/state/player_provider.dart';
 
 // ---------------------------------------------------------------------------
@@ -19,18 +21,27 @@ class ProficiencyNotifier extends AsyncNotifier<Map<String, double>> {
     return db.proficiencyMapForPlayer(player.id);
   }
 
-  Future<void> recordAnswer(String conceptId, {required bool correct}) async {
+  /// Records an answer and returns an [UnlockEvent] if the answer triggered
+  /// a mastery transition that the drip-feed converted into a new concept
+  /// introduction. Returns null otherwise.
+  ///
+  /// Per plan.md Phase 5: unlock events fire only on *correct* answers
+  /// (mastery is unreachable from a wrong answer anyway because the EMA
+  /// update moves p toward 0). The unlock UI is thus naturally suppressed
+  /// when the player gets a question wrong.
+  Future<UnlockEvent?> recordAnswer(
+    String conceptId, {
+    required bool correct,
+  }) async {
     final player = await ref.read(activePlayerProvider.future);
     final db = ref.read(appDatabaseProvider);
 
+    final concept = findConceptById(conceptId)!;
     final current =
         state.asData?.value[conceptId] ??
-        initialProficiency(
-          findConceptById(conceptId)!.gradeLevel,
-          player.gradeLevel,
-        );
-
+        initialProficiency(concept.primaryGrade, player.gradeLevel);
     final updated = updateProficiency(current, correct: correct);
+
     await db.upsertProficiency(
       player.id,
       conceptId,
@@ -38,7 +49,30 @@ class ProficiencyNotifier extends AsyncNotifier<Map<String, double>> {
       correct: correct,
     );
 
+    UnlockEvent? unlock;
+    final crossedMastery = current < 0.85 && updated >= 0.85;
+    if (correct && crossedMastery) {
+      // Run drip-feed against the *post-update* state.
+      final freshProf = await db.proficiencyMapForPlayer(player.id);
+      final introduced = await db.introducedConceptIdsForPlayer(player.id);
+      final engine = ref.read(dagEngineProvider);
+      final next = engine.pickNext(
+        introduced: introduced,
+        profMap: freshProf,
+      );
+      if (next != null) {
+        await ref
+            .read(introducedConceptsProvider.notifier)
+            .introduce(next.id);
+        unlock = UnlockEvent(
+          newConcept: next,
+          masteredConcept: concept,
+        );
+      }
+    }
+
     ref.invalidateSelf();
+    return unlock;
   }
 }
 
@@ -48,23 +82,46 @@ final proficiencyProvider =
     );
 
 // ---------------------------------------------------------------------------
-// Wheel concepts — concepts in challenging or comfortable band.
-// Falls back to all concepts if none qualify (should not happen in practice).
+// Wheel concepts — introduced ∩ generator-registered, in challenging or
+// comfortable band, capped at 8 segments. Sorted ascending by difficulty
+// so spin layout is stable as the catalog grows.
 // ---------------------------------------------------------------------------
+
+const int kMaxWheelSegments = 8;
 
 final wheelConceptsProvider = FutureProvider<List<Concept>>((ref) async {
   final profMap = await ref.watch(proficiencyProvider.future);
+  final introduced = await ref.watch(introducedConceptsProvider.future);
+  final registry = ref.watch(generatorRegistryProvider);
   final player = await ref.watch(activePlayerProvider.future);
 
-  final onWheel = allConcepts.where((c) {
+  bool eligible(Concept c) {
+    if (!introduced.contains(c.id)) return false;
+    if (!registry.isImplemented(c.id)) return false;
     final p =
-        profMap[c.id] ?? initialProficiency(c.gradeLevel, player.gradeLevel);
+        profMap[c.id] ?? initialProficiency(c.primaryGrade, player.gradeLevel);
     final band = bandForProficiency(p);
     return band == ProficiencyBand.challenging ||
         band == ProficiencyBand.comfortable;
-  }).toList();
+  }
 
-  return onWheel.isEmpty ? allConcepts : onWheel;
+  final concepts = allConcepts.where(eligible).toList()
+    ..sort(compareConceptDifficulty);
+
+  // Wheel cap: take the *easiest* up to kMaxWheelSegments — the player
+  // sees their currently-relevant concepts, not their hardest unlocked ones.
+  final capped = concepts.take(kMaxWheelSegments).toList();
+
+  // Fallback: if no concepts qualify (e.g. all introduced are mastered),
+  // surface the full introduced+implemented set so the wheel still spins.
+  if (capped.isEmpty) {
+    return allConcepts
+        .where((c) =>
+            introduced.contains(c.id) && registry.isImplemented(c.id))
+        .toList()
+      ..sort(compareConceptDifficulty);
+  }
+  return capped;
 });
 
 // ---------------------------------------------------------------------------
@@ -80,6 +137,7 @@ ProficiencyBand bandForConcept(
 ) {
   final concept = findConceptById(conceptId)!;
   final p =
-      profMap[conceptId] ?? initialProficiency(concept.gradeLevel, playerGrade);
+      profMap[conceptId] ??
+      initialProficiency(concept.primaryGrade, playerGrade);
   return bandForProficiency(p);
 }
