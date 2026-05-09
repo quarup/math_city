@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:math_city/presentation/home/home_screen.dart';
+import 'package:math_city/presentation/splash/splash_screen.dart';
+import 'package:math_city/presentation/theme/app_theme.dart';
 
 class MathCityApp extends StatelessWidget {
   const MathCityApp({super.key});
@@ -8,11 +9,8 @@ class MathCityApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Math City',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange),
-        useMaterial3: true,
-      ),
-      home: const HomeScreen(),
+      theme: AppTheme.light,
+      home: const SplashScreen(),
     );
   }
 }

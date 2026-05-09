@@ -6,6 +6,7 @@ import 'package:math_city/data/database.dart';
 import 'package:math_city/presentation/player/adventurer_avatar_widget.dart';
 import 'package:math_city/presentation/player/player_creation_screen.dart';
 import 'package:math_city/presentation/spin/spin_screen.dart';
+import 'package:math_city/presentation/theme/app_palette.dart';
 import 'package:math_city/state/player_provider.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -16,6 +17,7 @@ class HomeScreen extends ConsumerWidget {
     final allAsync = ref.watch(allPlayersProvider);
     final activeId = ref.watch(activePlayerIdProvider);
     final theme = Theme.of(context);
+    final palette = theme.extension<AppPalette>()!;
 
     return allAsync.when(
       loading: () => const Scaffold(
@@ -34,82 +36,100 @@ class HomeScreen extends ConsumerWidget {
         }
 
         return Scaffold(
-          backgroundColor: theme.colorScheme.surfaceContainerLowest,
-          body: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 24,
-                vertical: 32,
+          body: DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [palette.skyGradientStart, palette.skyGradientEnd],
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    'Math City',
-                    style: theme.textTheme.displaySmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: theme.colorScheme.primary,
-                    ),
-                    textAlign: TextAlign.center,
+            ),
+            child: Stack(
+              children: [
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Image.asset(
+                    'assets/images/math_city_bottom.png',
+                    width: double.infinity,
+                    fit: BoxFit.fitWidth,
                   ),
-                  const SizedBox(height: 24),
-
-                  // ---- Player chip row ----
-                  Text(
-                    "Who's playing?",
-                    style: theme.textTheme.labelLarge?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
+                ),
+                SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 32,
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  if (players.isEmpty)
-                    SizedBox(
-                      height: 130,
-                      child: _EmptyPlayerPrompt(
-                        onAdd: () => _openCreation(context),
-                      ),
-                    )
-                  else
-                    Wrap(
-                      spacing: 10,
-                      runSpacing: 10,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        for (final p in players)
-                          _PlayerChip(
-                            player: p,
-                            isSelected: p.id == activeId,
-                            onTap: () => ref
-                                .read(activePlayerIdProvider.notifier)
-                                .selected = p.id,
-                            onEdit: () => _openEdit(context, p),
+                        Center(
+                          child: Image.asset(
+                            'assets/images/math_city_logo.png',
+                            height: 120,
+                            fit: BoxFit.contain,
                           ),
-                        _AddChip(onTap: () => _openCreation(context)),
+                        ),
+                        const SizedBox(height: 24),
+
+                        // ---- Player chip row ----
+                        Text(
+                          "Who's playing?",
+                          style: theme.textTheme.labelLarge?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        if (players.isEmpty)
+                          SizedBox(
+                            height: 130,
+                            child: _EmptyPlayerPrompt(
+                              onAdd: () => _openCreation(context),
+                            ),
+                          )
+                        else
+                          Wrap(
+                            spacing: 10,
+                            runSpacing: 10,
+                            children: [
+                              for (final p in players)
+                                _PlayerChip(
+                                  player: p,
+                                  isSelected: p.id == activeId,
+                                  onTap: () => ref
+                                      .read(activePlayerIdProvider.notifier)
+                                      .selected = p.id,
+                                  onEdit: () => _openEdit(context, p),
+                                ),
+                              _AddChip(onTap: () => _openCreation(context)),
+                            ],
+                          ),
+
+                        const SizedBox(height: 24),
+
+                        // ---- Spin button ----
+                        FilledButton.icon(
+                          onPressed: activeId == null
+                              ? null
+                              : () => unawaited(
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute<void>(
+                                        builder: (_) => const SpinScreen(),
+                                      ),
+                                    ),
+                                  ),
+                          icon: const Icon(Icons.refresh_rounded),
+                          label: const Text('Spin!'),
+                          style: FilledButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 20),
+                            textStyle: theme.textTheme.titleLarge,
+                          ),
+                        ),
                       ],
                     ),
-
-                  const Spacer(),
-
-                  // ---- Spin button ----
-                  FilledButton.icon(
-                    onPressed: activeId == null
-                        ? null
-                        : () => unawaited(
-                              Navigator.of(context).push(
-                                MaterialPageRoute<void>(
-                                  builder: (_) => const SpinScreen(),
-                                ),
-                              ),
-                            ),
-                    icon: const Icon(Icons.refresh_rounded),
-                    label: const Text('Spin!'),
-                    style: FilledButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 20),
-                      textStyle: theme.textTheme.titleLarge,
-                    ),
                   ),
-                  const SizedBox(height: 16),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         );
@@ -158,6 +178,7 @@ class _PlayerChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final palette = theme.extension<AppPalette>()!;
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
@@ -199,9 +220,9 @@ class _PlayerChip extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.star_rounded,
-                        color: Colors.amber,
+                        color: palette.coinGold,
                         size: 13,
                       ),
                       const SizedBox(width: 2),
