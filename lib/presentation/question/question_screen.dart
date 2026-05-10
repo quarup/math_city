@@ -71,17 +71,13 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final conceptName =
         findConceptById(widget.conceptId)?.name ?? widget.conceptId;
     final useNumberPad = widget.band == ProficiencyBand.comfortable;
 
     return Scaffold(
-      backgroundColor: theme.colorScheme.surfaceContainerLowest,
       appBar: AppBar(
         title: Text(conceptName),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
         automaticallyImplyLeading: false,
       ),
       body: SafeArea(

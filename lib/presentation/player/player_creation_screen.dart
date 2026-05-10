@@ -96,11 +96,8 @@ class _PlayerCreationScreenState extends ConsumerState<PlayerCreationScreen> {
     final isEdit = widget.isEdit;
 
     return Scaffold(
-      backgroundColor: theme.colorScheme.surfaceContainerLowest,
       appBar: AppBar(
         title: Text(isEdit ? 'Edit Player' : 'New Player'),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
       ),
       body: SafeArea(
         child: GestureDetector(
@@ -111,7 +108,7 @@ class _PlayerCreationScreenState extends ConsumerState<PlayerCreationScreen> {
               // ---- Sticky avatar preview ----
               Container(
                 color: theme.colorScheme.surfaceContainerLowest,
-                padding: const EdgeInsets.symmetric(vertical: 16),
+                padding: const EdgeInsets.symmetric(vertical: 20),
                 child: Center(
                   child: AdventurerAvatarWidget(config: _config, size: 120),
                 ),

@@ -9,131 +9,185 @@ import 'package:math_city/presentation/spin/spin_screen.dart';
 import 'package:math_city/presentation/theme/app_palette.dart';
 import 'package:math_city/state/player_provider.dart';
 
-class HomeScreen extends ConsumerWidget {
-  const HomeScreen({super.key});
+class HomeScreen extends ConsumerStatefulWidget {
+  const HomeScreen({super.key, this.playIntro = false});
+
+  /// When true, the non-logo content fades in after the logo's hero flight
+  /// from the splash screen settles. Default false for back-navigations.
+  final bool playIntro;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen>
+    with SingleTickerProviderStateMixin {
+  // Must match the splash-route transitionDuration so the fade waits for the
+  // hero to land.
+  static const _heroDuration = Duration(milliseconds: 700);
+  static const _fadeDuration = Duration(milliseconds: 450);
+
+  late final AnimationController _intro;
+
+  @override
+  void initState() {
+    super.initState();
+    _intro = AnimationController(
+      vsync: this,
+      duration: _fadeDuration,
+      value: widget.playIntro ? 0 : 1,
+    );
+    if (widget.playIntro) {
+      unawaited(
+        Future<void>.delayed(_heroDuration, () {
+          if (mounted) unawaited(_intro.forward());
+        }),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _intro.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final allAsync = ref.watch(allPlayersProvider);
     final activeId = ref.watch(activePlayerIdProvider);
     final theme = Theme.of(context);
     final palette = theme.extension<AppPalette>()!;
 
-    return allAsync.when(
-      loading: () => const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      ),
-      error: (e, _) => Scaffold(
-        body: Center(child: Text('Error: $e')),
-      ),
-      data: (players) {
-        // Auto-select the first player when none is active yet.
-        if (players.isNotEmpty && activeId == null) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            ref.read(activePlayerIdProvider.notifier).selected =
-                players.first.id;
-          });
-        }
-
-        return Scaffold(
-          body: DecoratedBox(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [palette.skyGradientStart, palette.skyGradientEnd],
+    return Scaffold(
+      body: DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [palette.skyGradientStart, palette.skyGradientEnd],
+          ),
+        ),
+        child: Stack(
+          children: [
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Image.asset(
+                'assets/images/math_city_bottom.png',
+                width: double.infinity,
+                fit: BoxFit.fitWidth,
               ),
             ),
-            child: Stack(
-              children: [
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Image.asset(
-                    'assets/images/math_city_bottom.png',
-                    width: double.infinity,
-                    fit: BoxFit.fitWidth,
-                  ),
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 32,
                 ),
-                SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 32,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Center(
+                      child: Hero(
+                        tag: 'math-city-logo',
+                        child: Image.asset(
+                          'assets/images/math_city_logo.png',
+                          height: 120,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Center(
-                          child: Image.asset(
-                            'assets/images/math_city_logo.png',
-                            height: 120,
-                            fit: BoxFit.contain,
-                          ),
+                    const SizedBox(height: 24),
+                    Expanded(
+                      child: FadeTransition(
+                        opacity: CurvedAnimation(
+                          parent: _intro,
+                          curve: Curves.easeOut,
                         ),
-                        const SizedBox(height: 24),
-
-                        // ---- Player chip row ----
-                        Text(
-                          "Who's playing?",
-                          style: theme.textTheme.labelLarge?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant,
-                          ),
+                        child: allAsync.when(
+                          loading: () =>
+                              const Center(child: CircularProgressIndicator()),
+                          error: (e, _) => Center(child: Text('Error: $e')),
+                          data: (players) =>
+                              _buildPlayersAndSpin(theme, players, activeId),
                         ),
-                        const SizedBox(height: 10),
-                        if (players.isEmpty)
-                          SizedBox(
-                            height: 130,
-                            child: _EmptyPlayerPrompt(
-                              onAdd: () => _openCreation(context),
-                            ),
-                          )
-                        else
-                          Wrap(
-                            spacing: 10,
-                            runSpacing: 10,
-                            children: [
-                              for (final p in players)
-                                _PlayerChip(
-                                  player: p,
-                                  isSelected: p.id == activeId,
-                                  onTap: () => ref
-                                      .read(activePlayerIdProvider.notifier)
-                                      .selected = p.id,
-                                  onEdit: () => _openEdit(context, p),
-                                ),
-                              _AddChip(onTap: () => _openCreation(context)),
-                            ],
-                          ),
-
-                        const SizedBox(height: 24),
-
-                        // ---- Spin button ----
-                        FilledButton.icon(
-                          onPressed: activeId == null
-                              ? null
-                              : () => unawaited(
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute<void>(
-                                        builder: (_) => const SpinScreen(),
-                                      ),
-                                    ),
-                                  ),
-                          icon: const Icon(Icons.refresh_rounded),
-                          label: const Text('Spin!'),
-                          style: FilledButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(vertical: 20),
-                            textStyle: theme.textTheme.titleLarge,
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
+              ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPlayersAndSpin(
+    ThemeData theme,
+    List<Player> players,
+    int? activeId,
+  ) {
+    // Auto-select the first player when none is active yet.
+    if (players.isNotEmpty && activeId == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref.read(activePlayerIdProvider.notifier).selected = players.first.id;
+      });
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          "Who's playing?",
+          style: theme.textTheme.labelLarge?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
           ),
-        );
-      },
+        ),
+        const SizedBox(height: 10),
+        if (players.isEmpty)
+          SizedBox(
+            height: 130,
+            child: _EmptyPlayerPrompt(
+              onAdd: () => _openCreation(context),
+            ),
+          )
+        else
+          Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            children: [
+              for (final p in players)
+                _PlayerChip(
+                  player: p,
+                  isSelected: p.id == activeId,
+                  onTap: () => ref
+                      .read(activePlayerIdProvider.notifier)
+                      .selected = p.id,
+                  onEdit: () => _openEdit(context, p),
+                ),
+              _AddChip(onTap: () => _openCreation(context)),
+            ],
+          ),
+        const SizedBox(height: 24),
+        FilledButton.icon(
+          onPressed: activeId == null
+              ? null
+              : () => unawaited(
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const SpinScreen(),
+                      ),
+                    ),
+                  ),
+          icon: const Icon(Icons.refresh_rounded),
+          label: const Text('Spin!'),
+          style: FilledButton.styleFrom(
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            textStyle: theme.textTheme.titleLarge,
+          ),
+        ),
+      ],
     );
   }
 

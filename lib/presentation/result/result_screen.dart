@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_city/domain/concepts/dag_engine.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
 import 'package:math_city/presentation/spin/spin_screen.dart';
+import 'package:math_city/presentation/theme/app_palette.dart';
 import 'package:math_city/state/game_session_provider.dart';
 
 class ResultScreen extends ConsumerStatefulWidget {
@@ -106,10 +107,12 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final palette = theme.extension<AppPalette>()!;
     final isCorrect = widget.isCorrect;
 
     return Scaffold(
-      backgroundColor: isCorrect ? Colors.green.shade50 : Colors.red.shade50,
+      backgroundColor:
+          isCorrect ? palette.successGreenSoft : palette.errorRedSoft,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(32),
@@ -120,7 +123,9 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
               Icon(
                 isCorrect ? Icons.check_circle_rounded : Icons.cancel_rounded,
                 size: 80,
-                color: isCorrect ? Colors.green : Colors.red,
+                color: isCorrect
+                    ? palette.successGreenDeep
+                    : palette.errorRedDeep,
               ),
               const SizedBox(height: 16),
               Text(
@@ -128,8 +133,8 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                 style: theme.textTheme.headlineLarge?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: isCorrect
-                      ? Colors.green.shade800
-                      : Colors.red.shade800,
+                      ? palette.successGreenDeep
+                      : palette.errorRedDeep,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -181,16 +186,17 @@ class _StarAward extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final palette = theme.extension<AppPalette>()!;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Icon(Icons.star_rounded, color: Colors.amber, size: 40),
+        Icon(Icons.star_rounded, color: palette.coinGold, size: 40),
         const SizedBox(width: 8),
         Text(
           '+$stars',
           style: theme.textTheme.headlineMedium?.copyWith(
             fontWeight: FontWeight.bold,
-            color: Colors.amber.shade800,
+            color: palette.coinGoldDeep,
           ),
         ),
       ],
@@ -210,8 +216,9 @@ class _ExplanationCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final palette = theme.extension<AppPalette>()!;
     return Card(
-      color: Colors.white,
+      color: theme.colorScheme.surfaceContainerLowest,
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -220,7 +227,7 @@ class _ExplanationCard extends StatelessWidget {
             Text(
               'You answered: $selectedAnswer',
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: Colors.red.shade700,
+                color: palette.errorRedDeep,
               ),
             ),
             const SizedBox(height: 12),
@@ -249,19 +256,20 @@ class _UnlockCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final palette = theme.extension<AppPalette>()!;
     return Card(
-      color: Colors.amber.shade50,
+      color: theme.colorScheme.surfaceContainer,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: Colors.amber.shade400, width: 2),
+        side: BorderSide(color: palette.coinGold, width: 2),
       ),
       child: Padding(
         padding: const EdgeInsets.all(18),
         child: Row(
           children: [
-            const Icon(
+            Icon(
               Icons.lock_open_rounded,
-              color: Colors.amber,
+              color: palette.coinGold,
               size: 36,
             ),
             const SizedBox(width: 14),
@@ -273,7 +281,7 @@ class _UnlockCard extends StatelessWidget {
                     'New concept unlocked!',
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: Colors.amber.shade900,
+                      color: palette.coinGoldDeep,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -332,6 +340,7 @@ class _FlyingStarOverlayState extends State<_FlyingStarOverlay>
 
   @override
   Widget build(BuildContext context) {
+    final palette = Theme.of(context).extension<AppPalette>()!;
     return AnimatedBuilder(
       animation: _anim,
       builder: (ctx, child) {
@@ -355,19 +364,19 @@ class _FlyingStarOverlayState extends State<_FlyingStarOverlay>
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.star_rounded,
-                      color: Colors.amber,
+                      color: palette.coinGold,
                       size: 36,
                     ),
                     const SizedBox(width: 4),
                     Text(
                       '+${widget.starsEarned}',
-                      style: const TextStyle(
-                        color: Colors.amber,
+                      style: TextStyle(
+                        color: palette.coinGold,
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
-                        shadows: [
+                        shadows: const [
                           Shadow(
                             color: Color(0x99000000),
                             blurRadius: 4,

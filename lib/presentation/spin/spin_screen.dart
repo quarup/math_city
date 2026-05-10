@@ -10,6 +10,7 @@ import 'package:math_city/game/spin_wheel/spin_wheel_component.dart';
 import 'package:math_city/game/spin_wheel/spin_wheel_game.dart';
 import 'package:math_city/presentation/player/adventurer_avatar_widget.dart';
 import 'package:math_city/presentation/question/question_screen.dart';
+import 'package:math_city/presentation/theme/app_palette.dart';
 import 'package:math_city/state/game_session_provider.dart';
 import 'package:math_city/state/introduced_concepts_provider.dart';
 import 'package:math_city/state/player_provider.dart';
@@ -127,6 +128,7 @@ class _SpinScreenState extends ConsumerState<SpinScreen>
     final wheelAsync = ref.watch(wheelConceptsProvider);
     final playerAsync = ref.watch(activePlayerProvider);
     final theme = Theme.of(context);
+    final palette = theme.extension<AppPalette>()!;
 
     final playerName = playerAsync.asData?.value.name ?? '';
     final avatarConfig =
@@ -142,10 +144,7 @@ class _SpinScreenState extends ConsumerState<SpinScreen>
     }
 
     return Scaffold(
-      backgroundColor: theme.colorScheme.surfaceContainerLowest,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
         // Tapping the player chip pops back to HomeScreen to switch players.
         title: GestureDetector(
           onTap: () => Navigator.of(context).pop(),
@@ -165,9 +164,9 @@ class _SpinScreenState extends ConsumerState<SpinScreen>
               scale: _pulseScale,
               child: Row(
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.star_rounded,
-                    color: Colors.amber,
+                    color: palette.coinGold,
                     size: 24,
                   ),
                   const SizedBox(width: 4),

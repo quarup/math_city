@@ -23,10 +23,12 @@ class _SplashScreenState extends State<SplashScreen> {
     if (!mounted) return;
     await Navigator.of(context).pushReplacement(
       PageRouteBuilder<void>(
-        transitionDuration: const Duration(milliseconds: 400),
-        pageBuilder: (_, a, b) => const HomeScreen(),
-        transitionsBuilder: (_, animation, b, child) =>
-            FadeTransition(opacity: animation, child: child),
+        // Hero animates the logo from center → top over this duration; the
+        // page itself uses no transition so the logo is the only thing moving.
+        transitionDuration: const Duration(milliseconds: 700),
+        reverseTransitionDuration: Duration.zero,
+        pageBuilder: (_, a, b) => const HomeScreen(playIntro: true),
+        transitionsBuilder: (_, a, b, child) => child,
       ),
     );
   }
@@ -54,10 +56,13 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
             ),
             Center(
-              child: Image.asset(
-                'assets/images/math_city_logo.png',
-                width: 240,
-                fit: BoxFit.contain,
+              child: Hero(
+                tag: 'math-city-logo',
+                child: Image.asset(
+                  'assets/images/math_city_logo.png',
+                  height: 120,
+                  fit: BoxFit.contain,
+                ),
               ),
             ),
           ],
