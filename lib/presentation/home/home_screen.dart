@@ -128,18 +128,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     List<Player> players,
     int? activeId,
   ) {
-    // Auto-select the first player when none is active yet.
-    if (players.isNotEmpty && activeId == null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        ref.read(activePlayerIdProvider.notifier).selected = players.first.id;
-      });
-    }
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          "Who's playing?",
+          'Select player:',
           style: theme.textTheme.labelLarge?.copyWith(
             color: theme.colorScheme.onSurfaceVariant,
           ),
@@ -154,6 +147,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           )
         else
           Wrap(
+            alignment: WrapAlignment.center,
             spacing: 10,
             runSpacing: 10,
             children: [
@@ -161,33 +155,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                 _PlayerChip(
                   player: p,
                   isSelected: p.id == activeId,
-                  onTap: () => ref
-                      .read(activePlayerIdProvider.notifier)
-                      .selected = p.id,
+                  onTap: () => _selectAndPlay(p),
                   onEdit: () => _openEdit(context, p),
                 ),
               _AddChip(onTap: () => _openCreation(context)),
             ],
           ),
-        const SizedBox(height: 24),
-        FilledButton.icon(
-          onPressed: activeId == null
-              ? null
-              : () => unawaited(
-                    Navigator.of(context).push(
-                      MaterialPageRoute<void>(
-                        builder: (_) => const SpinScreen(),
-                      ),
-                    ),
-                  ),
-          icon: const Icon(Icons.refresh_rounded),
-          label: const Text('Spin!'),
-          style: FilledButton.styleFrom(
-            padding: const EdgeInsets.symmetric(vertical: 20),
-            textStyle: theme.textTheme.titleLarge,
-          ),
-        ),
       ],
+    );
+  }
+
+  void _selectAndPlay(Player player) {
+    ref.read(activePlayerIdProvider.notifier).selected = player.id;
+    unawaited(
+      Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => const SpinScreen(),
+        ),
+      ),
     );
   }
 

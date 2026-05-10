@@ -6,6 +6,7 @@ import 'package:math_city/data/database.dart';
 import 'package:math_city/domain/avatar/adventurer_catalog.dart';
 import 'package:math_city/domain/avatar/adventurer_config.dart';
 import 'package:math_city/presentation/player/adventurer_avatar_widget.dart';
+import 'package:math_city/presentation/spin/spin_screen.dart';
 import 'package:math_city/state/introduced_concepts_provider.dart';
 import 'package:math_city/state/player_provider.dart';
 import 'package:math_city/state/proficiency_provider.dart';
@@ -86,7 +87,16 @@ class _PlayerCreationScreenState extends ConsumerState<PlayerCreationScreen> {
     }
 
     if (!mounted) return;
-    Navigator.of(context).pop();
+    if (widget.isEdit) {
+      Navigator.of(context).pop();
+    } else {
+      // pushReplacement so back from spin lands on home, not on this form.
+      unawaited(
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute<void>(builder: (_) => const SpinScreen()),
+        ),
+      );
+    }
   }
 
   @override
