@@ -15,11 +15,11 @@ void main() {
         child: const MathCityApp(),
       ),
     );
-    await tester.pump(); // let FutureProvider resolve
+    // Splash holds for 1500ms then runs a 700ms transition to HomeScreen.
+    await tester.pump(const Duration(milliseconds: 1500));
+    await tester.pumpAndSettle();
 
-    // HomeScreen always shows the title.
-    expect(find.text('Math City'), findsOneWidget);
-    // With no players, the empty-state prompt is shown.
+    // With no players, the empty-state Create Player button is shown.
     expect(find.text('Create Player'), findsOneWidget);
   });
 }

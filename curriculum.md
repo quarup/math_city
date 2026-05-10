@@ -221,7 +221,7 @@ The columns:
 | `compare_fractions_same_num` | Compare (same top) | 3 | [fraction_a_over_b] | algorithmic | optional |
 | `compare_fractions_unlike` | Compare unlike fractions | 4 | [equivalent_fractions_compute] | algorithmic | none |
 | `whole_number_as_fraction` | Whole numbers as fractions | 3 | [fraction_a_over_b] | algorithmic | none |
-| `simplify_fraction` | Simplify fractions | 4 | [equivalent_fractions_compute, gcf_two_numbers] | algorithmic | none |
+| `simplify_fraction` | Simplify fractions | 4 | [equivalent_fractions_compute] | algorithmic | none |
 | `improper_to_mixed` | Improper → mixed number | 4 | [fraction_a_over_b] | algorithmic | optional |
 | `mixed_to_improper` | Mixed number → improper | 4 | [improper_to_mixed] | algorithmic | optional |
 | `add_fractions_like_denom` | Add fractions (same bottom) | 4 | [fraction_a_over_b, add_within_20] | algorithmic | optional |
@@ -229,7 +229,7 @@ The columns:
 | `add_mixed_like_denom` | Add mixed numbers (like) | 4 | [add_fractions_like_denom, mixed_to_improper] | algorithmic | optional |
 | `sub_mixed_like_denom` | Subtract mixed numbers (like) | 4 | [sub_fractions_like_denom, mixed_to_improper] | algorithmic | optional |
 | `mult_fraction_by_whole` | Fraction × whole number | 4 | [fraction_a_over_b, mult_facts_within_100] | algorithmic | optional |
-| `add_fractions_unlike_denom` | Add fractions (unlike) | 5 | [add_fractions_like_denom, equivalent_fractions_compute, lcm_two_numbers] | algorithmic | none |
+| `add_fractions_unlike_denom` | Add fractions (unlike) | 5 | [add_fractions_like_denom, equivalent_fractions_compute] | algorithmic | none |
 | `sub_fractions_unlike_denom` | Subtract fractions (unlike) | 5 | [add_fractions_unlike_denom] | algorithmic | none |
 | `add_mixed_unlike_denom` | Add mixed (unlike) | 5 | [add_fractions_unlike_denom] | algorithmic | none |
 | `sub_mixed_unlike_denom` | Subtract mixed (unlike) | 5 | [sub_fractions_unlike_denom] | algorithmic | none |
