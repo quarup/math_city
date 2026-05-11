@@ -16,6 +16,7 @@ class ResultScreen extends ConsumerStatefulWidget {
     required this.isCorrect,
     required this.starsEarned,
     this.unlockEvent,
+    this.debugMode = false,
     super.key,
   });
 
@@ -28,6 +29,11 @@ class ResultScreen extends ConsumerStatefulWidget {
   /// this is null on wrong answers — the result screen does not double-
   /// check (we trust the caller per plan.md Phase 5).
   final UnlockEvent? unlockEvent;
+
+  /// When true, "Next round" pops back to the debug picker instead of
+  /// pushing the spin wheel. Caller is also responsible for passing
+  /// `starsEarned: 0` so no stars are written to the player profile.
+  final bool debugMode;
 
   @override
   ConsumerState<ResultScreen> createState() => _ResultScreenState();
@@ -49,6 +55,11 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
   }
 
   Future<void> _onNextRound() async {
+    if (widget.debugMode) {
+      Navigator.of(context).pop();
+      return;
+    }
+
     if (widget.starsEarned <= 0) {
       _pushSpin();
       return;
@@ -167,7 +178,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                   padding: const EdgeInsets.symmetric(vertical: 18),
                   textStyle: theme.textTheme.titleLarge,
                 ),
-                child: const Text('Next Round'),
+                child: Text(widget.debugMode ? 'Try another' : 'Next Round'),
               ),
               const SizedBox(height: 12),
             ],

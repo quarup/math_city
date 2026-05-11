@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_city/data/database.dart';
+import 'package:math_city/presentation/debug/concept_debug_screen.dart';
 import 'package:math_city/presentation/player/adventurer_avatar_widget.dart';
 import 'package:math_city/presentation/player/player_creation_screen.dart';
 import 'package:math_city/presentation/spin/spin_screen.dart';
@@ -143,6 +145,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             height: 130,
             child: _EmptyPlayerPrompt(
               onAdd: () => _openCreation(context),
+              onDebug: kDebugMode ? () => _openDebug(context) : null,
             ),
           )
         else
@@ -159,6 +162,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                   onEdit: () => _openEdit(context, p),
                 ),
               _AddChip(onTap: () => _openCreation(context)),
+              if (kDebugMode)
+                _DebugChip(onTap: () => _openDebug(context)),
             ],
           ),
       ],
@@ -191,6 +196,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       Navigator.of(context).push(
         MaterialPageRoute<void>(
           builder: (_) => PlayerCreationScreen(initialPlayer: player),
+        ),
+      ),
+    );
+  }
+
+  void _openDebug(BuildContext context) {
+    unawaited(
+      Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => const ConceptDebugScreen(),
         ),
       ),
     );
@@ -346,26 +361,82 @@ class _AddChip extends StatelessWidget {
 }
 
 // ---------------------------------------------------------------------------
+// Debug chip (kDebugMode only — opens the ConceptDebugScreen)
+// ---------------------------------------------------------------------------
+
+class _DebugChip extends StatelessWidget {
+  const _DebugChip({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final accent = theme.colorScheme.tertiary;
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 96,
+        height: 120,
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surfaceContainer,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: accent),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.bug_report_rounded, size: 28, color: accent),
+            const SizedBox(height: 6),
+            Text(
+              'Debug',
+              style: theme.textTheme.labelMedium?.copyWith(color: accent),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Empty state prompt (no players yet)
 // ---------------------------------------------------------------------------
 
 class _EmptyPlayerPrompt extends StatelessWidget {
-  const _EmptyPlayerPrompt({required this.onAdd});
+  const _EmptyPlayerPrompt({required this.onAdd, this.onDebug});
 
   final VoidCallback onAdd;
+  final VoidCallback? onDebug;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Center(
-      child: OutlinedButton.icon(
-        onPressed: onAdd,
-        icon: const Icon(Icons.person_add_rounded),
-        label: const Text('Create Player'),
-        style: OutlinedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-          textStyle: theme.textTheme.titleMedium,
-        ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          OutlinedButton.icon(
+            onPressed: onAdd,
+            icon: const Icon(Icons.person_add_rounded),
+            label: const Text('Create Player'),
+            style: OutlinedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 24,
+                vertical: 14,
+              ),
+              textStyle: theme.textTheme.titleMedium,
+            ),
+          ),
+          if (onDebug != null) ...[
+            const SizedBox(height: 12),
+            TextButton.icon(
+              onPressed: onDebug,
+              icon: const Icon(Icons.bug_report_rounded),
+              label: const Text('Debug'),
+            ),
+          ],
+        ],
       ),
     );
   }

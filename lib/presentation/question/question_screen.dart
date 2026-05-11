@@ -15,6 +15,7 @@ class QuestionScreen extends ConsumerStatefulWidget {
   const QuestionScreen({
     required this.conceptId,
     required this.band,
+    this.debugMode = false,
     super.key,
   });
 
@@ -23,6 +24,12 @@ class QuestionScreen extends ConsumerStatefulWidget {
   /// The proficiency band at the time the wheel landed.
   /// Determines input mode (MC vs number pad) and stars awarded.
   final ProficiencyBand band;
+
+  /// When true (kDebugMode-only entry from `ConceptDebugScreen`):
+  /// proficiency tracking is skipped, no stars are awarded, and the
+  /// result screen pops back to the picker instead of returning to the
+  /// spin wheel. Player profile state stays untouched.
+  final bool debugMode;
 
   @override
   ConsumerState<QuestionScreen> createState() => _QuestionScreenState();
@@ -47,12 +54,19 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen> {
 
     final isCorrect = answer == _question.correctAnswer;
 
-    // Persist proficiency update (and possibly trigger drip-feed unlock).
-    final unlock = await ref
-        .read(proficiencyProvider.notifier)
-        .recordAnswer(widget.conceptId, correct: isCorrect);
+    // Debug mode: skip every persisted side-effect (proficiency, drip-feed,
+    // stars) so testing a generator doesn't pollute player state.
+    final unlock = widget.debugMode
+        ? null
+        : await ref
+              .read(proficiencyProvider.notifier)
+              .recordAnswer(widget.conceptId, correct: isCorrect);
 
     if (!mounted) return;
+
+    final stars = (isCorrect && !widget.debugMode)
+        ? starsForBand(widget.band)
+        : 0;
 
     unawaited(
       Navigator.of(context).pushReplacement(
@@ -61,8 +75,9 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen> {
             question: _question,
             selectedAnswer: answer,
             isCorrect: isCorrect,
-            starsEarned: isCorrect ? starsForBand(widget.band) : 0,
+            starsEarned: stars,
             unlockEvent: isCorrect ? unlock : null,
+            debugMode: widget.debugMode,
           ),
         ),
       ),
