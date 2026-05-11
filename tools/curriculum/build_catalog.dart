@@ -96,6 +96,12 @@ const _shortLabelOverrides = <String, String>{
   'sub_multidigit_standard_alg': '− multi',
   'mult_facts_within_100': '× facts',
   'div_facts_within_100': '÷ facts',
+  'div_with_remainder': '÷ w/ rem',
+  'mult_4digit_by_1digit': '4d × 1d',
+  'mult_2digit_by_2digit': '2d × 2d',
+  'mult_multidigit_standard_alg': '× multi',
+  'div_4digit_by_1digit': '4d ÷ 1d',
+  'div_4digit_by_2digit': '4d ÷ 2d',
   'fraction_a_over_b': 'a/b',
   'compare_fractions_same_denom': 'cmp frac',
   'equivalent_fractions_visual': 'equiv frac',
@@ -135,6 +141,10 @@ const _prereqOverrides = <String, List<String>>{
   'mult_facts_within_100': ['add_within_100'],
   // drop div_meaning_share (no generator).
   'div_facts_within_100': ['mult_facts_within_100'],
+  // drop place_value_multidigit (no generator).
+  'mult_4digit_by_1digit': ['mult_facts_within_100'],
+  // drop place_value_multidigit (no generator).
+  'div_4digit_by_1digit': ['div_with_remainder'],
   // drop unit_fraction_intro (no generator).
   'fraction_a_over_b': <String>[],
   // drop skip_count_5 (no generator).

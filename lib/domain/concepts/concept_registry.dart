@@ -1107,7 +1107,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'div_with_remainder',
     name: '÷ with remainder',
-    shortLabel: '÷ with remainder',
+    shortLabel: '÷ w/ rem',
     categoryId: 'mult_div',
     primaryGrade: 4,
     prereqIds: ['div_facts_within_100'],
@@ -1140,10 +1140,10 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'mult_4digit_by_1digit',
     name: '4-digit × 1-digit',
-    shortLabel: '4-digit × 1-digit',
+    shortLabel: '4d × 1d',
     categoryId: 'mult_div',
     primaryGrade: 4,
-    prereqIds: ['mult_facts_within_100', 'place_value_multidigit'],
+    prereqIds: ['mult_facts_within_100'],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
     categoryRowOrder: 24,
@@ -1151,7 +1151,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'mult_2digit_by_2digit',
     name: '2-digit × 2-digit',
-    shortLabel: '2-digit × 2-digit',
+    shortLabel: '2d × 2d',
     categoryId: 'mult_div',
     primaryGrade: 4,
     prereqIds: ['mult_4digit_by_1digit'],
@@ -1162,10 +1162,10 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'div_4digit_by_1digit',
     name: '4-digit ÷ 1-digit',
-    shortLabel: '4-digit ÷ 1-digit',
+    shortLabel: '4d ÷ 1d',
     categoryId: 'mult_div',
     primaryGrade: 4,
-    prereqIds: ['div_with_remainder', 'place_value_multidigit'],
+    prereqIds: ['div_with_remainder'],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
     categoryRowOrder: 26,
@@ -1173,7 +1173,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'mult_multidigit_standard_alg',
     name: 'Multi-digit × (algorithm)',
-    shortLabel: 'Multi-digit × (algorithm)',
+    shortLabel: '× multi',
     categoryId: 'mult_div',
     primaryGrade: 5,
     prereqIds: ['mult_2digit_by_2digit'],
@@ -1184,7 +1184,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'div_4digit_by_2digit',
     name: '4-digit ÷ 2-digit',
-    shortLabel: '4-digit ÷ 2-digit',
+    shortLabel: '4d ÷ 2d',
     categoryId: 'mult_div',
     primaryGrade: 5,
     prereqIds: ['div_4digit_by_1digit'],

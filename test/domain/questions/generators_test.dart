@@ -160,6 +160,95 @@ void main() {
     });
   });
 
+  group('Multi-digit × ÷ (Phase 6 path B)', () {
+    test('div_with_remainder: answer is "qRr", check arithmetic', () {
+      final answerRe = RegExp(r'^(\d+)R(\d+)$');
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'div_with_remainder', i);
+        final parts = q.prompt.replaceAll(' = ?', '').split(' ÷ ');
+        final dividend = int.parse(parts[0]);
+        final divisor = int.parse(parts[1]);
+        final m = answerRe.firstMatch(q.correctAnswer);
+        expect(m, isNotNull, reason: 'answer "${q.correctAnswer}" not qRr');
+        final quotient = int.parse(m!.group(1)!);
+        final remainder = int.parse(m.group(2)!);
+        expect(divisor, inInclusiveRange(2, 9));
+        expect(remainder, inInclusiveRange(1, divisor - 1));
+        expect(dividend, divisor * quotient + remainder);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+
+    test('mult_4digit_by_1digit: a∈[1000,9999], b∈[2,9], product correct', () {
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'mult_4digit_by_1digit', i);
+        final parts = q.prompt.replaceAll(' = ?', '').split(' × ');
+        final a = int.parse(parts[0]);
+        final b = int.parse(parts[1]);
+        expect(a, inInclusiveRange(1000, 9999));
+        expect(b, inInclusiveRange(2, 9));
+        expect(a * b, int.parse(q.correctAnswer));
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+
+    test('mult_2digit_by_2digit: a, b ∈ [10,99], product correct', () {
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'mult_2digit_by_2digit', i);
+        final parts = q.prompt.replaceAll(' = ?', '').split(' × ');
+        final a = int.parse(parts[0]);
+        final b = int.parse(parts[1]);
+        expect(a, inInclusiveRange(10, 99));
+        expect(b, inInclusiveRange(10, 99));
+        expect(a * b, int.parse(q.correctAnswer));
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+
+    test('mult_multidigit_standard_alg: shape mix, product correct', () {
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'mult_multidigit_standard_alg', i);
+        final parts = q.prompt.replaceAll(' = ?', '').split(' × ');
+        final a = int.parse(parts[0]);
+        final b = int.parse(parts[1]);
+        // Both operands ≥ 2 digits so this never collapses to a "facts" case.
+        expect(a, greaterThanOrEqualTo(10));
+        expect(b, greaterThanOrEqualTo(10));
+        expect(a * b, int.parse(q.correctAnswer));
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+
+    test('div_4digit_by_1digit: exact, dividend 4-digit, divisor ∈ [2,9]', () {
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'div_4digit_by_1digit', i);
+        final parts = q.prompt.replaceAll(' = ?', '').split(' ÷ ');
+        final dividend = int.parse(parts[0]);
+        final divisor = int.parse(parts[1]);
+        final quotient = int.parse(q.correctAnswer);
+        expect(dividend, inInclusiveRange(1000, 9999));
+        expect(divisor, inInclusiveRange(2, 9));
+        expect(divisor * quotient, dividend);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+
+    test('div_4digit_by_2digit: exact, dividend 4-digit, divisor ∈ [11,99]',
+        () {
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'div_4digit_by_2digit', i);
+        final parts = q.prompt.replaceAll(' = ?', '').split(' ÷ ');
+        final dividend = int.parse(parts[0]);
+        final divisor = int.parse(parts[1]);
+        final quotient = int.parse(q.correctAnswer);
+        expect(dividend, inInclusiveRange(1000, 9999));
+        expect(divisor, inInclusiveRange(11, 99));
+        expect(divisor * quotient, dividend);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
   group('Fractions', () {
     test('fraction_a_over_b: proper fraction + bar diagram', () {
       for (var i = 0; i < _iterations; i++) {

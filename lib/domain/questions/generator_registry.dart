@@ -59,6 +59,12 @@ class GeneratorRegistry {
     // Multiplication / division
     'mult_facts_within_100': multFactsWithin100,
     'div_facts_within_100': divFactsWithin100,
+    'div_with_remainder': divWithRemainder,
+    'mult_4digit_by_1digit': mult4digitBy1digit,
+    'mult_2digit_by_2digit': mult2digitBy2digit,
+    'mult_multidigit_standard_alg': multMultidigitStandardAlg,
+    'div_4digit_by_1digit': div4digitBy1digit,
+    'div_4digit_by_2digit': div4digitBy2digit,
     // Fractions
     'fraction_a_over_b': fractionAOverB,
     'compare_fractions_same_denom': compareFractionsSameDenom,
