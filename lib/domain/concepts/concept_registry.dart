@@ -809,7 +809,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'add_word_problems_within_100',
     name: '+/− word problems (100)',
-    shortLabel: '+/− word problems (100)',
+    shortLabel: '+ word',
     categoryId: 'add_sub',
     primaryGrade: 2,
     prereqIds: ['add_within_100', 'sub_within_100'],

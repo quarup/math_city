@@ -108,6 +108,7 @@ const _shortLabelOverrides = <String, String>{
   'add_fractions_like_denom': '+ frac',
   'time_to_hour_half': 'clock ½h',
   'time_to_5_min': 'clock 5m',
+  'add_word_problems_within_100': '+ word',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.

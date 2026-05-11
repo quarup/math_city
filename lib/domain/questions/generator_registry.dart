@@ -5,6 +5,7 @@ import 'package:math_city/domain/questions/generators/add_sub_generators.dart';
 import 'package:math_city/domain/questions/generators/fraction_generators.dart';
 import 'package:math_city/domain/questions/generators/mult_div_generators.dart';
 import 'package:math_city/domain/questions/generators/time_generators.dart';
+import 'package:math_city/domain/questions/word_problems/word_problem_generators.dart';
 
 /// A pure function that produces one question for a given concept.
 typedef QuestionGenerator = GeneratedQuestion Function(Random rand);
@@ -73,5 +74,7 @@ class GeneratorRegistry {
     // Time
     'time_to_hour_half': timeToHourHalf,
     'time_to_5_min': timeTo5Min,
+    // Word problems
+    'add_word_problems_within_100': addWordProblemsWithin100,
   };
 }
