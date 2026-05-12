@@ -4,6 +4,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_city/domain/concepts/dag_engine.dart';
+import 'package:math_city/domain/questions/answer_check.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
 import 'package:math_city/presentation/spin/spin_screen.dart';
 import 'package:math_city/presentation/theme/app_palette.dart';
@@ -13,7 +14,7 @@ class ResultScreen extends ConsumerStatefulWidget {
   const ResultScreen({
     required this.question,
     required this.selectedAnswer,
-    required this.isCorrect,
+    required this.outcome,
     required this.starsEarned,
     this.unlockEvent,
     this.debugMode = false,
@@ -22,7 +23,12 @@ class ResultScreen extends ConsumerStatefulWidget {
 
   final GeneratedQuestion question;
   final String selectedAnswer;
-  final bool isCorrect;
+
+  /// Three-way classification of [selectedAnswer] vs the question's
+  /// canonical answer (see `answer_check.dart`). `canonical` and
+  /// `equivalentNonCanonical` both render the success state; the latter
+  /// also surfaces a friendly nudge with the canonical form.
+  final AnswerOutcome outcome;
   final int starsEarned;
 
   /// Drip-feed unlock to celebrate. Caller is responsible for ensuring
@@ -119,7 +125,9 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final palette = theme.extension<AppPalette>()!;
-    final isCorrect = widget.isCorrect;
+    final isCorrect = widget.outcome != AnswerOutcome.wrong;
+    final isEquivalentNonCanonical =
+        widget.outcome == AnswerOutcome.equivalentNonCanonical;
 
     return Scaffold(
       backgroundColor:
@@ -158,6 +166,13 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                     stars: widget.starsEarned,
                     theme: theme,
                   ),
+                ),
+              ],
+              if (isEquivalentNonCanonical) ...[
+                const SizedBox(height: 16),
+                _EquivalentNudgeCard(
+                  playerAnswer: widget.selectedAnswer,
+                  canonical: widget.question.correctAnswer,
                 ),
               ],
               if (isCorrect && widget.unlockEvent != null) ...[
@@ -252,6 +267,54 @@ class _ExplanationCard extends StatelessWidget {
                   ),
                 ),
               ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Friendly nudge when the player's answer is mathematically equivalent
+/// but not in canonical (lowest-terms / textbook) form. Resolves [GitHub
+/// issue #2 option (c)] — we accepted the answer, now teach the
+/// simplification.
+class _EquivalentNudgeCard extends StatelessWidget {
+  const _EquivalentNudgeCard({
+    required this.playerAnswer,
+    required this.canonical,
+  });
+
+  final String playerAnswer;
+  final String canonical;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final palette = theme.extension<AppPalette>()!;
+    return Card(
+      color: theme.colorScheme.surfaceContainerLowest,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: palette.successGreenDeep, width: 1.5),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
+            Icon(
+              Icons.lightbulb_outline_rounded,
+              color: palette.successGreenDeep,
+              size: 32,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                "You said $playerAnswer — that's equal to $canonical!",
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
           ],
         ),
       ),

@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:math_city/domain/questions/diagram_spec.dart';
+import 'package:math_city/domain/questions/fraction.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
 import 'package:math_city/domain/questions/generator_registry.dart';
 
@@ -282,7 +283,10 @@ void main() {
         final b = int.parse(m.group(3)!);
         final d2 = int.parse(m.group(4)!);
         expect(d1, d2);
-        expect(q.correctAnswer, '${a + b}/$d1');
+        // Canonical answer is the reduced form (whole as int if denom→1).
+        final sum = Fraction(a + b, d1);
+        expect(q.correctAnswer, sum.toCanonical());
+        expect(q.answerFormat, AnswerFormat.fraction);
       }
     });
 

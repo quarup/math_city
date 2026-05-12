@@ -27,9 +27,10 @@ class NumberPadWidget extends StatefulWidget {
 class _NumberPadWidgetState extends State<NumberPadWidget> {
   String _input = '';
 
-  // 7 covers the worst case in v1: a 3-digit/3-digit fraction like
-  // `100/123` or a 4-character time like `12:55`.
-  static const _maxLength = 7;
+  // 8 covers the worst case in v1: a mixed-number answer with a 2-digit
+  // whole part and a 2-digit denominator, e.g. `12 3/12`. (3-digit/3-digit
+  // fractions like `100/123` and `12:55` times fit in 7.)
+  static const _maxLength = 8;
 
   void _append(String c) {
     if (_input.length >= _maxLength) return;
@@ -85,7 +86,12 @@ class _ExtraCharsRow extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 4),
             child: SizedBox(
               width: 80,
-              child: _DigitButton(label: c, onTap: () => onTap(c)),
+              child: _DigitButton(
+                // Space is invisible on a button; show "and" so the mixed-
+                // number separator key reads clearly to a kid.
+                label: c == ' ' ? 'and' : c,
+                onTap: () => onTap(c),
+              ),
             ),
           ),
       ],

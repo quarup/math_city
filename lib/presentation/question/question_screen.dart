@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_city/domain/concepts/concept_registry.dart';
 import 'package:math_city/domain/proficiency/proficiency_band.dart';
+import 'package:math_city/domain/questions/answer_check.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
 import 'package:math_city/presentation/diagrams/diagram_renderer.dart';
 import 'package:math_city/presentation/question/number_pad_widget.dart';
@@ -52,7 +53,8 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen> {
     if (_answered) return;
     _answered = true;
 
-    final isCorrect = answer == _question.correctAnswer;
+    final outcome = checkAnswer(_question, answer);
+    final isCorrect = outcome != AnswerOutcome.wrong;
 
     // Debug mode: skip every persisted side-effect (proficiency, drip-feed,
     // stars) so testing a generator doesn't pollute player state.
@@ -74,7 +76,7 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen> {
           builder: (_) => ResultScreen(
             question: _question,
             selectedAnswer: answer,
-            isCorrect: isCorrect,
+            outcome: outcome,
             starsEarned: stars,
             unlockEvent: isCorrect ? unlock : null,
             debugMode: widget.debugMode,
