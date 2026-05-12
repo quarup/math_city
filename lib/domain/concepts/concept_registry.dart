@@ -1306,7 +1306,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'equivalent_fractions_visual',
     name: 'Equal fractions (with picture)',
-    shortLabel: 'equiv frac',
+    shortLabel: 'equiv visual',
     categoryId: 'fractions',
     primaryGrade: 3,
     prereqIds: ['fraction_a_over_b'],
@@ -1317,7 +1317,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'equivalent_fractions_compute',
     name: 'Find equivalent fraction',
-    shortLabel: 'Find equivalent fraction',
+    shortLabel: 'find equiv',
     categoryId: 'fractions',
     primaryGrade: 4,
     prereqIds: ['equivalent_fractions_visual', 'mult_facts_within_100'],
@@ -1328,7 +1328,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'compare_fractions_same_denom',
     name: 'Compare (same bottom)',
-    shortLabel: 'cmp frac',
+    shortLabel: 'cmp same d',
     categoryId: 'fractions',
     primaryGrade: 3,
     prereqIds: ['fraction_a_over_b'],
@@ -1339,7 +1339,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'compare_fractions_same_num',
     name: 'Compare (same top)',
-    shortLabel: 'Compare (same top)',
+    shortLabel: 'cmp same n',
     categoryId: 'fractions',
     primaryGrade: 3,
     prereqIds: ['fraction_a_over_b'],
@@ -1350,7 +1350,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'compare_fractions_unlike',
     name: 'Compare unlike fractions',
-    shortLabel: 'Compare unlike fractions',
+    shortLabel: 'cmp unlike',
     categoryId: 'fractions',
     primaryGrade: 4,
     prereqIds: ['equivalent_fractions_compute'],
@@ -1372,7 +1372,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'simplify_fraction',
     name: 'Simplify fractions',
-    shortLabel: 'Simplify fractions',
+    shortLabel: 'simplify',
     categoryId: 'fractions',
     primaryGrade: 4,
     prereqIds: ['equivalent_fractions_compute'],
@@ -1383,7 +1383,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'improper_to_mixed',
     name: 'Improper → mixed number',
-    shortLabel: 'Improper → mixed number',
+    shortLabel: '→ mixed',
     categoryId: 'fractions',
     primaryGrade: 4,
     prereqIds: ['fraction_a_over_b'],
@@ -1394,7 +1394,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'mixed_to_improper',
     name: 'Mixed number → improper',
-    shortLabel: 'Mixed number → improper',
+    shortLabel: '→ improper',
     categoryId: 'fractions',
     primaryGrade: 4,
     prereqIds: ['improper_to_mixed'],
@@ -1416,7 +1416,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'sub_fractions_like_denom',
     name: 'Subtract fractions (same bottom)',
-    shortLabel: 'Subtract fractions (same bottom)',
+    shortLabel: '− frac',
     categoryId: 'fractions',
     primaryGrade: 4,
     prereqIds: ['add_fractions_like_denom'],
@@ -1449,7 +1449,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'mult_fraction_by_whole',
     name: 'Fraction × whole number',
-    shortLabel: 'Fraction × whole number',
+    shortLabel: 'frac × N',
     categoryId: 'fractions',
     primaryGrade: 4,
     prereqIds: ['fraction_a_over_b', 'mult_facts_within_100'],
@@ -1460,7 +1460,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'add_fractions_unlike_denom',
     name: 'Add fractions (unlike)',
-    shortLabel: 'Add fractions (unlike)',
+    shortLabel: '+ unlike',
     categoryId: 'fractions',
     primaryGrade: 5,
     prereqIds: ['add_fractions_like_denom', 'equivalent_fractions_compute'],
@@ -1471,7 +1471,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'sub_fractions_unlike_denom',
     name: 'Subtract fractions (unlike)',
-    shortLabel: 'Subtract fractions (unlike)',
+    shortLabel: '− unlike',
     categoryId: 'fractions',
     primaryGrade: 5,
     prereqIds: ['add_fractions_unlike_denom'],
@@ -1504,7 +1504,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'fraction_as_division',
     name: 'Fraction as a ÷ b',
-    shortLabel: 'Fraction as a ÷ b',
+    shortLabel: '÷ as frac',
     categoryId: 'fractions',
     primaryGrade: 5,
     prereqIds: ['div_facts_within_100', 'fraction_a_over_b'],
@@ -1515,7 +1515,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'mult_fractions_proper',
     name: 'Fraction × fraction',
-    shortLabel: 'Fraction × fraction',
+    shortLabel: 'frac × frac',
     categoryId: 'fractions',
     primaryGrade: 5,
     prereqIds: ['mult_fraction_by_whole'],
@@ -1548,7 +1548,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'div_unit_fraction_by_whole',
     name: 'Unit fraction ÷ whole',
-    shortLabel: 'Unit fraction ÷ whole',
+    shortLabel: '1/n ÷ N',
     categoryId: 'fractions',
     primaryGrade: 5,
     prereqIds: ['fraction_a_over_b', 'div_facts_within_100'],
@@ -1559,7 +1559,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'div_whole_by_unit_fraction',
     name: 'Whole ÷ unit fraction',
-    shortLabel: 'Whole ÷ unit fraction',
+    shortLabel: 'N ÷ 1/n',
     categoryId: 'fractions',
     primaryGrade: 5,
     prereqIds: ['div_unit_fraction_by_whole'],
@@ -1570,7 +1570,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'div_fraction_by_fraction',
     name: 'Fraction ÷ fraction',
-    shortLabel: 'Fraction ÷ fraction',
+    shortLabel: 'frac ÷ frac',
     categoryId: 'fractions',
     primaryGrade: 6,
     prereqIds: ['div_unit_fraction_by_whole', 'div_whole_by_unit_fraction', 'mult_fractions_proper'],
