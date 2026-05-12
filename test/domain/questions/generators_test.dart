@@ -470,6 +470,41 @@ void main() {
         expect(q.correctAnswer, diff.toCanonical());
       }
     });
+
+    test('mult_fraction_by_whole: n × a/b matches product, reduced', () {
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'mult_fraction_by_whole', i);
+        final m = RegExp(
+          r'(\d+) × (\d+)/(\d+) = \?',
+        ).firstMatch(q.prompt)!;
+        final w = int.parse(m.group(1)!);
+        final n = int.parse(m.group(2)!);
+        final d = int.parse(m.group(3)!);
+        final product = Fraction(w * n, d);
+        expect(q.correctAnswer, product.toCanonical());
+      }
+    });
+
+    test('mult_fractions_proper: area-grid spec matches operands', () {
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'mult_fractions_proper', i);
+        final m = RegExp(
+          r'(\d+)/(\d+) × (\d+)/(\d+) = \?',
+        ).firstMatch(q.prompt)!;
+        final a = int.parse(m.group(1)!);
+        final b = int.parse(m.group(2)!);
+        final c = int.parse(m.group(3)!);
+        final d = int.parse(m.group(4)!);
+        expect(q.diagram, isA<AreaGridSpec>());
+        final spec = q.diagram! as AreaGridSpec;
+        expect(spec.cols, b);
+        expect(spec.rows, d);
+        expect(spec.shadedCols, a);
+        expect(spec.shadedRows, c);
+        final product = Fraction(a * c, b * d);
+        expect(q.correctAnswer, product.toCanonical());
+      }
+    });
   });
 
   group('Time-telling', () {

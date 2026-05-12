@@ -595,3 +595,80 @@ GeneratedQuestion subFractionsUnlikeDenom(Random rand) {
     answerFormat: AnswerFormat.fraction,
   );
 }
+
+/// Multiply a whole number by a proper fraction: n × a/b = (n·a)/b,
+/// displayed in reduced (whole-when-whole) form.
+GeneratedQuestion multFractionByWhole(Random rand) {
+  final whole = rand.nextInt(8) + 2; // 2..9
+  final denominator = rand.nextInt(7) + 2; // 2..8
+  final numerator = rand.nextInt(denominator - 1) + 1; // proper
+  final productF = Fraction(whole * numerator, denominator);
+  final correct = productF.toCanonical();
+  final distractors = _fractionDistractors(
+    productF,
+    [
+      '$numerator/${whole * denominator}', // multiplied denom instead of num
+      '${whole + numerator}/$denominator', // added instead of multiplied
+      '${whole * numerator}/${whole * denominator}', // multiplied both
+      '${whole * numerator + 1}/$denominator', // off-by-one num
+      '${whole * numerator}/${denominator + 1}', // off-by-one denom
+    ],
+    rand,
+  );
+  return GeneratedQuestion(
+    conceptId: 'mult_fraction_by_whole',
+    prompt: '$whole × $numerator/$denominator = ?',
+    correctAnswer: correct,
+    distractors: distractors,
+    explanation: [
+      'Top × whole: $whole × $numerator = ${whole * numerator}.',
+      'Bottom stays the same: $denominator.',
+      'Result: ${whole * numerator}/$denominator.',
+      if (correct != '${whole * numerator}/$denominator')
+        'Simplified, that is $correct.',
+    ],
+    answerFormat: AnswerFormat.fraction,
+  );
+}
+
+/// Multiply two proper fractions: (a/b) × (c/d) = (a·c)/(b·d), reduced.
+/// Renders an area-grid diagram showing the product as the deepest-shaded
+/// rectangle.
+GeneratedQuestion multFractionsProper(Random rand) {
+  final b = rand.nextInt(4) + 2; // 2..5
+  final d = rand.nextInt(4) + 2; // 2..5
+  final a = rand.nextInt(b - 1) + 1; // 1..b-1
+  final c = rand.nextInt(d - 1) + 1; // 1..d-1
+  final productF = Fraction(a * c, b * d);
+  final correct = productF.toCanonical();
+  final distractors = _fractionDistractors(
+    productF,
+    [
+      '${a + c}/${b + d}', // added everything
+      '${a * c}/${b + d}', // multiplied top, added bottom
+      '${a + c}/${b * d}', // added top, multiplied bottom
+      '${a * c + 1}/${b * d}', // off-by-one num
+      '${a * c}/${b * d + 1}', // off-by-one denom
+    ],
+    rand,
+  );
+  return GeneratedQuestion(
+    conceptId: 'mult_fractions_proper',
+    prompt: '$a/$b × $c/$d = ?',
+    diagram: AreaGridSpec(
+      rows: d,
+      cols: b,
+      shadedRows: c,
+      shadedCols: a,
+    ),
+    correctAnswer: correct,
+    distractors: distractors,
+    explanation: [
+      'Multiply the tops: $a × $c = ${a * c}.',
+      'Multiply the bottoms: $b × $d = ${b * d}.',
+      'So $a/$b × $c/$d = ${a * c}/${b * d}.',
+      if (correct != '${a * c}/${b * d}') 'Simplified, that is $correct.',
+    ],
+    answerFormat: AnswerFormat.fraction,
+  );
+}

@@ -51,6 +51,33 @@ class NumberLineSpec extends DiagramSpec {
   final List<NumberLineHop> hops;
 }
 
+/// A `rows × cols` grid where the top `shadedRows` rows and the left
+/// `shadedCols` columns are both shaded. The intersection cells (top-left
+/// `shadedRows × shadedCols` rectangle) are highlighted in a stronger
+/// color to depict the product of two fractions: a/cols × b/rows visually
+/// reads as the deepest-shaded rectangle out of the whole grid.
+class AreaGridSpec extends DiagramSpec {
+  const AreaGridSpec({
+    required this.rows,
+    required this.cols,
+    required this.shadedRows,
+    required this.shadedCols,
+  }) : assert(rows > 0 && cols > 0, 'rows and cols must be > 0'),
+       assert(
+         shadedRows >= 0 && shadedRows <= rows,
+         'shadedRows must be in 0..rows',
+       ),
+       assert(
+         shadedCols >= 0 && shadedCols <= cols,
+         'shadedCols must be in 0..cols',
+       );
+
+  final int rows;
+  final int cols;
+  final int shadedRows;
+  final int shadedCols;
+}
+
 /// A round analog clock face showing [hour] (1–12) and [minute] (0–59).
 class ClockSpec extends DiagramSpec {
   const ClockSpec({
