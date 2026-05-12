@@ -88,6 +88,13 @@ class GeneratorRegistry {
     'div_whole_by_unit_fraction': divWholeByUnitFraction,
     'div_fraction_by_fraction': divFractionByFraction,
     'fraction_as_division': fractionAsDivision,
+    'whole_number_as_fraction': wholeNumberAsFraction,
+    'add_mixed_like_denom': addMixedLikeDenom,
+    'sub_mixed_like_denom': subMixedLikeDenom,
+    'add_mixed_unlike_denom': addMixedUnlikeDenom,
+    'sub_mixed_unlike_denom': subMixedUnlikeDenom,
+    'mult_mixed_numbers': multMixedNumbers,
+    'mult_as_scaling': multAsScaling,
     // Time
     'time_to_hour_half': timeToHourHalf,
     'time_to_5_min': timeTo5Min,

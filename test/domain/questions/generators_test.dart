@@ -544,6 +544,136 @@ void main() {
       }
     });
 
+    test('whole_number_as_fraction: answer is n·d/d, exact-string shape', () {
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'whole_number_as_fraction', i);
+        final m = RegExp(
+          r'Write (\d+) as a fraction with denominator (\d+)',
+        ).firstMatch(q.prompt)!;
+        final n = int.parse(m.group(1)!);
+        final d = int.parse(m.group(2)!);
+        expect(q.correctAnswer, '${n * d}/$d');
+        expect(q.answerFormat, AnswerFormat.fraction);
+        expect(q.answerShape, AnswerShape.exactString);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+
+    test('add_mixed_like_denom: same-bottom sum matches improper add', () {
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'add_mixed_like_denom', i);
+        final m = RegExp(
+          r'(\d+) (\d+)/(\d+) \+ (\d+) (\d+)/(\d+) = \?',
+        ).firstMatch(q.prompt)!;
+        final w1 = int.parse(m.group(1)!);
+        final n1 = int.parse(m.group(2)!);
+        final d1 = int.parse(m.group(3)!);
+        final w2 = int.parse(m.group(4)!);
+        final n2 = int.parse(m.group(5)!);
+        final d2 = int.parse(m.group(6)!);
+        expect(d1, d2);
+        final sum = Fraction(w1 * d1 + n1, d1) + Fraction(w2 * d2 + n2, d2);
+        expect(q.correctAnswer, sum.toMixed());
+        expect(q.answerFormat, AnswerFormat.mixedNumber);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+
+    test('sub_mixed_like_denom: result ≥ 0, like denoms', () {
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'sub_mixed_like_denom', i);
+        final m = RegExp(
+          r'(\d+) (\d+)/(\d+) − (\d+) (\d+)/(\d+) = \?',
+        ).firstMatch(q.prompt)!;
+        final w1 = int.parse(m.group(1)!);
+        final n1 = int.parse(m.group(2)!);
+        final d1 = int.parse(m.group(3)!);
+        final w2 = int.parse(m.group(4)!);
+        final n2 = int.parse(m.group(5)!);
+        final d2 = int.parse(m.group(6)!);
+        expect(d1, d2);
+        final diff = Fraction(w1 * d1 + n1, d1) - Fraction(w2 * d2 + n2, d2);
+        expect(diff.numerator, greaterThan(0));
+        expect(q.correctAnswer, diff.toMixed());
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+
+    test('add_mixed_unlike_denom: unlike denoms, mixed-form answer', () {
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'add_mixed_unlike_denom', i);
+        final m = RegExp(
+          r'(\d+) (\d+)/(\d+) \+ (\d+) (\d+)/(\d+) = \?',
+        ).firstMatch(q.prompt)!;
+        final w1 = int.parse(m.group(1)!);
+        final n1 = int.parse(m.group(2)!);
+        final d1 = int.parse(m.group(3)!);
+        final w2 = int.parse(m.group(4)!);
+        final n2 = int.parse(m.group(5)!);
+        final d2 = int.parse(m.group(6)!);
+        expect(d1, isNot(d2));
+        final sum = Fraction(w1 * d1 + n1, d1) + Fraction(w2 * d2 + n2, d2);
+        expect(q.correctAnswer, sum.toMixed());
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+
+    test('sub_mixed_unlike_denom: unlike denoms, result > 0', () {
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'sub_mixed_unlike_denom', i);
+        final m = RegExp(
+          r'(\d+) (\d+)/(\d+) − (\d+) (\d+)/(\d+) = \?',
+        ).firstMatch(q.prompt)!;
+        final w1 = int.parse(m.group(1)!);
+        final n1 = int.parse(m.group(2)!);
+        final d1 = int.parse(m.group(3)!);
+        final w2 = int.parse(m.group(4)!);
+        final n2 = int.parse(m.group(5)!);
+        final d2 = int.parse(m.group(6)!);
+        expect(d1, isNot(d2));
+        final diff = Fraction(w1 * d1 + n1, d1) - Fraction(w2 * d2 + n2, d2);
+        expect(diff.numerator, greaterThan(0));
+        expect(q.correctAnswer, diff.toMixed());
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+
+    test('mult_mixed_numbers: product matches improper × improper', () {
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'mult_mixed_numbers', i);
+        final m = RegExp(
+          r'(\d+) (\d+)/(\d+) × (\d+) (\d+)/(\d+) = \?',
+        ).firstMatch(q.prompt)!;
+        final w1 = int.parse(m.group(1)!);
+        final n1 = int.parse(m.group(2)!);
+        final d1 = int.parse(m.group(3)!);
+        final w2 = int.parse(m.group(4)!);
+        final n2 = int.parse(m.group(5)!);
+        final d2 = int.parse(m.group(6)!);
+        final product = Fraction(w1 * d1 + n1, d1) * Fraction(w2 * d2 + n2, d2);
+        expect(q.correctAnswer, product.toMixed());
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+
+    test('mult_as_scaling: answer matches direction of the fraction factor', () {
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'mult_as_scaling', i);
+        final m = RegExp(
+          r'(\d+) × (\d+)/(\d+) is ___ than',
+        ).firstMatch(q.prompt)!;
+        final num = int.parse(m.group(2)!);
+        final den = int.parse(m.group(3)!);
+        final expected = num < den
+            ? 'smaller'
+            : num > den
+                ? 'bigger'
+                : 'the same';
+        expect(q.correctAnswer, expected);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+
     test('fraction_as_division: answer is cookies/kids, reduced, proper', () {
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'fraction_as_division', i);

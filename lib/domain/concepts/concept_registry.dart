@@ -1361,7 +1361,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'whole_number_as_fraction',
     name: 'Whole numbers as fractions',
-    shortLabel: 'Whole numbers as fractions',
+    shortLabel: 'N as frac',
     categoryId: 'fractions',
     primaryGrade: 3,
     prereqIds: ['fraction_a_over_b'],
@@ -1427,7 +1427,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'add_mixed_like_denom',
     name: 'Add mixed numbers (like)',
-    shortLabel: 'Add mixed numbers (like)',
+    shortLabel: '+ mixed',
     categoryId: 'fractions',
     primaryGrade: 4,
     prereqIds: ['add_fractions_like_denom', 'mixed_to_improper'],
@@ -1438,7 +1438,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'sub_mixed_like_denom',
     name: 'Subtract mixed numbers (like)',
-    shortLabel: 'Subtract mixed numbers (like)',
+    shortLabel: '− mixed',
     categoryId: 'fractions',
     primaryGrade: 4,
     prereqIds: ['sub_fractions_like_denom', 'mixed_to_improper'],
@@ -1482,7 +1482,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'add_mixed_unlike_denom',
     name: 'Add mixed (unlike)',
-    shortLabel: 'Add mixed (unlike)',
+    shortLabel: '+ mix unlk',
     categoryId: 'fractions',
     primaryGrade: 5,
     prereqIds: ['add_fractions_unlike_denom'],
@@ -1493,7 +1493,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'sub_mixed_unlike_denom',
     name: 'Subtract mixed (unlike)',
-    shortLabel: 'Subtract mixed (unlike)',
+    shortLabel: '− mix unlk',
     categoryId: 'fractions',
     primaryGrade: 5,
     prereqIds: ['sub_fractions_unlike_denom'],
@@ -1526,7 +1526,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'mult_mixed_numbers',
     name: '× with mixed numbers',
-    shortLabel: '× with mixed numbers',
+    shortLabel: 'mixed ×',
     categoryId: 'fractions',
     primaryGrade: 5,
     prereqIds: ['mult_fractions_proper', 'mixed_to_improper'],
@@ -1537,7 +1537,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'mult_as_scaling',
     name: 'Multiplication as scaling',
-    shortLabel: 'Multiplication as scaling',
+    shortLabel: 'scaling',
     categoryId: 'fractions',
     primaryGrade: 5,
     prereqIds: ['mult_fractions_proper'],

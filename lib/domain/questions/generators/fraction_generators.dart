@@ -780,6 +780,349 @@ GeneratedQuestion divFractionByFraction(Random rand) {
   );
 }
 
+/// Whole number as a fraction with a given denominator: write `n` as
+/// `(n·d)/d`. Form is fixed by the requested denominator, so shape is
+/// exactString.
+GeneratedQuestion wholeNumberAsFraction(Random rand) {
+  final n = rand.nextInt(7) + 2; // 2..8
+  final d = rand.nextInt(7) + 2; // 2..8
+  final correctNum = n * d;
+  final correct = '$correctNum/$d';
+  final correctF = Fraction(correctNum, d);
+  final distractors = _fractionDistractors(
+    correctF,
+    [
+      '$n/$d', // forgot to multiply
+      '$d/$n', // swapped
+      '${n + d}/$d', // added instead of multiplied
+      '$correctNum/${d + 1}',
+      '${correctNum + 1}/$d',
+    ],
+    rand,
+  );
+  return GeneratedQuestion(
+    conceptId: 'whole_number_as_fraction',
+    prompt: 'Write $n as a fraction with denominator $d.',
+    correctAnswer: correct,
+    distractors: distractors,
+    explanation: [
+      '$n is the same as $n wholes.',
+      'Each whole = $d/$d, so $n wholes = $n × $d/$d.',
+      'Top: $n × $d = $correctNum.',
+      'So $n = $correctNum/$d.',
+    ],
+    answerFormat: AnswerFormat.fraction,
+    answerShape: AnswerShape.exactString,
+  );
+}
+
+/// Add two mixed numbers with the same denominator: combine wholes and
+/// add the proper parts (handling carry into the whole when the proper
+/// sum exceeds 1). Canonical is the reduced mixed-number form.
+GeneratedQuestion addMixedLikeDenom(Random rand) {
+  final denominator = rand.nextInt(6) + 3; // 3..8
+  final w1 = rand.nextInt(4) + 1; // 1..4
+  final w2 = rand.nextInt(4) + 1;
+  final n1 = rand.nextInt(denominator - 1) + 1;
+  final n2 = rand.nextInt(denominator - 1) + 1;
+  final improperA = w1 * denominator + n1;
+  final improperB = w2 * denominator + n2;
+  final sumNum = improperA + improperB;
+  final sumF = Fraction(sumNum, denominator);
+  final correct = sumF.toMixed();
+  final rawSumTop = n1 + n2; // ones-place sum before carry
+  final carried = rawSumTop >= denominator;
+  final distractors = _fractionDistractors(
+    sumF,
+    [
+      // Forgot to carry: kept top sum even when ≥ denominator.
+      if (carried) '${w1 + w2} $rawSumTop/$denominator',
+      // Doubled denominator misconception.
+      '${w1 + w2} $rawSumTop/${denominator * 2}',
+      // Added everything indiscriminately.
+      '${w1 + w2 + 1} $rawSumTop/$denominator',
+      // Off-by-one whole.
+      '${w1 + w2} ${n1 + n2 - 1}/$denominator',
+    ],
+    rand,
+  );
+  return GeneratedQuestion(
+    conceptId: 'add_mixed_like_denom',
+    prompt: '$w1 $n1/$denominator + $w2 $n2/$denominator = ?',
+    correctAnswer: correct,
+    distractors: distractors,
+    explanation: [
+      'Add the wholes: $w1 + $w2 = ${w1 + w2}.',
+      'Add the tops: $n1 + $n2 = $rawSumTop, over $denominator.',
+      if (carried)
+        'Top is $rawSumTop ≥ $denominator → carry 1 to the wholes.',
+      'Sum: $correct.',
+    ],
+    answerFormat: AnswerFormat.mixedNumber,
+  );
+}
+
+/// Subtract two mixed numbers with the same denominator. Generator
+/// guarantees the result is non-negative.
+GeneratedQuestion subMixedLikeDenom(Random rand) {
+  final denominator = rand.nextInt(6) + 3; // 3..8
+  // Build (w1, n1) − (w2, n2) so the value of the first is ≥ the second.
+  var w1 = 0;
+  var w2 = 0;
+  var n1 = 0;
+  var n2 = 0;
+  var improperA = 0;
+  var improperB = 1; // forces first loop iteration
+  while (improperA <= improperB) {
+    w1 = rand.nextInt(4) + 2; // 2..5
+    w2 = rand.nextInt(w1) + 1; // 1..w1
+    n1 = rand.nextInt(denominator - 1) + 1;
+    n2 = rand.nextInt(denominator - 1) + 1;
+    improperA = w1 * denominator + n1;
+    improperB = w2 * denominator + n2;
+  }
+  final diffNum = improperA - improperB;
+  final diffF = Fraction(diffNum, denominator);
+  final correct = diffF.toMixed();
+  final borrowed = n1 < n2;
+  final wholeDiff = w1 - w2;
+  final distractors = _fractionDistractors(
+    diffF,
+    [
+      // Forgot to borrow: subtracted tops anyway, getting a negative top.
+      if (borrowed && wholeDiff > 0)
+        '$wholeDiff ${(n1 - n2).abs()}/$denominator',
+      // Added the tops instead of subtracting (or treated borrow as add).
+      if (wholeDiff > 0) '$wholeDiff ${n1 + n2}/$denominator',
+      // Doubled denominator misconception.
+      if (wholeDiff > 0)
+        '$wholeDiff ${(n1 - n2).abs()}/${denominator * 2}',
+      // Just the whole-part difference, ignoring fractional parts.
+      '$wholeDiff',
+      // Off-by-one numerator on improper form.
+      '${diffNum + 1}/$denominator',
+    ],
+    rand,
+  );
+  return GeneratedQuestion(
+    conceptId: 'sub_mixed_like_denom',
+    prompt: '$w1 $n1/$denominator − $w2 $n2/$denominator = ?',
+    correctAnswer: correct,
+    distractors: distractors,
+    explanation: [
+      if (borrowed) 'Top: $n1 < $n2 → borrow 1 from the wholes.',
+      if (borrowed)
+        'Now: ${w1 - 1} − $w2 wholes, ${n1 + denominator} − $n2 tops.'
+      else
+        '$w1 − $w2 = ${w1 - w2}; $n1 − $n2 = ${n1 - n2}.',
+      'Result: $correct.',
+    ],
+    answerFormat: AnswerFormat.mixedNumber,
+  );
+}
+
+/// Add two mixed numbers with different denominators. Reuses the LCM
+/// common-denominator strategy, then re-mixes.
+GeneratedQuestion addMixedUnlikeDenom(Random rand) {
+  var d1 = 0;
+  var d2 = 0;
+  while (d1 == d2) {
+    d1 = rand.nextInt(5) + 2; // 2..6
+    d2 = rand.nextInt(5) + 2;
+  }
+  final w1 = rand.nextInt(3) + 1; // 1..3
+  final w2 = rand.nextInt(3) + 1;
+  final n1 = rand.nextInt(d1 - 1) + 1;
+  final n2 = rand.nextInt(d2 - 1) + 1;
+  final improperA = w1 * d1 + n1;
+  final improperB = w2 * d2 + n2;
+  final common = lcm(d1, d2);
+  final scaledA = improperA * (common ~/ d1);
+  final scaledB = improperB * (common ~/ d2);
+  final sumNum = scaledA + scaledB;
+  final sumF = Fraction(sumNum, common);
+  final correct = sumF.toMixed();
+  final distractors = _fractionDistractors(
+    sumF,
+    [
+      // Added wholes; tops+tops, bottoms+bottoms misconception.
+      '${w1 + w2} ${n1 + n2}/${d1 + d2}',
+      // Added wholes; multiplied bottoms.
+      '${w1 + w2} ${n1 + n2}/${d1 * d2}',
+      // Just the wholes — forgot the fractional parts.
+      '${w1 + w2}',
+      // Off-by-one numerator on improper form.
+      '${sumNum + 1}/$common',
+    ],
+    rand,
+  );
+  return GeneratedQuestion(
+    conceptId: 'add_mixed_unlike_denom',
+    prompt: '$w1 $n1/$d1 + $w2 $n2/$d2 = ?',
+    correctAnswer: correct,
+    distractors: distractors,
+    explanation: [
+      'Common bottom is $common.',
+      '$w1 $n1/$d1 = $scaledA/$common.',
+      '$w2 $n2/$d2 = $scaledB/$common.',
+      '$scaledA + $scaledB = $sumNum, so the sum is $sumNum/$common.',
+      'As a mixed number: $correct.',
+    ],
+    answerFormat: AnswerFormat.mixedNumber,
+  );
+}
+
+/// Subtract two mixed numbers with different denominators. Result ≥ 0.
+GeneratedQuestion subMixedUnlikeDenom(Random rand) {
+  var d1 = 0;
+  var d2 = 0;
+  var n1 = 0;
+  var n2 = 0;
+  var w1 = 0;
+  var w2 = 0;
+  var common = 0;
+  var scaledA = 0;
+  var scaledB = 1;
+  // Loop until denoms differ, both fractional parts are proper, and
+  // scaledA > scaledB so the result is strictly positive.
+  while (d1 == d2 || scaledA <= scaledB) {
+    d1 = rand.nextInt(5) + 2;
+    d2 = rand.nextInt(5) + 2;
+    if (d1 == d2) continue;
+    w1 = rand.nextInt(3) + 2; // 2..4
+    w2 = rand.nextInt(w1) + 1; // 1..w1
+    n1 = rand.nextInt(d1 - 1) + 1;
+    n2 = rand.nextInt(d2 - 1) + 1;
+    common = lcm(d1, d2);
+    scaledA = (w1 * d1 + n1) * (common ~/ d1);
+    scaledB = (w2 * d2 + n2) * (common ~/ d2);
+  }
+  final diffNum = scaledA - scaledB;
+  final diffF = Fraction(diffNum, common);
+  final correct = diffF.toMixed();
+  final fractionalDiffAbs = (n1 * d2 - n2 * d1).abs();
+  final distractors = _fractionDistractors(
+    diffF,
+    [
+      // Subtracted wholes; tops−tops, bottoms−bottoms misconception.
+      () {
+        final dDiff = (d1 - d2).abs() == 0 ? d1 : (d1 - d2).abs();
+        return '${w1 - w2} ${(n1 - n2).abs()}/$dDiff';
+      }(),
+      // Subtracted wholes; multiplied bottoms.
+      '${w1 - w2} ${(n1 - n2).abs()}/${d1 * d2}',
+      // Just the whole-part difference.
+      '${w1 - w2}',
+      // Off-by-one numerator on improper form.
+      '${diffNum + 1}/$common',
+      // Common-bottom found but tops subtracted directly.
+      '${w1 - w2} $fractionalDiffAbs/$common',
+    ],
+    rand,
+  );
+  return GeneratedQuestion(
+    conceptId: 'sub_mixed_unlike_denom',
+    prompt: '$w1 $n1/$d1 − $w2 $n2/$d2 = ?',
+    correctAnswer: correct,
+    distractors: distractors,
+    explanation: [
+      'Common bottom is $common.',
+      '$w1 $n1/$d1 = $scaledA/$common.',
+      '$w2 $n2/$d2 = $scaledB/$common.',
+      '$scaledA − $scaledB = $diffNum, so the result is $diffNum/$common.',
+      'As a mixed number: $correct.',
+    ],
+    answerFormat: AnswerFormat.mixedNumber,
+  );
+}
+
+/// Multiply two mixed numbers: convert each to improper, multiply, reduce
+/// back to mixed form. Operands chosen small so the answer stays kid-
+/// readable.
+GeneratedQuestion multMixedNumbers(Random rand) {
+  final d1 = rand.nextInt(4) + 2; // 2..5
+  final d2 = rand.nextInt(4) + 2;
+  final w1 = rand.nextInt(3) + 1; // 1..3
+  final w2 = rand.nextInt(3) + 1;
+  final n1 = rand.nextInt(d1 - 1) + 1;
+  final n2 = rand.nextInt(d2 - 1) + 1;
+  final improperA = w1 * d1 + n1;
+  final improperB = w2 * d2 + n2;
+  final productF = Fraction(improperA * improperB, d1 * d2);
+  final correct = productF.toMixed();
+  final distractors = _fractionDistractors(
+    productF,
+    [
+      // Distributed naively: multiplied wholes, multiplied fractions,
+      // glued them back together (a real misconception for this skill).
+      '${w1 * w2} ${n1 * n2}/${d1 * d2}',
+      // Forgot to convert: multiplied fractions only, ignored wholes.
+      '${n1 * n2}/${d1 * d2}',
+      // Multiplied wholes only.
+      '${w1 * w2}',
+      // Off-by-one numerator on the improper-form product.
+      '${improperA * improperB + 1}/${d1 * d2}',
+    ],
+    rand,
+  );
+  return GeneratedQuestion(
+    conceptId: 'mult_mixed_numbers',
+    prompt: '$w1 $n1/$d1 × $w2 $n2/$d2 = ?',
+    correctAnswer: correct,
+    distractors: distractors,
+    explanation: [
+      'Make them improper: $improperA/$d1 and $improperB/$d2.',
+      'Tops: $improperA × $improperB = ${improperA * improperB}.',
+      'Bottoms: $d1 × $d2 = ${d1 * d2}.',
+      'Product: ${improperA * improperB}/${d1 * d2} = $correct.',
+    ],
+    answerFormat: AnswerFormat.mixedNumber,
+  );
+}
+
+/// Multiplication as scaling: without computing, decide whether N × a/b
+/// is bigger, smaller, or equal to N. Multiple choice over fixed strings.
+GeneratedQuestion multAsScaling(Random rand) {
+  final n = rand.nextInt(8) + 2; // 2..9 (the "whole" anchor)
+  final denominator = rand.nextInt(6) + 2; // 2..7
+  // Choose factor as either proper (< 1), improper > 1, or = 1.
+  // Bias to proper/improper because = 1 is the rarer case.
+  final flavor = rand.nextInt(5); // 0..4
+  final int numerator;
+  final String result;
+  if (flavor == 0) {
+    // Equal: numerator == denominator (factor = 1).
+    numerator = denominator;
+    result = 'the same';
+  } else if (flavor < 3) {
+    // Proper fraction (< 1): smaller.
+    numerator = rand.nextInt(denominator - 1) + 1;
+    result = 'smaller';
+  } else {
+    // Improper (> 1): bigger.
+    numerator = denominator + rand.nextInt(denominator - 1) + 1;
+    result = 'bigger';
+  }
+  const pool = ['bigger', 'smaller', 'the same', "can't tell"];
+  return GeneratedQuestion(
+    conceptId: 'mult_as_scaling',
+    prompt:
+        'Without computing: $n × $numerator/$denominator is ___ than $n.',
+    correctAnswer: result,
+    distractors: pool.where((s) => s != result).toList(),
+    explanation: [
+      if (numerator < denominator)
+        '$numerator/$denominator is less than 1.',
+      if (numerator > denominator)
+        '$numerator/$denominator is more than 1.',
+      if (numerator == denominator)
+        '$numerator/$denominator equals 1 (top = bottom).',
+      '× by less than 1 shrinks; × by more than 1 grows; × by 1 keeps it.',
+      'So $n × $numerator/$denominator is $result than $n.',
+    ],
+  );
+}
+
 /// Fraction as division — CCSS framing. "Y kids share X cookies equally"
 /// → X/Y per kid. Reuses the word-problem name & edible-item pools so the
 /// scenario reads naturally.
