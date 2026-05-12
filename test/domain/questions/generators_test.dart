@@ -325,7 +325,7 @@ void main() {
         expect(targetD % baseD, 0, reason: 'target must be a multiple');
         final multiplier = targetD ~/ baseD;
         expect(q.correctAnswer, '${baseN * multiplier}/$targetD');
-        expect(q.requiresCanonicalForm, isTrue);
+        expect(q.answerShape, AnswerShape.exactString);
         _expectThreeDistinctDistractors(q);
       }
     });
@@ -382,7 +382,7 @@ void main() {
           final parts = q.correctAnswer.split('/');
           expect(_gcdInt(int.parse(parts[0]), int.parse(parts[1])), 1);
         }
-        expect(q.requiresCanonicalForm, isTrue);
+        expect(q.answerShape, AnswerShape.exactString);
       }
     });
 
@@ -401,7 +401,7 @@ void main() {
         final ans = Fraction.tryParse(q.correctAnswer)!;
         expect(ans.equalsByValue(Fraction(improperN, d)), isTrue);
         expect(q.answerFormat, AnswerFormat.mixedNumber);
-        expect(q.requiresCanonicalForm, isTrue);
+        expect(q.answerShape, AnswerShape.mixedForm);
         _expectThreeDistinctDistractors(q);
       }
     });
@@ -417,7 +417,7 @@ void main() {
         final d = int.parse(src.group(3)!);
         final improperN = w * d + p;
         expect(q.correctAnswer, '$improperN/$d');
-        expect(q.requiresCanonicalForm, isTrue);
+        expect(q.answerShape, AnswerShape.improperFraction);
         _expectThreeDistinctDistractors(q);
       }
     });

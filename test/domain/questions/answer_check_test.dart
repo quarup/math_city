@@ -5,7 +5,7 @@ import 'package:math_city/domain/questions/generated_question.dart';
 GeneratedQuestion _q(
   String correct, {
   AnswerFormat fmt = AnswerFormat.integer,
-  bool requiresCanonical = false,
+  AnswerShape shape = AnswerShape.any,
 }) => GeneratedQuestion(
   conceptId: 'test',
   prompt: 'test',
@@ -13,7 +13,7 @@ GeneratedQuestion _q(
   distractors: const ['a', 'b', 'c'],
   explanation: const [],
   answerFormat: fmt,
-  requiresCanonicalForm: requiresCanonical,
+  answerShape: shape,
 );
 
 void main() {
@@ -72,10 +72,14 @@ void main() {
       );
     });
 
-    test('requiresCanonicalForm rejects equivalents', () {
+    test('AnswerShape.exactString rejects equivalents', () {
       expect(
         checkAnswer(
-          _q('1/2', fmt: AnswerFormat.fraction, requiresCanonical: true),
+          _q(
+            '1/2',
+            fmt: AnswerFormat.fraction,
+            shape: AnswerShape.exactString,
+          ),
           '2/4',
         ),
         AnswerOutcome.wrong,
@@ -83,7 +87,11 @@ void main() {
       // Canonical still passes.
       expect(
         checkAnswer(
-          _q('1/2', fmt: AnswerFormat.fraction, requiresCanonical: true),
+          _q(
+            '1/2',
+            fmt: AnswerFormat.fraction,
+            shape: AnswerShape.exactString,
+          ),
           '1/2',
         ),
         AnswerOutcome.canonical,
@@ -112,15 +120,59 @@ void main() {
       );
     });
 
-    test('requiresCanonicalForm: rejects improper when mixed expected', () {
+    test('AnswerShape.mixedForm rejects improper-shape input', () {
       expect(
         checkAnswer(
           _q(
             '1 1/4',
             fmt: AnswerFormat.mixedNumber,
-            requiresCanonical: true,
+            shape: AnswerShape.mixedForm,
           ),
           '5/4',
+        ),
+        AnswerOutcome.wrong,
+      );
+    });
+
+    test('AnswerShape.mixedForm accepts simplified mixed equivalent', () {
+      // Canonical "3 2/4" — player types "3 1/2" (simplified mixed).
+      expect(
+        checkAnswer(
+          _q(
+            '3 2/4',
+            fmt: AnswerFormat.mixedNumber,
+            shape: AnswerShape.mixedForm,
+          ),
+          '3 1/2',
+        ),
+        AnswerOutcome.equivalentNonCanonical,
+      );
+    });
+
+    test('AnswerShape.improperFraction accepts simplified improper', () {
+      // Canonical "14/4" — player types "7/2" (simplified improper).
+      expect(
+        checkAnswer(
+          _q(
+            '14/4',
+            fmt: AnswerFormat.fraction,
+            shape: AnswerShape.improperFraction,
+          ),
+          '7/2',
+        ),
+        AnswerOutcome.equivalentNonCanonical,
+      );
+    });
+
+    test('AnswerShape.improperFraction rejects mixed-shape input', () {
+      expect(
+        checkAnswer(
+          _q(
+            '14/4',
+            fmt: AnswerFormat.fraction,
+            shape: AnswerShape.improperFraction,
+          ),
+          '3 1/2',
         ),
         AnswerOutcome.wrong,
       );

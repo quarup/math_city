@@ -62,9 +62,9 @@ List<String> _fractionDistractors(
 /// "What fraction is shaded?" — shows a fraction bar and asks for a/b.
 ///
 /// The canonical answer is the *visible* form on the bar (kid counts what
-/// they see). [GeneratedQuestion.requiresCanonicalForm] is `true` because
-/// this concept's lesson IS "count what's depicted" — simplification is
-/// a separate concept (`simplify_fraction`).
+/// they see). Shape: exactString because this concept's lesson IS "count
+/// what's depicted" — simplification is a separate concept
+/// (`simplify_fraction`).
 GeneratedQuestion fractionAOverB(Random rand) {
   final denominator = rand.nextInt(7) + 2; // 2..8
   final numerator = rand.nextInt(denominator - 1) + 1; // 1..denom-1 (proper)
@@ -95,7 +95,7 @@ GeneratedQuestion fractionAOverB(Random rand) {
       '$numerator of them are shaded, so it is $numerator/$denominator.',
     ],
     answerFormat: AnswerFormat.fraction,
-    requiresCanonicalForm: true,
+    answerShape: AnswerShape.exactString,
   );
 }
 
@@ -169,7 +169,7 @@ GeneratedQuestion equivalentFractionsVisual(Random rand) {
       'So $numerator/$denominator = $equivN/$equivD.',
     ],
     answerFormat: AnswerFormat.fraction,
-    requiresCanonicalForm: true,
+    answerShape: AnswerShape.exactString,
   );
 }
 
@@ -207,7 +207,7 @@ GeneratedQuestion equivalentFractionsCompute(Random rand) {
       'So $baseNum/$baseDen = $targetNum/$targetDen.',
     ],
     answerFormat: AnswerFormat.fraction,
-    requiresCanonicalForm: true,
+    answerShape: AnswerShape.exactString,
   );
 }
 
@@ -324,7 +324,7 @@ GeneratedQuestion simplifyFraction(Random rand) {
       'So $baseN/$baseD = $correct.',
     ],
     answerFormat: AnswerFormat.fraction,
-    requiresCanonicalForm: true,
+    answerShape: AnswerShape.exactString,
   );
 }
 
@@ -410,8 +410,10 @@ GeneratedQuestion subFractionsLikeDenom(Random rand) {
 }
 
 /// Convert an improper fraction (e.g. 7/4) to a mixed number (e.g. 1 3/4).
-/// requiresCanonicalForm: true — the lesson IS producing the mixed form;
-/// re-typing the improper would defeat it.
+/// Shape: mixedForm — the lesson IS producing the mixed form (re-typing
+/// the improper would defeat it), but within that, any simplified
+/// equivalent is accepted with a nudge (e.g. `3 1/2` for canonical
+/// `3 2/4`).
 GeneratedQuestion improperToMixed(Random rand) {
   // Choose mixed parts first, then derive the improper form. Ensures the
   // answer is always genuinely mixed (whole ≥ 1, proper part > 0).
@@ -465,13 +467,14 @@ GeneratedQuestion improperToMixed(Random rand) {
       'So $improperNum/$denominator = $whole and $properNum/$denominator.',
     ],
     answerFormat: AnswerFormat.mixedNumber,
-    requiresCanonicalForm: true,
+    answerShape: AnswerShape.mixedForm,
   );
 }
 
 /// Convert a mixed number (e.g. 1 3/4) to an improper fraction (e.g. 7/4).
-/// requiresCanonicalForm: true — the lesson IS producing the improper
-/// form; re-typing the mixed would defeat it.
+/// Shape: improperFraction — the lesson IS producing the single-fraction
+/// form, but any simplified equivalent in that shape is accepted with a
+/// nudge.
 GeneratedQuestion mixedToImproper(Random rand) {
   final whole = rand.nextInt(5) + 1; // 1..5
   final denominator = rand.nextInt(7) + 2; // 2..8
@@ -499,7 +502,7 @@ GeneratedQuestion mixedToImproper(Random rand) {
       'So $whole and $properNum/$denominator = $improperNum/$denominator.',
     ],
     answerFormat: AnswerFormat.fraction,
-    requiresCanonicalForm: true,
+    answerShape: AnswerShape.improperFraction,
   );
 }
 

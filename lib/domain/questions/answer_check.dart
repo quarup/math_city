@@ -12,21 +12,22 @@ enum AnswerOutcome {
   /// #2 option (c)] — accept, then nudge on the result screen.
   equivalentNonCanonical,
 
-  /// Player's input does not match canonically nor by value.
+  /// Player's input does not match canonically nor by value, OR matches by
+  /// value but in a disallowed surface form (e.g. typing the improper
+  /// fraction when the lesson asked for a mixed number).
   wrong,
 }
 
 /// Compares [playerAnswer] against [question]'s correct answer, honouring
 /// the question's [GeneratedQuestion.answerFormat] and
-/// [GeneratedQuestion.requiresCanonicalForm] settings.
+/// [GeneratedQuestion.answerShape] settings.
 ///
 /// Returns one of three outcomes:
 ///
 ///   * [AnswerOutcome.canonical] — exact string match, always accepted.
 ///   * [AnswerOutcome.equivalentNonCanonical] — same mathematical value
-///     under the question's answer format. Only possible when the format
-///     supports equivalence (`fraction`, `mixedNumber`) AND the question
-///     does NOT require canonical form.
+///     under the question's answer format, AND the input's surface form
+///     is allowed by the answer shape.
 ///   * [AnswerOutcome.wrong] — neither.
 ///
 /// Whitespace at the ends of [playerAnswer] is trimmed before comparison
@@ -36,10 +37,19 @@ AnswerOutcome checkAnswer(GeneratedQuestion question, String playerAnswer) {
   final input = playerAnswer.trim();
   if (input == question.correctAnswer) return AnswerOutcome.canonical;
 
-  // Canonical-required questions never accept equivalents — there the
-  // canonical form *is* the lesson (simplify, equivalent-with-given-
-  // denominator, mixed↔improper).
-  if (question.requiresCanonicalForm) return AnswerOutcome.wrong;
+  // Shape check: reject inputs whose surface form is not allowed for this
+  // question, even if their value matches.
+  switch (question.answerShape) {
+    case AnswerShape.exactString:
+      // Only the exact canonical string matches; we already failed that.
+      return AnswerOutcome.wrong;
+    case AnswerShape.any:
+      break;
+    case AnswerShape.mixedForm:
+      if (!_isMixedForm(input)) return AnswerOutcome.wrong;
+    case AnswerShape.improperFraction:
+      if (!_isImproperFractionForm(input)) return AnswerOutcome.wrong;
+  }
 
   switch (question.answerFormat) {
     case AnswerFormat.integer:
@@ -55,3 +65,10 @@ AnswerOutcome checkAnswer(GeneratedQuestion question, String playerAnswer) {
           : AnswerOutcome.wrong;
   }
 }
+
+final _mixedFormPattern = RegExp(r'^-?\d+\s+\d+/\d+$');
+final _improperFractionPattern = RegExp(r'^-?\d+/\d+$');
+
+bool _isMixedForm(String s) => _mixedFormPattern.hasMatch(s);
+bool _isImproperFractionForm(String s) =>
+    _improperFractionPattern.hasMatch(s);
