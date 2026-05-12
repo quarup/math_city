@@ -55,7 +55,7 @@ List<String> _fractionDistractors(
 }
 
 // ---------------------------------------------------------------------------
-// Phase 5 generators — kept, rewritten to use Fraction + AnswerFormat.
+// Generators
 // ---------------------------------------------------------------------------
 
 /// "What fraction is shaded?" — shows a fraction bar and asks for a/b.
@@ -170,6 +170,172 @@ GeneratedQuestion equivalentFractionsVisual(Random rand) {
     answerFormat: AnswerFormat.fraction,
     requiresCanonicalForm: true,
   );
+}
+
+/// "Find an equivalent fraction with denominator D." The kid has to figure
+/// out the multiplier themselves (vs `equivalent_fractions_visual` where
+/// the multiplier is stated). Canonical-required because D fixes the
+/// answer form.
+GeneratedQuestion equivalentFractionsCompute(Random rand) {
+  final baseDen = rand.nextInt(7) + 2; // 2..8
+  final baseNum = rand.nextInt(baseDen - 1) + 1; // proper
+  final multiplier = rand.nextInt(8) + 2; // 2..9
+  final targetDen = baseDen * multiplier;
+  final targetNum = baseNum * multiplier;
+  final correct = '$targetNum/$targetDen';
+  final distractors = _fractionDistractors(
+    Fraction(targetNum, targetDen),
+    [
+      '$baseNum/$targetDen', // forgot to scale numerator
+      '$targetNum/$baseDen', // forgot to scale denominator
+      '${targetNum + 1}/$targetDen',
+      '$targetNum/${targetDen + 1}',
+      '${baseNum + multiplier}/${baseDen + multiplier}', // added instead of multiplied
+    ],
+    rand,
+  );
+  return GeneratedQuestion(
+    conceptId: 'equivalent_fractions_compute',
+    prompt:
+        'Fill in the blank: $baseNum/$baseDen = ?/$targetDen',
+    correctAnswer: correct,
+    distractors: distractors,
+    explanation: [
+      'Bottoms: $baseDen × $multiplier = $targetDen.',
+      'Apply the same multiplier on top: $baseNum × $multiplier = $targetNum.',
+      'So $baseNum/$baseDen = $targetNum/$targetDen.',
+    ],
+    answerFormat: AnswerFormat.fraction,
+    requiresCanonicalForm: true,
+  );
+}
+
+/// Compare two fractions with the same numerator (e.g. 3/4 vs 3/7).
+/// Bigger denominator → smaller fraction. Answer is the larger of the two
+/// shown fractions.
+GeneratedQuestion compareFractionsSameNum(Random rand) {
+  final numerator = rand.nextInt(5) + 1; // 1..5
+  final d1 = rand.nextInt(7) + numerator + 1; // > num so the fraction is proper
+  int d2;
+  do {
+    d2 = rand.nextInt(7) + numerator + 1;
+  } while (d2 == d1);
+  final left = '$numerator/$d1';
+  final right = '$numerator/$d2';
+  final correct = d1 < d2 ? left : right; // smaller denom → bigger fraction
+  final wrong = d1 < d2 ? right : left;
+  return GeneratedQuestion(
+    conceptId: 'compare_fractions_same_num',
+    prompt: 'Which is bigger: $left or $right?',
+    correctAnswer: correct,
+    distractors: <String>[
+      wrong,
+      'They are equal',
+      'Cannot tell',
+    ],
+    explanation: [
+      'Both fractions have $numerator on top.',
+      'Smaller bottom = bigger pieces ⇒ bigger fraction.',
+      '${d1 < d2 ? '$d1 < $d2' : '$d2 < $d1'}, so $correct is bigger.',
+    ],
+  );
+}
+
+/// Compare two fractions with different numerators AND different
+/// denominators. Solved via cross-multiplication. Answer is the larger of
+/// the two shown fractions.
+GeneratedQuestion compareFractionsUnlike(Random rand) {
+  var n1 = 0;
+  var d1 = 0;
+  var n2 = 0;
+  var d2 = 0;
+  // Loop until we get two non-equivalent, non-trivially-comparable fractions.
+  while (d1 == d2 || n1 == n2 || n1 * d2 == n2 * d1) {
+    d1 = rand.nextInt(7) + 3; // 3..9
+    n1 = rand.nextInt(d1 - 1) + 1; // 1..d1-1
+    d2 = rand.nextInt(7) + 3;
+    n2 = rand.nextInt(d2 - 1) + 1;
+  }
+  final left = '$n1/$d1';
+  final right = '$n2/$d2';
+  final cross1 = n1 * d2;
+  final cross2 = n2 * d1;
+  final correct = cross1 > cross2 ? left : right;
+  final wrong = cross1 > cross2 ? right : left;
+  final compareSummary = cross1 > cross2
+      ? '$cross1 > $cross2'
+      : '$cross2 > $cross1';
+  return GeneratedQuestion(
+    conceptId: 'compare_fractions_unlike',
+    prompt: 'Which is bigger: $left or $right?',
+    correctAnswer: correct,
+    distractors: <String>[
+      wrong,
+      'They are equal',
+      'Cannot tell',
+    ],
+    explanation: [
+      'Cross-multiply to compare: $n1 × $d2 = $cross1, $n2 × $d1 = $cross2.',
+      '$compareSummary, so $correct is bigger.',
+    ],
+  );
+}
+
+/// "Simplify this fraction to lowest terms." Picks a reducible fraction
+/// (GCF > 1) and asks for the reduced form. Canonical-required — the
+/// lesson IS producing the simplest form.
+GeneratedQuestion simplifyFraction(Random rand) {
+  var baseN = 0;
+  var baseD = 0;
+  var gcf = 0;
+  // Loop until we pick a reducible fraction (gcf > 1) with reasonable size.
+  while (gcf <= 1 || baseD > 60 || _gcdInt(baseN, baseD) <= 1) {
+    final reducedN = rand.nextInt(6) + 1; // 1..6
+    final reducedD = rand.nextInt(8) + 2; // 2..9
+    if (reducedN >= reducedD) continue;
+    gcf = rand.nextInt(4) + 2; // 2..5
+    baseN = reducedN * gcf;
+    baseD = reducedD * gcf;
+  }
+  final correctF = Fraction(baseN, baseD);
+  final correct = correctF.toCanonical();
+  final distractors = _fractionDistractors(
+    correctF,
+    [
+      // "divided only numerator" / "divided only denominator" misconceptions.
+      '${baseN ~/ gcf}/$baseD',
+      '$baseN/${baseD ~/ gcf}',
+      // Off-by-one variants on the reduced form.
+      '${(baseN ~/ gcf) + 1}/${baseD ~/ gcf}',
+      // Swapped reduced.
+      '${baseD ~/ gcf}/${baseN ~/ gcf}',
+    ],
+    rand,
+  );
+  return GeneratedQuestion(
+    conceptId: 'simplify_fraction',
+    prompt: 'Simplify $baseN/$baseD to lowest terms.',
+    correctAnswer: correct,
+    distractors: distractors,
+    explanation: [
+      'Find a number that divides both $baseN and $baseD.',
+      '$baseN ÷ $gcf = ${baseN ~/ gcf}; $baseD ÷ $gcf = ${baseD ~/ gcf}',
+      'So $baseN/$baseD = $correct.',
+    ],
+    answerFormat: AnswerFormat.fraction,
+    requiresCanonicalForm: true,
+  );
+}
+
+int _gcdInt(int a, int b) {
+  var x = a.abs();
+  var y = b.abs();
+  while (y != 0) {
+    final t = y;
+    y = x % y;
+    x = t;
+  }
+  return x;
 }
 
 /// Add fractions with like denominators: a/d + b/d = (a+b)/d, displayed in

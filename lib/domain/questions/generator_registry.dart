@@ -71,7 +71,11 @@ class GeneratorRegistry {
     // Fractions
     'fraction_a_over_b': fractionAOverB,
     'compare_fractions_same_denom': compareFractionsSameDenom,
+    'compare_fractions_same_num': compareFractionsSameNum,
+    'compare_fractions_unlike': compareFractionsUnlike,
     'equivalent_fractions_visual': equivalentFractionsVisual,
+    'equivalent_fractions_compute': equivalentFractionsCompute,
+    'simplify_fraction': simplifyFraction,
     'add_fractions_like_denom': addFractionsLikeDenom,
     // Time
     'time_to_hour_half': timeToHourHalf,

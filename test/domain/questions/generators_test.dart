@@ -17,6 +17,17 @@ void _expectThreeDistinctDistractors(GeneratedQuestion q) {
   expect(q.distractors, isNot(contains(q.correctAnswer)));
 }
 
+int _gcdInt(int a, int b) {
+  var x = a.abs();
+  var y = b.abs();
+  while (y != 0) {
+    final t = y;
+    y = x % y;
+    x = t;
+  }
+  return x;
+}
+
 void main() {
   late GeneratorRegistry registry;
   setUp(() => registry = GeneratorRegistry.defaultRegistry());
@@ -298,6 +309,80 @@ void main() {
         final num = int.parse(m.group(1)!);
         final den = int.parse(m.group(2)!);
         expect(den % num == 0 || num % den == 0 || den > num, isTrue);
+      }
+    });
+
+    test('equivalent_fractions_compute: target denom equals base × mult', () {
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'equivalent_fractions_compute', i);
+        // Prompt: "Fill in the blank: a/b = ?/D"
+        final m = RegExp(
+          r'(\d+)/(\d+) = \?/(\d+)',
+        ).firstMatch(q.prompt)!;
+        final baseN = int.parse(m.group(1)!);
+        final baseD = int.parse(m.group(2)!);
+        final targetD = int.parse(m.group(3)!);
+        expect(targetD % baseD, 0, reason: 'target must be a multiple');
+        final multiplier = targetD ~/ baseD;
+        expect(q.correctAnswer, '${baseN * multiplier}/$targetD');
+        expect(q.requiresCanonicalForm, isTrue);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+
+    test('compare_fractions_same_num: smaller denom wins', () {
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'compare_fractions_same_num', i);
+        final m = RegExp(
+          r'(\d+)/(\d+) or (\d+)/(\d+)',
+        ).firstMatch(q.prompt)!;
+        final n1 = int.parse(m.group(1)!);
+        final d1 = int.parse(m.group(2)!);
+        final n2 = int.parse(m.group(3)!);
+        final d2 = int.parse(m.group(4)!);
+        expect(n1, n2, reason: 'numerators must match');
+        final correctD = d1 < d2 ? d1 : d2;
+        expect(q.correctAnswer, '$n1/$correctD');
+      }
+    });
+
+    test('compare_fractions_unlike: cross-multiply picks bigger', () {
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'compare_fractions_unlike', i);
+        final m = RegExp(
+          r'(\d+)/(\d+) or (\d+)/(\d+)',
+        ).firstMatch(q.prompt)!;
+        final n1 = int.parse(m.group(1)!);
+        final d1 = int.parse(m.group(2)!);
+        final n2 = int.parse(m.group(3)!);
+        final d2 = int.parse(m.group(4)!);
+        // Numerators or denominators differ (generator excludes both equal).
+        expect(d1 == d2 && n1 == n2, isFalse);
+        // Cross-product determines winner.
+        final left = '$n1/$d1';
+        final right = '$n2/$d2';
+        final correct = n1 * d2 > n2 * d1 ? left : right;
+        expect(q.correctAnswer, correct);
+      }
+    });
+
+    test('simplify_fraction: answer is lowest-terms; gcf(num,denom)=1', () {
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'simplify_fraction', i);
+        final m = RegExp(r'Simplify (\d+)/(\d+)').firstMatch(q.prompt)!;
+        final baseN = int.parse(m.group(1)!);
+        final baseD = int.parse(m.group(2)!);
+        // Source fraction must be reducible.
+        expect(_gcdInt(baseN, baseD), greaterThan(1));
+        final correctF = Fraction.tryParse(q.correctAnswer)!;
+        // Answer equals the source fraction.
+        expect(correctF.equalsByValue(Fraction(baseN, baseD)), isTrue);
+        // Answer is in lowest terms — its own gcf is 1 (or it's a whole int).
+        if (q.correctAnswer.contains('/')) {
+          final parts = q.correctAnswer.split('/');
+          expect(_gcdInt(int.parse(parts[0]), int.parse(parts[1])), 1);
+        }
+        expect(q.requiresCanonicalForm, isTrue);
       }
     });
   });
