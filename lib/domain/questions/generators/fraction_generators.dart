@@ -372,3 +372,226 @@ GeneratedQuestion addFractionsLikeDenom(Random rand) {
     answerFormat: AnswerFormat.fraction,
   );
 }
+
+/// Subtract fractions with like denominators: a/d − b/d = (a−b)/d.
+/// Result ≥ 0; canonical = reduced form.
+GeneratedQuestion subFractionsLikeDenom(Random rand) {
+  final denominator = rand.nextInt(6) + 3; // 3..8
+  final a = rand.nextInt(denominator - 1) + 1; // 1..denom-1
+  final b = rand.nextInt(a) + 1; // 1..a, so a ≥ b
+  final diffNum = a - b;
+  final diffF = Fraction(diffNum, denominator);
+  final correct = diffF.toCanonical();
+  final distractors = _fractionDistractors(
+    diffF,
+    [
+      '${a + b}/$denominator', // added instead of subtracted
+      '$diffNum/${denominator * 2}', // subtracted denoms too
+      '${diffNum + 1}/$denominator', // off-by-one
+      '$diffNum/${denominator - 1}', // wrong denom
+    ],
+    rand,
+  );
+  return GeneratedQuestion(
+    conceptId: 'sub_fractions_like_denom',
+    prompt: '$a/$denominator − $b/$denominator = ?',
+    correctAnswer: correct,
+    distractors: distractors,
+    explanation: [
+      'Same bottoms — just subtract the tops.',
+      '$a − $b = $diffNum',
+      'So $a/$denominator − $b/$denominator = $diffNum/$denominator.',
+      if (correct != '$diffNum/$denominator')
+        'Simplified, that is $correct.',
+    ],
+    answerFormat: AnswerFormat.fraction,
+  );
+}
+
+/// Convert an improper fraction (e.g. 7/4) to a mixed number (e.g. 1 3/4).
+/// requiresCanonicalForm: true — the lesson IS producing the mixed form;
+/// re-typing the improper would defeat it.
+GeneratedQuestion improperToMixed(Random rand) {
+  // Choose mixed parts first, then derive the improper form. Ensures the
+  // answer is always genuinely mixed (whole ≥ 1, proper part > 0).
+  final whole = rand.nextInt(5) + 1; // 1..5
+  final denominator = rand.nextInt(7) + 2; // 2..8
+  final properNum = rand.nextInt(denominator - 1) + 1; // 1..denom-1
+  final improperNum = whole * denominator + properNum;
+  final correct = '$whole $properNum/$denominator';
+  // Distractor pool — kid-typical errors.
+  final wrongWholes = <int>[whole + 1, if (whole > 1) whole - 1];
+  final wrongRems = <int>[
+    if (properNum > 1) properNum - 1,
+    if (properNum < denominator - 1) properNum + 1,
+  ];
+  final candidates = <String>[
+    for (final w in wrongWholes) '$w $properNum/$denominator',
+    for (final r in wrongRems) '$whole $r/$denominator',
+    '$properNum $whole/$denominator', // swapped whole and rem
+    if (denominator > 2) '$whole $properNum/${denominator - 1}',
+  ];
+  // Pick first 3 unique non-canonical, non-equivalent strings.
+  final correctF = Fraction(improperNum, denominator);
+  final distractors = <String>[];
+  final seen = <String>{correct};
+  for (final c in candidates) {
+    if (distractors.length >= 3) break;
+    if (seen.contains(c)) continue;
+    final f = Fraction.tryParse(c);
+    if (f == null || f.equalsByValue(correctF)) continue;
+    distractors.add(c);
+    seen.add(c);
+  }
+  // Pad if needed (rare).
+  var pad = 1;
+  while (distractors.length < 3) {
+    final s = '${whole + pad} $properNum/$denominator';
+    if (!seen.contains(s)) {
+      distractors.add(s);
+      seen.add(s);
+    }
+    pad++;
+  }
+  return GeneratedQuestion(
+    conceptId: 'improper_to_mixed',
+    prompt: 'Write $improperNum/$denominator as a mixed number.',
+    correctAnswer: correct,
+    distractors: distractors,
+    explanation: [
+      'Divide: $improperNum ÷ $denominator = $whole remainder $properNum.',
+      'The whole part is $whole; the leftover is $properNum/$denominator.',
+      'So $improperNum/$denominator = $whole and $properNum/$denominator.',
+    ],
+    answerFormat: AnswerFormat.mixedNumber,
+    requiresCanonicalForm: true,
+  );
+}
+
+/// Convert a mixed number (e.g. 1 3/4) to an improper fraction (e.g. 7/4).
+/// requiresCanonicalForm: true — the lesson IS producing the improper
+/// form; re-typing the mixed would defeat it.
+GeneratedQuestion mixedToImproper(Random rand) {
+  final whole = rand.nextInt(5) + 1; // 1..5
+  final denominator = rand.nextInt(7) + 2; // 2..8
+  final properNum = rand.nextInt(denominator - 1) + 1; // 1..denom-1
+  final improperNum = whole * denominator + properNum;
+  final correct = '$improperNum/$denominator';
+  final correctF = Fraction(improperNum, denominator);
+  final candidates = <String>[
+    '${whole + properNum}/$denominator', // added instead of multiplied
+    '${whole * properNum}/$denominator', // multiplied whole × num
+    '$improperNum/${whole + denominator}', // wrong denom
+    '${improperNum + denominator}/$denominator', // off-by-whole
+    '${improperNum - 1}/$denominator', // off-by-one
+  ];
+  final distractors = _fractionDistractors(correctF, candidates, rand);
+  return GeneratedQuestion(
+    conceptId: 'mixed_to_improper',
+    prompt:
+        'Write $whole and $properNum/$denominator as an improper fraction.',
+    correctAnswer: correct,
+    distractors: distractors,
+    explanation: [
+      '$whole × $denominator = ${whole * denominator} (whole × bottom).',
+      '${whole * denominator} + $properNum = $improperNum (then add the top).',
+      'So $whole and $properNum/$denominator = $improperNum/$denominator.',
+    ],
+    answerFormat: AnswerFormat.fraction,
+    requiresCanonicalForm: true,
+  );
+}
+
+/// Add two fractions with different denominators. Uses LCM for the common
+/// denominator. Canonical = reduced.
+GeneratedQuestion addFractionsUnlikeDenom(Random rand) {
+  // Pick small denoms in 2..6, distinct, so the LCM stays modest.
+  var d1 = 0;
+  var d2 = 0;
+  while (d1 == d2) {
+    d1 = rand.nextInt(5) + 2; // 2..6
+    d2 = rand.nextInt(5) + 2;
+  }
+  final n1 = rand.nextInt(d1 - 1) + 1; // proper
+  final n2 = rand.nextInt(d2 - 1) + 1;
+  final common = lcm(d1, d2);
+  final scaled1 = n1 * (common ~/ d1);
+  final scaled2 = n2 * (common ~/ d2);
+  final sumNum = scaled1 + scaled2;
+  final sumF = Fraction(sumNum, common);
+  final correct = sumF.toCanonical();
+  final distractors = _fractionDistractors(
+    sumF,
+    [
+      '${n1 + n2}/${d1 + d2}', // tops+tops, bottoms+bottoms misconception
+      '${n1 + n2}/$d1', // tops+tops, kept one denom
+      '${n1 + n2}/${d1 * d2}', // tops+tops, denoms multiplied
+      '$sumNum/${common + 1}',
+      '${sumNum + 1}/$common',
+    ],
+    rand,
+  );
+  return GeneratedQuestion(
+    conceptId: 'add_fractions_unlike_denom',
+    prompt: '$n1/$d1 + $n2/$d2 = ?',
+    correctAnswer: correct,
+    distractors: distractors,
+    explanation: [
+      'Common bottom is $common (smallest multiple of $d1 and $d2).',
+      '$n1/$d1 = $scaled1/$common; $n2/$d2 = $scaled2/$common.',
+      '$scaled1/$common + $scaled2/$common = $sumNum/$common.',
+      if (correct != '$sumNum/$common') 'Simplified, that is $correct.',
+    ],
+    answerFormat: AnswerFormat.fraction,
+  );
+}
+
+/// Subtract two fractions with different denominators. Result ≥ 0.
+/// Canonical = reduced.
+GeneratedQuestion subFractionsUnlikeDenom(Random rand) {
+  var d1 = 0;
+  var d2 = 0;
+  var n1 = 0;
+  var n2 = 0;
+  var common = 0;
+  var scaled1 = 0;
+  var scaled2 = 1; // forces first loop iteration
+  // Loop until denoms differ AND scaled1 > scaled2 so the result is positive.
+  while (d1 == d2 || scaled1 <= scaled2) {
+    d1 = rand.nextInt(5) + 2;
+    d2 = rand.nextInt(5) + 2;
+    if (d1 == d2) continue;
+    n1 = rand.nextInt(d1 - 1) + 1;
+    n2 = rand.nextInt(d2 - 1) + 1;
+    common = lcm(d1, d2);
+    scaled1 = n1 * (common ~/ d1);
+    scaled2 = n2 * (common ~/ d2);
+  }
+  final diffNum = scaled1 - scaled2;
+  final diffF = Fraction(diffNum, common);
+  final correct = diffF.toCanonical();
+  final distractors = _fractionDistractors(
+    diffF,
+    [
+      '${(n1 - n2).abs()}/${(d1 - d2).abs() == 0 ? d1 : (d1 - d2).abs()}',
+      '${n1 - n2}/$d1', // subtracted tops, kept one denom
+      '$diffNum/${common + 1}',
+      '${diffNum + 1}/$common',
+      '${scaled1 + scaled2}/$common', // added instead of subtracted
+    ],
+    rand,
+  );
+  return GeneratedQuestion(
+    conceptId: 'sub_fractions_unlike_denom',
+    prompt: '$n1/$d1 − $n2/$d2 = ?',
+    correctAnswer: correct,
+    distractors: distractors,
+    explanation: [
+      'Common bottom is $common (smallest multiple of $d1 and $d2).',
+      '$n1/$d1 = $scaled1/$common; $n2/$d2 = $scaled2/$common.',
+      '$scaled1/$common − $scaled2/$common = $diffNum/$common.',
+      if (correct != '$diffNum/$common') 'Simplified, that is $correct.',
+    ],
+    answerFormat: AnswerFormat.fraction,
+  );
+}

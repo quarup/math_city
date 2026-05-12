@@ -385,6 +385,91 @@ void main() {
         expect(q.requiresCanonicalForm, isTrue);
       }
     });
+
+    test('improper_to_mixed: answer is mixed; parses to source', () {
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'improper_to_mixed', i);
+        final src = RegExp(
+          r'Write (\d+)/(\d+) as a mixed number',
+        ).firstMatch(q.prompt)!;
+        final improperN = int.parse(src.group(1)!);
+        final d = int.parse(src.group(2)!);
+        // Source is genuinely improper.
+        expect(improperN, greaterThanOrEqualTo(d));
+        // Answer is a mixed number "W p/d".
+        expect(q.correctAnswer, matches(RegExp(r'^\d+ \d+/\d+$')));
+        final ans = Fraction.tryParse(q.correctAnswer)!;
+        expect(ans.equalsByValue(Fraction(improperN, d)), isTrue);
+        expect(q.answerFormat, AnswerFormat.mixedNumber);
+        expect(q.requiresCanonicalForm, isTrue);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+
+    test('mixed_to_improper: answer is improper; parses to source', () {
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'mixed_to_improper', i);
+        final src = RegExp(
+          r'Write (\d+) and (\d+)/(\d+) as an improper',
+        ).firstMatch(q.prompt)!;
+        final w = int.parse(src.group(1)!);
+        final p = int.parse(src.group(2)!);
+        final d = int.parse(src.group(3)!);
+        final improperN = w * d + p;
+        expect(q.correctAnswer, '$improperN/$d');
+        expect(q.requiresCanonicalForm, isTrue);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+
+    test('sub_fractions_like_denom: result ≥ 0; reduced', () {
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'sub_fractions_like_denom', i);
+        final m = RegExp(
+          r'(\d+)/(\d+) − (\d+)/(\d+) = \?',
+        ).firstMatch(q.prompt)!;
+        final a = int.parse(m.group(1)!);
+        final d = int.parse(m.group(2)!);
+        final b = int.parse(m.group(3)!);
+        expect(int.parse(m.group(4)!), d);
+        expect(a, greaterThanOrEqualTo(b));
+        final diff = Fraction(a - b, d);
+        expect(q.correctAnswer, diff.toCanonical());
+      }
+    });
+
+    test('add_fractions_unlike_denom: sum matches LCM-scaled add', () {
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'add_fractions_unlike_denom', i);
+        final m = RegExp(
+          r'(\d+)/(\d+) \+ (\d+)/(\d+) = \?',
+        ).firstMatch(q.prompt)!;
+        final n1 = int.parse(m.group(1)!);
+        final d1 = int.parse(m.group(2)!);
+        final n2 = int.parse(m.group(3)!);
+        final d2 = int.parse(m.group(4)!);
+        expect(d1, isNot(d2)); // generator enforces unlike denoms.
+        final sum = Fraction(n1, d1) + Fraction(n2, d2);
+        expect(q.correctAnswer, sum.toCanonical());
+      }
+    });
+
+    test('sub_fractions_unlike_denom: result ≥ 0; unlike; reduced', () {
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'sub_fractions_unlike_denom', i);
+        final m = RegExp(
+          r'(\d+)/(\d+) − (\d+)/(\d+) = \?',
+        ).firstMatch(q.prompt)!;
+        final n1 = int.parse(m.group(1)!);
+        final d1 = int.parse(m.group(2)!);
+        final n2 = int.parse(m.group(3)!);
+        final d2 = int.parse(m.group(4)!);
+        expect(d1, isNot(d2));
+        final diff = Fraction(n1, d1) - Fraction(n2, d2);
+        expect(diff.numerator, greaterThan(0));
+        expect(q.correctAnswer, diff.toCanonical());
+      }
+    });
   });
 
   group('Time-telling', () {

@@ -76,7 +76,12 @@ class GeneratorRegistry {
     'equivalent_fractions_visual': equivalentFractionsVisual,
     'equivalent_fractions_compute': equivalentFractionsCompute,
     'simplify_fraction': simplifyFraction,
+    'improper_to_mixed': improperToMixed,
+    'mixed_to_improper': mixedToImproper,
     'add_fractions_like_denom': addFractionsLikeDenom,
+    'sub_fractions_like_denom': subFractionsLikeDenom,
+    'add_fractions_unlike_denom': addFractionsUnlikeDenom,
+    'sub_fractions_unlike_denom': subFractionsUnlikeDenom,
     // Time
     'time_to_hour_half': timeToHourHalf,
     'time_to_5_min': timeTo5Min,
