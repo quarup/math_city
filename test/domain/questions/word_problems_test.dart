@@ -273,4 +273,43 @@ void main() {
       expect(sawSubShape, isTrue);
     });
   });
+
+  group('mult_compare_word', () {
+    GeneratedQuestion gen(int seed) =>
+        registry.generate('mult_compare_word', random: Random(seed));
+
+    test('correct = k × n; k ∈ [2,9], n ∈ [2,11]; distinct names', () {
+      final promptRe = RegExp(
+        r'^(\S+) has (\d+) times as many (.+?) as (\S+)\. '
+        r'\4 has (\d+) \3\. How many \3 does \1 have\?$',
+      );
+
+      for (var i = 0; i < _iterations; i++) {
+        final q = gen(i);
+        expect(q.conceptId, 'mult_compare_word');
+        expect(q.diagram, isNull);
+
+        final m = promptRe.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: 'prompt did not match: ${q.prompt}');
+        final name1 = m!.group(1)!;
+        final k = int.parse(m.group(2)!);
+        final items = m.group(3)!;
+        final name2 = m.group(4)!;
+        final n = int.parse(m.group(5)!);
+
+        expect(wordProblemNames, contains(name1));
+        expect(wordProblemNames, contains(name2));
+        expect(name1, isNot(name2));
+        expect(wordProblemItems, contains(items));
+        expect(k, inInclusiveRange(2, 9));
+        expect(n, inInclusiveRange(2, 11));
+        expect(int.parse(q.correctAnswer), k * n);
+        expect(int.parse(q.correctAnswer), lessThanOrEqualTo(99));
+
+        expect(q.distractors, hasLength(3));
+        expect(q.distractors.toSet(), hasLength(3));
+        expect(q.distractors, isNot(contains(q.correctAnswer)));
+      }
+    });
+  });
 }

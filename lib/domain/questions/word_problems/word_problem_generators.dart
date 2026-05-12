@@ -74,3 +74,46 @@ GeneratedQuestion addSubWordProblemsWithin100(Random rand) {
     explanation: explanation,
   );
 }
+
+/// Multiplicative-comparison word problem ("X has K times as many as Y").
+/// Algorithmically generated despite curriculum.md tagging this as
+/// `dataset` — the comparison framing is templatable and stays within the
+/// word-problem framework's pools.
+///
+/// Constraints: k ∈ [2, 9], n ∈ [2, 11], so the product k·n ≤ 99 (within
+/// 100). Items use the full word-problem pool (not restricted to edibles
+/// — the verbs don't require edibility).
+///
+/// Misconception distractor: added instead of multiplied (k + n).
+GeneratedQuestion multCompareWord(Random rand) {
+  // Pick two distinct names — leader (has more) and follower (has less).
+  final name1 = pickRandom(wordProblemNames, rand);
+  String name2;
+  do {
+    name2 = pickRandom(wordProblemNames, rand);
+  } while (name2 == name1);
+
+  final items = pickRandom(wordProblemItems, rand);
+  final k = rand.nextInt(8) + 2; // 2..9
+  final n = rand.nextInt(10) + 2; // 2..11
+  final correct = k * n;
+  final prompt = '$name1 has $k times as many $items as $name2. '
+      '$name2 has $n $items. How many $items does $name1 have?';
+
+  return GeneratedQuestion(
+    conceptId: 'mult_compare_word',
+    prompt: prompt,
+    correctAnswer: correct.toString(),
+    distractors: integerDistractorsWith(
+      correct,
+      rand,
+      misconception: k + n, // added instead of multiplied
+    ),
+    explanation: [
+      '$name2 has $n $items.',
+      '$name1 has $k times as many, so multiply.',
+      '$k × $n = $correct.',
+      '$name1 has $correct $items.',
+    ],
+  );
+}

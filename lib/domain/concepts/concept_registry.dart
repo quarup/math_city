@@ -1129,7 +1129,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'mult_compare_word',
     name: 'Multiplicative comparison',
-    shortLabel: 'Multiplicative comparison',
+    shortLabel: '× compare',
     categoryId: 'mult_div',
     primaryGrade: 4,
     prereqIds: ['mult_facts_within_100'],

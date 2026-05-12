@@ -131,6 +131,7 @@ const _shortLabelOverrides = <String, String>{
   'time_to_hour_half': 'clock ½h',
   'time_to_5_min': 'clock 5m',
   'add_word_problems_within_100': '+− word',
+  'mult_compare_word': '× compare',
   'place_value_2digit': 'place 2d',
   'place_value_3digit': 'place 3d',
   'place_value_multidigit': 'place md',

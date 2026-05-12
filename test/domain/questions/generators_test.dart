@@ -656,7 +656,7 @@ void main() {
       }
     });
 
-    test('mult_as_scaling: answer matches direction of the fraction factor', () {
+    test('mult_as_scaling: answer matches direction of fraction factor', () {
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'mult_as_scaling', i);
         final m = RegExp(
