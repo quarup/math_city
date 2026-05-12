@@ -84,6 +84,10 @@ class GeneratorRegistry {
     'sub_fractions_unlike_denom': subFractionsUnlikeDenom,
     'mult_fraction_by_whole': multFractionByWhole,
     'mult_fractions_proper': multFractionsProper,
+    'div_unit_fraction_by_whole': divUnitFractionByWhole,
+    'div_whole_by_unit_fraction': divWholeByUnitFraction,
+    'div_fraction_by_fraction': divFractionByFraction,
+    'fraction_as_division': fractionAsDivision,
     // Time
     'time_to_hour_half': timeToHourHalf,
     'time_to_5_min': timeTo5Min,

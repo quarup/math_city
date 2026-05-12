@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:math_city/domain/questions/diagram_spec.dart';
 import 'package:math_city/domain/questions/fraction.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
+import 'package:math_city/domain/questions/word_problems/word_problem_framework.dart';
 
 // ---------------------------------------------------------------------------
 // Shared helpers
@@ -668,6 +669,148 @@ GeneratedQuestion multFractionsProper(Random rand) {
       'Multiply the bottoms: $b × $d = ${b * d}.',
       'So $a/$b × $c/$d = ${a * c}/${b * d}.',
       if (correct != '${a * c}/${b * d}') 'Simplified, that is $correct.',
+    ],
+    answerFormat: AnswerFormat.fraction,
+  );
+}
+
+/// Divide a unit fraction by a whole number: (1/n) ÷ m = 1/(n·m).
+/// Renders the unit fraction on a bar so kids can see what's being split.
+GeneratedQuestion divUnitFractionByWhole(Random rand) {
+  final n = rand.nextInt(7) + 2; // 2..8
+  final m = rand.nextInt(5) + 2; // 2..6
+  final productF = Fraction(1, n * m);
+  final correct = productF.toCanonical();
+  final distractors = _fractionDistractors(
+    productF,
+    [
+      '$m/$n', // inverted (kid divided by 1/m instead)
+      '${n * m}/1', // multiplied instead of divided
+      '1/${n + m}', // added bottom
+      '1/${(n * m) + 1}',
+      '1/${(n * m) - 1}',
+    ],
+    rand,
+  );
+  return GeneratedQuestion(
+    conceptId: 'div_unit_fraction_by_whole',
+    prompt: '1/$n ÷ $m = ?',
+    diagram: FractionBarSpec(numerator: 1, denominator: n),
+    correctAnswer: correct,
+    distractors: distractors,
+    explanation: [
+      'Splitting 1/$n into $m equal parts makes each part $m times smaller.',
+      'New bottom: $n × $m = ${n * m}.',
+      'So 1/$n ÷ $m = 1/${n * m}.',
+    ],
+    answerFormat: AnswerFormat.fraction,
+  );
+}
+
+/// Divide a whole number by a unit fraction: m ÷ (1/n) = m·n.
+/// Renders the unit fraction on a bar to anchor "how many of these fit
+/// into m wholes?".
+GeneratedQuestion divWholeByUnitFraction(Random rand) {
+  final n = rand.nextInt(7) + 2; // 2..8 (unit-fraction denom)
+  final m = rand.nextInt(7) + 2; // 2..8 (whole)
+  final product = m * n;
+  final productF = Fraction(product, 1);
+  final correct = productF.toCanonical(); // bare integer string
+  final distractors = _fractionDistractors(
+    productF,
+    [
+      '$m/$n', // forgot to invert
+      '${m + n}', // added instead of multiplied
+      '${(m * n) + 1}',
+      '${(m * n) - 1}',
+      '${m * n}/$n', // off-by-divisor
+    ],
+    rand,
+  );
+  return GeneratedQuestion(
+    conceptId: 'div_whole_by_unit_fraction',
+    prompt: '$m ÷ 1/$n = ?',
+    diagram: FractionBarSpec(numerator: 1, denominator: n),
+    correctAnswer: correct,
+    distractors: distractors,
+    explanation: [
+      'How many 1/$n pieces fit in one whole? $n.',
+      'And in $m wholes? $m × $n = ${m * n}.',
+      'So $m ÷ 1/$n = ${m * n}.',
+    ],
+    answerFormat: AnswerFormat.fraction,
+  );
+}
+
+/// Divide two fractions: (a/b) ÷ (c/d) = (a·d)/(b·c), reduced.
+/// "Keep, change, flip."
+GeneratedQuestion divFractionByFraction(Random rand) {
+  final b = rand.nextInt(5) + 2; // 2..6
+  final d = rand.nextInt(5) + 2; // 2..6
+  final a = rand.nextInt(b - 1) + 1; // proper
+  final c = rand.nextInt(d - 1) + 1; // proper
+  final productF = Fraction(a * d, b * c);
+  final correct = productF.toCanonical();
+  final distractors = _fractionDistractors(
+    productF,
+    [
+      '${a * c}/${b * d}', // forgot to flip — multiplied directly
+      '${b * c}/${a * d}', // inverted answer
+      '${a + d}/${b + c}', // added everything
+      '${(a * d) + 1}/${b * c}',
+      '${a * d}/${(b * c) + 1}',
+    ],
+    rand,
+  );
+  return GeneratedQuestion(
+    conceptId: 'div_fraction_by_fraction',
+    prompt: '$a/$b ÷ $c/$d = ?',
+    correctAnswer: correct,
+    distractors: distractors,
+    explanation: [
+      'Keep, change, flip: $a/$b ÷ $c/$d = $a/$b × $d/$c.',
+      'Multiply tops: $a × $d = ${a * d}; bottoms: $b × $c = ${b * c}.',
+      'So $a/$b ÷ $c/$d = ${a * d}/${b * c}.',
+      if (correct != '${a * d}/${b * c}') 'Simplified, that is $correct.',
+    ],
+    answerFormat: AnswerFormat.fraction,
+  );
+}
+
+/// Fraction as division — CCSS framing. "Y kids share X cookies equally"
+/// → X/Y per kid. Reuses the word-problem name & edible-item pools so the
+/// scenario reads naturally.
+///
+/// Constrained to X < Y so the canonical answer is always a *proper*
+/// fraction (no mixed-number input needed).
+GeneratedQuestion fractionAsDivision(Random rand) {
+  final kids = rand.nextInt(6) + 3; // 3..8
+  final cookies = rand.nextInt(kids - 1) + 1; // 1..kids-1 → proper fraction
+  final name = pickRandom(wordProblemNames, rand);
+  final item = pickRandom(edibleWordProblemItems, rand);
+  final correctF = Fraction(cookies, kids);
+  final correct = correctF.toCanonical();
+  final distractors = _fractionDistractors(
+    correctF,
+    [
+      '$kids/$cookies', // swapped — sharing is kids ÷ cookies misconception
+      '${kids - cookies}/$kids', // subtracted instead of dividing
+      '$cookies/${kids + 1}',
+      '${cookies + 1}/$kids',
+    ],
+    rand,
+  );
+  return GeneratedQuestion(
+    conceptId: 'fraction_as_division',
+    prompt:
+        '$name has $cookies $item to share equally among '
+        '$kids friends. How much does each friend get?',
+    correctAnswer: correct,
+    distractors: distractors,
+    explanation: [
+      'Sharing equally means dividing: $cookies ÷ $kids.',
+      'That is $cookies/$kids.',
+      if (correct != '$cookies/$kids') 'Simplified, that is $correct.',
     ],
     answerFormat: AnswerFormat.fraction,
   );

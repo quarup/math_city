@@ -505,6 +505,60 @@ void main() {
         expect(q.correctAnswer, product.toCanonical());
       }
     });
+
+    test('div_unit_fraction_by_whole: 1/n ÷ m = 1/(n·m)', () {
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'div_unit_fraction_by_whole', i);
+        final m = RegExp(r'1/(\d+) ÷ (\d+) = \?').firstMatch(q.prompt)!;
+        final n = int.parse(m.group(1)!);
+        final whole = int.parse(m.group(2)!);
+        final product = Fraction(1, n * whole);
+        expect(q.correctAnswer, product.toCanonical());
+        expect(q.diagram, isA<FractionBarSpec>());
+      }
+    });
+
+    test('div_whole_by_unit_fraction: m ÷ 1/n = m·n', () {
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'div_whole_by_unit_fraction', i);
+        final m = RegExp(r'(\d+) ÷ 1/(\d+) = \?').firstMatch(q.prompt)!;
+        final whole = int.parse(m.group(1)!);
+        final n = int.parse(m.group(2)!);
+        expect(q.correctAnswer, '${whole * n}');
+        expect(q.diagram, isA<FractionBarSpec>());
+      }
+    });
+
+    test('div_fraction_by_fraction: (a/b) ÷ (c/d) = a·d / b·c', () {
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'div_fraction_by_fraction', i);
+        final m = RegExp(
+          r'(\d+)/(\d+) ÷ (\d+)/(\d+) = \?',
+        ).firstMatch(q.prompt)!;
+        final a = int.parse(m.group(1)!);
+        final b = int.parse(m.group(2)!);
+        final c = int.parse(m.group(3)!);
+        final d = int.parse(m.group(4)!);
+        final product = Fraction(a * d, b * c);
+        expect(q.correctAnswer, product.toCanonical());
+      }
+    });
+
+    test('fraction_as_division: answer is cookies/kids, reduced, proper', () {
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'fraction_as_division', i);
+        // Prompt mentions "X items" and "among Y friends".
+        final m = RegExp(
+          r'has (\d+) \w[\w ]+ to share equally among (\d+) friends',
+        ).firstMatch(q.prompt)!;
+        final cookies = int.parse(m.group(1)!);
+        final kids = int.parse(m.group(2)!);
+        // Generator enforces cookies < kids (always proper).
+        expect(cookies, lessThan(kids));
+        final answer = Fraction(cookies, kids);
+        expect(q.correctAnswer, answer.toCanonical());
+      }
+    });
   });
 
   group('Time-telling', () {
