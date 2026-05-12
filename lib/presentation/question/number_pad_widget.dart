@@ -34,6 +34,9 @@ class _NumberPadWidgetState extends State<NumberPadWidget> {
 
   void _append(String c) {
     if (_input.length >= _maxLength) return;
+    // Mixed-number separator: only one space allowed, and only after a digit.
+    // Stops the silent double-press footgun and the "leading space" mistake.
+    if (c == ' ' && (_input.isEmpty || _input.endsWith(' '))) return;
     setState(() => _input += c);
   }
 
@@ -120,7 +123,10 @@ class _InputDisplay extends StatelessWidget {
       ),
       alignment: Alignment.center,
       child: Text(
-        input.isEmpty ? '?' : input,
+        // The mixed-number separator is stored as ' ' so the parser handles
+        // it, but rendered as " and " so the player visually matches the
+        // prompt's phrasing ("Write 1 and 3/4 as ...").
+        input.isEmpty ? '?' : input.replaceAll(' ', ' and '),
         style: theme.textTheme.displaySmall?.copyWith(
           fontWeight: FontWeight.bold,
           color: input.isEmpty
