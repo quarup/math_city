@@ -52,6 +52,18 @@ const List<String> wordProblemItems = [
   'bricks', 'paint cans', 'traffic cones', 'road signs',
 ];
 
+/// Subset of [wordProblemItems] that one can plausibly *eat*. Used by
+/// the `eats` subtraction context to avoid sentences like "Maria eats 5
+/// of the bricks."
+const List<String> edibleWordProblemItems = [
+  'apples',
+  'oranges',
+  'grapes',
+  'cookies',
+  'cupcakes',
+  'candies',
+];
+
 // ─────────────────────────────────────────────────────────────────────────
 // Contexts — the verb shape that drives the math. Each context is one
 // templated sentence inserted between the setup and the question.
@@ -59,29 +71,61 @@ const List<String> wordProblemItems = [
 // Templates use placeholders {Name}, {b}, {items}.
 // ─────────────────────────────────────────────────────────────────────────
 
-class AdditionContext {
-  const AdditionContext({required this.id, required this.action});
+enum WordProblemOp { add, sub }
+
+class WordProblemContext {
+  const WordProblemContext({
+    required this.id,
+    required this.op,
+    required this.action,
+    this.requiresEdibleItems = false,
+  });
 
   final String id;
+  final WordProblemOp op;
 
-  /// Action sentence. Inserted between "{Name} has {a} {items}." and
-  /// "How many {items} does {Name} have now?". Placeholders: {Name}, {b},
-  /// {items}.
+  /// Action sentence inserted between the setup and the question.
+  /// Placeholders: {Name}, {b}, {items}.
   final String action;
+
+  /// When true, the generator must pick an item from
+  /// [edibleWordProblemItems] (used by the `eats` context).
+  final bool requiresEdibleItems;
 }
 
-const List<AdditionContext> additionContextsV1 = [
-  AdditionContext(
+const List<WordProblemContext> addSubContextsV1 = [
+  // Addition
+  WordProblemContext(
     id: 'collects',
+    op: WordProblemOp.add,
     action: '{Name} finds {b} more {items}.',
   ),
-  AdditionContext(
+  WordProblemContext(
     id: 'is_given',
+    op: WordProblemOp.add,
     action: 'A friend gives {Name} {b} more {items}.',
   ),
-  AdditionContext(
+  WordProblemContext(
     id: 'buys',
+    op: WordProblemOp.add,
     action: '{Name} buys {b} more {items} at the store.',
+  ),
+  // Subtraction
+  WordProblemContext(
+    id: 'gives_away',
+    op: WordProblemOp.sub,
+    action: '{Name} gives {b} of the {items} to a friend.',
+  ),
+  WordProblemContext(
+    id: 'eats',
+    op: WordProblemOp.sub,
+    action: '{Name} eats {b} of the {items}.',
+    requiresEdibleItems: true,
+  ),
+  WordProblemContext(
+    id: 'loses',
+    op: WordProblemOp.sub,
+    action: '{Name} loses {b} of the {items}.',
   ),
 ];
 
@@ -89,24 +133,37 @@ const List<AdditionContext> additionContextsV1 = [
 // Composer
 // ─────────────────────────────────────────────────────────────────────────
 
-/// Composes the prompt for a 1-step "starts-with-a, adds-b, total?" problem.
+/// Composes the prompt for a 1-step word problem.
 ///
-/// Structure: "{name} has {a} {items}. {action}. How many {items} does
-/// {name} have now?"
-String composeAdditionWordProblem({
+/// Structure (addition):
+///   "{name} has {a} {items}. {action} How many {items} does {name} have
+///    now?"
+///
+/// Structure (subtraction):
+///   "{name} has {a} {items}. {action} How many {items} does {name} have
+///    left?"
+String composeWordProblem({
   required String name,
   required String items,
   required int a,
   required int b,
-  required AdditionContext context,
+  required WordProblemContext context,
 }) {
   final action = context.action
       .replaceAll('{Name}', name)
       .replaceAll('{b}', '$b')
       .replaceAll('{items}', items);
+  final closing = context.op == WordProblemOp.add ? 'have now' : 'have left';
   return '$name has $a $items. $action '
-      'How many $items does $name have now?';
+      'How many $items does $name $closing?';
 }
+
+/// Picks a context-compatible item from the pool. Filters to edibles when
+/// the context requires it.
+String pickWordProblemItem(WordProblemContext context, Random rand) =>
+    context.requiresEdibleItems
+        ? pickRandom(edibleWordProblemItems, rand)
+        : pickRandom(wordProblemItems, rand);
 
 /// Picks a uniformly-random element from [list] using [rand].
 T pickRandom<T>(List<T> list, Random rand) => list[rand.nextInt(list.length)];

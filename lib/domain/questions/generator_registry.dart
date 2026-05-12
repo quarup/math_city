@@ -75,6 +75,6 @@ class GeneratorRegistry {
     'time_to_hour_half': timeToHourHalf,
     'time_to_5_min': timeTo5Min,
     // Word problems
-    'add_word_problems_within_100': addWordProblemsWithin100,
+    'add_word_problems_within_100': addSubWordProblemsWithin100,
   };
 }
