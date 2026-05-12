@@ -115,6 +115,9 @@ const _shortLabelOverrides = <String, String>{
   'round_to_10': 'round 10',
   'round_to_100': 'round 100',
   'round_multidigit_any_place': 'round md',
+  'integers_add': '± int +',
+  'integers_subtract': '± int −',
+  'integers_multiply_divide': '± int ×÷',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
@@ -159,6 +162,10 @@ const _prereqOverrides = <String, List<String>>{
   'round_to_10': ['place_value_2digit'],
   // drop compare_3digit (no generator) — same substitution.
   'round_to_100': ['place_value_3digit'],
+  // drop opposites_and_zero (no generator) — substitute the broadest
+  // basic-arithmetic prereq so kids meet integer addition having
+  // already worked through positive arithmetic.
+  'integers_add': ['add_within_100'],
 };
 
 // ─────────────────────────────────────────────────────────────────────────

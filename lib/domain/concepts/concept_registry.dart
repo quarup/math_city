@@ -3060,10 +3060,10 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'integers_add',
     name: 'Add integers',
-    shortLabel: 'Add integers',
+    shortLabel: '± int +',
     categoryId: 'rationals',
     primaryGrade: 7,
-    prereqIds: ['opposites_and_zero'],
+    prereqIds: ['add_within_100'],
     source: ConceptSource.algorithmicWithDiagram,
     diagramRequirement: DiagramRequired('number_line'),
     categoryRowOrder: 7,
@@ -3071,7 +3071,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'integers_subtract',
     name: 'Subtract integers',
-    shortLabel: 'Subtract integers',
+    shortLabel: '± int −',
     categoryId: 'rationals',
     primaryGrade: 7,
     prereqIds: ['integers_add'],
@@ -3082,7 +3082,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'integers_multiply_divide',
     name: '× and ÷ integers (sign rules)',
-    shortLabel: '× and ÷ integers (sign rules)',
+    shortLabel: '± int ×÷',
     categoryId: 'rationals',
     primaryGrade: 7,
     prereqIds: ['integers_subtract', 'mult_facts_within_100'],

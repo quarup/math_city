@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:math_city/domain/questions/generated_question.dart';
 import 'package:math_city/domain/questions/generators/add_sub_generators.dart';
 import 'package:math_city/domain/questions/generators/fraction_generators.dart';
+import 'package:math_city/domain/questions/generators/integer_generators.dart';
 import 'package:math_city/domain/questions/generators/mult_div_generators.dart';
 import 'package:math_city/domain/questions/generators/place_value_generators.dart';
 import 'package:math_city/domain/questions/generators/time_generators.dart';
@@ -85,5 +86,9 @@ class GeneratorRegistry {
     'round_to_10': roundTo10,
     'round_to_100': roundTo100,
     'round_multidigit_any_place': roundMultidigitAnyPlace,
+    // Signed-integer arithmetic
+    'integers_add': integersAdd,
+    'integers_subtract': integersSubtract,
+    'integers_multiply_divide': integersMultiplyDivide,
   };
 }

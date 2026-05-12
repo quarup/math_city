@@ -262,10 +262,10 @@ void main() {
       final engine = DripFeedEngine(
         registry: GeneratorRegistry.defaultRegistry(),
       );
-      // The implemented ceiling is currently G5 (mult_multidigit_standard_alg,
-      // div_4digit_by_2digit landed in Phase 6 path B). Clamping is
-      // min(stated, ceiling).
-      expect(engine.effectiveGradeFor(8), 5);
+      // The implemented ceiling is currently G7 (integers_add /
+      // integers_subtract / integers_multiply_divide landed in Phase 6
+      // sub-slice C). Clamping is min(stated, ceiling).
+      expect(engine.effectiveGradeFor(8), 7);
       expect(engine.effectiveGradeFor(4), 4);
       expect(engine.effectiveGradeFor(2), 2);
       expect(engine.effectiveGradeFor(0), 0);
