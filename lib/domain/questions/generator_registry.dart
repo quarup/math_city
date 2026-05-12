@@ -6,6 +6,7 @@ import 'package:math_city/domain/questions/generators/fraction_generators.dart';
 import 'package:math_city/domain/questions/generators/integer_generators.dart';
 import 'package:math_city/domain/questions/generators/mult_div_generators.dart';
 import 'package:math_city/domain/questions/generators/place_value_generators.dart';
+import 'package:math_city/domain/questions/generators/rationals_generators.dart';
 import 'package:math_city/domain/questions/generators/time_generators.dart';
 import 'package:math_city/domain/questions/word_problems/word_problem_generators.dart';
 
@@ -114,5 +115,8 @@ class GeneratorRegistry {
     'integers_add': integersAdd,
     'integers_subtract': integersSubtract,
     'integers_multiply_divide': integersMultiplyDivide,
+    // Rationals
+    'rationals_add_sub': rationalsAddSub,
+    'rationals_multiply_divide': rationalsMultiplyDivide,
   };
 }

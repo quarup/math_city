@@ -142,6 +142,8 @@ const _shortLabelOverrides = <String, String>{
   'integers_add': '± int +',
   'integers_subtract': '± int −',
   'integers_multiply_divide': '± int ×÷',
+  'rationals_add_sub': '± rat +−',
+  'rationals_multiply_divide': '± rat ×÷',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
@@ -190,6 +192,13 @@ const _prereqOverrides = <String, List<String>>{
   // basic-arithmetic prereq so kids meet integer addition having
   // already worked through positive arithmetic.
   'integers_add': ['add_within_100'],
+  // drop add_decimals (no generator yet).
+  'rationals_add_sub': ['integers_add', 'add_fractions_unlike_denom'],
+  // drop mult_decimals (no generator yet).
+  'rationals_multiply_divide': [
+    'integers_multiply_divide',
+    'mult_fractions_proper',
+  ],
 };
 
 // ─────────────────────────────────────────────────────────────────────────
