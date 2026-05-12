@@ -108,7 +108,13 @@ const _shortLabelOverrides = <String, String>{
   'add_fractions_like_denom': '+ frac',
   'time_to_hour_half': 'clock ½h',
   'time_to_5_min': 'clock 5m',
-  'add_word_problems_within_100': '+ word',
+  'add_word_problems_within_100': '+− word',
+  'place_value_2digit': 'place 2d',
+  'place_value_3digit': 'place 3d',
+  'place_value_multidigit': 'place md',
+  'round_to_10': 'round 10',
+  'round_to_100': 'round 100',
+  'round_multidigit_any_place': 'round md',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
@@ -134,22 +140,25 @@ const _prereqOverrides = <String, List<String>>{
   'add_within_1000': ['add_2digit_carry'],
   // drop place_value_3digit (no generator).
   'sub_within_1000': ['sub_2digit_borrow'],
-  // drop place_value_multidigit (no generator).
-  'add_multidigit_standard_alg': ['add_within_1000'],
-  // drop place_value_multidigit (no generator).
-  'sub_multidigit_standard_alg': ['sub_within_1000'],
+  // (add_multidigit_standard_alg, sub_multidigit_standard_alg,
+  //  mult_4digit_by_1digit, div_4digit_by_1digit) — all four no longer
+  // need overrides now that place_value_multidigit has a generator.
   // drop mult_meaning_groups + skip_count_{2,5,10} (no generators).
   'mult_facts_within_100': ['add_within_100'],
   // drop div_meaning_share (no generator).
   'div_facts_within_100': ['mult_facts_within_100'],
-  // drop place_value_multidigit (no generator).
-  'mult_4digit_by_1digit': ['mult_facts_within_100'],
-  // drop place_value_multidigit (no generator).
-  'div_4digit_by_1digit': ['div_with_remainder'],
   // drop unit_fraction_intro (no generator).
   'fraction_a_over_b': <String>[],
   // drop skip_count_5 (no generator).
   'time_to_5_min': ['time_to_hour_half'],
+  // drop teen_numbers_as_ten_plus (no generator) — it's a foundational
+  // grade-1 concept, no other prereq stands in.
+  'place_value_2digit': <String>[],
+  // drop compare_2digit (no generator) — substitute the more direct
+  // place-value prereq.
+  'round_to_10': ['place_value_2digit'],
+  // drop compare_3digit (no generator) — same substitution.
+  'round_to_100': ['place_value_3digit'],
 };
 
 // ─────────────────────────────────────────────────────────────────────────

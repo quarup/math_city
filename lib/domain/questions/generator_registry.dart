@@ -4,6 +4,7 @@ import 'package:math_city/domain/questions/generated_question.dart';
 import 'package:math_city/domain/questions/generators/add_sub_generators.dart';
 import 'package:math_city/domain/questions/generators/fraction_generators.dart';
 import 'package:math_city/domain/questions/generators/mult_div_generators.dart';
+import 'package:math_city/domain/questions/generators/place_value_generators.dart';
 import 'package:math_city/domain/questions/generators/time_generators.dart';
 import 'package:math_city/domain/questions/word_problems/word_problem_generators.dart';
 
@@ -76,5 +77,13 @@ class GeneratorRegistry {
     'time_to_5_min': timeTo5Min,
     // Word problems
     'add_word_problems_within_100': addSubWordProblemsWithin100,
+    // Place value
+    'place_value_2digit': placeValue2digit,
+    'place_value_3digit': placeValue3digit,
+    'place_value_multidigit': placeValueMultidigit,
+    // Rounding
+    'round_to_10': roundTo10,
+    'round_to_100': roundTo100,
+    'round_multidigit_any_place': roundMultidigitAnyPlace,
   };
 }

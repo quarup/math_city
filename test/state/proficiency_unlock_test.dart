@@ -62,12 +62,14 @@ void main() {
         // The starter pack of 4 already includes all add_within_5's DAG
         // children (sub_within_5, add_within_10, sub_within_10), so the
         // drip-feed picks the lowest-grade root concept that *isn't* yet
-        // introduced — `time_to_hour_half` (G1, no prereqs).
-        expect(unlock.newConcept.id, 'time_to_hour_half');
+        // introduced. After landing place_value_2digit (G1, no prereqs
+        // post-override), it wins the tiebreak over time_to_hour_half
+        // because place_value (display order 1) precedes measurement (7).
+        expect(unlock.newConcept.id, 'place_value_2digit');
 
         // The newly-unlocked concept is now persisted as introduced.
         final introduced = await db.introducedConceptIdsForPlayer(pid);
-        expect(introduced, contains('time_to_hour_half'));
+        expect(introduced, contains('place_value_2digit'));
       },
     );
 
@@ -91,7 +93,7 @@ void main() {
         // No new concept introduced beyond the 4-concept starter pack.
         final introduced = await db.introducedConceptIdsForPlayer(pid);
         expect(introduced, hasLength(4));
-        expect(introduced, isNot(contains('time_to_hour_half')));
+        expect(introduced, isNot(contains('place_value_2digit')));
       },
     );
 
