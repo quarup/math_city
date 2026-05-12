@@ -274,6 +274,70 @@ void main() {
     });
   });
 
+  group('add_sub_2step_word_problems', () {
+    GeneratedQuestion gen(int seed) =>
+        registry.generate('add_sub_2step_word_problems', random: Random(seed));
+
+    test('two steps; intermediate + final ∈ [2, 100]; correct arithmetic', () {
+      // Match "<name> has <a> <items>. Then <action1> Then <action2> How
+      // many <items> does <name> (have now|have left)?"
+      final promptRe = RegExp(
+        r'^(\S+) has (\d+) (.+?)\. Then .+ Then .+ '
+        r'How many \3 does \1 (have now|have left)\?$',
+      );
+
+      for (var i = 0; i < _iterations; i++) {
+        final q = gen(i);
+        expect(q.conceptId, 'add_sub_2step_word_problems');
+        expect(q.diagram, isNull);
+
+        final m = promptRe.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: 'prompt did not match: ${q.prompt}');
+        final name = m!.group(1)!;
+        final a = int.parse(m.group(2)!);
+        final items = m.group(3)!;
+
+        expect(wordProblemNames, contains(name));
+        expect(wordProblemItems, contains(items));
+        expect(a, inInclusiveRange(10, 45));
+
+        final correct = int.parse(q.correctAnswer);
+        expect(correct, inInclusiveRange(2, 100));
+
+        // Three operands in the prompt: a, b1, b2.
+        final integers = RegExp(r'\d+').allMatches(q.prompt).toList();
+        expect(integers.length, greaterThanOrEqualTo(3));
+
+        expect(q.distractors, hasLength(3));
+        expect(q.distractors.toSet(), hasLength(3));
+        expect(q.distractors, isNot(contains(q.correctAnswer)));
+
+        // Explanation: 4 lines, last contains name + result + items.
+        expect(q.explanation, hasLength(4));
+        expect(q.explanation.last, contains(name));
+        expect(q.explanation.last, contains(q.correctAnswer));
+        expect(q.explanation.last, contains(items));
+      }
+    });
+
+    test('eats sub-context always uses edible items (when present)', () {
+      // Scan 1000 iterations for prompts containing " eats " and verify the
+      // item is from the edible pool.
+      final setupRe = RegExp(r'^(.+?) has (\d+) (.+?)\. ');
+      for (var i = 0; i < 1000; i++) {
+        final q = gen(i);
+        if (!q.prompt.contains(' eats ')) continue;
+        final m = setupRe.firstMatch(q.prompt)!;
+        final items = m.group(3)!;
+        expect(
+          edibleWordProblemItems,
+          contains(items),
+          reason: 'eats context picked non-edible: $items',
+        );
+      }
+    });
+  });
+
   group('mult_compare_word', () {
     GeneratedQuestion gen(int seed) =>
         registry.generate('mult_compare_word', random: Random(seed));

@@ -100,6 +100,7 @@ class GeneratorRegistry {
     'time_to_5_min': timeTo5Min,
     // Word problems
     'add_word_problems_within_100': addSubWordProblemsWithin100,
+    'add_sub_2step_word_problems': addSub2stepWordProblems,
     'mult_compare_word': multCompareWord,
     // Place value
     'place_value_2digit': placeValue2digit,

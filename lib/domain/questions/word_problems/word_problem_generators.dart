@@ -75,6 +75,93 @@ GeneratedQuestion addSubWordProblemsWithin100(Random rand) {
   );
 }
 
+/// Two-step +/− word problem. Picks two contexts from `addSubContextsV1`,
+/// generates `a`, `b1`, `b2` so that the intermediate and final results
+/// stay within [2, 100], and emits a single prompt that strings both
+/// actions together.
+///
+/// Retries the operand draws up to 50 times until constraints hold; this
+/// is fast in practice because the constraints are loose for a, b1, b2
+/// chosen from small ranges.
+GeneratedQuestion addSub2stepWordProblems(Random rand) {
+  final name = pickRandom(wordProblemNames, rand);
+
+  late WordProblemContext ctx1;
+  late WordProblemContext ctx2;
+  late String items;
+  late int a;
+  late int b1;
+  late int b2;
+  late int intermediate;
+  late int correct;
+
+  for (var attempt = 0; attempt < 50; attempt++) {
+    ctx1 = pickRandom(addSubContextsV1, rand);
+    ctx2 = pickRandom(addSubContextsV1, rand);
+    // Item must satisfy both contexts' edibility requirements if either
+    // uses the eats verb.
+    final eats = ctx1.requiresEdibleItems || ctx2.requiresEdibleItems;
+    items =
+        eats
+            ? pickRandom(edibleWordProblemItems, rand)
+            : pickRandom(wordProblemItems, rand);
+    a = rand.nextInt(36) + 10; // 10..45
+    b1 = rand.nextInt(9) + 2; // 2..10
+    b2 = rand.nextInt(9) + 2;
+    intermediate = ctx1.op == WordProblemOp.add ? a + b1 : a - b1;
+    correct =
+        ctx2.op == WordProblemOp.add ? intermediate + b2 : intermediate - b2;
+    if (intermediate >= 2 &&
+        intermediate <= 100 &&
+        correct >= 2 &&
+        correct <= 100) {
+      break;
+    }
+  }
+
+  String fillAction(WordProblemContext ctx, int b) =>
+      ctx.action.replaceAll('{Name}', name).replaceAll('{b}', '$b').replaceAll(
+        '{items}',
+        items,
+      );
+
+  final closing =
+      ctx2.op == WordProblemOp.add ? 'have now' : 'have left';
+  final prompt = '$name has $a $items. '
+      'Then ${fillAction(ctx1, b1)} '
+      'Then ${fillAction(ctx2, b2)} '
+      'How many $items does $name $closing?';
+
+  // Misconception: applied both ops as the first one (e.g. add+add when
+  // it should have been add then sub).
+  final bothFirstOp = ctx1.op == WordProblemOp.add
+      ? a + b1 + b2
+      : a - b1 - b2;
+
+  return GeneratedQuestion(
+    conceptId: 'add_sub_2step_word_problems',
+    prompt: prompt,
+    correctAnswer: correct.toString(),
+    distractors: integerDistractorsWith(
+      correct,
+      rand,
+      misconception: bothFirstOp,
+    ),
+    explanation: [
+      'Start with $a $items.',
+      if (ctx1.op == WordProblemOp.add)
+        'After step 1: $a + $b1 = $intermediate.'
+      else
+        'After step 1: $a − $b1 = $intermediate.',
+      if (ctx2.op == WordProblemOp.add)
+        'After step 2: $intermediate + $b2 = $correct.'
+      else
+        'After step 2: $intermediate − $b2 = $correct.',
+      '$name has $correct $items.',
+    ],
+  );
+}
+
 /// Multiplicative-comparison word problem ("X has K times as many as Y").
 /// Algorithmically generated despite curriculum.md tagging this as
 /// `dataset` — the comparison framing is templatable and stays within the

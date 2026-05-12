@@ -820,7 +820,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'add_sub_2step_word_problems',
     name: 'Two-step word problems',
-    shortLabel: 'Two-step word problems',
+    shortLabel: '+− 2-step',
     categoryId: 'add_sub',
     primaryGrade: 2,
     prereqIds: ['add_word_problems_within_100'],
