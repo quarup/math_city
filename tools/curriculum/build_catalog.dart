@@ -203,6 +203,11 @@ const _shortLabelOverrides = <String, String>{
   'range_data': 'range',
   'iqr': 'IQR',
   'mad': 'MAD',
+  'area_rectangle_formula': 'area rect',
+  'perimeter_polygon': 'perimeter',
+  'area_triangle': 'area △',
+  'probability_zero_to_one': 'P scale',
+  'probability_simple_event': 'P(event)',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
@@ -289,6 +294,9 @@ const _prereqOverrides = <String, List<String>>{
   // drop skip_count_2 (no generator) — multiples is fundamentally a
   // "did mult facts" skill.
   'multiples_of_n': ['mult_facts_within_100'],
+  // drop area_rectangle_count_squares (no generator) — substitute the
+  // mult-facts background since area-by-formula IS multiplication.
+  'area_rectangle_formula': ['mult_facts_within_100'],
 };
 
 // ─────────────────────────────────────────────────────────────────────────

@@ -7,10 +7,10 @@
 
 ## Status
 
-- **Phase:** Phase 6 — Full Question Bank. **115 generators implemented**; six K–8 categories with coverage (`fractions` 26, `decimals_percent` 24, `ratios` 10/16, `expressions_equations` 13/14, `statistics` 6/15, plus the new `number_theory` 4 + integer foundations). Geometry still untouched.
+- **Phase:** Phase 6 — Full Question Bank. **120 generators implemented**; eight K–8 categories with coverage now spanning fractions, decimals/percent, ratios, equations, statistics, number theory, geometry, and probability. Two more categories kicked off this slice. Remaining gaps: data displays (bar/box/histogram), more geometry (parallelogram/trapezoid/3D), coordinate plane, scientific notation, transformations, Pythagorean.
 - **Last updated:** 2026-05-17
-- **Last action:** **Chunk 13 — number-theory + integer foundations** — 6 generators across two files. New `number_theory_generators.dart`: `factors_of_n` (G4, MC pick the factor from candidates), `multiples_of_n` (G4, MC pick the multiple), `gcf_two_numbers` (G6, generated as g·p, g·q with gcd(p,q)=1 so GCF is exactly g), `lcm_two_numbers` (G6, same parametrisation). Appended to `integer_generators.dart`: `absolute_value` (G6, "|−7|" → 7), `opposites_and_zero` (G6, includes the special-case "opposite of 0 = 0" ~10% of the time). Overrides cleanup: removed `integers_add: ['add_within_100']` since `opposites_and_zero` now lives; added `multiples_of_n: ['mult_facts_within_100']`, `absolute_value: ['add_within_100']`, `opposites_and_zero: ['add_within_100']`. Tests: +6 groups @ 300; **294 total pass**, `flutter analyze` clean.
-- **Last action (prior):** **#12 Equations chunk 12** — `factor_linear_expression`, `solve_two_step_eq_distributive`, `solve_linear_eq_one_solution` (first G8). Commit `fcb7cf8`.
+- **Last action:** **Chunk 14 — probability + geometry kickoff** — 5 generators across two new files. `probability_generators.dart`: `probability_zero_to_one` (G7, MC over canonical scenarios — "impossible" → 0, "certain" → 1, etc.), `probability_simple_event` (G7, "bag has 3 red 5 blue. P(red)?" → reduced fraction, exactString). `geometry_generators.dart`: `area_rectangle_formula` (G3, l×w), `perimeter_polygon` (G3, square 4s or rectangle 2(l+w), 50/50), `area_triangle` (G6, re-rolls until base×height is even so ÷2 stays integer). Implemented without the curriculum-suggested `RectangleArea`/`Shape`/`Spinner`/`Dice` widgets — the math works verbally; the visuals can land later as a polish slice. Override: `area_rectangle_formula` drops the unimplemented `area_rectangle_count_squares` (substitute `mult_facts_within_100`). Tests: +5 groups @ 300; **299 total pass**, `flutter analyze` clean.
+- **Last action (prior):** **Chunk 13 — number-theory + integer foundations** — 6 generators. Commit `5b14482`.
 - **Last action (prior):** **#7 Decimals sub-slice (chunk 3) — percent intro** — 3 new generators in a new file `percent_generators.dart` plus a new diagram widget:
   - **`PercentGridSpec` + `PercentGrid` widget** ([lib/presentation/diagrams/percent_grid.dart](lib/presentation/diagrams/percent_grid.dart)) — 10×10 grid with N cells shaded row-major. Distinct from `AreaGrid` (which is shaped as a row × col overlap rectangle for fraction × fraction). Wired into `DiagramRenderer`.
   - **`percent_intro` (G6)** — "What percent is shaded?" + grid diagram. Excludes 0/50/100 so the kid actually has to count. Misconception distractors: 100−n (swapped shaded/unshaded), n÷10 (read as out-of-10).
@@ -30,10 +30,10 @@
   - **DAG cleanup:** removed the `rationals_add_sub` / `rationals_multiply_divide` prereq overrides — `add_decimals` / `mult_decimals` now exist, so the rationals prereqs match curriculum.md again. Added a `decimal_notation_tenths` override that drops the unimplemented `fraction_denom_10_100` prereq (so this slice's entry point into the decimals branch reaches kids).
   - **Tests:** +20 (Decimal value-type 14 + decimal generators 6 groups @ 300 iterations each). All 259 pass; `flutter analyze` clean.
 - **Next action:** Pick the next sub-slice. Easy options remaining ([curriculum.md §5.1](curriculum.md)):
-  - **More number-theory** — `prime_or_composite` (G4), `distributive_with_gcf` (G6, "rewrite 12 + 18 as 6(2 + 3)"), `simplify_fraction_with_gcf` polish, `scientific_notation_*` (G8).
-  - **Geometry kickoff (#9–11)** — `area_rectangle_count_squares`, `area_rectangle_formula`, `perimeter_polygon` would be the natural entry. Needs a small `RectangleArea` widget (the curriculum tags these as `required:rectangle_area`; can also start with verbal versions).
-  - **Probability (#14)** — `probability_zero_to_one`, `probability_simple_event` are algorithmic without diagrams; `experimental_probability` needs `Dice`/`Spinner`.
-  - **Remaining ratio rows** (need new widgets): `ratio_table`, `double_number_line`, `ratio_to_coordinate_pairs`, `multistep_ratio_word`, `scale_drawing`.
+  - **Geometry chunk 2** — `area_parallelogram`, `area_trapezoid`, `perimeter_unknown_side`, `area_polygon_decompose`. All algorithmic; some need fractional-output handling for trapezoid.
+  - **Probability chunk 2** — `experimental_probability`, `theoretical_vs_experimental`, `sample_space_list`. Algorithmic.
+  - **Scientific notation** — `scientific_notation_write`, `scientific_notation_compare`, `scientific_notation_ops`.
+  - **Coordinate plane** — needs `CoordinatePlane` widget.
   - **#9–#11 Geometry / area / perimeter** — needs `RectangleArea`, `Polygon`, `Angle` widgets first.
   - **#12–#14 Pre-algebra / equations** — `solve_one_step_eq_addition`, `solve_one_step_eq_mult`, `solve_two_step_eq`, etc.
   - **#16 Statistics** — `mean_median_mode_range`, basic data-display reading.

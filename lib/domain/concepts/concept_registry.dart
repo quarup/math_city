@@ -2350,10 +2350,10 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'area_rectangle_formula',
     name: 'Area = l × w',
-    shortLabel: 'Area = l × w',
+    shortLabel: 'area rect',
     categoryId: 'measurement',
     primaryGrade: 3,
-    prereqIds: ['area_rectangle_count_squares', 'mult_facts_within_100'],
+    prereqIds: ['mult_facts_within_100'],
     source: ConceptSource.algorithmicWithDiagram,
     diagramRequirement: DiagramRequired('shape'),
     categoryRowOrder: 24,
@@ -2361,7 +2361,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'perimeter_polygon',
     name: 'Perimeter of polygon',
-    shortLabel: 'Perimeter of polygon',
+    shortLabel: 'perimeter',
     categoryId: 'measurement',
     primaryGrade: 3,
     prereqIds: ['add_within_100'],
@@ -2703,7 +2703,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'area_triangle',
     name: 'Area of a triangle',
-    shortLabel: 'Area of a triangle',
+    shortLabel: 'area △',
     categoryId: 'geometry',
     primaryGrade: 6,
     prereqIds: ['area_rectangle_formula'],
@@ -3876,7 +3876,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'probability_zero_to_one',
     name: 'Probability: 0 to 1 scale',
-    shortLabel: 'Probability: 0 to 1 scale',
+    shortLabel: 'P scale',
     categoryId: 'stats',
     primaryGrade: 7,
     prereqIds: ['decimals_fluent_4ops'],
@@ -3887,7 +3887,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'probability_simple_event',
     name: 'P(simple event)',
-    shortLabel: 'P(simple event)',
+    shortLabel: 'P(event)',
     categoryId: 'stats',
     primaryGrade: 7,
     prereqIds: ['probability_zero_to_one', 'fraction_a_over_b'],

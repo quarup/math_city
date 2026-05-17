@@ -5,11 +5,13 @@ import 'package:math_city/domain/questions/generators/add_sub_generators.dart';
 import 'package:math_city/domain/questions/generators/decimal_generators.dart';
 import 'package:math_city/domain/questions/generators/equation_generators.dart';
 import 'package:math_city/domain/questions/generators/fraction_generators.dart';
+import 'package:math_city/domain/questions/generators/geometry_generators.dart';
 import 'package:math_city/domain/questions/generators/integer_generators.dart';
 import 'package:math_city/domain/questions/generators/mult_div_generators.dart';
 import 'package:math_city/domain/questions/generators/number_theory_generators.dart';
 import 'package:math_city/domain/questions/generators/percent_generators.dart';
 import 'package:math_city/domain/questions/generators/place_value_generators.dart';
+import 'package:math_city/domain/questions/generators/probability_generators.dart';
 import 'package:math_city/domain/questions/generators/ratio_generators.dart';
 import 'package:math_city/domain/questions/generators/rationals_generators.dart';
 import 'package:math_city/domain/questions/generators/statistics_generators.dart';
@@ -182,6 +184,13 @@ class GeneratorRegistry {
     'factor_linear_expression': factorLinearExpression,
     'solve_two_step_eq_distributive': solveTwoStepEqDistributive,
     'solve_linear_eq_one_solution': solveLinearEqOneSolution,
+    // Geometry
+    'area_rectangle_formula': areaRectangleFormula,
+    'perimeter_polygon': perimeterPolygon,
+    'area_triangle': areaTriangle,
+    // Probability
+    'probability_zero_to_one': probabilityZeroToOne,
+    'probability_simple_event': probabilitySimpleEvent,
     // Statistics
     'mean': meanGenerator,
     'median': medianGenerator,
