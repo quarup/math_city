@@ -716,6 +716,30 @@ void main() {
     });
   });
 
+  group('mult_facts_N tables', () {
+    for (var n = 2; n <= 10; n++) {
+      test('mult_facts_$n: $n × b for b ∈ [1, 10]', () {
+        final re = RegExp(r'^(\d+) × (\d+) = \?$');
+        for (var i = 0; i < _iterations; i++) {
+          final q = _gen(registry, 'mult_facts_$n', i);
+          final m = re.firstMatch(q.prompt);
+          expect(m, isNotNull, reason: q.prompt);
+          expect(int.parse(m!.group(1)!), n);
+          final b = int.parse(m.group(2)!);
+          expect(b, inInclusiveRange(1, 10));
+          expect(q.correctAnswer, '${n * b}');
+          _expectThreeDistinctDistractors(q);
+        }
+      });
+    }
+    test('multFactsN throws for out-of-range n', () {
+      // Imported helper isn't exposed here; instead, registry only has 2..10.
+      for (final n in [0, 1, 11, 12]) {
+        expect(registry.isImplemented('mult_facts_$n'), isFalse);
+      }
+    });
+  });
+
   group('add_3_addends_within_20', () {
     test('three addends ∈ [0,9], sum ≤ 20, answer = a+b+c', () {
       final re = RegExp(r'^(\d+) \+ (\d+) \+ (\d+) = \?$');

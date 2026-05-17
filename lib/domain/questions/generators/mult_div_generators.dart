@@ -2,6 +2,28 @@ import 'dart:math';
 
 import 'package:math_city/domain/questions/distractors.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
+import 'package:math_city/domain/questions/generator_registry.dart';
+
+/// Per-table multiplication-fact generator (×n facts, n ∈ [2, 10]).
+/// Other factor ∈ [1, 10]. Used by mult_facts_2, mult_facts_3, …,
+/// mult_facts_10. Lets the wheel surface a specific table the kid is
+/// drilling without dragging in the others.
+QuestionGenerator multFactsN(int n) {
+  if (n < 2 || n > 10) {
+    throw ArgumentError('mult_facts_n: n must be in [2, 10], got $n');
+  }
+  return (rand) {
+    final b = rand.nextInt(10) + 1; // 1..10
+    final correct = n * b;
+    return GeneratedQuestion(
+      conceptId: 'mult_facts_$n',
+      prompt: '$n × $b = ?',
+      correctAnswer: '$correct',
+      distractors: integerDistractors(correct, rand),
+      explanation: ['$n × $b = $correct'],
+    );
+  };
+}
 
 /// Multiplication facts up to 100. Operands ∈ [2, 9] (skip ×0 and ×1).
 GeneratedQuestion multFactsWithin100(Random rand) {

@@ -323,6 +323,14 @@ const _prereqOverrides = <String, List<String>>{
   // "look at the last digit" skill; sub_within_20 stands in as a basic
   // number-sense prereq.
   'even_odd': ['sub_within_20'],
+  // The per-table mult-fact roots — drop the skip_count_* / mult_meaning_*
+  // prereqs (no generators yet); add_within_100 stands in as the basic
+  // arithmetic background. mult_facts_4 / 6 / 7 / 8 / 9 need no override
+  // because their prereqs (mult_facts_2, 3, 5, 10) are now wired up.
+  'mult_facts_2': ['add_within_100'],
+  'mult_facts_3': ['add_within_100'],
+  'mult_facts_5': ['add_within_100'],
+  'mult_facts_10': ['add_within_100'],
   // drop area_rectangle_count_squares (no generator) — substitute the
   // mult-facts background since area-by-formula IS multiplication.
   'area_rectangle_formula': ['mult_facts_within_100'],
