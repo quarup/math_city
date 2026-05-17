@@ -62,6 +62,7 @@ This is a hobby project being built in small sessions. Optimize for "next sessio
 - Check off completed phase tasks.
 - If you discover something blocking, add it to "Open Questions" in `plan.md`.
 - Prefer many small commits with clear messages over large ones.
+- **Push small, safe changes directly to `main`.** This includes: a single chunk of generator/curriculum content following existing patterns, infra/tooling changes (hooks, CI), docs, and lint/format cleanups. Skip the PR step — the existing `main` history is fully linear and direct-push is the project's normal flow. Reserve PRs for changes the user explicitly asks to review, architectural shifts (new layer, new dependency, schema migration), anything that touches multiple layers at once, or work spanning more than ~500 LOC of net change.
 
 ## What NOT to do
 
