@@ -716,6 +716,96 @@ void main() {
     });
   });
 
+  group('ten_more_ten_less', () {
+    test('answer is n ± 10 matching the prompt direction', () {
+      final re = RegExp(r'^What is 10 (more|less) than (\d+)\?$');
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'ten_more_ten_less', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final dir = m!.group(1)!;
+        final n = int.parse(m.group(2)!);
+        final answer = int.parse(q.correctAnswer);
+        expect(answer, dir == 'more' ? n + 10 : n - 10);
+        expect(answer, inInclusiveRange(1, 99));
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('add_2digit_1digit', () {
+    test('two-digit + one-digit, sum ≤ 99', () {
+      final re = RegExp(r'^(\d+) \+ (\d+) = \?$');
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'add_2digit_1digit', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final a = int.parse(m!.group(1)!);
+        final b = int.parse(m.group(2)!);
+        expect(a, inInclusiveRange(10, 99));
+        expect(b, inInclusiveRange(1, 9));
+        expect(int.parse(q.correctAnswer), a + b);
+        expect(a + b, lessThanOrEqualTo(99));
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('sub_multiples_of_10', () {
+    test('both operands are multiples of 10; result ≥ 0', () {
+      final re = RegExp(r'^(\d+) − (\d+) = \?$');
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'sub_multiples_of_10', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final a = int.parse(m!.group(1)!);
+        final b = int.parse(m.group(2)!);
+        expect(a % 10, 0);
+        expect(b % 10, 0);
+        expect(a, greaterThanOrEqualTo(b));
+        expect(int.parse(q.correctAnswer), a - b);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('add_up_to_4_2digit', () {
+    test('3 or 4 two-digit addends; sum ≤ 99', () {
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'add_up_to_4_2digit', i);
+        final body = q.prompt.replaceAll(' = ?', '');
+        final parts = body.split(' + ').map(int.parse).toList();
+        expect(parts.length, anyOf(3, 4));
+        for (final v in parts) {
+          expect(v, inInclusiveRange(10, 99));
+        }
+        final sum = parts.reduce((a, b) => a + b);
+        expect(sum, lessThanOrEqualTo(99));
+        expect(int.parse(q.correctAnswer), sum);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('mental_add_10_or_100', () {
+    test('answer is n ± amount; amount ∈ {10, 100}; answer ∈ [1, 999]', () {
+      final re = RegExp(r'^What is (10|100) (more|less) than (\d+)\?$');
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'mental_add_10_or_100', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final amount = int.parse(m!.group(1)!);
+        final dir = m.group(2)!;
+        final n = int.parse(m.group(3)!);
+        final answer = int.parse(q.correctAnswer);
+        expect(amount, anyOf(10, 100));
+        expect(answer, dir == 'more' ? n + amount : n - amount);
+        expect(answer, inInclusiveRange(1, 999));
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
   group('missing_addend_within_20', () {
     test('answer + known = sum; sum ∈ [2, 20]', () {
       final re = RegExp(

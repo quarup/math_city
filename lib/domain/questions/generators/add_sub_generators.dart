@@ -143,6 +143,159 @@ int _powerOf10(int n) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────
+// ten_more_ten_less (Grade 1)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "What is 10 more than 47?" → 57. Two shapes (more / less). n ∈ [11, 89]
+/// for the "more" shape (so answer ≤ 99), n ∈ [11, 99] with answer ≥ 1
+/// for "less".
+GeneratedQuestion tenMoreTenLess(Random rand) {
+  final isMore = rand.nextBool();
+  late int n;
+  late int answer;
+  if (isMore) {
+    n = rand.nextInt(79) + 11; // 11..89
+    answer = n + 10;
+  } else {
+    n = rand.nextInt(89) + 11; // 11..99
+    answer = n - 10;
+  }
+  return GeneratedQuestion(
+    conceptId: 'ten_more_ten_less',
+    prompt: 'What is 10 ${isMore ? 'more' : 'less'} than $n?',
+    correctAnswer: '$answer',
+    // Misconception: changed the ones place instead of the tens.
+    distractors: integerDistractorsWith(
+      answer,
+      rand,
+      misconception: isMore ? n + 1 : n - 1,
+    ),
+    explanation: [
+      '10 ${isMore ? 'more' : 'less'} changes only the tens place.',
+      '$n → $answer.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// add_2digit_1digit (Grade 1)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "23 + 5 = ?" → 28. Two-digit a ∈ [10, 99], one-digit b ∈ [1, 9],
+/// sum ≤ 99 (rerolls when it would tip over).
+GeneratedQuestion add2digit1digit(Random rand) {
+  int a;
+  int b;
+  do {
+    a = rand.nextInt(90) + 10; // 10..99
+    b = rand.nextInt(9) + 1; // 1..9
+  } while (a + b > 99);
+  final correct = a + b;
+  return GeneratedQuestion(
+    conceptId: 'add_2digit_1digit',
+    prompt: '$a + $b = ?',
+    correctAnswer: '$correct',
+    distractors: integerDistractors(correct, rand),
+    explanation: ['$a + $b = $correct'],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// sub_multiples_of_10 (Grade 1)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "60 − 40 = ?" → 20. Both operands are multiples of 10 in [10, 90].
+/// Result ≥ 0.
+GeneratedQuestion subMultiplesOf10(Random rand) {
+  final aTens = rand.nextInt(9) + 1; // 1..9 → a ∈ {10..90}
+  final bTens = rand.nextInt(aTens) + 1; // 1..aTens → b ≤ a
+  final a = aTens * 10;
+  final b = bTens * 10;
+  final correct = a - b;
+  return GeneratedQuestion(
+    conceptId: 'sub_multiples_of_10',
+    prompt: '$a $_minus $b = ?',
+    correctAnswer: '$correct',
+    distractors: integerDistractors(correct, rand),
+    explanation: [
+      '$aTens tens $_minus $bTens tens = ${aTens - bTens} tens = $correct.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// add_up_to_4_2digit (Grade 2)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "23 + 14 + 35 = ?" or "21 + 19 + 14 + 12 = ?" — three or four 2-digit
+/// addends, sum ≤ 99 so the result stays inside add_within_100.
+GeneratedQuestion addUpTo4_2digit(Random rand) {
+  // 50/50 between 3 and 4 addends.
+  final count = rand.nextBool() ? 3 : 4;
+  final addends = <int>[];
+  var running = 0;
+  for (var i = 0; i < count; i++) {
+    final remainingSlots = count - i;
+    // Cap each addend so the sum stays ≤ 99 (assume the rest could be 10
+    // minimum each — actually 10 not enforced as floor, but per-call we
+    // sample then accept).
+    final maxNext = 99 - running - 10 * (remainingSlots - 1);
+    if (maxNext < 10) return addUpTo4_2digit(rand); // retry
+    final v = rand.nextInt(maxNext - 10 + 1) + 10;
+    addends.add(v);
+    running += v;
+  }
+  final correct = running;
+  return GeneratedQuestion(
+    conceptId: 'add_up_to_4_2digit',
+    prompt: '${addends.join(' + ')} = ?',
+    correctAnswer: '$correct',
+    distractors: integerDistractors(correct, rand),
+    explanation: ['${addends.join(' + ')} = $correct'],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// mental_add_10_or_100 (Grade 2)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "What is 100 more than 247?" → 347. Two operand magnitudes (±10, ±100)
+/// and two directions (more / less). Result ∈ [1, 999] so a kid can
+/// hold the number in their head.
+GeneratedQuestion mentalAdd10Or100(Random rand) {
+  final amount = rand.nextBool() ? 10 : 100;
+  final isMore = rand.nextBool();
+  late int n;
+  late int answer;
+  if (isMore) {
+    // n in [amount+1, 999 - amount].
+    n = rand.nextInt(999 - 2 * amount) + amount + 1;
+    answer = n + amount;
+  } else {
+    // n in [amount + 1, 999], answer ≥ 1.
+    n = rand.nextInt(999 - amount) + amount + 1;
+    answer = n - amount;
+  }
+  return GeneratedQuestion(
+    conceptId: 'mental_add_10_or_100',
+    prompt: 'What is $amount ${isMore ? 'more' : 'less'} than $n?',
+    correctAnswer: '$answer',
+    distractors: integerDistractorsWith(
+      answer,
+      rand,
+      // Misconception: kid changed the wrong place.
+      misconception: isMore ? n + 1 : n - 1,
+    ),
+    explanation: [
+      // ignore: no_adjacent_strings_in_list — single line wrapped for length
+      '$amount ${isMore ? 'more' : 'less'} changes only the '
+          '${amount == 10 ? 'tens' : 'hundreds'} place.',
+      '$n → $answer.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
 // missing_addend_within_20 (Grade 1)
 // ─────────────────────────────────────────────────────────────────────────
 

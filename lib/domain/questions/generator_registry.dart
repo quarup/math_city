@@ -75,6 +75,11 @@ class GeneratorRegistry {
     'add_3_addends_within_20': add3AddendsWithin20,
     'commutative_add': commutativeAdd,
     'associative_add': associativeAdd,
+    'ten_more_ten_less': tenMoreTenLess,
+    'add_2digit_1digit': add2digit1digit,
+    'sub_multiples_of_10': subMultiplesOf10,
+    'add_up_to_4_2digit': addUpTo4_2digit,
+    'mental_add_10_or_100': mentalAdd10Or100,
     // Multiplication / division
     'mult_facts_within_100': multFactsWithin100,
     'mult_1digit_by_multiple_of_10': mult1digitByMultipleOf10,

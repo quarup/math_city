@@ -250,8 +250,11 @@ const _prereqOverrides = <String, List<String>>{
   'add_within_20': ['add_within_10'],
   // drop decompose_10 (no generator).
   'sub_within_20': ['sub_within_10'],
-  // drop add_2digit_1digit + place_value_2digit (no generators).
-  'add_within_100': ['add_within_20'],
+  // add_2digit_1digit now lives, so the curriculum prereq is met.
+  // Drop place_value_2digit (its only-step is `place_value_2digit: []`
+  // due to a missing teen_numbers_as_ten_plus prereq, so it adds no
+  // information) and use add_2digit_1digit as the direct prereq.
+  'add_within_100': ['add_2digit_1digit'],
   // drop place_value_2digit (no generator).
   'sub_within_100': ['sub_within_20'],
   // drop place_value_3digit (no generator).
@@ -341,6 +344,12 @@ const _prereqOverrides = <String, List<String>>{
   // drop shape_attributes_basic (no generator) — triangle inequality is
   // purely a sum-comparison skill.
   'triangle_inequality_recognize': ['compare_2digit'],
+  // drop count_to_100_by_10 (no generator) — ten more / ten less is a
+  // place-value digit-shift skill; place_value_2digit covers it.
+  'ten_more_ten_less': ['place_value_2digit'],
+  // drop skip_count_10 (no generator) — subtraction-of-tens is a
+  // place-value skill grounded in basic subtraction.
+  'sub_multiples_of_10': ['sub_within_20'],
   // drop area_rectangle_count_squares (no generator) — substitute the
   // mult-facts background since area-by-formula IS multiplication.
   'area_rectangle_formula': ['mult_facts_within_100'],
