@@ -6,6 +6,7 @@ import 'package:math_city/domain/questions/generators/advanced_generators.dart';
 import 'package:math_city/domain/questions/generators/decimal_generators.dart';
 import 'package:math_city/domain/questions/generators/equation_generators.dart';
 import 'package:math_city/domain/questions/generators/fraction_generators.dart';
+import 'package:math_city/domain/questions/generators/function_generators.dart';
 import 'package:math_city/domain/questions/generators/geometry_generators.dart';
 import 'package:math_city/domain/questions/generators/integer_generators.dart';
 import 'package:math_city/domain/questions/generators/mult_div_generators.dart';
@@ -205,8 +206,15 @@ class GeneratorRegistry {
     'factor_linear_expression': factorLinearExpression,
     'solve_two_step_eq_distributive': solveTwoStepEqDistributive,
     'solve_linear_eq_one_solution': solveLinearEqOneSolution,
+    'solve_linear_eq_with_distrib_collect': solveLinearEqWithDistribCollect,
+    'solve_system_substitution': solveSystemSubstitution,
+    'solve_system_elimination': solveSystemElimination,
     'inequality_one_var_intro': inequalityOneVarIntro,
     'solve_two_step_inequality': solveTwoStepInequality,
+    // Functions (G8)
+    'slope_from_two_points': slopeFromTwoPoints,
+    'linear_function_construct': linearFunctionConstruct,
+    'function_definition_check': functionDefinitionCheck,
     // Geometry
     'area_rectangle_formula': areaRectangleFormula,
     'perimeter_polygon': perimeterPolygon,
