@@ -716,6 +716,82 @@ void main() {
     });
   });
 
+  group('equal_sign_meaning', () {
+    test('answer makes both sides equal; LHS uses add_within_10', () {
+      final re = RegExp(
+        r'^What goes in the box\? '
+        r'(\d+) \+ (\d+) = (\d+|\?) \+ (\d+|\?)$',
+      );
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'equal_sign_meaning', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final a = int.parse(m!.group(1)!);
+        final b = int.parse(m.group(2)!);
+        expect(a + b, lessThanOrEqualTo(10), reason: 'LHS uses add_within_10');
+        final rhs1 = m.group(3)!;
+        final rhs2 = m.group(4)!;
+        // Exactly one of the right-hand operands is the unknown.
+        expect(rhs1 == '?' ? rhs2 != '?' : rhs2 == '?', isTrue);
+        final known = int.parse(rhs1 == '?' ? rhs2 : rhs1);
+        final answer = int.parse(q.correctAnswer);
+        expect(answer + known, a + b);
+        expect(answer, greaterThanOrEqualTo(1));
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('commutative_add', () {
+    test('answer = a + b; swap order in prompt', () {
+      final re = RegExp(
+        r'^If (\d+) \+ (\d+) = (\d+), what is (\d+) \+ (\d+)\?$',
+      );
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'commutative_add', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final a = int.parse(m!.group(1)!);
+        final b = int.parse(m.group(2)!);
+        final stated = int.parse(m.group(3)!);
+        final swapA = int.parse(m.group(4)!);
+        final swapB = int.parse(m.group(5)!);
+        expect(stated, a + b);
+        expect(swapA, b);
+        expect(swapB, a);
+        expect(a, isNot(b));
+        expect(q.correctAnswer, '${a + b}');
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('commutative_mult', () {
+    test('answer = a × b; swap order in prompt', () {
+      final re = RegExp(
+        r'^If (\d+) × (\d+) = (\d+), what is (\d+) × (\d+)\?$',
+      );
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'commutative_mult', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final a = int.parse(m!.group(1)!);
+        final b = int.parse(m.group(2)!);
+        final stated = int.parse(m.group(3)!);
+        final swapA = int.parse(m.group(4)!);
+        final swapB = int.parse(m.group(5)!);
+        expect(a, inInclusiveRange(2, 9));
+        expect(b, inInclusiveRange(2, 9));
+        expect(a, isNot(b));
+        expect(stated, a * b);
+        expect(swapA, b);
+        expect(swapB, a);
+        expect(q.correctAnswer, '${a * b}');
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
   group('Registry guards', () {
     test('unknown concept throws ArgumentError', () {
       expect(

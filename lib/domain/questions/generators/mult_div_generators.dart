@@ -189,3 +189,30 @@ int _pow10(int n) {
   }
   return v;
 }
+
+// ─────────────────────────────────────────────────────────────────────────
+// commutative_mult (Grade 3)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "If 8 × 6 = 48, what is 6 × 8?" → 48. Tests CCSS 3.OA.B.5 — the
+/// commutative property of multiplication. Factors ∈ [2, 9] (excludes the
+/// trivial × 1 and × 0).
+GeneratedQuestion commutativeMult(Random rand) {
+  int a;
+  int b;
+  do {
+    a = rand.nextInt(8) + 2; // 2..9
+    b = rand.nextInt(8) + 2;
+  } while (a == b); // pick distinct factors so the swap is visible
+  final correct = a * b;
+  return GeneratedQuestion(
+    conceptId: 'commutative_mult',
+    prompt: 'If $a × $b = $correct, what is $b × $a?',
+    correctAnswer: '$correct',
+    distractors: integerDistractors(correct, rand),
+    explanation: [
+      'Multiplying in a different order gives the same product.',
+      '$b × $a = $a × $b = $correct.',
+    ],
+  );
+}

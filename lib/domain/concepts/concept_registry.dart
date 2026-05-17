@@ -225,7 +225,7 @@ const List<Concept> allConcepts = [
     shortLabel: 'Even or odd?',
     categoryId: 'counting',
     primaryGrade: 2,
-    prereqIds: ['skip_count_2'],
+    prereqIds: ['sub_within_20'],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
     categoryRowOrder: 19,

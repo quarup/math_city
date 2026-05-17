@@ -123,6 +123,66 @@ void main() {
     });
   });
 
+  group('even_odd', () {
+    test(
+      'answer matches actual parity of n; MC over {even, odd, both, neither}',
+      () {
+        final re = RegExp(r'^Is (\d+) even or odd\?$');
+        for (var i = 0; i < _iterations; i++) {
+          final q = _gen(registry, 'even_odd', i);
+          final m = re.firstMatch(q.prompt);
+          expect(m, isNotNull, reason: q.prompt);
+          final n = int.parse(m!.group(1)!);
+          expect(n, inInclusiveRange(2, 99));
+          expect(q.correctAnswer, n.isEven ? 'even' : 'odd');
+          expect(q.answerFormat, AnswerFormat.string);
+          // Distractor pool fixed at {opposite, both, neither}.
+          final allChoices = {q.correctAnswer, ...q.distractors};
+          expect(allChoices, {'even', 'odd', 'both', 'neither'});
+          _expectThreeDistinctDistractors(q);
+        }
+      },
+    );
+  });
+
+  group('distributive_with_gcf', () {
+    test('correct form is g × (p + q) for coprime p, q; addends = gp + gq', () {
+      final re = RegExp(
+        r'^Use the GCF to rewrite (\d+) \+ (\d+) as a product\.$',
+      );
+      final ansRe = RegExp(r'^(\d+) × \((\d+) \+ (\d+)\)$');
+      int gcd(int x, int y) {
+        var a = x.abs();
+        var b = y.abs();
+        while (b != 0) {
+          final t = b;
+          b = a % b;
+          a = t;
+        }
+        return a;
+      }
+
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'distributive_with_gcf', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final a = int.parse(m!.group(1)!);
+        final b = int.parse(m.group(2)!);
+        final am = ansRe.firstMatch(q.correctAnswer);
+        expect(am, isNotNull, reason: q.correctAnswer);
+        final g = int.parse(am!.group(1)!);
+        final p = int.parse(am.group(2)!);
+        final qVal = int.parse(am.group(3)!);
+        expect(g * p, a);
+        expect(g * qVal, b);
+        expect(gcd(p, qVal), 1, reason: 'inner sum must be in lowest terms');
+        expect(g, gcd(a, b), reason: 'g must be the actual GCF');
+        expect(q.answerFormat, AnswerFormat.string);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
   group('exponents_whole_number', () {
     test('answer = base^exp computed integer', () {
       final re = RegExp(r'^What is (\d+)\^(\d+)\?$');

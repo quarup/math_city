@@ -318,6 +318,10 @@ const _prereqOverrides = <String, List<String>>{
   // drop skip_count_2 (no generator) — multiples is fundamentally a
   // "did mult facts" skill.
   'multiples_of_n': ['mult_facts_within_100'],
+  // drop skip_count_2 (no generator) — even/odd is fundamentally a
+  // "look at the last digit" skill; sub_within_20 stands in as a basic
+  // number-sense prereq.
+  'even_odd': ['sub_within_20'],
   // drop area_rectangle_count_squares (no generator) — substitute the
   // mult-facts background since area-by-formula IS multiplication.
   'area_rectangle_formula': ['mult_facts_within_100'],

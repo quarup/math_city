@@ -141,3 +141,72 @@ int _powerOf10(int n) {
   }
   return v;
 }
+
+// ─────────────────────────────────────────────────────────────────────────
+// equal_sign_meaning (Grade 1)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "What number makes this equation true? 4 + 3 = ? + 2" → 5. Tests the
+/// "equal sign means same value" understanding from CCSS 1.OA.D.7 by asking
+/// for the missing operand on the other side. Three shapes, all using
+/// add_within_10 operands so the kid stays in their comfort zone.
+GeneratedQuestion equalSignMeaning(Random rand) {
+  // Pick a, b ∈ [1, 9] with a + b ≤ 10.
+  final a = rand.nextInt(9) + 1; // 1..9
+  final b = rand.nextInt(10 - a) + 1; // 1..10-a so a + b ≤ 10
+  final total = a + b;
+  // Right-hand side: a "?" plus another non-zero addend that's ≤ total.
+  // We need the other addend < total so the unknown is ≥ 1.
+  final c = rand.nextInt(total - 1) + 1; // 1..total-1
+  final correct = total - c;
+  // Two shapes: blank on the right side either as first or second operand.
+  final shape = rand.nextInt(2);
+  final prompt = shape == 0
+      ? 'What goes in the box? $a + $b = ? + $c'
+      : 'What goes in the box? $a + $b = $c + ?';
+
+  return GeneratedQuestion(
+    conceptId: 'equal_sign_meaning',
+    prompt: prompt,
+    // Common misconception: the kid puts the total on the right (treats
+    // = as "the answer goes here"). Surface it as a distractor.
+    correctAnswer: '$correct',
+    distractors: integerDistractorsWith(
+      correct,
+      rand,
+      misconception: total,
+    ),
+    explanation: [
+      '$a + $b = $total, so both sides must equal $total.',
+      '$correct + $c = $total (or $c + $correct = $total).',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// commutative_add (Grade 1)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "If 8 + 5 = 13, what is 5 + 8?" → 13. Tests CCSS 1.OA.B.3 — the
+/// commutative property of addition. Sums stay within 20 so we're firmly
+/// in the kid's `add_within_20` band.
+GeneratedQuestion commutativeAdd(Random rand) {
+  // a, b ∈ [1, 9] with a ≠ b so the swap is visually distinct.
+  int a;
+  int b;
+  do {
+    a = rand.nextInt(9) + 1; // 1..9
+    b = rand.nextInt(9) + 1;
+  } while (a == b);
+  final correct = a + b;
+  return GeneratedQuestion(
+    conceptId: 'commutative_add',
+    prompt: 'If $a + $b = $correct, what is $b + $a?',
+    correctAnswer: '$correct',
+    distractors: integerDistractors(correct, rand),
+    explanation: [
+      'Adding in a different order gives the same sum.',
+      '$b + $a = $a + $b = $correct.',
+    ],
+  );
+}

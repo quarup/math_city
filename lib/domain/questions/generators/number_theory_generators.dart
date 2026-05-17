@@ -478,6 +478,80 @@ GeneratedQuestion integerExponentProps(Random rand) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────
+// even_odd (Grade 2)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "Is 14 even or odd?" → MC over {even, odd, both, neither}. n ∈ [2, 99]
+/// so single-digit and multi-digit cases both appear.
+GeneratedQuestion evenOdd(Random rand) {
+  final n = rand.nextInt(98) + 2; // 2..99
+  final isEven = n.isEven;
+  final correct = isEven ? 'even' : 'odd';
+  final distractors = <String>[
+    if (isEven) 'odd' else 'even',
+    'both',
+    'neither',
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'even_odd',
+    prompt: 'Is $n even or odd?',
+    correctAnswer: correct,
+    distractors: distractors,
+    explanation: [
+      if (isEven)
+        '$n ends in a 0, 2, 4, 6, or 8 — it is even.'
+      else
+        '$n ends in a 1, 3, 5, 7, or 9 — it is odd.',
+    ],
+    answerFormat: AnswerFormat.string,
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// distributive_with_gcf (Grade 6)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "Use the GCF to rewrite 12 + 18 as a product." → "6 × (2 + 3)". MC
+/// over four product/sum forms. Picks two coprime cofactors so the
+/// resulting inner sum stays in lowest terms.
+GeneratedQuestion distributiveWithGcf(Random rand) {
+  final g = rand.nextInt(7) + 2; // 2..8 — GCF
+  int p;
+  int q;
+  do {
+    p = rand.nextInt(8) + 2; // 2..9
+    q = rand.nextInt(8) + 2;
+  } while (p == q || _gcd(p, q) != 1);
+  final a = g * p;
+  final b = g * q;
+  final correct = '$g × ($p + $q)';
+
+  // p ≠ q and gcd(p, q) = 1, so these three are guaranteed ≠ correct.
+  final distractors = <String>[
+    // Misconception: pulled out GCF but didn't divide the addends.
+    '$g × ($a + $b)',
+    // Misconception: used one of the addends as the "GCF".
+    '$a × (1 + $q)',
+    // Misconception: gave the raw sum (forgot to factor).
+    '${a + b}',
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'distributive_with_gcf',
+    prompt: 'Use the GCF to rewrite $a + $b as a product.',
+    correctAnswer: correct,
+    distractors: distractors,
+    explanation: [
+      'GCF of $a and $b is $g.',
+      '$a = $g × $p; $b = $g × $q.',
+      '$a + $b = $g × ($p + $q).',
+    ],
+    answerFormat: AnswerFormat.string,
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
 // gcf_two_numbers (Grade 6)
 // ─────────────────────────────────────────────────────────────────────────
 
