@@ -188,6 +188,10 @@ const _shortLabelOverrides = <String, String>{
   'add_subtract_linear_expressions': 'combine',
   'equivalent_expressions_props': 'equiv expr',
   'substitute_to_check': 'sub check',
+  'mean': 'mean',
+  'median': 'median',
+  'mode': 'mode',
+  'range_data': 'range',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
@@ -254,6 +258,12 @@ const _prereqOverrides = <String, List<String>>{
   // (no generators) — substitute mult facts as basic background.
   'expand_linear_expression': ['mult_facts_within_100'],
   'equivalent_expressions_props': ['mult_facts_within_100'],
+  // drop compare_order_rationals (no generator) — substitute basic
+  // ordering/sort skill via sub_within_1000 which already lives in the DAG.
+  'median': ['sub_within_1000'],
+  // drop classify_count_categories (no generator) — substitute a basic
+  // arithmetic background; mode is conceptually a "spot the repeat" skill.
+  'mode': ['add_within_100'],
 };
 
 // ─────────────────────────────────────────────────────────────────────────

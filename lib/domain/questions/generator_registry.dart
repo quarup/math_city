@@ -11,6 +11,7 @@ import 'package:math_city/domain/questions/generators/percent_generators.dart';
 import 'package:math_city/domain/questions/generators/place_value_generators.dart';
 import 'package:math_city/domain/questions/generators/ratio_generators.dart';
 import 'package:math_city/domain/questions/generators/rationals_generators.dart';
+import 'package:math_city/domain/questions/generators/statistics_generators.dart';
 import 'package:math_city/domain/questions/generators/time_generators.dart';
 import 'package:math_city/domain/questions/word_problems/word_problem_generators.dart';
 
@@ -170,5 +171,10 @@ class GeneratorRegistry {
     'add_subtract_linear_expressions': addSubtractLinearExpressions,
     'equivalent_expressions_props': equivalentExpressionsProps,
     'substitute_to_check': substituteToCheck,
+    // Statistics
+    'mean': meanGenerator,
+    'median': medianGenerator,
+    'mode': modeGenerator,
+    'range_data': rangeDataGenerator,
   };
 }

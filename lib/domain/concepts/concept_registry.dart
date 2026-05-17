@@ -3766,7 +3766,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'mean',
     name: 'Mean (average)',
-    shortLabel: 'Mean (average)',
+    shortLabel: 'mean',
     categoryId: 'stats',
     primaryGrade: 6,
     prereqIds: ['div_4digit_by_1digit'],
@@ -3777,10 +3777,10 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'median',
     name: 'Median',
-    shortLabel: 'Median',
+    shortLabel: 'median',
     categoryId: 'stats',
     primaryGrade: 6,
-    prereqIds: ['compare_order_rationals'],
+    prereqIds: ['sub_within_1000'],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
     categoryRowOrder: 16,
@@ -3788,10 +3788,10 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'mode',
     name: 'Mode',
-    shortLabel: 'Mode',
+    shortLabel: 'mode',
     categoryId: 'stats',
     primaryGrade: 6,
-    prereqIds: ['classify_count_categories'],
+    prereqIds: ['add_within_100'],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
     categoryRowOrder: 17,
@@ -3799,7 +3799,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'range_data',
     name: 'Range',
-    shortLabel: 'Range',
+    shortLabel: 'range',
     categoryId: 'stats',
     primaryGrade: 6,
     prereqIds: ['sub_within_1000'],
