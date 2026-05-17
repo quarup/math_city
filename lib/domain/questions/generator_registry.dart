@@ -174,6 +174,8 @@ class GeneratorRegistry {
     'volume_rect_prism_formula': volumeRectPrismFormula,
     'compare_order_rationals': compareOrderRationals,
     'irrational_recognize': irrationalRecognize,
+    'numerical_pattern_rule': numericalPatternRule,
+    'arithmetic_patterns_in_tables': arithmeticPatternsInTables,
     // Rationals
     'rationals_add_sub': rationalsAddSub,
     'rationals_multiply_divide': rationalsMultiplyDivide,
@@ -232,6 +234,8 @@ class GeneratorRegistry {
     'factor_linear_expression': factorLinearExpression,
     'solve_two_step_eq_distributive': solveTwoStepEqDistributive,
     'solve_linear_eq_one_solution': solveLinearEqOneSolution,
+    'solve_linear_eq_no_or_inf': solveLinearEqNoOrInf,
+    'solve_linear_eq_with_distrib_collect': solveLinearEqWithDistribCollect,
     'inequality_one_var_intro': inequalityOneVarIntro,
     'solve_two_step_inequality': solveTwoStepInequality,
     // Geometry
@@ -241,6 +245,7 @@ class GeneratorRegistry {
     'area_triangle': areaTriangle,
     'area_parallelogram': areaParallelogram,
     'area_trapezoid': areaTrapezoid,
+    'triangle_inequality_recognize': triangleInequalityRecognize,
     // Probability
     'probability_zero_to_one': probabilityZeroToOne,
     'probability_simple_event': probabilitySimpleEvent,

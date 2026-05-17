@@ -272,3 +272,56 @@ GeneratedQuestion areaTriangle(Random rand) {
     ],
   );
 }
+
+// ─────────────────────────────────────────────────────────────────────────
+// triangle_inequality_recognize (Grade 7)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "Can a triangle have sides of length 3, 4, 5?" → "yes". MC over
+/// {yes, no, only if all sides are equal, can't tell without more info}.
+/// Triangle inequality: each side < sum of the other two.
+GeneratedQuestion triangleInequalityRecognize(Random rand) {
+  final shouldBeValid = rand.nextBool();
+  int a;
+  int b;
+  int c;
+  if (shouldBeValid) {
+    a = rand.nextInt(8) + 2; // 2..9
+    b = rand.nextInt(8) + 2;
+    final lo = (a - b).abs() + 1;
+    final hi = a + b - 1;
+    if (hi < lo) return triangleInequalityRecognize(rand);
+    c = lo + rand.nextInt(hi - lo + 1);
+  } else {
+    a = rand.nextInt(6) + 2; // 2..7
+    b = rand.nextInt(6) + 2;
+    c = a + b + rand.nextInt(4); // a + b ≤ c ≤ a + b + 3
+  }
+  // Shuffle so the over-large side isn't always c.
+  final sides = [a, b, c]..shuffle(rand);
+  final correct = shouldBeValid ? 'yes' : 'no';
+  final distractors = <String>[
+    if (shouldBeValid) 'no' else 'yes',
+    'only if all sides are equal',
+    "can't tell without more info",
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'triangle_inequality_recognize',
+    prompt:
+        'Can a triangle have sides of length '
+        '${sides[0]}, ${sides[1]}, and ${sides[2]}?',
+    correctAnswer: correct,
+    distractors: distractors,
+    explanation: [
+      // ignore: no_adjacent_strings_in_list — single line wrapped for length
+      'Triangle inequality: each side must be less than the sum of the '
+          'other two.',
+      if (shouldBeValid)
+        'All three checks pass — a triangle with these sides exists.'
+      else
+        'The longest side ≥ sum of the other two — no triangle possible.',
+    ],
+    answerFormat: AnswerFormat.string,
+  );
+}

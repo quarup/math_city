@@ -273,3 +273,108 @@ GeneratedQuestion irrationalRecognize(Random rand) {
     answerFormat: AnswerFormat.string,
   );
 }
+
+// ─────────────────────────────────────────────────────────────────────────
+// numerical_pattern_rule (Grade 4)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "Find the next number: 3, 7, 11, 15, ?" → 19. Two pattern families:
+/// arithmetic (+ step) and geometric (× ratio). Tests CCSS 4.OA.C.5.
+GeneratedQuestion numericalPatternRule(Random rand) {
+  final isArithmetic = rand.nextBool();
+  late List<int> seq;
+  late int next;
+  late String ruleText;
+  late int misconception;
+  if (isArithmetic) {
+    final start = rand.nextInt(8) + 1; // 1..8
+    final step = rand.nextInt(9) + 2; // 2..10
+    seq = List.generate(4, (i) => start + step * i);
+    next = seq.last + step;
+    ruleText = 'add $step';
+    misconception = seq.last + step - 1;
+  } else {
+    final start = rand.nextInt(5) + 1; // 1..5
+    final ratio = rand.nextInt(2) + 2; // 2 or 3
+    seq = List.generate(4, (i) => start * _intPow(ratio, i));
+    next = seq.last * ratio;
+    ruleText = 'multiply by $ratio';
+    // Misconception: did additive (last + (last − prev)) instead.
+    misconception = seq.last + (seq.last - seq[2]);
+  }
+  final correct = '$next';
+  final prompt =
+      'Find the next number: '
+      '${seq[0]}, ${seq[1]}, ${seq[2]}, ${seq[3]}, ?';
+
+  final candidatesSet = <String>{
+    '$misconception',
+    '${next + 1}',
+    '${next - 1}',
+    '${seq.last * 2}',
+    '${seq.last + 1}',
+  }..remove(correct);
+  final candidates = candidatesSet.toList()..shuffle(rand);
+  final distractors = candidates.take(3).toList();
+  while (distractors.length < 3) {
+    final extra = '${next + 5 + distractors.length}';
+    if (extra != correct && !distractors.contains(extra)) {
+      distractors.add(extra);
+    } else {
+      break;
+    }
+  }
+
+  return GeneratedQuestion(
+    conceptId: 'numerical_pattern_rule',
+    prompt: prompt,
+    correctAnswer: correct,
+    distractors: distractors,
+    explanation: [
+      'Rule: $ruleText.',
+      // ignore: no_adjacent_strings_in_list — single line wrapped for length
+      'Next: ${seq.last}${isArithmetic ? ' + ' : ' × '}'
+          '${isArithmetic ? next - seq.last : next ~/ seq.last} = $next.',
+    ],
+  );
+}
+
+int _intPow(int base, int exp) {
+  var v = 1;
+  for (var i = 0; i < exp; i++) {
+    v *= base;
+  }
+  return v;
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// arithmetic_patterns_in_tables (Grade 3)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "Pattern: 6, 12, 18, 24, ?" — multiples of n, n ∈ [2, 10]. Tests
+/// CCSS 3.OA.D.9 — recognising multiplicative patterns in the
+/// multiplication tables.
+GeneratedQuestion arithmeticPatternsInTables(Random rand) {
+  final n = rand.nextInt(9) + 2; // 2..10
+  final terms = List.generate(4, (i) => n * (i + 1));
+  final next = n * 5;
+  final correct = '$next';
+  final prompt = 'Pattern: ${terms.join(', ')}, ?';
+
+  final candidates = <String>[
+    // Misconception: kid added 1 instead of n.
+    '${terms.last + 1}',
+    // Misconception: kid skipped a step in the table.
+    '${next + n}',
+    // Misconception: doubled the last term.
+    '${terms.last * 2}',
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'arithmetic_patterns_in_tables',
+    prompt: prompt,
+    correctAnswer: correct,
+    distractors: _wholeDistractors(next, candidates, rand),
+    explanation: ['Each term goes up by $n.', '${terms.last} + $n = $next.'],
+  );
+}

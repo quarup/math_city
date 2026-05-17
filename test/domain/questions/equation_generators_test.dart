@@ -397,4 +397,44 @@ void main() {
       }
     });
   });
+
+  group('solve_linear_eq_no_or_inf', () {
+    test('answer matches the case the prompt actually represents', () {
+      const cases = {
+        'one solution',
+        'no solution',
+        'infinitely many solutions',
+      };
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'solve_linear_eq_no_or_inf', i);
+        expect(cases, contains(q.correctAnswer));
+        expect(q.prompt.startsWith('Solve for x:'), isTrue);
+        // The three case strings must all appear in the four total choices.
+        final all = {q.correctAnswer, ...q.distractors};
+        expect(cases.difference(all), isEmpty);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('solve_linear_eq_with_distrib_collect', () {
+    test('integer x answers the parsed equation', () {
+      final re = RegExp(
+        r'^Solve for x: (\d+)\(x \+ (\d+)\) − (\d+)x = (\d+)$',
+      );
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'solve_linear_eq_with_distrib_collect', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final p = int.parse(m!.group(1)!);
+        final qq = int.parse(m.group(2)!);
+        final k = int.parse(m.group(3)!);
+        final r = int.parse(m.group(4)!);
+        final x = int.parse(q.correctAnswer);
+        expect(p - k, greaterThan(0));
+        expect(p * (x + qq) - k * x, r);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
 }

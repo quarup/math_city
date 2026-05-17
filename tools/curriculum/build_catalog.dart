@@ -335,6 +335,12 @@ const _prereqOverrides = <String, List<String>>{
   // covers the multiplicative skill; the lesson here is just attaching
   // the zero.
   'mult_1digit_by_multiple_of_10': ['mult_facts_within_100'],
+  // drop skip_count_2 (no generator) — pattern continuation only needs
+  // basic mult facts as background.
+  'numerical_pattern_rule': ['mult_facts_within_100'],
+  // drop shape_attributes_basic (no generator) — triangle inequality is
+  // purely a sum-comparison skill.
+  'triangle_inequality_recognize': ['compare_2digit'],
   // drop area_rectangle_count_squares (no generator) — substitute the
   // mult-facts background since area-by-formula IS multiplication.
   'area_rectangle_formula': ['mult_facts_within_100'],

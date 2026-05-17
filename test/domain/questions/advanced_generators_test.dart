@@ -120,4 +120,55 @@ void main() {
       }
     });
   });
+
+  group('numerical_pattern_rule', () {
+    test('answer continues the parsed pattern (arithmetic or geometric)', () {
+      final re = RegExp(
+        r'^Find the next number: (\d+), (\d+), (\d+), (\d+), \?$',
+      );
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'numerical_pattern_rule', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final t = [
+          int.parse(m!.group(1)!),
+          int.parse(m.group(2)!),
+          int.parse(m.group(3)!),
+          int.parse(m.group(4)!),
+        ];
+        final answer = int.parse(q.correctAnswer);
+        final step = t[1] - t[0];
+        final isArithmetic = t[2] - t[1] == step && t[3] - t[2] == step;
+        if (isArithmetic) {
+          expect(answer, t[3] + step);
+        } else {
+          expect(t[1] % t[0], 0);
+          final ratio = t[1] ~/ t[0];
+          expect(t[2], t[1] * ratio);
+          expect(t[3], t[2] * ratio);
+          expect(answer, t[3] * ratio);
+        }
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('arithmetic_patterns_in_tables', () {
+    test('answer is the next multiple of n (n ∈ [2, 10])', () {
+      final re = RegExp(r'^Pattern: (\d+), (\d+), (\d+), (\d+), \?$');
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'arithmetic_patterns_in_tables', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final t1 = int.parse(m!.group(1)!);
+        final t2 = int.parse(m.group(2)!);
+        expect(t1, inInclusiveRange(2, 10));
+        expect(t2, 2 * t1);
+        expect(int.parse(m.group(3)!), 3 * t1);
+        expect(int.parse(m.group(4)!), 4 * t1);
+        expect(int.parse(q.correctAnswer), 5 * t1);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
 }

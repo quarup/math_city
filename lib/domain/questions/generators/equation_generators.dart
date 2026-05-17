@@ -810,3 +810,129 @@ GeneratedQuestion substituteToCheck(Random rand) {
     answerFormat: AnswerFormat.string,
   );
 }
+
+// ─────────────────────────────────────────────────────────────────────────
+// solve_linear_eq_no_or_inf (Grade 8)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "Solve 2x + 5 = 2x + 9." → "no solution". MC over {"one solution",
+/// "no solution", "infinitely many solutions"} plus a specific-value
+/// distractor. Tests CCSS 8.EE.C.7.a — recognising the three cases.
+GeneratedQuestion solveLinearEqNoOrInf(Random rand) {
+  final shape = rand.nextInt(3); // 0 = one, 1 = no, 2 = infinite
+  final a = rand.nextInt(7) + 2; // 2..8
+  final b = rand.nextInt(9) + 1; // 1..9
+  late String prompt;
+  late String correct;
+  late List<String> explanation;
+  late String specificDistractor;
+  switch (shape) {
+    case 0:
+      // ax + b = cx + d with a != c → exactly one solution.
+      int c;
+      do {
+        c = rand.nextInt(6) + 1; // 1..6
+      } while (c == a);
+      final x = rand.nextInt(7) + 2; // 2..8
+      final d = (a - c) * x + b;
+      if (d < 1) return solveLinearEqNoOrInf(rand);
+      prompt = 'Solve for x: ${a}x + $b = ${c}x + $d';
+      correct = 'one solution';
+      explanation = [
+        '${a}x − ${c}x = ${a - c}x ≠ 0 → one solution at x = $x.',
+      ];
+      specificDistractor = 'x = ${x + 1}';
+    case 1:
+      // ax + b = ax + d with b != d → no solution.
+      int d;
+      do {
+        d = rand.nextInt(9) + 1; // 1..9
+      } while (d == b);
+      prompt = 'Solve for x: ${a}x + $b = ${a}x + $d';
+      correct = 'no solution';
+      explanation = [
+        'Subtracting ${a}x from both sides leaves $b = $d.',
+        '$b ≠ $d → no value of x makes the equation true.',
+      ];
+      specificDistractor = 'x = 0';
+    default:
+      // ax + b = ax + b written differently → infinitely many.
+      // Use factored form: ax + b = a(x + b/a) when b is divisible by a,
+      // else fall back to ax + b on the right.
+      if (b % a == 0) {
+        prompt = 'Solve for x: ${a}x + $b = $a(x + ${b ~/ a})';
+      } else {
+        // Fall back to identity form using the same b.
+        prompt = 'Solve for x: ${a}x + $b = ${a}x + $b';
+      }
+      correct = 'infinitely many solutions';
+      explanation = [
+        'Both sides simplify to the same expression.',
+        'Every value of x makes the equation true.',
+      ];
+      specificDistractor = 'x = $b';
+  }
+
+  final allOptions = <String>[
+    'one solution',
+    'no solution',
+    'infinitely many solutions',
+    specificDistractor,
+  ];
+  final distractors = allOptions.where((s) => s != correct).take(3).toList();
+
+  return GeneratedQuestion(
+    conceptId: 'solve_linear_eq_no_or_inf',
+    prompt: prompt,
+    correctAnswer: correct,
+    distractors: distractors,
+    explanation: explanation,
+    answerFormat: AnswerFormat.string,
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// solve_linear_eq_with_distrib_collect (Grade 8)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "Solve 3(x + 2) − 2x = 11" → 5. One step beyond
+/// solve_two_step_eq_distributive: kid must distribute AND collect
+/// like terms before isolating. Integer x ∈ [2, 9].
+GeneratedQuestion solveLinearEqWithDistribCollect(Random rand) {
+  final p = rand.nextInt(7) + 2; // 2..8 — outer multiplier
+  final q = rand.nextInt(8) + 1; // 1..8 — inside constant
+  final k = rand.nextInt(p - 1) + 1; // 1..p-1 — coefficient subtracted
+  final x = rand.nextInt(8) + 2; // 2..9
+  // Expression: p(x + q) − kx = (p − k)x + pq.
+  final lhsCoeff = p - k;
+  final lhsConst = p * q;
+  final r = lhsCoeff * x + lhsConst;
+  if (r < 1) return solveLinearEqWithDistribCollect(rand);
+  final prompt = 'Solve for x: $p(x + $q) $_minus ${k}x = $r';
+  final correct = '$x';
+
+  final candidates = <String>[
+    // Misconception: forgot to distribute (used p × q for the constant
+    // term but kept the coefficient as p instead of p − k).
+    '${(r - lhsConst) ~/ p}',
+    // Misconception: did p − k on the constant too.
+    '${(r - q) ~/ lhsCoeff}',
+    // Off-by-one.
+    '${x + 1}',
+    // Distractor — divided r by lhsCoeff (ignored the +pq).
+    '${r ~/ lhsCoeff}',
+  ];
+  final distractors = _intDistractors(x, candidates, rand);
+
+  return GeneratedQuestion(
+    conceptId: 'solve_linear_eq_with_distrib_collect',
+    prompt: prompt,
+    correctAnswer: correct,
+    distractors: distractors,
+    explanation: [
+      'Distribute: ${p}x + ${p * q} $_minus ${k}x = $r.',
+      'Combine like terms: ${lhsCoeff}x + ${p * q} = $r.',
+      'Subtract ${p * q}, then divide by $lhsCoeff: x = $x.',
+    ],
+  );
+}

@@ -139,4 +139,27 @@ void main() {
       }
     });
   });
+
+  group('triangle_inequality_recognize', () {
+    test('answer matches whether the three sides satisfy the inequality', () {
+      final re = RegExp(
+        '^Can a triangle have sides of length '
+        r'(\d+), (\d+), and (\d+)\?$',
+      );
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'triangle_inequality_recognize', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final s = [
+          int.parse(m!.group(1)!),
+          int.parse(m.group(2)!),
+          int.parse(m.group(3)!),
+        ]..sort();
+        // Valid iff longest < sum of other two.
+        final valid = s[2] < s[0] + s[1];
+        expect(q.correctAnswer, valid ? 'yes' : 'no');
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
 }
