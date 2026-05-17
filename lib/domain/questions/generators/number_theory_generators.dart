@@ -552,7 +552,8 @@ GeneratedQuestion distributiveWithGcf(Random rand) {
     // Misconception: factored g out but forgot to divide either term.
     '$g($a + $b)',
     // Misconception: used a non-greatest common factor (if g is composite).
-    if (subDivisor != null) '$subDivisor(${a ~/ subDivisor} + ${b ~/ subDivisor})',
+    if (subDivisor != null)
+      '$subDivisor(${a ~/ subDivisor} + ${b ~/ subDivisor})',
     // Misconception: divided only the first operand.
     '$g($p + $b)',
     // Misconception: divided only the second operand.
