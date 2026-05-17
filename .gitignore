@@ -44,5 +44,7 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-# Claude Code (per-user settings)
-.claude/
+# Claude Code — shared project config (settings.json + hooks) is
+# committed; per-user local overrides stay untracked.
+.claude/settings.local.json
+.claude/local/
