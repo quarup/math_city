@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:math_city/domain/questions/diagram_spec.dart';
 import 'package:math_city/presentation/diagrams/area_grid.dart';
 import 'package:math_city/presentation/diagrams/clock.dart';
+import 'package:math_city/presentation/diagrams/coordinate_plane.dart';
 import 'package:math_city/presentation/diagrams/fraction_bar.dart';
 import 'package:math_city/presentation/diagrams/number_line.dart';
 import 'package:math_city/presentation/diagrams/percent_grid.dart';
@@ -21,5 +22,6 @@ class DiagramRenderer extends StatelessWidget {
     final ClockSpec s => Clock(spec: s),
     final AreaGridSpec s => AreaGrid(spec: s),
     final PercentGridSpec s => PercentGrid(spec: s),
+    final CoordinatePlaneSpec s => CoordinatePlane(spec: s),
   };
 }
