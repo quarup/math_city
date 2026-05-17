@@ -232,3 +232,86 @@ GeneratedQuestion sampleSpaceList(Random rand) {
     ],
   );
 }
+
+// ─────────────────────────────────────────────────────────────────────────
+// theoretical_vs_experimental (Grade 7)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// Distinguishes theoretical from experimental probability with both
+/// surfaced in the same prompt. Tests CCSS 7.SP.C.6.
+///
+/// Scenario: a fair spinner / die / coin with `n` equally-likely
+/// outcomes is run `trials` times; the target outcome occurs
+/// `successes` times. The kid is asked for ONE of {theoretical,
+/// experimental}; the other is the lead distractor.
+GeneratedQuestion theoreticalVsExperimental(Random rand) {
+  const scenarios = <(String, int, String)>[
+    ('a 4-section spinner', 4, 'section 1'),
+    ('a 6-section spinner', 6, 'section 3'),
+    ('a 6-sided die', 6, 'a 4'),
+    ('an 8-section spinner', 8, 'section 5'),
+    ('a 10-section spinner', 10, 'section 7'),
+  ];
+  final s = scenarios[rand.nextInt(scenarios.length)];
+  final n = s.$2;
+  // Pick trials and successes so theoretical (1/n) and experimental
+  // (successes/trials) reduce to *different* fractions — otherwise the
+  // distinction is invisible.
+  int trials;
+  int successes;
+  Fraction experimental;
+  do {
+    trials = (rand.nextInt(5) + 2) * 5; // 10, 15, 20, 25, 30
+    successes = rand.nextInt(trials - 1) + 1; // 1..trials-1
+    experimental = Fraction(successes, trials).reduce();
+  } while (experimental.equalsByValue(Fraction(1, n)));
+  final theoretical = Fraction(1, n).reduce();
+  final askTheoretical = rand.nextBool();
+  final correctF = askTheoretical ? theoretical : experimental;
+  final otherF = askTheoretical ? experimental : theoretical;
+  final correct = correctF.toCanonical();
+  final which = askTheoretical ? 'theoretical' : 'experimental';
+
+  // Distractor pool: the OTHER probability (lead misconception), plus
+  // un-reduced and inverted forms.
+  final unreduced = '$successes/$trials';
+  final inverted = '$trials/$successes';
+  final unreducedF = Fraction.tryParse(unreduced);
+  final candidates = <String>[
+    otherF.toCanonical(), // the "other" probability
+    if (unreduced != correct &&
+        (unreducedF == null || !unreducedF.equalsByValue(correctF)))
+      unreduced,
+    if (inverted != correct) inverted,
+    // Off-by-1 numerator fallback.
+    '${correctF.numerator + 1}/${correctF.denominator}',
+  ];
+  final distractors = <String>[];
+  final seen = <String>{correct};
+  for (final c in candidates) {
+    if (distractors.length >= 3) break;
+    final f = Fraction.tryParse(c);
+    if (f != null && f.equalsByValue(correctF)) continue;
+    if (seen.add(c)) distractors.add(c);
+  }
+
+  return GeneratedQuestion(
+    conceptId: 'theoretical_vs_experimental',
+    prompt:
+        '${s.$1} is spun or rolled $trials times and lands on ${s.$3} '
+        '$successes times. What is the $which probability of ${s.$3}?',
+    correctAnswer: correct,
+    distractors: distractors,
+    explanation: askTheoretical
+        ? [
+            'Theoretical P uses the fair outcomes — ignore the trial data.',
+            'There are $n equally-likely outcomes, so P = 1/$n = $correct.',
+          ]
+        : [
+            'Experimental P = successes ÷ trials.',
+            '$successes / $trials reduced = $correct.',
+          ],
+    answerFormat: AnswerFormat.fraction,
+    answerShape: AnswerShape.exactString,
+  );
+}

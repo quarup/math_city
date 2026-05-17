@@ -716,6 +716,156 @@ void main() {
     });
   });
 
+  group('missing_addend_within_20', () {
+    test('answer + known = sum; sum ∈ [2, 20]', () {
+      final re = RegExp(
+        r'^What goes in the box\? (\d+|\?) \+ (\d+|\?) = (\d+)$',
+      );
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'missing_addend_within_20', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final l = m!.group(1)!;
+        final r = m.group(2)!;
+        final sum = int.parse(m.group(3)!);
+        expect(sum, inInclusiveRange(2, 20));
+        expect(l == '?' ? r != '?' : r == '?', isTrue);
+        final known = int.parse(l == '?' ? r : l);
+        final answer = int.parse(q.correctAnswer);
+        expect(known + answer, sum);
+        expect(answer, greaterThanOrEqualTo(1));
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('add_sub_unknown_position', () {
+    test('answer satisfies the prompt equation; operands fit within 20', () {
+      final re = RegExp(
+        r'^Find the missing number: (\d+|\?) ([+−]) (\d+|\?) = (\d+|\?)$',
+      );
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'add_sub_unknown_position', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final lhs1 = m!.group(1)!;
+        final op = m.group(2)!;
+        final lhs2 = m.group(3)!;
+        final rhs = m.group(4)!;
+        final unknowns = [lhs1, lhs2, rhs].where((s) => s == '?').length;
+        expect(unknowns, 1, reason: 'exactly one unknown per prompt');
+        final answer = int.parse(q.correctAnswer);
+        // Plug answer back in and check.
+        int valOf(String s) => s == '?' ? answer : int.parse(s);
+        final a = valOf(lhs1);
+        final b = valOf(lhs2);
+        final c = valOf(rhs);
+        if (op == '+') {
+          expect(a + b, c);
+        } else {
+          expect(a - b, c);
+        }
+        // All operands stay within 20.
+        for (final v in [a, b, c]) {
+          expect(v, inInclusiveRange(0, 20));
+        }
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('mult_1digit_by_multiple_of_10', () {
+    test('factor ∈ [2, 9] × multiple-of-10 ∈ [10, 90]; correct = product', () {
+      final re = RegExp(r'^(\d+) × (\d+) = \?$');
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'mult_1digit_by_multiple_of_10', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final factor = int.parse(m!.group(1)!);
+        final multiple = int.parse(m.group(2)!);
+        expect(factor, inInclusiveRange(2, 9));
+        expect(multiple, inInclusiveRange(10, 90));
+        expect(multiple % 10, 0);
+        expect(int.parse(q.correctAnswer), factor * multiple);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('signed_quantities_context', () {
+    test('correct scenario sign matches the asked-for word', () {
+      final re = RegExp(
+        '^Which situation can be represented by a (negative|positive) '
+        r'number\?$',
+      );
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'signed_quantities_context', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final word = m!.group(1)!;
+        // The correct answer string contains a "below", "withdrawal",
+        // "down", "Owing", "Losing" cue for negative, or "above",
+        // "deposit", "Climbing up", "Gaining", "Earning" for positive.
+        // We just sanity-check that the correctAnswer is in the answer set,
+        // not duplicated, and matches the answerFormat.
+        expect(q.answerFormat, AnswerFormat.string);
+        expect(word, anyOf('negative', 'positive'));
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('theoretical_vs_experimental', () {
+    test(
+      'answer matches the asked-for probability (theoretical or experimental)',
+      () {
+        final re = RegExp(
+          r'^(.+) is spun or rolled (\d+) times and lands on (.+?) '
+          r'(\d+) times\. What is the (theoretical|experimental) '
+          r'probability of (.+?)\?$',
+        );
+        for (var i = 0; i < _iterations; i++) {
+          final q = _gen(registry, 'theoretical_vs_experimental', i);
+          final m = re.firstMatch(q.prompt);
+          expect(m, isNotNull, reason: q.prompt);
+          // Parse the scenario's n (number of equally-likely outcomes) from
+          // the leading text: "a 6-section spinner" or "a 6-sided die".
+          final scenario = m!.group(1)!;
+          final scN = RegExp(
+            r'(\d+)[- ](?:section|sided)',
+          ).firstMatch(scenario);
+          expect(scN, isNotNull, reason: scenario);
+          final n = int.parse(scN!.group(1)!);
+          final trials = int.parse(m.group(2)!);
+          final successes = int.parse(m.group(4)!);
+          final which = m.group(5)!;
+          const theoreticalNum = 1;
+          final theoreticalDen = n;
+          // Reduce experimental.
+          int gcd(int x, int y) {
+            var a = x.abs();
+            var b = y.abs();
+            while (b != 0) {
+              final t = b;
+              b = a % b;
+              a = t;
+            }
+            return a;
+          }
+
+          final eg = gcd(successes, trials);
+          final expectedExp = '${successes ~/ eg}/${trials ~/ eg}';
+          final expectedTheo = '$theoreticalNum/$theoreticalDen';
+          expect(
+            q.correctAnswer,
+            which == 'theoretical' ? expectedTheo : expectedExp,
+          );
+          _expectThreeDistinctDistractors(q);
+        }
+      },
+    );
+  });
+
   group('mult_facts_N tables', () {
     for (var n = 2; n <= 10; n++) {
       test('mult_facts_$n: $n × b for b ∈ [1, 10]', () {

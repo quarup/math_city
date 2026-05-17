@@ -217,3 +217,49 @@ GeneratedQuestion oppositesAndZero(Random rand) {
     ],
   );
 }
+
+// ─────────────────────────────────────────────────────────────────────────
+// signed_quantities_context (Grade 6)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// MC over four word scenarios — three with the opposite sign of the
+/// asked-for one. Tests CCSS 6.NS.C.5 — understanding negatives as
+/// quantities in real-world contexts.
+GeneratedQuestion signedQuantitiesContext(Random rand) {
+  // Each scenario: (description, sign — +1 or −1).
+  const scenarios = <(String, int)>[
+    ('A temperature of 12 degrees below zero', -1),
+    (r'A bank withdrawal of $40', -1),
+    ('Walking down 3 floors', -1),
+    (r'Owing a friend $8', -1),
+    ('5 feet below sea level', -1),
+    ('Losing 6 points in a game', -1),
+    ('Gaining 7 points on a quiz', 1),
+    (r'A bank deposit of $25', 1),
+    ('A temperature of 8 degrees above zero', 1),
+    ('Climbing up 4 floors', 1),
+    (r'Earning $15 on a chore', 1),
+    ('10 feet above ground', 1),
+  ];
+  final correctSign = rand.nextBool() ? -1 : 1;
+  final matching = scenarios.where((s) => s.$2 == correctSign).toList()
+    ..shuffle(rand);
+  final correctScenario = matching.first;
+  final opposite = scenarios.where((s) => s.$2 != correctSign).toList()
+    ..shuffle(rand);
+  final distractors = opposite.take(3).map((s) => s.$1).toList();
+  final word = correctSign == -1 ? 'negative' : 'positive';
+
+  return GeneratedQuestion(
+    conceptId: 'signed_quantities_context',
+    prompt: 'Which situation can be represented by a $word number?',
+    correctAnswer: correctScenario.$1,
+    distractors: distractors,
+    explanation: [
+      'Negative numbers represent quantities below zero, owed, or lost.',
+      'Positive numbers represent quantities above zero, earned, or gained.',
+      '"${correctScenario.$1}" matches a $word value.',
+    ],
+    answerFormat: AnswerFormat.string,
+  );
+}

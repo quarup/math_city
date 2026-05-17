@@ -287,9 +287,9 @@ const _prereqOverrides = <String, List<String>>{
   'percent_intro': <String>[],
   // evaluate_expression: order_of_operations_with_exp now lives — the
   // curriculum.md prereq is met, no override needed.
-  // drop missing_addend_within_20 + write_expression_from_words
-  // (no generators) — substitute the basic +/− concept as background.
-  'solve_one_step_eq_addition': ['add_within_100'],
+  // drop write_expression_from_words (no generator). missing_addend_within_20
+  // now lives, so use it as the canonical prereq.
+  'solve_one_step_eq_addition': ['missing_addend_within_20'],
   // drop write_expression_from_words (no generator). missing_factor now
   // lives, so use it as the more direct prereq.
   'solve_one_step_eq_mult': ['missing_factor'],
@@ -331,6 +331,10 @@ const _prereqOverrides = <String, List<String>>{
   'mult_facts_3': ['add_within_100'],
   'mult_facts_5': ['add_within_100'],
   'mult_facts_10': ['add_within_100'],
+  // drop skip_count_10 (no generator) — mult_facts_within_100 already
+  // covers the multiplicative skill; the lesson here is just attaching
+  // the zero.
+  'mult_1digit_by_multiple_of_10': ['mult_facts_within_100'],
   // drop area_rectangle_count_squares (no generator) — substitute the
   // mult-facts background since area-by-formula IS multiplication.
   'area_rectangle_formula': ['mult_facts_within_100'],

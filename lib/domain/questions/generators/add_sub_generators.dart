@@ -143,6 +143,108 @@ int _powerOf10(int n) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────
+// missing_addend_within_20 (Grade 1)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "5 + ? = 13" → 8. Two prompt shapes — blank in either addend position.
+/// Operands chosen so the answer ∈ [1, 9] and the sum ∈ [2, 20].
+GeneratedQuestion missingAddendWithin20(Random rand) {
+  final sum = rand.nextInt(19) + 2; // 2..20
+  final known = rand.nextInt(sum - 1) + 1; // 1..sum-1
+  final answer = sum - known;
+  final shape = rand.nextInt(2);
+  final prompt = shape == 0
+      ? 'What goes in the box? $known + ? = $sum'
+      : 'What goes in the box? ? + $known = $sum';
+  return GeneratedQuestion(
+    conceptId: 'missing_addend_within_20',
+    prompt: prompt,
+    correctAnswer: '$answer',
+    // Misconception: the kid just gave the total.
+    distractors: integerDistractorsWith(answer, rand, misconception: sum),
+    explanation: [
+      '$known + $answer = $sum.',
+      'So the missing addend is $answer.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// add_sub_unknown_position (Grade 1)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "Find the missing number." Six prompt shapes covering both addition
+/// and subtraction with the unknown in each position. All operands and
+/// results stay within `add_within_20` / `sub_within_20`. Tests CCSS
+/// 1.OA.D.8 (Determine the unknown whole number in an addition or
+/// subtraction equation).
+GeneratedQuestion addSubUnknownPosition(Random rand) {
+  // Pick a result first, then derive consistent operands.
+  final result = rand.nextInt(19) + 1; // 1..19
+  final shape = rand.nextInt(6);
+  late String prompt;
+  late int answer;
+  late int misconception; // common "got the wrong number from the equation"
+
+  switch (shape) {
+    case 0:
+      // ? + b = c → ? = c − b
+      final b = rand.nextInt(result) + 1; // 1..result
+      answer = result - b;
+      misconception = result; // gave the total
+      prompt = 'Find the missing number: ? + $b = $result';
+    case 1:
+      // a + ? = c → ? = c − a
+      final a = rand.nextInt(result) + 1;
+      answer = result - a;
+      misconception = result;
+      prompt = 'Find the missing number: $a + ? = $result';
+    case 2:
+      // a + b = ? → ? = a + b
+      final a = rand.nextInt(result) + 1;
+      final b = result - a;
+      answer = result;
+      misconception = (a - b).abs(); // did subtraction
+      prompt = 'Find the missing number: $a + $b = ?';
+    case 3:
+      // ? − b = c → ? = b + c; pick b so total ≤ 20
+      final maxB = 20 - result;
+      if (maxB < 1) return addSubUnknownPosition(rand); // retry
+      final b = rand.nextInt(maxB) + 1;
+      answer = result + b;
+      misconception = result; // gave the diff
+      prompt = 'Find the missing number: ? $_minus $b = $result';
+    case 4:
+      // a − ? = c → ? = a − c; pick a > result, a ≤ 20
+      if (result >= 20) return addSubUnknownPosition(rand);
+      final a = result + rand.nextInt(20 - result) + 1; // > result, ≤ 20
+      answer = a - result;
+      misconception = a; // gave the minuend
+      prompt = 'Find the missing number: $a $_minus ? = $result';
+    default:
+      // a − b = ? → ? = a − b; pick a, b with a ≥ b
+      if (result >= 20) return addSubUnknownPosition(rand);
+      final a = result + rand.nextInt(20 - result) + 1; // a > result
+      final b = a - result;
+      answer = result;
+      misconception = a + b; // added instead
+      prompt = 'Find the missing number: $a $_minus $b = ?';
+  }
+
+  return GeneratedQuestion(
+    conceptId: 'add_sub_unknown_position',
+    prompt: prompt,
+    correctAnswer: '$answer',
+    distractors: integerDistractorsWith(
+      answer,
+      rand,
+      misconception: misconception,
+    ),
+    explanation: ['Find the missing number that makes the equation true.'],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
 // equal_sign_meaning (Grade 1)
 // ─────────────────────────────────────────────────────────────────────────
 

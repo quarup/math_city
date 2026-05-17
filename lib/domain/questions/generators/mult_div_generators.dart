@@ -213,6 +213,35 @@ int _pow10(int n) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────
+// mult_1digit_by_multiple_of_10 (Grade 3)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "7 × 30 = ?" → 210. factor ∈ [2, 9], multiple-of-10 ∈ [10, 90]. Tests
+/// CCSS 3.NBT.A.3 — extending mult facts past 100 by attaching the zero.
+GeneratedQuestion mult1digitByMultipleOf10(Random rand) {
+  final factor = rand.nextInt(8) + 2; // 2..9
+  final tens = rand.nextInt(9) + 1; // 1..9
+  final multiple = tens * 10;
+  final correct = factor * multiple;
+  // Misconception: forgot to attach the zero (gave factor × tens).
+  final misconception = factor * tens;
+  return GeneratedQuestion(
+    conceptId: 'mult_1digit_by_multiple_of_10',
+    prompt: '$factor × $multiple = ?',
+    correctAnswer: '$correct',
+    distractors: integerDistractorsWith(
+      correct,
+      rand,
+      misconception: misconception,
+    ),
+    explanation: [
+      '$factor × $tens = $misconception.',
+      '$factor × $multiple = $factor × $tens × 10 = $correct.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
 // associative_mult (Grade 3)
 // ─────────────────────────────────────────────────────────────────────────
 

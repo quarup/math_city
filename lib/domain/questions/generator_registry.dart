@@ -70,11 +70,14 @@ class GeneratorRegistry {
     'add_multidigit_standard_alg': addMultidigit,
     'sub_multidigit_standard_alg': subMultidigit,
     'equal_sign_meaning': equalSignMeaning,
+    'missing_addend_within_20': missingAddendWithin20,
+    'add_sub_unknown_position': addSubUnknownPosition,
     'add_3_addends_within_20': add3AddendsWithin20,
     'commutative_add': commutativeAdd,
     'associative_add': associativeAdd,
     // Multiplication / division
     'mult_facts_within_100': multFactsWithin100,
+    'mult_1digit_by_multiple_of_10': mult1digitByMultipleOf10,
     'mult_facts_2': multFactsN(2),
     'mult_facts_3': multFactsN(3),
     'mult_facts_4': multFactsN(4),
@@ -149,6 +152,7 @@ class GeneratorRegistry {
     'integers_multiply_divide': integersMultiplyDivide,
     'absolute_value': absoluteValue,
     'opposites_and_zero': oppositesAndZero,
+    'signed_quantities_context': signedQuantitiesContext,
     // Number theory
     'factors_of_n': factorsOfN,
     'multiples_of_n': multiplesOfN,
@@ -241,6 +245,7 @@ class GeneratorRegistry {
     'probability_zero_to_one': probabilityZeroToOne,
     'probability_simple_event': probabilitySimpleEvent,
     'experimental_probability': experimentalProbability,
+    'theoretical_vs_experimental': theoreticalVsExperimental,
     'sample_space_list': sampleSpaceList,
     // Statistics
     'mean': meanGenerator,
