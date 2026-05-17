@@ -810,3 +810,185 @@ GeneratedQuestion substituteToCheck(Random rand) {
     answerFormat: AnswerFormat.string,
   );
 }
+
+// ─────────────────────────────────────────────────────────────────────────
+// solve_linear_eq_with_distrib_collect (Grade 8)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "Solve: 2(x + 3) + 4x = 30" → 4. Combines distribution and collecting
+/// like terms before solving. Form: `a(x + b) + cx = d` with a, b, c, d
+/// chosen so x ∈ [2, 9] is an integer. The constant inside the parens
+/// is always positive; the outer `cx` term is always positive too.
+GeneratedQuestion solveLinearEqWithDistribCollect(Random rand) {
+  final x = rand.nextInt(8) + 2; // 2..9
+  final a = rand.nextInt(4) + 2; // 2..5
+  final b = rand.nextInt(8) + 1; // 1..8
+  final c = rand.nextInt(7) + 1; // 1..7
+  // d = a·x + a·b + c·x = (a + c)·x + a·b
+  final d = (a + c) * x + a * b;
+  final prompt = 'Solve for x: $a(x + $b) + ${c}x = $d';
+  final correct = '$x';
+
+  final candidates = <String>[
+    // Misconception: divided d straight by (a + c), ignored the constant.
+    '${d ~/ (a + c)}',
+    // Misconception: distributed but ignored the cx term.
+    '${(d - a * b) ~/ a}',
+    // Off-by-one.
+    '${x + 1}',
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'solve_linear_eq_with_distrib_collect',
+    prompt: prompt,
+    correctAnswer: correct,
+    distractors: _intDistractors(x, candidates, rand),
+    explanation: [
+      'Distribute: ${a}x + ${a * b} + ${c}x = $d.',
+      'Combine x terms: ${a + c}x + ${a * b} = $d.',
+      'Subtract ${a * b}: ${a + c}x = ${d - a * b}.',
+      'Divide by ${a + c}: x = $x.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// solve_system_substitution (Grade 8)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "Solve: y = 2x + 1 and y = −x + 7" → "(2, 5)". Both equations in
+/// slope-intercept form; pick (x, y) integer first and back-build two
+/// distinct lines through that point. Answer is the ordered-pair string.
+GeneratedQuestion solveSystemSubstitution(Random rand) {
+  final x = rand.nextInt(7) + 1; // 1..7
+  final y = rand.nextInt(11) + 2; // 2..12
+  int m1;
+  int m2;
+  // Pick two distinct non-zero slopes in [-3, 3] \ {0}.
+  do {
+    m1 = rand.nextInt(7) - 3; // -3..3
+  } while (m1 == 0);
+  do {
+    m2 = rand.nextInt(7) - 3;
+  } while (m2 == 0 || m2 == m1);
+  final b1 = y - m1 * x;
+  final b2 = y - m2 * x;
+  final correct = '(${_signed(x)}, ${_signed(y)})';
+
+  String eqn(int m, int b) {
+    final mPart = m == 1
+        ? 'x'
+        : m == -1
+        ? '${_minus}x'
+        : '${_signed(m)}x';
+    if (b == 0) return 'y = $mPart';
+    if (b > 0) return 'y = $mPart + $b';
+    return 'y = $mPart $_minus ${-b}';
+  }
+
+  final prompt = 'Solve the system: ${eqn(m1, b1)} and ${eqn(m2, b2)}.';
+
+  final candidates = <String>[
+    // Misconception: swapped coords.
+    '(${_signed(y)}, ${_signed(x)})',
+    // Misconception: sign error on x.
+    '(${_signed(-x)}, ${_signed(y)})',
+    // Misconception: sign error on y.
+    '(${_signed(x)}, ${_signed(-y)})',
+    // Misconception: used one equation only — solved m1·x + b1 = 0.
+    if (m1 != 0 && b1 % m1 == 0 && -b1 ~/ m1 != x)
+      '(${_signed(-b1 ~/ m1)}, ${_signed(0)})',
+  ];
+  return GeneratedQuestion(
+    conceptId: 'solve_system_substitution',
+    prompt: prompt,
+    correctAnswer: correct,
+    distractors: _stringDistractors(correct, candidates, x, y),
+    explanation: [
+      'Both equations equal y. Set the right sides equal and solve.',
+      '${eqn(m1, b1).substring(4)} = ${eqn(m2, b2).substring(4)} → x = $x.',
+      'Substitute back: y = $y. Answer: $correct.',
+    ],
+    answerFormat: AnswerFormat.string,
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// solve_system_elimination (Grade 8)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "Solve: 3x + 2y = 16 and 5x − 2y = 8" → "(3, 7/2)" — but we restrict
+/// coefficients so x and y are positive integers. The two equations have
+/// matching y coefficients with opposite signs so adding the equations
+/// eliminates y in one step.
+GeneratedQuestion solveSystemElimination(Random rand) {
+  final x = rand.nextInt(7) + 1; // 1..7
+  final y = rand.nextInt(7) + 1; // 1..7
+  final a = rand.nextInt(4) + 1; // 1..4
+  final d = rand.nextInt(4) + 1; // 1..4
+  final b = rand.nextInt(3) + 1; // 1..3 (coefficient on y; same magnitude)
+  final c1 = a * x + b * y;
+  final c2 = d * x - b * y;
+  final correct = '(${_signed(x)}, ${_signed(y)})';
+
+  String term(int coeff, String varName) =>
+      coeff == 1 ? varName : '$coeff$varName';
+
+  final prompt =
+      'Solve the system: ${term(a, "x")} + ${term(b, "y")} = ${_signed(c1)} '
+      'and ${term(d, "x")} $_minus ${term(b, "y")} = ${_signed(c2)}.';
+
+  final candidates = <String>[
+    // Swapped coords.
+    '(${_signed(y)}, ${_signed(x)})',
+    // Sign error on x.
+    '(${_signed(-x)}, ${_signed(y)})',
+    // Sign error on y.
+    '(${_signed(x)}, ${_signed(-y)})',
+    // Forgot to back-substitute — gave x as the sole answer.
+    _signed(x),
+  ];
+  return GeneratedQuestion(
+    conceptId: 'solve_system_elimination',
+    prompt: prompt,
+    correctAnswer: correct,
+    distractors: _stringDistractors(correct, candidates, x, y),
+    explanation: [
+      'Add the equations: ${a + d}x = ${c1 + c2}, so x = $x.',
+      'Substitute x = $x back: ${b}y = ${c1 - a * x}, so y = $y.',
+      'Answer: $correct.',
+    ],
+    answerFormat: AnswerFormat.string,
+  );
+}
+
+/// String-MC distractor helper that guarantees 3 unique values different
+/// from [correct]. Falls back to off-by-one tweaks of (x, y) if the
+/// candidate pool dedupes to fewer than 3.
+List<String> _stringDistractors(
+  String correct,
+  List<String> candidates,
+  int x,
+  int y,
+) {
+  final out = <String>[];
+  final seen = <String>{correct};
+  for (final c in candidates) {
+    if (out.length >= 3) break;
+    if (seen.add(c)) out.add(c);
+  }
+  // Fallback: nudge (x, y) by ±i in either coord.
+  for (var i = 1; out.length < 3 && i < 20; i++) {
+    for (final pair in <List<int>>[
+      [x + i, y],
+      [x - i, y],
+      [x, y + i],
+      [x, y - i],
+    ]) {
+      final s = '(${_signed(pair[0])}, ${_signed(pair[1])})';
+      if (seen.add(s)) out.add(s);
+      if (out.length >= 3) break;
+    }
+  }
+  return out.take(3).toList();
+}

@@ -339,6 +339,13 @@ const _prereqOverrides = <String, List<String>>{
   // area_rectangle_formula ✓ — no override needed.
   // irrational_recognize: rational_to_decimal_repeating now lives, so
   // the override above can be cleaned up — handled below.
+  // drop graph_proportional_slope (no generator yet — needs the
+  // CoordinatePlane widget). proportional_relationship is conceptually
+  // closest since slope is the constant of proportionality.
+  'slope_from_two_points': ['proportional_relationship'],
+  // drop graph_linear_equation (no generator yet — needs CoordinatePlane).
+  // linear_function_construct lives now and is in the same family.
+  'function_definition_check': ['linear_function_construct'],
 };
 
 // ─────────────────────────────────────────────────────────────────────────

@@ -397,4 +397,104 @@ void main() {
       }
     });
   });
+
+  group('solve_linear_eq_with_distrib_collect', () {
+    test('answer x satisfies a(x + b) + cx = d', () {
+      final re = RegExp(
+        r'^Solve for x: (\d+)\(x \+ (\d+)\) \+ (\d+)x = (\d+)$',
+      );
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'solve_linear_eq_with_distrib_collect', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final a = int.parse(m!.group(1)!);
+        final b = int.parse(m.group(2)!);
+        final c = int.parse(m.group(3)!);
+        final d = int.parse(m.group(4)!);
+        final x = int.parse(q.correctAnswer);
+        expect(a * (x + b) + c * x, d);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('solve_system_substitution', () {
+    test('answer (x, y) satisfies both y = m·x + b equations', () {
+      // Coord parser allows U+2212 minus signs.
+      final ans = RegExp(r'^\((−?\d+), (−?\d+)\)$');
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'solve_system_substitution', i);
+        final am = ans.firstMatch(q.correctAnswer);
+        expect(am, isNotNull, reason: q.correctAnswer);
+        final x = _parseSigned(am!.group(1)!);
+        final y = _parseSigned(am.group(2)!);
+        // Pull the two RHS expressions out and evaluate at x.
+        // Prompt is "Solve the system: y = ... and y = ....".
+        final pmatch = RegExp(
+          r'^Solve the system: y = (.*) and y = (.*)\.$',
+        ).firstMatch(q.prompt);
+        expect(pmatch, isNotNull, reason: q.prompt);
+        for (final side in [pmatch!.group(1)!, pmatch.group(2)!]) {
+          expect(_evalMxPlusB(side, x), y, reason: '${q.prompt} at x=$x');
+        }
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('solve_system_elimination', () {
+    test('answer (x, y) satisfies both equations', () {
+      final ans = RegExp(r'^\((−?\d+), (−?\d+)\)$');
+      // Prompt: "Solve the system: ax + by = c1 and dx − by = c2."
+      // (Where coefficient "1" is rendered as "x" or "y" with no leading 1.)
+      final p = RegExp(
+        r'^Solve the system: ((?:\d+)?x) \+ ((?:\d+)?y) = (−?\d+) '
+        r'and ((?:\d+)?x) − ((?:\d+)?y) = (−?\d+)\.$',
+      );
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'solve_system_elimination', i);
+        final am = ans.firstMatch(q.correctAnswer);
+        expect(am, isNotNull, reason: q.correctAnswer);
+        final x = _parseSigned(am!.group(1)!);
+        final y = _parseSigned(am.group(2)!);
+        final pm = p.firstMatch(q.prompt);
+        expect(pm, isNotNull, reason: q.prompt);
+        int coef(String s, String varName) =>
+            s == varName ? 1 : int.parse(s.substring(0, s.length - 1));
+        final a = coef(pm!.group(1)!, 'x');
+        final b = coef(pm.group(2)!, 'y');
+        final c1 = _parseSigned(pm.group(3)!);
+        final d = coef(pm.group(4)!, 'x');
+        final b2 = coef(pm.group(5)!, 'y');
+        final c2 = _parseSigned(pm.group(6)!);
+        expect(b, b2, reason: 'y coefficients should match magnitude');
+        expect(a * x + b * y, c1, reason: q.prompt);
+        expect(d * x - b * y, c2, reason: q.prompt);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+}
+
+/// Evaluates the right-hand-side of `y = mx + b` strings produced by
+/// `solve_system_substitution.eqn`. Accepts "x", "−x", "${m}x", with
+/// optional "+ b" or "− b" tail.
+int _evalMxPlusB(String rhs, int x) {
+  // Slope part is everything up to the first " +" or " −" outside of the
+  // signed leading "−". Easier: parse via regex.
+  final re = RegExp(r'^(−?\d*)x(?: ([+−]) (\d+))?$');
+  final m = re.firstMatch(rhs);
+  if (m == null) {
+    throw FormatException('Could not parse y = mx + b RHS: "$rhs"');
+  }
+  final mPart = m.group(1)!;
+  final slope = switch (mPart) {
+    '' => 1,
+    '−' => -1,
+    final s => int.parse(s.replaceAll('−', '-')),
+  };
+  if (m.group(2) == null) return slope * x;
+  final op = m.group(2)!;
+  final b = int.parse(m.group(3)!);
+  return slope * x + (op == '+' ? b : -b);
 }
