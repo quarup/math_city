@@ -139,4 +139,119 @@ void main() {
       }
     });
   });
+
+  group('supplementary_angles', () {
+    test('answer = 180 − a; a never equals 90', () {
+      final re = RegExp(
+        r'^Two angles are supplementary\. One is (\d+)°\. '
+        r'What is the other\?$',
+      );
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'supplementary_angles', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final a = int.parse(m!.group(1)!);
+        expect(a, isNot(90), reason: 'a == 90 would yield duplicate answer');
+        expect(q.correctAnswer, '${180 - a}');
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('complementary_angles', () {
+    test('answer = 90 − a; a never equals 45', () {
+      final re = RegExp(
+        r'^Two angles are complementary\. One is (\d+)°\. '
+        r'What is the other\?$',
+      );
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'complementary_angles', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final a = int.parse(m!.group(1)!);
+        expect(a, isNot(45), reason: 'a == 45 would yield duplicate answer');
+        expect(q.correctAnswer, '${90 - a}');
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('vertical_angles', () {
+    test('vertical = a; adjacent = 180 − a; both modes covered', () {
+      final re = RegExp(
+        r'^Two lines cross\. One angle measures (\d+)°\. '
+        r'What is the angle (vertical to|adjacent to) it\?$',
+      );
+      final modesSeen = <String>{};
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'vertical_angles', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final a = int.parse(m!.group(1)!);
+        final relation = m.group(2)!;
+        modesSeen.add(relation);
+        final expected = relation == 'vertical to' ? a : 180 - a;
+        expect(q.correctAnswer, '$expected');
+        _expectThreeDistinctDistractors(q);
+      }
+      expect(modesSeen, containsAll(<String>['vertical to', 'adjacent to']));
+    });
+  });
+
+  group('triangle_angle_sum', () {
+    test('answer = 180 − a − b; all three angles positive', () {
+      final re = RegExp(
+        r'^A triangle has angles (\d+)° and (\d+)°\. '
+        r'What is the third angle\?$',
+      );
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'triangle_angle_sum', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final a = int.parse(m!.group(1)!);
+        final b = int.parse(m.group(2)!);
+        final c = 180 - a - b;
+        expect(c, greaterThan(0), reason: 'third angle must be positive');
+        expect(a, greaterThan(0));
+        expect(b, greaterThan(0));
+        expect(q.correctAnswer, '$c');
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('parallel_lines_transversal', () {
+    test(
+      'equal-angle relations return a; co-interior returns 180 − a',
+      () {
+        final re = RegExp(
+          r'^Two parallel lines are cut by a transversal\. '
+          r'One angle is (\d+)°\. '
+          'What is the (corresponding|alternate interior|'
+          r'alternate exterior|co-interior) angle\?$',
+        );
+        final relationsSeen = <String>{};
+        for (var i = 0; i < _iterations; i++) {
+          final q = _gen(registry, 'parallel_lines_transversal', i);
+          final m = re.firstMatch(q.prompt);
+          expect(m, isNotNull, reason: q.prompt);
+          final a = int.parse(m!.group(1)!);
+          final relation = m.group(2)!;
+          relationsSeen.add(relation);
+          final expected = relation == 'co-interior' ? 180 - a : a;
+          expect(q.correctAnswer, '$expected');
+          _expectThreeDistinctDistractors(q);
+        }
+        expect(
+          relationsSeen,
+          containsAll(<String>[
+            'corresponding',
+            'alternate interior',
+            'alternate exterior',
+            'co-interior',
+          ]),
+        );
+      },
+    );
+  });
 }

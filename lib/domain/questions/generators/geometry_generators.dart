@@ -272,3 +272,215 @@ GeneratedQuestion areaTriangle(Random rand) {
     ],
   );
 }
+
+// ─────────────────────────────────────────────────────────────────────────
+// supplementary_angles (Grade 7)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "Two angles are supplementary. One is 65°. What is the other?" → 115°.
+/// Implemented text-only; the visual `Angle` widget can wire in later.
+GeneratedQuestion supplementaryAngles(Random rand) {
+  // Pick angle1 in [10, 170] excluding 90 (would give a == b = 90°).
+  int a;
+  do {
+    a = rand.nextInt(161) + 10; // 10..170
+  } while (a == 90);
+  final b = 180 - a;
+  final correct = '$b';
+
+  final candidates = <String>[
+    // Misconception: used complementary (90 − a) — only valid when a < 90.
+    if (a < 90) '${90 - a}',
+    // Misconception: gave the same angle back.
+    '$a',
+    // Misconception: used 360 (angles around a point).
+    '${360 - a}',
+    // Misconception: doubled the original.
+    '${2 * a}',
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'supplementary_angles',
+    prompt: 'Two angles are supplementary. One is $a°. What is the other?',
+    correctAnswer: correct,
+    distractors: _wholeDistractors(b, candidates, rand),
+    explanation: [
+      'Supplementary angles add up to 180°.',
+      'Other = 180° − $a° = $b°.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// complementary_angles (Grade 7)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "Two angles are complementary. One is 35°. What is the other?" → 55°.
+GeneratedQuestion complementaryAngles(Random rand) {
+  // Pick angle1 in [10, 80] excluding 45 (would give a == b = 45°).
+  int a;
+  do {
+    a = rand.nextInt(71) + 10; // 10..80
+  } while (a == 45);
+  final b = 90 - a;
+  final correct = '$b';
+
+  final candidates = <String>[
+    // Misconception: used supplementary (180 − a).
+    '${180 - a}',
+    // Misconception: gave the same angle back.
+    '$a',
+    // Misconception: added instead of subtracted.
+    '${90 + a}',
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'complementary_angles',
+    prompt: 'Two angles are complementary. One is $a°. What is the other?',
+    correctAnswer: correct,
+    distractors: _wholeDistractors(b, candidates, rand),
+    explanation: [
+      'Complementary angles add up to 90°.',
+      'Other = 90° − $a° = $b°.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// vertical_angles (Grade 7)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// Two intersecting lines form four angles. Two adjacent angles form a
+/// linear pair (sum to 180°); two opposite (vertical) angles are equal.
+/// Half the questions ask for the vertical angle (= a); half ask for an
+/// adjacent angle (= 180° − a).
+GeneratedQuestion verticalAngles(Random rand) {
+  int a;
+  do {
+    a = rand.nextInt(161) + 10; // 10..170
+  } while (a == 90);
+  final askVertical = rand.nextBool();
+  final answer = askVertical ? a : 180 - a;
+  final relation = askVertical ? 'vertical to' : 'adjacent to';
+  final correct = '$answer';
+
+  final candidates = <String>[
+    // Misconception: confused vertical and adjacent — gave the *other* answer.
+    '${askVertical ? 180 - a : a}',
+    // Misconception: used 360 (whole turn).
+    '${360 - a}',
+    // Misconception: used 90 (right angle).
+    '${(90 - a).abs()}',
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'vertical_angles',
+    prompt:
+        'Two lines cross. One angle measures $a°. What is the angle '
+        '$relation it?',
+    correctAnswer: correct,
+    distractors: _wholeDistractors(answer, candidates, rand),
+    explanation: [
+      'Vertical (opposite) angles are equal.',
+      'Adjacent angles on a straight line add to 180°.',
+      if (askVertical)
+        'The vertical angle equals $a°.'
+      else
+        'The adjacent angle is 180° − $a° = ${180 - a}°.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// triangle_angle_sum (Grade 8)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "A triangle has angles 35° and 75°. What is the third angle?" → 70°.
+GeneratedQuestion triangleAngleSum(Random rand) {
+  // Need a + b in [10, 170] so the third angle is in [10, 170].
+  int a;
+  int b;
+  do {
+    a = rand.nextInt(151) + 10; // 10..160
+    b = rand.nextInt(151) + 10;
+  } while (a + b < 20 || a + b > 170 || a + b == 90);
+  final c = 180 - a - b;
+  final correct = '$c';
+
+  final candidates = <String>[
+    // Misconception: used 90° sum.
+    if (a + b < 90) '${90 - a - b}',
+    // Misconception: used 360° sum.
+    '${360 - a - b}',
+    // Misconception: gave a + b (sum, not third angle).
+    '${a + b}',
+    // Misconception: 180 - max(a, b) only.
+    '${180 - (a > b ? a : b)}',
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'triangle_angle_sum',
+    prompt: 'A triangle has angles $a° and $b°. What is the third angle?',
+    correctAnswer: correct,
+    distractors: _wholeDistractors(c, candidates, rand),
+    explanation: [
+      'The three angles of a triangle add up to 180°.',
+      'Third = 180° − $a° − $b° = $c°.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// parallel_lines_transversal (Grade 8)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "Two parallel lines are cut by a transversal. One angle is 65°. What
+/// is the *corresponding* angle?" → 65°.
+///
+/// Four relationship types are sampled uniformly. Three are equal-angle
+/// (corresponding, alternate interior, alternate exterior); one is
+/// supplementary (co-interior / same-side interior).
+GeneratedQuestion parallelLinesTransversal(Random rand) {
+  int a;
+  do {
+    a = rand.nextInt(141) + 20; // 20..160
+  } while (a == 90);
+  const relations = <String>[
+    'corresponding',
+    'alternate interior',
+    'alternate exterior',
+    'co-interior',
+  ];
+  final relation = relations[rand.nextInt(relations.length)];
+  final isSupplementary = relation == 'co-interior';
+  final answer = isSupplementary ? 180 - a : a;
+  final correct = '$answer';
+
+  final candidates = <String>[
+    // Misconception: applied the *other* rule.
+    '${isSupplementary ? a : 180 - a}',
+    // Misconception: complementary.
+    if (a < 90) '${90 - a}',
+    // Misconception: full turn.
+    '${360 - a}',
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'parallel_lines_transversal',
+    prompt:
+        'Two parallel lines are cut by a transversal. One angle is $a°. '
+        'What is the $relation angle?',
+    correctAnswer: correct,
+    distractors: _wholeDistractors(answer, candidates, rand),
+    explanation: [
+      if (isSupplementary)
+        'Co-interior (same-side interior) angles add up to 180°.'
+      else
+        '$relation angles are equal when lines are parallel.',
+      if (isSupplementary)
+        'Other = 180° − $a° = ${180 - a}°.'
+      else
+        'Other = $a°.',
+    ],
+  );
+}
