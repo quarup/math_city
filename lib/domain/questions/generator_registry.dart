@@ -6,6 +6,7 @@ import 'package:math_city/domain/questions/generators/decimal_generators.dart';
 import 'package:math_city/domain/questions/generators/fraction_generators.dart';
 import 'package:math_city/domain/questions/generators/integer_generators.dart';
 import 'package:math_city/domain/questions/generators/mult_div_generators.dart';
+import 'package:math_city/domain/questions/generators/percent_generators.dart';
 import 'package:math_city/domain/questions/generators/place_value_generators.dart';
 import 'package:math_city/domain/questions/generators/rationals_generators.dart';
 import 'package:math_city/domain/questions/generators/time_generators.dart';
@@ -134,5 +135,9 @@ class GeneratorRegistry {
     'div_by_decimal': divByDecimal,
     'decimal_to_fraction': decimalToFraction,
     'fraction_to_decimal': fractionToDecimal,
+    // Percent
+    'percent_intro': percentIntro,
+    'percent_of_quantity': percentOfQuantity,
+    'find_whole_from_part_percent': findWholeFromPartPercent,
   };
 }

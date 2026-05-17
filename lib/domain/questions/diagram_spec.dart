@@ -78,6 +78,19 @@ class AreaGridSpec extends DiagramSpec {
   final int shadedCols;
 }
 
+/// A 10×10 grid with the first [shadedCount] cells shaded in row-major
+/// order (left-to-right, top-to-bottom). Visualises "N out of 100",
+/// the canonical way to introduce a percent.
+class PercentGridSpec extends DiagramSpec {
+  const PercentGridSpec({required this.shadedCount})
+    : assert(
+        shadedCount >= 0 && shadedCount <= 100,
+        'shadedCount must be 0..100',
+      );
+
+  final int shadedCount;
+}
+
 /// A round analog clock face showing [hour] (1–12) and [minute] (0–59).
 class ClockSpec extends DiagramSpec {
   const ClockSpec({

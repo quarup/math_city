@@ -1809,10 +1809,10 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'percent_intro',
     name: 'What is a percent?',
-    shortLabel: 'What is a percent?',
+    shortLabel: 'percent?',
     categoryId: 'decimals_percent',
     primaryGrade: 6,
-    prereqIds: ['fraction_denom_10_100'],
+    prereqIds: [],
     source: ConceptSource.algorithmicWithDiagram,
     diagramRequirement: DiagramRequired('area_grid'),
     categoryRowOrder: 19,
@@ -1820,7 +1820,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'percent_of_quantity',
     name: 'Percent of a number',
-    shortLabel: 'Percent of a number',
+    shortLabel: '% of N',
     categoryId: 'decimals_percent',
     primaryGrade: 6,
     prereqIds: ['percent_intro', 'mult_decimals'],
@@ -1831,7 +1831,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'find_whole_from_part_percent',
     name: 'Find whole from a percent',
-    shortLabel: 'Find whole from a percent',
+    shortLabel: 'whole from %',
     categoryId: 'decimals_percent',
     primaryGrade: 6,
     prereqIds: ['percent_of_quantity'],

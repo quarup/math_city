@@ -158,6 +158,9 @@ const _shortLabelOverrides = <String, String>{
   'div_by_decimal': '÷ by dec',
   'decimal_to_fraction': 'dec → frac',
   'fraction_to_decimal': 'frac → dec',
+  'percent_intro': 'percent?',
+  'percent_of_quantity': '% of N',
+  'find_whole_from_part_percent': 'whole from %',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
@@ -209,6 +212,9 @@ const _prereqOverrides = <String, List<String>>{
   // drop fraction_denom_10_100 (no generator yet) — `decimal_notation_tenths`
   // becomes the entry point into the decimals branch.
   'decimal_notation_tenths': <String>[],
+  // drop fraction_denom_10_100 (no generator yet) for the percent root —
+  // the percent grid widget visualises "N out of 100" directly.
+  'percent_intro': <String>[],
 };
 
 // ─────────────────────────────────────────────────────────────────────────

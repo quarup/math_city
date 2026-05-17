@@ -4,6 +4,7 @@ import 'package:math_city/presentation/diagrams/area_grid.dart';
 import 'package:math_city/presentation/diagrams/clock.dart';
 import 'package:math_city/presentation/diagrams/fraction_bar.dart';
 import 'package:math_city/presentation/diagrams/number_line.dart';
+import 'package:math_city/presentation/diagrams/percent_grid.dart';
 
 /// Dispatches a [DiagramSpec] (pure-Dart value type) to the corresponding
 /// Flutter widget. Used by the question screen so generators in
@@ -19,5 +20,6 @@ class DiagramRenderer extends StatelessWidget {
     final NumberLineSpec s => NumberLine(spec: s),
     final ClockSpec s => Clock(spec: s),
     final AreaGridSpec s => AreaGrid(spec: s),
+    final PercentGridSpec s => PercentGrid(spec: s),
   };
 }
