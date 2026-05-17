@@ -109,6 +109,103 @@ void main() {
     });
   });
 
+  group('unit_pricing', () {
+    test('answer = total ÷ count; arithmetic exact', () {
+      final re = RegExp(r'^(\d+) \S+ cost \$(\d+)\. What is the unit price');
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'unit_pricing', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final count = int.parse(m!.group(1)!);
+        final total = int.parse(m.group(2)!);
+        expect(total % count, 0);
+        expect(q.correctAnswer, '${total ~/ count}');
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('convert_units_using_ratio', () {
+    test('answer = qty × factor; factor and qty parse out of the prompt', () {
+      final re = RegExp(
+        r'^1 \S+ = (\d+) \S+\. How many \S+ are in (\d+) \S+',
+      );
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'convert_units_using_ratio', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final factor = int.parse(m!.group(1)!);
+        final qty = int.parse(m.group(2)!);
+        expect(q.correctAnswer, '${factor * qty}');
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('proportional_relationship', () {
+    test('Yes iff y/x is constant across all three rows', () {
+      final re = RegExp(r'^x: ([^;]+); y: ([^.]+)\. Is y proportional to x\?$');
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'proportional_relationship', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final xs = m!
+            .group(1)!
+            .split(',')
+            .map((s) => int.parse(s.trim()))
+            .toList();
+        final ys = m
+            .group(2)!
+            .split(',')
+            .map((s) => int.parse(s.trim()))
+            .toList();
+        expect(xs.length, ys.length);
+        // Compute y/x for each pair; check constancy.
+        final ratios = <double>[];
+        for (var j = 0; j < xs.length; j++) {
+          ratios.add(ys[j] / xs[j]);
+        }
+        final allEqual = ratios.every((r) => r == ratios.first);
+        expect(q.correctAnswer, allEqual ? 'Yes' : 'No');
+      }
+    });
+  });
+
+  group('constant_of_proportionality', () {
+    test('k = y ÷ x; always integer', () {
+      final re = RegExp(r'^y = kx\. If y = (\d+) when x = (\d+), what is k\?$');
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'constant_of_proportionality', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final y = int.parse(m!.group(1)!);
+        final x = int.parse(m.group(2)!);
+        expect(y % x, 0);
+        expect(q.correctAnswer, '${y ~/ x}');
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('proportional_equation', () {
+    test('correct answer matches "y = kx" form for k = y ÷ x', () {
+      final re = RegExp(
+        r'^y is proportional to x\. When x = (\d+), y = (\d+)\. ',
+      );
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'proportional_equation', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final x = int.parse(m!.group(1)!);
+        final y = int.parse(m.group(2)!);
+        expect(y % x, 0);
+        final k = y ~/ x;
+        expect(q.correctAnswer, 'y = ${k}x');
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
   group('constant_speed', () {
     test('distance = rate × time; correct value for each blank variant', () {
       final dist = RegExp(

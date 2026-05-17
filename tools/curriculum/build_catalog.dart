@@ -173,6 +173,11 @@ const _shortLabelOverrides = <String, String>{
   'equivalent_ratios': 'equiv ratio',
   'unit_rate': 'unit rate',
   'constant_speed': 'd = r·t',
+  'unit_pricing': 'unit price',
+  'convert_units_using_ratio': 'unit conv',
+  'proportional_relationship': 'is prop?',
+  'constant_of_proportionality': 'find k',
+  'proportional_equation': 'y = kx',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.

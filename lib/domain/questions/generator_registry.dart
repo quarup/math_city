@@ -153,5 +153,10 @@ class GeneratorRegistry {
     'equivalent_ratios': equivalentRatios,
     'unit_rate': unitRate,
     'constant_speed': constantSpeed,
+    'unit_pricing': unitPricing,
+    'convert_units_using_ratio': convertUnitsUsingRatio,
+    'proportional_relationship': proportionalRelationship,
+    'constant_of_proportionality': constantOfProportionality,
+    'proportional_equation': proportionalEquation,
   };
 }

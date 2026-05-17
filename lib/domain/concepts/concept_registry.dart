@@ -1964,7 +1964,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'unit_pricing',
     name: 'Unit pricing',
-    shortLabel: 'Unit pricing',
+    shortLabel: 'unit price',
     categoryId: 'ratios',
     primaryGrade: 6,
     prereqIds: ['unit_rate'],
@@ -1986,7 +1986,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'convert_units_using_ratio',
     name: 'Convert units (ratio)',
-    shortLabel: 'Convert units (ratio)',
+    shortLabel: 'unit conv',
     categoryId: 'ratios',
     primaryGrade: 6,
     prereqIds: ['unit_rate'],
@@ -2030,7 +2030,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'proportional_relationship',
     name: 'Is it proportional?',
-    shortLabel: 'Is it proportional?',
+    shortLabel: 'is prop?',
     categoryId: 'ratios',
     primaryGrade: 7,
     prereqIds: ['equivalent_ratios'],
@@ -2041,7 +2041,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'constant_of_proportionality',
     name: 'Constant k in y=kx',
-    shortLabel: 'Constant k in y=kx',
+    shortLabel: 'find k',
     categoryId: 'ratios',
     primaryGrade: 7,
     prereqIds: ['proportional_relationship'],
@@ -2052,7 +2052,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'proportional_equation',
     name: 'Write y = kx',
-    shortLabel: 'Write y = kx',
+    shortLabel: 'y = kx',
     categoryId: 'ratios',
     primaryGrade: 7,
     prereqIds: ['constant_of_proportionality'],

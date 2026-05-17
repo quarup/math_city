@@ -269,6 +269,205 @@ GeneratedQuestion unitRate(Random rand) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────
+// unit_pricing (Grade 6)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "Three apples cost \$6. What's the unit price (dollars per apple)?"
+/// → 2. Same arithmetic shape as `unit_rate`, framed as money.
+/// Curriculum tags as dataset; implemented algorithmically per design
+/// principle 4.
+GeneratedQuestion unitPricing(Random rand) {
+  final price = rand.nextInt(8) + 2; // 2..9 dollars per item
+  final count = rand.nextInt(8) + 2; // 2..9 items
+  final total = price * count;
+
+  const items = <String>[
+    'apples',
+    'oranges',
+    'pens',
+    'notebooks',
+    'cookies',
+    'candles',
+    'magnets',
+    'erasers',
+  ];
+  final item = items[rand.nextInt(items.length)];
+
+  final correct = '$price';
+  final candidates = <String>['$total', '$count', '${total - count}'];
+
+  return GeneratedQuestion(
+    conceptId: 'unit_pricing',
+    prompt:
+        '$count $item cost \$$total. What is the unit price '
+        '(dollars per $item)?',
+    correctAnswer: correct,
+    distractors: _wholeDistractors(price, candidates, rand),
+    explanation: [
+      'Unit price = total ÷ how many items.',
+      '\$$total ÷ $count = \$$price per $item.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// convert_units_using_ratio (Grade 6)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "1 ft = 12 in. How many inches in 4 ft?" → 48. Uses small whole-
+/// number conversion factors so the answer is always an integer.
+GeneratedQuestion convertUnitsUsingRatio(Random rand) {
+  // Curated (from-unit, to-unit, factor) triples; factor = to/from.
+  const conversions = <(String, String, int)>[
+    ('foot', 'inches', 12),
+    ('yard', 'feet', 3),
+    ('meter', 'centimeters', 100),
+    ('hour', 'minutes', 60),
+    ('minute', 'seconds', 60),
+    ('day', 'hours', 24),
+    ('week', 'days', 7),
+    ('kilogram', 'grams', 1000),
+  ];
+  final c = conversions[rand.nextInt(conversions.length)];
+  final quantity = rand.nextInt(8) + 2; // 2..9
+  // Cap big-factor conversions so the answer stays kid-tractable.
+  final cappedQuantity = c.$3 >= 100 ? (rand.nextInt(4) + 2) : quantity;
+  final answer = cappedQuantity * c.$3;
+  final correct = '$answer';
+
+  final candidates = <String>[
+    '${cappedQuantity + c.$3}',
+    '$cappedQuantity', // forgot to multiply
+    '${c.$3}',
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'convert_units_using_ratio',
+    prompt:
+        '1 ${c.$1} = ${c.$3} ${c.$2}. '
+        'How many ${c.$2} are in $cappedQuantity ${c.$1}'
+        '${cappedQuantity == 1 ? "" : "s"}?',
+    correctAnswer: correct,
+    distractors: _wholeDistractors(answer, candidates, rand),
+    explanation: [
+      '1 ${c.$1} = ${c.$3} ${c.$2}.',
+      'Multiply by $cappedQuantity: ${c.$3} × $cappedQuantity = $answer.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// proportional_relationship (Grade 7)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "Given x: 1, 2, 3; y: 4, 8, 12. Is this proportional?" → "Yes" / "No".
+/// Verbal-table version (the curriculum.md row asks for a coordinate-
+/// plane diagram, but the underlying lesson — "is y/x constant?" —
+/// works fine with a typed mini-table). MC of {Yes, No}.
+GeneratedQuestion proportionalRelationship(Random rand) {
+  final isProportional = rand.nextBool();
+  // Three x-values 1..5 (distinct, increasing).
+  final xs = <int>[1, 2, 3];
+  late final List<int> ys;
+  if (isProportional) {
+    final k = rand.nextInt(8) + 2; // 2..9
+    ys = xs.map((x) => x * k).toList();
+  } else {
+    // Pick non-proportional: y = mx + b with b != 0.
+    final m = rand.nextInt(5) + 1; // 1..5
+    final b = rand.nextInt(8) + 1; // 1..8 (b != 0 breaks proportionality)
+    ys = xs.map((x) => m * x + b).toList();
+  }
+
+  final tableX = xs.join(', ');
+  final tableY = ys.join(', ');
+  final correct = isProportional ? 'Yes' : 'No';
+  final distractors = <String>[
+    if (isProportional) 'No' else 'Yes',
+    "Can't tell",
+    'Sometimes',
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'proportional_relationship',
+    prompt: 'x: $tableX; y: $tableY. Is y proportional to x?',
+    correctAnswer: correct,
+    distractors: distractors,
+    explanation: [
+      'Proportional iff y/x is the same constant for every pair.',
+      if (isProportional)
+        'Every y ÷ x = ${ys.first ~/ xs.first} here — same constant.'
+      else
+        'y ÷ x changes across rows — so it is not proportional.',
+    ],
+    answerFormat: AnswerFormat.string,
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// constant_of_proportionality (Grade 7)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "y = kx, and y = 12 when x = 3. What is k?" → 4. Always pick an
+/// integer k.
+GeneratedQuestion constantOfProportionality(Random rand) {
+  final k = rand.nextInt(9) + 2; // 2..10
+  final x = rand.nextInt(8) + 2; // 2..9
+  final y = k * x;
+
+  final correct = '$k';
+  final candidates = <String>[
+    '${y - x}', // subtracted instead of divided
+    '$x',
+    '$y',
+    '${y + x}',
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'constant_of_proportionality',
+    prompt: 'y = kx. If y = $y when x = $x, what is k?',
+    correctAnswer: correct,
+    distractors: _wholeDistractors(k, candidates, rand),
+    explanation: [
+      'k = y ÷ x.',
+      '$y ÷ $x = $k.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// proportional_equation (Grade 7)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "y is proportional to x. y = 12 when x = 3. Pick the equation."
+/// MC over four equation forms — the kid practises identifying the
+/// proportional `y = kx` shape vs. additive, inverse, etc.
+GeneratedQuestion proportionalEquation(Random rand) {
+  final k = rand.nextInt(9) + 2; // 2..10
+  final x = rand.nextInt(8) + 2; // 2..9
+  final y = k * x;
+  final correct = 'y = ${k}x';
+  final distractors = <String>[
+    'y = x + $k', // additive shift
+    'y = $k/x', // inverse
+    'y = ${k}x + 1', // linear with intercept
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'proportional_equation',
+    prompt: 'y is proportional to x. When x = $x, y = $y. Which equation fits?',
+    correctAnswer: correct,
+    distractors: distractors,
+    explanation: [
+      'For a proportional relationship: y = kx where k = y ÷ x.',
+      'k = $y ÷ $x = $k.',
+      'So y = ${k}x.',
+    ],
+    answerFormat: AnswerFormat.string,
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
 // constant_speed (Grade 6)
 // ─────────────────────────────────────────────────────────────────────────
 
