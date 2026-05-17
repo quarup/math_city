@@ -1909,7 +1909,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'ratio_intro',
     name: 'What is a ratio?',
-    shortLabel: 'What is a ratio?',
+    shortLabel: 'ratio?',
     categoryId: 'ratios',
     primaryGrade: 6,
     prereqIds: ['mult_facts_within_100'],
@@ -1920,7 +1920,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'ratio_language',
     name: 'Ratio language (a:b, a to b)',
-    shortLabel: 'Ratio language (a:b, a to b)',
+    shortLabel: 'ratio form',
     categoryId: 'ratios',
     primaryGrade: 6,
     prereqIds: ['ratio_intro'],
@@ -1931,7 +1931,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'equivalent_ratios',
     name: 'Equivalent ratios',
-    shortLabel: 'Equivalent ratios',
+    shortLabel: 'equiv ratio',
     categoryId: 'ratios',
     primaryGrade: 6,
     prereqIds: ['ratio_intro', 'mult_facts_within_100'],
@@ -1953,7 +1953,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'unit_rate',
     name: 'Unit rate',
-    shortLabel: 'Unit rate',
+    shortLabel: 'unit rate',
     categoryId: 'ratios',
     primaryGrade: 6,
     prereqIds: ['ratio_intro', 'div_facts_within_100'],
@@ -1975,7 +1975,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'constant_speed',
     name: 'Constant-speed problems',
-    shortLabel: 'Constant-speed problems',
+    shortLabel: 'd = r·t',
     categoryId: 'ratios',
     primaryGrade: 6,
     prereqIds: ['unit_rate'],

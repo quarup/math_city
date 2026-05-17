@@ -8,6 +8,7 @@ import 'package:math_city/domain/questions/generators/integer_generators.dart';
 import 'package:math_city/domain/questions/generators/mult_div_generators.dart';
 import 'package:math_city/domain/questions/generators/percent_generators.dart';
 import 'package:math_city/domain/questions/generators/place_value_generators.dart';
+import 'package:math_city/domain/questions/generators/ratio_generators.dart';
 import 'package:math_city/domain/questions/generators/rationals_generators.dart';
 import 'package:math_city/domain/questions/generators/time_generators.dart';
 import 'package:math_city/domain/questions/word_problems/word_problem_generators.dart';
@@ -146,5 +147,11 @@ class GeneratorRegistry {
     'markup_markdown': markupMarkdown,
     'sales_tax_tip': salesTaxTip,
     'convert_fraction_decimal_percent': convertFractionDecimalPercent,
+    // Ratios
+    'ratio_intro': ratioIntro,
+    'ratio_language': ratioLanguage,
+    'equivalent_ratios': equivalentRatios,
+    'unit_rate': unitRate,
+    'constant_speed': constantSpeed,
   };
 }

@@ -168,6 +168,11 @@ const _shortLabelOverrides = <String, String>{
   'sales_tax_tip': 'tax/tip',
   'convert_fraction_decimal_percent': 'F/D/% conv',
   'decimals_fluent_4ops': 'dec ±×÷',
+  'ratio_intro': 'ratio?',
+  'ratio_language': 'ratio form',
+  'equivalent_ratios': 'equiv ratio',
+  'unit_rate': 'unit rate',
+  'constant_speed': 'd = r·t',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
