@@ -6,6 +6,11 @@
 # `flutter test` / `dart format`. Idempotent — re-running re-uses the
 # cached SDK directory and skips the download.
 #
+# Runs in async mode: the session starts immediately while this script
+# completes in the background. Trade-off: if I try to run `flutter test`
+# before the install finishes, the command will fail and I'll need to
+# wait/retry. Set CLAUDE_HOOK_SYNC=true to force synchronous behaviour.
+#
 # Quiet on success; only emits output if something needs attention.
 
 set -euo pipefail
@@ -13,6 +18,14 @@ set -euo pipefail
 # Skip on local sessions — the developer's machine already has Flutter.
 if [ "${CLAUDE_CODE_REMOTE:-}" != "true" ]; then
   exit 0
+fi
+
+# Switch to async mode unless explicitly overridden. The JSON must be
+# emitted on stdout before any other output. asyncTimeout is generous
+# enough to cover a cold Flutter SDK download (~700 MB) plus extraction
+# plus `flutter pub get`.
+if [ "${CLAUDE_HOOK_SYNC:-}" != "true" ]; then
+  echo '{"async": true, "asyncTimeout": 600000}'
 fi
 
 FLUTTER_VERSION="3.41.7"
