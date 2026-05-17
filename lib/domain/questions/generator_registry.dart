@@ -133,6 +133,11 @@ class GeneratorRegistry {
     'place_value_2digit': placeValue2digit,
     'place_value_3digit': placeValue3digit,
     'place_value_multidigit': placeValueMultidigit,
+    'compare_2digit': compare2digit,
+    'compare_3digit': compare3digit,
+    'compare_multidigit': compareMultidigit,
+    'place_value_relationship_10x': placeValueRelationship10x,
+    'powers_of_10': powersOf10,
     // Rounding
     'round_to_10': roundTo10,
     'round_to_100': roundTo100,

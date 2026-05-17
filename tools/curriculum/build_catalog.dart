@@ -334,11 +334,12 @@ const _prereqOverrides = <String, List<String>>{
   // drop area_rectangle_count_squares (no generator) — substitute the
   // mult-facts background since area-by-formula IS multiplication.
   'area_rectangle_formula': ['mult_facts_within_100'],
-  // drop powers_of_10 (no generator) — substitute mult facts as the
-  // basic multiplicative background.
-  'exponents_whole_number': ['mult_facts_within_100'],
-  // drop powers_of_10 (no generator yet) — substitute mult_facts.
-  'scientific_notation_read': ['mult_facts_within_100'],
+  // exponents_whole_number / scientific_notation_read: both curriculum
+  // prereqs (powers_of_10) now live — no override needed.
+  // compare_multidigit: drop read_write_multidigit (no generator) —
+  // substitute place_value_multidigit since "compare digit by digit"
+  // is the underlying skill.
+  'compare_multidigit': ['place_value_multidigit'],
   // drop volume_unit_cubes (no generator); area_rectangle_count_squares
   // also missing. Substitute mult facts (V = lwh is just multiplication).
   'volume_rect_prism_formula': ['mult_facts_within_100'],

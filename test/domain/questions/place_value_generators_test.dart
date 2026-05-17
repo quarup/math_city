@@ -189,6 +189,123 @@ void main() {
       }
     });
   });
+
+  group('compare_2digit / compare_3digit / compare_multidigit', () {
+    final reCompare = RegExp(
+      r'^Which is bigger: ([\d,]+) or ([\d,]+)\?$',
+    );
+    int parseFormatted(String s) => int.parse(s.replaceAll(',', ''));
+
+    test('compare_2digit: a, b ∈ [10, 99]; answer = the larger', () {
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'compare_2digit', i);
+        final m = reCompare.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final a = parseFormatted(m!.group(1)!);
+        final b = parseFormatted(m.group(2)!);
+        expect(a, inInclusiveRange(10, 99));
+        expect(b, inInclusiveRange(10, 99));
+        expect(a, isNot(b));
+        expect(parseFormatted(q.correctAnswer), a > b ? a : b);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+
+    test('compare_3digit: a, b ∈ [100, 999]; answer = the larger', () {
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'compare_3digit', i);
+        final m = reCompare.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final a = parseFormatted(m!.group(1)!);
+        final b = parseFormatted(m.group(2)!);
+        expect(a, inInclusiveRange(100, 999));
+        expect(b, inInclusiveRange(100, 999));
+        expect(a, isNot(b));
+        expect(parseFormatted(q.correctAnswer), a > b ? a : b);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+
+    test('compare_multidigit: 4–7 digit operands; answer = the larger', () {
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'compare_multidigit', i);
+        final m = reCompare.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final a = parseFormatted(m!.group(1)!);
+        final b = parseFormatted(m.group(2)!);
+        expect(a, inInclusiveRange(1000, 9999999));
+        expect(b, inInclusiveRange(1000, 9999999));
+        expect(a, isNot(b));
+        expect(parseFormatted(q.correctAnswer), a > b ? a : b);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('place_value_relationship_10x', () {
+    test(
+      'built number has two equal non-zero digits k apart; answer = 10^k',
+      () {
+        final re = RegExp(
+          r'^In (\d+), how many times greater is the value of the leftmost '
+          r'(\d) than the rightmost \d\?$',
+        );
+        for (var i = 0; i < _iterations; i++) {
+          final q = _gen(registry, 'place_value_relationship_10x', i);
+          final m = re.firstMatch(q.prompt);
+          expect(m, isNotNull, reason: q.prompt);
+          final n = m!.group(1)!;
+          final d = int.parse(m.group(2)!);
+          // Repeated digit appears exactly twice; everything else is 0.
+          final occurrences = n.split('').where((c) => c == '$d').length;
+          final zeros = n.split('').where((c) => c == '0').length;
+          expect(occurrences, 2);
+          expect(occurrences + zeros, n.length);
+          // Distance between the two ds gives k.
+          final left = n.indexOf('$d');
+          final right = n.lastIndexOf('$d');
+          final k = right - left; // since digits read left-to-right
+          final answer = int.parse(q.correctAnswer);
+          expect(answer, _pow10(k));
+          _expectThreeDistinctDistractors(q);
+        }
+      },
+    );
+  });
+
+  group('powers_of_10', () {
+    test('answer matches the three prompt shapes', () {
+      final reLit = RegExp(r'^What is 10\^(\d+)\?$');
+      final reMul = RegExp(r'^(\d+) × 10\^(\d+) = \?$');
+      final reDiv = RegExp(r'^(\d+) ÷ 10\^(\d+) = \?$');
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'powers_of_10', i);
+        final answer = int.parse(q.correctAnswer);
+        final mL = reLit.firstMatch(q.prompt);
+        final mM = reMul.firstMatch(q.prompt);
+        final mD = reDiv.firstMatch(q.prompt);
+        if (mL != null) {
+          final k = int.parse(mL.group(1)!);
+          expect(answer, _pow10(k));
+          expect(k, inInclusiveRange(1, 5));
+        } else if (mM != null) {
+          final a = int.parse(mM.group(1)!);
+          final k = int.parse(mM.group(2)!);
+          expect(answer, a * _pow10(k));
+          expect(a, inInclusiveRange(2, 9));
+          expect(k, inInclusiveRange(1, 4));
+        } else if (mD != null) {
+          final n = int.parse(mD.group(1)!);
+          final k = int.parse(mD.group(2)!);
+          expect(n % _pow10(k), 0, reason: 'exact division required');
+          expect(answer, n ~/ _pow10(k));
+        } else {
+          fail('unrecognised prompt: ${q.prompt}');
+        }
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
 }
 
 /// Local copy of the private power-of-10 helper for test arithmetic.

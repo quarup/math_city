@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:math_city/domain/questions/distractors.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
 
 /// Place-value & rounding generators.
@@ -299,6 +300,196 @@ GeneratedQuestion roundMultidigitAnyPlace(Random rand) {
     n: n,
     place: place,
     placeLabel: placeLabel,
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// compare_2digit / compare_3digit / compare_multidigit
+// ─────────────────────────────────────────────────────────────────────────
+
+/// Builds a "Which is bigger: $a or $b?" MC. Same shape as
+/// `compare_fractions_*` — the kid picks one of the two displayed
+/// numbers (or "They are equal", which is always wrong here because we
+/// keep a ≠ b).
+GeneratedQuestion _compareIntsGen({
+  required String conceptId,
+  required int a,
+  required int b,
+}) {
+  assert(a != b, 'compare generators require distinct inputs');
+  final aStr = formatWithCommas(a);
+  final bStr = formatWithCommas(b);
+  final correct = a > b ? aStr : bStr;
+  final wrong = a > b ? bStr : aStr;
+  // Misconception slot: the difference (kid subtracted instead of compared).
+  // Falls back to sum when difference would dup an existing choice — e.g.
+  // for (10, 5) where wrong = |a − b| = 5.
+  final diff = (a - b).abs();
+  final sum = a + b;
+  final diffStr = formatWithCommas(diff);
+  final sumStr = formatWithCommas(sum);
+  final misconception = (diffStr == correct || diffStr == wrong)
+      ? sumStr
+      : diffStr;
+  return GeneratedQuestion(
+    conceptId: conceptId,
+    prompt: 'Which is bigger: $aStr or $bStr?',
+    correctAnswer: correct,
+    distractors: <String>[wrong, 'They are equal', misconception],
+    explanation: [
+      'Line up the digits and compare the leftmost place that differs.',
+      '$correct is bigger than $wrong.',
+    ],
+    answerFormat: AnswerFormat.string,
+  );
+}
+
+/// "Which is bigger: 47 or 52?" → "52". 2-digit ∈ [10, 99].
+GeneratedQuestion compare2digit(Random rand) {
+  final a = rand.nextInt(90) + 10; // 10..99
+  int b;
+  do {
+    b = rand.nextInt(90) + 10;
+  } while (b == a);
+  return _compareIntsGen(conceptId: 'compare_2digit', a: a, b: b);
+}
+
+/// "Which is bigger: 472 or 521?" → "521". 3-digit ∈ [100, 999].
+GeneratedQuestion compare3digit(Random rand) {
+  final a = rand.nextInt(900) + 100; // 100..999
+  int b;
+  do {
+    b = rand.nextInt(900) + 100;
+  } while (b == a);
+  return _compareIntsGen(conceptId: 'compare_3digit', a: a, b: b);
+}
+
+/// "Which is bigger: 47,200 or 47,500?" 4–7 digits each. Operands often
+/// share their leading digits so the kid actually has to scan past them
+/// — picks a, b within the same order of magnitude 70% of the time.
+GeneratedQuestion compareMultidigit(Random rand) {
+  final digits = rand.nextInt(4) + 4; // 4..7
+  final lo = _pow10(digits - 1);
+  final hi = _pow10(digits) - 1;
+  final a = lo + rand.nextInt(hi - lo + 1);
+  int b;
+  do {
+    final sameMag = rand.nextInt(10) < 7;
+    if (sameMag) {
+      b = lo + rand.nextInt(hi - lo + 1);
+    } else {
+      final otherDigits = rand.nextInt(4) + 4;
+      final lo2 = _pow10(otherDigits - 1);
+      final hi2 = _pow10(otherDigits) - 1;
+      b = lo2 + rand.nextInt(hi2 - lo2 + 1);
+    }
+  } while (b == a);
+  return _compareIntsGen(conceptId: 'compare_multidigit', a: a, b: b);
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// place_value_relationship_10x (Grade 5)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "In 770, how many times greater is the value of the leftmost 7 than
+/// the rightmost 7?" → 10. Builds a number with a single repeated
+/// non-zero digit and zeros elsewhere, gap k ∈ [1, 3]. Tests CCSS
+/// 5.NBT.A.1.
+GeneratedQuestion placeValueRelationship10x(Random rand) {
+  final d = rand.nextInt(9) + 1; // 1..9
+  final k = rand.nextInt(3) + 1; // 1..3
+  final pRight = rand.nextInt(2); // 0 or 1
+  final pLeft = pRight + k;
+  // Build digit string left-to-right: position pLeft is leftmost.
+  final buf = StringBuffer();
+  for (var pos = pLeft; pos >= 0; pos--) {
+    buf.write(pos == pLeft || pos == pRight ? d : 0);
+  }
+  final n = buf.toString();
+  final answer = _pow10(k);
+
+  return GeneratedQuestion(
+    conceptId: 'place_value_relationship_10x',
+    prompt:
+        'In $n, how many times greater is the value of the leftmost $d '
+        'than the rightmost $d?',
+    correctAnswer: '$answer',
+    distractors: integerDistractorsWith(
+      answer,
+      rand,
+      // Misconception: gave k × 10 instead of 10^k (so for k=3 says 30).
+      misconception: k * 10,
+    ),
+    explanation: [
+      'Each place is 10 times the place to its right.',
+      // ignore: no_adjacent_strings_in_list — single line wrapped for length
+      'The two ${d}s are $k place${k == 1 ? '' : 's'} apart, so the left '
+          'value is 10^$k = $answer times the right value.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// powers_of_10 (Grade 5)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// Three shapes covering CCSS 5.NBT.A.2 "multiply/divide by powers of 10":
+///   * "What is 10^$k?" → 10^k (k ∈ [1, 5])
+///   * "$a × 10^$k = ?" → a × 10^k (a ∈ [2, 9], k ∈ [1, 4])
+///   * "$N ÷ 10^$k = ?" → N ÷ 10^k (N generated as a × 10^k for exact div)
+GeneratedQuestion powersOf10(Random rand) {
+  final shape = rand.nextInt(3);
+  late int answer;
+  late String prompt;
+  late int misconception;
+  late List<String> explanation;
+  switch (shape) {
+    case 0:
+      final k = rand.nextInt(5) + 1; // 1..5
+      answer = _pow10(k);
+      prompt = 'What is 10^$k?';
+      misconception = 10 * k; // kid does 10 × k instead of 10^k
+      explanation = [
+        '10^$k = 1 followed by $k zero${k == 1 ? '' : 's'}.',
+        '10^$k = $answer.',
+      ];
+    case 1:
+      final a = rand.nextInt(8) + 2; // 2..9
+      final k = rand.nextInt(4) + 1; // 1..4
+      answer = a * _pow10(k);
+      prompt = '$a × 10^$k = ?';
+      misconception = a * k;
+      explanation = [
+        // ignore: no_adjacent_strings_in_list — single line wrapped for length
+        'Multiplying by 10^$k shifts the digits $k '
+            'place${k == 1 ? '' : 's'} to the left.',
+        '$a × 10^$k = $answer.',
+      ];
+    default:
+      final a = rand.nextInt(8) + 2; // 2..9
+      final k = rand.nextInt(4) + 1; // 1..4
+      final n = a * _pow10(k);
+      answer = a;
+      prompt = '$n ÷ 10^$k = ?';
+      // Misconception: kid shifted the decimal the wrong way.
+      misconception = a * _pow10(2 * k);
+      explanation = [
+        // ignore: no_adjacent_strings_in_list — single line wrapped for length
+        'Dividing by 10^$k shifts the digits $k '
+            'place${k == 1 ? '' : 's'} to the right.',
+        '$n ÷ 10^$k = $answer.',
+      ];
+  }
+  return GeneratedQuestion(
+    conceptId: 'powers_of_10',
+    prompt: prompt,
+    correctAnswer: '$answer',
+    distractors: integerDistractorsWith(
+      answer,
+      rand,
+      misconception: misconception,
+    ),
+    explanation: explanation,
   );
 }
 
