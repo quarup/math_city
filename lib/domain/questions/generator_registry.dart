@@ -127,5 +127,12 @@ class GeneratorRegistry {
     'sub_decimals': subDecimals,
     'mult_decimal_by_whole': multDecimalByWhole,
     'mult_decimals': multDecimals,
+    'decimal_to_thousandths_read': decimalToThousandthsRead,
+    'compare_decimals_thousandths': compareDecimalsThousandths,
+    'round_decimals': roundDecimals,
+    'div_decimal_by_whole': divDecimalByWhole,
+    'div_by_decimal': divByDecimal,
+    'decimal_to_fraction': decimalToFraction,
+    'fraction_to_decimal': fractionToDecimal,
   };
 }

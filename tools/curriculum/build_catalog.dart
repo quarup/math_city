@@ -151,6 +151,13 @@ const _shortLabelOverrides = <String, String>{
   'sub_decimals': '− dec',
   'mult_decimal_by_whole': 'dec × N',
   'mult_decimals': 'dec × dec',
+  'decimal_to_thousandths_read': 'thousandths',
+  'compare_decimals_thousandths': 'cmp 0.001',
+  'round_decimals': 'round dec',
+  'div_decimal_by_whole': 'dec ÷ N',
+  'div_by_decimal': '÷ by dec',
+  'decimal_to_fraction': 'dec → frac',
+  'fraction_to_decimal': 'frac → dec',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.

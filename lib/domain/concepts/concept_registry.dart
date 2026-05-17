@@ -1650,7 +1650,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'decimal_to_thousandths_read',
     name: 'Read decimals to 0.001',
-    shortLabel: 'Read decimals to 0.001',
+    shortLabel: 'thousandths',
     categoryId: 'decimals_percent',
     primaryGrade: 5,
     prereqIds: ['compare_decimals_hundredths'],
@@ -1661,7 +1661,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'compare_decimals_thousandths',
     name: 'Compare decimals to 0.001',
-    shortLabel: 'Compare decimals to 0.001',
+    shortLabel: 'cmp 0.001',
     categoryId: 'decimals_percent',
     primaryGrade: 5,
     prereqIds: ['decimal_to_thousandths_read'],
@@ -1672,7 +1672,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'round_decimals',
     name: 'Round decimals',
-    shortLabel: 'Round decimals',
+    shortLabel: 'round dec',
     categoryId: 'decimals_percent',
     primaryGrade: 5,
     prereqIds: ['decimal_to_thousandths_read', 'round_to_100'],
@@ -1727,7 +1727,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'div_decimal_by_whole',
     name: 'Decimal ÷ whole',
-    shortLabel: 'Decimal ÷ whole',
+    shortLabel: 'dec ÷ N',
     categoryId: 'decimals_percent',
     primaryGrade: 5,
     prereqIds: ['div_4digit_by_1digit', 'decimal_notation_hundredths'],
@@ -1738,7 +1738,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'div_by_decimal',
     name: '÷ by a decimal',
-    shortLabel: '÷ by a decimal',
+    shortLabel: '÷ by dec',
     categoryId: 'decimals_percent',
     primaryGrade: 6,
     prereqIds: ['mult_decimals', 'div_decimal_by_whole'],
@@ -1765,7 +1765,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'decimal_to_fraction',
     name: 'Decimal → fraction',
-    shortLabel: 'Decimal → fraction',
+    shortLabel: 'dec → frac',
     categoryId: 'decimals_percent',
     primaryGrade: 5,
     prereqIds: ['decimal_notation_hundredths'],
@@ -1776,7 +1776,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'fraction_to_decimal',
     name: 'Fraction → decimal',
-    shortLabel: 'Fraction → decimal',
+    shortLabel: 'frac → dec',
     categoryId: 'decimals_percent',
     primaryGrade: 6,
     prereqIds: ['div_facts_within_100', 'decimal_notation_hundredths'],

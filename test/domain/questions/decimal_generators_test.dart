@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:math_city/domain/questions/decimal.dart';
+import 'package:math_city/domain/questions/fraction.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
 import 'package:math_city/domain/questions/generator_registry.dart';
 
@@ -246,4 +247,221 @@ void main() {
       }
     });
   });
+
+  group('decimal_to_thousandths_read', () {
+    test('answer matches N/1000 canonical for N ∈ [1, 999]', () {
+      final re = RegExp(r'^Write (\d+) thousandths as a decimal\.$');
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'decimal_to_thousandths_read', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final n = int.parse(m!.group(1)!);
+        expect(n, inInclusiveRange(1, 999));
+        expect(q.correctAnswer, Decimal(n, 3).toCanonical());
+        expect(q.answerFormat, AnswerFormat.decimal);
+        _expectThreeDistinctDistractors(q);
+        _expectDistractorsNotValueEquivalent(q);
+      }
+    });
+
+    test('single-digit N yields "0.00N" with both leading zeros', () {
+      var sawSmall = false;
+      for (var i = 0; i < 800 && !sawSmall; i++) {
+        final q = _gen(registry, 'decimal_to_thousandths_read', i);
+        final n = int.parse(RegExp(r'(\d+)').firstMatch(q.prompt)!.group(1)!);
+        if (n < 10) {
+          sawSmall = true;
+          expect(q.correctAnswer, '0.00$n');
+        }
+      }
+      expect(sawSmall, isTrue);
+    });
+  });
+
+  group('compare_decimals_thousandths', () {
+    test('correct answer is the larger of the two operands; no ties', () {
+      final re = RegExp(
+        r'^Which is bigger: (-?\d+(?:\.\d+)?) or (-?\d+(?:\.\d+)?)\?$',
+      );
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'compare_decimals_thousandths', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final aStr = m!.group(1)!;
+        final bStr = m.group(2)!;
+        final a = Decimal.tryParse(aStr)!;
+        final b = Decimal.tryParse(bStr)!;
+        expect(a.compareTo(b), isNot(0), reason: 'tie not allowed');
+        final largerStr = a.compareTo(b) > 0 ? aStr : bStr;
+        expect(q.correctAnswer, largerStr);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('round_decimals', () {
+    test(
+      'answer matches the half-away-from-zero rounding to the named place',
+      () {
+        final re = RegExp(
+          r'^Round (\d+(?:\.\d+)?) to the nearest (whole number|tenth|hundredth)\.$',
+        );
+        for (var i = 0; i < _iterations; i++) {
+          final q = _gen(registry, 'round_decimals', i);
+          final m = re.firstMatch(q.prompt);
+          expect(m, isNotNull, reason: q.prompt);
+          final value = Decimal.tryParse(m!.group(1)!)!;
+          final placeName = m.group(2)!;
+          final targetScale = switch (placeName) {
+            'whole number' => 0,
+            'tenth' => 1,
+            'hundredth' => 2,
+            _ => -1,
+          };
+          expect(targetScale, isNot(-1));
+          // Compute expected rounding the same way the generator does.
+          final factor = _pow10(value.scale - targetScale);
+          final half = value.scaled >= 0 ? factor ~/ 2 : -(factor ~/ 2);
+          final expectedScaled = (value.scaled + half) ~/ factor;
+          final expected = Decimal(expectedScaled, targetScale).toCanonical();
+          expect(q.correctAnswer, expected);
+          expect(q.answerFormat, AnswerFormat.decimal);
+          _expectThreeDistinctDistractors(q);
+          _expectDistractorsNotValueEquivalent(q);
+        }
+      },
+    );
+  });
+
+  group('div_decimal_by_whole', () {
+    test('dividend ÷ divisor = correctAnswer exactly; divisor ∈ [2, 9]', () {
+      final re = RegExp(r'^(\d+(?:\.\d+)?) ÷ (\d+) = \?$');
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'div_decimal_by_whole', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final dividend = Decimal.tryParse(m!.group(1)!)!;
+        final divisor = int.parse(m.group(2)!);
+        expect(divisor, inInclusiveRange(2, 9));
+        final quotient = Decimal.tryParse(q.correctAnswer)!;
+        // quotient × divisor should equal dividend exactly.
+        final back = quotient * Decimal(divisor, 0);
+        expect(
+          back.equalsByValue(dividend),
+          isTrue,
+          reason: 'quotient×divisor ≠ dividend in ${q.prompt}',
+        );
+        expect(q.answerFormat, AnswerFormat.decimal);
+        _expectThreeDistinctDistractors(q);
+        _expectDistractorsNotValueEquivalent(q);
+      }
+    });
+  });
+
+  group('div_by_decimal', () {
+    test('quotient is a whole number in [2, 20]; arithmetic checks out', () {
+      final re = RegExp(r'^(\d+(?:\.\d+)?) ÷ (\d+(?:\.\d+)?) = \?$');
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'div_by_decimal', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final dividend = Decimal.tryParse(m!.group(1)!)!;
+        final divisor = Decimal.tryParse(m.group(2)!)!;
+        expect(
+          divisor.scale,
+          greaterThan(0),
+          reason: 'divisor should be decimal: ${q.prompt}',
+        );
+        final quotient = int.parse(q.correctAnswer);
+        expect(quotient, inInclusiveRange(2, 20));
+        // divisor × quotient == dividend exactly.
+        expect(
+          (divisor * Decimal(quotient, 0)).equalsByValue(dividend),
+          isTrue,
+          reason: 'divisor×quotient ≠ dividend in ${q.prompt}',
+        );
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('decimal_to_fraction', () {
+    test('answer is the reduced fraction of the given decimal', () {
+      final re = RegExp(
+        r'^Write (\d+\.\d+) as a fraction in lowest terms\.$',
+      );
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'decimal_to_fraction', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final value = Decimal.tryParse(m!.group(1)!)!;
+        final expected = Fraction(
+          value.scaled,
+          _pow10(value.scale),
+        ).reduce().toCanonical();
+        expect(q.correctAnswer, expected);
+        expect(q.answerFormat, AnswerFormat.fraction);
+        expect(q.answerShape, AnswerShape.exactString);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+
+    test('non-trivial reduction always — the un-reduced N/100 is rejected', () {
+      // The generator re-rolls when the fraction is already in lowest terms
+      // at denominator 100. Verify the answer's denominator is never 100.
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'decimal_to_fraction', i);
+        final ans = Fraction.tryParse(q.correctAnswer)!;
+        expect(
+          ans.denominator,
+          isNot(100),
+          reason: 'expected reduction: ${q.prompt} → ${q.correctAnswer}',
+        );
+      }
+    });
+  });
+
+  group('fraction_to_decimal', () {
+    test('answer is the exact decimal expansion of the fraction', () {
+      final re = RegExp(r'^Write (\d+)/(\d+) as a decimal\.$');
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'fraction_to_decimal', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final n = int.parse(m!.group(1)!);
+        final d = int.parse(m.group(2)!);
+        // Reconstruct the expected decimal via scaled-int division.
+        const workingScale = 4;
+        final scaled = (n * _pow10(workingScale)) ~/ d;
+        final expected = Decimal(scaled, workingScale).toCanonical();
+        expect(q.correctAnswer, expected);
+        expect(q.answerFormat, AnswerFormat.decimal);
+        _expectThreeDistinctDistractors(q);
+        _expectDistractorsNotValueEquivalent(q);
+      }
+    });
+
+    test('denominator ∈ {2, 4, 5, 8, 10, 20, 25, 50}', () {
+      const allowed = {2, 4, 5, 8, 10, 20, 25, 50};
+      final re = RegExp(r'^Write (\d+)/(\d+) as a decimal\.$');
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'fraction_to_decimal', i);
+        final m = re.firstMatch(q.prompt)!;
+        final d = int.parse(m.group(2)!);
+        expect(
+          allowed.contains(d),
+          isTrue,
+          reason: 'denominator $d not in terminating set',
+        );
+      }
+    });
+  });
+}
+
+int _pow10(int n) {
+  var v = 1;
+  for (var i = 0; i < n; i++) {
+    v *= 10;
+  }
+  return v;
 }

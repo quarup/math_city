@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:math_city/domain/questions/decimal.dart';
+import 'package:math_city/domain/questions/fraction.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
 
 /// Decimal generators (Grades 4–5).
@@ -49,6 +50,32 @@ List<String> _decimalDistractors(
   // Extreme fallback so the contract is never violated.
   while (out.length < 3) {
     out.add('${out.length + 7}.${out.length + 1}');
+  }
+  return out.take(3).toList();
+}
+
+/// Returns three distinct whole-number-string distractors that differ
+/// from [correct]. Used by generators (like `div_by_decimal`) whose
+/// canonical answer is always a whole integer rendered as a bare string.
+List<String> _wholeDistractors(
+  int correct,
+  List<String> candidates,
+  Random rand,
+) {
+  final out = <String>[];
+  final seen = <String>{'$correct'};
+  for (final c in candidates) {
+    if (out.length >= 3) break;
+    if (seen.add(c)) out.add(c);
+  }
+  for (var i = 1; out.length < 3 && i < 30; i++) {
+    for (final delta in <int>[i, -i]) {
+      final v = correct + delta;
+      if (v < 1) continue;
+      final s = '$v';
+      if (seen.add(s)) out.add(s);
+      if (out.length >= 3) break;
+    }
   }
   return out.take(3).toList();
 }
@@ -407,6 +434,379 @@ GeneratedQuestion multDecimals(Random rand) {
       'Ignore the points: ${a.scaled} × ${b.scaled} = ${a.scaled * b.scaled}.',
       'Digits after points: ${a.scale} + ${b.scale} = ${a.scale + b.scale}.',
       'Put the point that many spots from the right → $correct.',
+    ],
+    answerFormat: AnswerFormat.decimal,
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Thousandths notation / comparison (Grade 5)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "Write N thousandths as a decimal." → e.g. 7 → "0.007", 123 → "0.123".
+GeneratedQuestion decimalToThousandthsRead(Random rand) {
+  final n = rand.nextInt(999) + 1; // 1..999
+  final answer = Decimal(n, 3);
+  final correct = answer.toCanonical();
+
+  final distractors = <String>[
+    // Misconception: dropped one or two leading zeros (read as hundredths
+    // or tenths instead).
+    _shiftPoint(answer, -1).toCanonical(),
+    _shiftPoint(answer, -2).toCanonical(),
+    // Misconception: wrote N as a whole number.
+    '$n',
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'decimal_to_thousandths_read',
+    prompt: 'Write $n thousandths as a decimal.',
+    correctAnswer: correct,
+    distractors: _decimalDistractors(answer, distractors, rand),
+    explanation: [
+      '"N thousandths" means N divided by 1000.',
+      '$n ÷ 1000 = $correct.',
+      'Three digits after the point — the thousandths place.',
+    ],
+    answerFormat: AnswerFormat.decimal,
+  );
+}
+
+/// "Which is bigger: 0.345 or 0.4?" Variant of
+/// [compareDecimalsHundredths] extended to thousandths precision. Same
+/// "longer = bigger" misconception bait when scales differ.
+GeneratedQuestion compareDecimalsThousandths(Random rand) {
+  Decimal a;
+  Decimal b;
+  if (rand.nextDouble() < 0.5) {
+    // Misconception bait: mismatched scales. Pick the shorter at
+    // tenths or hundredths and the longer at thousandths.
+    final shorterScale = rand.nextBool() ? 1 : 2;
+    final shorter = shorterScale == 1
+        ? Decimal(rand.nextInt(9) + 1, 1) // 0.1..0.9
+        : Decimal(rand.nextInt(99) + 1, 2); // 0.01..0.99
+    Decimal longer;
+    do {
+      longer = Decimal(rand.nextInt(999) + 1, 3); // 0.001..0.999
+    } while (longer.scale != 3 || longer.compareTo(shorter) == 0);
+    if (rand.nextBool()) {
+      a = shorter;
+      b = longer;
+    } else {
+      a = longer;
+      b = shorter;
+    }
+  } else {
+    // General: two random thousandths.
+    do {
+      a = Decimal(rand.nextInt(999) + 1, 3);
+      b = Decimal(rand.nextInt(999) + 1, 3);
+    } while (a.compareTo(b) == 0);
+  }
+
+  final aStr = a.toCanonical();
+  final bStr = b.toCanonical();
+  final correct = a.compareTo(b) > 0 ? aStr : bStr;
+  final wrong = a.compareTo(b) > 0 ? bStr : aStr;
+
+  return GeneratedQuestion(
+    conceptId: 'compare_decimals_thousandths',
+    prompt: 'Which is bigger: $aStr or $bStr?',
+    correctAnswer: correct,
+    distractors: <String>[wrong, 'They are equal', 'Neither'],
+    explanation: [
+      'Pad both with zeros to the same length, then compare digit by digit.',
+      '$correct is bigger.',
+      'Tip: extra digits do not mean bigger — 0.4 beats 0.345.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Rounding decimals (Grade 5)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "Round 0.567 to the nearest tenth." → "0.6". Place ∈ {whole, tenths,
+/// hundredths}. Uses round-half-away-from-zero (standard kid convention).
+GeneratedQuestion roundDecimals(Random rand) {
+  // Generate a decimal at thousandths precision in [0.001, 9.999].
+  Decimal value;
+  do {
+    value = Decimal(rand.nextInt(9999) + 1, 3);
+  } while (value.scale < 3); // ensure a thousandths digit actually exists
+
+  // Pick the place to round to (smaller than the value's own scale so the
+  // rounding is non-trivial).
+  final placeOptions = <_RoundPlace>[
+    const _RoundPlace(0, 'whole number'),
+    const _RoundPlace(1, 'tenth'),
+    const _RoundPlace(2, 'hundredth'),
+  ];
+  final place = placeOptions[rand.nextInt(placeOptions.length)];
+
+  final rounded = _roundHalfAwayFromZero(value, place.scale);
+  final correct = rounded.toCanonical();
+
+  // Misconception: rounded in the wrong direction (truncate vs round up).
+  final truncated = _truncate(value, place.scale);
+  final flipped = truncated.compareTo(rounded) == 0
+      // truncate == round → bump by one in the smallest place
+      ? Decimal(rounded.scaled + 1, rounded.scale)
+      : truncated;
+
+  return GeneratedQuestion(
+    conceptId: 'round_decimals',
+    prompt: 'Round ${value.toCanonical()} to the nearest ${place.name}.',
+    correctAnswer: correct,
+    distractors: _decimalDistractors(
+      rounded,
+      <String>[
+        flipped.toCanonical(),
+        // Misconception: rounded to the wrong place (off by one).
+        _roundHalfAwayFromZero(
+          value,
+          (place.scale - 1).clamp(0, 3),
+        ).toCanonical(),
+        // Truncated form.
+        truncated.toCanonical(),
+      ],
+      rand,
+    ),
+    explanation: [
+      'Look at the digit one place to the right of the ${place.name}.',
+      'If that digit is 5 or more, round up; otherwise round down.',
+      '${value.toCanonical()} → $correct.',
+    ],
+    answerFormat: AnswerFormat.decimal,
+  );
+}
+
+class _RoundPlace {
+  const _RoundPlace(this.scale, this.name);
+  final int scale;
+  final String name;
+}
+
+/// Rounds [v] to [targetScale] digits after the point using half-away-
+/// from-zero.
+Decimal _roundHalfAwayFromZero(Decimal v, int targetScale) {
+  if (v.scale <= targetScale) return v;
+  final factor = _intPow10(v.scale - targetScale);
+  final scaled = v.scaled;
+  // Half-away: divide and add 0.5 with the sign.
+  final half = scaled >= 0 ? factor ~/ 2 : -(factor ~/ 2);
+  final out = (scaled + half) ~/ factor;
+  return Decimal(out, targetScale);
+}
+
+/// Truncates [v] toward zero to [targetScale] digits after the point.
+Decimal _truncate(Decimal v, int targetScale) {
+  if (v.scale <= targetScale) return v;
+  final factor = _intPow10(v.scale - targetScale);
+  return Decimal(v.scaled ~/ factor, targetScale);
+}
+
+int _intPow10(int n) {
+  var x = 1;
+  for (var i = 0; i < n; i++) {
+    x *= 10;
+  }
+  return x;
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Division (Grades 5–6)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// `div_decimal_by_whole`: "0.6 ÷ 3 = ?" → "0.2". Generated as
+/// `quotient × divisor = dividend` so the result is always an exact
+/// terminating decimal at the same scale as the quotient.
+GeneratedQuestion divDecimalByWhole(Random rand) {
+  Decimal quotient;
+  do {
+    final scale = rand.nextBool() ? 1 : 2;
+    quotient = scale == 1
+        ? Decimal(rand.nextInt(99) + 1, 1) // 0.1..9.9
+        : Decimal(rand.nextInt(990) + 1, 2); // 0.01..9.90
+  } while (quotient.scale == 0); // require a real fractional part
+  final divisor = rand.nextInt(8) + 2; // 2..9
+  final dividend = quotient * Decimal(divisor, 0);
+  final correct = quotient.toCanonical();
+
+  return GeneratedQuestion(
+    conceptId: 'div_decimal_by_whole',
+    prompt: '${dividend.toCanonical()} ÷ $divisor = ?',
+    correctAnswer: correct,
+    distractors: _decimalDistractors(
+      quotient,
+      <String>[
+        // Misconception: wrong decimal-point shift.
+        _shiftPoint(quotient, 1).toCanonical(),
+        _shiftPoint(quotient, -1).toCanonical(),
+        // Misconception: divided ignoring the point.
+        '${dividend.scaled ~/ divisor}',
+      ],
+      rand,
+    ),
+    explanation: [
+      '${dividend.toCanonical()} ÷ $divisor',
+      'Divide as if no point: ${dividend.scaled} ÷ $divisor.',
+      '= ${dividend.scaled ~/ divisor}. Put point in same spot → $correct.',
+    ],
+    answerFormat: AnswerFormat.decimal,
+  );
+}
+
+/// `div_by_decimal`: "6 ÷ 0.3 = ?" → "20". Quotient is always a whole
+/// number to keep results kid-friendly; divisor is a decimal at tenths
+/// or hundredths precision with a non-zero fractional part.
+GeneratedQuestion divByDecimal(Random rand) {
+  Decimal divisor;
+  do {
+    final scale = rand.nextBool() ? 1 : 2;
+    divisor = scale == 1
+        ? Decimal(rand.nextInt(9) + 1, 1) // 0.1..0.9
+        : Decimal(rand.nextInt(99) + 1, 2); // 0.01..0.99
+  } while (divisor.scale == 0);
+  final quotient = rand.nextInt(19) + 2; // 2..20
+  final dividend = divisor * Decimal(quotient, 0);
+  final correct = '$quotient';
+
+  return GeneratedQuestion(
+    conceptId: 'div_by_decimal',
+    prompt: '${dividend.toCanonical()} ÷ ${divisor.toCanonical()} = ?',
+    correctAnswer: correct,
+    distractors: _wholeDistractors(
+      quotient,
+      <String>[
+        // Misconception: forgot to shift; divided the raw integer parts.
+        '${dividend.scaled ~/ divisor.scaled}',
+        // Wrong shift direction (×10 / ÷10 of the answer).
+        '${quotient * 10}',
+        '${quotient > 10 ? quotient ~/ 10 : quotient + 10}',
+      ],
+      rand,
+    ),
+    explanation: [
+      '${dividend.toCanonical()} ÷ ${divisor.toCanonical()}',
+      'Shift the point in both by ${divisor.scale} so the divisor is whole.',
+      'Then divide: ${dividend.scaled} ÷ ${divisor.scaled} = $correct.',
+    ],
+    // answerFormat: integer (default) — answer is always a whole number.
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Conversions (Grades 5–6)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// `decimal_to_fraction`: "Write 0.25 as a fraction in lowest terms."
+/// → "1/4". Picks decimals at hundredths so the un-reduced fraction is
+/// N/100; answer is the reduced form. `AnswerShape.exactString` because
+/// the lesson IS "in lowest terms".
+GeneratedQuestion decimalToFraction(Random rand) {
+  // Pick a hundredth in [0.01, 0.99] that actually reduces (so the
+  // lesson exercises simplification rather than producing trivial N/100
+  // half the time).
+  Decimal value;
+  Fraction reduced;
+  do {
+    value = Decimal(rand.nextInt(99) + 1, 2);
+    final n = value.scaled;
+    final d = _intPow10(value.scale);
+    reduced = Fraction(n, d).reduce();
+  } while (reduced.denominator == 100); // require non-trivial reduction
+  final correct = reduced.toCanonical();
+
+  // Misconception distractors:
+  //  - the un-reduced N/100 form.
+  //  - flipped numerator/denominator.
+  //  - half-reduced (divide by 2 only).
+  final unReduced = '${value.scaled}/${_intPow10(value.scale)}';
+  final flipped = '${reduced.denominator}/${reduced.numerator}';
+  final candidates = <String>[unReduced, flipped];
+
+  final out = <String>[];
+  final seen = <String>{correct};
+  for (final c in candidates) {
+    if (out.length >= 3) break;
+    if (seen.contains(c)) continue;
+    final f = Fraction.tryParse(c);
+    if (f != null && f.equalsByValue(reduced)) continue;
+    seen.add(c);
+    out.add(c);
+  }
+  // Fallback: small perturbations on numerator.
+  for (var i = 1; out.length < 3 && i < 10; i++) {
+    final cand = '${reduced.numerator + i}/${reduced.denominator}';
+    if (seen.add(cand)) out.add(cand);
+  }
+
+  return GeneratedQuestion(
+    conceptId: 'decimal_to_fraction',
+    prompt: 'Write ${value.toCanonical()} as a fraction in lowest terms.',
+    correctAnswer: correct,
+    distractors: out.take(3).toList(),
+    explanation: [
+      '${value.toCanonical()} = ${value.scaled}/${_intPow10(value.scale)}.',
+      'Reduce by the GCF → $correct.',
+    ],
+    answerFormat: AnswerFormat.fraction,
+    answerShape: AnswerShape.exactString,
+  );
+}
+
+/// `fraction_to_decimal`: "Write 3/4 as a decimal." → "0.75". Only
+/// fractions with terminating decimal expansions (denominators whose
+/// prime factors are 2 and 5 only) are generated.
+GeneratedQuestion fractionToDecimal(Random rand) {
+  // Curated list of denominators whose decimal expansion terminates and
+  // stays within ≤ 4 decimal places: 2, 4, 5, 8, 10, 20, 25, 50.
+  const terminatingDenominators = [2, 4, 5, 8, 10, 20, 25, 50];
+  final denominator =
+      terminatingDenominators[rand.nextInt(terminatingDenominators.length)];
+  // Pick a proper numerator (so the decimal stays < 1) and re-roll if
+  // the fraction reduces to a whole number (e.g. 4/4) or to a simpler
+  // form already covered by an easier denominator.
+  int numerator;
+  do {
+    numerator = rand.nextInt(denominator - 1) + 1; // 1..denom-1
+  } while (Fraction(numerator, denominator).reduce().denominator == 1);
+
+  // Compute decimal expansion exactly via scaled integers. Multiply
+  // numerator by 10^4 (max needed for these denominators), divide by
+  // denominator, build a Decimal at that scale — Decimal's canonical
+  // form will strip the trailing zeros.
+  const workingScale = 4;
+  final scaled = (numerator * _intPow10(workingScale)) ~/ denominator;
+  final answer = Decimal(scaled, workingScale);
+  final correct = answer.toCanonical();
+
+  // Misconception distractors:
+  //  - concatenated form: "0.N/D" combined → "0.numdenom" (the classic
+  //    "3/4 = 0.34" mistake). Use the digits concatenated.
+  //  - off-by-one place.
+  final concat = '0.$numerator$denominator';
+  final candidates = <String>[
+    concat,
+    _shiftPoint(answer, 1).toCanonical(),
+    _shiftPoint(answer, -1).toCanonical(),
+    // "Backwards": denominator/numerator interpretation.
+    Decimal(
+      (denominator * _intPow10(workingScale)) ~/ numerator,
+      workingScale,
+    ).toCanonical(),
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'fraction_to_decimal',
+    prompt: 'Write $numerator/$denominator as a decimal.',
+    correctAnswer: correct,
+    distractors: _decimalDistractors(answer, candidates, rand),
+    explanation: [
+      '$numerator/$denominator means $numerator ÷ $denominator.',
+      'Long-divide (or scale to a power-of-10 denominator).',
+      '$numerator ÷ $denominator = $correct.',
     ],
     answerFormat: AnswerFormat.decimal,
   );
