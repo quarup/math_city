@@ -317,6 +317,167 @@ GeneratedQuestion cbrtPerfectCubes(Random rand) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────
+// scientific_notation_read (Grade 8)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "What is 3.5 × 10^4?" → 35000. Coefficient at tenths precision in
+/// [1.1, 9.9]; exponent ∈ [2, 5] so the result fits comfortably.
+GeneratedQuestion scientificNotationRead(Random rand) {
+  // Coefficient as scaled int over /10. Pick 11..99 (= 1.1..9.9).
+  final coeffTenths = rand.nextInt(89) + 11;
+  // Exponent ∈ [2, 5].
+  final exp = rand.nextInt(4) + 2;
+  // Result = coeffTenths × 10^(exp - 1) since coefficient is /10.
+  var value = coeffTenths;
+  for (var i = 1; i < exp; i++) {
+    value *= 10;
+  }
+  final correct = '$value';
+
+  final coeffStr = '${coeffTenths ~/ 10}.${coeffTenths % 10}';
+  final candidates = <String>[
+    // Misconception: off by one power of 10.
+    '${value * 10}',
+    '${value ~/ 10}',
+    // Misconception: just multiplied coefficient by exponent.
+    '${coeffTenths * exp ~/ 10}',
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'scientific_notation_read',
+    prompt: 'What is $coeffStr × 10^$exp written as a whole number?',
+    correctAnswer: correct,
+    distractors: _wholeDistractors(value, candidates, rand),
+    explanation: [
+      '$coeffStr × 10^$exp means shift the decimal point $exp places right.',
+      '$coeffStr → $correct.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// scientific_notation_write (Grade 8)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "Write 35000 in scientific notation" → "3.5 × 10^4". MC over four
+/// plausibly-similar forms.
+GeneratedQuestion scientificNotationWrite(Random rand) {
+  final coeffTenths = rand.nextInt(89) + 11; // 1.1..9.9
+  final exp = rand.nextInt(4) + 2; // 2..5
+  var value = coeffTenths;
+  for (var i = 1; i < exp; i++) {
+    value *= 10;
+  }
+  final coeffStr = '${coeffTenths ~/ 10}.${coeffTenths % 10}';
+  final correct = '$coeffStr × 10^$exp';
+  final distractors = <String>{
+    // Off by one in the exponent.
+    '$coeffStr × 10^${exp + 1}',
+    '$coeffStr × 10^${exp - 1}',
+    // Wrong coefficient: shifted decimal by one place.
+    '${coeffTenths * 10 ~/ 10}.${(coeffTenths * 10) % 10 ~/ 1} × 10^$exp',
+  }.where((s) => s != correct).take(3).toList();
+  // Fallback distractor if dedup left us short (rare).
+  while (distractors.length < 3) {
+    final extra =
+        '${(coeffTenths + 11) ~/ 10}.${(coeffTenths + 11) % 10} × 10^$exp';
+    if (extra != correct && !distractors.contains(extra)) {
+      distractors.add(extra);
+    } else {
+      break;
+    }
+  }
+
+  return GeneratedQuestion(
+    conceptId: 'scientific_notation_write',
+    prompt: 'Write $value in scientific notation.',
+    correctAnswer: correct,
+    distractors: distractors.take(3).toList(),
+    explanation: [
+      'Move the decimal point until exactly one non-zero digit sits before it.',
+      '$value → $coeffStr × 10^$exp.',
+    ],
+    answerFormat: AnswerFormat.string,
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// integer_exponent_props (Grade 8)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "Simplify: 2^3 × 2^4" → "2^7". MC over four exponent-rule outcomes:
+/// product (a^m·a^n = a^(m+n)), quotient (a^m÷a^n = a^(m−n)), or power
+/// of a power ((a^m)^n = a^(mn)).
+GeneratedQuestion integerExponentProps(Random rand) {
+  final base = rand.nextInt(8) + 2; // 2..9
+  final m = rand.nextInt(5) + 2; // 2..6
+  final n = rand.nextInt(4) + 2; // 2..5
+  final shape = rand.nextInt(3);
+  late int newExp;
+  late String prompt;
+  switch (shape) {
+    case 0:
+      newExp = m + n;
+      prompt = 'Simplify: $base^$m × $base^$n';
+    case 1:
+      // Ensure m > n so the answer is positive.
+      if (m <= n) return integerExponentProps(rand);
+      newExp = m - n;
+      prompt = 'Simplify: $base^$m ÷ $base^$n';
+    default:
+      newExp = m * n;
+      prompt = 'Simplify: ($base^$m)^$n';
+  }
+  final correct = '$base^$newExp';
+  // Build candidate distractors per shape — the "did the wrong rule"
+  // exponent for each case.
+  final wrongExp = switch (shape) {
+    // For mult: a^m × a^n should be a^(m+n); kid does a^(m·n).
+    0 => m * n,
+    // For div: a^m ÷ a^n should be a^(m−n); kid does a^(m÷n) (or m+n).
+    1 => m + n,
+    // For power-of-power: (a^m)^n should be a^(m·n); kid does a^(m+n).
+    _ => m + n,
+  };
+  final candidates = <String>[
+    '$base^$wrongExp',
+    // Misconception: did the wrong op on the BASES (doubled the base).
+    '${base * 2}^$newExp',
+    // Misconception: an unrelated nearby exponent.
+    '$base^${newExp + 1}',
+    '$base^${newExp > 1 ? newExp - 1 : newExp + 2}',
+  ];
+  final distractors = <String>[];
+  final seen = <String>{correct};
+  for (final c in candidates) {
+    if (distractors.length >= 3) break;
+    if (seen.add(c)) distractors.add(c);
+  }
+
+  return GeneratedQuestion(
+    conceptId: 'integer_exponent_props',
+    prompt: prompt,
+    correctAnswer: correct,
+    distractors: distractors,
+    explanation: switch (shape) {
+      0 => [
+        'a^m × a^n = a^(m+n).',
+        '$base^$m × $base^$n = $base^${m + n}.',
+      ],
+      1 => [
+        'a^m ÷ a^n = a^(m−n).',
+        '$base^$m ÷ $base^$n = $base^${m - n}.',
+      ],
+      _ => [
+        '(a^m)^n = a^(m·n).',
+        '($base^$m)^$n = $base^${m * n}.',
+      ],
+    },
+    answerFormat: AnswerFormat.string,
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
 // gcf_two_numbers (Grade 6)
 // ─────────────────────────────────────────────────────────────────────────
 

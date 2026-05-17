@@ -757,6 +757,92 @@ GeneratedQuestion decimalToFraction(Random rand) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────
+// repeating_decimal_recognize (Grade 8)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "Does N/M produce a terminating or repeating decimal?" → MC.
+/// Fraction with only-2-and-5 denominator → terminating; otherwise
+/// repeating. Picks numerators and denominators from a curated mix.
+GeneratedQuestion repeatingDecimalRecognize(Random rand) {
+  // 50/50 between terminating and repeating.
+  final isTerminating = rand.nextBool();
+  const terminating = [2, 4, 5, 8, 10, 20, 25, 50];
+  const repeating = [3, 6, 7, 9, 11, 12, 13];
+  final denominators = isTerminating ? terminating : repeating;
+  final denominator = denominators[rand.nextInt(denominators.length)];
+  // Pick a proper numerator that doesn't reduce to a different category.
+  int numerator;
+  do {
+    numerator = rand.nextInt(denominator - 1) + 1;
+  } while (Fraction(numerator, denominator).reduce().denominator !=
+      denominator);
+  final correct = isTerminating ? 'terminating' : 'repeating';
+  final distractors = <String>[
+    if (isTerminating) 'repeating' else 'terminating',
+    'neither',
+    'both',
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'repeating_decimal_recognize',
+    prompt:
+        'Does $numerator/$denominator produce a terminating or repeating '
+        'decimal?',
+    correctAnswer: correct,
+    distractors: distractors,
+    explanation: [
+      'Terminates iff the reduced denominator has only 2s and 5s as factors.',
+      '$numerator/$denominator → $correct.',
+    ],
+    answerFormat: AnswerFormat.string,
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// repeating_decimal_to_fraction (Grade 8)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "Write 0.3̄ as a fraction" → "1/3". Curated short-period cases only:
+/// 0.3̄ = 1/3, 0.6̄ = 2/3, 0.1̄ = 1/9, 0.2̄ = 2/9, 0.4̄ = 4/9, 0.5̄ = 5/9,
+/// 0.7̄ = 7/9, 0.8̄ = 8/9. Notation uses "..." for the repeat indicator
+/// (e.g. "0.333...") to keep the prompt keyboard-friendly.
+GeneratedQuestion repeatingDecimalToFraction(Random rand) {
+  const cases = <(String, int, int)>[
+    ('0.333...', 1, 3),
+    ('0.666...', 2, 3),
+    ('0.111...', 1, 9),
+    ('0.222...', 2, 9),
+    ('0.444...', 4, 9),
+    ('0.555...', 5, 9),
+    ('0.777...', 7, 9),
+    ('0.888...', 8, 9),
+  ];
+  final pick = cases[rand.nextInt(cases.length)];
+  final correct = '${pick.$2}/${pick.$3}';
+  final distractors = <String>{
+    // Misconception: gave the leading-digit-over-10 form.
+    '${pick.$2}/10',
+    // Misconception: gave a similar wrong fraction.
+    '${pick.$2}/100',
+    '${pick.$2 + 1}/${pick.$3}',
+    '${pick.$2}/${pick.$3 + 1}',
+  }.where((s) => s != correct).take(3).toList();
+
+  return GeneratedQuestion(
+    conceptId: 'repeating_decimal_to_fraction',
+    prompt: 'Write ${pick.$1} as a fraction in lowest terms.',
+    correctAnswer: correct,
+    distractors: distractors,
+    explanation: [
+      'Single-digit repeating decimals over /9 (or /3 for the 3/9 family):',
+      '${pick.$1} = $correct.',
+    ],
+    answerFormat: AnswerFormat.fraction,
+    answerShape: AnswerShape.exactString,
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
 // Composite (Grade 6)
 // ─────────────────────────────────────────────────────────────────────────
 

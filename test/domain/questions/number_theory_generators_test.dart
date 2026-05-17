@@ -205,6 +205,90 @@ void main() {
     });
   });
 
+  group('scientific_notation_read', () {
+    test('answer = coefficient × 10^exp (integer)', () {
+      final re = RegExp(
+        r'^What is (\d+)\.(\d+) × 10\^(\d+) written as a whole number\?$',
+      );
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'scientific_notation_read', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final whole = int.parse(m!.group(1)!);
+        final frac = int.parse(m.group(2)!);
+        final exp = int.parse(m.group(3)!);
+        final coeffTenths = whole * 10 + frac;
+        var expected = coeffTenths;
+        for (var k = 1; k < exp; k++) {
+          expected *= 10;
+        }
+        expect(q.correctAnswer, '$expected');
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('scientific_notation_write', () {
+    test('answer parses back to the prompt value', () {
+      final re = RegExp(r'^Write (\d+) in scientific notation\.$');
+      final ansRe = RegExp(r'^(\d+)\.(\d+) × 10\^(\d+)$');
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'scientific_notation_write', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final value = int.parse(m!.group(1)!);
+        final am = ansRe.firstMatch(q.correctAnswer);
+        expect(am, isNotNull, reason: q.correctAnswer);
+        final whole = int.parse(am!.group(1)!);
+        final frac = int.parse(am.group(2)!);
+        final exp = int.parse(am.group(3)!);
+        var reconstructed = whole * 10 + frac;
+        for (var k = 1; k < exp; k++) {
+          reconstructed *= 10;
+        }
+        expect(reconstructed, value);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('integer_exponent_props', () {
+    test('answer matches exponent rule for the prompt shape', () {
+      final reMult = RegExp(r'^Simplify: (\d+)\^(\d+) × (\d+)\^(\d+)$');
+      final reDiv = RegExp(r'^Simplify: (\d+)\^(\d+) ÷ (\d+)\^(\d+)$');
+      final rePow = RegExp(r'^Simplify: \((\d+)\^(\d+)\)\^(\d+)$');
+      final ansRe = RegExp(r'^(\d+)\^(\d+)$');
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'integer_exponent_props', i);
+        final am = ansRe.firstMatch(q.correctAnswer);
+        expect(am, isNotNull, reason: q.correctAnswer);
+        final base = int.parse(am!.group(1)!);
+        final newExp = int.parse(am.group(2)!);
+        final mM = reMult.firstMatch(q.prompt);
+        final mD = reDiv.firstMatch(q.prompt);
+        final mP = rePow.firstMatch(q.prompt);
+        if (mM != null) {
+          expect(int.parse(mM.group(1)!), base);
+          expect(int.parse(mM.group(3)!), base);
+          final m = int.parse(mM.group(2)!);
+          final n = int.parse(mM.group(4)!);
+          expect(newExp, m + n);
+        } else if (mD != null) {
+          final m = int.parse(mD.group(2)!);
+          final n = int.parse(mD.group(4)!);
+          expect(newExp, m - n);
+        } else if (mP != null) {
+          final m = int.parse(mP.group(2)!);
+          final n = int.parse(mP.group(3)!);
+          expect(newExp, m * n);
+        } else {
+          fail('unrecognised prompt: ${q.prompt}');
+        }
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
   group('absolute_value', () {
     test('answer = |v| where v is parsed from "|v|" in the prompt', () {
       final re = RegExp(r'^What is \|([−-]?\d+)\|\?$');

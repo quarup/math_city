@@ -218,6 +218,11 @@ const _shortLabelOverrides = <String, String>{
   'order_of_operations_with_exp': 'order +exp',
   'sqrt_perfect_squares': '√',
   'cbrt_perfect_cubes': '∛',
+  'scientific_notation_read': 'sci → N',
+  'scientific_notation_write': 'N → sci',
+  'integer_exponent_props': 'exp rules',
+  'repeating_decimal_recognize': 'rep dec?',
+  'repeating_decimal_to_fraction': 'rep → frac',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
@@ -309,6 +314,8 @@ const _prereqOverrides = <String, List<String>>{
   // drop powers_of_10 (no generator) — substitute mult facts as the
   // basic multiplicative background.
   'exponents_whole_number': ['mult_facts_within_100'],
+  // drop powers_of_10 (no generator yet) — substitute mult_facts.
+  'scientific_notation_read': ['mult_facts_within_100'],
 };
 
 // ─────────────────────────────────────────────────────────────────────────

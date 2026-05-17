@@ -456,6 +456,68 @@ void main() {
       }
     });
   });
+
+  group('repeating_decimal_recognize', () {
+    test('answer matches whether the reduced denominator is only-2-and-5', () {
+      final re = RegExp(
+        r'^Does (\d+)/(\d+) produce a terminating or repeating decimal\?$',
+      );
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'repeating_decimal_recognize', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final n = int.parse(m!.group(1)!);
+        final d = int.parse(m.group(2)!);
+        // Reduce.
+        var nn = n;
+        var dd = d;
+        for (var k = 2; k <= dd; k++) {
+          while (nn % k == 0 && dd % k == 0) {
+            nn ~/= k;
+            dd ~/= k;
+          }
+        }
+        // Check dd has only 2s and 5s.
+        var x = dd;
+        while (x.isEven) {
+          x ~/= 2;
+        }
+        while (x % 5 == 0) {
+          x ~/= 5;
+        }
+        final terminating = x == 1;
+        expect(q.correctAnswer, terminating ? 'terminating' : 'repeating');
+      }
+    });
+  });
+
+  group('repeating_decimal_to_fraction', () {
+    test(
+      'answer is one of the curated fractions, matching the prompt decimal',
+      () {
+        const known = <String, String>{
+          '0.333...': '1/3',
+          '0.666...': '2/3',
+          '0.111...': '1/9',
+          '0.222...': '2/9',
+          '0.444...': '4/9',
+          '0.555...': '5/9',
+          '0.777...': '7/9',
+          '0.888...': '8/9',
+        };
+        final re = RegExp(
+          r'^Write (0\.\d+\.\.\.) as a fraction in lowest terms\.$',
+        );
+        for (var i = 0; i < _iterations; i++) {
+          final q = _gen(registry, 'repeating_decimal_to_fraction', i);
+          final m = re.firstMatch(q.prompt);
+          expect(m, isNotNull, reason: q.prompt);
+          final dec = m!.group(1)!;
+          expect(q.correctAnswer, known[dec], reason: q.prompt);
+        }
+      },
+    );
+  });
 }
 
 int _pow10(int n) {

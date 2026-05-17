@@ -135,6 +135,9 @@ class GeneratorRegistry {
     'order_of_operations_with_exp': orderOfOperationsWithExp,
     'sqrt_perfect_squares': sqrtPerfectSquares,
     'cbrt_perfect_cubes': cbrtPerfectCubes,
+    'scientific_notation_read': scientificNotationRead,
+    'scientific_notation_write': scientificNotationWrite,
+    'integer_exponent_props': integerExponentProps,
     // Rationals
     'rationals_add_sub': rationalsAddSub,
     'rationals_multiply_divide': rationalsMultiplyDivide,
@@ -154,6 +157,8 @@ class GeneratorRegistry {
     'decimal_to_fraction': decimalToFraction,
     'fraction_to_decimal': fractionToDecimal,
     'decimals_fluent_4ops': decimalsFluent4ops,
+    'repeating_decimal_recognize': repeatingDecimalRecognize,
+    'repeating_decimal_to_fraction': repeatingDecimalToFraction,
     // Percent
     'percent_intro': percentIntro,
     'percent_of_quantity': percentOfQuantity,

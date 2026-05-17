@@ -476,7 +476,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'integer_exponent_props',
     name: 'Properties of exponents',
-    shortLabel: 'Properties of exponents',
+    shortLabel: 'exp rules',
     categoryId: 'place_value',
     primaryGrade: 8,
     prereqIds: ['exponents_whole_number', 'integers_multiply_divide'],
@@ -509,10 +509,10 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'scientific_notation_read',
     name: 'Read scientific notation',
-    shortLabel: 'Read scientific notation',
+    shortLabel: 'sci → N',
     categoryId: 'place_value',
     primaryGrade: 8,
-    prereqIds: ['powers_of_10'],
+    prereqIds: ['mult_facts_within_100'],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
     categoryRowOrder: 25,
@@ -520,7 +520,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'scientific_notation_write',
     name: 'Write scientific notation',
-    shortLabel: 'Write scientific notation',
+    shortLabel: 'N → sci',
     categoryId: 'place_value',
     primaryGrade: 8,
     prereqIds: ['scientific_notation_read'],
@@ -1787,7 +1787,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'repeating_decimal_recognize',
     name: 'Repeating decimal?',
-    shortLabel: 'Repeating decimal?',
+    shortLabel: 'rep dec?',
     categoryId: 'decimals_percent',
     primaryGrade: 8,
     prereqIds: ['fraction_to_decimal'],
@@ -1798,7 +1798,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'repeating_decimal_to_fraction',
     name: 'Repeating decimal → fraction',
-    shortLabel: 'Repeating decimal → fraction',
+    shortLabel: 'rep → frac',
     categoryId: 'decimals_percent',
     primaryGrade: 8,
     prereqIds: ['repeating_decimal_recognize'],
