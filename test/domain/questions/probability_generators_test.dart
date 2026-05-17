@@ -89,13 +89,15 @@ void main() {
         final shape = m.group(3)!;
         final resultShort = m.group(4)!;
         final expectedTheoretical = theoretical[resultShort];
-        expect(expectedTheoretical, isNotNull,
-            reason: 'unknown resultShort: $resultShort');
+        expect(
+          expectedTheoretical,
+          isNotNull,
+          reason: 'unknown resultShort: $resultShort',
+        );
         if (shape == 'theoretical') {
           expect(q.correctAnswer, expectedTheoretical);
         } else {
-          final reduced =
-              Fraction(observed, trials).reduce().toCanonical();
+          final reduced = Fraction(observed, trials).reduce().toCanonical();
           expect(q.correctAnswer, reduced);
           // Pedagogical guarantee: experimental ≠ theoretical so the
           // two shapes don't collapse to the same answer.
