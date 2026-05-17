@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:math_city/domain/questions/generated_question.dart';
 import 'package:math_city/domain/questions/generators/add_sub_generators.dart';
 import 'package:math_city/domain/questions/generators/advanced_generators.dart';
+import 'package:math_city/domain/questions/generators/coordinate_plane_generators.dart';
 import 'package:math_city/domain/questions/generators/decimal_generators.dart';
 import 'package:math_city/domain/questions/generators/equation_generators.dart';
 import 'package:math_city/domain/questions/generators/fraction_generators.dart';
@@ -234,6 +235,10 @@ class GeneratorRegistry {
     'volume_cylinder': volumeCylinder,
     'volume_cone': volumeCone,
     'volume_sphere': volumeSphere,
+    // Coordinate plane
+    'plot_first_quadrant': plotFirstQuadrant,
+    'read_first_quadrant': readFirstQuadrant,
+    'plot_four_quadrants': plotFourQuadrants,
     // Probability
     'probability_zero_to_one': probabilityZeroToOne,
     'probability_simple_event': probabilitySimpleEvent,

@@ -47,6 +47,15 @@ void main(List<String> args) {
   final dart = _emit(concepts);
   File(outputPath).writeAsStringSync(dart);
 
+  // Run `dart format` over the generated file so the lint suite (which
+  // enforces 80-column lines) stays clean. Without this step a `prereqIds`
+  // list with 3+ entries lands on one line and trips the line-length lint.
+  final fmt = Process.runSync('dart', <String>['format', outputPath]);
+  if (fmt.exitCode != 0) {
+    stderr.writeln(fmt.stderr);
+    exit(fmt.exitCode);
+  }
+
   stdout.writeln(
     'Wrote ${concepts.length} concepts across '
     '${concepts.map((c) => c.categoryId).toSet().length} categories '
@@ -354,6 +363,13 @@ const _prereqOverrides = <String, List<String>>{
   // vertical_angles / triangle_angle_sum / parallel_lines_transversal:
   // their curriculum prereqs (supplementary_angles, vertical_angles) now
   // live — no override needed.
+  // drop number_line_add_sub (no generator yet — needs NumberLine-driven
+  // ± generator). Substitute add_within_100 as basic arithmetic background.
+  'plot_first_quadrant': ['add_within_100'],
+  // drop integers_on_number_line (no generator yet). Substitute
+  // opposites_and_zero, which carries the same "negative integers
+  // exist on a number line" intuition needed for Q2/Q3/Q4 plotting.
+  'plot_four_quadrants': ['plot_first_quadrant', 'opposites_and_zero'],
 };
 
 // ─────────────────────────────────────────────────────────────────────────
@@ -418,7 +434,9 @@ List<_ParsedConcept> _parse(String content) {
     // Expected: ['', ID, Display, Grade, Prereqs, Source, Diagram, '']
     if (cells.length < 8) continue;
 
-    final id = cells[1].trim().replaceAll('`', '');
+    // Strip backticks and the `✅` implemented-marker that
+    // sync_implementation_status.py writes in front of implemented IDs.
+    final id = cells[1].trim().replaceAll('`', '').replaceAll('✅', '').trim();
     if (id.isEmpty) continue;
 
     final displayName = cells[2].trim();

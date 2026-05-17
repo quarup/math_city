@@ -102,3 +102,40 @@ class ClockSpec extends DiagramSpec {
   final int hour;
   final int minute;
 }
+
+/// A single labelled point on a coordinate plane.
+class CoordinatePlanePoint {
+  const CoordinatePlanePoint({
+    required this.x,
+    required this.y,
+    this.label,
+  });
+
+  final int x;
+  final int y;
+
+  /// Short label (typically a single letter A/B/C/D) drawn next to the
+  /// point. `null` means draw the dot with no label.
+  final String? label;
+}
+
+/// A 2-D coordinate plane spanning `[minX, maxX] × [minY, maxY]` (inclusive
+/// integer ranges), with a grid at every integer step, labelled axes, and
+/// zero or more marked points. Covers both first-quadrant (`minX = minY =
+/// 0`) and four-quadrant (`minX, minY < 0`) flavours.
+class CoordinatePlaneSpec extends DiagramSpec {
+  const CoordinatePlaneSpec({
+    required this.minX,
+    required this.maxX,
+    required this.minY,
+    required this.maxY,
+    this.points = const [],
+  }) : assert(maxX > minX, 'maxX must be > minX'),
+       assert(maxY > minY, 'maxY must be > minY');
+
+  final int minX;
+  final int maxX;
+  final int minY;
+  final int maxY;
+  final List<CoordinatePlanePoint> points;
+}
