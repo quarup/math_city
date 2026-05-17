@@ -193,6 +193,54 @@ void main() {
     });
   });
 
+  group('convert_fraction_decimal_percent', () {
+    test('answer format matches the target form; equivalence holds', () {
+      final re = RegExp(
+        r'^Write (\S+) as (a fraction in lowest terms|a decimal|a percent)\.$',
+      );
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'convert_fraction_decimal_percent', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final target = m!.group(2)!;
+        switch (target) {
+          case 'a fraction in lowest terms':
+            expect(q.answerFormat, AnswerFormat.fraction);
+            expect(q.answerShape, AnswerShape.exactString);
+            expect(q.correctAnswer.contains('/'), isTrue);
+          case 'a decimal':
+            expect(q.answerFormat, AnswerFormat.decimal);
+            expect(q.correctAnswer.contains('.'), isTrue);
+          case 'a percent':
+            expect(q.answerFormat, AnswerFormat.integer);
+            expect(int.tryParse(q.correctAnswer), isNotNull);
+          default:
+            fail('unexpected target: $target');
+        }
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('decimals_fluent_4ops', () {
+    test('delegates to one of +, −, ×, ÷ decimal generators', () {
+      // The composite reuses the inner generators' prompt shapes; verify
+      // the four shapes are all seen across a batch.
+      final seenOps = <String>{};
+      for (var i = 0; i < 500 && seenOps.length < 4; i++) {
+        final q = _gen(registry, 'decimals_fluent_4ops', i);
+        expect(q.conceptId, 'decimals_fluent_4ops');
+        for (final op in ['+', '−', '×', '÷']) {
+          if (q.prompt.contains(' $op ')) {
+            seenOps.add(op);
+            break;
+          }
+        }
+      }
+      expect(seenOps, containsAll(['+', '−', '×', '÷']));
+    });
+  });
+
   group('sales_tax_tip', () {
     test('extra = bill × rate / 100; always an integer dollar amount', () {
       final reTip = RegExp(

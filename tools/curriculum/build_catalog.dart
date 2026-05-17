@@ -166,6 +166,8 @@ const _shortLabelOverrides = <String, String>{
   'commission': 'commission',
   'markup_markdown': 'mark up/dn',
   'sales_tax_tip': 'tax/tip',
+  'convert_fraction_decimal_percent': 'F/D/% conv',
+  'decimals_fluent_4ops': 'dec ±×÷',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.

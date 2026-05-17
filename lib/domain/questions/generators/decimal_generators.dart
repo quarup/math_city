@@ -756,6 +756,34 @@ GeneratedQuestion decimalToFraction(Random rand) {
   );
 }
 
+// ─────────────────────────────────────────────────────────────────────────
+// Composite (Grade 6)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// `decimals_fluent_4ops`: mixed +/−/×/÷ practice for kids who already
+/// have each operation separately. Picks one of the four underlying
+/// generators uniformly and returns its question, retagged with the
+/// composite concept ID so proficiency tracks the mixed-practice skill.
+GeneratedQuestion decimalsFluent4ops(Random rand) {
+  final pick = rand.nextInt(4);
+  final inner = switch (pick) {
+    0 => addDecimals(rand),
+    1 => subDecimals(rand),
+    2 => multDecimals(rand),
+    _ => divByDecimal(rand),
+  };
+  return GeneratedQuestion(
+    conceptId: 'decimals_fluent_4ops',
+    prompt: inner.prompt,
+    correctAnswer: inner.correctAnswer,
+    distractors: inner.distractors,
+    explanation: inner.explanation,
+    answerFormat: inner.answerFormat,
+    answerShape: inner.answerShape,
+    diagram: inner.diagram,
+  );
+}
+
 /// `fraction_to_decimal`: "Write 3/4 as a decimal." → "0.75". Only
 /// fractions with terminating decimal expansions (denominators whose
 /// prime factors are 2 and 5 only) are generated.

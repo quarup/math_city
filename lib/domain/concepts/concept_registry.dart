@@ -1749,7 +1749,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'decimals_fluent_4ops',
     name: 'Fluent +,−,×,÷ decimals',
-    shortLabel: 'Fluent +,−,×,÷ decimals',
+    shortLabel: 'dec ±×÷',
     categoryId: 'decimals_percent',
     primaryGrade: 6,
     prereqIds: [
@@ -1897,7 +1897,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'convert_fraction_decimal_percent',
     name: 'Convert F/D/%',
-    shortLabel: 'Convert F/D/%',
+    shortLabel: 'F/D/% conv',
     categoryId: 'decimals_percent',
     primaryGrade: 6,
     prereqIds: ['decimal_to_fraction', 'percent_intro'],

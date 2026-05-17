@@ -135,6 +135,7 @@ class GeneratorRegistry {
     'div_by_decimal': divByDecimal,
     'decimal_to_fraction': decimalToFraction,
     'fraction_to_decimal': fractionToDecimal,
+    'decimals_fluent_4ops': decimalsFluent4ops,
     // Percent
     'percent_intro': percentIntro,
     'percent_of_quantity': percentOfQuantity,
@@ -144,5 +145,6 @@ class GeneratorRegistry {
     'commission': commission,
     'markup_markdown': markupMarkdown,
     'sales_tax_tip': salesTaxTip,
+    'convert_fraction_decimal_percent': convertFractionDecimalPercent,
   };
 }

@@ -1,6 +1,8 @@
 import 'dart:math';
 
+import 'package:math_city/domain/questions/decimal.dart';
 import 'package:math_city/domain/questions/diagram_spec.dart';
+import 'package:math_city/domain/questions/fraction.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
 
 /// Percent generators (Grade 6).
@@ -401,6 +403,130 @@ GeneratedQuestion salesTaxTip(Random rand) {
     ],
   );
 }
+
+// ─────────────────────────────────────────────────────────────────────────
+// convert_fraction_decimal_percent (Grade 6)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "Write X as Y" where X is one of {fraction, decimal, percent} and Y
+/// is a different form. Six variants, equally likely. Base values are
+/// drawn from a curated set with clean three-way equivalents (multiples
+/// of 5% with neat fraction reductions).
+GeneratedQuestion convertFractionDecimalPercent(Random rand) {
+  // Pick percent ∈ multiples of 5 in [5, 95] excluding 50 (too trivial)
+  // and 100 (degenerate).
+  const percents = <int>[
+    5,
+    10,
+    15,
+    20,
+    25,
+    30,
+    35,
+    40,
+    45,
+    55,
+    60,
+    65,
+    70,
+    75,
+    80,
+    85,
+    90,
+    95,
+  ];
+  final percent = percents[rand.nextInt(percents.length)];
+  // Derive the three representations.
+  final decimal = Decimal(percent, 2); // e.g. 25 → 0.25
+  final fraction = Fraction(percent, 100).reduce(); // e.g. 25/100 → 1/4
+  final percentStr = '$percent';
+  final decimalStr = decimal.toCanonical();
+  final fractionStr = fraction.toCanonical();
+
+  // Pick a (from, to) pair from the 6 variants. `from` is the form
+  // shown in the prompt; `to` is the form the answer must be in.
+  const variants = <(_Form, _Form)>[
+    (_Form.fraction, _Form.decimal),
+    (_Form.fraction, _Form.percent),
+    (_Form.decimal, _Form.fraction),
+    (_Form.decimal, _Form.percent),
+    (_Form.percent, _Form.fraction),
+    (_Form.percent, _Form.decimal),
+  ];
+  final variant = variants[rand.nextInt(variants.length)];
+  final from = variant.$1;
+  final to = variant.$2;
+
+  String shown;
+  switch (from) {
+    case _Form.fraction:
+      shown = fractionStr;
+    case _Form.decimal:
+      shown = decimalStr;
+    case _Form.percent:
+      shown = '$percentStr%';
+  }
+  String targetWord;
+  String correct;
+  AnswerFormat answerFormat;
+  AnswerShape answerShape;
+  switch (to) {
+    case _Form.fraction:
+      targetWord = 'a fraction in lowest terms';
+      correct = fractionStr;
+      answerFormat = AnswerFormat.fraction;
+      // Exact-string because the lesson IS "in lowest terms".
+      answerShape = AnswerShape.exactString;
+    case _Form.decimal:
+      targetWord = 'a decimal';
+      correct = decimalStr;
+      answerFormat = AnswerFormat.decimal;
+      answerShape = AnswerShape.any;
+    case _Form.percent:
+      targetWord = 'a percent';
+      correct = percentStr;
+      answerFormat = AnswerFormat.integer;
+      answerShape = AnswerShape.any;
+  }
+
+  // Distractors: pick one of the other-form representations (a classic
+  // confusion: writing the percent number when asked for the decimal,
+  // etc.), plus off-by-power-of-10 perturbations.
+  final misconceptions = <String>[
+    if (to != _Form.percent) percentStr, // wrote the percent number
+    if (to != _Form.decimal) decimalStr, // wrote the decimal
+    if (to != _Form.fraction) fractionStr, // wrote the fraction
+  ];
+  final distractors = <String>[];
+  final seen = <String>{correct};
+  for (final m in misconceptions) {
+    if (distractors.length >= 3) break;
+    if (seen.add(m)) distractors.add(m);
+  }
+  // Filler perturbations.
+  for (var i = 1; distractors.length < 3 && i < 20; i++) {
+    final v = '${percent + i * 5}';
+    if (seen.add(v)) distractors.add(v);
+    if (distractors.length >= 3) break;
+    final v2 = '${(percent - i * 5).clamp(1, 99)}';
+    if (seen.add(v2)) distractors.add(v2);
+  }
+
+  return GeneratedQuestion(
+    conceptId: 'convert_fraction_decimal_percent',
+    prompt: 'Write $shown as $targetWord.',
+    correctAnswer: correct,
+    distractors: distractors.take(3).toList(),
+    explanation: [
+      'Three forms: $fractionStr = $decimalStr = $percentStr%.',
+      'Answer: $correct.',
+    ],
+    answerFormat: answerFormat,
+    answerShape: answerShape,
+  );
+}
+
+enum _Form { fraction, decimal, percent }
 
 // ─────────────────────────────────────────────────────────────────────────
 
