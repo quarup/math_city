@@ -133,6 +133,7 @@ class GeneratorRegistry {
     'gcf_two_numbers': gcfTwoNumbers,
     'lcm_two_numbers': lcmTwoNumbers,
     'prime_or_composite': primeOrComposite,
+    'distributive_with_gcf': distributiveWithGcf,
     'exponents_whole_number': exponentsWholeNumber,
     'order_of_operations_with_exp': orderOfOperationsWithExp,
     'sqrt_perfect_squares': sqrtPerfectSquares,
@@ -217,6 +218,7 @@ class GeneratorRegistry {
     'probability_zero_to_one': probabilityZeroToOne,
     'probability_simple_event': probabilitySimpleEvent,
     'experimental_probability': experimentalProbability,
+    'theoretical_vs_experimental': theoreticalVsExperimental,
     'sample_space_list': sampleSpaceList,
     // Statistics
     'mean': meanGenerator,

@@ -7,9 +7,10 @@
 
 ## Status
 
-- **Phase:** Phase 6 — Full Question Bank. **145 generators implemented**; broad K–8 coverage. Remaining gaps: coordinate plane, transformations, data displays (bar/box/histogram), compound probability, some 3D volume (cylinder/cone/sphere need π).
+- **Phase:** Phase 6 — Full Question Bank. **147 generators implemented**; broad K–8 coverage. Remaining gaps: coordinate plane, transformations, data displays (bar/box/histogram), compound probability (needs `tree_diagram` widget), some 3D volume (cylinder/cone/sphere need π).
 - **Last updated:** 2026-05-17
-- **Last action:** **Chunk 19 — inequalities + cross-category aliases** — 5 generators across three existing files plus one prereq cleanup. Place value: `expanded_form_3digit` (G2, "Write 472 in expanded form" → "400 + 70 + 2"; re-rolls until all three digits are non-zero so the expansion has exactly three terms). Equations: `inequality_one_var_intro` (G6, "Which inequality is true when x = 5?" MC), `solve_two_step_inequality` (G7, "Solve 3x + 2 > 11" → "x > 3" string MC; pick parameters at the integer boundary so answers are integer-valued). Decimals: `rational_to_decimal_terminating` (G7, delegates to `fractionToDecimal` and retags), `rational_to_decimal_repeating` (G8, 8 curated cases — "Write 1/3 as a decimal" → "0.333..."). Override cleanup: removed `irrational_recognize: ['repeating_decimal_recognize']` since `rational_to_decimal_repeating` (the canonical curriculum prereq) now lives. Tests: +5 groups @ 300; **324 total pass**, `flutter analyze` clean.
+- **Last action:** **Chunk 20 — distributive GCF + theoretical-vs-experimental** — 2 generators plus one DAG cleanup. Number theory: `distributive_with_gcf` (G6, "Factor out the GCF: 12 + 18" → "6(2 + 3)" string MC; reuses `gcf_two_numbers`'s `g·p / g·q` parametrisation with coprime cofactors so the inside parens has no further common factor). Probability: `theoretical_vs_experimental` (G7, dual-shape parametrised generator over 4 fair-device scenarios — coin/die/4-spin/5-spin. Same scenario in both shapes; question asks for either THEORETICAL or EXPERIMENTAL P. Observed count forced away from expected so the two answers visibly differ — the *other* probability is the primary misconception distractor). Override cleanup: removed `factor_linear_expression: ['add_subtract_linear_expressions']` from the curriculum parser since `distributive_with_gcf` (the second curriculum.md prereq) now lives — `factor_linear_expression` once again uses its full curriculum prereq list. Tests: +2 groups @ 300 iterations each. **Local verification not possible — this remote container has no Flutter/Dart toolchain; relying on CI to verify `flutter analyze` + the full test suite.**
+- **Last action (prior):** **Chunk 19 — inequalities + cross-category aliases** — 5 generators. Commit `4a44b43`.
 - **Last action (prior):** **Chunk 18 — Pythagorean + late-grade cleanup** — 5 generators. Commit `ae795d3`.
 - **Last action (prior):** **#7 Decimals sub-slice (chunk 3) — percent intro** — 3 new generators in a new file `percent_generators.dart` plus a new diagram widget:
   - **`PercentGridSpec` + `PercentGrid` widget** ([lib/presentation/diagrams/percent_grid.dart](lib/presentation/diagrams/percent_grid.dart)) — 10×10 grid with N cells shaded row-major. Distinct from `AreaGrid` (which is shaped as a row × col overlap rectangle for fraction × fraction). Wired into `DiagramRenderer`.
@@ -29,14 +30,16 @@
   - **Keypad:** no changes needed — the existing `_extraCharsFor(answer)` derives the `.` button automatically from the canonical answer string.
   - **DAG cleanup:** removed the `rationals_add_sub` / `rationals_multiply_divide` prereq overrides — `add_decimals` / `mult_decimals` now exist, so the rationals prereqs match curriculum.md again. Added a `decimal_notation_tenths` override that drops the unimplemented `fraction_denom_10_100` prereq (so this slice's entry point into the decimals branch reaches kids).
   - **Tests:** +20 (Decimal value-type 14 + decimal generators 6 groups @ 300 iterations each). All 259 pass; `flutter analyze` clean.
-- **Next action:** Pick the next sub-slice. Easy options remaining ([curriculum.md §5.1](curriculum.md)):
-  - **Scientific notation** — `scientific_notation_write`, `scientific_notation_compare`, `scientific_notation_ops`. Algorithmic, no diagram.
-  - **More number theory** — `prime_or_composite` (G4), `distributive_with_gcf` (G6), `exponents_whole_number` (G6).
-  - **Probability cleanup** — `theoretical_vs_experimental` (G7), `compound_event_probability` (G7, needs `tree_diagram`).
-  - **Coordinate plane** — needs `CoordinatePlane` widget.
-  - **#9–#11 Geometry / area / perimeter** — needs `RectangleArea`, `Polygon`, `Angle` widgets first.
-  - **#12–#14 Pre-algebra / equations** — `solve_one_step_eq_addition`, `solve_one_step_eq_mult`, `solve_two_step_eq`, etc.
-  - **#16 Statistics** — `mean_median_mode_range`, basic data-display reading.
+- **Next action:** Pick the next sub-slice. The candidate list below is freshly pruned (most prior entries had already landed but weren't checked off). What's actually still missing ([curriculum.md §5.1](curriculum.md)):
+  - **Coordinate plane** — `plot_first_quadrant`, `plot_four_quadrants`, distance/midpoint. Needs a new `CoordinatePlane` widget (Q1 + Q4) first.
+  - **Transformations (G8)** — `translate`, `reflect`, `rotate`, `dilate`. Need `CoordinatePlane` widget + possibly a `Polygon` widget.
+  - **Data displays** — `bar_chart_read`, `dot_plot_read`, `box_plot_read`, `histogram_read`, `scatter_plot_*`. Each needs the corresponding diagram widget (`BarChart`, `DotPlot`, `BoxPlot`, `Histogram`, `ScatterPlot`).
+  - **Compound probability** — `tree_diagram`, `compound_event_probability`. Needs a `TreeDiagram` widget.
+  - **3D volume w/ π** — `volume_cylinder`, `volume_cone`, `volume_sphere`. Algorithmic but answers are π-bearing (need answer-format decision: decimal approx vs. coefficient-of-π string).
+  - **Remaining geometry** — `circumference_circle`, `area_circle` (also π). Angle relationships (`complementary_supplementary`, `vertical_angles`, `parallel_lines_transversal`) — algorithmic, but the diagram-bearing ones need an `Angle` or `IntersectingLines` widget for full effect.
+  - **Functions (G8)** — `function_value`, `linear_function_table`, `slope_from_points`, `y_intercept_from_eq`. Mostly algorithmic; some need `CoordinatePlane`.
+  - **Two-step word problems** — `add_sub_2step_word_problems` listed in Phase 6 task list but not yet implemented; needs multi-step shape in the word-problem template engine.
+  - **Multiplication word problems** — needs concept-ID design call (curriculum.md doesn't pre-name them — see Phase 6 task list).
 - **Deferred:** Audio SFX + background music (CC0 assets not sourced yet — stub in place). iOS verification. Both revisit before Phase 11 at latest.
 
 ---

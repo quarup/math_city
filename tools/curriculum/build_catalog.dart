@@ -307,9 +307,9 @@ const _prereqOverrides = <String, List<String>>{
   // the simpler-prereq override so mad reaches kids who haven't done
   // integers yet.
   'mad': ['mean'],
-  // drop distributive_with_gcf (no generator) — substitute the more
-  // basic combine-like-terms skill which is already in the DAG.
-  'factor_linear_expression': ['add_subtract_linear_expressions'],
+  // factor_linear_expression: distributive_with_gcf now lives — the
+  // curriculum.md prereq [add_subtract_linear_expressions, distributive_with_gcf]
+  // is met, no override needed.
   // drop integers_on_number_line (no generator yet — needs NumberLine
   // diagram wiring for decimals support). Use add_within_100 as
   // basic background for both absolute value and opposites.

@@ -3343,7 +3343,7 @@ const List<Concept> allConcepts = [
     shortLabel: 'factor',
     categoryId: 'prealgebra',
     primaryGrade: 7,
-    prereqIds: ['add_subtract_linear_expressions'],
+    prereqIds: ['add_subtract_linear_expressions', 'distributive_with_gcf'],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
     categoryRowOrder: 14,

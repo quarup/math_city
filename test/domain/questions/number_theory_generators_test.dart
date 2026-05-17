@@ -289,6 +289,39 @@ void main() {
     });
   });
 
+  group('distributive_with_gcf', () {
+    test('answer factors a+b as g(p+q) with gcd(p,q)=1 and g·p+g·q=a+b', () {
+      final re = RegExp(r'^Factor out the GCF: (\d+) \+ (\d+)$');
+      final ansRe = RegExp(r'^(\d+)\((\d+) \+ (\d+)\)$');
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'distributive_with_gcf', i);
+        final pm = re.firstMatch(q.prompt);
+        expect(pm, isNotNull, reason: q.prompt);
+        final a = int.parse(pm!.group(1)!);
+        final b = int.parse(pm.group(2)!);
+        final am = ansRe.firstMatch(q.correctAnswer);
+        expect(am, isNotNull, reason: q.correctAnswer);
+        final g = int.parse(am!.group(1)!);
+        final p = int.parse(am.group(2)!);
+        final qInner = int.parse(am.group(3)!);
+        // The answer factors must satisfy a = g·p and b = g·q.
+        expect(g * p, a, reason: '$g × $p should equal $a');
+        expect(g * qInner, b, reason: '$g × $qInner should equal $b');
+        // gcd(p, q) must be 1 so g is truly the GREATEST common factor.
+        var x = p;
+        var y = qInner;
+        while (y != 0) {
+          final t = y;
+          y = x % y;
+          x = t;
+        }
+        expect(x, 1, reason: 'gcd($p, $qInner) should be 1');
+        _expectThreeDistinctDistractors(q);
+        expect(q.answerFormat, AnswerFormat.string);
+      }
+    });
+  });
+
   group('absolute_value', () {
     test('answer = |v| where v is parsed from "|v|" in the prompt', () {
       final re = RegExp(r'^What is \|([−-]?\d+)\|\?$');
