@@ -63,6 +63,65 @@ void main() {
     });
   });
 
+  group('area_parallelogram', () {
+    test('area = base × height', () {
+      final re = RegExp(
+        r'^A parallelogram has base (\d+) and height (\d+)\. What is its area\?$',
+      );
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'area_parallelogram', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final base = int.parse(m!.group(1)!);
+        final height = int.parse(m.group(2)!);
+        expect(q.correctAnswer, '${base * height}');
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('area_trapezoid', () {
+    test('area = (b1 + b2) × h ÷ 2 (always integer)', () {
+      final re = RegExp(
+        r'^A trapezoid has parallel sides of length (\d+) and (\d+), and '
+        r'height (\d+)\. What is its area\?$',
+      );
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'area_trapezoid', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final b1 = int.parse(m!.group(1)!);
+        final b2 = int.parse(m.group(2)!);
+        final h = int.parse(m.group(3)!);
+        expect(
+          ((b1 + b2) * h).isEven,
+          isTrue,
+          reason: '(b1+b2)·h must be even: ${q.prompt}',
+        );
+        expect(q.correctAnswer, '${(b1 + b2) * h ~/ 2}');
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('perimeter_unknown_side', () {
+    test('answer = P÷2 − l (valid rectangle)', () {
+      final re = RegExp(
+        r'^A rectangle has perimeter (\d+) and length (\d+)\. What is its width\?$',
+      );
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'perimeter_unknown_side', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final p = int.parse(m!.group(1)!);
+        final l = int.parse(m.group(2)!);
+        final w = int.parse(q.correctAnswer);
+        expect(2 * (l + w), p);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
   group('area_triangle', () {
     test('area = base × height ÷ 2 (always integer)', () {
       final re = RegExp(

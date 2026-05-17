@@ -31,6 +31,38 @@ void main() {
     });
   });
 
+  group('experimental_probability', () {
+    test('answer = reduce(successes / trials)', () {
+      // Anchor on the two specific "$num times" slots — trials before
+      // the first "times" and successes before the second.
+      final re = RegExp(
+        r'(\d+) times.*?(\d+) times\.',
+      );
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'experimental_probability', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final trials = int.parse(m!.group(1)!);
+        final successes = int.parse(m.group(2)!);
+        final expected = Fraction(successes, trials).reduce().toCanonical();
+        expect(q.correctAnswer, expected, reason: q.prompt);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('sample_space_list', () {
+    test('answer is a positive whole number; distractors distinct', () {
+      // No common regex for the prompt — just sanity-check the contract.
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'sample_space_list', i);
+        final ans = int.parse(q.correctAnswer);
+        expect(ans, greaterThan(0));
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
   group('probability_simple_event', () {
     test('answer = reduce(a / (a+b))', () {
       final re = RegExp(

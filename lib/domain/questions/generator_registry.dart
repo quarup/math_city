@@ -187,10 +187,15 @@ class GeneratorRegistry {
     // Geometry
     'area_rectangle_formula': areaRectangleFormula,
     'perimeter_polygon': perimeterPolygon,
+    'perimeter_unknown_side': perimeterUnknownSide,
     'area_triangle': areaTriangle,
+    'area_parallelogram': areaParallelogram,
+    'area_trapezoid': areaTrapezoid,
     // Probability
     'probability_zero_to_one': probabilityZeroToOne,
     'probability_simple_event': probabilitySimpleEvent,
+    'experimental_probability': experimentalProbability,
+    'sample_space_list': sampleSpaceList,
     // Statistics
     'mean': meanGenerator,
     'median': medianGenerator,

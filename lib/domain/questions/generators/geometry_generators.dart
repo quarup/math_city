@@ -125,6 +125,117 @@ GeneratedQuestion perimeterPolygon(Random rand) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────
+// area_parallelogram (Grade 6)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "A parallelogram has base 6 and height 4. What is its area?" → 24.
+/// Same formula as rectangle (base × height) but with the geometric
+/// reminder that the side length is NOT what counts.
+GeneratedQuestion areaParallelogram(Random rand) {
+  final base = rand.nextInt(11) + 2; // 2..12
+  final height = rand.nextInt(11) + 2;
+  final area = base * height;
+  final correct = '$area';
+
+  final candidates = <String>[
+    // Misconception: ½ × b × h (confused with triangle).
+    '${(base * height) ~/ 2}',
+    // Misconception: base + height.
+    '${base + height}',
+    // Misconception: 2 × (b + h) (perimeter-style).
+    '${2 * (base + height)}',
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'area_parallelogram',
+    prompt:
+        'A parallelogram has base $base and height $height. '
+        'What is its area?',
+    correctAnswer: correct,
+    distractors: _wholeDistractors(area, candidates, rand),
+    explanation: [
+      'Area of a parallelogram = base × height.',
+      '$base × $height = $area.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// area_trapezoid (Grade 6)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "A trapezoid has parallel sides 4 and 6, and height 8. Area?" → 40.
+/// Formula: ½ × (b1 + b2) × h. Generator re-rolls until (b1+b2)×h is
+/// even, guaranteeing an integer answer.
+GeneratedQuestion areaTrapezoid(Random rand) {
+  late int b1;
+  late int b2;
+  late int h;
+  do {
+    b1 = rand.nextInt(9) + 2; // 2..10
+    b2 = rand.nextInt(9) + 2;
+    h = rand.nextInt(9) + 2;
+  } while (b1 == b2 || ((b1 + b2) * h).isOdd);
+  final area = ((b1 + b2) * h) ~/ 2;
+  final correct = '$area';
+
+  final candidates = <String>[
+    // Misconception: (b1 + b2) × h (forgot the ½).
+    '${(b1 + b2) * h}',
+    // Misconception: b1 × b2 (wrong formula entirely).
+    '${b1 * b2}',
+    // Misconception: only one base.
+    '${b1 * h}',
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'area_trapezoid',
+    prompt:
+        'A trapezoid has parallel sides of length $b1 and $b2, and '
+        'height $h. What is its area?',
+    correctAnswer: correct,
+    distractors: _wholeDistractors(area, candidates, rand),
+    explanation: [
+      'Area of a trapezoid = ½ × (b₁ + b₂) × h.',
+      '½ × ($b1 + $b2) × $h = ½ × ${b1 + b2} × $h = $area.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// perimeter_unknown_side (Grade 3)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "A rectangle has perimeter 24 and length 8. What is its width?"
+/// → 4. Given P and one side, recover the other.
+GeneratedQuestion perimeterUnknownSide(Random rand) {
+  final l = rand.nextInt(11) + 2; // 2..12
+  final w = rand.nextInt(11) + 2;
+  final p = 2 * (l + w);
+  final correct = '$w';
+
+  final candidates = <String>[
+    // Misconception: gave the perimeter directly.
+    '$p',
+    // Misconception: gave the given side.
+    '$l',
+    // Misconception: subtracted but didn't ÷ 2.
+    '${p - 2 * l}',
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'perimeter_unknown_side',
+    prompt: 'A rectangle has perimeter $p and length $l. What is its width?',
+    correctAnswer: correct,
+    distractors: _wholeDistractors(w, candidates, rand),
+    explanation: [
+      'P = 2 × (l + w).  So l + w = P ÷ 2 = ${p ~/ 2}.',
+      'Width = (P ÷ 2) − l = ${p ~/ 2} − $l = $w.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
 // area_triangle (Grade 6)
 // ─────────────────────────────────────────────────────────────────────────
 

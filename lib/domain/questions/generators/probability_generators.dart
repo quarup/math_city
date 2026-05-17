@@ -126,3 +126,109 @@ GeneratedQuestion probabilitySimpleEvent(Random rand) {
     answerShape: AnswerShape.exactString,
   );
 }
+
+// ─────────────────────────────────────────────────────────────────────────
+// experimental_probability (Grade 7)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "A coin was flipped 20 times and landed heads 12 times. What is the
+/// experimental probability of heads?" → reduced fraction (3/5).
+GeneratedQuestion experimentalProbability(Random rand) {
+  const scenarios = <(String, String, String, String)>[
+    ('A coin was flipped', 'times', 'and landed heads', 'heads'),
+    ('A die was rolled', 'times', 'and landed on 6', 'a 6'),
+    ('A spinner was spun', 'times', 'and landed on red', 'red'),
+  ];
+  final s = scenarios[rand.nextInt(scenarios.length)];
+  // Pick trials and successes so successes < trials and gcd > 1.
+  int trials;
+  int successes;
+  do {
+    trials = (rand.nextInt(5) + 2) * 5; // 10, 15, 20, …, 30
+    successes = rand.nextInt(trials - 1) + 1; // 1..trials-1
+  } while (Fraction(successes, trials).reduce().denominator == trials);
+  final reduced = Fraction(successes, trials).reduce();
+  final correct = reduced.toCanonical();
+
+  final candidates = <String>[
+    '$successes/$trials', // un-reduced
+    Fraction(trials - successes, trials).reduce().toCanonical(), // complement
+    '$successes/${trials - successes}', // ratio not probability
+  ];
+  final out = <String>[];
+  final seen = <String>{correct};
+  for (final c in candidates) {
+    if (out.length >= 3) break;
+    if (seen.contains(c)) continue;
+    final f = Fraction.tryParse(c);
+    if (f != null && f.equalsByValue(reduced)) continue;
+    seen.add(c);
+    out.add(c);
+  }
+  for (var i = 1; out.length < 3 && i < 10; i++) {
+    final cand = '${reduced.numerator + i}/${reduced.denominator}';
+    if (seen.add(cand)) out.add(cand);
+  }
+
+  return GeneratedQuestion(
+    conceptId: 'experimental_probability',
+    prompt:
+        '${s.$1} $trials ${s.$2} ${s.$3} $successes times. '
+        'What is the experimental probability of ${s.$4}?',
+    correctAnswer: correct,
+    distractors: out.take(3).toList(),
+    explanation: [
+      'Experimental P = successes ÷ trials.',
+      '$successes / $trials reduced = $correct.',
+    ],
+    answerFormat: AnswerFormat.fraction,
+    answerShape: AnswerShape.exactString,
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// sample_space_list (Grade 7)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "Roll two dice. How many outcomes are in the sample space?" → 36.
+/// Pure counting — the kid multiplies the per-trial counts. Three
+/// scenario shapes for variety.
+GeneratedQuestion sampleSpaceList(Random rand) {
+  const scenarios = <(String, int, int)>[
+    ('Roll two dice', 6, 6),
+    ('Flip a coin three times', 2, 4), // 2 × 4 = 8 (interpret as 2×2×2)
+    ('Spin a 4-section spinner twice', 4, 4),
+    ('Pick one of 5 hats and one of 3 jackets', 5, 3),
+    ('Pick one of 4 shirts and one of 6 pairs of pants', 4, 6),
+    ('Flip a coin and roll a die', 2, 6),
+  ];
+  final pick = scenarios[rand.nextInt(scenarios.length)];
+  final total = pick.$2 * pick.$3;
+  final correct = '$total';
+
+  final candidates = <String>[
+    // Misconception: added counts.
+    '${pick.$2 + pick.$3}',
+    // Misconception: one of the input counts.
+    '${pick.$2}',
+    '${pick.$3}',
+    // Off-by-1 (sometimes kids confuse outcomes with pairs).
+    '${total + 1}',
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'sample_space_list',
+    prompt: '${pick.$1}. How many outcomes are possible?',
+    correctAnswer: correct,
+    distractors: <String>[
+      ...{
+        for (final c in candidates)
+          if (c != correct) c,
+      }.take(3),
+    ],
+    explanation: [
+      'Multiply the number of choices at each step.',
+      '${pick.$2} × ${pick.$3} = $total.',
+    ],
+  );
+}

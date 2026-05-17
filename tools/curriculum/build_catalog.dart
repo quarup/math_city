@@ -205,9 +205,14 @@ const _shortLabelOverrides = <String, String>{
   'mad': 'MAD',
   'area_rectangle_formula': 'area rect',
   'perimeter_polygon': 'perimeter',
+  'perimeter_unknown_side': 'find side',
   'area_triangle': 'area △',
+  'area_parallelogram': 'area ▱',
+  'area_trapezoid': 'area trap',
   'probability_zero_to_one': 'P scale',
   'probability_simple_event': 'P(event)',
+  'experimental_probability': 'P (data)',
+  'sample_space_list': 'outcomes',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.

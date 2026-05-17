@@ -2372,7 +2372,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'perimeter_unknown_side',
     name: 'Find missing side (perimeter)',
-    shortLabel: 'Find missing side (perimeter)',
+    shortLabel: 'find side',
     categoryId: 'measurement',
     primaryGrade: 3,
     prereqIds: ['perimeter_polygon'],
@@ -2714,7 +2714,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'area_parallelogram',
     name: 'Area of a parallelogram',
-    shortLabel: 'Area of a parallelogram',
+    shortLabel: 'area ▱',
     categoryId: 'geometry',
     primaryGrade: 6,
     prereqIds: ['area_rectangle_formula'],
@@ -2725,7 +2725,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'area_trapezoid',
     name: 'Area of a trapezoid',
-    shortLabel: 'Area of a trapezoid',
+    shortLabel: 'area trap',
     categoryId: 'geometry',
     primaryGrade: 6,
     prereqIds: ['area_parallelogram'],
@@ -3898,7 +3898,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'experimental_probability',
     name: 'Probability from data',
-    shortLabel: 'Probability from data',
+    shortLabel: 'P (data)',
     categoryId: 'stats',
     primaryGrade: 7,
     prereqIds: ['probability_simple_event'],
@@ -3920,7 +3920,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'sample_space_list',
     name: 'List sample space',
-    shortLabel: 'List sample space',
+    shortLabel: 'outcomes',
     categoryId: 'stats',
     primaryGrade: 7,
     prereqIds: ['probability_simple_event'],
