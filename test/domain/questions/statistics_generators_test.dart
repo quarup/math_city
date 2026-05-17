@@ -75,6 +75,51 @@ void main() {
     });
   });
 
+  group('iqr', () {
+    test('answer = Q3 − Q1; always 7 distinct values', () {
+      final re = RegExp(r'^Find the IQR: (.+)$');
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'iqr', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final xs = _parseList(m!.group(1)!);
+        expect(xs.length, 7);
+        expect(xs.toSet(), hasLength(7), reason: 'duplicates in ${q.prompt}');
+        final sorted = [...xs]..sort();
+        final q1 = sorted[1];
+        final q3 = sorted[5];
+        expect(q.correctAnswer, '${q3 - q1}');
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('mad', () {
+    test('answer = average of absolute deviations from the mean', () {
+      final re = RegExp(r'^Find the mean absolute deviation: (.+)$');
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'mad', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final xs = _parseList(m!.group(1)!);
+        expect(xs.length, 4);
+        final sum = xs.reduce((a, b) => a + b);
+        expect(sum % xs.length, 0, reason: 'non-integer mean in ${q.prompt}');
+        final mean = sum ~/ xs.length;
+        final sumAbsDev = xs
+            .map((v) => (v - mean).abs())
+            .reduce((a, b) => a + b);
+        expect(
+          sumAbsDev % xs.length,
+          0,
+          reason: 'non-integer MAD in ${q.prompt}',
+        );
+        expect(q.correctAnswer, '${sumAbsDev ~/ xs.length}');
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
   group('range_data', () {
     test('answer = max − min', () {
       final re = RegExp(r'^Find the range: (.+)$');

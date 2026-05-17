@@ -164,6 +164,91 @@ GeneratedQuestion modeGenerator(Random rand) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────
+// iqr (Grade 6)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "Find the IQR: 2, 5, 7, 9, 11, 14, 18" → 9. Fixed at n=7 so the
+/// lower half is exactly 3 values (Q1 = middle of {a,b,c} = b) and the
+/// upper half is exactly 3 (Q3 = middle of {e,f,g} = f). Both Q1 and
+/// Q3 are always integers; IQR = Q3 − Q1.
+GeneratedQuestion iqrGenerator(Random rand) {
+  const n = 7;
+  final pool = List.generate(50, (i) => i + 1)..shuffle(rand);
+  final values = pool.take(n).toList();
+  final sorted = [...values]..sort();
+  final q1 = sorted[1]; // median of lower half {sorted[0..2]}
+  final q3 = sorted[5]; // median of upper half {sorted[4..6]}
+  final iqr = q3 - q1;
+  final correct = '$iqr';
+
+  final candidates = <String>[
+    // Misconception: gave the full range instead.
+    '${sorted.last - sorted.first}',
+    // Misconception: used the wrong quartile pair.
+    '${sorted[5] - sorted[0]}',
+    '${sorted[6] - sorted[1]}',
+    // Misconception: gave the median.
+    '${sorted[3]}',
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'iqr',
+    prompt: 'Find the IQR: ${_formatList(values)}',
+    correctAnswer: correct,
+    distractors: _wholeDistractors(iqr, candidates, rand),
+    explanation: [
+      'Sort: ${_formatList(sorted)}.',
+      'Median is ${sorted[3]} — splits the list in two halves.',
+      'Q1 = $q1 (middle of lower half); Q3 = $q3 (middle of upper half).',
+      'IQR = Q3 − Q1 = $q3 − $q1 = $iqr.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// mad (Grade 6)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "Find the mean absolute deviation: 8, 10, 14, 16" → 3.
+/// Generated as `{mean − 2d, mean − d, mean + d, mean + 2d}` so all
+/// values are distinct, the mean is exactly `mean`, and MAD = 1.5·d.
+/// Uses d ∈ {2, 4} only, giving integer MAD of 3 or 6.
+GeneratedQuestion madGenerator(Random rand) {
+  final d = rand.nextBool() ? 2 : 4; // → MAD = 3 or 6
+  final mean = rand.nextInt(11) + (2 * d) + 1; // mean ≥ 2d+1 so values ≥ 1
+  final values = <int>[mean - 2 * d, mean - d, mean + d, mean + 2 * d]
+    ..shuffle(rand);
+  const n = 4;
+  final mad = (3 * d) ~/ 2; // == 1.5·d when d is even
+  final absDevs = values.map((v) => (v - mean).abs()).toList();
+  final sumAbsDevs = absDevs.reduce((a, b) => a + b);
+  final correct = '$mad';
+
+  final candidates = <String>[
+    // Misconception: gave the mean instead.
+    '$mean',
+    // Misconception: forgot to take absolute values (sum of devs = 0).
+    '0',
+    // Misconception: gave the range.
+    '${4 * d}',
+    // Misconception: gave 2d (one of the deviations).
+    '${2 * d}',
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'mad',
+    prompt: 'Find the mean absolute deviation: ${_formatList(values)}',
+    correctAnswer: correct,
+    distractors: _wholeDistractors(mad, candidates, rand),
+    explanation: [
+      'Mean = $mean.',
+      'Absolute deviations: ${absDevs.join(", ")}.',
+      'Total $sumAbsDevs ÷ $n = $mad.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
 // range_data (Grade 6)
 // ─────────────────────────────────────────────────────────────────────────
 

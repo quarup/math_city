@@ -192,6 +192,8 @@ const _shortLabelOverrides = <String, String>{
   'median': 'median',
   'mode': 'mode',
   'range_data': 'range',
+  'iqr': 'IQR',
+  'mad': 'MAD',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
@@ -264,6 +266,9 @@ const _prereqOverrides = <String, List<String>>{
   // drop classify_count_categories (no generator) — substitute a basic
   // arithmetic background; mode is conceptually a "spot the repeat" skill.
   'mode': ['add_within_100'],
+  // drop absolute_value (no generator) — mean is enough background since
+  // values here are all positive so the absolute-value step is trivial.
+  'mad': ['mean'],
 };
 
 // ─────────────────────────────────────────────────────────────────────────

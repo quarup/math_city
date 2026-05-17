@@ -3810,7 +3810,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'iqr',
     name: 'Interquartile range',
-    shortLabel: 'Interquartile range',
+    shortLabel: 'IQR',
     categoryId: 'stats',
     primaryGrade: 6,
     prereqIds: ['median'],
@@ -3821,10 +3821,10 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'mad',
     name: 'Mean absolute deviation',
-    shortLabel: 'Mean absolute deviation',
+    shortLabel: 'MAD',
     categoryId: 'stats',
     primaryGrade: 6,
-    prereqIds: ['mean', 'absolute_value'],
+    prereqIds: ['mean'],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
     categoryRowOrder: 20,

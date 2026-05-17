@@ -176,5 +176,7 @@ class GeneratorRegistry {
     'median': medianGenerator,
     'mode': modeGenerator,
     'range_data': rangeDataGenerator,
+    'iqr': iqrGenerator,
+    'mad': madGenerator,
   };
 }
