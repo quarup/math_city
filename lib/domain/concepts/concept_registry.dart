@@ -289,7 +289,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'expanded_form_3digit',
     name: 'Expanded form (3-digit)',
-    shortLabel: 'Expanded form (3-digit)',
+    shortLabel: 'expanded',
     categoryId: 'place_value',
     primaryGrade: 2,
     prereqIds: ['place_value_3digit'],
@@ -3141,7 +3141,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'rational_to_decimal_terminating',
     name: 'Rational → terminating decimal',
-    shortLabel: 'Rational → terminating decimal',
+    shortLabel: 'a/b → dec',
     categoryId: 'rationals',
     primaryGrade: 7,
     prereqIds: ['fraction_to_decimal'],
@@ -3152,7 +3152,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'rational_to_decimal_repeating',
     name: 'Rational → repeating decimal',
-    shortLabel: 'Rational → repeating decimal',
+    shortLabel: 'a/b → rep',
     categoryId: 'rationals',
     primaryGrade: 8,
     prereqIds: ['fraction_to_decimal', 'repeating_decimal_recognize'],
@@ -3166,7 +3166,7 @@ const List<Concept> allConcepts = [
     shortLabel: 'rat?',
     categoryId: 'rationals',
     primaryGrade: 8,
-    prereqIds: ['repeating_decimal_recognize'],
+    prereqIds: ['rational_to_decimal_repeating'],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
     categoryRowOrder: 15,
@@ -3307,7 +3307,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'inequality_one_var_intro',
     name: 'Inequalities x > c, x < c',
-    shortLabel: 'Inequalities x > c, x < c',
+    shortLabel: 'x > c?',
     categoryId: 'prealgebra',
     primaryGrade: 6,
     prereqIds: ['compare_order_rationals'],
@@ -3388,7 +3388,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'solve_two_step_inequality',
     name: 'Solve px + q > r',
-    shortLabel: 'Solve px + q > r',
+    shortLabel: 'px+q>r',
     categoryId: 'prealgebra',
     primaryGrade: 7,
     prereqIds: ['solve_two_step_eq', 'inequality_one_var_intro'],

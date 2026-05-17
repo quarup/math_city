@@ -843,6 +843,71 @@ GeneratedQuestion repeatingDecimalToFraction(Random rand) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────
+// rational_to_decimal_terminating (Grade 7)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// Same shape as [fractionToDecimal] (write a/b as a terminating
+/// decimal), retagged with the Grade-7 concept ID so proficiency tracks
+/// independently.
+GeneratedQuestion rationalToDecimalTerminating(Random rand) {
+  final inner = fractionToDecimal(rand);
+  return GeneratedQuestion(
+    conceptId: 'rational_to_decimal_terminating',
+    prompt: inner.prompt,
+    correctAnswer: inner.correctAnswer,
+    distractors: inner.distractors,
+    explanation: inner.explanation,
+    answerFormat: inner.answerFormat,
+    answerShape: inner.answerShape,
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// rational_to_decimal_repeating (Grade 8)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "Write 1/3 as a decimal" → "0.333...". Curated short-period
+/// fractions only, paired up with the same "..." notation used in
+/// [repeatingDecimalToFraction] so the kid sees consistent symbols.
+GeneratedQuestion rationalToDecimalRepeating(Random rand) {
+  // Mirror image of repeating_decimal_to_fraction's curated cases.
+  const cases = <(String, String)>[
+    ('1/3', '0.333...'),
+    ('2/3', '0.666...'),
+    ('1/9', '0.111...'),
+    ('2/9', '0.222...'),
+    ('4/9', '0.444...'),
+    ('5/9', '0.555...'),
+    ('7/9', '0.777...'),
+    ('8/9', '0.888...'),
+  ];
+  final pick = cases[rand.nextInt(cases.length)];
+  final correct = pick.$2;
+  final distractors = <String>{
+    // Misconception: pretended it terminates at one place.
+    '0.${correct.substring(2, 3)}',
+    // Misconception: gave the fraction unchanged.
+    pick.$1,
+    // Misconception: gave a different short-period decimal.
+    cases[(rand.nextInt(cases.length - 1) + 1) % cases.length].$2,
+  }.where((s) => s != correct).take(3).toList();
+  while (distractors.length < 3) {
+    distractors.add('${distractors.length}.0');
+  }
+
+  return GeneratedQuestion(
+    conceptId: 'rational_to_decimal_repeating',
+    prompt: 'Write ${pick.$1} as a decimal.',
+    correctAnswer: correct,
+    distractors: distractors,
+    explanation: [
+      '${pick.$1} = $correct (the digit repeats forever).',
+    ],
+    answerFormat: AnswerFormat.string,
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
 // Composite (Grade 6)
 // ─────────────────────────────────────────────────────────────────────────
 

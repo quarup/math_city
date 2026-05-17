@@ -301,3 +301,40 @@ GeneratedQuestion roundMultidigitAnyPlace(Random rand) {
     placeLabel: placeLabel,
   );
 }
+
+// ─────────────────────────────────────────────────────────────────────────
+// expanded_form_3digit (Grade 2)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "Write 472 in expanded form." → "400 + 70 + 2". Re-rolls until all
+/// three digits are non-zero so the expansion has exactly three terms.
+GeneratedQuestion expandedForm3digit(Random rand) {
+  int n;
+  do {
+    n = rand.nextInt(900) + 100; // 100..999
+  } while (n % 10 == 0 || (n ~/ 10) % 10 == 0);
+  final hundreds = n ~/ 100;
+  final tens = (n ~/ 10) % 10;
+  final ones = n % 10;
+  final correct = '${hundreds * 100} + ${tens * 10} + $ones';
+  final distractors = <String>[
+    // Misconception: wrote raw digits without place value.
+    '$hundreds + $tens + $ones',
+    // Misconception: shifted by one place.
+    '${hundreds * 10} + $tens + $ones',
+    // Misconception: dropped tens place.
+    '${hundreds * 100} + $ones',
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'expanded_form_3digit',
+    prompt: 'Write $n in expanded form.',
+    correctAnswer: correct,
+    distractors: distractors,
+    explanation: [
+      '$n has $hundreds hundreds, $tens tens, and $ones ones.',
+      '= ${hundreds * 100} + ${tens * 10} + $ones.',
+    ],
+    answerFormat: AnswerFormat.string,
+  );
+}

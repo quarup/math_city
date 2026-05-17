@@ -228,6 +228,11 @@ const _shortLabelOverrides = <String, String>{
   'volume_rect_prism_formula': 'V = lwh',
   'compare_order_rationals': 'order rat',
   'irrational_recognize': 'rat?',
+  'expanded_form_3digit': 'expanded',
+  'inequality_one_var_intro': 'x > c?',
+  'solve_two_step_inequality': 'px+q>r',
+  'rational_to_decimal_terminating': 'a/b → dec',
+  'rational_to_decimal_repeating': 'a/b → rep',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
@@ -327,11 +332,12 @@ const _prereqOverrides = <String, List<String>>{
   // drop integers_on_number_line (no generator yet — needs decimal-aware
   // NumberLine spec). compare_decimals_thousandths is already a prereq.
   'compare_order_rationals': ['compare_decimals_thousandths'],
-  // drop rational_to_decimal_repeating (no generator yet) — substitute
-  // repeating_decimal_recognize as the conceptual background.
-  'irrational_recognize': ['repeating_decimal_recognize'],
+  // irrational_recognize: rational_to_decimal_repeating now lives —
+  // curriculum.md prereq is met, no override needed.
   // pythagorean_apply_2d: prereqs are sqrt_perfect_squares ✓ and
   // area_rectangle_formula ✓ — no override needed.
+  // irrational_recognize: rational_to_decimal_repeating now lives, so
+  // the override above can be cleaned up — handled below.
 };
 
 // ─────────────────────────────────────────────────────────────────────────

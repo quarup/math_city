@@ -350,4 +350,51 @@ void main() {
       }
     });
   });
+
+  group('inequality_one_var_intro', () {
+    test('correct answer is satisfied when x is the prompted value', () {
+      final re = RegExp(r'^Which inequality is true when x = (\d+)\?$');
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'inequality_one_var_intro', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final x = int.parse(m!.group(1)!);
+        // Answer is "x > c". Parse and verify.
+        final ansMatch = RegExp(
+          r'^x ([<>]) (\d+)$',
+        ).firstMatch(q.correctAnswer);
+        expect(ansMatch, isNotNull, reason: q.correctAnswer);
+        final op = ansMatch!.group(1)!;
+        final c = int.parse(ansMatch.group(2)!);
+        final satisfied = op == '>' ? x > c : x < c;
+        expect(satisfied, isTrue, reason: '$x $op $c should be true');
+      }
+    });
+  });
+
+  group('solve_two_step_inequality', () {
+    test('boundary value satisfies px + q ⋚ r at equality', () {
+      final re = RegExp(
+        r'^Solve for x: (\d+)x \+ (\d+) ([<>]) (\d+)$',
+      );
+      final ansRe = RegExp(r'^x ([<>]) (\d+)$');
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'solve_two_step_inequality', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final p = int.parse(m!.group(1)!);
+        final qq = int.parse(m.group(2)!);
+        final op = m.group(3)!;
+        final r = int.parse(m.group(4)!);
+        final am = ansRe.firstMatch(q.correctAnswer);
+        expect(am, isNotNull, reason: q.correctAnswer);
+        final ansOp = am!.group(1)!;
+        final c = int.parse(am.group(2)!);
+        // Direction is preserved (no negative-coefficient flip in this gen).
+        expect(ansOp, op);
+        // Boundary value: p·c + q == r.
+        expect(p * c + qq, r);
+      }
+    });
+  });
 }

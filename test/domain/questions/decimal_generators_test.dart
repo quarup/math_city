@@ -518,6 +518,42 @@ void main() {
       },
     );
   });
+
+  group('rational_to_decimal_terminating', () {
+    test('delegates to fraction_to_decimal shape', () {
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'rational_to_decimal_terminating', i);
+        // Same prompt and answer-format contract as fraction_to_decimal.
+        expect(q.prompt, startsWith('Write '));
+        expect(q.prompt, endsWith(' as a decimal.'));
+        expect(q.answerFormat, AnswerFormat.decimal);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('rational_to_decimal_repeating', () {
+    test('answer is one of the curated repeating decimals', () {
+      const known = <String, String>{
+        '1/3': '0.333...',
+        '2/3': '0.666...',
+        '1/9': '0.111...',
+        '2/9': '0.222...',
+        '4/9': '0.444...',
+        '5/9': '0.555...',
+        '7/9': '0.777...',
+        '8/9': '0.888...',
+      };
+      final re = RegExp(r'^Write (\d+/\d+) as a decimal\.$');
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'rational_to_decimal_repeating', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final frac = m!.group(1)!;
+        expect(q.correctAnswer, known[frac], reason: q.prompt);
+      }
+    });
+  });
 }
 
 int _pow10(int n) {

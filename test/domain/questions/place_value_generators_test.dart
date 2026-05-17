@@ -169,6 +169,26 @@ void main() {
       }
     });
   });
+
+  group('expanded_form_3digit', () {
+    test('answer = h·100 + t·10 + o (all digits non-zero)', () {
+      final re = RegExp(r'^Write (\d{3}) in expanded form\.$');
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'expanded_form_3digit', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final n = int.parse(m!.group(1)!);
+        final h = n ~/ 100;
+        final t = (n ~/ 10) % 10;
+        final o = n % 10;
+        expect(h, greaterThan(0));
+        expect(t, greaterThan(0));
+        expect(o, greaterThan(0));
+        expect(q.correctAnswer, '${h * 100} + ${t * 10} + $o');
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
 }
 
 /// Local copy of the private power-of-10 helper for test arithmetic.

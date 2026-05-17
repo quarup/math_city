@@ -694,6 +694,78 @@ GeneratedQuestion solveLinearEqOneSolution(Random rand) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────
+// inequality_one_var_intro (Grade 6)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "Which inequality is true for x = 5?" → MC over {x > 3, x < 3,
+/// x ≥ 6, x = 5}. Tests basic inequality-symbol comprehension.
+GeneratedQuestion inequalityOneVarIntro(Random rand) {
+  // Pick the value of x, then a constant c < x so "x > c" is true.
+  final x = rand.nextInt(8) + 3; // 3..10
+  final cLess = rand.nextInt(x - 1) + 1; // 1..x-1 (strict less)
+  final cGreater = x + rand.nextInt(5) + 1; // x+1..x+5
+  // Correct: x > cLess.
+  final correct = 'x > $cLess';
+  final distractors = <String>[
+    'x < $cLess', // wrong direction
+    'x > $cGreater', // not satisfied
+    'x = ${x + 1}', // value-equality, wrong number
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'inequality_one_var_intro',
+    prompt: 'Which inequality is true when x = $x?',
+    correctAnswer: correct,
+    distractors: distractors,
+    explanation: [
+      'Check each: is x = $x bigger than $cLess? Yes.',
+      'So x > $cLess is true.',
+    ],
+    answerFormat: AnswerFormat.string,
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// solve_two_step_inequality (Grade 7)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "Solve 3x + 2 > 11" → "x > 3". String MC over four solution-set
+/// forms. Always picks parameters so the integer boundary is positive.
+GeneratedQuestion solveTwoStepInequality(Random rand) {
+  final p = rand.nextInt(8) + 2; // 2..9
+  final boundary = rand.nextInt(8) + 2; // 2..9 (the answer's c)
+  final q = rand.nextInt(9) + 1; // 1..9
+  // r is chosen so that px + q = r when x = boundary.
+  final r = p * boundary + q;
+  // Two operator variants: "> " or "< ".
+  final isGreater = rand.nextBool();
+  final op = isGreater ? '>' : '<';
+  final ansOp = isGreater ? '>' : '<';
+  final prompt = 'Solve for x: ${p}x + $q $op $r';
+  final correct = 'x $ansOp $boundary';
+  final distractors = <String>[
+    // Misconception: flipped direction.
+    'x ${isGreater ? '<' : '>'} $boundary',
+    // Misconception: off-by-one.
+    'x $ansOp ${boundary + 1}',
+    // Misconception: forgot to undo the constant first.
+    'x $ansOp ${r ~/ p}',
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'solve_two_step_inequality',
+    prompt: prompt,
+    correctAnswer: correct,
+    distractors: distractors,
+    explanation: [
+      'Subtract $q from both sides: ${p}x $op ${r - q}.',
+      'Divide both sides by $p: x $ansOp $boundary.',
+    ],
+    answerFormat: AnswerFormat.string,
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
 // substitute_to_check (Grade 6)
 // ─────────────────────────────────────────────────────────────────────────
 

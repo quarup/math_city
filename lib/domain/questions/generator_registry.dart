@@ -120,6 +120,7 @@ class GeneratorRegistry {
     'round_to_10': roundTo10,
     'round_to_100': roundTo100,
     'round_multidigit_any_place': roundMultidigitAnyPlace,
+    'expanded_form_3digit': expandedForm3digit,
     // Signed-integer arithmetic
     'integers_add': integersAdd,
     'integers_subtract': integersSubtract,
@@ -166,6 +167,8 @@ class GeneratorRegistry {
     'decimals_fluent_4ops': decimalsFluent4ops,
     'repeating_decimal_recognize': repeatingDecimalRecognize,
     'repeating_decimal_to_fraction': repeatingDecimalToFraction,
+    'rational_to_decimal_terminating': rationalToDecimalTerminating,
+    'rational_to_decimal_repeating': rationalToDecimalRepeating,
     // Percent
     'percent_intro': percentIntro,
     'percent_of_quantity': percentOfQuantity,
@@ -201,6 +204,8 @@ class GeneratorRegistry {
     'factor_linear_expression': factorLinearExpression,
     'solve_two_step_eq_distributive': solveTwoStepEqDistributive,
     'solve_linear_eq_one_solution': solveLinearEqOneSolution,
+    'inequality_one_var_intro': inequalityOneVarIntro,
+    'solve_two_step_inequality': solveTwoStepInequality,
     // Geometry
     'area_rectangle_formula': areaRectangleFormula,
     'perimeter_polygon': perimeterPolygon,
