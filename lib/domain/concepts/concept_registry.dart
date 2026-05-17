@@ -3299,7 +3299,7 @@ const List<Concept> allConcepts = [
     shortLabel: 'px = q',
     categoryId: 'prealgebra',
     primaryGrade: 6,
-    prereqIds: ['mult_facts_within_100'],
+    prereqIds: ['missing_factor'],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
     categoryRowOrder: 10,

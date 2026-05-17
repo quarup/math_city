@@ -290,8 +290,9 @@ const _prereqOverrides = <String, List<String>>{
   // drop missing_addend_within_20 + write_expression_from_words
   // (no generators) — substitute the basic +/− concept as background.
   'solve_one_step_eq_addition': ['add_within_100'],
-  // drop missing_factor + write_expression_from_words (no generators).
-  'solve_one_step_eq_mult': ['mult_facts_within_100'],
+  // drop write_expression_from_words (no generator). missing_factor now
+  // lives, so use it as the more direct prereq.
+  'solve_one_step_eq_mult': ['missing_factor'],
   // drop distributive_mult_over_add + write_expression_from_words
   // (no generators) — substitute mult facts as basic background.
   'expand_linear_expression': ['mult_facts_within_100'],

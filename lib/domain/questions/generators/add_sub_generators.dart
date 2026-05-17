@@ -184,6 +184,61 @@ GeneratedQuestion equalSignMeaning(Random rand) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────
+// add_3_addends_within_20 (Grade 1)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "$a + $b + $c = ?". Three single-digit addends with sum ≤ 20.
+GeneratedQuestion add3AddendsWithin20(Random rand) {
+  // Pick a, b, c ∈ [0, 9] with sum ≤ 20.
+  int a;
+  int b;
+  int c;
+  do {
+    a = rand.nextInt(10); // 0..9
+    b = rand.nextInt(10);
+    c = rand.nextInt(10);
+  } while (a + b + c > 20);
+  final correct = a + b + c;
+  return GeneratedQuestion(
+    conceptId: 'add_3_addends_within_20',
+    prompt: '$a + $b + $c = ?',
+    correctAnswer: '$correct',
+    distractors: integerDistractors(correct, rand),
+    explanation: ['$a + $b + $c = $correct'],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// associative_add (Grade 1)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "If (3 + 4) + 5 = 12, what is 3 + (4 + 5)?" → 12. Tests CCSS 1.OA.B.3 —
+/// re-grouping addends doesn't change the sum. Addends chosen so the sum
+/// stays within `add_3_addends_within_20` and the inner re-grouping is
+/// visibly distinct (b + c ≠ a + b).
+GeneratedQuestion associativeAdd(Random rand) {
+  int a;
+  int b;
+  int c;
+  do {
+    a = rand.nextInt(8) + 1; // 1..8
+    b = rand.nextInt(8) + 1;
+    c = rand.nextInt(8) + 1;
+  } while (a + b + c > 20 || a == c);
+  final correct = a + b + c;
+  return GeneratedQuestion(
+    conceptId: 'associative_add',
+    prompt: 'If ($a + $b) + $c = $correct, what is $a + ($b + $c)?',
+    correctAnswer: '$correct',
+    distractors: integerDistractors(correct, rand),
+    explanation: [
+      'Grouping addends differently gives the same sum.',
+      '$a + ($b + $c) = ($a + $b) + $c = $correct.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
 // commutative_add (Grade 1)
 // ─────────────────────────────────────────────────────────────────────────
 

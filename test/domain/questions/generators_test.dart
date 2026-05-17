@@ -716,6 +716,123 @@ void main() {
     });
   });
 
+  group('add_3_addends_within_20', () {
+    test('three addends ∈ [0,9], sum ≤ 20, answer = a+b+c', () {
+      final re = RegExp(r'^(\d+) \+ (\d+) \+ (\d+) = \?$');
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'add_3_addends_within_20', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final a = int.parse(m!.group(1)!);
+        final b = int.parse(m.group(2)!);
+        final c = int.parse(m.group(3)!);
+        expect(a, inInclusiveRange(0, 9));
+        expect(b, inInclusiveRange(0, 9));
+        expect(c, inInclusiveRange(0, 9));
+        expect(a + b + c, lessThanOrEqualTo(20));
+        expect(q.correctAnswer, '${a + b + c}');
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('associative_add', () {
+    test('answer = a+b+c; both groupings appear in prompt', () {
+      final re = RegExp(
+        r'^If \((\d+) \+ (\d+)\) \+ (\d+) = (\d+), '
+        r'what is (\d+) \+ \((\d+) \+ (\d+)\)\?$',
+      );
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'associative_add', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final a = int.parse(m!.group(1)!);
+        final b = int.parse(m.group(2)!);
+        final c = int.parse(m.group(3)!);
+        final stated = int.parse(m.group(4)!);
+        final a2 = int.parse(m.group(5)!);
+        final b2 = int.parse(m.group(6)!);
+        final c2 = int.parse(m.group(7)!);
+        expect([a2, b2, c2], [a, b, c]);
+        expect(stated, a + b + c);
+        expect(a + b + c, lessThanOrEqualTo(20));
+        expect(q.correctAnswer, '${a + b + c}');
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('associative_mult', () {
+    test('answer = a·b·c; both groupings appear in prompt; product ≤ 100', () {
+      final re = RegExp(
+        r'^If \((\d+) × (\d+)\) × (\d+) = (\d+), '
+        r'what is (\d+) × \((\d+) × (\d+)\)\?$',
+      );
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'associative_mult', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final a = int.parse(m!.group(1)!);
+        final b = int.parse(m.group(2)!);
+        final c = int.parse(m.group(3)!);
+        final stated = int.parse(m.group(4)!);
+        expect(a, inInclusiveRange(2, 5));
+        expect(b, inInclusiveRange(2, 5));
+        expect(c, inInclusiveRange(2, 5));
+        expect(stated, a * b * c);
+        expect(a * b * c, lessThanOrEqualTo(100));
+        expect(q.correctAnswer, '${a * b * c}');
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('missing_factor', () {
+    test('answer × stated factor = product; product ≤ 81', () {
+      final re = RegExp(
+        r'^What goes in the box\? (\?|\d+) × (\?|\d+) = (\d+)$',
+      );
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'missing_factor', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final l = m!.group(1)!;
+        final r = m.group(2)!;
+        final product = int.parse(m.group(3)!);
+        expect(l == '?' ? r != '?' : r == '?', isTrue);
+        final stated = int.parse(l == '?' ? r : l);
+        final answer = int.parse(q.correctAnswer);
+        expect(stated, inInclusiveRange(2, 9));
+        expect(answer, inInclusiveRange(2, 9));
+        expect(answer * stated, product);
+        expect(product, lessThanOrEqualTo(81));
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('div_as_unknown_factor', () {
+    test('answer = dividend ÷ divisor; matches stated multiplication', () {
+      final re = RegExp(
+        r'^If (\d+) × \? = (\d+), what is (\d+) ÷ (\d+)\?$',
+      );
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'div_as_unknown_factor', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final divisor = int.parse(m!.group(1)!);
+        final dividend = int.parse(m.group(2)!);
+        expect(int.parse(m.group(3)!), dividend);
+        expect(int.parse(m.group(4)!), divisor);
+        final quotient = int.parse(q.correctAnswer);
+        expect(divisor * quotient, dividend);
+        expect(divisor, inInclusiveRange(2, 9));
+        expect(quotient, inInclusiveRange(1, 9));
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
   group('equal_sign_meaning', () {
     test('answer makes both sides equal; LHS uses add_within_10', () {
       final re = RegExp(

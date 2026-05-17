@@ -191,6 +191,85 @@ int _pow10(int n) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────
+// associative_mult (Grade 3)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "If (2 × 3) × 4 = 24, what is 2 × (3 × 4)?" → 24. Tests CCSS 3.OA.B.5 —
+/// re-grouping factors doesn't change the product. Factors picked from
+/// [2, 5] so the product stays within mult_facts_within_100.
+GeneratedQuestion associativeMult(Random rand) {
+  int a;
+  int b;
+  int c;
+  do {
+    a = rand.nextInt(4) + 2; // 2..5
+    b = rand.nextInt(4) + 2;
+    c = rand.nextInt(4) + 2;
+  } while (a * b * c > 100 || a == c);
+  final correct = a * b * c;
+  return GeneratedQuestion(
+    conceptId: 'associative_mult',
+    prompt: 'If ($a × $b) × $c = $correct, what is $a × ($b × $c)?',
+    correctAnswer: '$correct',
+    distractors: integerDistractors(correct, rand),
+    explanation: [
+      'Grouping factors differently gives the same product.',
+      '$a × ($b × $c) = ($a × $b) × $c = $correct.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// missing_factor (Grade 3)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "? × 6 = 42" → 7. Two prompt shapes (factor on left / right). Factors
+/// ∈ [2, 9] so the product stays in mult_facts_within_100.
+GeneratedQuestion missingFactor(Random rand) {
+  final a = rand.nextInt(8) + 2; // 2..9
+  final b = rand.nextInt(8) + 2; // 2..9
+  final product = a * b;
+  final shape = rand.nextInt(2);
+  final prompt = shape == 0
+      ? 'What goes in the box? ? × $a = $product'
+      : 'What goes in the box? $a × ? = $product';
+  return GeneratedQuestion(
+    conceptId: 'missing_factor',
+    prompt: prompt,
+    correctAnswer: '$b',
+    // Misconception: gave the product instead of the factor.
+    distractors: integerDistractorsWith(b, rand, misconception: product),
+    explanation: [
+      '$a × $b = $product, so the missing factor is $b.',
+      'Check: $a × $b = $product.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// div_as_unknown_factor (Grade 3)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "If 6 × ? = 24, what is 24 ÷ 6?" → 4. Tests CCSS 3.OA.B.6 — division
+/// understood as the inverse of multiplication. Same parameter shape as
+/// div_facts_within_100 (exact division, no remainder).
+GeneratedQuestion divAsUnknownFactor(Random rand) {
+  final divisor = rand.nextInt(8) + 2; // 2..9
+  final quotient = rand.nextInt(9) + 1; // 1..9
+  final dividend = divisor * quotient;
+  return GeneratedQuestion(
+    conceptId: 'div_as_unknown_factor',
+    prompt: 'If $divisor × ? = $dividend, what is $dividend ÷ $divisor?',
+    correctAnswer: '$quotient',
+    distractors: integerDistractors(quotient, rand),
+    explanation: [
+      '$divisor × $quotient = $dividend, so the missing factor is $quotient.',
+      '$dividend ÷ $divisor = $quotient (the same missing factor).',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
 // commutative_mult (Grade 3)
 // ─────────────────────────────────────────────────────────────────────────
 
