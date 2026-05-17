@@ -227,6 +227,11 @@ class GeneratorRegistry {
     'vertical_angles': verticalAngles,
     'triangle_angle_sum': triangleAngleSum,
     'parallel_lines_transversal': parallelLinesTransversal,
+    'circle_circumference': circleCircumference,
+    'area_circle': areaCircle,
+    'volume_cylinder': volumeCylinder,
+    'volume_cone': volumeCone,
+    'volume_sphere': volumeSphere,
     // Probability
     'probability_zero_to_one': probabilityZeroToOne,
     'probability_simple_event': probabilitySimpleEvent,

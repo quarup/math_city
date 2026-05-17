@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:math_city/domain/questions/decimal.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
 import 'package:math_city/domain/questions/generator_registry.dart';
 
@@ -253,5 +254,113 @@ void main() {
         );
       },
     );
+  });
+
+  // ─────────────────────────────────────────────────────────────────────
+  // π-bearing generators — π = 3.14 throughout, decimal canonical answers
+  // ─────────────────────────────────────────────────────────────────────
+
+  group('circle_circumference', () {
+    test('answer = 2 × 3.14 × r as a canonical decimal', () {
+      final re = RegExp(
+        r'^What is the circumference of a circle with radius (\d+)\? '
+        r'Use π ≈ 3\.14\.$',
+      );
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'circle_circumference', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final r = int.parse(m!.group(1)!);
+        final expected = Decimal(2 * 314 * r, 2).toCanonical();
+        expect(q.correctAnswer, expected);
+        expect(q.answerFormat, AnswerFormat.decimal);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('area_circle', () {
+    test('answer = 3.14 × r² as a canonical decimal', () {
+      final re = RegExp(
+        r'^What is the area of a circle with radius (\d+)\? '
+        r'Use π ≈ 3\.14\.$',
+      );
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'area_circle', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final r = int.parse(m!.group(1)!);
+        final expected = Decimal(314 * r * r, 2).toCanonical();
+        expect(q.correctAnswer, expected);
+        expect(q.answerFormat, AnswerFormat.decimal);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('volume_cylinder', () {
+    test('answer = 3.14 × r² × h', () {
+      final re = RegExp(
+        r'^A cylinder has radius (\d+) and height (\d+)\. '
+        r'What is its volume\? Use π ≈ 3\.14\.$',
+      );
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'volume_cylinder', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final r = int.parse(m!.group(1)!);
+        final h = int.parse(m.group(2)!);
+        final expected = Decimal(314 * r * r * h, 2).toCanonical();
+        expect(q.correctAnswer, expected);
+        expect(q.answerFormat, AnswerFormat.decimal);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('volume_cone', () {
+    test('answer = (3.14 × r² × h) / 3; numerator always divisible by 3', () {
+      final re = RegExp(
+        r'^A cone has radius (\d+) and height (\d+)\. '
+        r'What is its volume\? Use π ≈ 3\.14\.$',
+      );
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'volume_cone', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final r = int.parse(m!.group(1)!);
+        final h = int.parse(m.group(2)!);
+        expect(
+          (r * r * h) % 3,
+          0,
+          reason: 'r²·h must be divisible by 3 for exact answer',
+        );
+        final expected = Decimal(314 * r * r * h ~/ 3, 2).toCanonical();
+        expect(q.correctAnswer, expected);
+        expect(q.answerFormat, AnswerFormat.decimal);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('volume_sphere', () {
+    test('answer = (4 × 3.14 × r³) / 3; r ∈ {3, 6, 9}', () {
+      final re = RegExp(
+        r'^A sphere has radius (\d+)\. What is its volume\? '
+        r'Use π ≈ 3\.14\.$',
+      );
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'volume_sphere', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final r = int.parse(m!.group(1)!);
+        expect(r % 3, 0, reason: 'r must be divisible by 3');
+        expect(r, anyOf(3, 6, 9));
+        final expected = Decimal(4 * 314 * r * r * r ~/ 3, 2).toCanonical();
+        expect(q.correctAnswer, expected);
+        expect(q.answerFormat, AnswerFormat.decimal);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
   });
 }

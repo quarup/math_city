@@ -1,12 +1,22 @@
 import 'dart:math';
 
+import 'package:math_city/domain/questions/decimal.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
 
-/// Geometry generators — area + perimeter (Grades 3 & 6).
+/// Geometry generators — area + perimeter (Grades 3 & 6), angle
+/// relationships (Grade 7 & 8), and π-bearing circles + 3D volumes.
 ///
-/// Implemented without the curriculum-suggested `RectangleArea` / `Shape`
-/// widgets — the math works verbally ("rectangle with length 5 and
-/// width 7"). The visual widgets can be added later for richer UX.
+/// Implemented without the curriculum-suggested `Shape` / `Angle` /
+/// `Circle` widgets — the math works verbally ("rectangle with length
+/// 5 and width 7", "circle with radius 4"). The visual widgets can be
+/// added later for richer UX.
+///
+/// **π convention (locked).** π is approximated as **3.14** (the K–8
+/// CCSS standard). Generators that use π emit the answer as a
+/// [Decimal] (canonical form, ≤ 2 fractional digits) and constrain
+/// parameters so the exact computation with π = 3.14 terminates. The
+/// "coefficient-of-π" form (`10π`) is high-school-and-up — out of
+/// scope for v1.
 
 // ─────────────────────────────────────────────────────────────────────────
 // Shared helpers
@@ -482,5 +492,233 @@ GeneratedQuestion parallelLinesTransversal(Random rand) {
       else
         'Other = $a°.',
     ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// π-bearing generators — shared helpers
+// ─────────────────────────────────────────────────────────────────────────
+
+// π = 3.14 represented as a (scaled, scale) pair so all arithmetic stays
+// in integers and the answer is always an exact terminating decimal.
+const _piScaled = 314; // 3.14
+const _piScale = 2;
+
+/// Three distinct decimal-canonical-string distractors that differ from
+/// [correct]. Falls back to nudging [correct] by ±i × 0.01.
+List<String> _decimalDistractors(
+  Decimal correct,
+  List<Decimal> candidates,
+) {
+  final out = <String>[];
+  final correctStr = correct.toCanonical();
+  final seen = <String>{correctStr};
+  for (final c in candidates) {
+    if (out.length >= 3) break;
+    final s = c.toCanonical();
+    if (seen.add(s)) out.add(s);
+  }
+  // Fallback: tweak the scaled value by ±i so the magnitude differs.
+  for (var i = 1; out.length < 3 && i < 50; i++) {
+    for (final delta in <int>[i, -i]) {
+      final tweaked = Decimal(correct.scaled + delta, correct.scale);
+      if (tweaked.scaled <= 0) continue;
+      final s = tweaked.toCanonical();
+      if (seen.add(s)) out.add(s);
+      if (out.length >= 3) break;
+    }
+  }
+  return out.take(3).toList();
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// circle_circumference (Grade 7)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "What is the circumference of a circle with radius 5? Use π ≈ 3.14."
+/// → 31.4. C = 2πr; with r ∈ [1, 12] and π = 3.14 the answer always
+/// terminates at ≤ 1 decimal place.
+GeneratedQuestion circleCircumference(Random rand) {
+  final r = rand.nextInt(12) + 1; // 1..12
+  // C = 2πr → scaled = 2 × 314 × r at scale 2
+  final correct = Decimal(2 * _piScaled * r, _piScale);
+
+  final candidates = <Decimal>[
+    // Misconception: forgot ×2 — used πr (treated diameter as circumference).
+    Decimal(_piScaled * r, _piScale),
+    // Misconception: confused with area πr².
+    Decimal(_piScaled * r * r, _piScale),
+    // Misconception: dropped π entirely — gave 2r (diameter).
+    Decimal(2 * r, 0),
+    // Misconception: used 4πr.
+    Decimal(4 * _piScaled * r, _piScale),
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'circle_circumference',
+    prompt:
+        'What is the circumference of a circle with radius $r? '
+        'Use π ≈ 3.14.',
+    correctAnswer: correct.toCanonical(),
+    distractors: _decimalDistractors(correct, candidates),
+    explanation: [
+      'Circumference = 2 × π × r.',
+      '2 × 3.14 × $r = ${correct.toCanonical()}.',
+    ],
+    answerFormat: AnswerFormat.decimal,
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// area_circle (Grade 7)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "What is the area of a circle with radius 5? Use π ≈ 3.14." → 78.5.
+/// A = πr²; with r ∈ [1, 12] and π = 3.14 the answer always terminates.
+GeneratedQuestion areaCircle(Random rand) {
+  final r = rand.nextInt(12) + 1; // 1..12
+  // A = πr² → scaled = 314 × r × r at scale 2
+  final correct = Decimal(_piScaled * r * r, _piScale);
+
+  final candidates = <Decimal>[
+    // Misconception: confused with circumference 2πr.
+    Decimal(2 * _piScaled * r, _piScale),
+    // Misconception: forgot to square — used πr.
+    Decimal(_piScaled * r, _piScale),
+    // Misconception: used π × d² = π × (2r)² = 4πr².
+    Decimal(4 * _piScaled * r * r, _piScale),
+    // Misconception: used π × (2r) = πd (circumference variant).
+    Decimal(_piScaled * 2 * r, _piScale),
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'area_circle',
+    prompt: 'What is the area of a circle with radius $r? Use π ≈ 3.14.',
+    correctAnswer: correct.toCanonical(),
+    distractors: _decimalDistractors(correct, candidates),
+    explanation: [
+      'Area = π × r².',
+      '3.14 × $r × $r = ${correct.toCanonical()}.',
+    ],
+    answerFormat: AnswerFormat.decimal,
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// volume_cylinder (Grade 8)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "A cylinder has radius 2 and height 5. Volume?" → 62.8.
+/// V = πr²h with π ≈ 3.14.
+GeneratedQuestion volumeCylinder(Random rand) {
+  final r = rand.nextInt(8) + 1; // 1..8
+  final h = rand.nextInt(10) + 1; // 1..10
+  final correct = Decimal(_piScaled * r * r * h, _piScale);
+
+  final candidates = <Decimal>[
+    // Misconception: forgot to square r — used πrh.
+    Decimal(_piScaled * r * h, _piScale),
+    // Misconception: gave area πr² instead of volume.
+    Decimal(_piScaled * r * r, _piScale),
+    // Misconception: used cone formula (1/3)πr²h.
+    // Only added if it gives an exact answer (r²·h divisible by 3).
+    if ((r * r * h) % 3 == 0) Decimal(_piScaled * r * r * h ~/ 3, _piScale),
+    // Misconception: used 2πrh (lateral surface area).
+    Decimal(2 * _piScaled * r * h, _piScale),
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'volume_cylinder',
+    prompt:
+        'A cylinder has radius $r and height $h. What is its volume? '
+        'Use π ≈ 3.14.',
+    correctAnswer: correct.toCanonical(),
+    distractors: _decimalDistractors(correct, candidates),
+    explanation: [
+      'Volume of a cylinder = π × r² × height.',
+      '3.14 × $r × $r × $h = ${correct.toCanonical()}.',
+    ],
+    answerFormat: AnswerFormat.decimal,
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// volume_cone (Grade 8)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "A cone has radius 3 and height 4. Volume?" → 37.68.
+/// V = (1/3)πr²h. Re-rolls until r²·h is divisible by 3 so the exact
+/// decimal terminates.
+GeneratedQuestion volumeCone(Random rand) {
+  int r;
+  int h;
+  do {
+    r = rand.nextInt(6) + 1; // 1..6
+    h = rand.nextInt(9) + 1; // 1..9
+  } while ((r * r * h) % 3 != 0);
+  final correct = Decimal(_piScaled * r * r * h ~/ 3, _piScale);
+
+  final candidates = <Decimal>[
+    // Misconception: cylinder formula (forgot the 1/3).
+    Decimal(_piScaled * r * r * h, _piScale),
+    // Misconception: dropped the squaring on r → (1/3)πrh.
+    if ((r * h) % 3 == 0) Decimal(_piScaled * r * h ~/ 3, _piScale),
+    // Misconception: used (1/2)πr²h.
+    if ((_piScaled * r * r * h).isEven)
+      Decimal(_piScaled * r * r * h ~/ 2, _piScale),
+    // Misconception: forgot height (gave area).
+    Decimal(_piScaled * r * r, _piScale),
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'volume_cone',
+    prompt:
+        'A cone has radius $r and height $h. What is its volume? '
+        'Use π ≈ 3.14.',
+    correctAnswer: correct.toCanonical(),
+    distractors: _decimalDistractors(correct, candidates),
+    explanation: [
+      'Volume of a cone = ⅓ × π × r² × height.',
+      '⅓ × 3.14 × $r × $r × $h = ${correct.toCanonical()}.',
+    ],
+    answerFormat: AnswerFormat.decimal,
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// volume_sphere (Grade 8)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "A sphere has radius 3. Volume?" → 113.04.
+/// V = (4/3)πr³. With π = 3.14, restricts r to multiples of 3 so the
+/// answer is an exact terminating decimal (4 × 314 ≡ 2 mod 3, so r³
+/// must absorb the factor of 3).
+GeneratedQuestion volumeSphere(Random rand) {
+  // r ∈ {3, 6, 9} so r³ is divisible by 3.
+  final r = (rand.nextInt(3) + 1) * 3;
+  final correct = Decimal(4 * _piScaled * r * r * r ~/ 3, _piScale);
+
+  final candidates = <Decimal>[
+    // Misconception: forgot the 4/3 — used πr³.
+    Decimal(_piScaled * r * r * r, _piScale),
+    // Misconception: forgot the cube — used (4/3)πr² (gave 4×lateral?).
+    if ((4 * _piScaled * r * r) % 3 == 0)
+      Decimal(4 * _piScaled * r * r ~/ 3, _piScale),
+    // Misconception: used 4πr³ (forgot to divide by 3).
+    Decimal(4 * _piScaled * r * r * r, _piScale),
+    // Misconception: used cylinder-ish πr³ × something off.
+    Decimal(2 * _piScaled * r * r * r, _piScale),
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'volume_sphere',
+    prompt: 'A sphere has radius $r. What is its volume? Use π ≈ 3.14.',
+    correctAnswer: correct.toCanonical(),
+    distractors: _decimalDistractors(correct, candidates),
+    explanation: [
+      'Volume of a sphere = ⁴⁄₃ × π × r³.',
+      '⁴⁄₃ × 3.14 × $r × $r × $r = ${correct.toCanonical()}.',
+    ],
+    answerFormat: AnswerFormat.decimal,
   );
 }
