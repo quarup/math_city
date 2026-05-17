@@ -144,6 +144,13 @@ const _shortLabelOverrides = <String, String>{
   'integers_multiply_divide': '± int ×÷',
   'rationals_add_sub': '± rat +−',
   'rationals_multiply_divide': '± rat ×÷',
+  'decimal_notation_tenths': 'tenths',
+  'decimal_notation_hundredths': 'hundredths',
+  'compare_decimals_hundredths': 'cmp dec',
+  'add_decimals': '+ dec',
+  'sub_decimals': '− dec',
+  'mult_decimal_by_whole': 'dec × N',
+  'mult_decimals': 'dec × dec',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
@@ -192,13 +199,9 @@ const _prereqOverrides = <String, List<String>>{
   // basic-arithmetic prereq so kids meet integer addition having
   // already worked through positive arithmetic.
   'integers_add': ['add_within_100'],
-  // drop add_decimals (no generator yet).
-  'rationals_add_sub': ['integers_add', 'add_fractions_unlike_denom'],
-  // drop mult_decimals (no generator yet).
-  'rationals_multiply_divide': [
-    'integers_multiply_divide',
-    'mult_fractions_proper',
-  ],
+  // drop fraction_denom_10_100 (no generator yet) — `decimal_notation_tenths`
+  // becomes the entry point into the decimals branch.
+  'decimal_notation_tenths': <String>[],
 };
 
 // ─────────────────────────────────────────────────────────────────────────

@@ -1,3 +1,4 @@
+import 'package:math_city/domain/questions/decimal.dart';
 import 'package:math_city/domain/questions/fraction.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
 
@@ -61,6 +62,13 @@ AnswerOutcome checkAnswer(GeneratedQuestion question, String playerAnswer) {
       final correctF = Fraction.tryParse(question.correctAnswer);
       if (playerF == null || correctF == null) return AnswerOutcome.wrong;
       return playerF.equalsByValue(correctF)
+          ? AnswerOutcome.equivalentNonCanonical
+          : AnswerOutcome.wrong;
+    case AnswerFormat.decimal:
+      final playerD = Decimal.tryParse(input);
+      final correctD = Decimal.tryParse(question.correctAnswer);
+      if (playerD == null || correctD == null) return AnswerOutcome.wrong;
+      return playerD.equalsByValue(correctD)
           ? AnswerOutcome.equivalentNonCanonical
           : AnswerOutcome.wrong;
   }

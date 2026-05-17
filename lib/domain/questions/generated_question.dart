@@ -16,6 +16,10 @@ enum AnswerFormat {
   /// Equality is by value subject to [GeneratedQuestion.answerShape].
   mixedNumber,
 
+  /// Decimal shape `N.D` (or whole `N`). Equality is by value, so
+  /// `1.50` is accepted for canonical `1.5` and vice versa.
+  decimal,
+
   /// Any other text answer (e.g. time-of-day `3:30`, comparison operator
   /// `>`). Equality is exact-string.
   string,

@@ -1606,10 +1606,10 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'decimal_notation_tenths',
     name: 'Decimal: tenths',
-    shortLabel: 'Decimal: tenths',
+    shortLabel: 'tenths',
     categoryId: 'decimals_percent',
     primaryGrade: 4,
-    prereqIds: ['fraction_denom_10_100'],
+    prereqIds: [],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramOptional(),
     categoryRowOrder: 1,
@@ -1617,7 +1617,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'decimal_notation_hundredths',
     name: 'Decimal: hundredths',
-    shortLabel: 'Decimal: hundredths',
+    shortLabel: 'hundredths',
     categoryId: 'decimals_percent',
     primaryGrade: 4,
     prereqIds: ['decimal_notation_tenths'],
@@ -1639,7 +1639,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'compare_decimals_hundredths',
     name: 'Compare decimals to 0.01',
-    shortLabel: 'Compare decimals to 0.01',
+    shortLabel: 'cmp dec',
     categoryId: 'decimals_percent',
     primaryGrade: 4,
     prereqIds: ['decimal_notation_hundredths'],
@@ -1683,7 +1683,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'add_decimals',
     name: 'Add decimals (to 0.01)',
-    shortLabel: 'Add decimals (to 0.01)',
+    shortLabel: '+ dec',
     categoryId: 'decimals_percent',
     primaryGrade: 5,
     prereqIds: ['decimal_notation_hundredths', 'add_multidigit_standard_alg'],
@@ -1694,7 +1694,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'sub_decimals',
     name: 'Subtract decimals (to 0.01)',
-    shortLabel: 'Subtract decimals (to 0.01)',
+    shortLabel: '− dec',
     categoryId: 'decimals_percent',
     primaryGrade: 5,
     prereqIds: ['add_decimals'],
@@ -1705,7 +1705,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'mult_decimal_by_whole',
     name: 'Decimal × whole',
-    shortLabel: 'Decimal × whole',
+    shortLabel: 'dec × N',
     categoryId: 'decimals_percent',
     primaryGrade: 5,
     prereqIds: ['mult_multidigit_standard_alg', 'decimal_notation_hundredths'],
@@ -1716,7 +1716,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'mult_decimals',
     name: 'Decimal × decimal',
-    shortLabel: 'Decimal × decimal',
+    shortLabel: 'dec × dec',
     categoryId: 'decimals_percent',
     primaryGrade: 5,
     prereqIds: ['mult_decimal_by_whole'],
@@ -3107,7 +3107,7 @@ const List<Concept> allConcepts = [
     shortLabel: '± rat +−',
     categoryId: 'rationals',
     primaryGrade: 7,
-    prereqIds: ['integers_add', 'add_fractions_unlike_denom'],
+    prereqIds: ['integers_add', 'add_fractions_unlike_denom', 'add_decimals'],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
     categoryRowOrder: 10,
@@ -3118,7 +3118,11 @@ const List<Concept> allConcepts = [
     shortLabel: '± rat ×÷',
     categoryId: 'rationals',
     primaryGrade: 7,
-    prereqIds: ['integers_multiply_divide', 'mult_fractions_proper'],
+    prereqIds: [
+      'integers_multiply_divide',
+      'mult_fractions_proper',
+      'mult_decimals',
+    ],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
     categoryRowOrder: 11,

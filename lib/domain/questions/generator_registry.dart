@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:math_city/domain/questions/generated_question.dart';
 import 'package:math_city/domain/questions/generators/add_sub_generators.dart';
+import 'package:math_city/domain/questions/generators/decimal_generators.dart';
 import 'package:math_city/domain/questions/generators/fraction_generators.dart';
 import 'package:math_city/domain/questions/generators/integer_generators.dart';
 import 'package:math_city/domain/questions/generators/mult_div_generators.dart';
@@ -118,5 +119,13 @@ class GeneratorRegistry {
     // Rationals
     'rationals_add_sub': rationalsAddSub,
     'rationals_multiply_divide': rationalsMultiplyDivide,
+    // Decimals
+    'decimal_notation_tenths': decimalNotationTenths,
+    'decimal_notation_hundredths': decimalNotationHundredths,
+    'compare_decimals_hundredths': compareDecimalsHundredths,
+    'add_decimals': addDecimals,
+    'sub_decimals': subDecimals,
+    'mult_decimal_by_whole': multDecimalByWhole,
+    'mult_decimals': multDecimals,
   };
 }
