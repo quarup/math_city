@@ -96,6 +96,76 @@ void main() {
     });
   });
 
+  group('coord_distance_same_line', () {
+    test(
+      'answer is |Δ| on the differing axis; the two points share one '
+      'coordinate; both same-x and same-y cases appear',
+      () {
+        final orientations = <String>{};
+        for (var i = 0; i < _iterations; i++) {
+          final q = _gen(registry, 'coord_distance_same_line', i);
+          expect(q.prompt, 'What is the distance from A to B?');
+          expect(q.diagram, isA<CoordinatePlaneSpec>());
+          final spec = q.diagram! as CoordinatePlaneSpec;
+          expect(spec.points, hasLength(2));
+          final a = spec.points.firstWhere((p) => p.label == 'A');
+          final b = spec.points.firstWhere((p) => p.label == 'B');
+          // Exactly one of the two coordinates matches between A and B.
+          final sameX = a.x == b.x;
+          final sameY = a.y == b.y;
+          expect(
+            sameX ^ sameY,
+            isTrue,
+            reason: 'A and B must share exactly one coordinate: $a, $b',
+          );
+          orientations.add(sameX ? 'sameX' : 'sameY');
+          final expected = sameX ? (a.y - b.y).abs() : (a.x - b.x).abs();
+          expect(int.parse(q.correctAnswer), expected);
+          _expectThreeDistinctDistractors(q);
+        }
+        expect(orientations, {'sameX', 'sameY'});
+      },
+    );
+  });
+
+  group('pythagorean_distance_coords', () {
+    test(
+      'answer = hypotenuse of (Δx, Δy) right triangle; both triples '
+      '(3,4,5) and (6,8,10) appear; endpoints stay in [-8, 8]',
+      () {
+        final triples = <int>{};
+        for (var i = 0; i < _iterations; i++) {
+          final q = _gen(registry, 'pythagorean_distance_coords', i);
+          expect(q.prompt, 'What is the distance from A to B?');
+          expect(q.diagram, isA<CoordinatePlaneSpec>());
+          final spec = q.diagram! as CoordinatePlaneSpec;
+          expect(spec.points, hasLength(2));
+          final a = spec.points.firstWhere((p) => p.label == 'A');
+          final b = spec.points.firstWhere((p) => p.label == 'B');
+          for (final p in [a, b]) {
+            expect(p.x, inInclusiveRange(-8, 8));
+            expect(p.y, inInclusiveRange(-8, 8));
+          }
+          final dx = (b.x - a.x).abs();
+          final dy = (b.y - a.y).abs();
+          // Δx, Δy form a leg-pair of one of the two restricted triples.
+          // Sorted-tuple comparison since Set == Set is identity in Dart.
+          final legs = [dx, dy]..sort();
+          expect(
+            legs,
+            anyOf(equals([3, 4]), equals([6, 8])),
+            reason: 'unexpected legs ($dx, $dy)',
+          );
+          final c = int.parse(q.correctAnswer);
+          expect(dx * dx + dy * dy, c * c);
+          triples.add(c);
+          _expectThreeDistinctDistractors(q);
+        }
+        expect(triples, {5, 10});
+      },
+    );
+  });
+
   group('plot_four_quadrants', () {
     test(
       'correct label refers to the diagram point at the prompted (x, y); '

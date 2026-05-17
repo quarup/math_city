@@ -370,6 +370,14 @@ const _prereqOverrides = <String, List<String>>{
   // opposites_and_zero, which carries the same "negative integers
   // exist on a number line" intuition needed for Q2/Q3/Q4 plotting.
   'plot_four_quadrants': ['plot_first_quadrant', 'opposites_and_zero'],
+  // drop polygon_on_coordinate_plane (no generator yet — needs widget
+  // polygon support). Substitute coord_distance_same_line, which just
+  // landed and carries the same "compute distance from coordinates"
+  // intuition; pythagorean_apply_2d remains the math prereq.
+  'pythagorean_distance_coords': [
+    'pythagorean_apply_2d',
+    'coord_distance_same_line',
+  ],
 };
 
 // ─────────────────────────────────────────────────────────────────────────
