@@ -206,6 +206,7 @@ class GeneratorRegistry {
     'factor_linear_expression': factorLinearExpression,
     'solve_two_step_eq_distributive': solveTwoStepEqDistributive,
     'solve_linear_eq_one_solution': solveLinearEqOneSolution,
+    'solve_linear_eq_no_or_inf': solveLinearEqNoOrInf,
     'solve_linear_eq_with_distrib_collect': solveLinearEqWithDistribCollect,
     'solve_system_substitution': solveSystemSubstitution,
     'solve_system_elimination': solveSystemElimination,
@@ -215,6 +216,7 @@ class GeneratorRegistry {
     'slope_from_two_points': slopeFromTwoPoints,
     'linear_function_construct': linearFunctionConstruct,
     'function_definition_check': functionDefinitionCheck,
+    'compare_functions_representations': compareFunctionsRepresentations,
     // Geometry
     'area_rectangle_formula': areaRectangleFormula,
     'perimeter_polygon': perimeterPolygon,
