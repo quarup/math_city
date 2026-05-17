@@ -67,6 +67,12 @@ This is a hobby project being built in small sessions. Optimize for "next sessio
     - **Single file or small batch → `mcp__github__push_files`** (commits straight to `main`, no branch, no PR).
     - **Wants local `flutter analyze` / `flutter test` first → commit on the auto-assigned feature branch, then `mcp__github__merge_pull_request` with `merge_method: "rebase"`** (preserves linear history). PR creation via `mcp__github__create_pull_request` is a 1-call step.
   - In a local terminal session there's no proxy, so a plain `git push origin main` works fine — same policy, simpler mechanism.
+  - **Gotcha:** `mcp__github__push_files` writes to the remote via GitHub's API; the local working tree never sees it. After pushing direct-to-`main` from a feature branch, your local repo will still show the file as "modified" against the feature branch HEAD, even though that content is now on `origin/main`. The Stop hook flags this as uncommitted changes. Clean it up with:
+    ```sh
+    git restore <file>           # local edit is already on origin/main
+    git checkout main
+    git pull --ff-only origin main
+    ```
 
 ## What NOT to do
 
