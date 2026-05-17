@@ -55,6 +55,21 @@ dart format .          # format
 - **Asset & content licensing.** Every art/audio/font asset must be CC0, CC-BY, or equivalent. Every math dataset must be MIT / Apache 2.0 / CC-BY / CC0 — **CC-BY-NC and CC-BY-NC-SA are excluded** because app-store distribution carries non-zero commercial-use risk. Track sources in `LICENSES_THIRD_PARTY.md` (to be created in Phase 6 alongside dataset ingestion).
 - **Don't speculate features.** Stay within the current phase scope in `plan.md`. Future phases are aspirational, not a TODO list.
 
+## Keeping curriculum.md status in sync
+
+[curriculum.md](curriculum.md) carries `✅` markers in §3 (sub-concepts) and §6 (widgets) plus rollup counts in its Status block. These are auto-managed by [tools/curriculum/sync_implementation_status.py](tools/curriculum/sync_implementation_status.py).
+
+**Run it whenever you:**
+- add or remove an entry in [lib/domain/questions/generator_registry.dart](lib/domain/questions/generator_registry.dart),
+- add or remove a file under [lib/presentation/diagrams/](lib/presentation/diagrams/),
+- add or remove anything under `assets/data/`.
+
+```sh
+python3 tools/curriculum/sync_implementation_status.py
+```
+
+The script is idempotent. It prints a summary (`+N added, -M removed`) and warns if it spots drift — e.g. a registry ID with no matching row in curriculum.md, or a new widget file not yet catalogued in §6 / not yet in the script's `WIDGET_TO_FILE` dict. Resolve any warnings, then commit the curriculum.md changes alongside the code change that caused them.
+
 ## Working incrementally
 
 This is a hobby project being built in small sessions. Optimize for "next session can pick up easily":
