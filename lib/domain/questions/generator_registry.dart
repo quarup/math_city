@@ -165,5 +165,10 @@ class GeneratorRegistry {
     'evaluate_expression': evaluateExpression,
     'solve_one_step_eq_addition': solveOneStepEqAddition,
     'solve_one_step_eq_mult': solveOneStepEqMult,
+    'solve_two_step_eq': solveTwoStepEq,
+    'expand_linear_expression': expandLinearExpression,
+    'add_subtract_linear_expressions': addSubtractLinearExpressions,
+    'equivalent_expressions_props': equivalentExpressionsProps,
+    'substitute_to_check': substituteToCheck,
   };
 }

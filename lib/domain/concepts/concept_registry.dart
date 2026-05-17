@@ -3263,10 +3263,10 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'equivalent_expressions_props',
     name: 'Equivalent expressions',
-    shortLabel: 'Equivalent expressions',
+    shortLabel: 'equiv expr',
     categoryId: 'prealgebra',
     primaryGrade: 6,
-    prereqIds: ['distributive_mult_over_add', 'write_expression_from_words'],
+    prereqIds: ['mult_facts_within_100'],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
     categoryRowOrder: 7,
@@ -3274,7 +3274,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'substitute_to_check',
     name: 'Substitute to check',
-    shortLabel: 'Substitute to check',
+    shortLabel: 'sub check',
     categoryId: 'prealgebra',
     primaryGrade: 6,
     prereqIds: ['evaluate_expression'],
@@ -3329,7 +3329,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'add_subtract_linear_expressions',
     name: 'Combine like terms (linear)',
-    shortLabel: 'Combine like terms (linear)',
+    shortLabel: 'combine',
     categoryId: 'prealgebra',
     primaryGrade: 7,
     prereqIds: ['equivalent_expressions_props', 'integers_subtract'],
@@ -3351,10 +3351,10 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'expand_linear_expression',
     name: 'Expand: a(b+c)',
-    shortLabel: 'Expand: a(b+c)',
+    shortLabel: 'expand',
     categoryId: 'prealgebra',
     primaryGrade: 7,
-    prereqIds: ['distributive_mult_over_add'],
+    prereqIds: ['mult_facts_within_100'],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
     categoryRowOrder: 15,
@@ -3362,7 +3362,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'solve_two_step_eq',
     name: 'Solve px + q = r',
-    shortLabel: 'Solve px + q = r',
+    shortLabel: 'px ± q = r',
     categoryId: 'prealgebra',
     primaryGrade: 7,
     prereqIds: [

@@ -183,6 +183,11 @@ const _shortLabelOverrides = <String, String>{
   'evaluate_expression': 'eval ax+b',
   'solve_one_step_eq_addition': 'x ± p = q',
   'solve_one_step_eq_mult': 'px = q',
+  'solve_two_step_eq': 'px ± q = r',
+  'expand_linear_expression': 'expand',
+  'add_subtract_linear_expressions': 'combine',
+  'equivalent_expressions_props': 'equiv expr',
+  'substitute_to_check': 'sub check',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
@@ -245,6 +250,10 @@ const _prereqOverrides = <String, List<String>>{
   'solve_one_step_eq_addition': ['add_within_100'],
   // drop missing_factor + write_expression_from_words (no generators).
   'solve_one_step_eq_mult': ['mult_facts_within_100'],
+  // drop distributive_mult_over_add + write_expression_from_words
+  // (no generators) — substitute mult facts as basic background.
+  'expand_linear_expression': ['mult_facts_within_100'],
+  'equivalent_expressions_props': ['mult_facts_within_100'],
 };
 
 // ─────────────────────────────────────────────────────────────────────────

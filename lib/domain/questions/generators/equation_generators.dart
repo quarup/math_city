@@ -376,3 +376,240 @@ GeneratedQuestion _buildOneStepMult(
     ],
   );
 }
+
+// ─────────────────────────────────────────────────────────────────────────
+// solve_two_step_eq (Grade 7)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "Solve 3x + 5 = 14" → 3. Two-step form `px + q = r` or `px − q = r`.
+/// Answer is always a positive integer x ∈ [2, 12].
+GeneratedQuestion solveTwoStepEq(Random rand) {
+  final x = rand.nextInt(11) + 2; // 2..12
+  final p = rand.nextInt(8) + 2; // 2..9
+  final q = rand.nextInt(19) + 1; // 1..19
+  final isPlus = rand.nextBool();
+  final r = isPlus ? p * x + q : p * x - q;
+  // Re-roll if r came out negative under the subtract branch.
+  if (r < 1) return solveTwoStepEq(rand);
+
+  final op = isPlus ? '+' : _minus;
+  final prompt = 'Solve for x: ${p}x $op $q = $r';
+  final correct = '$x';
+  final candidates = <String>[
+    // Misconception: forgot to undo the +/−.
+    '${r ~/ p}',
+    // Misconception: applied operations in wrong order.
+    '${(r - q) ~/ (p == 0 ? 1 : p) + (isPlus ? q : -q)}',
+    // Misconception: subtracted/added instead of dividing.
+    '${r - p}',
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'solve_two_step_eq',
+    prompt: prompt,
+    correctAnswer: correct,
+    distractors: _intDistractors(x, candidates, rand),
+    explanation: [
+      if (isPlus)
+        'Subtract $q from both sides: ${p}x = $r − $q = ${p * x}.'
+      else
+        'Add $q to both sides: ${p}x = $r + $q = ${p * x}.',
+      'Divide both sides by $p: x = ${p * x} ÷ $p = $x.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// expand_linear_expression (Grade 7)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "Expand 3(x + 4)" → "3x + 12". MC over four expansion variants
+/// (the right answer, the "didn't distribute" answer, the "added
+/// instead of multiplied" answer, etc.).
+GeneratedQuestion expandLinearExpression(Random rand) {
+  final a = rand.nextInt(8) + 2; // 2..9
+  final b = rand.nextInt(11) + 2; // 2..12
+  final isPlus = rand.nextBool();
+  final op = isPlus ? '+' : _minus;
+  final prompt = 'Expand: $a(x $op $b)';
+  final product = a * b;
+  final correct = '${a}x $op $product';
+  final distractors = <String>[
+    // Misconception: didn't distribute to the constant term.
+    '${a}x $op $b',
+    // Misconception: distributed to x only, kept the constant.
+    'x $op $product',
+    // Misconception: added instead of multiplied (a + x style).
+    '${a + 1}x $op $product',
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'expand_linear_expression',
+    prompt: prompt,
+    correctAnswer: correct,
+    distractors: distractors,
+    explanation: [
+      'Distribute $a to both terms inside the parentheses.',
+      '$a × x = ${a}x; $a × $b = $product.',
+      'Result: $correct.',
+    ],
+    answerFormat: AnswerFormat.string,
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// add_subtract_linear_expressions (Grade 7)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "Simplify 3x + 5 + 2x − 1" → "5x + 4". Combines two linear terms
+/// each of shape `ax + b` (b can be any integer). Answer is the
+/// canonical `cx + d` form, MC-only.
+GeneratedQuestion addSubtractLinearExpressions(Random rand) {
+  // First term: a1·x + b1 with a1 in [1, 7], b1 in [1, 9].
+  final a1 = rand.nextInt(7) + 1;
+  final b1 = rand.nextInt(9) + 1;
+  // Second term added or subtracted; both terms kept positive in their
+  // shown form so the prompt reads like "3x + 5 + 2x + 1" or
+  // "3x + 5 + 2x − 1" — no nested-negative gymnastics.
+  final isPlus = rand.nextBool();
+  final a2 = rand.nextInt(7) + 1;
+  final b2 = rand.nextInt(9) + 1;
+
+  final op = isPlus ? '+' : _minus;
+  // Use a parenthesised second pair so the sign rule is unambiguous:
+  //   "3x + 5 + (2x + 1)" → "3x + 5 + 2x + 1"
+  //   "3x + 5 − (2x + 1)" → "3x + 5 − 2x − 1"
+  final actualA = a1 + (isPlus ? a2 : -a2);
+  final actualB = b1 + (isPlus ? b2 : -b2);
+  // Re-roll degenerate cases (zero x or zero constant — too easy / odd).
+  if (actualA == 0 || actualB == 0) return addSubtractLinearExpressions(rand);
+  // Re-roll if the result has a negative coefficient — keeps the answer
+  // in the canonical "cx + d" form rather than "−cx ± d".
+  if (actualA < 0) return addSubtractLinearExpressions(rand);
+
+  final correct = actualB > 0
+      ? '${actualA}x + $actualB'
+      : '${actualA}x $_minus ${-actualB}';
+  final prompt2 = 'Simplify: ${a1}x + $b1 $op (${a2}x + $b2)';
+  // Misconception distractors. The "didn't apply sign to constant"
+  // distractor is the same as correct when isPlus, so use it only in
+  // the subtraction branch.
+  final candidatePool = <String>[
+    if (!isPlus) '${actualA}x + ${b1 + b2}',
+    // Combined x coefficients only (forgot to apply sign to a2).
+    if (!isPlus) '${a1 + a2}x + $actualB',
+    // Did the op on x and constant separately but used the wrong sign.
+    '${a1 - (isPlus ? -a2 : a2)}x + $actualB',
+    // Added everything as a single constant.
+    '${a1 + b1 + (isPlus ? a2 + b2 : -(a2 + b2))}',
+    // Swapped x coefficient with constant.
+    '${actualB}x + $actualA',
+  ];
+  final distractors = <String>[];
+  final seen = <String>{correct};
+  for (final c in candidatePool) {
+    if (distractors.length >= 3) break;
+    if (seen.add(c)) distractors.add(c);
+  }
+  // Fallback: bump the x coefficient ±1.
+  for (var i = 1; distractors.length < 3 && i < 10; i++) {
+    for (final delta in <int>[i, -i]) {
+      final na = actualA + delta;
+      if (na < 1) continue;
+      final s = '${na}x ${actualB > 0 ? "+" : _minus} ${actualB.abs()}';
+      if (seen.add(s)) distractors.add(s);
+      if (distractors.length >= 3) break;
+    }
+  }
+
+  return GeneratedQuestion(
+    conceptId: 'add_subtract_linear_expressions',
+    prompt: prompt2,
+    correctAnswer: correct,
+    distractors: distractors.take(3).toList(),
+    explanation: [
+      'Combine x terms: ${a1}x ${isPlus ? "+" : _minus} ${a2}x = ${actualA}x.',
+      'Combine constants: $b1 ${isPlus ? "+" : _minus} $b2 = $actualB.',
+      'Result: $correct.',
+    ],
+    answerFormat: AnswerFormat.string,
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// equivalent_expressions_props (Grade 6)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "Which is equivalent to 3(x + 2)?" → "3x + 6". MC over a small
+/// menu of expansion / distribution variants.
+GeneratedQuestion equivalentExpressionsProps(Random rand) {
+  final a = rand.nextInt(7) + 2; // 2..8
+  final b = rand.nextInt(8) + 2; // 2..9
+  final correct = '${a}x + ${a * b}';
+  final distractors = <String>[
+    // Misconception: didn't distribute.
+    '${a}x + $b',
+    // Misconception: distributed to one side only.
+    'x + ${a * b}',
+    // Misconception: added a + b first.
+    '${a + b}x + ${a * b}',
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'equivalent_expressions_props',
+    prompt: 'Which is equivalent to $a(x + $b)?',
+    correctAnswer: correct,
+    distractors: distractors,
+    explanation: [
+      'Distributive property: $a(x + $b) = $a·x + $a·$b.',
+      '= ${a}x + ${a * b}.',
+    ],
+    answerFormat: AnswerFormat.string,
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// substitute_to_check (Grade 6)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "Is x = 5 a solution to x + 3 = 8?" → "Yes". Half the questions
+/// use a correct value of x, the other half use a wrong value.
+GeneratedQuestion substituteToCheck(Random rand) {
+  final p = rand.nextInt(8) + 2; // 2..9
+  final x = rand.nextInt(11) + 2; // 2..12
+  final q = rand.nextInt(19) + 1; // 1..19
+  final isPlus = rand.nextBool();
+  final op = isPlus ? '+' : _minus;
+  final r = isPlus ? p * x + q : p * x - q;
+  if (r < 1) return substituteToCheck(rand);
+  // Show prompt "Is x = $candidate a solution to ${p}x ± $q = $r?"
+  // candidate is the real x half the time, otherwise off by ±1..±3.
+  final isCorrect = rand.nextBool();
+  late int candidate;
+  if (isCorrect) {
+    candidate = x;
+  } else {
+    final delta = (rand.nextInt(3) + 1) * (rand.nextBool() ? 1 : -1);
+    candidate = x + delta;
+    if (candidate < 1) candidate = x + 1;
+  }
+  final answer = isCorrect ? 'Yes' : 'No';
+  final distractors = <String>[
+    if (answer == 'Yes') 'No' else 'Yes',
+    "Can't tell",
+    'Maybe',
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'substitute_to_check',
+    prompt: 'Is x = $candidate a solution to ${p}x $op $q = $r?',
+    correctAnswer: answer,
+    distractors: distractors,
+    explanation: [
+      'Substitute x = $candidate into the left side.',
+      'Result: ${isPlus ? p * candidate + q : p * candidate - q}.',
+      'Right side is $r — ${isCorrect ? "equal." : "not equal."}',
+    ],
+    answerFormat: AnswerFormat.string,
+  );
+}

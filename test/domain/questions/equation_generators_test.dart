@@ -70,7 +70,7 @@ void main() {
         final c = int.parse(m.group(5)!);
         final expected = _evalPrecedence(a, op1, b, op2, c);
         expect(expected, isNotNull, reason: q.prompt);
-        expect(_parseSigned(q.correctAnswer), expected!);
+        expect(_parseSigned(q.correctAnswer), expected);
         _expectThreeDistinctDistractors(q);
       }
     });
@@ -108,7 +108,7 @@ void main() {
           expected = bc == null ? null : _apply(a, op2, bc);
         }
         expect(expected, isNotNull, reason: q.prompt);
-        expect(_parseSigned(q.correctAnswer), expected!);
+        expect(_parseSigned(q.correctAnswer), expected);
         _expectThreeDistinctDistractors(q);
       }
     });
@@ -147,6 +147,120 @@ void main() {
           expect(x - p, qVal);
         }
         _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('solve_two_step_eq', () {
+    test('substituting the answer satisfies the equation', () {
+      final re = RegExp(
+        r'^Solve for x: (\d+)x ([+\-−]) (\d+) = (\d+)$',
+      );
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'solve_two_step_eq', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final p = int.parse(m!.group(1)!);
+        final op = m.group(2)!;
+        final qq = int.parse(m.group(3)!);
+        final r = int.parse(m.group(4)!);
+        final x = int.parse(q.correctAnswer);
+        final lhs = op == '+' ? p * x + qq : p * x - qq;
+        expect(lhs, r);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('expand_linear_expression', () {
+    test('answer matches a(x op b) = ax op (a·b)', () {
+      final re = RegExp(r'^Expand: (\d+)\(x ([+−]) (\d+)\)$');
+      final ansRe = RegExp(r'^(\d+)x ([+−]) (\d+)$');
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'expand_linear_expression', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final a = int.parse(m!.group(1)!);
+        final op = m.group(2)!;
+        final b = int.parse(m.group(3)!);
+        final am = ansRe.firstMatch(q.correctAnswer);
+        expect(am, isNotNull, reason: q.correctAnswer);
+        expect(int.parse(am!.group(1)!), a);
+        expect(am.group(2), op);
+        expect(int.parse(am.group(3)!), a * b);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('add_subtract_linear_expressions', () {
+    test('answer is (a1±a2)x + (b1±b2)', () {
+      final re = RegExp(
+        r'^Simplify: (\d+)x \+ (\d+) ([+−]) \((\d+)x \+ (\d+)\)$',
+      );
+      // Answer shape: NX + N or NX − N. Coefficient always positive.
+      final ansRe = RegExp(r'^(\d+)x ([+−]) (\d+)$');
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'add_subtract_linear_expressions', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final a1 = int.parse(m!.group(1)!);
+        final b1 = int.parse(m.group(2)!);
+        final op = m.group(3)!;
+        final a2 = int.parse(m.group(4)!);
+        final b2 = int.parse(m.group(5)!);
+        final isPlus = op == '+';
+        final expectedA = a1 + (isPlus ? a2 : -a2);
+        final expectedB = b1 + (isPlus ? b2 : -b2);
+        // Generator re-rolls to avoid zero or negative coefficient.
+        expect(expectedA, greaterThan(0));
+        expect(expectedB, isNot(0));
+        final am = ansRe.firstMatch(q.correctAnswer);
+        expect(am, isNotNull, reason: q.correctAnswer);
+        expect(int.parse(am!.group(1)!), expectedA);
+        if (expectedB > 0) {
+          expect(am.group(2), '+');
+          expect(int.parse(am.group(3)!), expectedB);
+        } else {
+          expect(am.group(2), '−');
+          expect(int.parse(am.group(3)!), -expectedB);
+        }
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('equivalent_expressions_props', () {
+    test('answer is "ax + a·b" from "a(x + b)"', () {
+      final re = RegExp(r'^Which is equivalent to (\d+)\(x \+ (\d+)\)\?$');
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'equivalent_expressions_props', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final a = int.parse(m!.group(1)!);
+        final b = int.parse(m.group(2)!);
+        expect(q.correctAnswer, '${a}x + ${a * b}');
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('substitute_to_check', () {
+    test('Yes iff substituting candidate yields the right side', () {
+      final re = RegExp(
+        r'^Is x = (\d+) a solution to (\d+)x ([+−]) (\d+) = (\d+)\?$',
+      );
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'substitute_to_check', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final cand = int.parse(m!.group(1)!);
+        final p = int.parse(m.group(2)!);
+        final op = m.group(3)!;
+        final qq = int.parse(m.group(4)!);
+        final r = int.parse(m.group(5)!);
+        final lhs = op == '+' ? p * cand + qq : p * cand - qq;
+        expect(q.correctAnswer, lhs == r ? 'Yes' : 'No');
       }
     });
   });
