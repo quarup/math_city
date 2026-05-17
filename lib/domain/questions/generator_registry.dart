@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:math_city/domain/questions/generated_question.dart';
 import 'package:math_city/domain/questions/generators/add_sub_generators.dart';
+import 'package:math_city/domain/questions/generators/advanced_generators.dart';
 import 'package:math_city/domain/questions/generators/decimal_generators.dart';
 import 'package:math_city/domain/questions/generators/equation_generators.dart';
 import 'package:math_city/domain/questions/generators/fraction_generators.dart';
@@ -138,6 +139,12 @@ class GeneratorRegistry {
     'scientific_notation_read': scientificNotationRead,
     'scientific_notation_write': scientificNotationWrite,
     'integer_exponent_props': integerExponentProps,
+    'scientific_notation_ops': scientificNotationOps,
+    // Late-grade / cross-category
+    'pythagorean_apply_2d': pythagoreanApply2d,
+    'volume_rect_prism_formula': volumeRectPrismFormula,
+    'compare_order_rationals': compareOrderRationals,
+    'irrational_recognize': irrationalRecognize,
     // Rationals
     'rationals_add_sub': rationalsAddSub,
     'rationals_multiply_divide': rationalsMultiplyDivide,

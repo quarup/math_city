@@ -223,6 +223,11 @@ const _shortLabelOverrides = <String, String>{
   'integer_exponent_props': 'exp rules',
   'repeating_decimal_recognize': 'rep dec?',
   'repeating_decimal_to_fraction': 'rep → frac',
+  'scientific_notation_ops': 'sci × sci',
+  'pythagorean_apply_2d': 'a²+b²=c²',
+  'volume_rect_prism_formula': 'V = lwh',
+  'compare_order_rationals': 'order rat',
+  'irrational_recognize': 'rat?',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
@@ -316,6 +321,17 @@ const _prereqOverrides = <String, List<String>>{
   'exponents_whole_number': ['mult_facts_within_100'],
   // drop powers_of_10 (no generator yet) — substitute mult_facts.
   'scientific_notation_read': ['mult_facts_within_100'],
+  // drop volume_unit_cubes (no generator); area_rectangle_count_squares
+  // also missing. Substitute mult facts (V = lwh is just multiplication).
+  'volume_rect_prism_formula': ['mult_facts_within_100'],
+  // drop integers_on_number_line (no generator yet — needs decimal-aware
+  // NumberLine spec). compare_decimals_thousandths is already a prereq.
+  'compare_order_rationals': ['compare_decimals_thousandths'],
+  // drop rational_to_decimal_repeating (no generator yet) — substitute
+  // repeating_decimal_recognize as the conceptual background.
+  'irrational_recognize': ['repeating_decimal_recognize'],
+  // pythagorean_apply_2d: prereqs are sqrt_perfect_squares ✓ and
+  // area_rectangle_formula ✓ — no override needed.
 };
 
 // ─────────────────────────────────────────────────────────────────────────
