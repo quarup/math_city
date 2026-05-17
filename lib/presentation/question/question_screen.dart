@@ -179,10 +179,10 @@ class _PromptCard extends StatelessWidget {
     return Card(
       elevation: 4,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
+        padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
         child: Text(
           prompt,
-          style: theme.textTheme.displaySmall?.copyWith(
+          style: theme.textTheme.headlineMedium?.copyWith(
             fontWeight: FontWeight.bold,
           ),
           textAlign: TextAlign.center,
