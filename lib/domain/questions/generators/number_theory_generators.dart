@@ -114,6 +114,209 @@ GeneratedQuestion multiplesOfN(Random rand) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────
+// prime_or_composite (Grade 4)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "Is 17 prime or composite?" → "prime" or "composite". MC of
+/// {prime, composite}. Excludes 1 (neither) and the small primes ≤ 3
+/// to keep the kid thinking.
+GeneratedQuestion primeOrComposite(Random rand) {
+  int n;
+  bool isPrime;
+  do {
+    n = rand.nextInt(48) + 4; // 4..51
+    isPrime = _isPrime(n);
+  } while (n < 4); // dummy condition for clarity
+  final correct = isPrime ? 'prime' : 'composite';
+  final distractors = <String>[
+    if (isPrime) 'composite' else 'prime',
+    'neither',
+    'both',
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'prime_or_composite',
+    prompt: 'Is $n prime or composite?',
+    correctAnswer: correct,
+    distractors: distractors,
+    explanation: [
+      if (isPrime)
+        '$n has no factors other than 1 and itself — it is prime.'
+      else
+        '$n has factors besides 1 and itself — it is composite.',
+    ],
+    answerFormat: AnswerFormat.string,
+  );
+}
+
+bool _isPrime(int n) {
+  if (n < 2) return false;
+  for (var i = 2; i * i <= n; i++) {
+    if (n % i == 0) return false;
+  }
+  return true;
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// exponents_whole_number (Grade 6)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "What is 2³?" → 8. Base ∈ [2, 9], exponent ∈ [2, 4] so the answer
+/// stays kid-tractable.
+GeneratedQuestion exponentsWholeNumber(Random rand) {
+  final base = rand.nextInt(8) + 2; // 2..9
+  // Cap exponent based on base so n^e doesn't blow up.
+  final maxExp = switch (base) {
+    2 => 6, // 2^6 = 64
+    3 => 4, // 3^4 = 81
+    >= 4 && <= 6 => 3, // 6^3 = 216
+    _ => 2, // 9^2 = 81
+  };
+  final exp = rand.nextInt(maxExp - 1) + 2; // 2..maxExp
+  var value = 1;
+  for (var i = 0; i < exp; i++) {
+    value *= base;
+  }
+  final correct = '$value';
+
+  final candidates = <String>[
+    // Misconception: multiplied base × exponent.
+    '${base * exp}',
+    // Misconception: added base + exponent.
+    '${base + exp}',
+    // Off by one factor of base.
+    '${value * base}',
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'exponents_whole_number',
+    prompt: 'What is $base^$exp?',
+    correctAnswer: correct,
+    distractors: _wholeDistractors(value, candidates, rand),
+    explanation: [
+      '$base^$exp means $base multiplied by itself $exp times.',
+      '${List.filled(exp, '$base').join(' × ')} = $value.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// order_of_operations_with_exp (Grade 6)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "$a + $b² = ?" — order of operations with one exponent term. Three
+/// shapes: $a + $b², $a × $b², $a − $b².
+GeneratedQuestion orderOfOperationsWithExp(Random rand) {
+  final a = rand.nextInt(19) + 2; // 2..20
+  final b = rand.nextInt(6) + 2; // 2..7 — keep squared values small
+  final shape = rand.nextInt(3);
+  final bSquared = b * b;
+  late int answer;
+  late String prompt;
+  switch (shape) {
+    case 0:
+      answer = a + bSquared;
+      prompt = '$a + $b^2 = ?';
+    case 1:
+      answer = a * bSquared;
+      prompt = '$a × $b^2 = ?';
+    case _:
+      // Ensure non-negative result.
+      if (a < bSquared) return orderOfOperationsWithExp(rand);
+      answer = a - bSquared;
+      prompt = '$a − $b^2 = ?';
+  }
+  final correct = '$answer';
+
+  final candidates = <String>[
+    // Misconception: didn't square; used b literally.
+    if (shape == 0) '${a + b}' else if (shape == 1) '${a * b}' else '${a - b}',
+    // Misconception: did the op first, then squared.
+    switch (shape) {
+      0 => '${(a + b) * (a + b)}',
+      1 => '${(a * b) * (a * b)}',
+      _ => a > b ? '${(a - b) * (a - b)}' : '${a + b}',
+    },
+    // Off by one in the exponent magnitude.
+    '${answer + bSquared}',
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'order_of_operations_with_exp',
+    prompt: prompt,
+    correctAnswer: correct,
+    distractors: _wholeDistractors(answer, candidates, rand),
+    explanation: [
+      'Exponents bind tighter than +, −, ×, ÷.',
+      'Evaluate $b^2 = $bSquared first.',
+      'Then $prompt → $correct.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// sqrt_perfect_squares (Grade 8)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "√81 = ?" → 9. Root ∈ [2, 15] so the square is in [4, 225].
+GeneratedQuestion sqrtPerfectSquares(Random rand) {
+  final root = rand.nextInt(14) + 2; // 2..15
+  final square = root * root;
+  final correct = '$root';
+
+  final candidates = <String>[
+    // Misconception: gave the square instead of the root.
+    '$square',
+    // Misconception: half the square.
+    '${square ~/ 2}',
+    // Off by one.
+    '${root + 1}',
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'sqrt_perfect_squares',
+    prompt: 'What is √$square?',
+    correctAnswer: correct,
+    distractors: _wholeDistractors(root, candidates, rand),
+    explanation: [
+      '√$square = the number whose square is $square.',
+      '$root × $root = $square, so √$square = $root.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// cbrt_perfect_cubes (Grade 8)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "∛27 = ?" → 3. Root ∈ [2, 8] so the cube ≤ 512.
+GeneratedQuestion cbrtPerfectCubes(Random rand) {
+  final root = rand.nextInt(7) + 2; // 2..8
+  final cube = root * root * root;
+  final correct = '$root';
+
+  final candidates = <String>[
+    // Misconception: gave the cube.
+    '$cube',
+    // Misconception: gave root × 3 (confused with root times exponent).
+    '${root * 3}',
+    // Off by one.
+    '${root + 1}',
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'cbrt_perfect_cubes',
+    prompt: 'What is ∛$cube?',
+    correctAnswer: correct,
+    distractors: _wholeDistractors(root, candidates, rand),
+    explanation: [
+      '∛$cube = the number whose cube is $cube.',
+      '$root × $root × $root = $cube, so ∛$cube = $root.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
 // gcf_two_numbers (Grade 6)
 // ─────────────────────────────────────────────────────────────────────────
 

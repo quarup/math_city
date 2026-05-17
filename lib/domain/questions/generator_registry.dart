@@ -130,6 +130,11 @@ class GeneratorRegistry {
     'multiples_of_n': multiplesOfN,
     'gcf_two_numbers': gcfTwoNumbers,
     'lcm_two_numbers': lcmTwoNumbers,
+    'prime_or_composite': primeOrComposite,
+    'exponents_whole_number': exponentsWholeNumber,
+    'order_of_operations_with_exp': orderOfOperationsWithExp,
+    'sqrt_perfect_squares': sqrtPerfectSquares,
+    'cbrt_perfect_cubes': cbrtPerfectCubes,
     // Rationals
     'rationals_add_sub': rationalsAddSub,
     'rationals_multiply_divide': rationalsMultiplyDivide,

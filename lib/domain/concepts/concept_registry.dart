@@ -410,7 +410,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'prime_or_composite',
     name: 'Prime or composite?',
-    shortLabel: 'Prime or composite?',
+    shortLabel: 'prime?',
     categoryId: 'place_value',
     primaryGrade: 4,
     prereqIds: ['factors_of_n'],
@@ -465,10 +465,10 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'exponents_whole_number',
     name: 'Whole-number exponents',
-    shortLabel: 'Whole-number exponents',
+    shortLabel: 'a^b',
     categoryId: 'place_value',
     primaryGrade: 6,
-    prereqIds: ['powers_of_10'],
+    prereqIds: ['mult_facts_within_100'],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
     categoryRowOrder: 21,
@@ -487,7 +487,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'sqrt_perfect_squares',
     name: 'Square roots (perfect)',
-    shortLabel: 'Square roots (perfect)',
+    shortLabel: '√',
     categoryId: 'place_value',
     primaryGrade: 8,
     prereqIds: ['exponents_whole_number'],
@@ -498,7 +498,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'cbrt_perfect_cubes',
     name: 'Cube roots (perfect)',
-    shortLabel: 'Cube roots (perfect)',
+    shortLabel: '∛',
     categoryId: 'place_value',
     primaryGrade: 8,
     prereqIds: ['exponents_whole_number'],
@@ -1226,7 +1226,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'order_of_operations_with_exp',
     name: 'Order with exponents',
-    shortLabel: 'Order with exponents',
+    shortLabel: 'order +exp',
     categoryId: 'mult_div',
     primaryGrade: 6,
     prereqIds: ['order_of_operations_no_exp', 'exponents_whole_number'],
@@ -3244,7 +3244,7 @@ const List<Concept> allConcepts = [
     shortLabel: 'eval ax+b',
     categoryId: 'prealgebra',
     primaryGrade: 6,
-    prereqIds: ['order_of_operations_no_exp'],
+    prereqIds: ['order_of_operations_with_exp'],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
     categoryRowOrder: 5,

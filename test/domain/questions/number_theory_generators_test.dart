@@ -102,6 +102,109 @@ void main() {
     });
   });
 
+  group('prime_or_composite', () {
+    test('answer matches actual primality of n', () {
+      final re = RegExp(r'^Is (\d+) prime or composite\?$');
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'prime_or_composite', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final n = int.parse(m!.group(1)!);
+        var isPrime = n > 1;
+        for (var d = 2; d * d <= n; d++) {
+          if (n % d == 0) {
+            isPrime = false;
+            break;
+          }
+        }
+        expect(q.correctAnswer, isPrime ? 'prime' : 'composite');
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('exponents_whole_number', () {
+    test('answer = base^exp computed integer', () {
+      final re = RegExp(r'^What is (\d+)\^(\d+)\?$');
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'exponents_whole_number', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final base = int.parse(m!.group(1)!);
+        final exp = int.parse(m.group(2)!);
+        var v = 1;
+        for (var k = 0; k < exp; k++) {
+          v *= base;
+        }
+        expect(q.correctAnswer, '$v');
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('order_of_operations_with_exp', () {
+    test('answer evaluates with exponent-first precedence', () {
+      final reAdd = RegExp(r'^(\d+) \+ (\d+)\^2 = \?$');
+      final reMult = RegExp(r'^(\d+) × (\d+)\^2 = \?$');
+      final reSub = RegExp(r'^(\d+) − (\d+)\^2 = \?$');
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'order_of_operations_with_exp', i);
+        int? expected;
+        for (final (re, op) in [
+          (reAdd, '+'),
+          (reMult, '×'),
+          (reSub, '−'),
+        ]) {
+          final m = re.firstMatch(q.prompt);
+          if (m != null) {
+            final a = int.parse(m.group(1)!);
+            final b = int.parse(m.group(2)!);
+            final sq = b * b;
+            expected = switch (op) {
+              '+' => a + sq,
+              '×' => a * sq,
+              _ => a - sq,
+            };
+            break;
+          }
+        }
+        expect(expected, isNotNull, reason: q.prompt);
+        expect(q.correctAnswer, '$expected');
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('sqrt_perfect_squares', () {
+    test('answer × answer = the number inside the √', () {
+      final re = RegExp(r'^What is √(\d+)\?$');
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'sqrt_perfect_squares', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final sq = int.parse(m!.group(1)!);
+        final root = int.parse(q.correctAnswer);
+        expect(root * root, sq);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('cbrt_perfect_cubes', () {
+    test('answer cubed = the number inside the ∛', () {
+      final re = RegExp(r'^What is ∛(\d+)\?$');
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'cbrt_perfect_cubes', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final cube = int.parse(m!.group(1)!);
+        final root = int.parse(q.correctAnswer);
+        expect(root * root * root, cube);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
   group('absolute_value', () {
     test('answer = |v| where v is parsed from "|v|" in the prompt', () {
       final re = RegExp(r'^What is \|([−-]?\d+)\|\?$');

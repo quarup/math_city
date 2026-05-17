@@ -213,6 +213,11 @@ const _shortLabelOverrides = <String, String>{
   'probability_simple_event': 'P(event)',
   'experimental_probability': 'P (data)',
   'sample_space_list': 'outcomes',
+  'prime_or_composite': 'prime?',
+  'exponents_whole_number': 'a^b',
+  'order_of_operations_with_exp': 'order +exp',
+  'sqrt_perfect_squares': '√',
+  'cbrt_perfect_cubes': '∛',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
@@ -265,9 +270,8 @@ const _prereqOverrides = <String, List<String>>{
   // drop fraction_denom_10_100 (no generator yet) for the percent root —
   // the percent grid widget visualises "N out of 100" directly.
   'percent_intro': <String>[],
-  // drop order_of_operations_with_exp (no generator yet) — substitute
-  // the simpler no-exp version which is enough background.
-  'evaluate_expression': ['order_of_operations_no_exp'],
+  // evaluate_expression: order_of_operations_with_exp now lives — the
+  // curriculum.md prereq is met, no override needed.
   // drop missing_addend_within_20 + write_expression_from_words
   // (no generators) — substitute the basic +/− concept as background.
   'solve_one_step_eq_addition': ['add_within_100'],
@@ -302,6 +306,9 @@ const _prereqOverrides = <String, List<String>>{
   // drop area_rectangle_count_squares (no generator) — substitute the
   // mult-facts background since area-by-formula IS multiplication.
   'area_rectangle_formula': ['mult_facts_within_100'],
+  // drop powers_of_10 (no generator) — substitute mult facts as the
+  // basic multiplicative background.
+  'exponents_whole_number': ['mult_facts_within_100'],
 };
 
 // ─────────────────────────────────────────────────────────────────────────
