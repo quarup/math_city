@@ -188,6 +188,9 @@ const _shortLabelOverrides = <String, String>{
   'add_subtract_linear_expressions': 'combine',
   'equivalent_expressions_props': 'equiv expr',
   'substitute_to_check': 'sub check',
+  'factor_linear_expression': 'factor',
+  'solve_two_step_eq_distributive': 'p(x±q)=r',
+  'solve_linear_eq_one_solution': 'ax+b=cx+d',
   'mean': 'mean',
   'median': 'median',
   'mode': 'mode',
@@ -269,6 +272,9 @@ const _prereqOverrides = <String, List<String>>{
   // drop absolute_value (no generator) — mean is enough background since
   // values here are all positive so the absolute-value step is trivial.
   'mad': ['mean'],
+  // drop distributive_with_gcf (no generator) — substitute the more
+  // basic combine-like-terms skill which is already in the DAG.
+  'factor_linear_expression': ['add_subtract_linear_expressions'],
 };
 
 // ─────────────────────────────────────────────────────────────────────────

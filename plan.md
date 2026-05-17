@@ -7,10 +7,10 @@
 
 ## Status
 
-- **Phase:** Phase 6 — Full Question Bank. **106 generators implemented**; five K–8 categories with coverage (`fractions` 26, `decimals_percent` 24, `ratios` 10/16, `expressions_equations` 10/14, `statistics` 6/15). Geometry still untouched.
+- **Phase:** Phase 6 — Full Question Bank. **109 generators implemented**; five K–8 categories with coverage (`fractions` 26, `decimals_percent` 24, `ratios` 10/16, `expressions_equations` 13/14, `statistics` 6/15). First G8 concept landed — catalog ceiling bumped from 7 to 8. Geometry still untouched.
 - **Last updated:** 2026-05-17
-- **Last action:** **#16 Statistics (chunk 11) — IQR + MAD** — 2 generators appended to `statistics_generators.dart`. `iqr` (G6, fixed n=7 so the lower half is exactly 3 values → Q1 = sorted[1], upper half 3 → Q3 = sorted[5]; both always integers; IQR = Q3 − Q1). `mad` (G6, generates `{m−2d, m−d, m+d, m+2d}` with d ∈ {2, 4}; mean is exactly m and MAD = 1.5d → 3 or 6, always integer). Prereq override for `mad` drops the unimplemented `absolute_value` since values stay positive so the |·| step is trivial. Tests: +2 groups @ 300; **285 total pass**, `flutter analyze` clean.
-- **Last action (prior):** **#16 Statistics (chunk 10) — entry** — `mean`, `median`, `mode`, `range_data`. Commit `12e2c07`.
+- **Last action:** **#12 Equations chunk 12 — finishing the algorithmic equations** — 3 generators appended to `equation_generators.dart`: `factor_linear_expression` (G7, "Factor 6x + 12" → "6(x + 2)"; MC over four plausible factored forms; re-rolls when k == b since `b(x + k)` would collide with the correct answer; prereq override drops the unimplemented `distributive_with_gcf`), `solve_two_step_eq_distributive` (G7, "Solve 3(x + 2) = 12" → 2), `solve_linear_eq_one_solution` (G8, variable on both sides; first G8 concept in the catalog — bumped the implemented-grade ceiling test from 7 to 8). Tests: +3 groups @ 300; **288 total pass**, `flutter analyze` clean.
+- **Last action (prior):** **#16 Statistics (chunk 11) — IQR + MAD**. Commit `21c0491`.
 - **Last action (prior):** **#7 Decimals sub-slice (chunk 3) — percent intro** — 3 new generators in a new file `percent_generators.dart` plus a new diagram widget:
   - **`PercentGridSpec` + `PercentGrid` widget** ([lib/presentation/diagrams/percent_grid.dart](lib/presentation/diagrams/percent_grid.dart)) — 10×10 grid with N cells shaded row-major. Distinct from `AreaGrid` (which is shaped as a row × col overlap rectangle for fraction × fraction). Wired into `DiagramRenderer`.
   - **`percent_intro` (G6)** — "What percent is shaded?" + grid diagram. Excludes 0/50/100 so the kid actually has to count. Misconception distractors: 100−n (swapped shaded/unshaded), n÷10 (read as out-of-10).
@@ -30,9 +30,10 @@
   - **DAG cleanup:** removed the `rationals_add_sub` / `rationals_multiply_divide` prereq overrides — `add_decimals` / `mult_decimals` now exist, so the rationals prereqs match curriculum.md again. Added a `decimal_notation_tenths` override that drops the unimplemented `fraction_denom_10_100` prereq (so this slice's entry point into the decimals branch reaches kids).
   - **Tests:** +20 (Decimal value-type 14 + decimal generators 6 groups @ 300 iterations each). All 259 pass; `flutter analyze` clean.
 - **Next action:** Pick the next sub-slice. Easy options remaining ([curriculum.md §5.1](curriculum.md)):
-  - **#16 Statistics chunk 11** — `iqr` (Q3 − Q1), `mad` (mean absolute deviation). Both algorithmic.
-  - **Remaining equation rows** — `factor_linear_expression` (G7), `solve_two_step_eq_distributive` (G7), `solve_two_step_inequality` (G7, needs number_line), `solve_linear_eq_*` (G8).
-  - **Remaining ratio rows** (need new widgets): `ratio_table`, `double_number_line`, `ratio_to_coordinate_pairs`, `multistep_ratio_word`, `scale_drawing`, `unit_rate_with_fractions`.
+  - **#12 Equations chunk 13** — `solve_linear_eq_with_distrib_collect` (G8, multi-step combine + distribute + solve). One more in the category.
+  - **Easy isolated wins** — `unit_rate_with_fractions` (G7) once the integer-answer setup is figured out; `absolute_value` (G6) standalone if the integers branch wants it.
+  - **Remaining ratio rows** (need new widgets): `ratio_table`, `double_number_line`, `ratio_to_coordinate_pairs`, `multistep_ratio_word`, `scale_drawing`.
+  - **Geometry** (#9–11): needs `RectangleArea`, `Polygon`, `Angle` widgets first.
   - **#9–#11 Geometry / area / perimeter** — needs `RectangleArea`, `Polygon`, `Angle` widgets first.
   - **#12–#14 Pre-algebra / equations** — `solve_one_step_eq_addition`, `solve_one_step_eq_mult`, `solve_two_step_eq`, etc.
   - **#16 Statistics** — `mean_median_mode_range`, basic data-display reading.

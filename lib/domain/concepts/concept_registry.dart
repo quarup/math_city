@@ -3340,10 +3340,10 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'factor_linear_expression',
     name: 'Factor a linear expression',
-    shortLabel: 'Factor a linear expression',
+    shortLabel: 'factor',
     categoryId: 'prealgebra',
     primaryGrade: 7,
-    prereqIds: ['add_subtract_linear_expressions', 'distributive_with_gcf'],
+    prereqIds: ['add_subtract_linear_expressions'],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
     categoryRowOrder: 14,
@@ -3377,7 +3377,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'solve_two_step_eq_distributive',
     name: 'Solve p(x+q) = r',
-    shortLabel: 'Solve p(x+q) = r',
+    shortLabel: 'p(x±q)=r',
     categoryId: 'prealgebra',
     primaryGrade: 7,
     prereqIds: ['solve_two_step_eq', 'expand_linear_expression'],
@@ -3410,7 +3410,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'solve_linear_eq_one_solution',
     name: 'Linear eq: one solution',
-    shortLabel: 'Linear eq: one solution',
+    shortLabel: 'ax+b=cx+d',
     categoryId: 'prealgebra',
     primaryGrade: 8,
     prereqIds: ['solve_two_step_eq'],

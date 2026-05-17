@@ -245,6 +245,67 @@ void main() {
     });
   });
 
+  group('factor_linear_expression', () {
+    test('answer is "k(x + b)" where k·1 = coeff and k·b = const', () {
+      final re = RegExp(r'^Factor: (\d+)x \+ (\d+)$');
+      final ansRe = RegExp(r'^(\d+)\(x \+ (\d+)\)$');
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'factor_linear_expression', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final coeff = int.parse(m!.group(1)!);
+        final cst = int.parse(m.group(2)!);
+        final am = ansRe.firstMatch(q.correctAnswer);
+        expect(am, isNotNull, reason: q.correctAnswer);
+        final k = int.parse(am!.group(1)!);
+        final b = int.parse(am.group(2)!);
+        expect(k, coeff);
+        expect(k * b, cst);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('solve_two_step_eq_distributive', () {
+    test('answer x satisfies p(x op q) = r', () {
+      final re = RegExp(r'^Solve for x: (\d+)\(x ([+−]) (\d+)\) = (\d+)$');
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'solve_two_step_eq_distributive', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final p = int.parse(m!.group(1)!);
+        final op = m.group(2)!;
+        final qq = int.parse(m.group(3)!);
+        final r = int.parse(m.group(4)!);
+        final x = int.parse(q.correctAnswer);
+        final inner = op == '+' ? x + qq : x - qq;
+        expect(p * inner, r);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('solve_linear_eq_one_solution', () {
+    test('answer x satisfies ax + b = cx + d; a != c', () {
+      final re = RegExp(
+        r'^Solve for x: (\d+)x \+ (\d+) = (\d+)x \+ (\d+)$',
+      );
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'solve_linear_eq_one_solution', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final a = int.parse(m!.group(1)!);
+        final b = int.parse(m.group(2)!);
+        final c = int.parse(m.group(3)!);
+        final d = int.parse(m.group(4)!);
+        expect(a, isNot(c));
+        final x = int.parse(q.correctAnswer);
+        expect(a * x + b, c * x + d);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
   group('substitute_to_check', () {
     test('Yes iff substituting candidate yields the right side', () {
       final re = RegExp(

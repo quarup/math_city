@@ -171,6 +171,9 @@ class GeneratorRegistry {
     'add_subtract_linear_expressions': addSubtractLinearExpressions,
     'equivalent_expressions_props': equivalentExpressionsProps,
     'substitute_to_check': substituteToCheck,
+    'factor_linear_expression': factorLinearExpression,
+    'solve_two_step_eq_distributive': solveTwoStepEqDistributive,
+    'solve_linear_eq_one_solution': solveLinearEqOneSolution,
     // Statistics
     'mean': meanGenerator,
     'median': medianGenerator,

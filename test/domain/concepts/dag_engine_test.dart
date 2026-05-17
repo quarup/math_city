@@ -267,10 +267,11 @@ void main() {
       final engine = DripFeedEngine(
         registry: GeneratorRegistry.defaultRegistry(),
       );
-      // The implemented ceiling is currently G7 (integers_add /
-      // integers_subtract / integers_multiply_divide landed in Phase 6
-      // sub-slice C). Clamping is min(stated, ceiling).
-      expect(engine.effectiveGradeFor(8), 7);
+      // The implemented ceiling is currently G8 (solve_linear_eq_one_solution
+      // landed in the equations chunk). Clamping is min(stated, ceiling).
+      // G9+ should still clamp down to 8.
+      expect(engine.effectiveGradeFor(9), 8);
+      expect(engine.effectiveGradeFor(8), 8);
       expect(engine.effectiveGradeFor(4), 4);
       expect(engine.effectiveGradeFor(2), 2);
       expect(engine.effectiveGradeFor(0), 0);

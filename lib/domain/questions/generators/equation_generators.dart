@@ -569,6 +569,131 @@ GeneratedQuestion equivalentExpressionsProps(Random rand) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────
+// factor_linear_expression (Grade 7)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "Factor 6x + 12" → "6(x + 2)". Picks a GCF k ≥ 2 and inner
+/// expression (x + b), then expands to get the prompt; the answer is
+/// the original factored form. MC over four plausible factored forms.
+GeneratedQuestion factorLinearExpression(Random rand) {
+  int k;
+  int b;
+  do {
+    k = rand.nextInt(7) + 2; // 2..8
+    b = rand.nextInt(8) + 2; // 2..9
+  } while (k == b); // avoid distractor `b(x + k)` colliding with correct
+  final coeff = k;
+  final constant = k * b;
+  final prompt = 'Factor: ${coeff}x + $constant';
+  final correct = '$k(x + $b)';
+  final distractors = <String>[
+    // Misconception: factored out coefficient but kept constant unchanged.
+    '$k(x + $constant)',
+    // Misconception: used the wrong GCF (b instead of k).
+    '$b(x + $k)',
+    // Misconception: factored x out.
+    'x($k + $constant)',
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'factor_linear_expression',
+    prompt: prompt,
+    correctAnswer: correct,
+    distractors: distractors,
+    explanation: [
+      'GCF of $coeff and $constant is $k.',
+      '$coeff = $k × 1, so ${coeff}x = $k × x; $constant = $k × $b.',
+      'Pull out $k: $correct.',
+    ],
+    answerFormat: AnswerFormat.string,
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// solve_two_step_eq_distributive (Grade 7)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "Solve 3(x + 2) = 12" → 2. Three-step solve: distribute, then
+/// subtract, then divide. Integer x ∈ [2, 9].
+GeneratedQuestion solveTwoStepEqDistributive(Random rand) {
+  final p = rand.nextInt(7) + 2; // 2..8
+  final q = rand.nextInt(9) + 1; // 1..9
+  final x = rand.nextInt(8) + 2; // 2..9
+  final isPlus = rand.nextBool();
+  final inner = isPlus ? x + q : x - q;
+  if (inner < 1) return solveTwoStepEqDistributive(rand);
+  final r = p * inner;
+  final op = isPlus ? '+' : _minus;
+  final prompt = 'Solve for x: $p(x $op $q) = $r';
+  final correct = '$x';
+  final candidates = <String>[
+    // Misconception: didn't distribute (treated as p × x = r).
+    '${r ~/ p}',
+    // Misconception: distributed but did the wrong inverse op.
+    '${isPlus ? inner + q : inner - q}',
+    // Off-by-one.
+    '${x + 1}',
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'solve_two_step_eq_distributive',
+    prompt: prompt,
+    correctAnswer: correct,
+    distractors: _intDistractors(x, candidates, rand),
+    explanation: [
+      'Distribute: ${p}x ${isPlus ? "+" : _minus} ${p * q} = $r.',
+      'Then ${isPlus ? "subtract ${p * q}" : "add ${p * q}"} and divide by $p.',
+      'x = $x.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// solve_linear_eq_one_solution (Grade 8)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "Solve 3x + 5 = 2x + 11" → 6. Variable on both sides; always pick
+/// coefficients so the resulting one-step `(a−c)x = d−b` has an integer
+/// solution.
+GeneratedQuestion solveLinearEqOneSolution(Random rand) {
+  // Pick the answer x, then pick a, b, c, d such that
+  //   a·x + b = c·x + d  AND  a != c.
+  final x = rand.nextInt(8) + 2; // 2..9
+  int a;
+  int c;
+  do {
+    a = rand.nextInt(7) + 2; // 2..8
+    c = rand.nextInt(5) + 1; // 1..5
+  } while (a == c);
+  // Pick a small positive intercept on the right; then b = c·x + d − a·x.
+  final d = rand.nextInt(9) + 1; // 1..9
+  final b = (c - a) * x + d;
+  // Require b ≥ 1 so the prompt reads naturally (no negative constants).
+  if (b < 1) return solveLinearEqOneSolution(rand);
+  final prompt = 'Solve for x: ${a}x + $b = ${c}x + $d';
+  final correct = '$x';
+  final candidates = <String>[
+    // Misconception: divided d by a.
+    '${d ~/ (a == 0 ? 1 : a)}',
+    // Misconception: ignored variable on right.
+    '${(d - b) ~/ (a == 0 ? 1 : a)}',
+    // Off-by-one.
+    '${x + 1}',
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'solve_linear_eq_one_solution',
+    prompt: prompt,
+    correctAnswer: correct,
+    distractors: _intDistractors(x, candidates, rand),
+    explanation: [
+      'Move x terms to one side: (${a - c})x = ${d - b}.',
+      'Divide by ${a - c}: x = ${d - b} ÷ ${a - c} = $x.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
 // substitute_to_check (Grade 6)
 // ─────────────────────────────────────────────────────────────────────────
 
