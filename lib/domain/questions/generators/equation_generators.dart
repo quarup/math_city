@@ -853,6 +853,81 @@ GeneratedQuestion solveLinearEqWithDistribCollect(Random rand) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────
+// solve_linear_eq_no_or_inf (Grade 8)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "How many solutions does this equation have? 3x + 5 = 3x + 7" →
+/// "No solution". Three answer classes drawn uniformly:
+///   - a ≠ c                → "One solution"
+///   - a = c and b ≠ d      → "No solution"
+///   - a = c and b = d      → "Infinitely many solutions"
+/// MC over those three plus a "Two solutions" misconception distractor.
+GeneratedQuestion solveLinearEqNoOrInf(Random rand) {
+  // 0 = one solution; 1 = no solution; 2 = infinite.
+  final outcome = rand.nextInt(3);
+  late int a;
+  late int b;
+  late int c;
+  late int d;
+  late String correct;
+
+  switch (outcome) {
+    case 0:
+      do {
+        a = rand.nextInt(7) + 2; // 2..8
+        c = rand.nextInt(5) + 1; // 1..5
+      } while (a == c);
+      b = rand.nextInt(9) + 1; // 1..9
+      d = rand.nextInt(9) + 1; // 1..9
+      correct = 'One solution';
+    case 1:
+      a = rand.nextInt(7) + 2;
+      c = a;
+      do {
+        b = rand.nextInt(9) + 1;
+        d = rand.nextInt(9) + 1;
+      } while (b == d);
+      correct = 'No solution';
+    default:
+      a = rand.nextInt(7) + 2;
+      c = a;
+      b = rand.nextInt(9) + 1;
+      d = b;
+      correct = 'Infinitely many solutions';
+  }
+
+  final prompt =
+      'How many solutions does this equation have? '
+      '${a}x + $b = ${c}x + $d';
+
+  // 3 classes + "Two solutions" misconception; drop whichever class is
+  // the correct answer so we end up with exactly 3 distinct distractors.
+  final pool = <String>[
+    'One solution',
+    'No solution',
+    'Infinitely many solutions',
+    'Two solutions',
+  ]..remove(correct);
+
+  return GeneratedQuestion(
+    conceptId: 'solve_linear_eq_no_or_inf',
+    prompt: prompt,
+    correctAnswer: correct,
+    distractors: pool,
+    explanation: [
+      'Move all x terms to one side and constants to the other.',
+      if (correct == 'One solution')
+        '(${a - c})x = ${d - b}, so there is exactly one value of x.'
+      else if (correct == 'No solution')
+        'x terms cancel: $b = $d is false, so no value of x works.'
+      else
+        'Both sides are identical — every value of x works.',
+    ],
+    answerFormat: AnswerFormat.string,
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
 // solve_system_substitution (Grade 8)
 // ─────────────────────────────────────────────────────────────────────────
 

@@ -206,3 +206,73 @@ GeneratedQuestion functionDefinitionCheck(Random rand) {
     answerFormat: AnswerFormat.string,
   );
 }
+
+// ─────────────────────────────────────────────────────────────────────────
+// compare_functions_representations (Grade 8)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "Function f: y = 3x + 2. Function g: passes through (1, 7) and (3, 17).
+/// Which has the greater rate of change?" → "Function g".
+///
+/// Both f and g are linear with distinct positive integer slopes; their
+/// representations are randomly chosen distinct entries from {equation,
+/// two points, table}. Restricting slopes to positives keeps "greater
+/// rate of change" unambiguous for grade 8.
+GeneratedQuestion compareFunctionsRepresentations(Random rand) {
+  int mF;
+  int mG;
+  do {
+    mF = rand.nextInt(5) + 2; // 2..6
+    mG = rand.nextInt(5) + 2;
+  } while (mF == mG);
+  final bF = rand.nextInt(9) + 1; // 1..9
+  final bG = rand.nextInt(9) + 1;
+
+  const reps = <String>['equation', 'two_points', 'table'];
+  // Pick two distinct rep types — one each for f and g.
+  final order = List<int>.generate(reps.length, (i) => i)..shuffle(rand);
+  final repF = reps[order[0]];
+  final repG = reps[order[1]];
+
+  final fDesc = _describeLinearFunction(mF, bF, repF);
+  final gDesc = _describeLinearFunction(mG, bG, repG);
+
+  final greater = mF > mG ? 'f' : 'g';
+  final correct = 'Function $greater';
+  final other = greater == 'f' ? 'g' : 'f';
+
+  final distractors = <String>[
+    'Function $other',
+    'They have the same rate of change',
+    "It can't be determined",
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'compare_functions_representations',
+    prompt:
+        'Function f: $fDesc. Function g: $gDesc. '
+        'Which has the greater rate of change?',
+    correctAnswer: correct,
+    distractors: distractors,
+    explanation: [
+      'Find the slope of each function.',
+      'Slope of f: $mF. Slope of g: $mG.',
+      'Since $mF ${mF > mG ? '>' : '<'} $mG, Function $greater is greater.',
+    ],
+    answerFormat: AnswerFormat.string,
+  );
+}
+
+String _describeLinearFunction(int m, int b, String rep) {
+  switch (rep) {
+    case 'equation':
+      return 'y = ${m}x + $b';
+    case 'two_points':
+      // x = 1 and x = 3 chosen for legibility; with positive integer m and
+      // b the resulting y values are also positive integers.
+      return 'passes through (1, ${m + b}) and (3, ${3 * m + b})';
+    case 'table':
+      return 'x→y values {(0, $b), (1, ${m + b}), (2, ${2 * m + b})}';
+  }
+  throw ArgumentError('Unknown representation: $rep');
+}

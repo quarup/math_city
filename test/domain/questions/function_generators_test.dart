@@ -123,4 +123,72 @@ void main() {
       expect(answers, containsAll(<String>['Yes', 'No']));
     });
   });
+
+  group('compare_functions_representations', () {
+    // Extract a function's slope from any of the three representations.
+    int extractSlope(String desc) {
+      // Equation form: "y = Mx + B" with M a positive integer.
+      final eq = RegExp(r'^y = (\d+)x \+ \d+$').firstMatch(desc);
+      if (eq != null) return int.parse(eq.group(1)!);
+      // Two-points form: "passes through (1, Y1) and (3, Y2)".
+      final tp = RegExp(
+        r'^passes through \(1, (\d+)\) and \(3, (\d+)\)$',
+      ).firstMatch(desc);
+      if (tp != null) {
+        final y1 = int.parse(tp.group(1)!);
+        final y2 = int.parse(tp.group(2)!);
+        return (y2 - y1) ~/ 2;
+      }
+      // Table form: "x→y values {(0, B), (1, B+M), (2, B+2M)}".
+      final tb = RegExp(
+        r'^x→y values \{\(0, (\d+)\), \(1, (\d+)\), \(2, \d+\)\}$',
+      ).firstMatch(desc);
+      if (tb != null) {
+        final y0 = int.parse(tb.group(1)!);
+        final y1 = int.parse(tb.group(2)!);
+        return y1 - y0;
+      }
+      throw StateError('Unrecognised representation: $desc');
+    }
+
+    test('correct answer is the function with the greater slope', () {
+      final re = RegExp(
+        r'^Function f: (.+?)\. Function g: (.+?)\. '
+        r'Which has the greater rate of change\?$',
+      );
+      final allReps = <String>{};
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'compare_functions_representations', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final fDesc = m!.group(1)!;
+        final gDesc = m.group(2)!;
+        final slopeF = extractSlope(fDesc);
+        final slopeG = extractSlope(gDesc);
+        expect(
+          slopeF,
+          isNot(slopeG),
+          reason: 'slopes must differ: ${q.prompt}',
+        );
+        final expected = slopeF > slopeG ? 'Function f' : 'Function g';
+        expect(q.correctAnswer, expected, reason: q.prompt);
+        _expectThreeDistinctDistractors(q);
+        // Track which representation kinds appeared.
+        for (final desc in <String>[fDesc, gDesc]) {
+          if (desc.startsWith('y =')) {
+            allReps.add('equation');
+          } else if (desc.startsWith('passes')) {
+            allReps.add('two_points');
+          } else if (desc.startsWith('x→y')) {
+            allReps.add('table');
+          }
+        }
+      }
+      // Sanity: each of the three representations shows up across seeds.
+      expect(
+        allReps,
+        containsAll(<String>['equation', 'two_points', 'table']),
+      );
+    });
+  });
 }

@@ -398,6 +398,47 @@ void main() {
     });
   });
 
+  group('solve_linear_eq_no_or_inf', () {
+    test('classification matches the equation a, b, c, d coefficients', () {
+      final re = RegExp(
+        r'^How many solutions does this equation have\? '
+        r'(\d+)x \+ (\d+) = (\d+)x \+ (\d+)$',
+      );
+      final answers = <String>{};
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'solve_linear_eq_no_or_inf', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final a = int.parse(m!.group(1)!);
+        final b = int.parse(m.group(2)!);
+        final c = int.parse(m.group(3)!);
+        final d = int.parse(m.group(4)!);
+        final String expected;
+        if (a != c) {
+          expected = 'One solution';
+        } else if (b == d) {
+          expected = 'Infinitely many solutions';
+        } else {
+          expected = 'No solution';
+        }
+        expect(q.correctAnswer, expected, reason: q.prompt);
+        answers.add(q.correctAnswer);
+        _expectThreeDistinctDistractors(q);
+        // "Two solutions" misconception is always present in the four choices.
+        expect(q.allChoices, contains('Two solutions'));
+      }
+      // Sanity: all three answer classes appear across many seeds.
+      expect(
+        answers,
+        containsAll(<String>[
+          'One solution',
+          'No solution',
+          'Infinitely many solutions',
+        ]),
+      );
+    });
+  });
+
   group('solve_linear_eq_with_distrib_collect', () {
     test('answer x satisfies a(x + b) + cx = d', () {
       final re = RegExp(
