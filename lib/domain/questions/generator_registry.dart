@@ -239,6 +239,8 @@ class GeneratorRegistry {
     'plot_first_quadrant': plotFirstQuadrant,
     'read_first_quadrant': readFirstQuadrant,
     'plot_four_quadrants': plotFourQuadrants,
+    'coord_distance_same_line': coordDistanceSameLine,
+    'pythagorean_distance_coords': pythagoreanDistanceCoords,
     // Probability
     'probability_zero_to_one': probabilityZeroToOne,
     'probability_simple_event': probabilitySimpleEvent,

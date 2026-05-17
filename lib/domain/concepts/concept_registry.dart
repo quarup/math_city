@@ -2985,7 +2985,7 @@ const List<Concept> allConcepts = [
     shortLabel: 'Distance between two points',
     categoryId: 'geometry',
     primaryGrade: 8,
-    prereqIds: ['pythagorean_apply_2d', 'polygon_on_coordinate_plane'],
+    prereqIds: ['pythagorean_apply_2d', 'coord_distance_same_line'],
     source: ConceptSource.algorithmicWithDiagram,
     diagramRequirement: DiagramRequired('coordinate_plane_q4'),
     categoryRowOrder: 45,

@@ -247,3 +247,162 @@ GeneratedQuestion plotFourQuadrants(Random rand) {
     answerFormat: AnswerFormat.string,
   );
 }
+
+// ─────────────────────────────────────────────────────────────────────────
+// coord_distance_same_line (Grade 6)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "What is the distance from A to B?" where A and B share one
+/// coordinate (same x → vertical line, or same y → horizontal line). The
+/// answer is the absolute difference on the *other* axis. Diagram shows
+/// both points labelled on a four-quadrant grid.
+GeneratedQuestion coordDistanceSameLine(Random rand) {
+  final sameX = rand.nextBool();
+  // Shared coordinate is anywhere in the range; the *differing* axis
+  // picks two distinct values v1 < v2 with v2 − v1 ∈ [2, 8].
+  final shared = rand.nextInt(11) - 5; // -5..5
+  final diff = rand.nextInt(7) + 2; // 2..8
+  // Pick v1 so that v2 = v1 + diff also fits inside [-5, 5].
+  final v1 = rand.nextInt(11 - diff) - 5; // -5..(5-diff)
+  final v2 = v1 + diff;
+
+  late int ax;
+  late int ay;
+  late int bx;
+  late int by;
+  if (sameX) {
+    ax = shared;
+    bx = shared;
+    ay = v1;
+    by = v2;
+  } else {
+    ax = v1;
+    bx = v2;
+    ay = shared;
+    by = shared;
+  }
+  final correct = diff;
+
+  // Misconception distractors:
+  //   - off-by-one in either direction (boundary-miscount)
+  //   - sum |v1| + |v2| (added the two coordinates instead of subtracted)
+  //   - just one of the coordinates (didn't subtract at all)
+  final candidates = <String>[
+    '${correct + 1}',
+    '${correct - 1}',
+    '${v1.abs() + v2.abs()}',
+    '${v1.abs()}',
+    '${v2.abs()}',
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'coord_distance_same_line',
+    prompt: 'What is the distance from A to B?',
+    diagram: CoordinatePlaneSpec(
+      minX: -5, maxX: 5, minY: -5, maxY: 5,
+      points: [
+        CoordinatePlanePoint(x: ax, y: ay, label: 'A'),
+        CoordinatePlanePoint(x: bx, y: by, label: 'B'),
+      ],
+    ),
+    correctAnswer: '$correct',
+    distractors: _distinctIntStrings(correct, candidates),
+    explanation: [
+      if (sameX)
+        'A and B have the same x — measure the gap on the y-axis.'
+      else
+        'A and B have the same y — measure the gap on the x-axis.',
+      'Distance = |$v2 − $v1| = $correct.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// pythagorean_distance_coords (Grade 8)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "What is the distance from A to B?" where A and B are at the
+/// endpoints of a Pythagorean triple's legs. Triples restricted to
+/// (3, 4, 5) and (6, 8, 10) so the answer is always an integer; both
+/// endpoints kept inside `[-8, 8]`. Diagram shows the two labelled
+/// points on a four-quadrant grid.
+GeneratedQuestion pythagoreanDistanceCoords(Random rand) {
+  // Pick a triple (a, b, c) and a random orientation of the legs.
+  final triple = rand.nextBool() ? (3, 4, 5) : (6, 8, 10);
+  final a0 = triple.$1;
+  final b0 = triple.$2;
+  final c = triple.$3;
+  // Random orientation: swap legs and/or negate either.
+  final dx = (rand.nextBool() ? a0 : b0) * (rand.nextBool() ? 1 : -1);
+  final dyRaw = (a0 + b0) - dx.abs(); // the other leg's magnitude
+  final dy = dyRaw * (rand.nextBool() ? 1 : -1);
+
+  const lo = -8;
+  const hi = 8;
+  // Pick ax so that ax + dx stays in [lo, hi].
+  final axMin = dx >= 0 ? lo : lo - dx;
+  final axMax = dx >= 0 ? hi - dx : hi;
+  final ax = axMin + rand.nextInt(axMax - axMin + 1);
+  final ayMin = dy >= 0 ? lo : lo - dy;
+  final ayMax = dy >= 0 ? hi - dy : hi;
+  final ay = ayMin + rand.nextInt(ayMax - ayMin + 1);
+  final bx = ax + dx;
+  final by = ay + dy;
+
+  final absDx = dx.abs();
+  final absDy = dy.abs();
+  final correct = c;
+  final candidates = <String>[
+    // Forgot the square root — gave a² + b².
+    '${absDx * absDx + absDy * absDy}',
+    // Added the legs instead of using the theorem.
+    '${absDx + absDy}',
+    // Gave one leg.
+    '$absDx',
+    '$absDy',
+    // Off-by-one (boundary miscount).
+    '${correct + 1}',
+    '${correct - 1}',
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'pythagorean_distance_coords',
+    prompt: 'What is the distance from A to B?',
+    diagram: CoordinatePlaneSpec(
+      minX: lo, maxX: hi, minY: lo, maxY: hi,
+      points: [
+        CoordinatePlanePoint(x: ax, y: ay, label: 'A'),
+        CoordinatePlanePoint(x: bx, y: by, label: 'B'),
+      ],
+    ),
+    correctAnswer: '$correct',
+    distractors: _distinctIntStrings(correct, candidates),
+    explanation: [
+      'Horizontal leg: $absDx. Vertical leg: $absDy.',
+      'a² + b² = ${absDx * absDx + absDy * absDy} = $correct².',
+      'Distance = $correct.',
+    ],
+  );
+}
+
+/// Three unique stringified-integer distractors that differ from
+/// [correct]. Falls back to ±i bumps if the candidate pool dedupes
+/// to fewer than 3.
+List<String> _distinctIntStrings(int correct, List<String> candidates) {
+  final out = <String>[];
+  final seen = <String>{'$correct'};
+  for (final c in candidates) {
+    if (out.length >= 3) break;
+    if (seen.add(c)) out.add(c);
+  }
+  for (var i = 2; out.length < 3 && i < 30; i++) {
+    for (final delta in <int>[i, -i]) {
+      final v = correct + delta;
+      if (v < 0) continue;
+      final s = '$v';
+      if (seen.add(s)) out.add(s);
+      if (out.length >= 3) break;
+    }
+  }
+  return out.take(3).toList();
+}
