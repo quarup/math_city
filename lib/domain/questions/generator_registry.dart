@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:math_city/domain/questions/generated_question.dart';
 import 'package:math_city/domain/questions/generators/add_sub_generators.dart';
 import 'package:math_city/domain/questions/generators/decimal_generators.dart';
+import 'package:math_city/domain/questions/generators/equation_generators.dart';
 import 'package:math_city/domain/questions/generators/fraction_generators.dart';
 import 'package:math_city/domain/questions/generators/integer_generators.dart';
 import 'package:math_city/domain/questions/generators/mult_div_generators.dart';
@@ -158,5 +159,11 @@ class GeneratorRegistry {
     'proportional_relationship': proportionalRelationship,
     'constant_of_proportionality': constantOfProportionality,
     'proportional_equation': proportionalEquation,
+    // Expressions / equations
+    'order_of_operations_no_exp': orderOfOperationsNoExp,
+    'nested_grouping': nestedGrouping,
+    'evaluate_expression': evaluateExpression,
+    'solve_one_step_eq_addition': solveOneStepEqAddition,
+    'solve_one_step_eq_mult': solveOneStepEqMult,
   };
 }
