@@ -161,6 +161,11 @@ const _shortLabelOverrides = <String, String>{
   'percent_intro': 'percent?',
   'percent_of_quantity': '% of N',
   'find_whole_from_part_percent': 'whole from %',
+  'percent_change': '% change',
+  'simple_interest': 'interest',
+  'commission': 'commission',
+  'markup_markdown': 'mark up/dn',
+  'sales_tax_tip': 'tax/tip',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.

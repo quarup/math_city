@@ -1842,7 +1842,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'percent_change',
     name: 'Percent increase/decrease',
-    shortLabel: 'Percent increase/decrease',
+    shortLabel: '% change',
     categoryId: 'decimals_percent',
     primaryGrade: 7,
     prereqIds: ['percent_of_quantity'],
@@ -1853,7 +1853,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'markup_markdown',
     name: 'Markup and markdown',
-    shortLabel: 'Markup and markdown',
+    shortLabel: 'mark up/dn',
     categoryId: 'decimals_percent',
     primaryGrade: 7,
     prereqIds: ['percent_change'],
@@ -1864,7 +1864,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'sales_tax_tip',
     name: 'Sales tax and tip',
-    shortLabel: 'Sales tax and tip',
+    shortLabel: 'tax/tip',
     categoryId: 'decimals_percent',
     primaryGrade: 7,
     prereqIds: ['percent_of_quantity'],
@@ -1875,7 +1875,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'simple_interest',
     name: 'Simple interest',
-    shortLabel: 'Simple interest',
+    shortLabel: 'interest',
     categoryId: 'decimals_percent',
     primaryGrade: 7,
     prereqIds: ['percent_of_quantity'],
@@ -1886,7 +1886,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'commission',
     name: 'Commission',
-    shortLabel: 'Commission',
+    shortLabel: 'commission',
     categoryId: 'decimals_percent',
     primaryGrade: 7,
     prereqIds: ['percent_of_quantity'],

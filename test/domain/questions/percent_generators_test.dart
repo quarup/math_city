@@ -85,4 +85,136 @@ void main() {
       }
     });
   });
+
+  group('percent_change', () {
+    test('answer is the percent change; arithmetic is consistent', () {
+      final re = RegExp(
+        r'^A value goes from (\d+) to (\d+)\. What percent (increase|decrease)\?$',
+      );
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'percent_change', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final original = int.parse(m!.group(1)!);
+        final updated = int.parse(m.group(2)!);
+        final dir = m.group(3)!;
+        final percent = int.parse(q.correctAnswer);
+        final delta = (updated - original).abs();
+        expect(
+          original * percent % 100,
+          0,
+          reason: 'non-integer change: ${q.prompt}',
+        );
+        expect(
+          original * percent ~/ 100,
+          delta,
+          reason: 'percent does not match magnitude in ${q.prompt}',
+        );
+        if (dir == 'increase') {
+          expect(updated, greaterThan(original));
+        } else {
+          expect(updated, lessThan(original));
+        }
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('simple_interest', () {
+    test('I = P × R × T / 100; principal is a multiple of 100', () {
+      final re = RegExp(
+        r'^\$(\d+) earns (\d+)% simple interest per year for (\d+) years?\..*\(in dollars\)$',
+      );
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'simple_interest', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final principal = int.parse(m!.group(1)!);
+        final rate = int.parse(m.group(2)!);
+        final years = int.parse(m.group(3)!);
+        expect(principal % 100, 0);
+        expect(rate, inInclusiveRange(2, 10));
+        expect(years, inInclusiveRange(1, 5));
+        expect(q.correctAnswer, '${principal * rate * years ~/ 100}');
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('commission', () {
+    test('commission = sale × rate / 100; always an integer dollar amount', () {
+      final re = RegExp(
+        r'^A salesperson earns (\d+)% commission on a \$(\d+) sale\..*\(in dollars\)$',
+      );
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'commission', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final rate = int.parse(m!.group(1)!);
+        final sale = int.parse(m.group(2)!);
+        expect(
+          rate * sale % 100,
+          0,
+          reason: 'non-integer commission in ${q.prompt}',
+        );
+        expect(q.correctAnswer, '${rate * sale ~/ 100}');
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('markup_markdown', () {
+    test('new price = original ± original×rate/100; correct direction', () {
+      final reUp = RegExp(
+        r'^A store buys an item for \$(\d+) and marks it up (\d+)%.*\(in dollars\)$',
+      );
+      final reDown = RegExp(
+        r'^An item costs \$(\d+)\. After a (\d+)% markdown,.*\(in dollars\)$',
+      );
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'markup_markdown', i);
+        final mUp = reUp.firstMatch(q.prompt);
+        final mDown = reDown.firstMatch(q.prompt);
+        expect(mUp != null || mDown != null, isTrue, reason: q.prompt);
+        final isUp = mUp != null;
+        final m = mUp ?? mDown!;
+        final original = int.parse(m.group(1)!);
+        final rate = int.parse(m.group(2)!);
+        expect(
+          original * rate % 100,
+          0,
+          reason: 'non-integer delta in ${q.prompt}',
+        );
+        final delta = original * rate ~/ 100;
+        final expected = isUp ? original + delta : original - delta;
+        expect(q.correctAnswer, '$expected');
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('sales_tax_tip', () {
+    test('extra = bill × rate / 100; always an integer dollar amount', () {
+      final reTip = RegExp(
+        r'^A meal cost \$(\d+)\. With a (\d+)% tip,.*\(in dollars\)$',
+      );
+      final reTax = RegExp(
+        r'^A purchase costs \$(\d+)\. With (\d+)% sales tax,.*\(in dollars\)$',
+      );
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'sales_tax_tip', i);
+        final m = reTip.firstMatch(q.prompt) ?? reTax.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final bill = int.parse(m!.group(1)!);
+        final rate = int.parse(m.group(2)!);
+        expect(
+          bill * rate % 100,
+          0,
+          reason: 'non-integer extra in ${q.prompt}',
+        );
+        expect(q.correctAnswer, '${bill * rate ~/ 100}');
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
 }

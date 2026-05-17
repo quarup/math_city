@@ -139,5 +139,10 @@ class GeneratorRegistry {
     'percent_intro': percentIntro,
     'percent_of_quantity': percentOfQuantity,
     'find_whole_from_part_percent': findWholeFromPartPercent,
+    'percent_change': percentChange,
+    'simple_interest': simpleInterest,
+    'commission': commission,
+    'markup_markdown': markupMarkdown,
+    'sales_tax_tip': salesTaxTip,
   };
 }

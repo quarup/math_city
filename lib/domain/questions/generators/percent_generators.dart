@@ -183,6 +183,226 @@ GeneratedQuestion findWholeFromPartPercent(Random rand) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────
+// percent_change (Grade 7)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "Increased from O to N. What's the percent increase?" — or the
+/// decrease variant. Picks parameters so the percent is a clean whole
+/// number in [5, 90], avoiding ±100% so the kid never sees a degenerate
+/// "all gone" or "doubled" case.
+GeneratedQuestion percentChange(Random rand) {
+  final isIncrease = rand.nextBool();
+  // Friendly percent magnitudes that produce clean integer values
+  // against the friendly original magnitudes below.
+  const friendlyPercents = <int>[10, 20, 25, 30, 40, 50, 60, 75, 80];
+  final percent = friendlyPercents[rand.nextInt(friendlyPercents.length)];
+  // Step makes percent × original divisible by 100.
+  final step = 100 ~/ _gcd(percent, 100);
+  final units = rand.nextInt(8) + 2; // 2..9
+  final original = step * units;
+  final delta = original * percent ~/ 100;
+  final updated = isIncrease ? original + delta : original - delta;
+  final correct = '$percent';
+
+  final word = isIncrease ? 'increase' : 'decrease';
+  final candidates = <String>[
+    // Misconception: reported the raw change magnitude, not the percent.
+    '$delta',
+    // Misconception: used updated instead of original as the base.
+    '${(delta * 100) ~/ (updated == 0 ? 1 : updated)}',
+    // Off-by-power-of-10.
+    '${percent * 10}',
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'percent_change',
+    prompt: isIncrease
+        ? 'A value goes from $original to $updated. What percent increase?'
+        : 'A value goes from $original to $updated. What percent decrease?',
+    correctAnswer: correct,
+    distractors: _wholeDistractors(percent, candidates, rand),
+    explanation: [
+      'Change = |$updated − $original| = $delta.',
+      'Percent $word = change ÷ original × 100.',
+      '$delta ÷ $original × 100 = $percent%.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// simple_interest (Grade 7)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "Principal \$P at R% per year for T years. How much interest?"
+/// I = P × R × T / 100. Parameters chosen so I is always a whole dollar.
+GeneratedQuestion simpleInterest(Random rand) {
+  // Friendly rates (small whole percents).
+  const rates = <int>[2, 3, 4, 5, 6, 8, 10];
+  final rate = rates[rand.nextInt(rates.length)];
+  // Term in years 1..5.
+  final years = rand.nextInt(5) + 1;
+  // Principal must make rate × years × principal divisible by 100.
+  // Easiest: principal is a multiple of 100.
+  final principal = 100 * (rand.nextInt(20) + 1); // 100..2000 in 100s
+  final interest = principal * rate * years ~/ 100;
+  final correct = '$interest';
+
+  final candidates = <String>[
+    // Misconception: forgot to multiply by time.
+    '${principal * rate ~/ 100}',
+    // Misconception: added rate + years instead of multiplying.
+    '${principal * (rate + years) ~/ 100}',
+    // Off by ÷100.
+    '${principal * rate * years}',
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'simple_interest',
+    prompt:
+        '\$$principal earns $rate% simple interest per year for $years '
+        'year${years == 1 ? "" : "s"}. How much interest? (in dollars)',
+    correctAnswer: correct,
+    distractors: _wholeDistractors(interest, candidates, rand),
+    explanation: [
+      'Simple interest = principal × rate × time ÷ 100.',
+      '\$$principal × $rate × $years ÷ 100 = \$$correct.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// commission (Grade 7)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "A salesperson earns R% commission on a \$S sale. Commission = ?"
+/// Reuses the percent-of-quantity arithmetic shape.
+GeneratedQuestion commission(Random rand) {
+  const rates = <int>[2, 3, 4, 5, 6, 8, 10, 12, 15, 20];
+  final rate = rates[rand.nextInt(rates.length)];
+  // Sale must make rate × sale divisible by 100.
+  final step = 100 ~/ _gcd(rate, 100);
+  final units = rand.nextInt(10) + 1; // 1..10
+  final sale = step * units;
+  final earned = sale * rate ~/ 100;
+  final correct = '$earned';
+
+  final candidates = <String>[
+    // Misconception: full sale (forgot to take a percent).
+    '$sale',
+    // Misconception: forgot the ÷100 step.
+    '${sale * rate}',
+    // Misconception: subtracted rate from sale.
+    '${sale - rate}',
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'commission',
+    prompt:
+        'A salesperson earns $rate% commission on a \$$sale sale. '
+        'How much commission? (in dollars)',
+    correctAnswer: correct,
+    distractors: _wholeDistractors(earned, candidates, rand),
+    explanation: [
+      'Commission = sale × rate ÷ 100.',
+      '\$$sale × $rate ÷ 100 = \$$correct.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// markup_markdown (Grade 7)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// Either "marked UP by R% from P → new price?" or "marked DOWN".
+/// Currently tagged `dataset` in curriculum.md but implemented
+/// algorithmically per the design principle 4 precedent (mult_compare_word).
+GeneratedQuestion markupMarkdown(Random rand) {
+  final isUp = rand.nextBool();
+  const rates = <int>[10, 15, 20, 25, 30, 40, 50];
+  final rate = rates[rand.nextInt(rates.length)];
+  final step = 100 ~/ _gcd(rate, 100);
+  final units = rand.nextInt(8) + 2; // 2..9
+  final original = step * units;
+  final delta = original * rate ~/ 100;
+  final updated = isUp ? original + delta : original - delta;
+  final correct = '$updated';
+
+  final candidates = <String>[
+    // Misconception: just the change amount.
+    '$delta',
+    // Misconception: wrong direction.
+    '${isUp ? original - delta : original + delta}',
+    // Misconception: original price.
+    '$original',
+  ];
+
+  final prompt = isUp
+      ? 'A store buys an item for \$$original and marks it up $rate%. '
+            'What is the new price? (in dollars)'
+      : 'An item costs \$$original. After a $rate% markdown, what is the '
+            'sale price? (in dollars)';
+
+  return GeneratedQuestion(
+    conceptId: 'markup_markdown',
+    prompt: prompt,
+    correctAnswer: correct,
+    distractors: _wholeDistractors(updated, candidates, rand),
+    explanation: [
+      '${isUp ? "Markup" : "Markdown"} = \$$original × $rate ÷ 100 = \$$delta.',
+      'New = \$$original ${isUp ? "+" : "−"} \$$delta = \$$correct.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// sales_tax_tip (Grade 7)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "A bill is \$B; the tax/tip rate is R%. How much extra?" Asks just
+/// for the tax/tip amount (not the total) so the answer is a clean
+/// percent-of-quantity. Currently tagged `dataset` in curriculum.md but
+/// implemented algorithmically per design-principle-4 precedent.
+GeneratedQuestion salesTaxTip(Random rand) {
+  final isTip = rand.nextBool();
+  const tipRates = <int>[10, 15, 18, 20, 25];
+  const taxRates = <int>[5, 6, 7, 8, 10];
+  final rate = (isTip
+      ? tipRates
+      : taxRates)[rand.nextInt((isTip ? tipRates : taxRates).length)];
+  final step = 100 ~/ _gcd(rate, 100);
+  final units = rand.nextInt(10) + 1; // 1..10
+  final bill = step * units;
+  final extra = bill * rate ~/ 100;
+  final correct = '$extra';
+
+  final candidates = <String>[
+    // Misconception: gave the total instead of just the extra.
+    '${bill + extra}',
+    // Misconception: gave the bill instead of the extra.
+    '$bill',
+    // Misconception: forgot the ÷100 step.
+    '${bill * rate}',
+  ];
+
+  final prompt = isTip
+      ? 'A meal cost \$$bill. With a $rate% tip, how much is the tip? '
+            '(in dollars)'
+      : 'A purchase costs \$$bill. With $rate% sales tax, how much is the '
+            'tax? (in dollars)';
+
+  return GeneratedQuestion(
+    conceptId: 'sales_tax_tip',
+    prompt: prompt,
+    correctAnswer: correct,
+    distractors: _wholeDistractors(extra, candidates, rand),
+    explanation: [
+      '${isTip ? "Tip" : "Tax"} = bill × rate ÷ 100.',
+      '\$$bill × $rate ÷ 100 = \$$correct.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
 
 int _gcd(int a, int b) {
   var x = a.abs();
