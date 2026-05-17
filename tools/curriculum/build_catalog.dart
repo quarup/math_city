@@ -142,6 +142,12 @@ const _shortLabelOverrides = <String, String>{
   'integers_add': '± int +',
   'integers_subtract': '± int −',
   'integers_multiply_divide': '± int ×÷',
+  'absolute_value': '|·|',
+  'opposites_and_zero': 'opposite',
+  'factors_of_n': 'factors',
+  'multiples_of_n': 'multiples',
+  'gcf_two_numbers': 'GCF',
+  'lcm_two_numbers': 'LCM',
   'rationals_add_sub': '± rat +−',
   'rationals_multiply_divide': '± rat ×÷',
   'decimal_notation_tenths': 'tenths',
@@ -241,10 +247,8 @@ const _prereqOverrides = <String, List<String>>{
   'round_to_10': ['place_value_2digit'],
   // drop compare_3digit (no generator) — same substitution.
   'round_to_100': ['place_value_3digit'],
-  // drop opposites_and_zero (no generator) — substitute the broadest
-  // basic-arithmetic prereq so kids meet integer addition having
-  // already worked through positive arithmetic.
-  'integers_add': ['add_within_100'],
+  // integers_add: opposites_and_zero now lives, so the curriculum.md
+  // prereq is met — no override needed.
   // drop fraction_denom_10_100 (no generator yet) — `decimal_notation_tenths`
   // becomes the entry point into the decimals branch.
   'decimal_notation_tenths': <String>[],
@@ -269,12 +273,22 @@ const _prereqOverrides = <String, List<String>>{
   // drop classify_count_categories (no generator) — substitute a basic
   // arithmetic background; mode is conceptually a "spot the repeat" skill.
   'mode': ['add_within_100'],
-  // drop absolute_value (no generator) — mean is enough background since
-  // values here are all positive so the absolute-value step is trivial.
+  // mad: absolute_value now lives, but it doesn't have a generator path
+  // visible to the DAG until after the integers branch fills in. Keep
+  // the simpler-prereq override so mad reaches kids who haven't done
+  // integers yet.
   'mad': ['mean'],
   // drop distributive_with_gcf (no generator) — substitute the more
   // basic combine-like-terms skill which is already in the DAG.
   'factor_linear_expression': ['add_subtract_linear_expressions'],
+  // drop integers_on_number_line (no generator yet — needs NumberLine
+  // diagram wiring for decimals support). Use add_within_100 as
+  // basic background for both absolute value and opposites.
+  'absolute_value': ['add_within_100'],
+  'opposites_and_zero': ['add_within_100'],
+  // drop skip_count_2 (no generator) — multiples is fundamentally a
+  // "did mult facts" skill.
+  'multiples_of_n': ['mult_facts_within_100'],
 };
 
 // ─────────────────────────────────────────────────────────────────────────

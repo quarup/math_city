@@ -141,3 +141,79 @@ GeneratedQuestion integersMultiplyDivide(Random rand) {
     rand: rand,
   );
 }
+
+// ─────────────────────────────────────────────────────────────────────────
+// absolute_value (Grade 6)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "What is |−7|?" → 7. Picks a non-zero integer; positive half the
+/// time, negative the other half so the kid sees both cases.
+GeneratedQuestion absoluteValue(Random rand) {
+  final magnitude = rand.nextInt(19) + 1; // 1..19
+  final isNeg = rand.nextBool();
+  final value = isNeg ? -magnitude : magnitude;
+  final shown = _signedNoParens(value);
+  final correct = '$magnitude';
+
+  final distractors = <String>{
+    // Misconception: kept the sign.
+    if (isNeg) _signedNoParens(value),
+    // Misconception: flipped a positive to negative.
+    if (!isNeg) _signedNoParens(-value),
+    // Off-by-one.
+    '${magnitude + 1}',
+    '${magnitude > 1 ? magnitude - 1 : magnitude + 2}',
+    '${magnitude + 2}',
+  }.where((s) => s != correct).take(3).toList();
+
+  return GeneratedQuestion(
+    conceptId: 'absolute_value',
+    prompt: 'What is |$shown|?',
+    correctAnswer: correct,
+    distractors: distractors,
+    explanation: [
+      'Absolute value = distance from 0 — always ≥ 0.',
+      '|$shown| = $magnitude.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// opposites_and_zero (Grade 6)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "What is the opposite of −7?" → 7. Special case: opposite of 0 is 0.
+GeneratedQuestion oppositesAndZero(Random rand) {
+  // Avoid 0 most of the time — too trivial. Include it ~10% to teach
+  // that the opposite of 0 is 0.
+  late int value;
+  if (rand.nextDouble() < 0.1) {
+    value = 0;
+  } else {
+    final magnitude = rand.nextInt(19) + 1;
+    value = rand.nextBool() ? -magnitude : magnitude;
+  }
+  final shown = _signedNoParens(value);
+  final correct = _signedNoParens(-value);
+
+  final distractors = <String>{
+    // Misconception: gave the same value back.
+    shown,
+    // Misconception: absolute value.
+    '${value.abs()}',
+    // Off-by-one.
+    _signedNoParens(-value + 1),
+    _signedNoParens(-value - 1),
+  }.where((s) => s != correct).take(3).toList();
+
+  return GeneratedQuestion(
+    conceptId: 'opposites_and_zero',
+    prompt: 'What is the opposite of $shown?',
+    correctAnswer: correct,
+    distractors: distractors,
+    explanation: [
+      'Opposite means same magnitude, flipped sign.',
+      'Opposite of $shown is $correct.',
+    ],
+  );
+}

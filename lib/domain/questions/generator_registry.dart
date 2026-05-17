@@ -7,6 +7,7 @@ import 'package:math_city/domain/questions/generators/equation_generators.dart';
 import 'package:math_city/domain/questions/generators/fraction_generators.dart';
 import 'package:math_city/domain/questions/generators/integer_generators.dart';
 import 'package:math_city/domain/questions/generators/mult_div_generators.dart';
+import 'package:math_city/domain/questions/generators/number_theory_generators.dart';
 import 'package:math_city/domain/questions/generators/percent_generators.dart';
 import 'package:math_city/domain/questions/generators/place_value_generators.dart';
 import 'package:math_city/domain/questions/generators/ratio_generators.dart';
@@ -120,6 +121,13 @@ class GeneratorRegistry {
     'integers_add': integersAdd,
     'integers_subtract': integersSubtract,
     'integers_multiply_divide': integersMultiplyDivide,
+    'absolute_value': absoluteValue,
+    'opposites_and_zero': oppositesAndZero,
+    // Number theory
+    'factors_of_n': factorsOfN,
+    'multiples_of_n': multiplesOfN,
+    'gcf_two_numbers': gcfTwoNumbers,
+    'lcm_two_numbers': lcmTwoNumbers,
     // Rationals
     'rationals_add_sub': rationalsAddSub,
     'rationals_multiply_divide': rationalsMultiplyDivide,
