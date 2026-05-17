@@ -519,6 +519,74 @@ GeneratedQuestion gcfTwoNumbers(Random rand) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────
+// distributive_with_gcf (Grade 6)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "Factor out the GCF: 12 + 18" → "6(2 + 3)". Same `g × p / g × q`
+/// parametrisation as `gcf_two_numbers` with coprime cofactors so the
+/// inside of the parens has no further common factor — that's the
+/// "GREATEST common factor" lesson.
+GeneratedQuestion distributiveWithGcf(Random rand) {
+  final g = rand.nextInt(11) + 2; // 2..12
+  int p;
+  int q;
+  do {
+    p = rand.nextInt(8) + 2; // 2..9
+    q = rand.nextInt(8) + 2;
+  } while (p == q || _gcd(p, q) != 1);
+  final a = g * p;
+  final b = g * q;
+  final correct = '$g($p + $q)';
+
+  // Smallest non-trivial sub-divisor of g (for the "used a non-greatest
+  // common factor" misconception). Null if g is prime.
+  int? subDivisor;
+  for (var d = 2; d < g; d++) {
+    if (g % d == 0) {
+      subDivisor = d;
+      break;
+    }
+  }
+
+  final candidates = <String>[
+    // Misconception: factored g out but forgot to divide either term.
+    '$g($a + $b)',
+    // Misconception: used a non-greatest common factor (if g is composite).
+    if (subDivisor != null) '$subDivisor(${a ~/ subDivisor} + ${b ~/ subDivisor})',
+    // Misconception: divided only the first operand.
+    '$g($p + $b)',
+    // Misconception: divided only the second operand.
+    '$g($a + $q)',
+  ];
+
+  final distractors = <String>[];
+  final seen = <String>{correct};
+  for (final c in candidates) {
+    if (distractors.length >= 3) break;
+    if (seen.add(c)) distractors.add(c);
+  }
+  // Fallback: perturb the inner sum if dedup left us short (happens
+  // when g is prime — no subDivisor candidate).
+  for (var i = 1; distractors.length < 3 && i < 6; i++) {
+    final cand = '$g($p + ${q + i})';
+    if (seen.add(cand)) distractors.add(cand);
+  }
+
+  return GeneratedQuestion(
+    conceptId: 'distributive_with_gcf',
+    prompt: 'Factor out the GCF: $a + $b',
+    correctAnswer: correct,
+    distractors: distractors,
+    explanation: [
+      'GCF of $a and $b is $g.',
+      '$a = $g × $p; $b = $g × $q.',
+      '$a + $b = $correct.',
+    ],
+    answerFormat: AnswerFormat.string,
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
 // lcm_two_numbers (Grade 6)
 // ─────────────────────────────────────────────────────────────────────────
 

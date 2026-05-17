@@ -63,6 +63,51 @@ void main() {
     });
   });
 
+  group('theoretical_vs_experimental', () {
+    test('answer matches the asked-for probability shape', () {
+      // Device → theoretical reduced canonical form. Anchored to the
+      // four scenarios in the generator.
+      const theoretical = <String, String>{
+        'heads': '1/2',
+        'a 4': '1/6',
+        'red': '1/4',
+        'blue': '1/5',
+      };
+      // Match either "$preamble $question" where question starts with
+      // "What is the THEORETICAL/EXPERIMENTAL probability of $resultShort?"
+      // Extract trials, observed, and the question shape.
+      final re = RegExp(
+        r'(\d+) times and .+? (\d+) times\. '
+        r'What is the (theoretical|experimental) probability of (.+)\?$',
+      );
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'theoretical_vs_experimental', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final trials = int.parse(m!.group(1)!);
+        final observed = int.parse(m.group(2)!);
+        final shape = m.group(3)!;
+        final resultShort = m.group(4)!;
+        final expectedTheoretical = theoretical[resultShort];
+        expect(expectedTheoretical, isNotNull,
+            reason: 'unknown resultShort: $resultShort');
+        if (shape == 'theoretical') {
+          expect(q.correctAnswer, expectedTheoretical);
+        } else {
+          final reduced =
+              Fraction(observed, trials).reduce().toCanonical();
+          expect(q.correctAnswer, reduced);
+          // Pedagogical guarantee: experimental ≠ theoretical so the
+          // two shapes don't collapse to the same answer.
+          expect(q.correctAnswer, isNot(expectedTheoretical));
+        }
+        expect(q.answerFormat, AnswerFormat.fraction);
+        expect(q.answerShape, AnswerShape.exactString);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
   group('probability_simple_event', () {
     test('answer = reduce(a / (a+b))', () {
       final re = RegExp(

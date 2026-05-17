@@ -187,6 +187,127 @@ GeneratedQuestion experimentalProbability(Random rand) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────
+// theoretical_vs_experimental (Grade 7)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// Two-shape generator that drills the *contrast* between theoretical
+/// and experimental probability. Same scenario in both shapes — only
+/// the question (THEORETICAL or EXPERIMENTAL) differs — so the
+/// "other" probability shows up as the natural misconception
+/// distractor.
+///
+/// Devices are fair (coin / 6-die / 4-spin / 5-spin) so theoretical P
+/// is a simple unit fraction. Observed count is forced away from the
+/// expected count so the two answers visibly differ.
+GeneratedQuestion theoreticalVsExperimental(Random rand) {
+  // (preamble, theoreticalNum, theoreticalDen, action phrase, result short)
+  // theoretical = num/den is the fixed device probability.
+  const scenarios = <(String, int, int, String, String)>[
+    ('A fair coin was flipped', 1, 2, 'landed heads', 'heads'),
+    ('A fair 6-sided die was rolled', 1, 6, 'showed a 4', 'a 4'),
+    ('A 4-color spinner was spun', 1, 4, 'landed on red', 'red'),
+    ('A 5-color spinner was spun', 1, 5, 'landed on blue', 'blue'),
+  ];
+  final s = scenarios[rand.nextInt(scenarios.length)];
+  final den = s.$3;
+  final numerator = s.$2;
+
+  // Pick trials as a multiple of the denominator so expected =
+  // trials × numerator/den is a clean integer.
+  final mult = rand.nextInt(8) + 3; // 3..10
+  final trials = mult * den;
+  final expected = mult * numerator;
+
+  // Observed: stay near expected but ≠ expected, and the resulting
+  // reduced experimental fraction must differ from the theoretical
+  // (otherwise both shapes give the same answer and the contrast is lost).
+  final theoretical = Fraction(numerator, den).reduce();
+  var observed = expected + 1; // fallback seed; overwritten below.
+  var experimental = Fraction(observed, trials).reduce();
+  for (var attempt = 0; attempt < 20; attempt++) {
+    final magnitude = rand.nextInt(3) + 2; // 2..4
+    final sign = rand.nextBool() ? 1 : -1;
+    final candidate = expected + sign * magnitude;
+    if (candidate < 1 || candidate >= trials) continue;
+    final candFraction = Fraction(candidate, trials).reduce();
+    if (candFraction.equalsByValue(theoretical)) continue;
+    observed = candidate;
+    experimental = candFraction;
+    break;
+  }
+  // If the loop exited without break, the fallback seed (expected + 1)
+  // is used. (expected + 1) / trials reduces to num/den only if
+  // (expected + 1) × den == num × trials, i.e. expected × den + den ==
+  // expected × den, which is impossible. So the seed always satisfies
+  // experimental ≠ theoretical.
+
+  final theoreticalStr = theoretical.toCanonical();
+  final experimentalStr = experimental.toCanonical();
+
+  final askTheoretical = rand.nextBool();
+  final correct = askTheoretical ? theoreticalStr : experimentalStr;
+  final preamble = '${s.$1} $trials times and ${s.$4} $observed times.';
+  final question = askTheoretical
+      ? 'What is the theoretical probability of ${s.$5}?'
+      : 'What is the experimental probability of ${s.$5}?';
+
+  // Distractor pool. The PRIMARY misconception distractor is the
+  // *other* probability — that's the central confusion this generator
+  // tests for.
+  final otherAnswer = askTheoretical ? experimentalStr : theoreticalStr;
+  // Complement: when asked for theoretical, the complement experimental
+  // ((trials-observed)/trials) is a believable wrong choice; when asked
+  // for experimental, the complement theoretical ((den-num)/den) is.
+  final complement = askTheoretical
+      ? Fraction(trials - observed, trials).reduce().toCanonical()
+      : Fraction(den - numerator, den).reduce().toCanonical();
+  // Un-reduced form of the experimental (a common slip).
+  final unreduced = '$observed/$trials';
+
+  final candidates = <String>[
+    otherAnswer,
+    complement,
+    unreduced,
+    // Fallback: a different unit fraction. (No scenario has den == 3,
+    // so 1/3 is always distinct from the theoretical.)
+    '1/3',
+  ];
+
+  final out = <String>[];
+  final seen = <String>{correct};
+  for (final c in candidates) {
+    if (out.length >= 3) break;
+    if (seen.contains(c)) continue;
+    final f = Fraction.tryParse(c);
+    if (f != null && f.equalsByValue(Fraction.tryParse(correct)!)) continue;
+    seen.add(c);
+    out.add(c);
+  }
+  for (var i = 1; out.length < 3 && i < 10; i++) {
+    final cand = '${i + 1}/${den + i}';
+    if (seen.add(cand)) out.add(cand);
+  }
+
+  return GeneratedQuestion(
+    conceptId: 'theoretical_vs_experimental',
+    prompt: '$preamble $question',
+    correctAnswer: correct,
+    distractors: out.take(3).toList(),
+    explanation: askTheoretical
+        ? [
+            'Theoretical probability depends on the device, not the data.',
+            'For a fair $numerator-out-of-$den device, P = $theoreticalStr.',
+          ]
+        : [
+            'Experimental P = successes ÷ trials.',
+            '$observed / $trials reduced = $experimentalStr.',
+          ],
+    answerFormat: AnswerFormat.fraction,
+    answerShape: AnswerShape.exactString,
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
 // sample_space_list (Grade 7)
 // ─────────────────────────────────────────────────────────────────────────
 
