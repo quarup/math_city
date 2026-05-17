@@ -42,25 +42,28 @@ void main() {
   setUp(() => registry = GeneratorRegistry.defaultRegistry());
 
   group('rationals_add_sub', () {
-    test('correct answer matches arithmetic; at least one operand negative',
-        () {
-      for (var i = 0; i < _iterations; i++) {
-        final q = _gen(registry, 'rationals_add_sub', i);
-        expect(q.conceptId, 'rationals_add_sub');
-        final parsed = _parsePrompt(q.prompt);
-        // At least one operand negative (we force this in the generator).
-        expect(
-          parsed.a.numerator < 0 || parsed.b.numerator < 0,
-          isTrue,
-          reason: 'expected at least one negative operand: ${q.prompt}',
-        );
-        final result =
-            parsed.op == '+' ? parsed.a + parsed.b : parsed.a - parsed.b;
-        expect(q.correctAnswer, result.toCanonical());
-        expect(q.answerFormat, AnswerFormat.fraction);
-        _expectThreeDistinctDistractors(q);
-      }
-    });
+    test(
+      'correct answer matches arithmetic; at least one operand negative',
+      () {
+        for (var i = 0; i < _iterations; i++) {
+          final q = _gen(registry, 'rationals_add_sub', i);
+          expect(q.conceptId, 'rationals_add_sub');
+          final parsed = _parsePrompt(q.prompt);
+          // At least one operand negative (we force this in the generator).
+          expect(
+            parsed.a.numerator < 0 || parsed.b.numerator < 0,
+            isTrue,
+            reason: 'expected at least one negative operand: ${q.prompt}',
+          );
+          final result = parsed.op == '+'
+              ? parsed.a + parsed.b
+              : parsed.a - parsed.b;
+          expect(q.correctAnswer, result.toCanonical());
+          expect(q.answerFormat, AnswerFormat.fraction);
+          _expectThreeDistinctDistractors(q);
+        }
+      },
+    );
 
     test('trailing-negative operand is wrapped in parens', () {
       for (var i = 0; i < 200; i++) {
@@ -87,8 +90,9 @@ void main() {
         expect(q.conceptId, 'rationals_multiply_divide');
         final parsed = _parsePrompt(q.prompt);
         expect(parsed.b.numerator, isNot(0));
-        final result =
-            parsed.op == '×' ? parsed.a * parsed.b : parsed.a / parsed.b;
+        final result = parsed.op == '×'
+            ? parsed.a * parsed.b
+            : parsed.a / parsed.b;
         expect(q.correctAnswer, result.toCanonical());
         expect(q.answerFormat, AnswerFormat.fraction);
         _expectThreeDistinctDistractors(q);

@@ -47,7 +47,8 @@ GeneratedQuestion _binaryOpQuestion({
   required int correct,
   required Random rand,
 }) {
-  final line = '${_signedNoParens(a)} $op ${_signed(b)} = '
+  final line =
+      '${_signedNoParens(a)} $op ${_signed(b)} = '
       '${_signedNoParens(correct)}';
   return GeneratedQuestion(
     conceptId: conceptId,

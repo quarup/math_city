@@ -162,8 +162,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                   onEdit: () => _openEdit(context, p),
                 ),
               _AddChip(onTap: () => _openCreation(context)),
-              if (kDebugMode)
-                _DebugChip(onTap: () => _openDebug(context)),
+              if (kDebugMode) _DebugChip(onTap: () => _openDebug(context)),
             ],
           ),
       ],
@@ -245,9 +244,7 @@ class _PlayerChip extends StatelessWidget {
               : theme.colorScheme.surfaceContainer,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
-            color: isSelected
-                ? theme.colorScheme.primary
-                : Colors.transparent,
+            color: isSelected ? theme.colorScheme.primary : Colors.transparent,
             width: 2,
           ),
         ),

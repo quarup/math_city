@@ -197,8 +197,7 @@ GeneratedQuestion equivalentFractionsCompute(Random rand) {
   );
   return GeneratedQuestion(
     conceptId: 'equivalent_fractions_compute',
-    prompt:
-        'Fill in the blank: $baseNum/$baseDen = ?/$targetDen',
+    prompt: 'Fill in the blank: $baseNum/$baseDen = ?/$targetDen',
     correctAnswer: correct,
     distractors: distractors,
     explanation: [
@@ -402,8 +401,7 @@ GeneratedQuestion subFractionsLikeDenom(Random rand) {
       'Same bottoms — just subtract the tops.',
       '$a − $b = $diffNum',
       'So $a/$denominator − $b/$denominator = $diffNum/$denominator.',
-      if (correct != '$diffNum/$denominator')
-        'Simplified, that is $correct.',
+      if (correct != '$diffNum/$denominator') 'Simplified, that is $correct.',
     ],
     answerFormat: AnswerFormat.fraction,
   );
@@ -492,8 +490,7 @@ GeneratedQuestion mixedToImproper(Random rand) {
   final distractors = _fractionDistractors(correctF, candidates, rand);
   return GeneratedQuestion(
     conceptId: 'mixed_to_improper',
-    prompt:
-        'Write $whole and $properNum/$denominator as an improper fraction.',
+    prompt: 'Write $whole and $properNum/$denominator as an improper fraction.',
     correctAnswer: correct,
     distractors: distractors,
     explanation: [
@@ -854,8 +851,7 @@ GeneratedQuestion addMixedLikeDenom(Random rand) {
     explanation: [
       'Add the wholes: $w1 + $w2 = ${w1 + w2}.',
       'Add the tops: $n1 + $n2 = $rawSumTop, over $denominator.',
-      if (carried)
-        'Top is $rawSumTop ≥ $denominator → carry 1 to the wholes.',
+      if (carried) 'Top is $rawSumTop ≥ $denominator → carry 1 to the wholes.',
       'Sum: $correct.',
     ],
     answerFormat: AnswerFormat.mixedNumber,
@@ -895,8 +891,7 @@ GeneratedQuestion subMixedLikeDenom(Random rand) {
       // Added the tops instead of subtracting (or treated borrow as add).
       if (wholeDiff > 0) '$wholeDiff ${n1 + n2}/$denominator',
       // Doubled denominator misconception.
-      if (wholeDiff > 0)
-        '$wholeDiff ${(n1 - n2).abs()}/${denominator * 2}',
+      if (wholeDiff > 0) '$wholeDiff ${(n1 - n2).abs()}/${denominator * 2}',
       // Just the whole-part difference, ignoring fractional parts.
       '$wholeDiff',
       // Off-by-one numerator on improper form.
@@ -1106,15 +1101,12 @@ GeneratedQuestion multAsScaling(Random rand) {
   const pool = ['bigger', 'smaller', 'the same', "can't tell"];
   return GeneratedQuestion(
     conceptId: 'mult_as_scaling',
-    prompt:
-        'Without computing: $n × $numerator/$denominator is ___ than $n.',
+    prompt: 'Without computing: $n × $numerator/$denominator is ___ than $n.',
     correctAnswer: result,
     distractors: pool.where((s) => s != result).toList(),
     explanation: [
-      if (numerator < denominator)
-        '$numerator/$denominator is less than 1.',
-      if (numerator > denominator)
-        '$numerator/$denominator is more than 1.',
+      if (numerator < denominator) '$numerator/$denominator is less than 1.',
+      if (numerator > denominator) '$numerator/$denominator is more than 1.',
       if (numerator == denominator)
         '$numerator/$denominator equals 1 (top = bottom).',
       '× by less than 1 shrinks; × by more than 1 grows; × by 1 keeps it.',

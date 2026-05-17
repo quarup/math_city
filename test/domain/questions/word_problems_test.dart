@@ -136,8 +136,9 @@ void main() {
         expect(out, contains('apples'));
         expect(out, contains('12'));
         expect(out, contains('8'));
-        final closing =
-            ctx.op == WordProblemOp.add ? 'have now?' : 'have left?';
+        final closing = ctx.op == WordProblemOp.add
+            ? 'have now?'
+            : 'have left?';
         expect(out, endsWith('How many apples does Diego $closing'));
       }
     });
@@ -242,8 +243,7 @@ void main() {
           }
         }
         for (final item in wordProblemItems) {
-          if (q.prompt.contains(' $item.') ||
-              q.prompt.contains(' $item ')) {
+          if (q.prompt.contains(' $item.') || q.prompt.contains(' $item ')) {
             itemsSeen.add(item);
             break;
           }

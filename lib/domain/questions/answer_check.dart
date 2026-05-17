@@ -70,5 +70,4 @@ final _mixedFormPattern = RegExp(r'^-?\d+\s+\d+/\d+$');
 final _improperFractionPattern = RegExp(r'^-?\d+/\d+$');
 
 bool _isMixedForm(String s) => _mixedFormPattern.hasMatch(s);
-bool _isImproperFractionForm(String s) =>
-    _improperFractionPattern.hasMatch(s);
+bool _isImproperFractionForm(String s) => _improperFractionPattern.hasMatch(s);

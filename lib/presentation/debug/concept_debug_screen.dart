@@ -20,8 +20,7 @@ class ConceptDebugScreen extends ConsumerStatefulWidget {
   const ConceptDebugScreen({super.key});
 
   @override
-  ConsumerState<ConceptDebugScreen> createState() =>
-      _ConceptDebugScreenState();
+  ConsumerState<ConceptDebugScreen> createState() => _ConceptDebugScreenState();
 }
 
 class _ConceptDebugScreenState extends ConsumerState<ConceptDebugScreen> {
@@ -74,8 +73,7 @@ class _ConceptDebugScreenState extends ConsumerState<ConceptDebugScreen> {
                       ),
                     ],
                     selected: {_band},
-                    onSelectionChanged: (s) =>
-                        setState(() => _band = s.first),
+                    onSelectionChanged: (s) => setState(() => _band = s.first),
                   ),
                 ),
               ],

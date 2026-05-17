@@ -83,35 +83,32 @@ class DripFeedEngine {
   /// in the DAG. Subsequent unlocks via [pickNext] do honor the DAG.
   List<Concept> pickStarterPack(int statedGrade, {int size = 4}) {
     final playerGrade = effectiveGradeFor(statedGrade);
-    final eligible = catalog
-        .where((c) {
-          if (!registry.isImplemented(c.id)) return false;
-          final p = initialProficiency(c.primaryGrade, playerGrade);
-          final band = bandForProficiency(p);
-          return band == ProficiencyBand.challenging ||
-              band == ProficiencyBand.comfortable;
-        })
-        .toList()
-      ..sort(compareConceptDifficulty);
+    final eligible = catalog.where((c) {
+      if (!registry.isImplemented(c.id)) return false;
+      final p = initialProficiency(c.primaryGrade, playerGrade);
+      final band = bandForProficiency(p);
+      return band == ProficiencyBand.challenging ||
+          band == ProficiencyBand.comfortable;
+    }).toList()..sort(compareConceptDifficulty);
 
     if (eligible.isNotEmpty) return eligible.take(size).toList();
 
     // Fallback: no in-band concepts. Surface the highest-grade implemented
     // concepts at-or-below grade so the wheel always has *something close
     // to* the frontier (not the easiest in the catalog).
-    final fallback = catalog
-        .where(
-          (c) =>
-              c.primaryGrade <= playerGrade &&
-              registry.isImplemented(c.id),
-        )
-        .toList()
-      // Sort highest-grade first, then by row order within grade.
-      ..sort((a, b) {
-        final byGrade = b.primaryGrade.compareTo(a.primaryGrade);
-        if (byGrade != 0) return byGrade;
-        return a.categoryRowOrder.compareTo(b.categoryRowOrder);
-      });
+    final fallback =
+        catalog
+            .where(
+              (c) =>
+                  c.primaryGrade <= playerGrade && registry.isImplemented(c.id),
+            )
+            .toList()
+          // Sort highest-grade first, then by row order within grade.
+          ..sort((a, b) {
+            final byGrade = b.primaryGrade.compareTo(a.primaryGrade);
+            if (byGrade != 0) return byGrade;
+            return a.categoryRowOrder.compareTo(b.categoryRowOrder);
+          });
     return fallback.take(size).toList();
   }
 
@@ -158,11 +155,8 @@ class DripFeedEngine {
     if (eligible.isEmpty) return null;
 
     // Step 1: lowest grade.
-    final minGrade = eligible
-        .map((c) => c.primaryGrade)
-        .reduce(min);
-    final tier1 =
-        eligible.where((c) => c.primaryGrade == minGrade).toList();
+    final minGrade = eligible.map((c) => c.primaryGrade).reduce(min);
+    final tier1 = eligible.where((c) => c.primaryGrade == minGrade).toList();
 
     // Step 2: prefer the category with the fewest currently-active
     // (introduced-but-not-mastered) concepts. Tiebreak by category display
@@ -176,22 +170,20 @@ class DripFeedEngine {
         )
         .length;
 
-    final candidateCategoryIds =
-        tier1.map((c) => c.categoryId).toSet().toList()
-          ..sort((a, b) {
-            final byActive = activeIn(a).compareTo(activeIn(b));
-            if (byActive != 0) return byActive;
-            final ca = findCategoryById(a)?.displayOrder ?? 1 << 30;
-            final cb = findCategoryById(b)?.displayOrder ?? 1 << 30;
-            return ca.compareTo(cb);
-          });
+    final candidateCategoryIds = tier1.map((c) => c.categoryId).toSet().toList()
+      ..sort((a, b) {
+        final byActive = activeIn(a).compareTo(activeIn(b));
+        if (byActive != 0) return byActive;
+        final ca = findCategoryById(a)?.displayOrder ?? 1 << 30;
+        final cb = findCategoryById(b)?.displayOrder ?? 1 << 30;
+        return ca.compareTo(cb);
+      });
     final chosenCategoryId = candidateCategoryIds.first;
 
     // Step 3: within-category, lowest categoryRowOrder.
-    final inCategory = tier1
-        .where((c) => c.categoryId == chosenCategoryId)
-        .toList()
-      ..sort((a, b) => a.categoryRowOrder.compareTo(b.categoryRowOrder));
+    final inCategory =
+        tier1.where((c) => c.categoryId == chosenCategoryId).toList()
+          ..sort((a, b) => a.categoryRowOrder.compareTo(b.categoryRowOrder));
     return inCategory.first;
   }
 }

@@ -67,6 +67,7 @@ class Concepts extends Table {
   TextColumn get shortLabel => text()();
   TextColumn get categoryId => text()();
   IntColumn get primaryGrade => integer()();
+
   /// Comma-separated list of prereq concept IDs. Empty string = root node.
   TextColumn get prereqIdsCsv => text().withDefault(const Constant(''))();
   TextColumn get sourceStrategy => text()();
@@ -150,8 +151,7 @@ class AppDatabase extends _$AppDatabase {
   }) => (update(players)..where((t) => t.id.equals(playerId))).write(
     PlayersCompanion(
       name: name != null ? Value(name) : const Value.absent(),
-      gradeLevel:
-          gradeLevel != null ? Value(gradeLevel) : const Value.absent(),
+      gradeLevel: gradeLevel != null ? Value(gradeLevel) : const Value.absent(),
       avatarConfig: avatarConfigJson != null
           ? Value(avatarConfigJson)
           : const Value.absent(),

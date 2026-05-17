@@ -26,14 +26,16 @@ class TotalStarsNotifier extends Notifier<int> {
       final player = ref.read(activePlayerProvider).asData?.value;
       final lifetime = (player?.lifetimeStarsEarned ?? 0) + stars;
       unawaited(
-        db.updatePlayerStars(
-          playerId,
-          currentStars: state,
-          lifetimeStarsEarned: lifetime,
-        ).then((_) {
-          // Invalidate so the player chips on HomeScreen show the new total.
-          ref.invalidate(allPlayersProvider);
-        }),
+        db
+            .updatePlayerStars(
+              playerId,
+              currentStars: state,
+              lifetimeStarsEarned: lifetime,
+            )
+            .then((_) {
+              // Invalidate so HomeScreen player chips show the new total.
+              ref.invalidate(allPlayersProvider);
+            }),
       );
     }
   }

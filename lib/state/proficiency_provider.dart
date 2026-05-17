@@ -64,9 +64,7 @@ class ProficiencyNotifier extends AsyncNotifier<Map<String, double>> {
         playerGrade: player.gradeLevel,
       );
       if (next != null) {
-        await ref
-            .read(introducedConceptsProvider.notifier)
-            .introduce(next.id);
+        await ref.read(introducedConceptsProvider.notifier).introduce(next.id);
         unlock = UnlockEvent(
           newConcept: next,
           masteredConcept: concept,
@@ -122,8 +120,7 @@ final wheelConceptsProvider = FutureProvider<List<Concept>>((ref) async {
   // surface the full introduced+implemented set so the wheel still spins.
   if (concepts.isEmpty) {
     return allConcepts
-        .where((c) =>
-            introduced.contains(c.id) && registry.isImplemented(c.id))
+        .where((c) => introduced.contains(c.id) && registry.isImplemented(c.id))
         .toList()
       ..sort(compareConceptDifficulty);
   }

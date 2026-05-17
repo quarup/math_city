@@ -101,16 +101,16 @@ GeneratedQuestion addSub2stepWordProblems(Random rand) {
     // Item must satisfy both contexts' edibility requirements if either
     // uses the eats verb.
     final eats = ctx1.requiresEdibleItems || ctx2.requiresEdibleItems;
-    items =
-        eats
-            ? pickRandom(edibleWordProblemItems, rand)
-            : pickRandom(wordProblemItems, rand);
+    items = eats
+        ? pickRandom(edibleWordProblemItems, rand)
+        : pickRandom(wordProblemItems, rand);
     a = rand.nextInt(36) + 10; // 10..45
     b1 = rand.nextInt(9) + 2; // 2..10
     b2 = rand.nextInt(9) + 2;
     intermediate = ctx1.op == WordProblemOp.add ? a + b1 : a - b1;
-    correct =
-        ctx2.op == WordProblemOp.add ? intermediate + b2 : intermediate - b2;
+    correct = ctx2.op == WordProblemOp.add
+        ? intermediate + b2
+        : intermediate - b2;
     if (intermediate >= 2 &&
         intermediate <= 100 &&
         correct >= 2 &&
@@ -119,24 +119,24 @@ GeneratedQuestion addSub2stepWordProblems(Random rand) {
     }
   }
 
-  String fillAction(WordProblemContext ctx, int b) =>
-      ctx.action.replaceAll('{Name}', name).replaceAll('{b}', '$b').replaceAll(
+  String fillAction(WordProblemContext ctx, int b) => ctx.action
+      .replaceAll('{Name}', name)
+      .replaceAll('{b}', '$b')
+      .replaceAll(
         '{items}',
         items,
       );
 
-  final closing =
-      ctx2.op == WordProblemOp.add ? 'have now' : 'have left';
-  final prompt = '$name has $a $items. '
+  final closing = ctx2.op == WordProblemOp.add ? 'have now' : 'have left';
+  final prompt =
+      '$name has $a $items. '
       'Then ${fillAction(ctx1, b1)} '
       'Then ${fillAction(ctx2, b2)} '
       'How many $items does $name $closing?';
 
   // Misconception: applied both ops as the first one (e.g. add+add when
   // it should have been add then sub).
-  final bothFirstOp = ctx1.op == WordProblemOp.add
-      ? a + b1 + b2
-      : a - b1 - b2;
+  final bothFirstOp = ctx1.op == WordProblemOp.add ? a + b1 + b2 : a - b1 - b2;
 
   return GeneratedQuestion(
     conceptId: 'add_sub_2step_word_problems',
@@ -184,7 +184,8 @@ GeneratedQuestion multCompareWord(Random rand) {
   final k = rand.nextInt(8) + 2; // 2..9
   final n = rand.nextInt(10) + 2; // 2..11
   final correct = k * n;
-  final prompt = '$name1 has $k times as many $items as $name2. '
+  final prompt =
+      '$name1 has $k times as many $items as $name2. '
       '$name2 has $n $items. How many $items does $name1 have?';
 
   return GeneratedQuestion(

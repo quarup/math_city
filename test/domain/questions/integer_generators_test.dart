@@ -72,7 +72,12 @@ void main() {
 
   group('integers_subtract', () {
     test('a, b ∈ [−20, 20]; difference correct; at least one negative', () {
-      final re = RegExp('^' r'(\S+) ' '$_minus' r' (\S+) = \?$');
+      final re = RegExp(
+        '^'
+        r'(\S+) '
+        '$_minus'
+        r' (\S+) = \?$',
+      );
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'integers_subtract', i);
         final m = re.firstMatch(q.prompt);

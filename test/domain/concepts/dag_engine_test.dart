@@ -75,8 +75,13 @@ void main() {
     test('starter pack excludes content well below player grade', () {
       // frac_a_b (G3) is registered so the implemented ceiling is G3 and
       // effectiveGradeFor(2) is a no-op (2 < 3 → 2).
-      final reg =
-          _registryFor(['add_5', 'sub_5', 'add_10', 'add_20', 'frac_a_b']);
+      final reg = _registryFor([
+        'add_5',
+        'sub_5',
+        'add_10',
+        'add_20',
+        'frac_a_b',
+      ]);
       final engine = DripFeedEngine(registry: reg, catalog: synthetic);
       // Grade-2 player: G0 concepts (add_5, sub_5, add_10) sit ≥2 below →
       // initial p=0.95, mastered, off the wheel. frac_a_b (G3) is above

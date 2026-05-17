@@ -10,25 +10,26 @@ abstract final class AppTheme {
   static const _logoYellow = Color(0xFFF0CC30); // gear inner
 
   static ThemeData get light {
-    final colorScheme = ColorScheme.fromSeed(
-      seedColor: _logoOrange,
-    ).copyWith(
-      primary: _logoTeal,
-      secondary: _logoOrange,
-      tertiary: _logoYellow,
-      // Realign container tones to the teal primary so cards/chips
-      // don't drift toward orange-derived peach.
-      primaryContainer: const Color(0xFFCFEEE8),
-      onPrimaryContainer: const Color(0xFF0E3F39),
-      // Light cool-gray surface family — neutral, pairs cleanly with the
-      // sky-blue gradients used on the home/splash screens.
-      surface: const Color(0xFFF7F8FA),
-      surfaceContainerLowest: Colors.white,
-      surfaceContainerLow: const Color(0xFFF0F2F5),
-      surfaceContainer: const Color(0xFFE5E9ED),
-      surfaceContainerHigh: const Color(0xFFDADFE3),
-      surfaceContainerHighest: const Color(0xFFCFD4D8),
-    );
+    final colorScheme =
+        ColorScheme.fromSeed(
+          seedColor: _logoOrange,
+        ).copyWith(
+          primary: _logoTeal,
+          secondary: _logoOrange,
+          tertiary: _logoYellow,
+          // Realign container tones to the teal primary so cards/chips
+          // don't drift toward orange-derived peach.
+          primaryContainer: const Color(0xFFCFEEE8),
+          onPrimaryContainer: const Color(0xFF0E3F39),
+          // Light cool-gray surface family — neutral, pairs cleanly with the
+          // sky-blue gradients used on the home/splash screens.
+          surface: const Color(0xFFF7F8FA),
+          surfaceContainerLowest: Colors.white,
+          surfaceContainerLow: const Color(0xFFF0F2F5),
+          surfaceContainer: const Color(0xFFE5E9ED),
+          surfaceContainerHigh: const Color(0xFFDADFE3),
+          surfaceContainerHighest: const Color(0xFFCFD4D8),
+        );
 
     return ThemeData(
       useMaterial3: true,

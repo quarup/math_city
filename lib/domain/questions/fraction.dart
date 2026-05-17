@@ -118,17 +118,15 @@ class Fraction {
     return '${parts.whole} ${parts.numerator}/${parts.denominator}';
   }
 
-  Fraction operator +(Fraction other) =>
-      Fraction(
-        numerator * other.denominator + other.numerator * denominator,
-        denominator * other.denominator,
-      );
+  Fraction operator +(Fraction other) => Fraction(
+    numerator * other.denominator + other.numerator * denominator,
+    denominator * other.denominator,
+  );
 
-  Fraction operator -(Fraction other) =>
-      Fraction(
-        numerator * other.denominator - other.numerator * denominator,
-        denominator * other.denominator,
-      );
+  Fraction operator -(Fraction other) => Fraction(
+    numerator * other.denominator - other.numerator * denominator,
+    denominator * other.denominator,
+  );
 
   Fraction operator *(Fraction other) =>
       Fraction(numerator * other.numerator, denominator * other.denominator);

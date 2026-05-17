@@ -130,8 +130,9 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
         widget.outcome == AnswerOutcome.equivalentNonCanonical;
 
     return Scaffold(
-      backgroundColor:
-          isCorrect ? palette.successGreenSoft : palette.errorRedSoft,
+      backgroundColor: isCorrect
+          ? palette.successGreenSoft
+          : palette.errorRedSoft,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(32),

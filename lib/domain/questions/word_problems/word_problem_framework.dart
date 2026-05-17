@@ -162,8 +162,8 @@ String composeWordProblem({
 /// the context requires it.
 String pickWordProblemItem(WordProblemContext context, Random rand) =>
     context.requiresEdibleItems
-        ? pickRandom(edibleWordProblemItems, rand)
-        : pickRandom(wordProblemItems, rand);
+    ? pickRandom(edibleWordProblemItems, rand)
+    : pickRandom(wordProblemItems, rand);
 
 /// Picks a uniformly-random element from [list] using [rand].
 T pickRandom<T>(List<T> list, Random rand) => list[rand.nextInt(list.length)];

@@ -6,8 +6,6 @@
 // To regenerate after editing curriculum.md:
 //   dart tools/curriculum/build_catalog.dart
 
-// ignore_for_file: lines_longer_than_80_chars // generated; long prereq lists are kept on one line for grep-ability
-
 import 'package:math_city/domain/concepts/concept.dart';
 
 const List<Concept> allConcepts = [
@@ -1573,7 +1571,11 @@ const List<Concept> allConcepts = [
     shortLabel: 'frac ÷ frac',
     categoryId: 'fractions',
     primaryGrade: 6,
-    prereqIds: ['div_unit_fraction_by_whole', 'div_whole_by_unit_fraction', 'mult_fractions_proper'],
+    prereqIds: [
+      'div_unit_fraction_by_whole',
+      'div_whole_by_unit_fraction',
+      'mult_fractions_proper',
+    ],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
     categoryRowOrder: 29,
@@ -1750,7 +1752,12 @@ const List<Concept> allConcepts = [
     shortLabel: 'Fluent +,−,×,÷ decimals',
     categoryId: 'decimals_percent',
     primaryGrade: 6,
-    prereqIds: ['add_decimals', 'sub_decimals', 'mult_decimals', 'div_by_decimal'],
+    prereqIds: [
+      'add_decimals',
+      'sub_decimals',
+      'mult_decimals',
+      'div_by_decimal',
+    ],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
     categoryRowOrder: 14,
@@ -2897,7 +2904,11 @@ const List<Concept> allConcepts = [
     shortLabel: 'Congruent figures',
     categoryId: 'geometry',
     primaryGrade: 8,
-    prereqIds: ['transformations_translation', 'transformations_reflection', 'transformations_rotation'],
+    prereqIds: [
+      'transformations_translation',
+      'transformations_reflection',
+      'transformations_rotation',
+    ],
     source: ConceptSource.algorithmicWithDiagram,
     diagramRequirement: DiagramRequired('coordinate_plane_q4'),
     categoryRowOrder: 38,
@@ -3350,7 +3361,11 @@ const List<Concept> allConcepts = [
     shortLabel: 'Solve px + q = r',
     categoryId: 'prealgebra',
     primaryGrade: 7,
-    prereqIds: ['solve_one_step_eq_mult', 'solve_one_step_eq_addition', 'integers_subtract'],
+    prereqIds: [
+      'solve_one_step_eq_mult',
+      'solve_one_step_eq_addition',
+      'integers_subtract',
+    ],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
     categoryRowOrder: 16,
@@ -3416,7 +3431,10 @@ const List<Concept> allConcepts = [
     shortLabel: 'Distrib + combine + solve',
     categoryId: 'prealgebra',
     primaryGrade: 8,
-    prereqIds: ['solve_two_step_eq_distributive', 'add_subtract_linear_expressions'],
+    prereqIds: [
+      'solve_two_step_eq_distributive',
+      'add_subtract_linear_expressions',
+    ],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
     categoryRowOrder: 22,

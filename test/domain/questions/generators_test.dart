@@ -245,20 +245,22 @@ void main() {
       }
     });
 
-    test('div_4digit_by_2digit: exact, dividend 4-digit, divisor ∈ [11,99]',
-        () {
-      for (var i = 0; i < _iterations; i++) {
-        final q = _gen(registry, 'div_4digit_by_2digit', i);
-        final parts = q.prompt.replaceAll(' = ?', '').split(' ÷ ');
-        final dividend = int.parse(parts[0]);
-        final divisor = int.parse(parts[1]);
-        final quotient = int.parse(q.correctAnswer);
-        expect(dividend, inInclusiveRange(1000, 9999));
-        expect(divisor, inInclusiveRange(11, 99));
-        expect(divisor * quotient, dividend);
-        _expectThreeDistinctDistractors(q);
-      }
-    });
+    test(
+      'div_4digit_by_2digit: exact, dividend 4-digit, divisor ∈ [11,99]',
+      () {
+        for (var i = 0; i < _iterations; i++) {
+          final q = _gen(registry, 'div_4digit_by_2digit', i);
+          final parts = q.prompt.replaceAll(' = ?', '').split(' ÷ ');
+          final dividend = int.parse(parts[0]);
+          final divisor = int.parse(parts[1]);
+          final quotient = int.parse(q.correctAnswer);
+          expect(dividend, inInclusiveRange(1000, 9999));
+          expect(divisor, inInclusiveRange(11, 99));
+          expect(divisor * quotient, dividend);
+          _expectThreeDistinctDistractors(q);
+        }
+      },
+    );
   });
 
   group('Fractions', () {
@@ -667,8 +669,8 @@ void main() {
         final expected = num < den
             ? 'smaller'
             : num > den
-                ? 'bigger'
-                : 'the same';
+            ? 'bigger'
+            : 'the same';
         expect(q.correctAnswer, expected);
         _expectThreeDistinctDistractors(q);
       }

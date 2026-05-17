@@ -28,7 +28,8 @@ class Clock extends StatelessWidget {
           tickColor: theme.colorScheme.onSurface,
           hourHandColor: theme.colorScheme.primary,
           minuteHandColor: theme.colorScheme.tertiary,
-          textStyle: theme.textTheme.titleMedium?.copyWith(
+          textStyle:
+              theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
               ) ??
               const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
@@ -83,7 +84,10 @@ class _ClockPainter extends CustomPainter {
         center.dy + r * math.sin(theta),
       );
       final tp = TextPainter(
-        text: TextSpan(text: '$h', style: textStyle.copyWith(color: tickColor)),
+        text: TextSpan(
+          text: '$h',
+          style: textStyle.copyWith(color: tickColor),
+        ),
         textDirection: TextDirection.ltr,
       )..layout();
       tp.paint(canvas, Offset(pos.dx - tp.width / 2, pos.dy - tp.height / 2));
@@ -109,8 +113,7 @@ class _ClockPainter extends CustomPainter {
 
     // Hour hand: angle accounts for minute progress.
     final hour12 = spec.hour % 12;
-    final hourAngle = -math.pi / 2 +
-        (hour12 + spec.minute / 60) * math.pi / 6;
+    final hourAngle = -math.pi / 2 + (hour12 + spec.minute / 60) * math.pi / 6;
     canvas.drawLine(
       center,
       Offset(

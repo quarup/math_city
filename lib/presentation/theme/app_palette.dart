@@ -94,17 +94,26 @@ class AppPalette extends ThemeExtension<AppPalette> {
   AppPalette lerp(ThemeExtension<AppPalette>? other, double t) {
     if (other is! AppPalette) return this;
     return AppPalette(
-      skyGradientStart:
-          Color.lerp(skyGradientStart, other.skyGradientStart, t)!,
+      skyGradientStart: Color.lerp(
+        skyGradientStart,
+        other.skyGradientStart,
+        t,
+      )!,
       skyGradientEnd: Color.lerp(skyGradientEnd, other.skyGradientEnd, t)!,
       coinGold: Color.lerp(coinGold, other.coinGold, t)!,
       coinGoldDeep: Color.lerp(coinGoldDeep, other.coinGoldDeep, t)!,
       streakOrange: Color.lerp(streakOrange, other.streakOrange, t)!,
       successGreen: Color.lerp(successGreen, other.successGreen, t)!,
-      successGreenSoft:
-          Color.lerp(successGreenSoft, other.successGreenSoft, t)!,
-      successGreenDeep:
-          Color.lerp(successGreenDeep, other.successGreenDeep, t)!,
+      successGreenSoft: Color.lerp(
+        successGreenSoft,
+        other.successGreenSoft,
+        t,
+      )!,
+      successGreenDeep: Color.lerp(
+        successGreenDeep,
+        other.successGreenDeep,
+        t,
+      )!,
       errorRedSoft: Color.lerp(errorRedSoft, other.errorRedSoft, t)!,
       errorRedDeep: Color.lerp(errorRedDeep, other.errorRedDeep, t)!,
       cityHillGreen: Color.lerp(cityHillGreen, other.cityHillGreen, t)!,

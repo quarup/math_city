@@ -40,10 +40,10 @@ class AreaGrid extends StatelessWidget {
                 final color = inRow && inCol
                     ? overlapColor
                     : inRow
-                        ? rowShade
-                        : inCol
-                            ? colShade
-                            : emptyColor;
+                    ? rowShade
+                    : inCol
+                    ? colShade
+                    : emptyColor;
                 return Expanded(
                   child: Container(
                     decoration: BoxDecoration(

@@ -381,11 +381,6 @@ String _emit(List<_ParsedConcept> concepts) {
     ..writeln('// To regenerate after editing curriculum.md:')
     ..writeln('//   dart tools/curriculum/build_catalog.dart')
     ..writeln()
-    ..writeln(
-      '// ignore_for_file: lines_longer_than_80_chars '
-      '// generated; long prereq lists are kept on one line for grep-ability',
-    )
-    ..writeln()
     ..writeln("import 'package:math_city/domain/concepts/concept.dart';")
     ..writeln()
     ..writeln('const List<Concept> allConcepts = [');

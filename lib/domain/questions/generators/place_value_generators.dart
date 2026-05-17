@@ -224,14 +224,15 @@ List<String> _roundingDistractors({
   required int factor,
   required Random rand,
 }) {
-  final candidates = <int>{
-    misconception,
-    correct + factor,
-    if (correct - factor >= 0) correct - factor,
-    correct + factor * 2,
-  }
-    ..remove(correct)
-    ..removeWhere((v) => v < 0);
+  final candidates =
+      <int>{
+          misconception,
+          correct + factor,
+          if (correct - factor >= 0) correct - factor,
+          correct + factor * 2,
+        }
+        ..remove(correct)
+        ..removeWhere((v) => v < 0);
   while (candidates.length < 3) {
     candidates.add(correct + factor * (candidates.length + 2));
   }
