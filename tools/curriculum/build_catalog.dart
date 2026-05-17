@@ -346,6 +346,14 @@ const _prereqOverrides = <String, List<String>>{
   // drop graph_linear_equation (no generator yet — needs CoordinatePlane).
   // linear_function_construct lives now and is in the same family.
   'function_definition_check': ['linear_function_construct'],
+  // drop right_acute_obtuse_angle (no generator yet — needs Angle
+  // diagram). Supplementary/complementary are fundamentally arithmetic
+  // (subtract from 180 / 90), so add_within_100 is a fair background.
+  'supplementary_angles': ['add_within_100'],
+  'complementary_angles': ['add_within_100'],
+  // vertical_angles / triangle_angle_sum / parallel_lines_transversal:
+  // their curriculum prereqs (supplementary_angles, vertical_angles) now
+  // live — no override needed.
 };
 
 // ─────────────────────────────────────────────────────────────────────────

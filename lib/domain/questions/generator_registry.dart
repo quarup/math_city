@@ -222,6 +222,11 @@ class GeneratorRegistry {
     'area_triangle': areaTriangle,
     'area_parallelogram': areaParallelogram,
     'area_trapezoid': areaTrapezoid,
+    'supplementary_angles': supplementaryAngles,
+    'complementary_angles': complementaryAngles,
+    'vertical_angles': verticalAngles,
+    'triangle_angle_sum': triangleAngleSum,
+    'parallel_lines_transversal': parallelLinesTransversal,
     // Probability
     'probability_zero_to_one': probabilityZeroToOne,
     'probability_simple_event': probabilitySimpleEvent,
