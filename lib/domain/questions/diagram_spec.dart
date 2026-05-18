@@ -361,6 +361,45 @@ class BarChartSpec extends DiagramSpec {
   final int maxY;
 }
 
+/// A picture graph (a.k.a. pictograph): one row per category, with a
+/// horizontal row of icon glyphs whose count visualises that category's
+/// value. The optional [scale] makes one icon represent multiple units
+/// (so `bananas = 6` with `scale = 2` is drawn as 3 icons + a "Each
+/// 🍌 = 2" key).
+///
+/// Used by `classify_count_categories`, `three_category_data`,
+/// `picture_graph_read`, `scaled_picture_graph`.
+class PictureGraphSpec extends DiagramSpec {
+  const PictureGraphSpec({
+    required this.title,
+    required this.rowLabels,
+    required this.values,
+    required this.icon,
+    this.scale = 1,
+  }) : assert(rowLabels.length == values.length, 'rows and values align'),
+       assert(rowLabels.length >= 2, 'need at least 2 rows'),
+       assert(scale > 0, 'scale must be > 0');
+
+  /// Header above the graph, e.g. "Favourite fruit".
+  final String title;
+
+  /// Row labels shown to the left of each icon row.
+  final List<String> rowLabels;
+
+  /// Per-row category counts (in real units, not icons). Each value must
+  /// be a non-negative multiple of [scale]; the renderer draws
+  /// `value ~/ scale` icons in that row.
+  final List<int> values;
+
+  /// Single character / short glyph repeated across each row. Typically
+  /// a Unicode emoji.
+  final String icon;
+
+  /// "1 icon = $scale units". 1 for unscaled picture graphs (the K-G2
+  /// case); >1 for scaled (G3 — `scaled_picture_graph`).
+  final int scale;
+}
+
 /// An infinite line on the coordinate plane, defined by two distinct
 /// points. The renderer extrapolates to the visible plot rect.
 class CoordinatePlaneLine {

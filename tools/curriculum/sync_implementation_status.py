@@ -58,6 +58,7 @@ WIDGET_TO_FILE = {
     # row in curriculum.md). Mapped here so the impl-vs-catalogued cross-check
     # passes.
     "TriangleAngles": "triangle_angles",
+    "PictureGraph": "picture_graph",
     "Spinner": "spinner",
     # §6.2 — second-tier
     "BaseTenBlocks": "base_ten_blocks",

@@ -382,6 +382,10 @@ const _shortLabelOverrides = <String, String>{
   'right_acute_obtuse_angle': '∠ kind?',
   'angle_addition': '∠ + ∠',
   'fraction_on_number_line': 'frac line',
+  'classify_count_categories': 'sort+count',
+  'three_category_data': '3 cats',
+  'picture_graph_read': 'pic graph',
+  'scaled_picture_graph': 'pic scaled',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
@@ -445,9 +449,8 @@ const _prereqOverrides = <String, List<String>>{
   // drop compare_order_rationals (no generator) — substitute basic
   // ordering/sort skill via sub_within_1000 which already lives in the DAG.
   'median': ['sub_within_1000'],
-  // drop classify_count_categories (no generator) — substitute a basic
-  // arithmetic background; mode is conceptually a "spot the repeat" skill.
-  'mode': ['add_within_100'],
+  // mode: classify_count_categories now lives (Chunk 55), so the
+  // curriculum prereq is met — no override needed.
   // mad: absolute_value now lives, but it doesn't have a generator path
   // visible to the DAG until after the integers branch fills in. Keep
   // the simpler-prereq override so mad reaches kids who haven't done
@@ -508,11 +511,8 @@ const _prereqOverrides = <String, List<String>>{
   'plot_four_quadrants': ['plot_first_quadrant', 'opposites_and_zero'],
   // pythagorean_distance_coords: polygon_on_coordinate_plane now lives
   // (Chunk 35), so the curriculum prereq is met — no override needed.
-  // drop picture_graph_read (no generator yet — same widget can render it
-  // but the prompt/distractor shape differs). Substitute add_within_100
-  // as basic arithmetic background; the bar chart itself carries the
-  // visual literacy needed.
-  'bar_graph_read': ['add_within_100'],
+  // bar_graph_read: picture_graph_read now lives (Chunk 55), so the
+  // curriculum prereq is met — no override needed.
   // bar_graph_compare prereqs are [bar_graph_read, sub_within_100] —
   // both implemented, no override needed.
   // scaled_bar_graph_read prereqs are [bar_graph_read,
@@ -540,10 +540,8 @@ const _prereqOverrides = <String, List<String>>{
   // box_plot prereq is [median] — implemented, no override needed.
   // compare_two_distributions prereq is [describe_distribution] —
   // implemented, no override needed.
-  // drop classify_count_categories (no generator — needs kindergarten
-  // sort-and-count widget). Substitute add_within_100 as basic background;
-  // reading a two-way table is essentially cell lookup + add/subtract.
-  'two_way_table_construct': ['add_within_100'],
+  // two_way_table_construct: classify_count_categories now lives —
+  // curriculum prereq is met, no override needed.
   // compare_numerals_1_10: read_numerals_0_20 now lives (Chunk 48) so
   // the curriculum prereq is met — no override needed.
   // two_way_relative_frequency prereqs are [two_way_table_construct,

@@ -29,6 +29,7 @@ import 'package:math_city/domain/questions/generators/mult_facts_extra_generator
 import 'package:math_city/domain/questions/generators/number_theory_generators.dart';
 import 'package:math_city/domain/questions/generators/numerals_word_generators.dart';
 import 'package:math_city/domain/questions/generators/percent_generators.dart';
+import 'package:math_city/domain/questions/generators/picture_graph_generators.dart';
 import 'package:math_city/domain/questions/generators/place_value_extra_generators.dart';
 import 'package:math_city/domain/questions/generators/place_value_generators.dart';
 import 'package:math_city/domain/questions/generators/polygon_coord_generators.dart';
@@ -438,5 +439,10 @@ class GeneratorRegistry {
     'right_acute_obtuse_angle': rightAcuteObtuseAngle,
     'angle_addition': angleAddition,
     'fraction_on_number_line': fractionOnNumberLine,
+    // K-G3 picture-graph family using the new PictureGraph widget
+    'classify_count_categories': classifyCountCategories,
+    'three_category_data': threeCategoryData,
+    'picture_graph_read': pictureGraphRead,
+    'scaled_picture_graph': scaledPictureGraph,
   };
 }
