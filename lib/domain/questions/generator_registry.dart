@@ -263,5 +263,8 @@ class GeneratorRegistry {
     // Data displays (dot / line plots)
     'line_plot_whole': lineplotWhole,
     'dot_plot': dotPlot,
+    'line_plot_fractional': lineplotFractional,
+    'line_plot_fraction_word': lineplotFractionWord,
+    'line_plot_5th_grade_ops': lineplot5thGradeOps,
   };
 }

@@ -133,8 +133,14 @@ class DotPlotSpec extends DiagramSpec {
     required this.values,
     required this.minX,
     required this.maxX,
+    this.denominator = 1,
   }) : assert(maxX > minX, 'maxX must be > minX'),
-       assert(values.length > 0, 'need at least one value');
+       assert(values.length > 0, 'need at least one value'),
+       assert(denominator > 0, 'denominator must be > 0'),
+       assert(
+         minX % denominator == 0 && maxX % denominator == 0,
+         'minX and maxX must be whole-number multiples of denominator',
+       );
 
   /// Header above the plot, e.g. "Plant heights" or "Books read".
   final String title;
@@ -143,12 +149,21 @@ class DotPlotSpec extends DiagramSpec {
   final String axisLabel;
 
   /// The data points. Duplicates are stacked vertically above the
-  /// corresponding axis tick. Every value must satisfy
-  /// `minX <= v <= maxX`.
+  /// corresponding axis tick. Every value satisfies `minX <= v <= maxX`
+  /// and represents `v / denominator` display units.
   final List<int> values;
 
+  /// Internal axis range in units of `1/denominator`. Both endpoints
+  /// must be whole-number multiples of [denominator] so the major ticks
+  /// land on integer display values.
   final int minX;
   final int maxX;
+
+  /// `1` for an integer dot plot (default). `2` / `4` / `8` for a line
+  /// plot at half / quarter / eighth precision: internal units divide by
+  /// this to give the display value. Used by `line_plot_fractional`,
+  /// `line_plot_fraction_word`, `line_plot_5th_grade_ops`.
+  final int denominator;
 }
 
 /// A vertical bar chart with one bar per category. `labels` and `values`
