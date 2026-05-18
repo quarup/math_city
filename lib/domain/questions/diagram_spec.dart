@@ -361,6 +361,46 @@ class BarChartSpec extends DiagramSpec {
   final int maxY;
 }
 
+/// A single coin or bill denomination shown in a [MoneySpec]. Values
+/// are in cents to keep arithmetic in integers (e.g. `quarter = 25`,
+/// `oneDollar = 100`, `fiveDollar = 500`).
+enum MoneyDenom {
+  penny(1, '1¢', isCoin: true),
+  nickel(5, '5¢', isCoin: true),
+  dime(10, '10¢', isCoin: true),
+  quarter(25, '25¢', isCoin: true),
+  oneDollar(100, r'$1', isCoin: false),
+  fiveDollar(500, r'$5', isCoin: false),
+  tenDollar(1000, r'$10', isCoin: false),
+  twentyDollar(2000, r'$20', isCoin: false);
+
+  const MoneyDenom(this.cents, this.label, {required this.isCoin});
+
+  /// Face value in cents.
+  final int cents;
+
+  /// Short kid-facing label. Coins are shown in `Nc` form, bills in
+  /// `$N` form.
+  final String label;
+
+  /// True for coins (rendered as circles), false for paper bills
+  /// (rendered as rounded rectangles).
+  final bool isCoin;
+}
+
+/// A small money figure showing a sequence of coins and/or bills. The
+/// renderer arranges them left-to-right (coins first, then bills) so
+/// the visual stays consistent across generator instances.
+///
+/// Used by `coins_id_value`, `count_coins`, `count_bills_coins`,
+/// `change_from_purchase`.
+class MoneySpec extends DiagramSpec {
+  const MoneySpec({required this.items})
+    : assert(items.length >= 1, 'need at least one coin or bill');
+
+  final List<MoneyDenom> items;
+}
+
 /// A picture graph (a.k.a. pictograph): one row per category, with a
 /// horizontal row of icon glyphs whose count visualises that category's
 /// value. The optional [scale] makes one icon represent multiple units

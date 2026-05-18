@@ -2251,7 +2251,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'coins_id_value',
     name: 'Coin values',
-    shortLabel: 'Coin values',
+    shortLabel: 'coin?',
     categoryId: 'measurement',
     primaryGrade: 1,
     prereqIds: [],
@@ -2262,7 +2262,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'count_coins',
     name: 'Count coins',
-    shortLabel: 'Count coins',
+    shortLabel: 'coin sum',
     categoryId: 'measurement',
     primaryGrade: 2,
     prereqIds: ['coins_id_value', 'skip_count_5', 'skip_count_10'],
@@ -2273,7 +2273,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'count_bills_coins',
     name: 'Bills and coins',
-    shortLabel: 'Bills and coins',
+    shortLabel: r'$ + ¢',
     categoryId: 'measurement',
     primaryGrade: 2,
     prereqIds: ['count_coins'],
@@ -2287,7 +2287,7 @@ const List<Concept> allConcepts = [
     shortLabel: r'$ word',
     categoryId: 'measurement',
     primaryGrade: 2,
-    prereqIds: ['add_within_100'],
+    prereqIds: ['count_bills_coins', 'add_within_100'],
     source: ConceptSource.dataset,
     diagramRequirement: DiagramOptional(),
     categoryRowOrder: 18,
@@ -2295,7 +2295,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'change_from_purchase',
     name: 'Make change',
-    shortLabel: 'Make change',
+    shortLabel: 'change',
     categoryId: 'measurement',
     primaryGrade: 2,
     prereqIds: ['money_word_problems', 'sub_within_100'],
