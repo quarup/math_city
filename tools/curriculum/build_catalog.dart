@@ -297,6 +297,20 @@ const _shortLabelOverrides = <String, String>{
   'two_way_relative_frequency': '2-way %',
   'ratio_to_coordinate_pairs': 'ratio plot',
   'dependent_independent_vars': 'indep var',
+  'mult_facts_2': '×2',
+  'mult_facts_3': '×3',
+  'mult_facts_4': '×4',
+  'mult_facts_5': '×5',
+  'mult_facts_6': '×6',
+  'mult_facts_7': '×7',
+  'mult_facts_8': '×8',
+  'mult_facts_9': '×9',
+  'mult_facts_10': '×10',
+  'mult_1digit_by_multiple_of_10': '× ×10',
+  'commutative_mult': 'a·b=b·a',
+  'associative_mult': '(ab)c',
+  'div_as_unknown_factor': 'a·?=c',
+  'arithmetic_patterns_in_tables': 'pattern',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
@@ -468,6 +482,11 @@ const _prereqOverrides = <String, List<String>>{
   'compare_numerals_1_10': ['count_to_10'],
   // two_way_relative_frequency prereqs are [two_way_table_construct,
   // percent_intro] — both implemented, no override needed.
+  // drop mult_meaning_groups (no generator — needs array_grid widget for
+  // "equal groups" intuition). Substitute mult_facts_within_100 as the
+  // direct prereq — the per-row tables are reinforcement of the mixed
+  // table, which kids encounter first.
+  'mult_facts_3': ['mult_facts_within_100'],
 };
 
 // ─────────────────────────────────────────────────────────────────────────

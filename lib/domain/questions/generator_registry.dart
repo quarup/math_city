@@ -19,6 +19,7 @@ import 'package:math_city/domain/questions/generators/histogram_generators.dart'
 import 'package:math_city/domain/questions/generators/integer_generators.dart';
 import 'package:math_city/domain/questions/generators/linear_function_generators.dart';
 import 'package:math_city/domain/questions/generators/mult_div_generators.dart';
+import 'package:math_city/domain/questions/generators/mult_facts_extra_generators.dart';
 import 'package:math_city/domain/questions/generators/number_theory_generators.dart';
 import 'package:math_city/domain/questions/generators/percent_generators.dart';
 import 'package:math_city/domain/questions/generators/place_value_generators.dart';
@@ -118,6 +119,21 @@ class GeneratorRegistry {
     'mult_multidigit_standard_alg': multMultidigitStandardAlg,
     'div_4digit_by_1digit': div4digitBy1digit,
     'div_4digit_by_2digit': div4digitBy2digit,
+    // Multiplication facts (per-row of the ×-table) and properties (G3)
+    'mult_facts_2': multFacts2,
+    'mult_facts_3': multFacts3,
+    'mult_facts_4': multFacts4,
+    'mult_facts_5': multFacts5,
+    'mult_facts_6': multFacts6,
+    'mult_facts_7': multFacts7,
+    'mult_facts_8': multFacts8,
+    'mult_facts_9': multFacts9,
+    'mult_facts_10': multFacts10,
+    'mult_1digit_by_multiple_of_10': mult1digitByMultipleOf10,
+    'commutative_mult': commutativeMult,
+    'associative_mult': associativeMult,
+    'div_as_unknown_factor': divAsUnknownFactor,
+    'arithmetic_patterns_in_tables': arithmeticPatternsInTables,
     // Fractions
     'fraction_a_over_b': fractionAOverB,
     'compare_fractions_same_denom': compareFractionsSameDenom,
