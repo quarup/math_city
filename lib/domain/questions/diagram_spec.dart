@@ -304,10 +304,42 @@ class BarChartSpec extends DiagramSpec {
   final int maxY;
 }
 
+/// An infinite line on the coordinate plane, defined by two distinct
+/// points. The renderer extrapolates to the visible plot rect.
+class CoordinatePlaneLine {
+  const CoordinatePlaneLine({
+    required this.x1,
+    required this.y1,
+    required this.x2,
+    required this.y2,
+    this.style = CoordinatePlaneLineStyle.solid,
+  }) : assert(
+         x1 != x2 || y1 != y2,
+         'a line needs two distinct points',
+       );
+
+  final num x1;
+  final num y1;
+  final num x2;
+  final num y2;
+  final CoordinatePlaneLineStyle style;
+}
+
+/// Visual style for a [CoordinatePlaneLine].
+enum CoordinatePlaneLineStyle {
+  /// Bold solid stroke in the primary colour. Default — used for
+  /// graphed equations.
+  solid,
+
+  /// Dashed stroke in a secondary colour. Used for "best-fit" overlays
+  /// on scatter plots so the line reads as suggested rather than canonical.
+  dashed,
+}
+
 /// A 2-D coordinate plane spanning `[minX, maxX] × [minY, maxY]` (inclusive
 /// integer ranges), with a grid at every integer step, labelled axes, and
-/// zero or more marked points. Covers both first-quadrant (`minX = minY =
-/// 0`) and four-quadrant (`minX, minY < 0`) flavours.
+/// zero or more marked points or lines. Covers both first-quadrant
+/// (`minX = minY = 0`) and four-quadrant (`minX, minY < 0`) flavours.
 class CoordinatePlaneSpec extends DiagramSpec {
   const CoordinatePlaneSpec({
     required this.minX,
@@ -315,6 +347,7 @@ class CoordinatePlaneSpec extends DiagramSpec {
     required this.minY,
     required this.maxY,
     this.points = const [],
+    this.lines = const [],
   }) : assert(maxX > minX, 'maxX must be > minX'),
        assert(maxY > minY, 'maxY must be > minY');
 
@@ -323,4 +356,8 @@ class CoordinatePlaneSpec extends DiagramSpec {
   final int minY;
   final int maxY;
   final List<CoordinatePlanePoint> points;
+
+  /// Optional list of lines drawn on top of the grid. Each line is
+  /// extrapolated to the visible plot rect.
+  final List<CoordinatePlaneLine> lines;
 }
