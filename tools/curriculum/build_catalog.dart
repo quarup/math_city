@@ -393,6 +393,8 @@ const _shortLabelOverrides = <String, String>{
   'measure_with_ruler_inches': 'ruler in',
   'measure_with_ruler_cm': 'ruler cm',
   'measure_to_half_quarter_inch': 'ruler ½/¼',
+  'measure_angle_protractor': 'measure ∠',
+  'draw_angle_protractor': 'draw ∠',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
@@ -507,9 +509,8 @@ const _prereqOverrides = <String, List<String>>{
   // classifying an angle as acute/right/obtuse doesn't really require
   // the line/ray/segment vocabulary to play.
   'right_acute_obtuse_angle': ['add_within_100'],
-  // drop measure_angle_protractor (no generator — needs Protractor
-  // widget). The angle-addition arithmetic only needs basic + skill.
-  'angle_addition': ['add_within_100'],
+  // angle_addition: measure_angle_protractor now lives (Chunk 58), so
+  // the curriculum prereq is met — no override needed.
   // drop measure_length_units (still no generator — needs the iterated-
   // units variant of the Ruler widget). Substitute add_within_20 as basic
   // count-up background; the ruler widget itself carries the visual

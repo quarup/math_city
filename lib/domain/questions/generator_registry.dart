@@ -35,6 +35,7 @@ import 'package:math_city/domain/questions/generators/place_value_extra_generato
 import 'package:math_city/domain/questions/generators/place_value_generators.dart';
 import 'package:math_city/domain/questions/generators/polygon_coord_generators.dart';
 import 'package:math_city/domain/questions/generators/probability_generators.dart';
+import 'package:math_city/domain/questions/generators/protractor_generators.dart';
 import 'package:math_city/domain/questions/generators/ratio_coord_generators.dart';
 import 'package:math_city/domain/questions/generators/ratio_generators.dart';
 import 'package:math_city/domain/questions/generators/rationals_generators.dart';
@@ -455,5 +456,8 @@ class GeneratorRegistry {
     'measure_with_ruler_inches': measureWithRulerInches,
     'measure_with_ruler_cm': measureWithRulerCm,
     'measure_to_half_quarter_inch': measureToHalfQuarterInch,
+    // G4 protractor family
+    'measure_angle_protractor': measureAngleProtractor,
+    'draw_angle_protractor': drawAngleProtractor,
   };
 }
