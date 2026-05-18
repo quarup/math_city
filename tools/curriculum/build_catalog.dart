@@ -390,6 +390,9 @@ const _shortLabelOverrides = <String, String>{
   'count_coins': 'coin sum',
   'count_bills_coins': r'$ + ¢',
   'change_from_purchase': 'change',
+  'measure_with_ruler_inches': 'ruler in',
+  'measure_with_ruler_cm': 'ruler cm',
+  'measure_to_half_quarter_inch': 'ruler ½/¼',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
@@ -507,6 +510,12 @@ const _prereqOverrides = <String, List<String>>{
   // drop measure_angle_protractor (no generator — needs Protractor
   // widget). The angle-addition arithmetic only needs basic + skill.
   'angle_addition': ['add_within_100'],
+  // drop measure_length_units (still no generator — needs the iterated-
+  // units variant of the Ruler widget). Substitute add_within_20 as basic
+  // count-up background; the ruler widget itself carries the visual
+  // measure-the-bar skill.
+  'measure_with_ruler_inches': ['add_within_20'],
+  'measure_with_ruler_cm': ['add_within_20'],
   // plot_first_quadrant: number_line_add_sub now lives — curriculum
   // prereq is met, no override needed.
   // drop integers_on_number_line (no generator yet). Substitute
@@ -521,12 +530,8 @@ const _prereqOverrides = <String, List<String>>{
   // both implemented, no override needed.
   // scaled_bar_graph_read prereqs are [bar_graph_read,
   // mult_facts_within_100] — both implemented, no override needed.
-  // drop measure_with_ruler_inches (no generator yet — would need a Ruler
-  // widget). Substitute add_within_20 as basic count-up-to-15 background
-  // (count_to_100_by_1 would be a better fit but has no generator); the
-  // dot plot questions are really "count the dots above this tick", which
-  // doesn't actually require physical-measurement skill.
-  'line_plot_whole': ['add_within_20'],
+  // line_plot_whole: measure_with_ruler_inches now lives (Chunk 57), so
+  // the curriculum prereq is met — no override needed.
   // dot_plot prereq is [line_plot_whole] — implemented, no override needed.
   // drop partition_halves_fourths (no generator — would need a FractionBar
   // partition exercise). Substitute fraction_a_over_b which carries the
@@ -552,18 +557,15 @@ const _prereqOverrides = <String, List<String>>{
   // percent_intro] — both implemented, no override needed.
   // mult_facts_3: mult_meaning_groups now lives (Chunk 52) — curriculum
   // prereq is met, no override needed.
-  // drop measure_with_ruler_inches (no generator yet — needs Ruler
-  // widget). The skill of length_diff_units is just subtraction in a
-  // word-problem framing, so sub_within_100 covers it.
-  'length_diff_units': ['sub_within_100'],
+  // length_diff_units: measure_with_ruler_inches now lives (Chunk 57), so
+  // the curriculum prereq is met — no override needed.
   // drop shape_attributes_basic (no generator — needs shape widget).
   // Substitute perimeter_polygon since "sides of a triangle" is the
   // same surface and kids who can compute perimeter already understand
   // that sides bound a polygon.
   'triangle_inequality_recognize': ['perimeter_polygon'],
-  // drop measure_with_ruler_inches (no generator — needs Ruler widget).
-  // The word-problem framing only needs +/− with two-digit operands.
-  'length_word_problems': ['add_within_100'],
+  // length_word_problems: measure_with_ruler_inches now lives (Chunk 57),
+  // so the curriculum prereq is met — no override needed.
   // money_word_problems: count_bills_coins now lives (Chunk 56), so the
   // curriculum prereq is met — no override needed.
   // drop identify_shape_2d (no generator — needs a Shape widget).
