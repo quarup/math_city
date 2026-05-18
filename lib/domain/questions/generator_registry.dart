@@ -38,6 +38,7 @@ import 'package:math_city/domain/questions/generators/probability_generators.dar
 import 'package:math_city/domain/questions/generators/ratio_coord_generators.dart';
 import 'package:math_city/domain/questions/generators/ratio_generators.dart';
 import 'package:math_city/domain/questions/generators/rationals_generators.dart';
+import 'package:math_city/domain/questions/generators/ruler_generators.dart';
 import 'package:math_city/domain/questions/generators/scatter_plot_generators.dart';
 import 'package:math_city/domain/questions/generators/statistics_generators.dart';
 import 'package:math_city/domain/questions/generators/time_generators.dart';
@@ -450,5 +451,9 @@ class GeneratorRegistry {
     'count_coins': countCoins,
     'count_bills_coins': countBillsCoins,
     'change_from_purchase': changeFromPurchase,
+    // G2-G3 length-measurement family using the new Ruler widget
+    'measure_with_ruler_inches': measureWithRulerInches,
+    'measure_with_ruler_cm': measureWithRulerCm,
+    'measure_to_half_quarter_inch': measureToHalfQuarterInch,
   };
 }

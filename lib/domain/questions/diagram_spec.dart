@@ -361,6 +361,44 @@ class BarChartSpec extends DiagramSpec {
   final int maxY;
 }
 
+/// A horizontal ruler showing a marked object measuring some fraction
+/// of the ruler's length. Lengths are tracked in units of
+/// `1/subdivisions` so a 3.5-inch object on a half-inch ruler is
+/// `markedLength = 7` with `subdivisions = 2`. The renderer draws major
+/// ticks at every whole unit (labelled) and minor ticks at every
+/// subdivision (unlabelled).
+///
+/// Used by `measure_with_ruler_inches`, `measure_with_ruler_cm`,
+/// `measure_to_half_quarter_inch`.
+class RulerSpec extends DiagramSpec {
+  const RulerSpec({
+    required this.totalLength,
+    required this.markedLength,
+    required this.unitLabel,
+    this.subdivisions = 1,
+  }) : assert(totalLength > 0, 'totalLength must be > 0'),
+       assert(subdivisions >= 1, 'subdivisions must be >= 1'),
+       assert(markedLength >= 1, 'markedLength must be >= 1'),
+       assert(
+         markedLength <= totalLength * subdivisions,
+         'markedLength must fit within the ruler',
+       );
+
+  /// Total ruler length in *whole* units (e.g. 6 = a 6-inch ruler).
+  final int totalLength;
+
+  /// Length of the object shown above the ruler, in units of
+  /// `1/subdivisions`. Display value is `markedLength / subdivisions`.
+  final int markedLength;
+
+  /// Unit label shown on the ruler, e.g. "in", "cm".
+  final String unitLabel;
+
+  /// `1` for whole-unit ticks only. `2` adds half ticks; `4` adds
+  /// quarter ticks.
+  final int subdivisions;
+}
+
 /// A single coin or bill denomination shown in a [MoneySpec]. Values
 /// are in cents to keep arithmetic in integers (e.g. `quarter = 25`,
 /// `oneDollar = 100`, `fiveDollar = 500`).
