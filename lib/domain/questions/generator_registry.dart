@@ -290,5 +290,7 @@ class GeneratorRegistry {
     'polygon_on_coordinate_plane': polygonOnCoordinatePlane,
     'transformations_translation': transformationsTranslation,
     'transformations_reflection': transformationsReflection,
+    'transformations_rotation': transformationsRotation,
+    'transformations_dilation': transformationsDilation,
   };
 }

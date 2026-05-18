@@ -124,6 +124,80 @@ void main() {
     );
   });
 
+  group('transformations_rotation', () {
+    test(
+      'rotation matches the prompt degrees; all 3 rotations appear',
+      () {
+        final degsSeen = <int>{};
+        for (var i = 0; i < _iterations; i++) {
+          final q = _gen(registry, 'transformations_rotation', i);
+          expect(q.diagram, isA<CoordinatePlaneSpec>());
+          final spec = q.diagram! as CoordinatePlaneSpec;
+          expect(spec.polygons, hasLength(2));
+          final pre = spec.polygons[0].vertices;
+          final img = spec.polygons[1].vertices;
+          expect(pre, hasLength(3));
+          expect(img, hasLength(3));
+
+          final m = RegExp(r'Rotate the triangle (\d+)°').firstMatch(q.prompt);
+          expect(m, isNotNull);
+          final deg = int.parse(m!.group(1)!);
+          expect(deg, isIn(const [90, 180, 270]));
+          degsSeen.add(deg);
+          // Each image vertex matches the rotation rule.
+          for (var k = 0; k < 3; k++) {
+            final p = pre[k];
+            final iV = img[k];
+            switch (deg) {
+              case 90:
+                expect(iV.x, -p.y);
+                expect(iV.y, p.x);
+              case 180:
+                expect(iV.x, -p.x);
+                expect(iV.y, -p.y);
+              case 270:
+                expect(iV.x, p.y);
+                expect(iV.y, -p.x);
+            }
+          }
+          _expectThreeDistinctDistractors(q);
+        }
+        expect(degsSeen, {90, 180, 270});
+      },
+    );
+  });
+
+  group('transformations_dilation', () {
+    test(
+      'image vertex = k × preimage vertex; k ∈ {2, 3}; both factors appear',
+      () {
+        final kSeen = <int>{};
+        for (var i = 0; i < _iterations; i++) {
+          final q = _gen(registry, 'transformations_dilation', i);
+          expect(q.diagram, isA<CoordinatePlaneSpec>());
+          final spec = q.diagram! as CoordinatePlaneSpec;
+          expect(spec.polygons, hasLength(2));
+          final pre = spec.polygons[0].vertices;
+          final img = spec.polygons[1].vertices;
+          expect(pre, hasLength(3));
+          expect(img, hasLength(3));
+
+          final m = RegExp(r'factor (\d+)').firstMatch(q.prompt);
+          expect(m, isNotNull);
+          final k = int.parse(m!.group(1)!);
+          expect(k, isIn(const [2, 3]));
+          kSeen.add(k);
+          for (var i = 0; i < 3; i++) {
+            expect(img[i].x, k * pre[i].x);
+            expect(img[i].y, k * pre[i].y);
+          }
+          _expectThreeDistinctDistractors(q);
+        }
+        expect(kSeen, {2, 3});
+      },
+    );
+  });
+
   group('transformations_reflection', () {
     test(
       'preimage + image polygons; axis taken from prompt; image vertex = '

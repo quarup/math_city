@@ -2879,7 +2879,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'transformations_rotation',
     name: 'Rotations',
-    shortLabel: 'Rotations',
+    shortLabel: 'rotate',
     categoryId: 'geometry',
     primaryGrade: 8,
     prereqIds: ['transformations_translation'],
@@ -2890,7 +2890,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'transformations_dilation',
     name: 'Dilations',
-    shortLabel: 'Dilations',
+    shortLabel: 'dilate',
     categoryId: 'geometry',
     primaryGrade: 8,
     prereqIds: ['transformations_translation'],
