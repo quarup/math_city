@@ -1942,7 +1942,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'ratio_table',
     name: 'Ratio tables',
-    shortLabel: 'Ratio tables',
+    shortLabel: 'ratio tbl',
     categoryId: 'ratios',
     primaryGrade: 6,
     prereqIds: ['equivalent_ratios'],
@@ -1997,7 +1997,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'double_number_line',
     name: 'Double number line',
-    shortLabel: 'Double number line',
+    shortLabel: '2× line',
     categoryId: 'ratios',
     primaryGrade: 6,
     prereqIds: ['equivalent_ratios'],
