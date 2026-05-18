@@ -234,7 +234,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'teen_numbers_as_ten_plus',
     name: 'Teens as ten + ones',
-    shortLabel: 'Teens as ten + ones',
+    shortLabel: 'teen = 10+',
     categoryId: 'place_value',
     primaryGrade: 0,
     prereqIds: ['count_to_20'],
@@ -248,7 +248,7 @@ const List<Concept> allConcepts = [
     shortLabel: 'place 2d',
     categoryId: 'place_value',
     primaryGrade: 1,
-    prereqIds: [],
+    prereqIds: ['teen_numbers_as_ten_plus'],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramOptional(),
     categoryRowOrder: 1,

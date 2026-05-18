@@ -764,6 +764,27 @@ enum ShapeKind {
   }
 }
 
+/// Base-ten place-value blocks: a count of hundreds (10×10 flat),
+/// tens (1×10 rod), and ones (1×1 unit cube). The renderer draws each
+/// in canonical Diene's-blocks form so kids see place value as
+/// physical magnitude.
+///
+/// Used by `teen_numbers_as_ten_plus` and (optionally) by 2- and
+/// 3-digit place-value generators when they want a concrete picture.
+class BaseTenBlocksSpec extends DiagramSpec {
+  const BaseTenBlocksSpec({
+    this.hundreds = 0,
+    this.tens = 0,
+    this.ones = 0,
+  })  : assert(hundreds >= 0, 'hundreds must be >= 0'),
+        assert(tens >= 0, 'tens must be >= 0'),
+        assert(ones >= 0, 'ones must be >= 0');
+
+  final int hundreds;
+  final int tens;
+  final int ones;
+}
+
 /// A schematic 2D or 3D figure used by shape-recognition, polygon-
 /// classification, and basic geometry generators. Drawn outline-only at
 /// a canonical orientation so kids can tell shape kinds apart at a

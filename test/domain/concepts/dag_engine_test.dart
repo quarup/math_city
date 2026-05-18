@@ -230,17 +230,19 @@ void main() {
         final pack = engine.pickStarterPack(0);
         expect(pack, hasLength(4));
         // pickStarterPack sorts by (grade, categoryRowOrder) and takes
-        // the first 4. After Chunk 59, four categories ship a G0 row-0
-        // concept: counting (count_to_10), add_sub (add_within_5),
-        // geometry (identify_shape_2d), and stats
-        // (classify_count_categories) — exactly fills the four slots.
+        // the first 4. After Chunk 61, five categories now ship a G0
+        // row-0 concept; the first four wins by category display order:
+        // counting (count_to_10), place_value
+        // (teen_numbers_as_ten_plus), add_sub (add_within_5), geometry
+        // (identify_shape_2d). The 5th K-grade root,
+        // stats (classify_count_categories), gets pushed out.
         expect(
           pack.map((c) => c.id).toList(),
           [
             'count_to_10',
+            'teen_numbers_as_ten_plus',
             'add_within_5',
             'identify_shape_2d',
-            'classify_count_categories',
           ],
         );
       },
