@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:math_city/domain/questions/decimal.dart';
+import 'package:math_city/domain/questions/diagram_spec.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
 import 'package:math_city/domain/questions/generator_registry.dart';
 
@@ -262,15 +263,10 @@ void main() {
 
   group('circle_circumference', () {
     test('answer = 2 × 3.14 × r as a canonical decimal', () {
-      final re = RegExp(
-        r'^What is the circumference of a circle with radius (\d+)\? '
-        r'Use π ≈ 3\.14\.$',
-      );
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'circle_circumference', i);
-        final m = re.firstMatch(q.prompt);
-        expect(m, isNotNull, reason: q.prompt);
-        final r = int.parse(m!.group(1)!);
+        final spec = q.diagram! as CircleSpec;
+        final r = spec.radius;
         final expected = Decimal(2 * 314 * r, 2).toCanonical();
         expect(q.correctAnswer, expected);
         expect(q.answerFormat, AnswerFormat.decimal);
@@ -281,15 +277,10 @@ void main() {
 
   group('area_circle', () {
     test('answer = 3.14 × r² as a canonical decimal', () {
-      final re = RegExp(
-        r'^What is the area of a circle with radius (\d+)\? '
-        r'Use π ≈ 3\.14\.$',
-      );
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'area_circle', i);
-        final m = re.firstMatch(q.prompt);
-        expect(m, isNotNull, reason: q.prompt);
-        final r = int.parse(m!.group(1)!);
+        final spec = q.diagram! as CircleSpec;
+        final r = spec.radius;
         final expected = Decimal(314 * r * r, 2).toCanonical();
         expect(q.correctAnswer, expected);
         expect(q.answerFormat, AnswerFormat.decimal);

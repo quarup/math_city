@@ -6,6 +6,7 @@ import 'package:math_city/presentation/diagrams/bar_chart.dart';
 import 'package:math_city/presentation/diagrams/base_ten_blocks.dart';
 import 'package:math_city/presentation/diagrams/box_3d.dart';
 import 'package:math_city/presentation/diagrams/box_plot.dart';
+import 'package:math_city/presentation/diagrams/circle.dart';
 import 'package:math_city/presentation/diagrams/clock.dart';
 import 'package:math_city/presentation/diagrams/coordinate_plane.dart';
 import 'package:math_city/presentation/diagrams/dot_plot.dart';
@@ -61,5 +62,6 @@ class DiagramRenderer extends StatelessWidget {
     final LineFigureSpec s => LineFigure(spec: s),
     final Box3DSpec s => Box3D(spec: s),
     final Net3DSpec s => Net3D(spec: s),
+    final CircleSpec s => Circle(spec: s),
   };
 }

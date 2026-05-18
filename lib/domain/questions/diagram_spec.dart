@@ -764,6 +764,30 @@ enum ShapeKind {
   }
 }
 
+/// A circle drawn at a fixed canonical size with optional radius
+/// and diameter markings + numeric labels. Used by
+/// `circle_circumference` and `area_circle`.
+class CircleSpec extends DiagramSpec {
+  const CircleSpec({
+    required this.radius,
+    this.showRadius = true,
+    this.showDiameter = false,
+  })  : assert(radius >= 1, 'radius must be >= 1');
+
+  /// The numeric radius value to label on the diagram. Visual size of
+  /// the circle is normalized by the widget — the label is what the
+  /// kid uses for arithmetic.
+  final int radius;
+
+  /// If true, draw a radius line from the centre to the boundary and
+  /// label it with the value.
+  final bool showRadius;
+
+  /// If true, draw a diameter line through the centre and label it
+  /// with 2·radius.
+  final bool showDiameter;
+}
+
 /// A 3D rectangular prism (length × width × height) drawn in
 /// isometric outline. Used by `volume_unit_cubes`,
 /// `pythagorean_apply_3d`, and other generators that benefit from

@@ -598,8 +598,8 @@ GeneratedQuestion circleCircumference(Random rand) {
   return GeneratedQuestion(
     conceptId: 'circle_circumference',
     prompt:
-        'What is the circumference of a circle with radius $r? '
-        'Use π ≈ 3.14.',
+        'What is the circumference of this circle? Use π ≈ 3.14.',
+    diagram: CircleSpec(radius: r),
     correctAnswer: correct.toCanonical(),
     distractors: _decimalDistractors(correct, candidates),
     explanation: [
@@ -634,7 +634,8 @@ GeneratedQuestion areaCircle(Random rand) {
 
   return GeneratedQuestion(
     conceptId: 'area_circle',
-    prompt: 'What is the area of a circle with radius $r? Use π ≈ 3.14.',
+    prompt: 'What is the area of this circle? Use π ≈ 3.14.',
+    diagram: CircleSpec(radius: r),
     correctAnswer: correct.toCanonical(),
     distractors: _decimalDistractors(correct, candidates),
     explanation: [
