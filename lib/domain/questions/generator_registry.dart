@@ -23,6 +23,7 @@ import 'package:math_city/domain/questions/generators/graph_extra_generators.dar
 import 'package:math_city/domain/questions/generators/graph_line_generators.dart';
 import 'package:math_city/domain/questions/generators/histogram_generators.dart';
 import 'package:math_city/domain/questions/generators/integer_generators.dart';
+import 'package:math_city/domain/questions/generators/line_figure_generators.dart';
 import 'package:math_city/domain/questions/generators/linear_function_generators.dart';
 import 'package:math_city/domain/questions/generators/misc_extra_generators.dart';
 import 'package:math_city/domain/questions/generators/money_generators.dart';
@@ -477,5 +478,10 @@ class GeneratorRegistry {
     // G6 ratio family on the TapeDiagram + DoubleNumberLine widgets
     'ratio_table': ratioTable,
     'double_number_line': doubleNumberLine,
+    // G4 line / ray / segment family on the LineFigure widget + a
+    // companion Shape-based generator
+    'identify_lines_rays_segments': identifyLinesRaysSegments,
+    'parallel_perpendicular_lines': parallelPerpendicularLines,
+    'classify_2d_by_lines_angles': classify2dByLinesAngles,
   };
 }

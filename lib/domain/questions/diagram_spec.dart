@@ -764,6 +764,46 @@ enum ShapeKind {
   }
 }
 
+/// What kind of one-dimensional figure to draw in a [LineFigureSpec].
+/// `line` extends infinitely both ways (arrows on each end); `ray`
+/// extends one way (arrow on one end, endpoint dot on the other);
+/// `segment` is bounded (endpoint dots on both ends).
+enum LineFigureKind {
+  line,
+  ray,
+  segment,
+  parallelLines,
+  perpendicularLines,
+  intersectingLines;
+
+  String get displayName {
+    switch (this) {
+      case LineFigureKind.line:
+        return 'line';
+      case LineFigureKind.ray:
+        return 'ray';
+      case LineFigureKind.segment:
+        return 'line segment';
+      case LineFigureKind.parallelLines:
+        return 'parallel';
+      case LineFigureKind.perpendicularLines:
+        return 'perpendicular';
+      case LineFigureKind.intersectingLines:
+        return 'intersecting';
+    }
+  }
+}
+
+/// A schematic figure showing a line / ray / segment, or a pair of
+/// two lines in one of three relationships (parallel / perpendicular
+/// / intersecting). Used by `identify_lines_rays_segments` and
+/// `parallel_perpendicular_lines`.
+class LineFigureSpec extends DiagramSpec {
+  const LineFigureSpec({required this.kind});
+
+  final LineFigureKind kind;
+}
+
 /// Two horizontal "tape" bars stacked vertically: the top bar is
 /// split into [topUnits] equal-width unit boxes, the bottom bar into
 /// [bottomUnits], both using the same unit size so the kid sees the

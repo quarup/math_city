@@ -78,6 +78,7 @@ WIDGET_TO_FILE = {
     "Net3D": "net_3d",
     "ColumnArithmetic": "column_arithmetic",
     "PercentGrid": "percent_grid",
+    "LineFigure": "line_figure",
 }
 
 # Total datasets tracked in §7.2.

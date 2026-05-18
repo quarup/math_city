@@ -406,6 +406,9 @@ const _shortLabelOverrides = <String, String>{
   'teen_numbers_as_ten_plus': 'teen = 10+',
   'ratio_table': 'ratio tbl',
   'double_number_line': '2× line',
+  'identify_lines_rays_segments': 'line/ray?',
+  'parallel_perpendicular_lines': '∥ ⊥ ×?',
+  'classify_2d_by_lines_angles': 'right ∠?',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
@@ -514,11 +517,8 @@ const _prereqOverrides = <String, List<String>>{
   // vertical_angles / triangle_angle_sum / parallel_lines_transversal:
   // their curriculum prereqs (supplementary_angles, vertical_angles) now
   // live — no override needed.
-  // drop identify_lines_rays_segments (still no generator — needs Shape
-  // widget). Substitute add_within_100 as basic arithmetic background;
-  // classifying an angle as acute/right/obtuse doesn't really require
-  // the line/ray/segment vocabulary to play.
-  'right_acute_obtuse_angle': ['add_within_100'],
+  // right_acute_obtuse_angle: identify_lines_rays_segments now lives
+  // (Chunk 63), so the curriculum prereq is met — no override needed.
   // angle_addition: measure_angle_protractor now lives (Chunk 58), so
   // the curriculum prereq is met — no override needed.
   // drop measure_length_units (still no generator — needs the iterated-
@@ -578,10 +578,8 @@ const _prereqOverrides = <String, List<String>>{
   // curriculum prereq is met — no override needed.
   // partition_into_rows_columns: identify_shape_2d now lives (Chunk 59),
   // so the curriculum prereq is met — no override needed.
-  // drop classify_2d_by_lines_angles (still no generator — needs the
-  // line/ray/segment vocab gens first). classify_quadrilaterals is the
-  // closest implemented step.
-  'classify_2d_hierarchy': ['classify_quadrilaterals'],
+  // classify_2d_hierarchy: classify_2d_by_lines_angles now lives
+  // (Chunk 63), so the curriculum prereq is met — no override needed.
 };
 
 // ─────────────────────────────────────────────────────────────────────────
