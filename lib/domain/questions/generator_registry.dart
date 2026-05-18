@@ -15,6 +15,7 @@ import 'package:math_city/domain/questions/generators/geometry_generators.dart';
 import 'package:math_city/domain/questions/generators/graph_line_generators.dart';
 import 'package:math_city/domain/questions/generators/histogram_generators.dart';
 import 'package:math_city/domain/questions/generators/integer_generators.dart';
+import 'package:math_city/domain/questions/generators/linear_function_generators.dart';
 import 'package:math_city/domain/questions/generators/mult_div_generators.dart';
 import 'package:math_city/domain/questions/generators/number_theory_generators.dart';
 import 'package:math_city/domain/questions/generators/percent_generators.dart';
@@ -282,5 +283,7 @@ class GeneratorRegistry {
     'informal_line_of_fit': informalLineOfFit,
     // Graphing (linear equations)
     'graph_linear_equation': graphLinearEquation,
+    'identify_linear_vs_nonlinear': identifyLinearVsNonlinear,
+    'solve_system_by_graphing': solveSystemByGraphing,
   };
 }

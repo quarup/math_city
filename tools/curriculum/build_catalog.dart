@@ -258,6 +258,8 @@ const _shortLabelOverrides = <String, String>{
   'scatter_plot_describe': 'scatter?',
   'informal_line_of_fit': 'best fit',
   'graph_linear_equation': 'graph y=mx+b',
+  'identify_linear_vs_nonlinear': 'linear?',
+  'solve_system_by_graphing': 'lines meet',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
