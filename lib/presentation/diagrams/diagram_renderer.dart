@@ -8,6 +8,7 @@ import 'package:math_city/presentation/diagrams/box_plot.dart';
 import 'package:math_city/presentation/diagrams/clock.dart';
 import 'package:math_city/presentation/diagrams/coordinate_plane.dart';
 import 'package:math_city/presentation/diagrams/dot_plot.dart';
+import 'package:math_city/presentation/diagrams/double_number_line.dart';
 import 'package:math_city/presentation/diagrams/fraction_bar.dart';
 import 'package:math_city/presentation/diagrams/histogram.dart';
 import 'package:math_city/presentation/diagrams/money.dart';
@@ -17,6 +18,7 @@ import 'package:math_city/presentation/diagrams/picture_graph.dart';
 import 'package:math_city/presentation/diagrams/protractor.dart';
 import 'package:math_city/presentation/diagrams/ruler.dart';
 import 'package:math_city/presentation/diagrams/shape.dart';
+import 'package:math_city/presentation/diagrams/tape_diagram.dart';
 import 'package:math_city/presentation/diagrams/tree_diagram.dart';
 import 'package:math_city/presentation/diagrams/triangle_angles.dart';
 import 'package:math_city/presentation/diagrams/two_way_table.dart';
@@ -51,5 +53,7 @@ class DiagramRenderer extends StatelessWidget {
     final ProtractorSpec s => Protractor(spec: s),
     final ShapeSpec s => Shape(spec: s),
     final BaseTenBlocksSpec s => BaseTenBlocks(spec: s),
+    final TapeDiagramSpec s => TapeDiagram(spec: s),
+    final DoubleNumberLineSpec s => DoubleNumberLine(spec: s),
   };
 }

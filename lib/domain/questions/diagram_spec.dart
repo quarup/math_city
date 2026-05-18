@@ -764,6 +764,55 @@ enum ShapeKind {
   }
 }
 
+/// Two horizontal "tape" bars stacked vertically: the top bar is
+/// split into [topUnits] equal-width unit boxes, the bottom bar into
+/// [bottomUnits], both using the same unit size so the kid sees the
+/// a:b ratio as the relative bar lengths.
+///
+/// Used by `ratio_table` and (optionally) by other proportional-
+/// reasoning generators.
+class TapeDiagramSpec extends DiagramSpec {
+  const TapeDiagramSpec({
+    required this.topUnits,
+    required this.bottomUnits,
+    this.topLabel,
+    this.bottomLabel,
+  })  : assert(topUnits >= 1, 'topUnits must be >= 1'),
+        assert(bottomUnits >= 1, 'bottomUnits must be >= 1');
+
+  final int topUnits;
+  final int bottomUnits;
+  final String? topLabel;
+  final String? bottomLabel;
+}
+
+/// Two parallel number lines stacked vertically with corresponding
+/// tick positions: position `i` on the top line corresponds to
+/// position `i` on the bottom line. Used to visualise a proportional
+/// relationship between two quantities (e.g. "for every 2 cups of
+/// flour, you need 5 cups of sugar").
+///
+/// Used by `double_number_line` and (optionally) other ratio /
+/// proportional-reasoning generators.
+class DoubleNumberLineSpec extends DiagramSpec {
+  const DoubleNumberLineSpec({
+    required this.topValues,
+    required this.bottomValues,
+    this.topLabel,
+    this.bottomLabel,
+  });
+
+  /// Tick values along the top line (left-to-right, including 0 at
+  /// position 0 by convention).
+  final List<int> topValues;
+
+  /// Tick values along the bottom line, same length as [topValues].
+  final List<int> bottomValues;
+
+  final String? topLabel;
+  final String? bottomLabel;
+}
+
 /// Base-ten place-value blocks: a count of hundreds (10×10 flat),
 /// tens (1×10 rod), and ones (1×1 unit cube). The renderer draws each
 /// in canonical Diene's-blocks form so kids see place value as

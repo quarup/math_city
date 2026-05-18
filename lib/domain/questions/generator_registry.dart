@@ -38,6 +38,7 @@ import 'package:math_city/domain/questions/generators/polygon_coord_generators.d
 import 'package:math_city/domain/questions/generators/probability_generators.dart';
 import 'package:math_city/domain/questions/generators/protractor_generators.dart';
 import 'package:math_city/domain/questions/generators/ratio_coord_generators.dart';
+import 'package:math_city/domain/questions/generators/ratio_diagram_generators.dart';
 import 'package:math_city/domain/questions/generators/ratio_generators.dart';
 import 'package:math_city/domain/questions/generators/rationals_generators.dart';
 import 'package:math_city/domain/questions/generators/ruler_generators.dart';
@@ -473,5 +474,8 @@ class GeneratorRegistry {
     'pythagorean_apply_3d': pythagoreanApply3d,
     // K place value on the BaseTenBlocks widget
     'teen_numbers_as_ten_plus': teenNumbersAsTenPlus,
+    // G6 ratio family on the TapeDiagram + DoubleNumberLine widgets
+    'ratio_table': ratioTable,
+    'double_number_line': doubleNumberLine,
   };
 }

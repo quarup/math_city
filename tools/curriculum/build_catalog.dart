@@ -404,6 +404,8 @@ const _shortLabelOverrides = <String, String>{
   'classify_2d_hierarchy': 'is a __?',
   'pythagorean_apply_3d': 'a²+b²+c²',
   'teen_numbers_as_ten_plus': 'teen = 10+',
+  'ratio_table': 'ratio tbl',
+  'double_number_line': '2× line',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
