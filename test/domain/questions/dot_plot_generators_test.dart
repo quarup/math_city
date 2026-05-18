@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:math_city/domain/questions/diagram_spec.dart';
+import 'package:math_city/domain/questions/fraction.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
 import 'package:math_city/domain/questions/generator_registry.dart';
 
@@ -52,6 +53,111 @@ void main() {
           _expectThreeDistinctDistractors(q);
         }
         expect(themesSeen.length, greaterThanOrEqualTo(2));
+      },
+    );
+  });
+
+  group('line_plot_fractional', () {
+    test(
+      'denom ∈ {2, 4}; asked value has count ≥ 1 and matches answer; '
+      'all values land in [0, maxX] internal units and are valid for '
+      'the spec; both denominators appear across seeds',
+      () {
+        final denomsSeen = <int>{};
+        for (var i = 0; i < _iterations; i++) {
+          final q = _gen(registry, 'line_plot_fractional', i);
+          expect(q.diagram, isA<DotPlotSpec>());
+          final spec = q.diagram! as DotPlotSpec;
+          expect(spec.denominator, isIn(const [2, 4]));
+          denomsSeen.add(spec.denominator);
+          for (final v in spec.values) {
+            expect(v, inInclusiveRange(spec.minX, spec.maxX));
+          }
+          // The asked display string appears verbatim in the prompt.
+          // Reconstruct the asked internal value from the count in the
+          // correctAnswer: count = how many values in spec.values equal V,
+          // where V is the asked tick. There must be exactly one V that
+          // matches.
+          final correctCount = int.parse(q.correctAnswer);
+          expect(correctCount, greaterThanOrEqualTo(1));
+          final candidates = <int>[
+            for (var v = spec.minX; v <= spec.maxX; v++)
+              if (spec.values.where((x) => x == v).length == correctCount)
+                v,
+          ];
+          // At least one tick has that count (the asked one). Confirm one
+          // such tick's display appears in the prompt.
+          final matched = candidates.any((v) {
+            final s = Fraction(v, spec.denominator).toMixed();
+            return q.prompt.contains(' $s ');
+          });
+          expect(matched, isTrue, reason: q.prompt);
+          _expectThreeDistinctDistractors(q);
+        }
+        expect(denomsSeen, {2, 4});
+      },
+    );
+  });
+
+  group('line_plot_fraction_word', () {
+    test(
+      'asked value is always a true fraction (not whole-inch); count ≥ 2; '
+      'correctAnswer equals count × value as a mixed number; distractors '
+      'are 3 distinct strings (no _distinctStringDistractors throw)',
+      () {
+        for (var i = 0; i < _iterations; i++) {
+          final q = _gen(registry, 'line_plot_fraction_word', i);
+          expect(q.diagram, isA<DotPlotSpec>());
+          final spec = q.diagram! as DotPlotSpec;
+          expect(q.answerFormat, AnswerFormat.mixedNumber);
+
+          // Find the asked tick: it's the one whose mixed-number display
+          // appears in the prompt and whose count in the data, when
+          // multiplied by the tick's value, equals correctAnswer.
+          final correctMixed = q.correctAnswer;
+          var found = false;
+          for (var v = spec.minX; v <= spec.maxX; v++) {
+            if (v % spec.denominator == 0) continue; // skip whole-inch
+            final count = spec.values.where((x) => x == v).length;
+            if (count < 2) continue;
+            final expected = Fraction(
+              count * v,
+              spec.denominator,
+            ).toMixed();
+            if (expected != correctMixed) continue;
+            final display = Fraction(v, spec.denominator).toMixed();
+            if (q.prompt.contains(display)) {
+              found = true;
+              break;
+            }
+          }
+          expect(found, isTrue, reason: q.prompt);
+          _expectThreeDistinctDistractors(q);
+        }
+      },
+    );
+  });
+
+  group('line_plot_5th_grade_ops', () {
+    test(
+      'correctAnswer equals (max − min) of the line-plot data, formatted '
+      'as a mixed number; the gap is always ≥ 1 inch (denom internal '
+      'units); distractors are 3 distinct strings',
+      () {
+        for (var i = 0; i < _iterations; i++) {
+          final q = _gen(registry, 'line_plot_5th_grade_ops', i);
+          expect(q.diagram, isA<DotPlotSpec>());
+          final spec = q.diagram! as DotPlotSpec;
+          expect(q.answerFormat, AnswerFormat.mixedNumber);
+
+          final maxV = spec.values.reduce((a, b) => a > b ? a : b);
+          final minV = spec.values.reduce((a, b) => a < b ? a : b);
+          final range = maxV - minV;
+          expect(range, greaterThanOrEqualTo(spec.denominator));
+          final expected = Fraction(range, spec.denominator).toMixed();
+          expect(q.correctAnswer, expected);
+          _expectThreeDistinctDistractors(q);
+        }
       },
     );
   });

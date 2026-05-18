@@ -247,6 +247,9 @@ const _shortLabelOverrides = <String, String>{
   'scaled_bar_graph_read': 'bar scaled',
   'line_plot_whole': 'line plot',
   'dot_plot': 'dot plot',
+  'line_plot_fractional': 'line ½/¼',
+  'line_plot_fraction_word': 'line × frac',
+  'line_plot_5th_grade_ops': 'line range',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
@@ -399,6 +402,14 @@ const _prereqOverrides = <String, List<String>>{
   // doesn't actually require physical-measurement skill.
   'line_plot_whole': ['add_within_20'],
   // dot_plot prereq is [line_plot_whole] — implemented, no override needed.
+  // drop partition_halves_fourths (no generator — would need a FractionBar
+  // partition exercise). Substitute fraction_a_over_b which carries the
+  // "I understand what 1/4 means as a fraction" intuition.
+  'line_plot_fractional': ['line_plot_whole', 'fraction_a_over_b'],
+  // line_plot_fraction_word prereqs are [line_plot_fractional,
+  // add_fractions_like_denom] — both implemented, no override needed.
+  // line_plot_5th_grade_ops prereqs are [line_plot_fractional,
+  // add_fractions_unlike_denom] — both implemented, no override needed.
 };
 
 // ─────────────────────────────────────────────────────────────────────────

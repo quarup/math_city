@@ -141,14 +141,27 @@ class _DotPlotPainter extends CustomPainter {
 
     double xFor(int v) => leftGutter + (v - spec.minX) * tickSpacing;
 
+    // Major ticks at whole-number positions (v % denominator == 0) get a
+    // longer tick + numeric label. Minor ticks (subdivisions) get a short
+    // tick only — kids learning line plots count the subdivisions
+    // themselves rather than reading every fractional label.
     for (var v = spec.minX; v <= spec.maxX; v++) {
       final x = xFor(v);
+      final isMajor = v % spec.denominator == 0;
+      final tickLen = isMajor ? 5.0 : 3.0;
       canvas.drawLine(
-        Offset(x, axisY - 4),
-        Offset(x, axisY + 4),
+        Offset(x, axisY - tickLen),
+        Offset(x, axisY + tickLen),
         axisPaint,
       );
-      _drawText(canvas, '$v', Offset(x, axisY + 14), tickStyle);
+      if (isMajor) {
+        _drawText(
+          canvas,
+          '${v ~/ spec.denominator}',
+          Offset(x, axisY + 14),
+          tickStyle,
+        );
+      }
     }
 
     // Axis label below the tick numbers.

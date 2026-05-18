@@ -3689,10 +3689,10 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'line_plot_fractional',
     name: 'Line plot (½, ¼, ⅛)',
-    shortLabel: 'Line plot (½, ¼, ⅛)',
+    shortLabel: 'line ½/¼',
     categoryId: 'stats',
     primaryGrade: 4,
-    prereqIds: ['line_plot_whole', 'partition_halves_fourths'],
+    prereqIds: ['line_plot_whole', 'fraction_a_over_b'],
     source: ConceptSource.algorithmicWithDiagram,
     diagramRequirement: DiagramRequired('line_plot'),
     categoryRowOrder: 8,
@@ -3700,7 +3700,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'line_plot_fraction_word',
     name: 'Line plot fraction problems',
-    shortLabel: 'Line plot fraction problems',
+    shortLabel: 'line × frac',
     categoryId: 'stats',
     primaryGrade: 4,
     prereqIds: ['line_plot_fractional', 'add_fractions_like_denom'],
@@ -3711,7 +3711,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'line_plot_5th_grade_ops',
     name: 'Line plot with fraction ops',
-    shortLabel: 'Line plot with fraction ops',
+    shortLabel: 'line range',
     categoryId: 'stats',
     primaryGrade: 5,
     prereqIds: ['line_plot_fractional', 'add_fractions_unlike_denom'],
