@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:math_city/domain/questions/diagram_spec.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
 
 /// Ratio + proportion generators (Grades 6–7).
@@ -121,6 +122,12 @@ GeneratedQuestion ratioIntro(Random rand) {
     prompt:
         '$name has $a ${pair.$1} and $b ${pair.$2}. '
         'What is the ratio of ${pair.$1} to ${pair.$2}?',
+    diagram: TapeDiagramSpec(
+      topUnits: a,
+      bottomUnits: b,
+      topLabel: pair.$1,
+      bottomLabel: pair.$2,
+    ),
     correctAnswer: correct,
     distractors: distractors,
     explanation: [
