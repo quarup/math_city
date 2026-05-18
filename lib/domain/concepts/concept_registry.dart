@@ -918,7 +918,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'mult_facts_2',
     name: '×2 facts',
-    shortLabel: '×2 facts',
+    shortLabel: '×2',
     categoryId: 'mult_div',
     primaryGrade: 3,
     prereqIds: ['skip_count_2'],
@@ -929,7 +929,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'mult_facts_5',
     name: '×5 facts',
-    shortLabel: '×5 facts',
+    shortLabel: '×5',
     categoryId: 'mult_div',
     primaryGrade: 3,
     prereqIds: ['skip_count_5'],
@@ -940,7 +940,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'mult_facts_10',
     name: '×10 facts',
-    shortLabel: '×10 facts',
+    shortLabel: '×10',
     categoryId: 'mult_div',
     primaryGrade: 3,
     prereqIds: ['skip_count_10'],
@@ -951,10 +951,10 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'mult_facts_3',
     name: '×3 facts',
-    shortLabel: '×3 facts',
+    shortLabel: '×3',
     categoryId: 'mult_div',
     primaryGrade: 3,
-    prereqIds: ['mult_meaning_groups'],
+    prereqIds: ['mult_facts_within_100'],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
     categoryRowOrder: 7,
@@ -962,7 +962,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'mult_facts_4',
     name: '×4 facts',
-    shortLabel: '×4 facts',
+    shortLabel: '×4',
     categoryId: 'mult_div',
     primaryGrade: 3,
     prereqIds: ['mult_facts_2'],
@@ -973,7 +973,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'mult_facts_6',
     name: '×6 facts',
-    shortLabel: '×6 facts',
+    shortLabel: '×6',
     categoryId: 'mult_div',
     primaryGrade: 3,
     prereqIds: ['mult_facts_3'],
@@ -984,7 +984,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'mult_facts_7',
     name: '×7 facts',
-    shortLabel: '×7 facts',
+    shortLabel: '×7',
     categoryId: 'mult_div',
     primaryGrade: 3,
     prereqIds: ['mult_facts_5', 'mult_facts_2'],
@@ -995,7 +995,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'mult_facts_8',
     name: '×8 facts',
-    shortLabel: '×8 facts',
+    shortLabel: '×8',
     categoryId: 'mult_div',
     primaryGrade: 3,
     prereqIds: ['mult_facts_4'],
@@ -1006,7 +1006,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'mult_facts_9',
     name: '×9 facts',
-    shortLabel: '×9 facts',
+    shortLabel: '×9',
     categoryId: 'mult_div',
     primaryGrade: 3,
     prereqIds: ['mult_facts_3', 'mult_facts_10'],
@@ -1050,7 +1050,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'div_as_unknown_factor',
     name: '÷ as missing factor',
-    shortLabel: '÷ as missing factor',
+    shortLabel: 'a·?=c',
     categoryId: 'mult_div',
     primaryGrade: 3,
     prereqIds: ['mult_facts_within_100'],
@@ -1061,7 +1061,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'commutative_mult',
     name: 'a × b = b × a',
-    shortLabel: 'a × b = b × a',
+    shortLabel: 'a·b=b·a',
     categoryId: 'mult_div',
     primaryGrade: 3,
     prereqIds: ['mult_facts_within_100'],
@@ -1072,7 +1072,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'associative_mult',
     name: '(a·b)·c = a·(b·c)',
-    shortLabel: '(a·b)·c = a·(b·c)',
+    shortLabel: '(ab)c',
     categoryId: 'mult_div',
     primaryGrade: 3,
     prereqIds: ['mult_facts_within_100'],
@@ -1094,7 +1094,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'mult_1digit_by_multiple_of_10',
     name: '1-digit × multiple of 10',
-    shortLabel: '1-digit × multiple of 10',
+    shortLabel: '× ×10',
     categoryId: 'mult_div',
     primaryGrade: 3,
     prereqIds: ['mult_facts_within_100', 'skip_count_10'],
@@ -1204,7 +1204,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'arithmetic_patterns_in_tables',
     name: 'Patterns in × and + tables',
-    shortLabel: 'Patterns in × and + tables',
+    shortLabel: 'pattern',
     categoryId: 'mult_div',
     primaryGrade: 3,
     prereqIds: ['mult_facts_within_100'],
