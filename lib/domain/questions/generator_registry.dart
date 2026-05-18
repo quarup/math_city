@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:math_city/domain/questions/generated_question.dart';
 import 'package:math_city/domain/questions/generators/add_sub_generators.dart';
 import 'package:math_city/domain/questions/generators/advanced_generators.dart';
+import 'package:math_city/domain/questions/generators/bar_graph_generators.dart';
 import 'package:math_city/domain/questions/generators/coordinate_plane_generators.dart';
 import 'package:math_city/domain/questions/generators/decimal_generators.dart';
 import 'package:math_city/domain/questions/generators/equation_generators.dart';
@@ -254,5 +255,9 @@ class GeneratorRegistry {
     'range_data': rangeDataGenerator,
     'iqr': iqrGenerator,
     'mad': madGenerator,
+    // Data displays (bar graphs)
+    'bar_graph_read': barGraphRead,
+    'bar_graph_compare': barGraphCompare,
+    'scaled_bar_graph_read': scaledBarGraphRead,
   };
 }
