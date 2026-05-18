@@ -64,7 +64,7 @@ void main() {
           expect(
             q.distractors.toSet(),
             {
-              isArithmetic ? 'Nonlinear' : 'Linear',
+              if (isArithmetic) 'Nonlinear' else 'Linear',
               'Cannot tell from a table',
               'Only a graph can answer this',
             },

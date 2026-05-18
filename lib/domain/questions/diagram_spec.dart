@@ -336,6 +336,31 @@ enum CoordinatePlaneLineStyle {
   dashed,
 }
 
+/// A closed polygon drawn on the coordinate plane. Vertices are
+/// connected in order and the polygon is auto-closed (last → first).
+/// Used by `polygon_on_coordinate_plane` and the `transformations_*`
+/// family (preimage = solid; image = dashed).
+class CoordinatePlanePolygon {
+  const CoordinatePlanePolygon({
+    required this.vertices,
+    this.style = CoordinatePlanePolygonStyle.solid,
+  }) : assert(vertices.length >= 3, 'polygon needs ≥ 3 vertices');
+
+  final List<CoordinatePlanePoint> vertices;
+  final CoordinatePlanePolygonStyle style;
+}
+
+/// Visual style for a [CoordinatePlanePolygon].
+enum CoordinatePlanePolygonStyle {
+  /// Solid translucent fill + crisp outline in the primary colour.
+  /// Use for the preimage / current shape.
+  solid,
+
+  /// Dashed outline in a secondary colour, no fill. Use for the image
+  /// of a transformation so the eye reads it as "the result".
+  dashed,
+}
+
 /// A 2-D coordinate plane spanning `[minX, maxX] × [minY, maxY]` (inclusive
 /// integer ranges), with a grid at every integer step, labelled axes, and
 /// zero or more marked points or lines. Covers both first-quadrant
@@ -348,6 +373,7 @@ class CoordinatePlaneSpec extends DiagramSpec {
     required this.maxY,
     this.points = const [],
     this.lines = const [],
+    this.polygons = const [],
   }) : assert(maxX > minX, 'maxX must be > minX'),
        assert(maxY > minY, 'maxY must be > minY');
 
@@ -360,4 +386,8 @@ class CoordinatePlaneSpec extends DiagramSpec {
   /// Optional list of lines drawn on top of the grid. Each line is
   /// extrapolated to the visible plot rect.
   final List<CoordinatePlaneLine> lines;
+
+  /// Optional list of closed polygons. Drawn beneath points and lines
+  /// so labelled vertices remain visible.
+  final List<CoordinatePlanePolygon> polygons;
 }

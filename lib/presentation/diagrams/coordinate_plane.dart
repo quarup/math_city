@@ -152,6 +152,46 @@ class _CoordinatePlanePainter extends CustomPainter {
       _drawLabel(canvas, '0', _pixel(0, 0) + const Offset(-8, 8));
     }
 
+    // Polygons (drawn first, beneath lines and points). Each polygon is
+    // auto-closed (last vertex → first).
+    for (final poly in spec.polygons) {
+      final path = Path();
+      for (var i = 0; i < poly.vertices.length; i++) {
+        final v = poly.vertices[i];
+        final p = _pixel(v.x, v.y);
+        if (i == 0) {
+          path.moveTo(p.dx, p.dy);
+        } else {
+          path.lineTo(p.dx, p.dy);
+        }
+      }
+      path.close();
+      switch (poly.style) {
+        case CoordinatePlanePolygonStyle.solid:
+          final fillPaint = Paint()
+            ..color = solidLineColor.withValues(alpha: 0.18)
+            ..style = PaintingStyle.fill;
+          final strokePaint = Paint()
+            ..color = solidLineColor
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 2;
+          canvas
+            ..drawPath(path, fillPaint)
+            ..drawPath(path, strokePaint);
+        case CoordinatePlanePolygonStyle.dashed:
+          // Draw each edge as a dashed segment (no fill).
+          final paint = Paint()
+            ..color = dashedLineColor
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 2;
+          for (var i = 0; i < poly.vertices.length; i++) {
+            final a = poly.vertices[i];
+            final b = poly.vertices[(i + 1) % poly.vertices.length];
+            _drawDashed(canvas, _pixel(a.x, a.y), _pixel(b.x, b.y), paint);
+          }
+      }
+    }
+
     // Lines (drawn beneath points so the dots stay on top). Extrapolate
     // each line to the visible plot rect by intersecting it with all
     // four sides and keeping the two intersections that fall inside.

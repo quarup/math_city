@@ -20,6 +20,7 @@ import 'package:math_city/domain/questions/generators/mult_div_generators.dart';
 import 'package:math_city/domain/questions/generators/number_theory_generators.dart';
 import 'package:math_city/domain/questions/generators/percent_generators.dart';
 import 'package:math_city/domain/questions/generators/place_value_generators.dart';
+import 'package:math_city/domain/questions/generators/polygon_coord_generators.dart';
 import 'package:math_city/domain/questions/generators/probability_generators.dart';
 import 'package:math_city/domain/questions/generators/ratio_generators.dart';
 import 'package:math_city/domain/questions/generators/rationals_generators.dart';
@@ -285,5 +286,9 @@ class GeneratorRegistry {
     'graph_linear_equation': graphLinearEquation,
     'identify_linear_vs_nonlinear': identifyLinearVsNonlinear,
     'solve_system_by_graphing': solveSystemByGraphing,
+    // Polygons on the coordinate plane (G6) + transformations (G8)
+    'polygon_on_coordinate_plane': polygonOnCoordinatePlane,
+    'transformations_translation': transformationsTranslation,
+    'transformations_reflection': transformationsReflection,
   };
 }

@@ -2747,7 +2747,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'polygon_on_coordinate_plane',
     name: 'Polygon on coord plane',
-    shortLabel: 'Polygon on coord plane',
+    shortLabel: 'polygon coords',
     categoryId: 'geometry',
     primaryGrade: 6,
     prereqIds: ['plot_first_quadrant', 'plot_four_quadrants'],
@@ -2857,7 +2857,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'transformations_translation',
     name: 'Translations',
-    shortLabel: 'Translations',
+    shortLabel: 'translate',
     categoryId: 'geometry',
     primaryGrade: 8,
     prereqIds: ['polygon_on_coordinate_plane'],
@@ -2868,7 +2868,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'transformations_reflection',
     name: 'Reflections',
-    shortLabel: 'Reflections',
+    shortLabel: 'reflect',
     categoryId: 'geometry',
     primaryGrade: 8,
     prereqIds: ['transformations_translation'],
@@ -2985,7 +2985,7 @@ const List<Concept> allConcepts = [
     shortLabel: 'Distance between two points',
     categoryId: 'geometry',
     primaryGrade: 8,
-    prereqIds: ['pythagorean_apply_2d', 'coord_distance_same_line'],
+    prereqIds: ['pythagorean_apply_2d', 'polygon_on_coordinate_plane'],
     source: ConceptSource.algorithmicWithDiagram,
     diagramRequirement: DiagramRequired('coordinate_plane_q4'),
     categoryRowOrder: 45,

@@ -260,6 +260,9 @@ const _shortLabelOverrides = <String, String>{
   'graph_linear_equation': 'graph y=mx+b',
   'identify_linear_vs_nonlinear': 'linear?',
   'solve_system_by_graphing': 'lines meet',
+  'polygon_on_coordinate_plane': 'polygon coords',
+  'transformations_translation': 'translate',
+  'transformations_reflection': 'reflect',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
@@ -387,14 +390,8 @@ const _prereqOverrides = <String, List<String>>{
   // opposites_and_zero, which carries the same "negative integers
   // exist on a number line" intuition needed for Q2/Q3/Q4 plotting.
   'plot_four_quadrants': ['plot_first_quadrant', 'opposites_and_zero'],
-  // drop polygon_on_coordinate_plane (no generator yet — needs widget
-  // polygon support). Substitute coord_distance_same_line, which just
-  // landed and carries the same "compute distance from coordinates"
-  // intuition; pythagorean_apply_2d remains the math prereq.
-  'pythagorean_distance_coords': [
-    'pythagorean_apply_2d',
-    'coord_distance_same_line',
-  ],
+  // pythagorean_distance_coords: polygon_on_coordinate_plane now lives
+  // (Chunk 35), so the curriculum prereq is met — no override needed.
   // drop picture_graph_read (no generator yet — same widget can render it
   // but the prompt/distractor shape differs). Substitute add_within_100
   // as basic arithmetic background; the bar chart itself carries the
