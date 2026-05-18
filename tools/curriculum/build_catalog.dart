@@ -89,6 +89,12 @@ String _detectRepoRoot() {
 /// override here whenever a generator lands so the wheel segment stays
 /// readable at small sizes.
 const _shortLabelOverrides = <String, String>{
+  'count_to_10': 'count 10',
+  'count_to_20': 'count 20',
+  'count_to_100_by_1': 'count 100',
+  'one_more_one_less_within_20': '±1',
+  'compare_numerals_1_10': 'compare',
+  'skip_count_2': 'skip 2s',
   'add_within_5': '+ to 5',
   'sub_within_5': '− from 5',
   'add_within_10': '+ to 10',
@@ -356,9 +362,8 @@ const _prereqOverrides = <String, List<String>>{
   // basic background for both absolute value and opposites.
   'absolute_value': ['add_within_100'],
   'opposites_and_zero': ['add_within_100'],
-  // drop skip_count_2 (no generator) — multiples is fundamentally a
-  // "did mult facts" skill.
-  'multiples_of_n': ['mult_facts_within_100'],
+  // multiples_of_n: skip_count_2 now lives (Chunk 41), so the curriculum
+  // prereq is met — no override needed.
   // drop area_rectangle_count_squares (no generator) — substitute the
   // mult-facts background since area-by-formula IS multiplication.
   'area_rectangle_formula': ['mult_facts_within_100'],
@@ -438,6 +443,10 @@ const _prereqOverrides = <String, List<String>>{
   // sort-and-count widget). Substitute add_within_100 as basic background;
   // reading a two-way table is essentially cell lookup + add/subtract.
   'two_way_table_construct': ['add_within_100'],
+  // drop read_numerals_0_20 (no generator yet — read/write numerals as
+  // word forms don't fit our integer-only MC pattern). count_to_10
+  // implies basic numeral recognition for the 1..10 range covered.
+  'compare_numerals_1_10': ['count_to_10'],
   // two_way_relative_frequency prereqs are [two_way_table_construct,
   // percent_intro] — both implemented, no override needed.
 };
