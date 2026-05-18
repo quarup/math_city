@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:math_city/domain/questions/generated_question.dart';
+import 'package:math_city/domain/questions/generators/add_sub_extra_generators.dart';
 import 'package:math_city/domain/questions/generators/add_sub_generators.dart';
 import 'package:math_city/domain/questions/generators/advanced_generators.dart';
 import 'package:math_city/domain/questions/generators/bar_graph_generators.dart';
@@ -78,6 +79,12 @@ class GeneratorRegistry {
     'one_more_one_less_within_20': oneMoreOneLessWithin20,
     'ten_more_ten_less': tenMoreTenLess,
     'compare_numerals_1_10': compareNumerals1to10,
+    'count_within_1000': countWithin1000,
+    'even_odd': evenOdd,
+    'compare_2digit': compare2digit,
+    'make_10_pair': make10Pair,
+    'add_3_addends_within_20': add3AddendsWithin20,
+    'add_sub_unknown_position': addSubUnknownPosition,
     'skip_count_2': skipCount2,
     'skip_count_5': skipCount5,
     'skip_count_10': skipCount10,

@@ -211,7 +211,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'count_within_1000',
     name: 'Count within 1000',
-    shortLabel: 'Count within 1000',
+    shortLabel: 'count 1000',
     categoryId: 'counting',
     primaryGrade: 2,
     prereqIds: ['count_to_120'],
@@ -222,7 +222,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'even_odd',
     name: 'Even or odd?',
-    shortLabel: 'Even or odd?',
+    shortLabel: 'even/odd',
     categoryId: 'counting',
     primaryGrade: 2,
     prereqIds: ['skip_count_2'],
@@ -256,7 +256,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'compare_2digit',
     name: 'Compare 2-digit numbers',
-    shortLabel: 'Compare 2-digit numbers',
+    shortLabel: 'compare 2d',
     categoryId: 'place_value',
     primaryGrade: 1,
     prereqIds: ['place_value_2digit'],
@@ -587,7 +587,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'make_10_pair',
     name: 'Pairs that make 10',
-    shortLabel: 'Pairs that make 10',
+    shortLabel: 'pair to 10',
     categoryId: 'add_sub',
     primaryGrade: 0,
     prereqIds: ['add_within_10'],
@@ -609,7 +609,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'add_3_addends_within_20',
     name: 'Add three numbers',
-    shortLabel: 'Add three numbers',
+    shortLabel: '3 addends',
     categoryId: 'add_sub',
     primaryGrade: 1,
     prereqIds: ['add_within_10'],
@@ -642,7 +642,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'add_sub_unknown_position',
     name: 'Find the missing number',
-    shortLabel: 'Find the missing number',
+    shortLabel: '?+b=r',
     categoryId: 'add_sub',
     primaryGrade: 1,
     prereqIds: ['add_within_20', 'sub_within_20'],
