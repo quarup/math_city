@@ -5,6 +5,7 @@ import 'package:math_city/domain/questions/generators/add_sub_extra_generators.d
 import 'package:math_city/domain/questions/generators/add_sub_generators.dart';
 import 'package:math_city/domain/questions/generators/advanced_generators.dart';
 import 'package:math_city/domain/questions/generators/algebra_extra_generators.dart';
+import 'package:math_city/domain/questions/generators/array_grid_extra_generators.dart';
 import 'package:math_city/domain/questions/generators/bar_graph_generators.dart';
 import 'package:math_city/domain/questions/generators/box_plot_generators.dart';
 import 'package:math_city/domain/questions/generators/coordinate_plane_generators.dart';
@@ -411,5 +412,18 @@ class GeneratorRegistry {
     'area_rectangle_count_squares': areaRectangleCountSquares,
     'partition_into_rows_columns': partitionIntoRowsColumns,
     'inference_from_sample': inferenceFromSample,
+    // Array-grid / clock / fraction-bar / number-line batch
+    'count_objects_to_10': countObjectsTo10,
+    'count_objects_to_20': countObjectsTo20,
+    'equal_groups_intro': equalGroupsIntro,
+    'array_repeated_addition': arrayRepeatedAddition,
+    'mult_meaning_groups': multMeaningGroups,
+    'div_meaning_share': divMeaningShare,
+    'div_meaning_grouping': divMeaningGrouping,
+    'distributive_mult_over_add': distributiveMultOverAdd,
+    'time_to_minute': timeToMinute,
+    'elapsed_time': elapsedTime,
+    'fraction_denom_10_100': fractionDenom10_100,
+    'approximate_irrational': approximateIrrational,
   };
 }

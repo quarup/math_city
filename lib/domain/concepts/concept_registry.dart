@@ -101,7 +101,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'count_objects_to_10',
     name: 'Count objects (10)',
-    shortLabel: 'Count objects (10)',
+    shortLabel: 'count obj 10',
     categoryId: 'counting',
     primaryGrade: 0,
     prereqIds: [],
@@ -112,7 +112,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'count_objects_to_20',
     name: 'Count objects (20)',
-    shortLabel: 'Count objects (20)',
+    shortLabel: 'count obj 20',
     categoryId: 'counting',
     primaryGrade: 0,
     prereqIds: ['count_objects_to_10'],
@@ -874,7 +874,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'equal_groups_intro',
     name: 'Equal groups (rows × cols)',
-    shortLabel: 'Equal groups (rows × cols)',
+    shortLabel: 'groups',
     categoryId: 'mult_div',
     primaryGrade: 2,
     prereqIds: ['skip_count_5', 'add_within_100'],
@@ -885,7 +885,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'array_repeated_addition',
     name: 'Arrays as repeated +',
-    shortLabel: 'Arrays as repeated +',
+    shortLabel: 'array +',
     categoryId: 'mult_div',
     primaryGrade: 2,
     prereqIds: ['equal_groups_intro'],
@@ -896,7 +896,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'mult_meaning_groups',
     name: 'What does 5 × 7 mean?',
-    shortLabel: 'What does 5 × 7 mean?',
+    shortLabel: '× meaning',
     categoryId: 'mult_div',
     primaryGrade: 3,
     prereqIds: ['equal_groups_intro'],
@@ -954,7 +954,7 @@ const List<Concept> allConcepts = [
     shortLabel: '×3',
     categoryId: 'mult_div',
     primaryGrade: 3,
-    prereqIds: ['mult_facts_within_100'],
+    prereqIds: ['mult_meaning_groups'],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
     categoryRowOrder: 7,
@@ -1017,7 +1017,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'div_meaning_share',
     name: 'Sharing equally',
-    shortLabel: 'Sharing equally',
+    shortLabel: 'share',
     categoryId: 'mult_div',
     primaryGrade: 3,
     prereqIds: ['mult_facts_within_100'],
@@ -1028,7 +1028,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'div_meaning_grouping',
     name: 'How many groups?',
-    shortLabel: 'How many groups?',
+    shortLabel: '÷ groups',
     categoryId: 'mult_div',
     primaryGrade: 3,
     prereqIds: ['mult_facts_within_100'],
@@ -1083,7 +1083,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'distributive_mult_over_add',
     name: 'Distributive property',
-    shortLabel: 'Distributive property',
+    shortLabel: 'distrib',
     categoryId: 'mult_div',
     primaryGrade: 3,
     prereqIds: ['mult_facts_within_100'],
@@ -1595,7 +1595,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'fraction_denom_10_100',
     name: 'Tenths and hundredths',
-    shortLabel: 'Tenths and hundredths',
+    shortLabel: 'tenths',
     categoryId: 'decimals_percent',
     primaryGrade: 4,
     prereqIds: ['fraction_a_over_b'],
@@ -1609,7 +1609,7 @@ const List<Concept> allConcepts = [
     shortLabel: 'tenths',
     categoryId: 'decimals_percent',
     primaryGrade: 4,
-    prereqIds: [],
+    prereqIds: ['fraction_denom_10_100'],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramOptional(),
     categoryRowOrder: 1,
@@ -1812,7 +1812,7 @@ const List<Concept> allConcepts = [
     shortLabel: 'percent?',
     categoryId: 'decimals_percent',
     primaryGrade: 6,
-    prereqIds: [],
+    prereqIds: ['fraction_denom_10_100'],
     source: ConceptSource.algorithmicWithDiagram,
     diagramRequirement: DiagramRequired('area_grid'),
     categoryRowOrder: 19,
@@ -2218,7 +2218,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'time_to_minute',
     name: 'Time to the minute',
-    shortLabel: 'Time to the minute',
+    shortLabel: 'clock 1m',
     categoryId: 'measurement',
     primaryGrade: 3,
     prereqIds: ['time_to_5_min'],
@@ -2240,7 +2240,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'elapsed_time',
     name: 'Elapsed time',
-    shortLabel: 'Elapsed time',
+    shortLabel: 'elapsed',
     categoryId: 'measurement',
     primaryGrade: 3,
     prereqIds: ['time_to_minute', 'add_within_100'],
@@ -3174,7 +3174,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'approximate_irrational',
     name: 'Approximate √2, π',
-    shortLabel: 'Approximate √2, π',
+    shortLabel: '√n approx',
     categoryId: 'rationals',
     primaryGrade: 8,
     prereqIds: ['irrational_recognize', 'sqrt_perfect_squares'],
