@@ -164,6 +164,152 @@ GeneratedQuestion add3AddendsWithin20(Random rand) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────
+// equal_sign_meaning (G1)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "Is the equation 8 + 3 = 11 true?" — 50/50 true/false. Half-time
+/// the equation balances; half-time the right-hand side is off by 1 or 2.
+GeneratedQuestion equalSignMeaning(Random rand) {
+  final a = rand.nextInt(8) + 1; // 1..8
+  final b = rand.nextInt(8) + 1; // 1..8
+  final realSum = a + b;
+  final isTrue = rand.nextBool();
+  final shownSum =
+      isTrue ? realSum : realSum + (rand.nextBool() ? 1 : -1);
+  return GeneratedQuestion(
+    conceptId: 'equal_sign_meaning',
+    prompt: 'Is the equation $a + $b = $shownSum true?',
+    correctAnswer: isTrue ? 'True' : 'False',
+    distractors: [
+      if (isTrue) 'False' else 'True',
+      "It's missing a number",
+      'Cannot tell',
+    ],
+    explanation: [
+      '$a + $b = $realSum.',
+      if (isTrue)
+        'The equation shows $shownSum, which matches. True.'
+      else
+        'The equation shows $shownSum, but $realSum is correct. False.',
+    ],
+    answerFormat: AnswerFormat.string,
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// commutative_add (G1)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "If a + b = result, then b + a = ?" — tests the commutative property.
+/// Answer is just `result`; the swap distractor (`a + b - 1` etc.) is
+/// included.
+GeneratedQuestion commutativeAdd(Random rand) {
+  final a = rand.nextInt(9) + 2; // 2..10
+  final b = rand.nextInt(9) + 2; // 2..10
+  final sum = a + b;
+  return GeneratedQuestion(
+    conceptId: 'commutative_add',
+    prompt: 'If $a + $b = $sum, then $b + $a = ?',
+    correctAnswer: '$sum',
+    distractors: _distinctIntStrings(sum, [
+      '${a + b - 1}', // off-by-one
+      '$a', '$b', // gave one of the addends
+      '${(a - b).abs()}', // gave the difference
+      '${a * b}',
+    ]),
+    explanation: [
+      'Adding in any order gives the same sum: $b + $a = $a + $b = $sum.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// add_2digit_1digit (G1)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "23 + 5 = ?" — 2-digit + 1-digit addition without explicit carry
+/// constraint. Picks values so the sum stays in [10, 99].
+GeneratedQuestion add2digit1digit(Random rand) {
+  late int a;
+  late int b;
+  do {
+    a = rand.nextInt(90) + 10; // 10..99
+    b = rand.nextInt(9) + 1; // 1..9
+  } while (a + b > 99);
+  final correct = a + b;
+  return GeneratedQuestion(
+    conceptId: 'add_2digit_1digit',
+    prompt: '$a + $b = ?',
+    correctAnswer: '$correct',
+    distractors: _distinctIntStrings(correct, [
+      '${a - b}', // subtracted instead
+      '${correct + 1}',
+      '${correct - 1}',
+      '${a + b * 10}', // misaligned place value
+    ]),
+    explanation: ['$a + $b = $correct.'],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// sub_multiples_of_10 (G1)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "60 − 20 = ?" — subtract two multiples of 10 with non-negative result.
+GeneratedQuestion subMultiplesOf10(Random rand) {
+  // a > b, both multiples of 10 in [10, 90].
+  late int a;
+  late int b;
+  do {
+    a = (rand.nextInt(9) + 1) * 10;
+    b = (rand.nextInt(9) + 1) * 10;
+  } while (a <= b);
+  final correct = a - b;
+  return GeneratedQuestion(
+    conceptId: 'sub_multiples_of_10',
+    prompt: '$a − $b = ?',
+    correctAnswer: '$correct',
+    distractors: _distinctIntStrings(correct, [
+      '${a + b}', // added instead
+      '${correct + 10}',
+      '${correct - 10}',
+      '${a ~/ 10 - b ~/ 10}', // dropped the zero
+    ]),
+    explanation: [
+      '${a ~/ 10} tens − ${b ~/ 10} tens = ${(a - b) ~/ 10} tens = $correct.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// mental_add_10_or_100 (G2)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "47 + 100 = ?" or "47 − 10 = ?" — add or subtract 10 / 100 mentally.
+GeneratedQuestion mentalAdd10Or100(Random rand) {
+  final base = rand.nextInt(800) + 100; // 100..899
+  final delta = rand.nextBool() ? 10 : 100;
+  final isAdd = rand.nextBool();
+  final correct = isAdd ? base + delta : base - delta;
+  if (correct < 0) return mentalAdd10Or100(rand);
+  return GeneratedQuestion(
+    conceptId: 'mental_add_10_or_100',
+    prompt: '$base ${isAdd ? "+" : "−"} $delta = ?',
+    correctAnswer: '$correct',
+    distractors: _distinctIntStrings(correct, [
+      '${isAdd ? base - delta : base + delta}', // wrong direction
+      '${isAdd ? base + 1 : base - 1}', // confused 10/100 with 1
+      '${isAdd ? base + 10 : base - 10}'.padLeft(0), // wrong magnitude
+      '${correct + 1}',
+      '${correct - 1}',
+    ]),
+    explanation: [
+      '$base ${isAdd ? "+ $delta = $correct" : "− $delta = $correct"}.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
 // add_sub_unknown_position (G1)
 // ─────────────────────────────────────────────────────────────────────────
 
