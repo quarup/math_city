@@ -119,6 +119,63 @@ class CoordinatePlanePoint {
   final String? label;
 }
 
+/// One five-number summary (min / Q1 / median / Q3 / max) for one box
+/// plot. Multiple summaries are stacked vertically inside a single
+/// [BoxPlotSpec] to support compare-two-distributions tasks.
+class BoxPlotSummary {
+  const BoxPlotSummary({
+    required this.label,
+    required this.min,
+    required this.q1,
+    required this.median,
+    required this.q3,
+    required this.max,
+  }) : assert(
+         min <= q1 && q1 <= median && median <= q3 && q3 <= max,
+         'five-number summary must be in non-decreasing order',
+       );
+
+  /// Short row label shown to the left of the box (e.g. "A", "B", or
+  /// "Class A"). For single-distribution plots, callers usually pass
+  /// the empty string.
+  final String label;
+  final int min;
+  final int q1;
+  final int median;
+  final int q3;
+  final int max;
+}
+
+/// A box plot (a.k.a. box-and-whisker plot) along a horizontal axis
+/// spanning [minX] to [maxX] (display units). One row per [BoxPlotSummary].
+///
+/// Used by `box_plot`, `compare_two_distributions`.
+class BoxPlotSpec extends DiagramSpec {
+  const BoxPlotSpec({
+    required this.title,
+    required this.axisLabel,
+    required this.summaries,
+    required this.minX,
+    required this.maxX,
+    this.tickStep = 5,
+  }) : assert(summaries.length >= 1, 'need at least one summary'),
+       assert(maxX > minX, 'maxX must be > minX'),
+       assert(tickStep > 0, 'tickStep must be > 0');
+
+  final String title;
+  final String axisLabel;
+
+  /// One or more five-number summaries, drawn top-to-bottom.
+  final List<BoxPlotSummary> summaries;
+
+  final int minX;
+  final int maxX;
+
+  /// Major-tick spacing on the x-axis. Tick labels are drawn at every
+  /// multiple of [tickStep] inside `[minX, maxX]`.
+  final int tickStep;
+}
+
 /// A histogram with `counts.length` adjacent bins, each of width [binWidth]
 /// starting at [binStart]. The y-axis is scaled by [scale] (1 for unscaled
 /// — every gridline is one unit). Bin i covers `[binStart + i·binWidth,

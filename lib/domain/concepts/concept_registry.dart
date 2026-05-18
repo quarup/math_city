@@ -3755,7 +3755,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'box_plot',
     name: 'Box plot',
-    shortLabel: 'Box plot',
+    shortLabel: 'box plot',
     categoryId: 'stats',
     primaryGrade: 6,
     prereqIds: ['median'],
@@ -3843,7 +3843,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'compare_two_distributions',
     name: 'Compare distributions',
-    shortLabel: 'Compare distributions',
+    shortLabel: 'A vs B',
     categoryId: 'stats',
     primaryGrade: 7,
     prereqIds: ['describe_distribution'],

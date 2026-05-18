@@ -252,6 +252,8 @@ const _shortLabelOverrides = <String, String>{
   'line_plot_5th_grade_ops': 'line range',
   'histogram': 'histogram',
   'describe_distribution': 'shape?',
+  'box_plot': 'box plot',
+  'compare_two_distributions': 'A vs B',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
@@ -417,6 +419,9 @@ const _prereqOverrides = <String, List<String>>{
   // alone is enough scaffolding for "describe the shape" — kids don't need
   // box-plot fluency to recognise symmetric / skewed / uniform.
   'describe_distribution': ['histogram'],
+  // box_plot prereq is [median] — implemented, no override needed.
+  // compare_two_distributions prereq is [describe_distribution] —
+  // implemented, no override needed.
 };
 
 // ─────────────────────────────────────────────────────────────────────────
