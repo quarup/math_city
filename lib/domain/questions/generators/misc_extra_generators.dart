@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:math_city/domain/questions/diagram_spec.dart';
 import 'package:math_city/domain/questions/distractors.dart';
 import 'package:math_city/domain/questions/fraction.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
@@ -152,6 +153,15 @@ GeneratedQuestion adjacentAngles(Random rand) {
     prompt:
         'Two adjacent angles share a side and together form a $figure. '
         'One angle measures $a°. What is the other angle in degrees?',
+    diagram: AngleSpec(
+      // Right angle: rays at 0°, 90°. Straight line: rays at 0°, 180°.
+      // Divider ray at a° splits the full wedge into a° and (total − a)°.
+      rayAnglesDeg: [0, a, total],
+      wedgeLabels: [
+        AngleWedgeLabel(rayIndex: 0, label: '$a°'),
+        const AngleWedgeLabel(rayIndex: 1, label: '?'),
+      ],
+    ),
     correctAnswer: '$correct',
     distractors: integerDistractorsWith(
       correct,
@@ -189,6 +199,15 @@ GeneratedQuestion exteriorAngleTriangle(Random rand) {
         'A triangle has two interior angles measuring $a° and $b°. '
         'What is the measure of the exterior angle adjacent to the '
         'third interior angle, in degrees?',
+    diagram: TriangleAnglesSpec(
+      angleDegA: a,
+      angleDegB: b,
+      angleDegC: third,
+      labelA: '$a°',
+      labelB: '$b°',
+      labelC: '?',
+      showExteriorAtC: true,
+    ),
     correctAnswer: '$correct',
     distractors: integerDistractorsWith(
       correct,

@@ -54,6 +54,10 @@ WIDGET_TO_FILE = {
     "RectangleArea": "area_grid",  # implemented under this name historically
     "CoordinatePlane": "coordinate_plane",
     "Angle": "angle",
+    # TriangleAngles is paired with Angle in the §6.1 row (separate Spec, same
+    # row in curriculum.md). Mapped here so the impl-vs-catalogued cross-check
+    # passes.
+    "TriangleAngles": "triangle_angles",
     "Spinner": "spinner",
     # §6.2 — second-tier
     "BaseTenBlocks": "base_ten_blocks",
