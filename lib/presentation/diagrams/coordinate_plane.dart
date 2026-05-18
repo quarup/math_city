@@ -50,6 +50,8 @@ class CoordinatePlane extends StatelessWidget {
               gridColor: theme.colorScheme.outlineVariant,
               axisColor: theme.colorScheme.onSurface,
               pointColor: theme.colorScheme.primary,
+              solidLineColor: theme.colorScheme.primary,
+              dashedLineColor: theme.colorScheme.tertiary,
               labelStyle:
                   theme.textTheme.labelSmall ?? const TextStyle(fontSize: 11),
               pointLabelStyle:
@@ -75,6 +77,8 @@ class _CoordinatePlanePainter extends CustomPainter {
     required this.gridColor,
     required this.axisColor,
     required this.pointColor,
+    required this.solidLineColor,
+    required this.dashedLineColor,
     required this.labelStyle,
     required this.pointLabelStyle,
   });
@@ -85,6 +89,8 @@ class _CoordinatePlanePainter extends CustomPainter {
   final Color gridColor;
   final Color axisColor;
   final Color pointColor;
+  final Color solidLineColor;
+  final Color dashedLineColor;
   final TextStyle labelStyle;
   final TextStyle pointLabelStyle;
 
@@ -146,6 +152,31 @@ class _CoordinatePlanePainter extends CustomPainter {
       _drawLabel(canvas, '0', _pixel(0, 0) + const Offset(-8, 8));
     }
 
+    // Lines (drawn beneath points so the dots stay on top). Extrapolate
+    // each line to the visible plot rect by intersecting it with all
+    // four sides and keeping the two intersections that fall inside.
+    final plotRect = Rect.fromLTRB(
+      _pixel(spec.minX, spec.maxY).dx,
+      _pixel(spec.minX, spec.maxY).dy,
+      _pixel(spec.maxX, spec.minY).dx,
+      _pixel(spec.maxX, spec.minY).dy,
+    );
+    for (final line in spec.lines) {
+      final visible = _clipLineToRect(line, plotRect);
+      if (visible == null) continue;
+      final paint = Paint()
+        ..color = line.style == CoordinatePlaneLineStyle.solid
+            ? solidLineColor
+            : dashedLineColor
+        ..strokeWidth = 2.4;
+      switch (line.style) {
+        case CoordinatePlaneLineStyle.solid:
+          canvas.drawLine(visible.$1, visible.$2, paint);
+        case CoordinatePlaneLineStyle.dashed:
+          _drawDashed(canvas, visible.$1, visible.$2, paint);
+      }
+    }
+
     // Marked points. Draw the dot first; if the point has a label, render
     // it just above-right of the dot so it never overlaps the dot itself.
     final pointPaint = Paint()..color = pointColor;
@@ -184,11 +215,83 @@ class _CoordinatePlanePainter extends CustomPainter {
     tp.paint(canvas, Offset(dx, dy));
   }
 
+  /// Compute the two endpoints where [line] (an infinite line through
+  /// two distinct points) crosses [rect]. Returns null if the line
+  /// misses the rect entirely.
+  (Offset, Offset)? _clipLineToRect(CoordinatePlaneLine line, Rect rect) {
+    final p1 = _pixel(line.x1, line.y1);
+    final p2 = _pixel(line.x2, line.y2);
+    final dx = p2.dx - p1.dx;
+    final dy = p2.dy - p1.dy;
+    final hits = <Offset>[];
+
+    bool inRect(double x, double y) =>
+        x >= rect.left - 0.001 &&
+        x <= rect.right + 0.001 &&
+        y >= rect.top - 0.001 &&
+        y <= rect.bottom + 0.001;
+
+    void tryAdd(Offset o) {
+      // De-dup near-corner intersections (a horizontal line through a
+      // corner hits both a vertical and a horizontal edge at the same
+      // pixel — keep only one).
+      for (final existing in hits) {
+        if ((existing - o).distance < 0.5) return;
+      }
+      hits.add(o);
+    }
+
+    // Vertical sides: solve x = rect.left and x = rect.right for t.
+    if (dx.abs() > 1e-9) {
+      for (final xEdge in <double>[rect.left, rect.right]) {
+        final t = (xEdge - p1.dx) / dx;
+        final y = p1.dy + t * dy;
+        if (inRect(xEdge, y)) tryAdd(Offset(xEdge, y));
+      }
+    }
+    // Horizontal sides: solve y = rect.top and y = rect.bottom for t.
+    if (dy.abs() > 1e-9) {
+      for (final yEdge in <double>[rect.top, rect.bottom]) {
+        final t = (yEdge - p1.dy) / dy;
+        final x = p1.dx + t * dx;
+        if (inRect(x, yEdge)) tryAdd(Offset(x, yEdge));
+      }
+    }
+    if (hits.length < 2) return null;
+    return (hits.first, hits[1]);
+  }
+
+  /// Draw a dashed segment along the line from [a] to [b].
+  void _drawDashed(Canvas canvas, Offset a, Offset b, Paint paint) {
+    const dashLen = 6.0;
+    const gapLen = 4.0;
+    final total = (b - a).distance;
+    if (total < 1) return;
+    final dir = Offset((b.dx - a.dx) / total, (b.dy - a.dy) / total);
+    var travelled = 0.0;
+    var drawing = true;
+    while (travelled < total) {
+      final step = drawing ? dashLen : gapLen;
+      final segEnd = travelled + step > total ? total : travelled + step;
+      if (drawing) {
+        canvas.drawLine(
+          a + dir * travelled,
+          a + dir * segEnd,
+          paint,
+        );
+      }
+      travelled = segEnd;
+      drawing = !drawing;
+    }
+  }
+
   @override
   bool shouldRepaint(_CoordinatePlanePainter old) =>
       old.spec != spec ||
       old.cellSize != cellSize ||
       old.gridColor != gridColor ||
       old.axisColor != axisColor ||
-      old.pointColor != pointColor;
+      old.pointColor != pointColor ||
+      old.solidLineColor != solidLineColor ||
+      old.dashedLineColor != dashedLineColor;
 }

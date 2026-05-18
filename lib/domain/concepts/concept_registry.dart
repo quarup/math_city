@@ -3490,7 +3490,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'graph_linear_equation',
     name: 'Graph y = mx + b',
-    shortLabel: 'Graph y = mx + b',
+    shortLabel: 'graph y=mx+b',
     categoryId: 'prealgebra',
     primaryGrade: 8,
     prereqIds: ['linear_function_construct'],
@@ -3515,7 +3515,7 @@ const List<Concept> allConcepts = [
     shortLabel: 'Is it a function?',
     categoryId: 'prealgebra',
     primaryGrade: 8,
-    prereqIds: ['linear_function_construct'],
+    prereqIds: ['graph_linear_equation'],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
     categoryRowOrder: 29,
@@ -3986,7 +3986,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'informal_line_of_fit',
     name: 'Fit a line to data',
-    shortLabel: 'Fit a line to data',
+    shortLabel: 'best fit',
     categoryId: 'stats',
     primaryGrade: 8,
     prereqIds: ['scatter_plot_describe', 'graph_linear_equation'],

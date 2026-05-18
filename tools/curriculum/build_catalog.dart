@@ -256,6 +256,8 @@ const _shortLabelOverrides = <String, String>{
   'compare_two_distributions': 'A vs B',
   'scatter_plot_construct': 'find pt',
   'scatter_plot_describe': 'scatter?',
+  'informal_line_of_fit': 'best fit',
+  'graph_linear_equation': 'graph y=mx+b',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
@@ -366,9 +368,8 @@ const _prereqOverrides = <String, List<String>>{
   // CoordinatePlane widget). proportional_relationship is conceptually
   // closest since slope is the constant of proportionality.
   'slope_from_two_points': ['proportional_relationship'],
-  // drop graph_linear_equation (no generator yet — needs CoordinatePlane).
-  // linear_function_construct lives now and is in the same family.
-  'function_definition_check': ['linear_function_construct'],
+  // function_definition_check: graph_linear_equation now lives (Chunk 33),
+  // so the curriculum.md prereq is met — no override needed.
   // drop right_acute_obtuse_angle (no generator yet — needs Angle
   // diagram). Supplementary/complementary are fundamentally arithmetic
   // (subtract from 180 / 90), so add_within_100 is a fair background.

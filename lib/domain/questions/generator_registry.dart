@@ -12,6 +12,7 @@ import 'package:math_city/domain/questions/generators/equation_generators.dart';
 import 'package:math_city/domain/questions/generators/fraction_generators.dart';
 import 'package:math_city/domain/questions/generators/function_generators.dart';
 import 'package:math_city/domain/questions/generators/geometry_generators.dart';
+import 'package:math_city/domain/questions/generators/graph_line_generators.dart';
 import 'package:math_city/domain/questions/generators/histogram_generators.dart';
 import 'package:math_city/domain/questions/generators/integer_generators.dart';
 import 'package:math_city/domain/questions/generators/mult_div_generators.dart';
@@ -278,5 +279,8 @@ class GeneratorRegistry {
     // Data displays (scatter plot)
     'scatter_plot_construct': scatterPlotConstruct,
     'scatter_plot_describe': scatterPlotDescribe,
+    'informal_line_of_fit': informalLineOfFit,
+    // Graphing (linear equations)
+    'graph_linear_equation': graphLinearEquation,
   };
 }
