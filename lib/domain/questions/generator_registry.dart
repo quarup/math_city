@@ -8,6 +8,7 @@ import 'package:math_city/domain/questions/generators/algebra_extra_generators.d
 import 'package:math_city/domain/questions/generators/angle_generators.dart';
 import 'package:math_city/domain/questions/generators/array_grid_extra_generators.dart';
 import 'package:math_city/domain/questions/generators/bar_graph_generators.dart';
+import 'package:math_city/domain/questions/generators/base_ten_blocks_generators.dart';
 import 'package:math_city/domain/questions/generators/box_plot_generators.dart';
 import 'package:math_city/domain/questions/generators/coordinate_plane_generators.dart';
 import 'package:math_city/domain/questions/generators/counting_generators.dart';
@@ -470,5 +471,7 @@ class GeneratorRegistry {
     'line_of_symmetry': lineOfSymmetry,
     'classify_2d_hierarchy': classify2dHierarchy,
     'pythagorean_apply_3d': pythagoreanApply3d,
+    // K place value on the BaseTenBlocks widget
+    'teen_numbers_as_ten_plus': teenNumbersAsTenPlus,
   };
 }

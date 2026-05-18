@@ -403,6 +403,7 @@ const _shortLabelOverrides = <String, String>{
   'line_of_symmetry': 'symmetry',
   'classify_2d_hierarchy': 'is a __?',
   'pythagorean_apply_3d': 'a²+b²+c²',
+  'teen_numbers_as_ten_plus': 'teen = 10+',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
@@ -440,9 +441,8 @@ const _prereqOverrides = <String, List<String>>{
   // the curriculum prereq is met — no override needed.
   // time_to_5_min: skip_count_5 now lives (Chunk 42), so the curriculum
   // prereq [time_to_hour_half, skip_count_5] is met — no override needed.
-  // drop teen_numbers_as_ten_plus (no generator) — it's a foundational
-  // grade-1 concept, no other prereq stands in.
-  'place_value_2digit': <String>[],
+  // place_value_2digit: teen_numbers_as_ten_plus now lives (Chunk 61),
+  // so the curriculum prereq is met — no override needed.
   // drop compare_2digit (no generator) — substitute the more direct
   // place-value prereq.
   'round_to_10': ['place_value_2digit'],
