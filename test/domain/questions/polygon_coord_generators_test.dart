@@ -198,6 +198,126 @@ void main() {
     );
   });
 
+  group('congruence_via_transformations', () {
+    test(
+      'correctAnswer is one of {Yes, No}; image vertices match a rigid '
+      'transformation iff Yes, or are a (k≥2)× scaling of preimage iff No; '
+      'both outcomes appear',
+      () {
+        final outcomesSeen = <String>{};
+        for (var i = 0; i < _iterations; i++) {
+          final q = _gen(registry, 'congruence_via_transformations', i);
+          expect(q.diagram, isA<CoordinatePlaneSpec>());
+          final spec = q.diagram! as CoordinatePlaneSpec;
+          expect(spec.polygons, hasLength(2));
+          final pre = spec.polygons[0].vertices;
+          final img = spec.polygons[1].vertices;
+          expect(pre, hasLength(3));
+          expect(img, hasLength(3));
+
+          final isCongruent =
+              q.correctAnswer.startsWith('Yes');
+          outcomesSeen.add(isCongruent ? 'yes' : 'no');
+
+          // Confirm: if congruent, side lengths preserved; if not,
+          // image is a scaling so all image vertices are k × preimage
+          // for some k > 1.
+          double dist(CoordinatePlanePoint a, CoordinatePlanePoint b) {
+            final dx = (a.x - b.x).toDouble();
+            final dy = (a.y - b.y).toDouble();
+            return dx * dx + dy * dy;
+          }
+
+          final preSides = [
+            dist(pre[0], pre[1]),
+            dist(pre[1], pre[2]),
+            dist(pre[2], pre[0]),
+          ];
+          final imgSides = [
+            dist(img[0], img[1]),
+            dist(img[1], img[2]),
+            dist(img[2], img[0]),
+          ];
+          if (isCongruent) {
+            // Same multiset of squared lengths.
+            preSides.sort();
+            imgSides.sort();
+            for (var k = 0; k < 3; k++) {
+              expect(imgSides[k], closeTo(preSides[k], 1e-6));
+            }
+          } else {
+            // Squared side ratios all equal and > 1.
+            final ratios = [
+              for (var k = 0; k < 3; k++) imgSides[k] / preSides[k],
+            ];
+            expect(ratios[0], greaterThan(1));
+            expect(ratios[1], closeTo(ratios[0], 1e-6));
+            expect(ratios[2], closeTo(ratios[0], 1e-6));
+          }
+          _expectThreeDistinctDistractors(q);
+        }
+        expect(outcomesSeen, {'yes', 'no'});
+      },
+    );
+  });
+
+  group('similarity_via_transformations', () {
+    test(
+      'correctAnswer is one of {Yes, No}; image side ratios are uniform '
+      'iff Yes; both outcomes appear',
+      () {
+        final outcomesSeen = <String>{};
+        for (var i = 0; i < _iterations; i++) {
+          final q = _gen(registry, 'similarity_via_transformations', i);
+          expect(q.diagram, isA<CoordinatePlaneSpec>());
+          final spec = q.diagram! as CoordinatePlaneSpec;
+          expect(spec.polygons, hasLength(2));
+          final pre = spec.polygons[0].vertices;
+          final img = spec.polygons[1].vertices;
+
+          final isSimilar = q.correctAnswer.startsWith('Yes');
+          outcomesSeen.add(isSimilar ? 'yes' : 'no');
+
+          double dist(CoordinatePlanePoint a, CoordinatePlanePoint b) {
+            final dx = (a.x - b.x).toDouble();
+            final dy = (a.y - b.y).toDouble();
+            return dx * dx + dy * dy;
+          }
+
+          final preSides = [
+            dist(pre[0], pre[1]),
+            dist(pre[1], pre[2]),
+            dist(pre[2], pre[0]),
+          ];
+          final imgSides = [
+            dist(img[0], img[1]),
+            dist(img[1], img[2]),
+            dist(img[2], img[0]),
+          ];
+          // For similar figures: side ratios are constant (within tolerance).
+          // For non-similar: at least one side ratio differs from the others.
+          final r0 = imgSides[0] / preSides[0];
+          final r1 = imgSides[1] / preSides[1];
+          final r2 = imgSides[2] / preSides[2];
+          final maxDelta = [
+            (r0 - r1).abs(),
+            (r1 - r2).abs(),
+            (r0 - r2).abs(),
+          ].reduce((a, b) => a > b ? a : b);
+          if (isSimilar) {
+            expect(maxDelta, lessThan(1e-6),
+                reason: 'similar figures should have uniform side ratios');
+          } else {
+            expect(maxDelta, greaterThan(1e-6),
+                reason: 'non-similar figures should have varying ratios');
+          }
+          _expectThreeDistinctDistractors(q);
+        }
+        expect(outcomesSeen, {'yes', 'no'});
+      },
+    );
+  });
+
   group('transformations_reflection', () {
     test(
       'preimage + image polygons; axis taken from prompt; image vertex = '

@@ -540,3 +540,212 @@ GeneratedQuestion transformationsDilation(Random rand) {
     answerFormat: AnswerFormat.string,
   );
 }
+
+// ─────────────────────────────────────────────────────────────────────────
+// congruence_via_transformations (Grade 8)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// Show preimage + image; ask "Are these two figures congruent?" The
+/// image is produced by either a rigid transformation (T / R / Rot —
+/// congruent) or a dilation with k > 1 (NOT congruent). 50/50.
+GeneratedQuestion congruenceViaTransformations(Random rand) {
+  final isCongruent = rand.nextBool();
+
+  int pickNonZero() {
+    final n = rand.nextInt(7) - 3; // -3..3
+    return n == 0 ? (rand.nextBool() ? 1 : -1) : n;
+  }
+
+  late List<List<int>> pre;
+  for (var attempt = 0; attempt < 30; attempt++) {
+    pre = [
+      [pickNonZero(), pickNonZero()],
+      [pickNonZero(), pickNonZero()],
+      [pickNonZero(), pickNonZero()],
+    ];
+    if (_isNonDegenerateTriangle(pre)) break;
+  }
+
+  late List<List<int>> image;
+  if (isCongruent) {
+    // Pick T / R / Rot uniformly.
+    final kind = rand.nextInt(3);
+    switch (kind) {
+      case 0: // Translation
+        int dx;
+        int dy;
+        do {
+          dx = rand.nextInt(7) - 3;
+          dy = rand.nextInt(7) - 3;
+        } while (dx == 0 && dy == 0);
+        image = [
+          for (final v in pre) [v[0] + dx, v[1] + dy],
+        ];
+      case 1: // Reflection across x-axis
+        image = [
+          for (final v in pre) [v[0], -v[1]],
+        ];
+      default: // Rotation 180°
+        image = [
+          for (final v in pre) [-v[0], -v[1]],
+        ];
+    }
+  } else {
+    // Dilation by k ∈ {2, 3}.
+    final k = rand.nextBool() ? 2 : 3;
+    image = [
+      for (final v in pre) [k * v[0], k * v[1]],
+    ];
+  }
+
+  const correctYes = 'Yes — same size and same shape';
+  const correctNo = 'No — sizes are different';
+  final correct = isCongruent ? correctYes : correctNo;
+  final distractors = [
+    if (isCongruent) correctNo else correctYes,
+    'Only if reflected',
+    'Cannot tell from a diagram',
+  ];
+
+  final preLabelled = [
+    for (var i = 0; i < 3; i++)
+      CoordinatePlanePoint(x: pre[i][0], y: pre[i][1], label: 'ABC'[i]),
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'congruence_via_transformations',
+    prompt: 'Are these two figures congruent?',
+    diagram: CoordinatePlaneSpec(
+      minX: -9,
+      maxX: 9,
+      minY: -9,
+      maxY: 9,
+      points: preLabelled,
+      polygons: [
+        CoordinatePlanePolygon(vertices: preLabelled),
+        CoordinatePlanePolygon(
+          vertices: [
+            for (var i = 0; i < 3; i++)
+              CoordinatePlanePoint(x: image[i][0], y: image[i][1]),
+          ],
+          style: CoordinatePlanePolygonStyle.dashed,
+        ),
+      ],
+    ),
+    correctAnswer: correct,
+    distractors: distractors,
+    explanation: [
+      if (isCongruent)
+        'Rigid moves (T / R / Rot) preserve size and shape: congruent.'
+      else
+        'Dilation scales the figure — different size; NOT congruent.',
+    ],
+    answerFormat: AnswerFormat.string,
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// similarity_via_transformations (Grade 8)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// Show preimage + image; ask "Are these two figures similar?" The
+/// image is produced by either:
+///   - a similarity transformation (T / R / Rot / uniform dilation) →
+///     similar
+///   - a non-uniform stretch like `(x, y) → (k·x, y)` → NOT similar
+/// 50/50.
+GeneratedQuestion similarityViaTransformations(Random rand) {
+  final isSimilar = rand.nextBool();
+
+  int pickNonZero() {
+    final n = rand.nextInt(5) - 2; // -2..2
+    return n == 0 ? (rand.nextBool() ? 1 : -1) : n;
+  }
+
+  late List<List<int>> pre;
+  for (var attempt = 0; attempt < 30; attempt++) {
+    pre = [
+      [pickNonZero(), pickNonZero()],
+      [pickNonZero(), pickNonZero()],
+      [pickNonZero(), pickNonZero()],
+    ];
+    if (_isNonDegenerateTriangle(pre)) break;
+  }
+
+  late List<List<int>> image;
+  if (isSimilar) {
+    // Similarity transformation. Pick uniform dilation (most distinctive),
+    // translation, or rotation 90° uniformly.
+    final kind = rand.nextInt(3);
+    switch (kind) {
+      case 0: // Dilation by 2
+        image = [
+          for (final v in pre) [2 * v[0], 2 * v[1]],
+        ];
+      case 1: // Translation
+        image = [
+          for (final v in pre) [v[0] + 3, v[1] + 2],
+        ];
+      default: // Rotation 90° CCW
+        image = [
+          for (final v in pre) [-v[1], v[0]],
+        ];
+    }
+  } else {
+    // Non-uniform stretch: scale x by 2 OR y by 2 but not both.
+    if (rand.nextBool()) {
+      image = [
+        for (final v in pre) [2 * v[0], v[1]],
+      ];
+    } else {
+      image = [
+        for (final v in pre) [v[0], 2 * v[1]],
+      ];
+    }
+  }
+
+  const correctYes = 'Yes — same shape (corresponding sides in proportion)';
+  const correctNo = 'No — corresponding sides are NOT in proportion';
+  final correct = isSimilar ? correctYes : correctNo;
+  final distractors = [
+    if (isSimilar) correctNo else correctYes,
+    'Only if congruent',
+    'Cannot tell from a diagram',
+  ];
+
+  final preLabelled = [
+    for (var i = 0; i < 3; i++)
+      CoordinatePlanePoint(x: pre[i][0], y: pre[i][1], label: 'ABC'[i]),
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'similarity_via_transformations',
+    prompt: 'Are these two figures similar?',
+    diagram: CoordinatePlaneSpec(
+      minX: -7,
+      maxX: 7,
+      minY: -7,
+      maxY: 7,
+      points: preLabelled,
+      polygons: [
+        CoordinatePlanePolygon(vertices: preLabelled),
+        CoordinatePlanePolygon(
+          vertices: [
+            for (var i = 0; i < 3; i++)
+              CoordinatePlanePoint(x: image[i][0], y: image[i][1]),
+          ],
+          style: CoordinatePlanePolygonStyle.dashed,
+        ),
+      ],
+    ),
+    correctAnswer: correct,
+    distractors: distractors,
+    explanation: [
+      if (isSimilar)
+        'T / R / Rot / uniform dilation all produce similar figures.'
+      else
+        'Stretching one direction warps the shape: NOT similar.',
+    ],
+    answerFormat: AnswerFormat.string,
+  );
+}

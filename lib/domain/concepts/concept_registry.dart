@@ -2901,7 +2901,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'congruence_via_transformations',
     name: 'Congruent figures',
-    shortLabel: 'Congruent figures',
+    shortLabel: 'congruent?',
     categoryId: 'geometry',
     primaryGrade: 8,
     prereqIds: [
@@ -2916,7 +2916,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'similarity_via_transformations',
     name: 'Similar figures',
-    shortLabel: 'Similar figures',
+    shortLabel: 'similar?',
     categoryId: 'geometry',
     primaryGrade: 8,
     prereqIds: ['transformations_dilation', 'congruence_via_transformations'],
