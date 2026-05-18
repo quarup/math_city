@@ -21,6 +21,7 @@ import 'package:math_city/domain/questions/generators/place_value_generators.dar
 import 'package:math_city/domain/questions/generators/probability_generators.dart';
 import 'package:math_city/domain/questions/generators/ratio_generators.dart';
 import 'package:math_city/domain/questions/generators/rationals_generators.dart';
+import 'package:math_city/domain/questions/generators/scatter_plot_generators.dart';
 import 'package:math_city/domain/questions/generators/statistics_generators.dart';
 import 'package:math_city/domain/questions/generators/time_generators.dart';
 import 'package:math_city/domain/questions/word_problems/word_problem_generators.dart';
@@ -274,5 +275,8 @@ class GeneratorRegistry {
     // Data displays (box plot)
     'box_plot': boxPlotReading,
     'compare_two_distributions': compareTwoDistributions,
+    // Data displays (scatter plot)
+    'scatter_plot_construct': scatterPlotConstruct,
+    'scatter_plot_describe': scatterPlotDescribe,
   };
 }

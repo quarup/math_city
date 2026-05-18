@@ -254,6 +254,8 @@ const _shortLabelOverrides = <String, String>{
   'describe_distribution': 'shape?',
   'box_plot': 'box plot',
   'compare_two_distributions': 'A vs B',
+  'scatter_plot_construct': 'find pt',
+  'scatter_plot_describe': 'scatter?',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
