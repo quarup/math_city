@@ -25,6 +25,7 @@ import 'package:math_city/domain/questions/generators/histogram_generators.dart'
 import 'package:math_city/domain/questions/generators/integer_generators.dart';
 import 'package:math_city/domain/questions/generators/line_figure_generators.dart';
 import 'package:math_city/domain/questions/generators/linear_function_generators.dart';
+import 'package:math_city/domain/questions/generators/measurement_vocab_generators.dart';
 import 'package:math_city/domain/questions/generators/misc_extra_generators.dart';
 import 'package:math_city/domain/questions/generators/money_generators.dart';
 import 'package:math_city/domain/questions/generators/mult_div_generators.dart';
@@ -483,5 +484,9 @@ class GeneratorRegistry {
     'identify_lines_rays_segments': identifyLinesRaysSegments,
     'parallel_perpendicular_lines': parallelPerpendicularLines,
     'classify_2d_by_lines_angles': classify2dByLinesAngles,
+    // K-G1 measurement-vocabulary chain (text-only)
+    'describe_attribute': describeAttribute,
+    'compare_two_objects': compareTwoObjects,
+    'order_three_objects_length': orderThreeObjectsLength,
   };
 }

@@ -2086,7 +2086,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'describe_attribute',
     name: 'Describe length/weight',
-    shortLabel: 'Describe length/weight',
+    shortLabel: 'measure?',
     categoryId: 'measurement',
     primaryGrade: 0,
     prereqIds: [],
@@ -2097,7 +2097,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'compare_two_objects',
     name: 'Compare objects directly',
-    shortLabel: 'Compare objects directly',
+    shortLabel: 'longer?',
     categoryId: 'measurement',
     primaryGrade: 0,
     prereqIds: ['describe_attribute'],
@@ -2108,7 +2108,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'order_three_objects_length',
     name: 'Order three by length',
-    shortLabel: 'Order three by length',
+    shortLabel: 'sort 3',
     categoryId: 'measurement',
     primaryGrade: 1,
     prereqIds: ['compare_two_objects'],

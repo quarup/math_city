@@ -230,19 +230,20 @@ void main() {
         final pack = engine.pickStarterPack(0);
         expect(pack, hasLength(4));
         // pickStarterPack sorts by (grade, categoryRowOrder) and takes
-        // the first 4. After Chunk 61, five categories now ship a G0
-        // row-0 concept; the first four wins by category display order:
-        // counting (count_to_10), place_value
-        // (teen_numbers_as_ten_plus), add_sub (add_within_5), geometry
-        // (identify_shape_2d). The 5th K-grade root,
-        // stats (classify_count_categories), gets pushed out.
+        // the first 4. After Chunk 64, six categories now ship a G0
+        // row-0 concept; the first four wins by category display
+        // order: counting (count_to_10), place_value
+        // (teen_numbers_as_ten_plus), add_sub (add_within_5),
+        // measurement (describe_attribute). geometry
+        // (identify_shape_2d) and stats (classify_count_categories)
+        // are pushed out.
         expect(
           pack.map((c) => c.id).toList(),
           [
             'count_to_10',
             'teen_numbers_as_ten_plus',
             'add_within_5',
-            'identify_shape_2d',
+            'describe_attribute',
           ],
         );
       },
@@ -307,6 +308,8 @@ void main() {
             'count_to_20',
             // Chunk 59: geometry root.
             'identify_shape_2d',
+            // Chunk 64: measurement root.
+            'describe_attribute',
           },
           profMap: const {
             'add_within_5': 0.9,
@@ -314,6 +317,7 @@ void main() {
             'count_to_10': 0.4,
             'count_to_20': 0.4,
             'identify_shape_2d': 0.4,
+            'describe_attribute': 0.4,
           },
           playerGrade: 0,
         );

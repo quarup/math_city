@@ -409,6 +409,9 @@ const _shortLabelOverrides = <String, String>{
   'identify_lines_rays_segments': 'line/ray?',
   'parallel_perpendicular_lines': '∥ ⊥ ×?',
   'classify_2d_by_lines_angles': 'right ∠?',
+  'describe_attribute': 'measure?',
+  'compare_two_objects': 'longer?',
+  'order_three_objects_length': 'sort 3',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
