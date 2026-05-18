@@ -46,6 +46,9 @@ WIDGET_TO_FILE = {
     "NumberLine": "number_line",
     "Clock": "clock",
     "BarChart": "bar_chart",
+    # BarChart, Histogram, DotPlot, LinePlot share one §6.1 row; map the
+    # extras to their own files so the impl-vs-catalogued cross-check passes.
+    "DotPlot": "dot_plot",
     "RectangleArea": "area_grid",  # implemented under this name historically
     "CoordinatePlane": "coordinate_plane",
     "Angle": "angle",

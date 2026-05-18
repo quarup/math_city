@@ -6,6 +6,7 @@ import 'package:math_city/domain/questions/generators/advanced_generators.dart';
 import 'package:math_city/domain/questions/generators/bar_graph_generators.dart';
 import 'package:math_city/domain/questions/generators/coordinate_plane_generators.dart';
 import 'package:math_city/domain/questions/generators/decimal_generators.dart';
+import 'package:math_city/domain/questions/generators/dot_plot_generators.dart';
 import 'package:math_city/domain/questions/generators/equation_generators.dart';
 import 'package:math_city/domain/questions/generators/fraction_generators.dart';
 import 'package:math_city/domain/questions/generators/function_generators.dart';
@@ -259,5 +260,8 @@ class GeneratorRegistry {
     'bar_graph_read': barGraphRead,
     'bar_graph_compare': barGraphCompare,
     'scaled_bar_graph_read': scaledBarGraphRead,
+    // Data displays (dot / line plots)
+    'line_plot_whole': lineplotWhole,
+    'dot_plot': dotPlot,
   };
 }

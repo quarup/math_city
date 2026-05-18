@@ -119,6 +119,38 @@ class CoordinatePlanePoint {
   final String? label;
 }
 
+/// A dot plot (a.k.a. line plot) — a horizontal axis from [minX] to [maxX]
+/// with one tick per integer, and a vertical stack of dots above each tick
+/// representing the count of that value in [values].
+///
+/// Used by `line_plot_whole`, `dot_plot`. Fractional-position support is
+/// a separate spec / widget extension when needed (see curriculum.md
+/// `line_plot_fractional`).
+class DotPlotSpec extends DiagramSpec {
+  const DotPlotSpec({
+    required this.title,
+    required this.axisLabel,
+    required this.values,
+    required this.minX,
+    required this.maxX,
+  }) : assert(maxX > minX, 'maxX must be > minX'),
+       assert(values.length > 0, 'need at least one value');
+
+  /// Header above the plot, e.g. "Plant heights" or "Books read".
+  final String title;
+
+  /// Short caption under the axis identifying the unit, e.g. "Inches".
+  final String axisLabel;
+
+  /// The data points. Duplicates are stacked vertically above the
+  /// corresponding axis tick. Every value must satisfy
+  /// `minX <= v <= maxX`.
+  final List<int> values;
+
+  final int minX;
+  final int maxX;
+}
+
 /// A vertical bar chart with one bar per category. `labels` and `values`
 /// are parallel lists. The y-axis runs from 0 to [maxY] with a gridline
 /// every [scale] units (so `maxY / scale` horizontal gridlines).

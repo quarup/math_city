@@ -3656,10 +3656,10 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'line_plot_whole',
     name: 'Line plot (whole units)',
-    shortLabel: 'Line plot (whole units)',
+    shortLabel: 'line plot',
     categoryId: 'stats',
     primaryGrade: 2,
-    prereqIds: ['measure_with_ruler_inches'],
+    prereqIds: ['add_within_20'],
     source: ConceptSource.algorithmicWithDiagram,
     diagramRequirement: DiagramRequired('line_plot'),
     categoryRowOrder: 5,
@@ -3733,7 +3733,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'dot_plot',
     name: 'Dot plot',
-    shortLabel: 'Dot plot',
+    shortLabel: 'dot plot',
     categoryId: 'stats',
     primaryGrade: 6,
     prereqIds: ['line_plot_whole'],
