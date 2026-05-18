@@ -362,6 +362,18 @@ const _shortLabelOverrides = <String, String>{
   'area_rectangle_count_squares': 'count □',
   'partition_into_rows_columns': 'rows × cols',
   'inference_from_sample': 'estimate',
+  'count_objects_to_10': 'count obj 10',
+  'count_objects_to_20': 'count obj 20',
+  'equal_groups_intro': 'groups',
+  'array_repeated_addition': 'array +',
+  'mult_meaning_groups': '× meaning',
+  'div_meaning_share': 'share',
+  'div_meaning_grouping': '÷ groups',
+  'distributive_mult_over_add': 'distrib',
+  'time_to_minute': 'clock 1m',
+  'elapsed_time': 'elapsed',
+  'fraction_denom_10_100': 'tenths',
+  'approximate_irrational': '√n approx',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
@@ -409,12 +421,8 @@ const _prereqOverrides = <String, List<String>>{
   'round_to_100': ['place_value_3digit'],
   // integers_add: opposites_and_zero now lives, so the curriculum.md
   // prereq is met — no override needed.
-  // drop fraction_denom_10_100 (no generator yet) — `decimal_notation_tenths`
-  // becomes the entry point into the decimals branch.
-  'decimal_notation_tenths': <String>[],
-  // drop fraction_denom_10_100 (no generator yet) for the percent root —
-  // the percent grid widget visualises "N out of 100" directly.
-  'percent_intro': <String>[],
+  // decimal_notation_tenths / percent_intro: fraction_denom_10_100 now
+  // lives (Chunk 52) — curriculum prereqs are met, no overrides needed.
   // evaluate_expression: order_of_operations_with_exp now lives — the
   // curriculum.md prereq is met, no override needed.
   // solve_one_step_eq_addition: missing_addend_within_20 +
@@ -526,11 +534,8 @@ const _prereqOverrides = <String, List<String>>{
   // the curriculum prereq is met — no override needed.
   // two_way_relative_frequency prereqs are [two_way_table_construct,
   // percent_intro] — both implemented, no override needed.
-  // drop mult_meaning_groups (no generator — needs array_grid widget for
-  // "equal groups" intuition). Substitute mult_facts_within_100 as the
-  // direct prereq — the per-row tables are reinforcement of the mixed
-  // table, which kids encounter first.
-  'mult_facts_3': ['mult_facts_within_100'],
+  // mult_facts_3: mult_meaning_groups now lives (Chunk 52) — curriculum
+  // prereq is met, no override needed.
   // drop measure_with_ruler_inches (no generator yet — needs Ruler
   // widget). The skill of length_diff_units is just subtraction in a
   // word-problem framing, so sub_within_100 covers it.
