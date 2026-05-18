@@ -337,6 +337,14 @@ const _shortLabelOverrides = <String, String>{
   'rationals_four_op_word': 'rat word',
   'word_problem_two_step_eq': '2-step eq',
   'system_word_problem': 'sys word',
+  'missing_addend_within_20': '?+b=r',
+  'missing_factor': '?×b=c',
+  'numerical_pattern_rule': 'rule?',
+  'signed_quantities_context': 'context ±',
+  'write_expression_from_words': 'words→expr',
+  'identify_parts_expression': 'coef/const',
+  'convert_units_within_system': 'unit conv',
+  'volume_prism_fractional_edges': 'V frac',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
@@ -392,15 +400,15 @@ const _prereqOverrides = <String, List<String>>{
   'percent_intro': <String>[],
   // evaluate_expression: order_of_operations_with_exp now lives — the
   // curriculum.md prereq is met, no override needed.
-  // drop missing_addend_within_20 + write_expression_from_words
-  // (no generators) — substitute the basic +/− concept as background.
-  'solve_one_step_eq_addition': ['add_within_100'],
-  // drop missing_factor + write_expression_from_words (no generators).
-  'solve_one_step_eq_mult': ['mult_facts_within_100'],
-  // drop distributive_mult_over_add + write_expression_from_words
-  // (no generators) — substitute mult facts as basic background.
-  'expand_linear_expression': ['mult_facts_within_100'],
-  'equivalent_expressions_props': ['mult_facts_within_100'],
+  // solve_one_step_eq_addition: missing_addend_within_20 +
+  // write_expression_from_words now live (Chunk 49) so the curriculum
+  // prereq is met — no override needed.
+  // solve_one_step_eq_mult: missing_factor + write_expression_from_words
+  // now live — no override needed.
+  // drop distributive_mult_over_add (no generator — needs array_grid
+  // widget). write_expression_from_words now lives, so substitute that.
+  'expand_linear_expression': ['write_expression_from_words'],
+  'equivalent_expressions_props': ['write_expression_from_words'],
   // drop compare_order_rationals (no generator) — substitute basic
   // ordering/sort skill via sub_within_1000 which already lives in the DAG.
   'median': ['sub_within_1000'],
