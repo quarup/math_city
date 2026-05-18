@@ -17,6 +17,7 @@ import 'package:math_city/domain/questions/generators/equation_generators.dart';
 import 'package:math_city/domain/questions/generators/fraction_generators.dart';
 import 'package:math_city/domain/questions/generators/function_generators.dart';
 import 'package:math_city/domain/questions/generators/geometry_generators.dart';
+import 'package:math_city/domain/questions/generators/graph_extra_generators.dart';
 import 'package:math_city/domain/questions/generators/graph_line_generators.dart';
 import 'package:math_city/domain/questions/generators/histogram_generators.dart';
 import 'package:math_city/domain/questions/generators/integer_generators.dart';
@@ -425,5 +426,11 @@ class GeneratorRegistry {
     'elapsed_time': elapsedTime,
     'fraction_denom_10_100': fractionDenom10_100,
     'approximate_irrational': approximateIrrational,
+    // Coordinate-plane graphs (G5-G8)
+    'two_pattern_relationships': twoPatternRelationships,
+    'graph_proportional_slope': graphProportionalSlope,
+    'qualitative_graph_features': qualitativeGraphFeatures,
+    'interpret_slope_intercept_data': interpretSlopeInterceptData,
+    'simulate_compound': simulateCompound,
   };
 }
