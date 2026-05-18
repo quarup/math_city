@@ -62,6 +62,59 @@ void main() {
     });
   });
 
+  group('volume_unit_cubes', () {
+    test('answer = l × w × h drawn from the prompt', () {
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'volume_unit_cubes', i);
+        expect((q.diagram! as ShapeSpec).kind, ShapeKind.cube);
+        final nums = RegExp(r'\d+')
+            .allMatches(q.prompt)
+            .map((m) => int.parse(m.group(0)!))
+            .toList();
+        expect(nums.length, greaterThanOrEqualTo(3));
+        final l = nums[0];
+        final w = nums[1];
+        final h = nums[2];
+        expect(int.parse(q.correctAnswer), l * w * h);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('surface_area_from_net', () {
+    test('answer = 6·s² drawn from the prompt', () {
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'surface_area_from_net', i);
+        expect((q.diagram! as ShapeSpec).kind, ShapeKind.cube);
+        final nums = RegExp(r'\d+')
+            .allMatches(q.prompt)
+            .map((m) => int.parse(m.group(0)!))
+            .toList();
+        expect(nums, isNotEmpty);
+        final s = nums[0];
+        expect(int.parse(q.correctAnswer), 6 * s * s);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('area_polygon_decompose', () {
+    test('answer = a + b drawn from the prompt', () {
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'area_polygon_decompose', i);
+        final nums = RegExp(r'\d+')
+            .allMatches(q.prompt)
+            .map((m) => int.parse(m.group(0)!))
+            .toList();
+        expect(nums.length, greaterThanOrEqualTo(2));
+        final a = nums[0];
+        final b = nums[1];
+        expect(int.parse(q.correctAnswer), a + b);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
   group('scale_drawing', () {
     test('both forward and inverse flavours appear; arithmetic checks', () {
       var forwardCount = 0;

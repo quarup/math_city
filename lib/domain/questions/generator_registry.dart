@@ -498,5 +498,9 @@ class GeneratorRegistry {
     'compose_shapes': composeShapes,
     'cross_section_3d': crossSection3d,
     'scale_drawing': scaleDrawing,
+    // G5 + G6 volume / surface-area / decomposition (text + Shape:cube)
+    'volume_unit_cubes': volumeUnitCubes,
+    'surface_area_from_net': surfaceAreaFromNet,
+    'area_polygon_decompose': areaPolygonDecompose,
   };
 }
