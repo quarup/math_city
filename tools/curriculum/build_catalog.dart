@@ -415,6 +415,9 @@ const _shortLabelOverrides = <String, String>{
   'positional_words': 'where?',
   'partition_circle_rect_halves': 'halves?',
   'estimate_length': 'estimate',
+  'compose_shapes': 'compose',
+  'cross_section_3d': 'cross §',
+  'scale_drawing': 'scale dr',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.

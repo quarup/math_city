@@ -2074,7 +2074,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'scale_drawing',
     name: 'Scale drawings',
-    shortLabel: 'Scale drawings',
+    shortLabel: 'scale dr',
     categoryId: 'ratios',
     primaryGrade: 7,
     prereqIds: ['proportional_equation'],
@@ -2527,7 +2527,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'compose_shapes',
     name: 'Build shapes from shapes',
-    shortLabel: 'Build shapes from shapes',
+    shortLabel: 'compose',
     categoryId: 'geometry',
     primaryGrade: 1,
     prereqIds: ['identify_shape_2d'],
@@ -2780,7 +2780,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'cross_section_3d',
     name: 'Cross-sections of 3D solids',
-    shortLabel: 'Cross-sections of 3D solids',
+    shortLabel: 'cross §',
     categoryId: 'geometry',
     primaryGrade: 7,
     prereqIds: ['identify_shape_3d'],

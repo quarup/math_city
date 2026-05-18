@@ -18,6 +18,7 @@ import 'package:math_city/domain/questions/generators/dot_plot_generators.dart';
 import 'package:math_city/domain/questions/generators/equation_generators.dart';
 import 'package:math_city/domain/questions/generators/fraction_generators.dart';
 import 'package:math_city/domain/questions/generators/function_generators.dart';
+import 'package:math_city/domain/questions/generators/geometry_extra_generators.dart';
 import 'package:math_city/domain/questions/generators/geometry_generators.dart';
 import 'package:math_city/domain/questions/generators/graph_extra_generators.dart';
 import 'package:math_city/domain/questions/generators/graph_line_generators.dart';
@@ -493,5 +494,9 @@ class GeneratorRegistry {
     'positional_words': positionalWords,
     'partition_circle_rect_halves': partitionCircleRectHalves,
     'estimate_length': estimateLength,
+    // G1 + G7 geometry fill-ins on existing widgets
+    'compose_shapes': composeShapes,
+    'cross_section_3d': crossSection3d,
+    'scale_drawing': scaleDrawing,
   };
 }
