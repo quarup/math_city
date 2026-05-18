@@ -46,7 +46,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'count_to_100_by_10',
     name: 'Count by tens',
-    shortLabel: 'Count by tens',
+    shortLabel: 'by 10s',
     categoryId: 'counting',
     primaryGrade: 0,
     prereqIds: ['count_to_20'],
@@ -57,7 +57,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'count_to_120',
     name: 'Count to 120',
-    shortLabel: 'Count to 120',
+    shortLabel: 'count 120',
     categoryId: 'counting',
     primaryGrade: 1,
     prereqIds: ['count_to_100_by_1'],
@@ -68,7 +68,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'count_forward_from_n',
     name: 'Count up from any number',
-    shortLabel: 'Count up from any number',
+    shortLabel: 'count up',
     categoryId: 'counting',
     primaryGrade: 0,
     prereqIds: ['count_to_20'],
@@ -156,7 +156,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'ten_more_ten_less',
     name: 'Ten more / ten less',
-    shortLabel: 'Ten more / ten less',
+    shortLabel: '±10',
     categoryId: 'counting',
     primaryGrade: 1,
     prereqIds: ['count_to_100_by_10'],
@@ -178,7 +178,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'skip_count_5',
     name: 'Skip count by 5s',
-    shortLabel: 'Skip count by 5s',
+    shortLabel: 'skip 5s',
     categoryId: 'counting',
     primaryGrade: 2,
     prereqIds: ['skip_count_2'],
@@ -189,7 +189,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'skip_count_10',
     name: 'Skip count by 10s',
-    shortLabel: 'Skip count by 10s',
+    shortLabel: 'skip 10s',
     categoryId: 'counting',
     primaryGrade: 1,
     prereqIds: ['count_to_100_by_10'],
@@ -200,7 +200,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'skip_count_100',
     name: 'Skip count by 100s',
-    shortLabel: 'Skip count by 100s',
+    shortLabel: 'skip 100s',
     categoryId: 'counting',
     primaryGrade: 2,
     prereqIds: ['skip_count_10'],
@@ -2210,7 +2210,7 @@ const List<Concept> allConcepts = [
     shortLabel: 'clock 5m',
     categoryId: 'measurement',
     primaryGrade: 2,
-    prereqIds: ['time_to_hour_half'],
+    prereqIds: ['time_to_hour_half', 'skip_count_5'],
     source: ConceptSource.algorithmicWithDiagram,
     diagramRequirement: DiagramRequired('clock_analog'),
     categoryRowOrder: 11,
