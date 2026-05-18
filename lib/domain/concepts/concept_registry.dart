@@ -3219,7 +3219,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'two_pattern_relationships',
     name: 'Compare two patterns',
-    shortLabel: 'Compare two patterns',
+    shortLabel: '2 patterns',
     categoryId: 'prealgebra',
     primaryGrade: 5,
     prereqIds: ['numerical_pattern_rule', 'plot_first_quadrant'],
@@ -3446,7 +3446,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'graph_proportional_slope',
     name: 'Graph proportional, find slope',
-    shortLabel: 'Graph proportional, find slope',
+    shortLabel: 'find slope',
     categoryId: 'prealgebra',
     primaryGrade: 8,
     prereqIds: ['proportional_relationship', 'plot_four_quadrants'],
@@ -3534,7 +3534,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'qualitative_graph_features',
     name: 'Read a graph qualitatively',
-    shortLabel: 'Read a graph qualitatively',
+    shortLabel: 'incr/decr',
     categoryId: 'prealgebra',
     primaryGrade: 8,
     prereqIds: ['graph_linear_equation'],
@@ -3953,7 +3953,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'simulate_compound',
     name: 'Simulate to estimate P',
-    shortLabel: 'Simulate to estimate P',
+    shortLabel: 'P sim',
     categoryId: 'stats',
     primaryGrade: 7,
     prereqIds: ['compound_event_probability'],
@@ -3997,7 +3997,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'interpret_slope_intercept_data',
     name: 'Interpret slope/intercept (data)',
-    shortLabel: 'Interpret slope/intercept (data)',
+    shortLabel: 'pred y',
     categoryId: 'stats',
     primaryGrade: 8,
     prereqIds: ['informal_line_of_fit'],

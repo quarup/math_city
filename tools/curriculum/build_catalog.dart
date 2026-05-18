@@ -374,6 +374,11 @@ const _shortLabelOverrides = <String, String>{
   'elapsed_time': 'elapsed',
   'fraction_denom_10_100': 'tenths',
   'approximate_irrational': '√n approx',
+  'two_pattern_relationships': '2 patterns',
+  'graph_proportional_slope': 'find slope',
+  'qualitative_graph_features': 'incr/decr',
+  'interpret_slope_intercept_data': 'pred y',
+  'simulate_compound': 'P sim',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
