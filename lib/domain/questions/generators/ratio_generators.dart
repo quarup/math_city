@@ -395,9 +395,25 @@ GeneratedQuestion proportionalRelationship(Random rand) {
     'Sometimes',
   ];
 
+  // Plot the (x, y) pairs so the kid can see whether they're
+  // collinear through the origin. Round maxY up to the nearest 5
+  // so the grid feels uniform.
+  final maxY = ys.reduce((a, b) => a > b ? a : b);
+  final roundedMaxY = ((maxY / 5).ceil()) * 5;
+
   return GeneratedQuestion(
     conceptId: 'proportional_relationship',
     prompt: 'x: $tableX; y: $tableY. Is y proportional to x?',
+    diagram: CoordinatePlaneSpec(
+      minX: 0,
+      maxX: 4,
+      minY: 0,
+      maxY: roundedMaxY,
+      points: [
+        for (var i = 0; i < xs.length; i++)
+          CoordinatePlanePoint(x: xs[i], y: ys[i]),
+      ],
+    ),
     correctAnswer: correct,
     distractors: distractors,
     explanation: [

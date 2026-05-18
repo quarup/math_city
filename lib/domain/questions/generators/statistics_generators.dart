@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:math_city/domain/questions/diagram_spec.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
 
 /// Statistics generators (Grade 6 — `statistics` category).
@@ -70,9 +71,18 @@ GeneratedQuestion meanGenerator(Random rand) {
     '${values.reduce((a, b) => a + b) - n}',
   ];
 
+  final minVal = values.reduce((a, b) => a < b ? a : b);
+  final maxVal = values.reduce((a, b) => a > b ? a : b);
   return GeneratedQuestion(
     conceptId: 'mean',
-    prompt: 'Find the mean: ${_formatList(values)}',
+    prompt: 'Find the mean of the data shown.',
+    diagram: DotPlotSpec(
+      title: 'Data',
+      axisLabel: 'Value',
+      values: values,
+      minX: (minVal - 1).clamp(0, 1 << 30),
+      maxX: maxVal + 1,
+    ),
     correctAnswer: correct,
     distractors: _wholeDistractors(mean, candidates, rand),
     explanation: [
@@ -108,9 +118,18 @@ GeneratedQuestion medianGenerator(Random rand) {
     '${values.reduce((a, b) => a + b) ~/ n}',
   ];
 
+  final minVal = sorted.first;
+  final maxVal = sorted.last;
   return GeneratedQuestion(
     conceptId: 'median',
-    prompt: 'Find the median: ${_formatList(values)}',
+    prompt: 'Find the median of the data shown.',
+    diagram: DotPlotSpec(
+      title: 'Data',
+      axisLabel: 'Value',
+      values: values,
+      minX: (minVal - 1).clamp(0, 1 << 30),
+      maxX: maxVal + 1,
+    ),
     correctAnswer: correct,
     distractors: _wholeDistractors(median, candidates, rand),
     explanation: [
@@ -151,9 +170,18 @@ GeneratedQuestion modeGenerator(Random rand) {
     '${otherValues.last}',
   ];
 
+  final minVal = values.reduce((a, b) => a < b ? a : b);
+  final maxVal = values.reduce((a, b) => a > b ? a : b);
   return GeneratedQuestion(
     conceptId: 'mode',
-    prompt: 'Find the mode: ${_formatList(values)}',
+    prompt: 'Find the mode of the data shown.',
+    diagram: DotPlotSpec(
+      title: 'Data',
+      axisLabel: 'Value',
+      values: values,
+      minX: (minVal - 1).clamp(0, 1 << 30),
+      maxX: maxVal + 1,
+    ),
     correctAnswer: correct,
     distractors: _wholeDistractors(modeVal, candidates, rand),
     explanation: [
@@ -193,7 +221,14 @@ GeneratedQuestion iqrGenerator(Random rand) {
 
   return GeneratedQuestion(
     conceptId: 'iqr',
-    prompt: 'Find the IQR: ${_formatList(values)}',
+    prompt: 'Find the IQR of the data shown.',
+    diagram: DotPlotSpec(
+      title: 'Data',
+      axisLabel: 'Value',
+      values: values,
+      minX: (sorted.first - 1).clamp(0, 1 << 30),
+      maxX: sorted.last + 1,
+    ),
     correctAnswer: correct,
     distractors: _wholeDistractors(iqr, candidates, rand),
     explanation: [
@@ -235,9 +270,18 @@ GeneratedQuestion madGenerator(Random rand) {
     '${2 * d}',
   ];
 
+  final minVal = values.reduce((a, b) => a < b ? a : b);
+  final maxVal = values.reduce((a, b) => a > b ? a : b);
   return GeneratedQuestion(
     conceptId: 'mad',
-    prompt: 'Find the mean absolute deviation: ${_formatList(values)}',
+    prompt: 'Find the mean absolute deviation of the data shown.',
+    diagram: DotPlotSpec(
+      title: 'Data',
+      axisLabel: 'Value',
+      values: values,
+      minX: (minVal - 1).clamp(0, 1 << 30),
+      maxX: maxVal + 1,
+    ),
     correctAnswer: correct,
     distractors: _wholeDistractors(mad, candidates, rand),
     explanation: [
@@ -273,7 +317,14 @@ GeneratedQuestion rangeDataGenerator(Random rand) {
 
   return GeneratedQuestion(
     conceptId: 'range_data',
-    prompt: 'Find the range: ${_formatList(values)}',
+    prompt: 'Find the range of the data shown.',
+    diagram: DotPlotSpec(
+      title: 'Data',
+      axisLabel: 'Value',
+      values: values,
+      minX: (minV - 1).clamp(0, 1 << 30),
+      maxX: maxV + 1,
+    ),
     correctAnswer: correct,
     distractors: _wholeDistractors(range, candidates, rand),
     explanation: [
