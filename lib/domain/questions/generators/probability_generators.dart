@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:math_city/domain/questions/diagram_spec.dart';
 import 'package:math_city/domain/questions/fraction.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
 
@@ -70,6 +71,8 @@ GeneratedQuestion probabilityZeroToOne(Random rand) {
 
 /// "A bag has 3 red marbles and 5 blue marbles. What is P(red)?"
 /// Answer is the reduced fraction `count(favorable) / count(total)`.
+/// Half the time the framing is bag-of-marbles (text-only); half the
+/// time it's a spinner (rendered via [SpinnerSpec]).
 GeneratedQuestion probabilitySimpleEvent(Random rand) {
   const colorPairs = <(String, String)>[
     ('red', 'blue'),
@@ -78,8 +81,12 @@ GeneratedQuestion probabilitySimpleEvent(Random rand) {
     ('purple', 'orange'),
   ];
   final colors = colorPairs[rand.nextInt(colorPairs.length)];
-  final a = rand.nextInt(7) + 2; // 2..8 favourable
-  final b = rand.nextInt(7) + 2; // 2..8 other
+  final useSpinner = rand.nextBool();
+  // Spinner stays small (≤8 sectors); bag goes higher.
+  final maxFav = useSpinner ? 4 : 7;
+  final maxOther = useSpinner ? 4 : 7;
+  final a = rand.nextInt(maxFav) + 1 + (useSpinner ? 0 : 1); // ≥1 / ≥2
+  final b = rand.nextInt(maxOther) + 1 + (useSpinner ? 0 : 1);
   final total = a + b;
   final reduced = Fraction(a, total).reduce();
   final correct = reduced.toCanonical();
@@ -110,11 +117,24 @@ GeneratedQuestion probabilitySimpleEvent(Random rand) {
     if (seen.add(cand)) out.add(cand);
   }
 
+  final prompt = useSpinner
+      ? 'The spinner shown has $total equal sectors. If you spin it once, '
+          'what is P(${colors.$1})?'
+      : 'A bag has $a ${colors.$1} marbles and $b ${colors.$2} marbles. '
+          'You pick one at random. What is P(${colors.$1})?';
+  final diagram = useSpinner
+      ? SpinnerSpec(
+          sectors: [
+            for (var i = 0; i < a; i++) colors.$1,
+            for (var i = 0; i < b; i++) colors.$2,
+          ],
+        )
+      : null;
+
   return GeneratedQuestion(
     conceptId: 'probability_simple_event',
-    prompt:
-        'A bag has $a ${colors.$1} marbles and $b ${colors.$2} marbles. '
-        'You pick one at random. What is P(${colors.$1})?',
+    prompt: prompt,
+    diagram: diagram,
     correctAnswer: correct,
     distractors: out.take(3).toList(),
     explanation: [

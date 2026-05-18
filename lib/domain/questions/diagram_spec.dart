@@ -764,6 +764,19 @@ enum ShapeKind {
   }
 }
 
+/// A spinner divided into equal sectors. Each entry in [sectors]
+/// represents one sector and carries the color label that appears
+/// on the wedge. Sectors with the same color name are filled with
+/// the same paint. Used by probability generators.
+class SpinnerSpec extends DiagramSpec {
+  const SpinnerSpec({required this.sectors})
+      : assert(sectors.length >= 2, 'spinner needs at least 2 sectors');
+
+  /// The color label for each sector. e.g. `['red', 'red', 'blue']`
+  /// means 3 equal sectors, 2 red and 1 blue.
+  final List<String> sectors;
+}
+
 /// A circle drawn at a fixed canonical size with optional radius
 /// and diameter markings + numeric labels. Used by
 /// `circle_circumference` and `area_circle`.
