@@ -13,18 +13,15 @@ import 'package:math_city/domain/questions/generated_question.dart';
 // ─────────────────────────────────────────────────────────────────────────
 
 /// "Group A has a {items}. Group B has b {items}. Which group has
-/// more?" CCSS K.CC.C.6.
-///
-/// Text-only in v1 — the AreaGrid widget can render one count, but
-/// not two side-by-side groups. Adding a dedicated two-array visual
-/// is the obvious next step but out of scope here.
-const List<String> _comparePoolItems = [
-  'apples',
-  'cookies',
-  'marbles',
-  'crayons',
-  'stickers',
-  'flowers',
+/// more?" CCSS K.CC.C.6. Renders the two groups as two rows in a
+/// PictureGraph so the kid can see and count.
+const List<({String name, String icon})> _comparePoolItems = [
+  (name: 'apples', icon: '🍎'),
+  (name: 'cookies', icon: '🍪'),
+  (name: 'marbles', icon: '⚫'),
+  (name: 'crayons', icon: '🖍'),
+  (name: 'stickers', icon: '⭐'),
+  (name: 'flowers', icon: '🌸'),
 ];
 
 GeneratedQuestion compareGroupsByCount(Random rand) {
@@ -39,8 +36,13 @@ GeneratedQuestion compareGroupsByCount(Random rand) {
   final answer = aWins ? 'Group A' : 'Group B';
   return GeneratedQuestion(
     conceptId: 'compare_groups_by_count',
-    prompt:
-        'Group A has $a $item. Group B has $b $item. Which group has more?',
+    prompt: 'Which group has more ${item.name}?',
+    diagram: PictureGraphSpec(
+      title: 'Comparing ${item.name}',
+      rowLabels: const ['Group A', 'Group B'],
+      values: [a, b],
+      icon: item.icon,
+    ),
     correctAnswer: answer,
     distractors: stringDistractorsFromPool(
       answer,

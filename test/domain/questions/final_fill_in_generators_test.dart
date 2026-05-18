@@ -26,13 +26,11 @@ void main() {
       var bWins = 0;
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'compare_groups_by_count', i);
-        final nums = RegExp(r'\d+')
-            .allMatches(q.prompt)
-            .map((m) => int.parse(m.group(0)!))
-            .toList();
-        expect(nums.length, greaterThanOrEqualTo(2));
-        final a = nums[0];
-        final b = nums[1];
+        final spec = q.diagram! as PictureGraphSpec;
+        expect(spec.rowLabels, ['Group A', 'Group B']);
+        expect(spec.values, hasLength(2));
+        final a = spec.values[0];
+        final b = spec.values[1];
         expect(a != b, isTrue);
         final expected = a > b ? 'Group A' : 'Group B';
         expect(q.correctAnswer, expected);
