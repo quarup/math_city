@@ -267,6 +267,8 @@ const _shortLabelOverrides = <String, String>{
   'transformations_dilation': 'dilate',
   'congruence_via_transformations': 'congruent?',
   'similarity_via_transformations': 'similar?',
+  'tree_diagram': 'tree',
+  'compound_event_probability': 'P(A∩B)',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
