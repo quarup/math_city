@@ -4,6 +4,7 @@ import 'package:math_city/domain/questions/generated_question.dart';
 import 'package:math_city/domain/questions/generators/add_sub_extra_generators.dart';
 import 'package:math_city/domain/questions/generators/add_sub_generators.dart';
 import 'package:math_city/domain/questions/generators/advanced_generators.dart';
+import 'package:math_city/domain/questions/generators/algebra_extra_generators.dart';
 import 'package:math_city/domain/questions/generators/bar_graph_generators.dart';
 import 'package:math_city/domain/questions/generators/box_plot_generators.dart';
 import 'package:math_city/domain/questions/generators/coordinate_plane_generators.dart';
@@ -380,5 +381,14 @@ class GeneratorRegistry {
     'rationals_four_op_word': rationalsFourOpWord,
     'word_problem_two_step_eq': wordProblemTwoStepEq,
     'system_word_problem': systemWordProblem,
+    // G1-G6 algebra fill-in
+    'missing_addend_within_20': missingAddendWithin20,
+    'missing_factor': missingFactor,
+    'numerical_pattern_rule': numericalPatternRule,
+    'signed_quantities_context': signedQuantitiesContext,
+    'write_expression_from_words': writeExpressionFromWords,
+    'identify_parts_expression': identifyPartsExpression,
+    'convert_units_within_system': convertUnitsWithinSystem,
+    'volume_prism_fractional_edges': volumePrismFractionalEdges,
   };
 }
