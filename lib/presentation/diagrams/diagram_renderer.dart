@@ -4,6 +4,7 @@ import 'package:math_city/presentation/diagrams/area_grid.dart';
 import 'package:math_city/presentation/diagrams/bar_chart.dart';
 import 'package:math_city/presentation/diagrams/clock.dart';
 import 'package:math_city/presentation/diagrams/coordinate_plane.dart';
+import 'package:math_city/presentation/diagrams/dot_plot.dart';
 import 'package:math_city/presentation/diagrams/fraction_bar.dart';
 import 'package:math_city/presentation/diagrams/number_line.dart';
 import 'package:math_city/presentation/diagrams/percent_grid.dart';
@@ -25,5 +26,6 @@ class DiagramRenderer extends StatelessWidget {
     final PercentGridSpec s => PercentGrid(spec: s),
     final CoordinatePlaneSpec s => CoordinatePlane(spec: s),
     final BarChartSpec s => BarChart(spec: s),
+    final DotPlotSpec s => DotPlot(spec: s),
   };
 }

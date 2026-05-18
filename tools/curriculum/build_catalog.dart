@@ -245,6 +245,8 @@ const _shortLabelOverrides = <String, String>{
   'bar_graph_read': 'bar graph',
   'bar_graph_compare': 'bar diff',
   'scaled_bar_graph_read': 'bar scaled',
+  'line_plot_whole': 'line plot',
+  'dot_plot': 'dot plot',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
@@ -390,6 +392,13 @@ const _prereqOverrides = <String, List<String>>{
   // both implemented, no override needed.
   // scaled_bar_graph_read prereqs are [bar_graph_read,
   // mult_facts_within_100] — both implemented, no override needed.
+  // drop measure_with_ruler_inches (no generator yet — would need a Ruler
+  // widget). Substitute add_within_20 as basic count-up-to-15 background
+  // (count_to_100_by_1 would be a better fit but has no generator); the
+  // dot plot questions are really "count the dots above this tick", which
+  // doesn't actually require physical-measurement skill.
+  'line_plot_whole': ['add_within_20'],
+  // dot_plot prereq is [line_plot_whole] — implemented, no override needed.
 };
 
 // ─────────────────────────────────────────────────────────────────────────
