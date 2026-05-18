@@ -292,5 +292,7 @@ class GeneratorRegistry {
     'transformations_reflection': transformationsReflection,
     'transformations_rotation': transformationsRotation,
     'transformations_dilation': transformationsDilation,
+    'congruence_via_transformations': congruenceViaTransformations,
+    'similarity_via_transformations': similarityViaTransformations,
   };
 }
