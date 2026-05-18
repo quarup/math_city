@@ -13,7 +13,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'count_to_10',
     name: 'Count to 10',
-    shortLabel: 'Count to 10',
+    shortLabel: 'count 10',
     categoryId: 'counting',
     primaryGrade: 0,
     prereqIds: [],
@@ -24,7 +24,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'count_to_20',
     name: 'Count to 20',
-    shortLabel: 'Count to 20',
+    shortLabel: 'count 20',
     categoryId: 'counting',
     primaryGrade: 0,
     prereqIds: ['count_to_10'],
@@ -35,7 +35,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'count_to_100_by_1',
     name: 'Count to 100',
-    shortLabel: 'Count to 100',
+    shortLabel: 'count 100',
     categoryId: 'counting',
     primaryGrade: 0,
     prereqIds: ['count_to_20'],
@@ -134,10 +134,10 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'compare_numerals_1_10',
     name: 'Compare two numbers (1–10)',
-    shortLabel: 'Compare two numbers (1–10)',
+    shortLabel: 'compare',
     categoryId: 'counting',
     primaryGrade: 0,
-    prereqIds: ['read_numerals_0_20'],
+    prereqIds: ['count_to_10'],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
     categoryRowOrder: 11,
@@ -145,7 +145,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'one_more_one_less_within_20',
     name: 'One more / one less',
-    shortLabel: 'One more / one less',
+    shortLabel: '±1',
     categoryId: 'counting',
     primaryGrade: 0,
     prereqIds: ['count_to_20'],
@@ -167,7 +167,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'skip_count_2',
     name: 'Skip count by 2s',
-    shortLabel: 'Skip count by 2s',
+    shortLabel: 'skip 2s',
     categoryId: 'counting',
     primaryGrade: 1,
     prereqIds: ['count_to_100_by_1'],
@@ -402,7 +402,7 @@ const List<Concept> allConcepts = [
     shortLabel: 'multiples',
     categoryId: 'place_value',
     primaryGrade: 4,
-    prereqIds: ['mult_facts_within_100'],
+    prereqIds: ['skip_count_2'],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
     categoryRowOrder: 15,

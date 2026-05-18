@@ -59,17 +59,16 @@ void main() {
 
         expect(unlock, isNotNull);
         expect(unlock!.masteredConcept?.id, 'add_within_5');
-        // The starter pack of 4 already includes all add_within_5's DAG
-        // children (sub_within_5, add_within_10, sub_within_10), so the
-        // drip-feed picks the lowest-grade root concept that *isn't* yet
-        // introduced. After landing place_value_2digit (G1, no prereqs
-        // post-override), it wins the tiebreak over time_to_hour_half
-        // because place_value (display order 1) precedes measurement (7).
-        expect(unlock.newConcept.id, 'place_value_2digit');
+        // After Chunk 41 the starter pack is {count_to_10, add_within_5,
+        // count_to_20, sub_within_5} (counting and add_sub alternate at
+        // G0). Mastering add_within_5 makes add_within_10 eligible (its
+        // only curriculum prereq is now met). add_within_10 is G0 so it
+        // wins the lowest-grade pick over G1 candidates.
+        expect(unlock.newConcept.id, 'add_within_10');
 
         // The newly-unlocked concept is now persisted as introduced.
         final introduced = await db.introducedConceptIdsForPlayer(pid);
-        expect(introduced, contains('place_value_2digit'));
+        expect(introduced, contains('add_within_10'));
       },
     );
 
@@ -93,7 +92,7 @@ void main() {
         // No new concept introduced beyond the 4-concept starter pack.
         final introduced = await db.introducedConceptIdsForPlayer(pid);
         expect(introduced, hasLength(4));
-        expect(introduced, isNot(contains('place_value_2digit')));
+        expect(introduced, isNot(contains('add_within_10')));
       },
     );
 
@@ -153,13 +152,15 @@ void main() {
           introducedConceptsProvider.future,
         );
         expect(introduced, hasLength(4));
+        // Starter pack alternates between the two G0 categories
+        // (counting and add_sub) — see Chunk 41.
         expect(
           introduced,
           containsAll([
+            'count_to_10',
             'add_within_5',
+            'count_to_20',
             'sub_within_5',
-            'add_within_10',
-            'sub_within_10',
           ]),
         );
 

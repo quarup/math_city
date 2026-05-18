@@ -6,6 +6,7 @@ import 'package:math_city/domain/questions/generators/advanced_generators.dart';
 import 'package:math_city/domain/questions/generators/bar_graph_generators.dart';
 import 'package:math_city/domain/questions/generators/box_plot_generators.dart';
 import 'package:math_city/domain/questions/generators/coordinate_plane_generators.dart';
+import 'package:math_city/domain/questions/generators/counting_generators.dart';
 import 'package:math_city/domain/questions/generators/decimal_generators.dart';
 import 'package:math_city/domain/questions/generators/dot_plot_generators.dart';
 import 'package:math_city/domain/questions/generators/equation_generators.dart';
@@ -67,6 +68,13 @@ class GeneratorRegistry {
   }
 
   static Map<String, QuestionGenerator> _buildDefault() => {
+    // Counting & number sense (K–1)
+    'count_to_10': countTo10,
+    'count_to_20': countTo20,
+    'count_to_100_by_1': countTo100By1,
+    'one_more_one_less_within_20': oneMoreOneLessWithin20,
+    'compare_numerals_1_10': compareNumerals1to10,
+    'skip_count_2': skipCount2,
     // Addition / subtraction
     'add_within_5': addWithinN(5),
     'sub_within_5': subWithinN(5),

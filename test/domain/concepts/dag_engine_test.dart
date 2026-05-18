@@ -221,19 +221,21 @@ void main() {
 
   group('DripFeedEngine — real catalog', () {
     test(
-      'starter pack on the real catalog gives 4 K-grade add_sub roots',
+      'starter pack on the real catalog gives 4 G0 concepts alternating '
+      'across counting and add_sub categories',
       () {
         final engine = DripFeedEngine(
           registry: GeneratorRegistry.defaultRegistry(),
         );
         final pack = engine.pickStarterPack(0);
         expect(pack, hasLength(4));
-        // First four by (grade, row order) at K-grade are
-        // add_within_5 (row 0), sub_within_5 (row 1),
-        // add_within_10 (row 2), sub_within_10 (row 3).
+        // After Chunk 41 both `counting` and `add_sub` have G0 roots, so
+        // the pick-policy tiebreaker ("fewest active concepts in
+        // category") alternates between them: counting → add_sub →
+        // counting → add_sub.
         expect(
           pack.map((c) => c.id).toList(),
-          ['add_within_5', 'sub_within_5', 'add_within_10', 'sub_within_10'],
+          ['count_to_10', 'add_within_5', 'count_to_20', 'sub_within_5'],
         );
       },
     );
@@ -278,19 +280,31 @@ void main() {
     });
 
     test(
-      'mastery of add_within_5 unlocks add_within_10 next on real catalog',
+      'mastery of add_within_5 unlocks add_within_10 next when no other '
+      'category has a fewer-active-concept advantage',
       () {
         final engine = DripFeedEngine(
           registry: GeneratorRegistry.defaultRegistry(),
         );
+        // Include the counting concepts in `introduced` so the category-
+        // tiebreak doesn't pull the pick away from add_sub. With both
+        // categories having ≥ 1 active concept, the lowest-grade DAG
+        // child wins — add_within_10 (G0, prereq met).
         final next = engine.pickNext(
-          introduced: {'add_within_5', 'sub_within_5'},
-          profMap: const {'add_within_5': 0.9, 'sub_within_5': 0.4},
+          introduced: {
+            'add_within_5',
+            'sub_within_5',
+            'count_to_10',
+            'count_to_20',
+          },
+          profMap: const {
+            'add_within_5': 0.9,
+            'sub_within_5': 0.4,
+            'count_to_10': 0.4,
+            'count_to_20': 0.4,
+          },
           playerGrade: 0,
         );
-        // sub_within_5 isn't mastered, so its child sub_within_10 isn't
-        // eligible. add_within_5 is mastered, so add_within_10 (its child)
-        // should be the pick.
         expect(next?.id, 'add_within_10');
       },
     );
