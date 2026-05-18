@@ -92,9 +92,16 @@ const _shortLabelOverrides = <String, String>{
   'count_to_10': 'count 10',
   'count_to_20': 'count 20',
   'count_to_100_by_1': 'count 100',
+  'count_to_100_by_10': 'by 10s',
+  'count_to_120': 'count 120',
+  'count_forward_from_n': 'count up',
   'one_more_one_less_within_20': '±1',
+  'ten_more_ten_less': '±10',
   'compare_numerals_1_10': 'compare',
   'skip_count_2': 'skip 2s',
+  'skip_count_5': 'skip 5s',
+  'skip_count_10': 'skip 10s',
+  'skip_count_100': 'skip 100s',
   'add_within_5': '+ to 5',
   'sub_within_5': '− from 5',
   'add_within_10': '+ to 10',
@@ -313,8 +320,8 @@ const _prereqOverrides = <String, List<String>>{
   'div_facts_within_100': ['mult_facts_within_100'],
   // drop unit_fraction_intro (no generator).
   'fraction_a_over_b': <String>[],
-  // drop skip_count_5 (no generator).
-  'time_to_5_min': ['time_to_hour_half'],
+  // time_to_5_min: skip_count_5 now lives (Chunk 42), so the curriculum
+  // prereq [time_to_hour_half, skip_count_5] is met — no override needed.
   // drop teen_numbers_as_ten_plus (no generator) — it's a foundational
   // grade-1 concept, no other prereq stands in.
   'place_value_2digit': <String>[],
