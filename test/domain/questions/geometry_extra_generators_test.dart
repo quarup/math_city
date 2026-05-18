@@ -63,35 +63,24 @@ void main() {
   });
 
   group('volume_unit_cubes', () {
-    test('answer = l × w × h drawn from the prompt', () {
+    test('answer = l × w × h from the Box3DSpec', () {
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'volume_unit_cubes', i);
-        expect((q.diagram! as ShapeSpec).kind, ShapeKind.cube);
-        final nums = RegExp(r'\d+')
-            .allMatches(q.prompt)
-            .map((m) => int.parse(m.group(0)!))
-            .toList();
-        expect(nums.length, greaterThanOrEqualTo(3));
-        final l = nums[0];
-        final w = nums[1];
-        final h = nums[2];
-        expect(int.parse(q.correctAnswer), l * w * h);
+        final spec = q.diagram! as Box3DSpec;
+        expect(spec.showUnitGrid, isTrue);
+        expect(int.parse(q.correctAnswer),
+            spec.length * spec.width * spec.height);
         _expectThreeDistinctDistractors(q);
       }
     });
   });
 
   group('surface_area_from_net', () {
-    test('answer = 6·s² drawn from the prompt', () {
+    test('answer = 6·s² where s = Net3DSpec.edgeLength', () {
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'surface_area_from_net', i);
-        expect((q.diagram! as ShapeSpec).kind, ShapeKind.cube);
-        final nums = RegExp(r'\d+')
-            .allMatches(q.prompt)
-            .map((m) => int.parse(m.group(0)!))
-            .toList();
-        expect(nums, isNotEmpty);
-        final s = nums[0];
+        final spec = q.diagram! as Net3DSpec;
+        final s = spec.edgeLength;
         expect(int.parse(q.correctAnswer), 6 * s * s);
         _expectThreeDistinctDistractors(q);
       }

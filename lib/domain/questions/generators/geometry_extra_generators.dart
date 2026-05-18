@@ -170,10 +170,14 @@ GeneratedQuestion volumeUnitCubes(Random rand) {
   return GeneratedQuestion(
     conceptId: 'volume_unit_cubes',
     prompt:
-        'A rectangular prism is built from unit cubes. It is $l cubes '
-        'long, $w cubes wide, and $h cubes tall. How many unit cubes '
-        'does it contain?',
-    diagram: const ShapeSpec(kind: ShapeKind.cube),
+        'A rectangular prism is built from unit cubes with these '
+        'dimensions. How many unit cubes does it contain?',
+    diagram: Box3DSpec(
+      length: l,
+      width: w,
+      height: h,
+      showUnitGrid: true,
+    ),
     correctAnswer: '$v',
     distractors: integerDistractorsWith(
       v,
@@ -201,9 +205,9 @@ GeneratedQuestion surfaceAreaFromNet(Random rand) {
   return GeneratedQuestion(
     conceptId: 'surface_area_from_net',
     prompt:
-        'A cube has an edge length of $s units. What is its total '
-        'surface area?',
-    diagram: const ShapeSpec(kind: ShapeKind.cube),
+        'This is the net of a cube whose edge length is $s units. What '
+        'is the total surface area of the cube?',
+    diagram: Net3DSpec(edgeLength: s),
     correctAnswer: '$sa',
     distractors: integerDistractorsWith(
       sa,

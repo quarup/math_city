@@ -764,6 +764,45 @@ enum ShapeKind {
   }
 }
 
+/// A 3D rectangular prism (length × width × height) drawn in
+/// isometric outline. Used by `volume_unit_cubes`,
+/// `pythagorean_apply_3d`, and other generators that benefit from
+/// seeing labelled dimensions on a 3D figure.
+class Box3DSpec extends DiagramSpec {
+  const Box3DSpec({
+    required this.length,
+    required this.width,
+    required this.height,
+    this.showUnitGrid = false,
+    this.showDimensionLabels = true,
+  })  : assert(length >= 1, 'length must be >= 1'),
+        assert(width >= 1, 'width must be >= 1'),
+        assert(height >= 1, 'height must be >= 1');
+
+  final int length;
+  final int width;
+  final int height;
+
+  /// If true, draws gridlines on each visible face so unit cubes are
+  /// visible — used by `volume_unit_cubes`.
+  final bool showUnitGrid;
+
+  /// If true, labels the three visible edges with their integer
+  /// values (l, w, h).
+  final bool showDimensionLabels;
+}
+
+/// An unfolded cube net: 6 connected square faces in the canonical
+/// "plus / cross" layout. Used by `surface_area_from_net`.
+class Net3DSpec extends DiagramSpec {
+  const Net3DSpec({required this.edgeLength})
+      : assert(edgeLength >= 1, 'edgeLength must be >= 1');
+
+  /// Edge length of the cube. Each of the 6 net squares is this size
+  /// (label is shown on one of them so the kid sees the scale).
+  final int edgeLength;
+}
+
 /// What kind of one-dimensional figure to draw in a [LineFigureSpec].
 /// `line` extends infinitely both ways (arrows on each end); `ray`
 /// extends one way (arrow on one end, endpoint dot on the other);

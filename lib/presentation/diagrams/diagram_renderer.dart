@@ -4,6 +4,7 @@ import 'package:math_city/presentation/diagrams/angle.dart';
 import 'package:math_city/presentation/diagrams/area_grid.dart';
 import 'package:math_city/presentation/diagrams/bar_chart.dart';
 import 'package:math_city/presentation/diagrams/base_ten_blocks.dart';
+import 'package:math_city/presentation/diagrams/box_3d.dart';
 import 'package:math_city/presentation/diagrams/box_plot.dart';
 import 'package:math_city/presentation/diagrams/clock.dart';
 import 'package:math_city/presentation/diagrams/coordinate_plane.dart';
@@ -13,6 +14,7 @@ import 'package:math_city/presentation/diagrams/fraction_bar.dart';
 import 'package:math_city/presentation/diagrams/histogram.dart';
 import 'package:math_city/presentation/diagrams/line_figure.dart';
 import 'package:math_city/presentation/diagrams/money.dart';
+import 'package:math_city/presentation/diagrams/net_3d.dart';
 import 'package:math_city/presentation/diagrams/number_line.dart';
 import 'package:math_city/presentation/diagrams/percent_grid.dart';
 import 'package:math_city/presentation/diagrams/picture_graph.dart';
@@ -57,5 +59,7 @@ class DiagramRenderer extends StatelessWidget {
     final TapeDiagramSpec s => TapeDiagram(spec: s),
     final DoubleNumberLineSpec s => DoubleNumberLine(spec: s),
     final LineFigureSpec s => LineFigure(spec: s),
+    final Box3DSpec s => Box3D(spec: s),
+    final Net3DSpec s => Net3D(spec: s),
   };
 }

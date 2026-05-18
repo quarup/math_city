@@ -154,18 +154,13 @@ void main() {
   });
 
   group('pythagorean_apply_3d', () {
-    test('answer squared equals l² + w² + h²', () {
+    test('answer squared equals l² + w² + h² from the Box3DSpec', () {
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'pythagorean_apply_3d', i);
-        final spec = _spec(q);
-        expect(spec.kind, ShapeKind.cube);
-        // Parse the three numbers out of the prompt.
-        final nums =
-            RegExp(r'-?\d+').allMatches(q.prompt).map((m) => m.group(0)!).toList();
-        expect(nums.length, greaterThanOrEqualTo(3));
-        final l = int.parse(nums[0]);
-        final w = int.parse(nums[1]);
-        final h = int.parse(nums[2]);
+        final spec = q.diagram! as Box3DSpec;
+        final l = spec.length;
+        final w = spec.width;
+        final h = spec.height;
         final d = int.parse(q.correctAnswer);
         expect(d * d, l * l + w * w + h * h);
         _expectThreeDistinctDistractors(q);

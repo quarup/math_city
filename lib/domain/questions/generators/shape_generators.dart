@@ -319,9 +319,9 @@ GeneratedQuestion pythagoreanApply3d(Random rand) {
   return GeneratedQuestion(
     conceptId: 'pythagorean_apply_3d',
     prompt:
-        'A rectangular box has length $l, width $w, and height $h. What is '
-        'the length of the diagonal from one corner to the opposite corner?',
-    diagram: const ShapeSpec(kind: ShapeKind.cube),
+        'A rectangular box has the dimensions shown. What is the length '
+        'of the diagonal from one corner to the opposite corner?',
+    diagram: Box3DSpec(length: l, width: w, height: h),
     correctAnswer: '$d',
     // Misconception: kids often forget the third dimension and compute
     // √(l² + w²) instead. Surface a magnitude-near distractor.
