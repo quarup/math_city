@@ -421,6 +421,9 @@ const _shortLabelOverrides = <String, String>{
   'volume_unit_cubes': 'count V',
   'surface_area_from_net': 'cube SA',
   'area_polygon_decompose': 'A = a+b',
+  'compare_groups_by_count': 'more?',
+  'measure_length_units': 'block len',
+  'volume_composite': 'V1 + V2',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
@@ -532,12 +535,9 @@ const _prereqOverrides = <String, List<String>>{
   // (Chunk 63), so the curriculum prereq is met — no override needed.
   // angle_addition: measure_angle_protractor now lives (Chunk 58), so
   // the curriculum prereq is met — no override needed.
-  // drop measure_length_units (still no generator — needs the iterated-
-  // units variant of the Ruler widget). Substitute add_within_20 as basic
-  // count-up background; the ruler widget itself carries the visual
-  // measure-the-bar skill.
-  'measure_with_ruler_inches': ['add_within_20'],
-  'measure_with_ruler_cm': ['add_within_20'],
+  // measure_with_ruler_inches / measure_with_ruler_cm:
+  // measure_length_units now lives (Chunk 68), so the curriculum
+  // prereqs are met — no overrides needed.
   // plot_first_quadrant: number_line_add_sub now lives — curriculum
   // prereq is met, no override needed.
   // drop integers_on_number_line (no generator yet). Substitute

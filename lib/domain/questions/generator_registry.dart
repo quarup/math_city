@@ -16,6 +16,7 @@ import 'package:math_city/domain/questions/generators/decimal_generators.dart';
 import 'package:math_city/domain/questions/generators/diagram_extra_generators.dart';
 import 'package:math_city/domain/questions/generators/dot_plot_generators.dart';
 import 'package:math_city/domain/questions/generators/equation_generators.dart';
+import 'package:math_city/domain/questions/generators/final_fill_in_generators.dart';
 import 'package:math_city/domain/questions/generators/fraction_generators.dart';
 import 'package:math_city/domain/questions/generators/function_generators.dart';
 import 'package:math_city/domain/questions/generators/geometry_extra_generators.dart';
@@ -502,5 +503,9 @@ class GeneratorRegistry {
     'volume_unit_cubes': volumeUnitCubes,
     'surface_area_from_net': surfaceAreaFromNet,
     'area_polygon_decompose': areaPolygonDecompose,
+    // Last-mile fill-ins (Chunk 68)
+    'compare_groups_by_count': compareGroupsByCount,
+    'measure_length_units': measureLengthUnits,
+    'volume_composite': volumeComposite,
   };
 }
