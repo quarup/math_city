@@ -23,6 +23,7 @@ import 'package:math_city/domain/questions/generators/graph_extra_generators.dar
 import 'package:math_city/domain/questions/generators/graph_line_generators.dart';
 import 'package:math_city/domain/questions/generators/histogram_generators.dart';
 import 'package:math_city/domain/questions/generators/integer_generators.dart';
+import 'package:math_city/domain/questions/generators/k_g2_extras_generators.dart';
 import 'package:math_city/domain/questions/generators/line_figure_generators.dart';
 import 'package:math_city/domain/questions/generators/linear_function_generators.dart';
 import 'package:math_city/domain/questions/generators/measurement_vocab_generators.dart';
@@ -488,5 +489,9 @@ class GeneratorRegistry {
     'describe_attribute': describeAttribute,
     'compare_two_objects': compareTwoObjects,
     'order_three_objects_length': orderThreeObjectsLength,
+    // K-G2 small fill-ins on existing widgets
+    'positional_words': positionalWords,
+    'partition_circle_rect_halves': partitionCircleRectHalves,
+    'estimate_length': estimateLength,
   };
 }
