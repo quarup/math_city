@@ -3964,7 +3964,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'scatter_plot_construct',
     name: 'Make a scatter plot',
-    shortLabel: 'Make a scatter plot',
+    shortLabel: 'find pt',
     categoryId: 'stats',
     primaryGrade: 8,
     prereqIds: ['plot_four_quadrants'],
@@ -3975,7 +3975,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'scatter_plot_describe',
     name: 'Describe scatter pattern',
-    shortLabel: 'Describe scatter pattern',
+    shortLabel: 'scatter?',
     categoryId: 'stats',
     primaryGrade: 8,
     prereqIds: ['scatter_plot_construct'],
