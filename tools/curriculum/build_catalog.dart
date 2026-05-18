@@ -345,6 +345,14 @@ const _shortLabelOverrides = <String, String>{
   'identify_parts_expression': 'coef/const',
   'convert_units_within_system': 'unit conv',
   'volume_prism_fractional_edges': 'V frac',
+  'length_word_problems': 'len word',
+  'money_word_problems': r'$ word',
+  'liquid_volume_mass': 'liquid',
+  'mult_div_word_2step': '×÷ 2-step',
+  'area_perimeter_word': 'area word',
+  'convert_units_multistep': 'unit 2-step',
+  'statistical_question': 'stat Q?',
+  'sampling_representativeness': 'fair?',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
@@ -528,6 +536,13 @@ const _prereqOverrides = <String, List<String>>{
   // same surface and kids who can compute perimeter already understand
   // that sides bound a polygon.
   'triangle_inequality_recognize': ['perimeter_polygon'],
+  // drop measure_with_ruler_inches (no generator — needs Ruler widget).
+  // The word-problem framing only needs +/− with two-digit operands.
+  'length_word_problems': ['add_within_100'],
+  // drop count_bills_coins (no generator — needs Money widget). The
+  // coin-counting variant is implemented arithmetically; the dollar
+  // variant only needs sub_within_100.
+  'money_word_problems': ['add_within_100'],
 };
 
 // ─────────────────────────────────────────────────────────────────────────
@@ -803,7 +818,16 @@ String _diagramFor(String diagram, String forId) {
 }
 
 String _dartString(String s) {
-  final escaped = s.replaceAll(r'\', r'\\').replaceAll("'", r"\'");
+  // Use a raw string when '$' is present and there are no chars (like
+  // backslash or single quote) that raw strings can't represent — that
+  // satisfies the use_raw_strings lint cleanly.
+  if (s.contains(r'$') && !s.contains(r'\') && !s.contains("'")) {
+    return "r'$s'";
+  }
+  final escaped = s
+      .replaceAll(r'\', r'\\')
+      .replaceAll(r'$', r'\$')
+      .replaceAll("'", r"\'");
   return "'$escaped'";
 }
 

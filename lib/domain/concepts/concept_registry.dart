@@ -1193,7 +1193,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'mult_div_word_2step',
     name: 'Multi-step word problems',
-    shortLabel: 'Multi-step word problems',
+    shortLabel: '×÷ 2-step',
     categoryId: 'mult_div',
     primaryGrade: 4,
     prereqIds: ['mult_compare_word', 'add_sub_2step_word_problems'],
@@ -2163,10 +2163,10 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'length_word_problems',
     name: 'Length word problems',
-    shortLabel: 'Length word problems',
+    shortLabel: 'len word',
     categoryId: 'measurement',
     primaryGrade: 2,
-    prereqIds: ['measure_with_ruler_inches', 'add_within_100'],
+    prereqIds: ['add_within_100'],
     source: ConceptSource.dataset,
     diagramRequirement: DiagramOptional(),
     categoryRowOrder: 7,
@@ -2284,10 +2284,10 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'money_word_problems',
     name: 'Money word problems',
-    shortLabel: 'Money word problems',
+    shortLabel: r'$ word',
     categoryId: 'measurement',
     primaryGrade: 2,
-    prereqIds: ['count_bills_coins', 'add_within_100'],
+    prereqIds: ['add_within_100'],
     source: ConceptSource.dataset,
     diagramRequirement: DiagramOptional(),
     categoryRowOrder: 18,
@@ -2306,7 +2306,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'liquid_volume_mass',
     name: 'Liquid volume / mass',
-    shortLabel: 'Liquid volume / mass',
+    shortLabel: 'liquid',
     categoryId: 'measurement',
     primaryGrade: 3,
     prereqIds: ['add_within_1000'],
@@ -2328,7 +2328,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'convert_units_multistep',
     name: 'Convert in word problems',
-    shortLabel: 'Convert in word problems',
+    shortLabel: 'unit 2-step',
     categoryId: 'measurement',
     primaryGrade: 5,
     prereqIds: ['convert_units_within_system', 'mult_decimals'],
@@ -2383,7 +2383,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'area_perimeter_word',
     name: 'Area/perimeter word problems',
-    shortLabel: 'Area/perimeter word problems',
+    shortLabel: 'area word',
     categoryId: 'measurement',
     primaryGrade: 4,
     prereqIds: ['area_rectangle_formula', 'perimeter_polygon'],
@@ -3722,7 +3722,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'statistical_question',
     name: 'Is it a statistical question?',
-    shortLabel: 'Is it a statistical question?',
+    shortLabel: 'stat Q?',
     categoryId: 'stats',
     primaryGrade: 6,
     prereqIds: [],
@@ -3854,7 +3854,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'sampling_representativeness',
     name: 'Is the sample fair?',
-    shortLabel: 'Is the sample fair?',
+    shortLabel: 'fair?',
     categoryId: 'stats',
     primaryGrade: 7,
     prereqIds: ['statistical_question'],
