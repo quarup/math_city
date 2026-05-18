@@ -59,16 +59,19 @@ void main() {
 
         expect(unlock, isNotNull);
         expect(unlock!.masteredConcept?.id, 'add_within_5');
-        // After Chunk 41 the starter pack is {count_to_10, add_within_5,
-        // count_to_20, sub_within_5} (counting and add_sub alternate at
-        // G0). Mastering add_within_5 makes add_within_10 eligible (its
-        // only curriculum prereq is now met). add_within_10 is G0 so it
-        // wins the lowest-grade pick over G1 candidates.
-        expect(unlock.newConcept.id, 'add_within_10');
+        // After Chunk 55 the starter pack is {count_to_10, add_within_5,
+        // classify_count_categories, count_to_20} — three categories with
+        // a row-0 K-grade concept each. Mastering add_within_5 makes both
+        // sub_within_5 and add_within_10 eligible (each has add_within_5
+        // as its sole prereq). The active-category tiebreak prefers
+        // add_sub (which is now at 0 active concepts post-mastery) over
+        // counting/stats (each at >=1 active); within add_sub the lowest
+        // row order wins, so the pick is sub_within_5.
+        expect(unlock.newConcept.id, 'sub_within_5');
 
         // The newly-unlocked concept is now persisted as introduced.
         final introduced = await db.introducedConceptIdsForPlayer(pid);
-        expect(introduced, contains('add_within_10'));
+        expect(introduced, contains('sub_within_5'));
       },
     );
 
@@ -92,7 +95,7 @@ void main() {
         // No new concept introduced beyond the 4-concept starter pack.
         final introduced = await db.introducedConceptIdsForPlayer(pid);
         expect(introduced, hasLength(4));
-        expect(introduced, isNot(contains('add_within_10')));
+        expect(introduced, isNot(contains('sub_within_5')));
       },
     );
 
@@ -152,15 +155,18 @@ void main() {
           introducedConceptsProvider.future,
         );
         expect(introduced, hasLength(4));
-        // Starter pack alternates between the two G0 categories
-        // (counting and add_sub) — see Chunk 41.
+        // Starter pack pulls the four easiest implemented G0 concepts
+        // sorted by (grade, categoryRowOrder). After Chunk 55, three
+        // categories carry a row-0 G0 concept: counting (count_to_10),
+        // add_sub (add_within_5), and stats (classify_count_categories);
+        // the fourth slot rolls over to counting:1 (count_to_20).
         expect(
           introduced,
           containsAll([
             'count_to_10',
             'add_within_5',
+            'classify_count_categories',
             'count_to_20',
-            'sub_within_5',
           ]),
         );
 

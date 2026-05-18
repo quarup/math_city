@@ -221,21 +221,27 @@ void main() {
 
   group('DripFeedEngine — real catalog', () {
     test(
-      'starter pack on the real catalog gives 4 G0 concepts alternating '
-      'across counting and add_sub categories',
+      'starter pack on the real catalog gives 4 G0 concepts spanning '
+      'all categories with a row-0 G0 concept',
       () {
         final engine = DripFeedEngine(
           registry: GeneratorRegistry.defaultRegistry(),
         );
         final pack = engine.pickStarterPack(0);
         expect(pack, hasLength(4));
-        // After Chunk 41 both `counting` and `add_sub` have G0 roots, so
-        // the pick-policy tiebreaker ("fewest active concepts in
-        // category") alternates between them: counting → add_sub →
-        // counting → add_sub.
+        // pickStarterPack sorts by (grade, categoryRowOrder) and takes
+        // the first 4. After Chunk 55, three categories now ship a G0
+        // row-0 concept: counting (count_to_10), add_sub (add_within_5),
+        // and stats (classify_count_categories). The 4th slot rolls
+        // over to the counting category at row order 1 (count_to_20).
         expect(
           pack.map((c) => c.id).toList(),
-          ['count_to_10', 'add_within_5', 'count_to_20', 'sub_within_5'],
+          [
+            'count_to_10',
+            'add_within_5',
+            'classify_count_categories',
+            'count_to_20',
+          ],
         );
       },
     );
