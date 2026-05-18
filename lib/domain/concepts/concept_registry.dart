@@ -3931,7 +3931,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'compound_event_probability',
     name: 'P(compound event)',
-    shortLabel: 'P(compound event)',
+    shortLabel: 'P(A∩B)',
     categoryId: 'stats',
     primaryGrade: 7,
     prereqIds: ['sample_space_list'],
@@ -3942,7 +3942,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'tree_diagram',
     name: 'Tree diagram',
-    shortLabel: 'Tree diagram',
+    shortLabel: 'tree',
     categoryId: 'stats',
     primaryGrade: 7,
     prereqIds: ['sample_space_list'],

@@ -146,6 +146,41 @@ class BoxPlotSummary {
   final int max;
 }
 
+/// One stage of a compound experiment in a [TreeDiagramSpec]: a stage
+/// name (e.g. "Coin" or "Spinner") plus the possible outcome labels at
+/// that stage (e.g. `["H", "T"]`).
+class TreeDiagramStage {
+  const TreeDiagramStage({
+    required this.label,
+    required this.outcomes,
+  }) : assert(outcomes.length >= 2, 'each stage needs ≥ 2 outcomes');
+
+  final String label;
+  final List<String> outcomes;
+}
+
+/// A probability tree diagram for a compound experiment of
+/// `stages.length` stages. Branching factor at stage i is
+/// `stages[i].outcomes.length`; total leaves = product of branching
+/// factors.
+///
+/// Used by `tree_diagram` and `compound_event_probability`.
+class TreeDiagramSpec extends DiagramSpec {
+  const TreeDiagramSpec({required this.stages})
+    : assert(stages.length >= 2, 'need ≥ 2 stages for a tree');
+
+  final List<TreeDiagramStage> stages;
+
+  /// Total number of leaves (= number of distinct outcome sequences).
+  int get leafCount {
+    var n = 1;
+    for (final s in stages) {
+      n *= s.outcomes.length;
+    }
+    return n;
+  }
+}
+
 /// A box plot (a.k.a. box-and-whisker plot) along a horizontal axis
 /// spanning [minX] to [maxX] (display units). One row per [BoxPlotSummary].
 ///
