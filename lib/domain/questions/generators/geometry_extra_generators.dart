@@ -151,3 +151,108 @@ GeneratedQuestion scaleDrawing(Random rand) {
     );
   }
 }
+
+// ─────────────────────────────────────────────────────────────────────────
+// volume_unit_cubes (G5)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "A rectangular prism is made of unit cubes. It is l × w × h cubes
+/// large. How many unit cubes does it contain?" → l·w·h. CCSS 5.MD.C.3.
+///
+/// Text-only with a schematic cube diagram (the Shape:cube widget
+/// doesn't yet take dimensions — the numbers in the prompt do the
+/// visual work, like `pythagorean_apply_3d`).
+GeneratedQuestion volumeUnitCubes(Random rand) {
+  final l = rand.nextInt(5) + 2; // 2..6
+  final w = rand.nextInt(5) + 2;
+  final h = rand.nextInt(4) + 2; // 2..5
+  final v = l * w * h;
+  return GeneratedQuestion(
+    conceptId: 'volume_unit_cubes',
+    prompt:
+        'A rectangular prism is built from unit cubes. It is $l cubes '
+        'long, $w cubes wide, and $h cubes tall. How many unit cubes '
+        'does it contain?',
+    diagram: const ShapeSpec(kind: ShapeKind.cube),
+    correctAnswer: '$v',
+    distractors: integerDistractorsWith(
+      v,
+      rand,
+      // Misconception: added the dimensions instead of multiplying.
+      misconception: l + w + h,
+    ),
+    explanation: [
+      'Count the cubes: $l × $w × $h = $v.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// surface_area_from_net (G6)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "A cube has edge length s. What is its total surface area?" → 6·s².
+/// CCSS 6.G.A.4 (surface area of right rectangular prism via nets —
+/// kept to the cube case in v1 since the Shape widget renders a cube,
+/// not an unfolded net).
+GeneratedQuestion surfaceAreaFromNet(Random rand) {
+  final s = rand.nextInt(8) + 2; // 2..9 → s² ∈ 4..81, sa ∈ 24..486
+  final sa = 6 * s * s;
+  return GeneratedQuestion(
+    conceptId: 'surface_area_from_net',
+    prompt:
+        'A cube has an edge length of $s units. What is its total '
+        'surface area?',
+    diagram: const ShapeSpec(kind: ShapeKind.cube),
+    correctAnswer: '$sa',
+    distractors: integerDistractorsWith(
+      sa,
+      rand,
+      // Misconception: computed volume (s³) instead of surface area.
+      misconception: s * s * s,
+    ),
+    explanation: [
+      'A cube has 6 faces, each of area $s × $s = ${s * s}.',
+      'Total surface area = 6 × ${s * s} = $sa.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// area_polygon_decompose (G6)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "A polygon can be split into a rectangle of area A and a triangle
+/// of area B. What is the total area?" → A + B. CCSS 6.G.A.1.
+///
+/// Text-driven decomposition: the prompt specifies the two part areas
+/// and the kid sums them. Diagram is one of the candidate result
+/// shapes for context.
+GeneratedQuestion areaPolygonDecompose(Random rand) {
+  // Rectangle area ∈ 6..60.
+  final a = (rand.nextInt(15) + 3) * 2;
+  // Triangle area ∈ 3..30.
+  final b = rand.nextInt(28) + 3;
+  final total = a + b;
+  // Use a hexagon or trapezoid as the visual context — both are
+  // canonical decomposable polygons.
+  const visuals = [ShapeKind.hexagon, ShapeKind.trapezoid];
+  return GeneratedQuestion(
+    conceptId: 'area_polygon_decompose',
+    prompt:
+        'A polygon is split into a rectangle of area $a square units and '
+        'a triangle of area $b square units. What is the total area of '
+        'the polygon?',
+    diagram: ShapeSpec(kind: visuals[rand.nextInt(visuals.length)]),
+    correctAnswer: '$total',
+    distractors: integerDistractorsWith(
+      total,
+      rand,
+      // Misconception: subtracted instead of added.
+      misconception: (a - b).abs(),
+    ),
+    explanation: [
+      'Decomposition: $a + $b = $total square units.',
+    ],
+  );
+}

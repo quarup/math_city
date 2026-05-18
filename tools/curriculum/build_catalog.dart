@@ -418,6 +418,9 @@ const _shortLabelOverrides = <String, String>{
   'compose_shapes': 'compose',
   'cross_section_3d': 'cross §',
   'scale_drawing': 'scale dr',
+  'volume_unit_cubes': 'count V',
+  'surface_area_from_net': 'cube SA',
+  'area_polygon_decompose': 'A = a+b',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
@@ -503,9 +506,8 @@ const _prereqOverrides = <String, List<String>>{
   'exponents_whole_number': ['mult_facts_within_100'],
   // drop powers_of_10 (no generator yet) — substitute mult_facts.
   'scientific_notation_read': ['mult_facts_within_100'],
-  // drop volume_unit_cubes (still no generator — needs a Box3D widget).
-  // area_rectangle_count_squares now lives, so substitute that.
-  'volume_rect_prism_formula': ['area_rectangle_count_squares'],
+  // volume_rect_prism_formula: volume_unit_cubes now lives (Chunk 67),
+  // so the curriculum prereq is met — no override needed.
   // compare_order_rationals: integers_on_number_line now lives —
   // curriculum prereq is met, no override needed.
   // irrational_recognize: rational_to_decimal_repeating now lives —

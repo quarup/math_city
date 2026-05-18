@@ -2394,7 +2394,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'volume_unit_cubes',
     name: 'Volume by counting cubes',
-    shortLabel: 'Volume by counting cubes',
+    shortLabel: 'count V',
     categoryId: 'measurement',
     primaryGrade: 5,
     prereqIds: ['area_rectangle_count_squares'],
@@ -2408,7 +2408,7 @@ const List<Concept> allConcepts = [
     shortLabel: 'V = lwh',
     categoryId: 'measurement',
     primaryGrade: 5,
-    prereqIds: ['area_rectangle_count_squares'],
+    prereqIds: ['volume_unit_cubes', 'mult_facts_within_100'],
     source: ConceptSource.algorithmicWithDiagram,
     diagramRequirement: DiagramRequired('shape'),
     categoryRowOrder: 29,
@@ -2438,7 +2438,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'surface_area_from_net',
     name: 'Surface area from net',
-    shortLabel: 'Surface area from net',
+    shortLabel: 'cube SA',
     categoryId: 'measurement',
     primaryGrade: 6,
     prereqIds: ['area_rectangle_formula'],
@@ -2736,7 +2736,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'area_polygon_decompose',
     name: 'Area by decomposing',
-    shortLabel: 'Area by decomposing',
+    shortLabel: 'A = a+b',
     categoryId: 'geometry',
     primaryGrade: 6,
     prereqIds: ['area_triangle', 'area_parallelogram'],
