@@ -4,6 +4,7 @@ import 'package:math_city/domain/questions/generated_question.dart';
 import 'package:math_city/domain/questions/generators/add_sub_generators.dart';
 import 'package:math_city/domain/questions/generators/advanced_generators.dart';
 import 'package:math_city/domain/questions/generators/bar_graph_generators.dart';
+import 'package:math_city/domain/questions/generators/box_plot_generators.dart';
 import 'package:math_city/domain/questions/generators/coordinate_plane_generators.dart';
 import 'package:math_city/domain/questions/generators/decimal_generators.dart';
 import 'package:math_city/domain/questions/generators/dot_plot_generators.dart';
@@ -270,5 +271,8 @@ class GeneratorRegistry {
     // Data displays (histogram)
     'histogram': histogramReading,
     'describe_distribution': describeDistribution,
+    // Data displays (box plot)
+    'box_plot': boxPlotReading,
+    'compare_two_distributions': compareTwoDistributions,
   };
 }
