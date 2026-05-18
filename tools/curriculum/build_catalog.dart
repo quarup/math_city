@@ -322,6 +322,13 @@ const _shortLabelOverrides = <String, String>{
   'compare_multidigit': 'compare md',
   'place_value_relationship_10x': '10× place',
   'powers_of_10': '10^n',
+  'am_pm': 'a.m./p.m.',
+  'length_diff_units': 'len diff',
+  'triangle_inequality_recognize': '△ valid?',
+  'adjacent_angles': 'adj ∠',
+  'exterior_angle_triangle': 'ext ∠',
+  'inspect_system_no_solution': 'sys soln?',
+  'unit_rate_with_fractions': 'frac rate',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
@@ -498,6 +505,15 @@ const _prereqOverrides = <String, List<String>>{
   // direct prereq — the per-row tables are reinforcement of the mixed
   // table, which kids encounter first.
   'mult_facts_3': ['mult_facts_within_100'],
+  // drop measure_with_ruler_inches (no generator yet — needs Ruler
+  // widget). The skill of length_diff_units is just subtraction in a
+  // word-problem framing, so sub_within_100 covers it.
+  'length_diff_units': ['sub_within_100'],
+  // drop shape_attributes_basic (no generator — needs shape widget).
+  // Substitute perimeter_polygon since "sides of a triangle" is the
+  // same surface and kids who can compute perimeter already understand
+  // that sides bound a polygon.
+  'triangle_inequality_recognize': ['perimeter_polygon'],
 };
 
 // ─────────────────────────────────────────────────────────────────────────

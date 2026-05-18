@@ -2019,7 +2019,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'unit_rate_with_fractions',
     name: 'Unit rate (fractions)',
-    shortLabel: 'Unit rate (fractions)',
+    shortLabel: 'frac rate',
     categoryId: 'ratios',
     primaryGrade: 7,
     prereqIds: ['unit_rate', 'div_fraction_by_fraction'],
@@ -2174,10 +2174,10 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'length_diff_units',
     name: 'How much longer?',
-    shortLabel: 'How much longer?',
+    shortLabel: 'len diff',
     categoryId: 'measurement',
     primaryGrade: 2,
-    prereqIds: ['measure_with_ruler_inches', 'sub_within_100'],
+    prereqIds: ['sub_within_100'],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
     categoryRowOrder: 8,
@@ -2229,7 +2229,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'am_pm',
     name: 'a.m. vs. p.m.',
-    shortLabel: 'a.m. vs. p.m.',
+    shortLabel: 'a.m./p.m.',
     categoryId: 'measurement',
     primaryGrade: 2,
     prereqIds: ['time_to_5_min'],
@@ -2769,10 +2769,10 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'triangle_inequality_recognize',
     name: 'Possible triangle?',
-    shortLabel: 'Possible triangle?',
+    shortLabel: '△ valid?',
     categoryId: 'geometry',
     primaryGrade: 7,
-    prereqIds: ['shape_attributes_basic'],
+    prereqIds: ['perimeter_polygon'],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
     categoryRowOrder: 26,
@@ -2846,7 +2846,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'adjacent_angles',
     name: 'Adjacent angles',
-    shortLabel: 'Adjacent angles',
+    shortLabel: 'adj ∠',
     categoryId: 'geometry',
     primaryGrade: 7,
     prereqIds: ['supplementary_angles'],
@@ -2938,7 +2938,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'exterior_angle_triangle',
     name: 'Exterior angle theorem',
-    shortLabel: 'Exterior angle theorem',
+    shortLabel: 'ext ∠',
     categoryId: 'geometry',
     primaryGrade: 8,
     prereqIds: ['triangle_angle_sum'],
@@ -3578,7 +3578,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'inspect_system_no_solution',
     name: 'System with no solution',
-    shortLabel: 'System with no solution',
+    shortLabel: 'sys soln?',
     categoryId: 'prealgebra',
     primaryGrade: 8,
     prereqIds: ['solve_system_substitution'],

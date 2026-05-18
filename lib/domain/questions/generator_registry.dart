@@ -18,6 +18,7 @@ import 'package:math_city/domain/questions/generators/graph_line_generators.dart
 import 'package:math_city/domain/questions/generators/histogram_generators.dart';
 import 'package:math_city/domain/questions/generators/integer_generators.dart';
 import 'package:math_city/domain/questions/generators/linear_function_generators.dart';
+import 'package:math_city/domain/questions/generators/misc_extra_generators.dart';
 import 'package:math_city/domain/questions/generators/mult_div_generators.dart';
 import 'package:math_city/domain/questions/generators/mult_facts_extra_generators.dart';
 import 'package:math_city/domain/questions/generators/number_theory_generators.dart';
@@ -361,5 +362,13 @@ class GeneratorRegistry {
     // Ratios on the coordinate plane + dependent/independent vars
     'ratio_to_coordinate_pairs': ratioToCoordinatePairs,
     'dependent_independent_vars': dependentIndependentVars,
+    // G2/G3/G7/G8 fill-in
+    'am_pm': amPm,
+    'length_diff_units': lengthDiffUnits,
+    'triangle_inequality_recognize': triangleInequalityRecognize,
+    'adjacent_angles': adjacentAngles,
+    'exterior_angle_triangle': exteriorAngleTriangle,
+    'inspect_system_no_solution': inspectSystemNoSolution,
+    'unit_rate_with_fractions': unitRateWithFractions,
   };
 }
