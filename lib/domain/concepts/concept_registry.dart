@@ -2637,7 +2637,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'measure_angle_protractor',
     name: 'Measure angle with protractor',
-    shortLabel: 'Measure angle with protractor',
+    shortLabel: 'measure ∠',
     categoryId: 'geometry',
     primaryGrade: 4,
     prereqIds: ['right_acute_obtuse_angle'],
@@ -2648,7 +2648,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'draw_angle_protractor',
     name: 'Draw angle with protractor',
-    shortLabel: 'Draw angle with protractor',
+    shortLabel: 'draw ∠',
     categoryId: 'geometry',
     primaryGrade: 4,
     prereqIds: ['measure_angle_protractor'],
@@ -2662,7 +2662,7 @@ const List<Concept> allConcepts = [
     shortLabel: '∠ + ∠',
     categoryId: 'geometry',
     primaryGrade: 4,
-    prereqIds: ['add_within_100'],
+    prereqIds: ['measure_angle_protractor'],
     source: ConceptSource.algorithmicWithDiagram,
     diagramRequirement: DiagramRequired('angle_diagram'),
     categoryRowOrder: 16,

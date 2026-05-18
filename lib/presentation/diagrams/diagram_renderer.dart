@@ -13,6 +13,7 @@ import 'package:math_city/presentation/diagrams/money.dart';
 import 'package:math_city/presentation/diagrams/number_line.dart';
 import 'package:math_city/presentation/diagrams/percent_grid.dart';
 import 'package:math_city/presentation/diagrams/picture_graph.dart';
+import 'package:math_city/presentation/diagrams/protractor.dart';
 import 'package:math_city/presentation/diagrams/ruler.dart';
 import 'package:math_city/presentation/diagrams/tree_diagram.dart';
 import 'package:math_city/presentation/diagrams/triangle_angles.dart';
@@ -45,5 +46,6 @@ class DiagramRenderer extends StatelessWidget {
     final PictureGraphSpec s => PictureGraph(spec: s),
     final MoneySpec s => Money(spec: s),
     final RulerSpec s => Ruler(spec: s),
+    final ProtractorSpec s => Protractor(spec: s),
   };
 }

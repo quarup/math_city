@@ -361,6 +361,26 @@ class BarChartSpec extends DiagramSpec {
   final int maxY;
 }
 
+/// A semicircular protractor with one ray fixed along the 0°-180° base
+/// line and a second ray at [angleDeg] (measured CCW from the 0° mark
+/// on the right). The renderer draws the half-circle, tick labels at
+/// every 10°, the two rays, and an arc inside the angle.
+///
+/// Used by `measure_angle_protractor`, `draw_angle_protractor`.
+class ProtractorSpec extends DiagramSpec {
+  const ProtractorSpec({
+    required this.angleDeg,
+    this.showAngleLabel = false,
+  }) : assert(angleDeg >= 0 && angleDeg <= 180, 'angleDeg in 0..180');
+
+  /// Angle between the two rays, in degrees (0..180).
+  final int angleDeg;
+
+  /// If true, render `${angleDeg}°` inside the wedge — used as a hint
+  /// for the "draw angle" task (the kid is shown the target angle).
+  final bool showAngleLabel;
+}
+
 /// A horizontal ruler showing a marked object measuring some fraction
 /// of the ruler's length. Lengths are tracked in units of
 /// `1/subdivisions` so a 3.5-inch object on a half-inch ruler is
