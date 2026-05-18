@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:math_city/domain/questions/diagram_spec.dart';
 import 'package:math_city/domain/questions/fraction.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
 import 'package:math_city/domain/questions/generator_registry.dart';
@@ -111,26 +112,51 @@ void main() {
   });
 
   group('probability_simple_event', () {
-    test('answer = reduce(a / (a+b))', () {
-      final re = RegExp(
+    test('answer = reduce(favourable / total) — both framings', () {
+      final bagRe = RegExp(
         r'^A bag has (\d+) (\S+) marbles and (\d+) \S+ marbles\. '
         r'You pick one at random\. What is P\((\S+)\)\?$',
       );
+      final spinnerRe = RegExp(
+        r'^The spinner shown has (\d+) equal sectors\. '
+        r'If you spin it once, what is P\((\S+)\)\?$',
+      );
+      var sawBag = false;
+      var sawSpinner = false;
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'probability_simple_event', i);
-        final m = re.firstMatch(q.prompt);
-        expect(m, isNotNull, reason: q.prompt);
-        final a = int.parse(m!.group(1)!);
-        final favourable = m.group(2)!;
-        final b = int.parse(m.group(3)!);
-        final asked = m.group(4)!;
-        expect(asked, favourable, reason: 'prompt asks for the favourable');
-        final expected = Fraction(a, a + b).reduce().toCanonical();
-        expect(q.correctAnswer, expected);
+        final bagM = bagRe.firstMatch(q.prompt);
+        final spinM = spinnerRe.firstMatch(q.prompt);
+        if (bagM != null) {
+          sawBag = true;
+          final a = int.parse(bagM.group(1)!);
+          final favourable = bagM.group(2)!;
+          final b = int.parse(bagM.group(3)!);
+          final asked = bagM.group(4)!;
+          expect(asked, favourable);
+          expect(q.diagram, isNull);
+          final expected = Fraction(a, a + b).reduce().toCanonical();
+          expect(q.correctAnswer, expected);
+        } else if (spinM != null) {
+          sawSpinner = true;
+          final total = int.parse(spinM.group(1)!);
+          final asked = spinM.group(2)!;
+          final spec = q.diagram! as SpinnerSpec;
+          expect(spec.sectors.length, total);
+          final favCount =
+              spec.sectors.where((c) => c == asked).length;
+          final expected = Fraction(favCount, total).reduce().toCanonical();
+          expect(q.correctAnswer, expected);
+        } else {
+          fail('prompt matched neither framing: ${q.prompt}');
+        }
         expect(q.answerFormat, AnswerFormat.fraction);
         expect(q.answerShape, AnswerShape.exactString);
         _expectThreeDistinctDistractors(q);
       }
+      expect(sawBag, isTrue, reason: 'should sometimes use bag framing');
+      expect(sawSpinner, isTrue,
+          reason: 'should sometimes use spinner framing');
     });
   });
 }

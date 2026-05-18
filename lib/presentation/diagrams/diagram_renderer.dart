@@ -22,6 +22,7 @@ import 'package:math_city/presentation/diagrams/picture_graph.dart';
 import 'package:math_city/presentation/diagrams/protractor.dart';
 import 'package:math_city/presentation/diagrams/ruler.dart';
 import 'package:math_city/presentation/diagrams/shape.dart';
+import 'package:math_city/presentation/diagrams/spinner.dart';
 import 'package:math_city/presentation/diagrams/tape_diagram.dart';
 import 'package:math_city/presentation/diagrams/tree_diagram.dart';
 import 'package:math_city/presentation/diagrams/triangle_angles.dart';
@@ -63,5 +64,6 @@ class DiagramRenderer extends StatelessWidget {
     final Box3DSpec s => Box3D(spec: s),
     final Net3DSpec s => Net3D(spec: s),
     final CircleSpec s => Circle(spec: s),
+    final SpinnerSpec s => Spinner(spec: s),
   };
 }
