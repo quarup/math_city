@@ -242,6 +242,9 @@ const _shortLabelOverrides = <String, String>{
   'solve_two_step_inequality': 'px+q>r',
   'rational_to_decimal_terminating': 'a/b → dec',
   'rational_to_decimal_repeating': 'a/b → rep',
+  'bar_graph_read': 'bar graph',
+  'bar_graph_compare': 'bar diff',
+  'scaled_bar_graph_read': 'bar scaled',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
@@ -378,6 +381,15 @@ const _prereqOverrides = <String, List<String>>{
     'pythagorean_apply_2d',
     'coord_distance_same_line',
   ],
+  // drop picture_graph_read (no generator yet — same widget can render it
+  // but the prompt/distractor shape differs). Substitute add_within_100
+  // as basic arithmetic background; the bar chart itself carries the
+  // visual literacy needed.
+  'bar_graph_read': ['add_within_100'],
+  // bar_graph_compare prereqs are [bar_graph_read, sub_within_100] —
+  // both implemented, no override needed.
+  // scaled_bar_graph_read prereqs are [bar_graph_read,
+  // mult_facts_within_100] — both implemented, no override needed.
 };
 
 // ─────────────────────────────────────────────────────────────────────────

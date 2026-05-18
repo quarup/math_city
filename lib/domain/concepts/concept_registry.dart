@@ -3634,10 +3634,10 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'bar_graph_read',
     name: 'Read a bar graph',
-    shortLabel: 'Read a bar graph',
+    shortLabel: 'bar graph',
     categoryId: 'stats',
     primaryGrade: 2,
-    prereqIds: ['picture_graph_read'],
+    prereqIds: ['add_within_100'],
     source: ConceptSource.algorithmicWithDiagram,
     diagramRequirement: DiagramRequired('bar_graph'),
     categoryRowOrder: 3,
@@ -3645,7 +3645,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'bar_graph_compare',
     name: 'Bar graph: compare problems',
-    shortLabel: 'Bar graph: compare problems',
+    shortLabel: 'bar diff',
     categoryId: 'stats',
     primaryGrade: 2,
     prereqIds: ['bar_graph_read', 'sub_within_100'],
@@ -3667,7 +3667,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'scaled_bar_graph_read',
     name: 'Scaled bar graph',
-    shortLabel: 'Scaled bar graph',
+    shortLabel: 'bar scaled',
     categoryId: 'stats',
     primaryGrade: 3,
     prereqIds: ['bar_graph_read', 'mult_facts_within_100'],

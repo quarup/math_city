@@ -119,6 +119,46 @@ class CoordinatePlanePoint {
   final String? label;
 }
 
+/// A vertical bar chart with one bar per category. `labels` and `values`
+/// are parallel lists. The y-axis runs from 0 to [maxY] with a gridline
+/// every [scale] units (so `maxY / scale` horizontal gridlines).
+///
+/// Used by `bar_graph_read`, `bar_graph_compare`, and
+/// `scaled_bar_graph_read`. For unscaled charts pass `scale: 1`; every
+/// value must be a non-negative multiple of [scale] (the widget assumes
+/// bars land exactly on gridlines).
+class BarChartSpec extends DiagramSpec {
+  const BarChartSpec({
+    required this.title,
+    required this.labels,
+    required this.values,
+    required this.scale,
+    required this.maxY,
+  }) : assert(labels.length == values.length, 'labels & values must align'),
+       assert(labels.length >= 2, 'need at least 2 bars'),
+       assert(scale > 0, 'scale must be > 0'),
+       assert(maxY > 0, 'maxY must be > 0'),
+       assert(maxY % scale == 0, 'maxY must be a multiple of scale');
+
+  /// Header above the chart, e.g. "Favorite fruit" or "Materials at the site".
+  final String title;
+
+  /// Category labels shown under each bar.
+  final List<String> labels;
+
+  /// Bar heights (same length as [labels]). Must be non-negative multiples
+  /// of [scale]; must not exceed [maxY].
+  final List<int> values;
+
+  /// y-axis gridline spacing. `1` for an unscaled chart; otherwise the
+  /// scale factor (2, 5, 10, …) that turns gridline counts into values.
+  final int scale;
+
+  /// Top of the y-axis; a multiple of [scale]. Should be just above
+  /// `values.reduce(max)` so the chart isn't dominated by empty space.
+  final int maxY;
+}
+
 /// A 2-D coordinate plane spanning `[minX, maxX] × [minY, maxY]` (inclusive
 /// integer ranges), with a grid at every integer step, labelled axes, and
 /// zero or more marked points. Covers both first-quadrant (`minX = minY =
