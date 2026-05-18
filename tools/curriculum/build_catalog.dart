@@ -329,6 +329,14 @@ const _shortLabelOverrides = <String, String>{
   'exterior_angle_triangle': 'ext ∠',
   'inspect_system_no_solution': 'sys soln?',
   'unit_rate_with_fractions': 'frac rate',
+  'read_numerals_0_20': 'read 0-20',
+  'write_numerals_0_20': 'write 0-20',
+  'interpret_remainder_word': 'rem story',
+  'fraction_word_problems': 'frac word',
+  'multistep_ratio_word': 'rate word',
+  'rationals_four_op_word': 'rat word',
+  'word_problem_two_step_eq': '2-step eq',
+  'system_word_problem': 'sys word',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
@@ -494,10 +502,8 @@ const _prereqOverrides = <String, List<String>>{
   // sort-and-count widget). Substitute add_within_100 as basic background;
   // reading a two-way table is essentially cell lookup + add/subtract.
   'two_way_table_construct': ['add_within_100'],
-  // drop read_numerals_0_20 (no generator yet — read/write numerals as
-  // word forms don't fit our integer-only MC pattern). count_to_10
-  // implies basic numeral recognition for the 1..10 range covered.
-  'compare_numerals_1_10': ['count_to_10'],
+  // compare_numerals_1_10: read_numerals_0_20 now lives (Chunk 48) so
+  // the curriculum prereq is met — no override needed.
   // two_way_relative_frequency prereqs are [two_way_table_construct,
   // percent_intro] — both implemented, no override needed.
   // drop mult_meaning_groups (no generator — needs array_grid widget for
