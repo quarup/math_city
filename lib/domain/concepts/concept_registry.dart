@@ -653,7 +653,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'equal_sign_meaning',
     name: 'Is the equation true?',
-    shortLabel: 'Is the equation true?',
+    shortLabel: 'true?',
     categoryId: 'add_sub',
     primaryGrade: 1,
     prereqIds: ['add_within_10'],
@@ -664,7 +664,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'commutative_add',
     name: 'a + b = b + a',
-    shortLabel: 'a + b = b + a',
+    shortLabel: 'a+b=b+a',
     categoryId: 'add_sub',
     primaryGrade: 1,
     prereqIds: ['add_within_20'],
@@ -686,7 +686,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'add_2digit_1digit',
     name: '2-digit + 1-digit',
-    shortLabel: '2-digit + 1-digit',
+    shortLabel: '2d+1d',
     categoryId: 'add_sub',
     primaryGrade: 1,
     prereqIds: ['add_within_20', 'place_value_2digit'],
@@ -708,7 +708,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'sub_multiples_of_10',
     name: 'Subtract multiples of 10',
-    shortLabel: 'Subtract multiples of 10',
+    shortLabel: '×10 −',
     categoryId: 'add_sub',
     primaryGrade: 1,
     prereqIds: ['skip_count_10'],
@@ -722,7 +722,7 @@ const List<Concept> allConcepts = [
     shortLabel: '+ to 100',
     categoryId: 'add_sub',
     primaryGrade: 2,
-    prereqIds: ['add_within_20'],
+    prereqIds: ['add_2digit_1digit', 'place_value_2digit'],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
     categoryRowOrder: 16,
@@ -796,7 +796,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'mental_add_10_or_100',
     name: 'Mental ±10 / ±100',
-    shortLabel: 'Mental ±10 / ±100',
+    shortLabel: '±10/100',
     categoryId: 'add_sub',
     primaryGrade: 2,
     prereqIds: ['ten_more_ten_less', 'place_value_3digit'],

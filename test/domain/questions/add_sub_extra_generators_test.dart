@@ -93,6 +93,96 @@ void main() {
     });
   });
 
+  group('equal_sign_meaning', () {
+    test('correctAnswer matches whether the shown equation is arithmetically true',
+        () {
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'equal_sign_meaning', i);
+        final m = RegExp(r'(\d+) \+ (\d+) = (\d+)').firstMatch(q.prompt);
+        expect(m, isNotNull);
+        final a = int.parse(m!.group(1)!);
+        final b = int.parse(m.group(2)!);
+        final shown = int.parse(m.group(3)!);
+        final expected = (a + b == shown) ? 'True' : 'False';
+        expect(q.correctAnswer, expected);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('commutative_add', () {
+    test('answer equals the stated sum (no recomputation needed)', () {
+      final re = RegExp(r'(\d+) \+ (\d+) = (\d+), then (\d+) \+ (\d+) = \?');
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'commutative_add', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull);
+        final a = int.parse(m!.group(1)!);
+        final b = int.parse(m.group(2)!);
+        final shownSum = int.parse(m.group(3)!);
+        final bSwap = int.parse(m.group(4)!);
+        final aSwap = int.parse(m.group(5)!);
+        expect(bSwap, b);
+        expect(aSwap, a);
+        expect(int.parse(q.correctAnswer), shownSum);
+        expect(shownSum, a + b);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('add_2digit_1digit', () {
+    test('answer = a + b; sum stays in [10, 99]', () {
+      final re = RegExp(r'^(\d{2}) \+ (\d) = \?$');
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'add_2digit_1digit', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: q.prompt);
+        final a = int.parse(m!.group(1)!);
+        final b = int.parse(m.group(2)!);
+        expect(int.parse(q.correctAnswer), a + b);
+        expect(a + b, lessThanOrEqualTo(99));
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('sub_multiples_of_10', () {
+    test('a and b are multiples of 10 with a > b; answer = a − b', () {
+      final re = RegExp(r'^(\d+) − (\d+) = \?$');
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'sub_multiples_of_10', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull);
+        final a = int.parse(m!.group(1)!);
+        final b = int.parse(m.group(2)!);
+        expect(a % 10, 0);
+        expect(b % 10, 0);
+        expect(a, greaterThan(b));
+        expect(int.parse(q.correctAnswer), a - b);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('mental_add_10_or_100', () {
+    test('delta ∈ {10, 100}; answer = base ± delta', () {
+      final re = RegExp(r'^(\d+) ([+−]) (\d+) = \?$');
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'mental_add_10_or_100', i);
+        final m = re.firstMatch(q.prompt);
+        expect(m, isNotNull);
+        final base = int.parse(m!.group(1)!);
+        final op = m.group(2)!;
+        final delta = int.parse(m.group(3)!);
+        expect(delta, isIn(const [10, 100]));
+        final expected = op == '+' ? base + delta : base - delta;
+        expect(int.parse(q.correctAnswer), expected);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
   group('add_sub_unknown_position', () {
     test('the equation with answer substituted is true', () {
       for (var i = 0; i < _iterations; i++) {

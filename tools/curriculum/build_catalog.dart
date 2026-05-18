@@ -104,6 +104,11 @@ const _shortLabelOverrides = <String, String>{
   'make_10_pair': 'pair to 10',
   'add_3_addends_within_20': '3 addends',
   'add_sub_unknown_position': '?+b=r',
+  'equal_sign_meaning': 'true?',
+  'commutative_add': 'a+b=b+a',
+  'add_2digit_1digit': '2d+1d',
+  'sub_multiples_of_10': '×10 −',
+  'mental_add_10_or_100': '±10/100',
   'skip_count_2': 'skip 2s',
   'skip_count_5': 'skip 5s',
   'skip_count_10': 'skip 10s',
@@ -309,8 +314,9 @@ const _prereqOverrides = <String, List<String>>{
   'add_within_20': ['add_within_10'],
   // drop decompose_10 (no generator).
   'sub_within_20': ['sub_within_10'],
-  // drop add_2digit_1digit + place_value_2digit (no generators).
-  'add_within_100': ['add_within_20'],
+  // add_within_100: add_2digit_1digit now lives (Chunk 44),
+  // place_value_2digit lives, so the curriculum prereq is met — no
+  // override needed.
   // drop place_value_2digit (no generator).
   'sub_within_100': ['sub_within_20'],
   // drop place_value_3digit (no generator).
