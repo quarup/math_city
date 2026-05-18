@@ -28,6 +28,7 @@ import 'package:math_city/domain/questions/generators/scatter_plot_generators.da
 import 'package:math_city/domain/questions/generators/statistics_generators.dart';
 import 'package:math_city/domain/questions/generators/time_generators.dart';
 import 'package:math_city/domain/questions/generators/tree_diagram_generators.dart';
+import 'package:math_city/domain/questions/generators/two_way_table_generators.dart';
 import 'package:math_city/domain/questions/word_problems/word_problem_generators.dart';
 
 /// A pure function that produces one question for a given concept.
@@ -298,5 +299,8 @@ class GeneratorRegistry {
     // Compound probability via tree diagrams
     'tree_diagram': treeDiagram,
     'compound_event_probability': compoundEventProbability,
+    // Two-way tables
+    'two_way_table_construct': twoWayTableConstruct,
+    'two_way_relative_frequency': twoWayRelativeFrequency,
   };
 }
