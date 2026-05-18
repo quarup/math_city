@@ -1,9 +1,17 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:math_city/domain/questions/diagram_spec.dart';
 
 /// Renders a [CoordinatePlaneSpec] as a grid with labelled axes and a set
 /// of marked, optionally-lettered points. Used by `plot_*_quadrant`,
 /// `read_first_quadrant`, and (later) transformations / graph generators.
+///
+/// [cellSize] is the *requested* pixel size of each grid cell. The widget
+/// shrinks below this value to fit the available width when the parent
+/// constraint is narrower than the natural size — important for the
+/// `[-8, 8]` grid (17 cells × 24 px = 408 px, which exceeds typical
+/// phone widths). It never grows beyond the requested size.
 class CoordinatePlane extends StatelessWidget {
   const CoordinatePlane({
     required this.spec,
@@ -17,31 +25,44 @@ class CoordinatePlane extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final width = (spec.maxX - spec.minX) * cellSize;
-    final height = (spec.maxY - spec.minY) * cellSize;
-    // Reserve a fixed gutter for axis labels (numbers along the axes).
     const gutter = 24.0;
-    return SizedBox(
-      width: width + 2 * gutter,
-      height: height + 2 * gutter,
-      child: CustomPaint(
-        painter: _CoordinatePlanePainter(
-          spec: spec,
-          cellSize: cellSize,
-          gutter: gutter,
-          gridColor: theme.colorScheme.outlineVariant,
-          axisColor: theme.colorScheme.onSurface,
-          pointColor: theme.colorScheme.primary,
-          labelStyle:
-              theme.textTheme.labelSmall ?? const TextStyle(fontSize: 11),
-          pointLabelStyle: (theme.textTheme.labelMedium ??
-                  const TextStyle(fontSize: 13))
-              .copyWith(
-                fontWeight: FontWeight.bold,
-                color: theme.colorScheme.primary,
-              ),
-        ),
-      ),
+    final cols = spec.maxX - spec.minX;
+    final rows = spec.maxY - spec.minY;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Auto-shrink cellSize when the parent is narrower than the
+        // natural grid size. Never grow beyond the requested cellSize.
+        var effective = cellSize;
+        if (constraints.maxWidth.isFinite) {
+          final perCell = (constraints.maxWidth - 2 * gutter) / cols;
+          if (perCell > 0) effective = math.min(effective, perCell);
+        }
+        final width = cols * effective;
+        final height = rows * effective;
+        return SizedBox(
+          width: width + 2 * gutter,
+          height: height + 2 * gutter,
+          child: CustomPaint(
+            painter: _CoordinatePlanePainter(
+              spec: spec,
+              cellSize: effective,
+              gutter: gutter,
+              gridColor: theme.colorScheme.outlineVariant,
+              axisColor: theme.colorScheme.onSurface,
+              pointColor: theme.colorScheme.primary,
+              labelStyle:
+                  theme.textTheme.labelSmall ?? const TextStyle(fontSize: 11),
+              pointLabelStyle:
+                  (theme.textTheme.labelMedium ??
+                          const TextStyle(fontSize: 13))
+                      .copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: theme.colorScheme.primary,
+                      ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
