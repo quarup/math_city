@@ -22,6 +22,7 @@ import 'package:math_city/domain/questions/generators/mult_div_generators.dart';
 import 'package:math_city/domain/questions/generators/mult_facts_extra_generators.dart';
 import 'package:math_city/domain/questions/generators/number_theory_generators.dart';
 import 'package:math_city/domain/questions/generators/percent_generators.dart';
+import 'package:math_city/domain/questions/generators/place_value_extra_generators.dart';
 import 'package:math_city/domain/questions/generators/place_value_generators.dart';
 import 'package:math_city/domain/questions/generators/polygon_coord_generators.dart';
 import 'package:math_city/domain/questions/generators/probability_generators.dart';
@@ -91,6 +92,11 @@ class GeneratorRegistry {
     'add_2digit_1digit': add2digit1digit,
     'sub_multiples_of_10': subMultiplesOf10,
     'mental_add_10_or_100': mentalAdd10Or100,
+    'decompose_10': decompose10,
+    'associative_add': associativeAdd,
+    'add_2digit_multiple_of_10': add2digitMultipleOf10,
+    'add_up_to_4_2digit': addUpTo4TwoDigit,
+    'add_sub_fluency_within_20': addSubFluencyWithin20,
     'skip_count_2': skipCount2,
     'skip_count_5': skipCount5,
     'skip_count_10': skipCount10,
@@ -172,6 +178,12 @@ class GeneratorRegistry {
     'place_value_2digit': placeValue2digit,
     'place_value_3digit': placeValue3digit,
     'place_value_multidigit': placeValueMultidigit,
+    'read_write_3digit': readWrite3digit,
+    'compare_3digit': compare3digit,
+    'read_write_multidigit': readWriteMultidigit,
+    'compare_multidigit': compareMultidigit,
+    'place_value_relationship_10x': placeValueRelationship10x,
+    'powers_of_10': powersOf10,
     // Rounding
     'round_to_10': roundTo10,
     'round_to_100': roundTo100,

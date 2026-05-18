@@ -311,6 +311,17 @@ const _shortLabelOverrides = <String, String>{
   'associative_mult': '(ab)c',
   'div_as_unknown_factor': 'a·?=c',
   'arithmetic_patterns_in_tables': 'pattern',
+  'decompose_10': '10=a+?',
+  'associative_add': '(a+b)+c',
+  'add_2digit_multiple_of_10': '2d+×10',
+  'add_up_to_4_2digit': '+ 4 nums',
+  'add_sub_fluency_within_20': '±/20 fluent',
+  'read_write_3digit': 'name 3d',
+  'compare_3digit': 'compare 3d',
+  'read_write_multidigit': 'name multi',
+  'compare_multidigit': 'compare md',
+  'place_value_relationship_10x': '10× place',
+  'powers_of_10': '10^n',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.

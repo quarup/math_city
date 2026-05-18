@@ -278,7 +278,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'read_write_3digit',
     name: 'Read/write to 1000',
-    shortLabel: 'Read/write to 1000',
+    shortLabel: 'name 3d',
     categoryId: 'place_value',
     primaryGrade: 2,
     prereqIds: ['place_value_3digit'],
@@ -300,7 +300,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'compare_3digit',
     name: 'Compare 3-digit numbers',
-    shortLabel: 'Compare 3-digit numbers',
+    shortLabel: 'compare 3d',
     categoryId: 'place_value',
     primaryGrade: 2,
     prereqIds: ['place_value_3digit', 'compare_2digit'],
@@ -344,7 +344,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'read_write_multidigit',
     name: 'Read/write big numbers',
-    shortLabel: 'Read/write big numbers',
+    shortLabel: 'name multi',
     categoryId: 'place_value',
     primaryGrade: 4,
     prereqIds: ['place_value_multidigit'],
@@ -355,7 +355,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'compare_multidigit',
     name: 'Compare big numbers',
-    shortLabel: 'Compare big numbers',
+    shortLabel: 'compare md',
     categoryId: 'place_value',
     primaryGrade: 4,
     prereqIds: ['read_write_multidigit'],
@@ -377,7 +377,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'place_value_relationship_10x',
     name: 'Each place is 10× the next',
-    shortLabel: 'Each place is 10× the next',
+    shortLabel: '10× place',
     categoryId: 'place_value',
     primaryGrade: 5,
     prereqIds: ['place_value_multidigit'],
@@ -454,7 +454,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'powers_of_10',
     name: 'Powers of 10',
-    shortLabel: 'Powers of 10',
+    shortLabel: '10^n',
     categoryId: 'place_value',
     primaryGrade: 5,
     prereqIds: ['place_value_relationship_10x'],
@@ -598,7 +598,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'decompose_10',
     name: 'Decompose 10 (or less)',
-    shortLabel: 'Decompose 10 (or less)',
+    shortLabel: '10=a+?',
     categoryId: 'add_sub',
     primaryGrade: 0,
     prereqIds: ['add_within_10'],
@@ -675,7 +675,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'associative_add',
     name: '(a+b)+c = a+(b+c)',
-    shortLabel: '(a+b)+c = a+(b+c)',
+    shortLabel: '(a+b)+c',
     categoryId: 'add_sub',
     primaryGrade: 1,
     prereqIds: ['add_3_addends_within_20'],
@@ -697,7 +697,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'add_2digit_multiple_of_10',
     name: '2-digit + multiple of 10',
-    shortLabel: '2-digit + multiple of 10',
+    shortLabel: '2d+×10',
     categoryId: 'add_sub',
     primaryGrade: 1,
     prereqIds: ['skip_count_10', 'add_within_20'],
@@ -763,7 +763,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'add_up_to_4_2digit',
     name: 'Add up to four 2-digit numbers',
-    shortLabel: 'Add up to four 2-digit numbers',
+    shortLabel: '+ 4 nums',
     categoryId: 'add_sub',
     primaryGrade: 2,
     prereqIds: ['add_within_100'],
@@ -851,7 +851,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'add_sub_fluency_within_20',
     name: '+/− facts within 20 (memory)',
-    shortLabel: '+/− facts within 20 (memory)',
+    shortLabel: '±/20 fluent',
     categoryId: 'add_sub',
     primaryGrade: 2,
     prereqIds: ['add_within_20', 'sub_within_20'],
