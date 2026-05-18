@@ -46,8 +46,10 @@ WIDGET_TO_FILE = {
     "NumberLine": "number_line",
     "Clock": "clock",
     "BarChart": "bar_chart",
-    # BarChart, Histogram, DotPlot, LinePlot share one §6.1 row; map the
-    # extras to their own files so the impl-vs-catalogued cross-check passes.
+    # BarChart and Histogram share §6.1 row 1; DotPlot and LinePlot share
+    # §6.1 row 2 (split landed in Chunk 28). Map the secondary widgets to
+    # their files so the impl-vs-catalogued cross-check passes.
+    "Histogram": "histogram",
     "DotPlot": "dot_plot",
     "RectangleArea": "area_grid",  # implemented under this name historically
     "CoordinatePlane": "coordinate_plane",

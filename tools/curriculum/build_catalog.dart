@@ -250,6 +250,8 @@ const _shortLabelOverrides = <String, String>{
   'line_plot_fractional': 'line ½/¼',
   'line_plot_fraction_word': 'line × frac',
   'line_plot_5th_grade_ops': 'line range',
+  'histogram': 'histogram',
+  'describe_distribution': 'shape?',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
@@ -410,6 +412,11 @@ const _prereqOverrides = <String, List<String>>{
   // add_fractions_like_denom] — both implemented, no override needed.
   // line_plot_5th_grade_ops prereqs are [line_plot_fractional,
   // add_fractions_unlike_denom] — both implemented, no override needed.
+  // histogram prereq is [bar_graph_read] — implemented, no override needed.
+  // drop box_plot (no generator yet — needs BoxPlot widget). The histogram
+  // alone is enough scaffolding for "describe the shape" — kids don't need
+  // box-plot fluency to recognise symmetric / skewed / uniform.
+  'describe_distribution': ['histogram'],
 };
 
 // ─────────────────────────────────────────────────────────────────────────

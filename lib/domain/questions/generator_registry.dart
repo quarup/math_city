@@ -11,6 +11,7 @@ import 'package:math_city/domain/questions/generators/equation_generators.dart';
 import 'package:math_city/domain/questions/generators/fraction_generators.dart';
 import 'package:math_city/domain/questions/generators/function_generators.dart';
 import 'package:math_city/domain/questions/generators/geometry_generators.dart';
+import 'package:math_city/domain/questions/generators/histogram_generators.dart';
 import 'package:math_city/domain/questions/generators/integer_generators.dart';
 import 'package:math_city/domain/questions/generators/mult_div_generators.dart';
 import 'package:math_city/domain/questions/generators/number_theory_generators.dart';
@@ -266,5 +267,8 @@ class GeneratorRegistry {
     'line_plot_fractional': lineplotFractional,
     'line_plot_fraction_word': lineplotFractionWord,
     'line_plot_5th_grade_ops': lineplot5thGradeOps,
+    // Data displays (histogram)
+    'histogram': histogramReading,
+    'describe_distribution': describeDistribution,
   };
 }

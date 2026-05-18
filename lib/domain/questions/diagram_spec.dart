@@ -119,6 +119,47 @@ class CoordinatePlanePoint {
   final String? label;
 }
 
+/// A histogram with `counts.length` adjacent bins, each of width [binWidth]
+/// starting at [binStart]. The y-axis is scaled by [scale] (1 for unscaled
+/// — every gridline is one unit). Bin i covers `[binStart + i·binWidth,
+/// binStart + (i+1)·binWidth)`.
+///
+/// Used by `histogram`, `describe_distribution`.
+class HistogramSpec extends DiagramSpec {
+  const HistogramSpec({
+    required this.title,
+    required this.axisLabel,
+    required this.counts,
+    required this.binStart,
+    required this.binWidth,
+    required this.scale,
+    required this.maxY,
+  }) : assert(counts.length >= 2, 'need at least 2 bins'),
+       assert(binWidth > 0, 'binWidth must be > 0'),
+       assert(scale > 0, 'scale must be > 0'),
+       assert(maxY > 0, 'maxY must be > 0'),
+       assert(maxY % scale == 0, 'maxY must be a multiple of scale');
+
+  /// Header above the plot, e.g. "Math test scores".
+  final String title;
+
+  /// Caption under the x-axis identifying the unit, e.g. "Score".
+  final String axisLabel;
+
+  /// Bin counts left-to-right. `counts[i]` is the frequency in
+  /// `[binStart + i·binWidth, binStart + (i+1)·binWidth)`.
+  final List<int> counts;
+
+  final int binStart;
+  final int binWidth;
+
+  /// y-axis gridline spacing. Same role as [BarChartSpec.scale].
+  final int scale;
+
+  /// Top of the y-axis, a multiple of [scale].
+  final int maxY;
+}
+
 /// A dot plot (a.k.a. line plot) — a horizontal axis from [minX] to [maxX]
 /// with one tick per integer, and a vertical stack of dots above each tick
 /// representing the count of that value in [values].
