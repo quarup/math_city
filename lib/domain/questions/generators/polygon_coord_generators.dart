@@ -338,3 +338,205 @@ GeneratedQuestion transformationsReflection(Random rand) {
     answerFormat: AnswerFormat.string,
   );
 }
+
+// ─────────────────────────────────────────────────────────────────────────
+// transformations_rotation (Grade 8)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// Show a preimage triangle + its rotation about the origin by 90°,
+/// 180°, or 270° (each CCW; equivalent CW phrasings are not used to
+/// keep the explanation single-rule).
+///
+/// Rotation rules about the origin:
+///   - 90°  CCW: (x, y) → (−y,  x)
+///   - 180°    : (x, y) → (−x, −y)
+///   - 270° CCW: (x, y) → ( y, −x)
+GeneratedQuestion transformationsRotation(Random rand) {
+  final degrees = const [90, 180, 270][rand.nextInt(3)];
+
+  // Preimage in a small box so the rotated image stays inside [-6, 6]².
+  int pickNonZero() {
+    final n = rand.nextInt(9) - 4; // -4..4
+    return n == 0 ? (rand.nextBool() ? 1 : -1) : n;
+  }
+
+  late List<List<int>> pre;
+  for (var attempt = 0; attempt < 30; attempt++) {
+    pre = [
+      [pickNonZero(), pickNonZero()],
+      [pickNonZero(), pickNonZero()],
+      [pickNonZero(), pickNonZero()],
+    ];
+    if (_isNonDegenerateTriangle(pre)) break;
+  }
+
+  List<int> rotate(List<int> p) {
+    switch (degrees) {
+      case 90:
+        return [-p[1], p[0]];
+      case 180:
+        return [-p[0], -p[1]];
+      case 270:
+        return [p[1], -p[0]];
+      default:
+        throw StateError('unreachable: degrees=$degrees');
+    }
+  }
+
+  final image = pre.map(rotate).toList();
+
+  final askIdx = rand.nextInt(3);
+  const labels = ['A', 'B', 'C'];
+  final askedLabel = labels[askIdx];
+  final pv = pre[askIdx];
+  final iv = image[askIdx];
+  final correct = _coord(iv[0], iv[1]);
+
+  // Misconception distractors: the wrong rotations.
+  final r90 = [-pv[1], pv[0]];
+  final r180 = [-pv[0], -pv[1]];
+  final r270 = [pv[1], -pv[0]];
+  final candidates = <String>[
+    // The OTHER two rotations.
+    if (degrees != 90) _coord(r90[0], r90[1]),
+    if (degrees != 180) _coord(r180[0], r180[1]),
+    if (degrees != 270) _coord(r270[0], r270[1]),
+    // Unchanged (forgot to rotate).
+    _coord(pv[0], pv[1]),
+    // Swapped without sign change (almost-rotation).
+    _coord(pv[1], pv[0]),
+  ];
+
+  final preLabelled = [
+    for (var i = 0; i < 3; i++)
+      CoordinatePlanePoint(x: pre[i][0], y: pre[i][1], label: labels[i]),
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'transformations_rotation',
+    prompt: 'Rotate the triangle $degrees° counter-clockwise about the '
+        "origin. What are the coordinates of $askedLabel'?",
+    diagram: CoordinatePlaneSpec(
+      minX: -6,
+      maxX: 6,
+      minY: -6,
+      maxY: 6,
+      points: preLabelled,
+      polygons: [
+        CoordinatePlanePolygon(vertices: preLabelled),
+        CoordinatePlanePolygon(
+          vertices: [
+            for (var i = 0; i < 3; i++)
+              CoordinatePlanePoint(x: image[i][0], y: image[i][1]),
+          ],
+          style: CoordinatePlanePolygonStyle.dashed,
+        ),
+      ],
+    ),
+    correctAnswer: correct,
+    distractors: _distinctStrings(correct, candidates),
+    explanation: [
+      _rotationRule(degrees),
+      '${_coord(pv[0], pv[1])} → ${_coord(iv[0], iv[1])}.',
+    ],
+    answerFormat: AnswerFormat.string,
+  );
+}
+
+String _rotationRule(int degrees) {
+  switch (degrees) {
+    case 90:
+      return '90° CCW about origin: (x, y) → (−y, x).';
+    case 180:
+      return '180° about origin: (x, y) → (−x, −y).';
+    case 270:
+      return '270° CCW about origin: (x, y) → (y, −x).';
+  }
+  return '';
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// transformations_dilation (Grade 8)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// Show a preimage triangle + its dilation by factor k ∈ {2, 3} centred
+/// at the origin. Preimage vertices in `[-3, 3]²` so the image fits
+/// inside `[-9, 9]²` (which is rendered on a `[-9, 9]` plane).
+GeneratedQuestion transformationsDilation(Random rand) {
+  final k = rand.nextBool() ? 2 : 3;
+  // Preimage box ±3 so dilated image fits inside ±9.
+  int pickNonZero() {
+    final n = rand.nextInt(7) - 3; // -3..3
+    return n == 0 ? (rand.nextBool() ? 1 : -1) : n;
+  }
+
+  late List<List<int>> pre;
+  for (var attempt = 0; attempt < 30; attempt++) {
+    pre = [
+      [pickNonZero(), pickNonZero()],
+      [pickNonZero(), pickNonZero()],
+      [pickNonZero(), pickNonZero()],
+    ];
+    if (_isNonDegenerateTriangle(pre)) break;
+  }
+
+  final image = [
+    for (final v in pre) [k * v[0], k * v[1]],
+  ];
+
+  final askIdx = rand.nextInt(3);
+  const labels = ['A', 'B', 'C'];
+  final askedLabel = labels[askIdx];
+  final pv = pre[askIdx];
+  final iv = image[askIdx];
+  final correct = _coord(iv[0], iv[1]);
+
+  // Misconception distractors:
+  //   - dilated by k + 1 or k − 1 (off-by-one factor)
+  //   - scaled only one coordinate (asymmetric stretch)
+  //   - added k to both instead of multiplying
+  //   - unchanged
+  final candidates = <String>[
+    _coord((k + 1) * pv[0], (k + 1) * pv[1]),
+    if (k > 1) _coord((k - 1) * pv[0], (k - 1) * pv[1]),
+    _coord(k * pv[0], pv[1]),
+    _coord(pv[0], k * pv[1]),
+    _coord(pv[0] + k, pv[1] + k),
+    _coord(pv[0], pv[1]),
+  ];
+
+  final preLabelled = [
+    for (var i = 0; i < 3; i++)
+      CoordinatePlanePoint(x: pre[i][0], y: pre[i][1], label: labels[i]),
+  ];
+
+  return GeneratedQuestion(
+    conceptId: 'transformations_dilation',
+    prompt: 'Dilate the triangle by factor $k centred at the origin. '
+        "What are the coordinates of $askedLabel'?",
+    diagram: CoordinatePlaneSpec(
+      minX: -9,
+      maxX: 9,
+      minY: -9,
+      maxY: 9,
+      points: preLabelled,
+      polygons: [
+        CoordinatePlanePolygon(vertices: preLabelled),
+        CoordinatePlanePolygon(
+          vertices: [
+            for (var i = 0; i < 3; i++)
+              CoordinatePlanePoint(x: image[i][0], y: image[i][1]),
+          ],
+          style: CoordinatePlanePolygonStyle.dashed,
+        ),
+      ],
+    ),
+    correctAnswer: correct,
+    distractors: _distinctStrings(correct, candidates),
+    explanation: [
+      'Dilating by k centred at origin: (x, y) → (k·x, k·y).',
+      '${_coord(pv[0], pv[1])} → ${_coord(iv[0], iv[1])}.',
+    ],
+    answerFormat: AnswerFormat.string,
+  );
+}

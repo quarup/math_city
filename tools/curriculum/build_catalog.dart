@@ -263,6 +263,8 @@ const _shortLabelOverrides = <String, String>{
   'polygon_on_coordinate_plane': 'polygon coords',
   'transformations_translation': 'translate',
   'transformations_reflection': 'reflect',
+  'transformations_rotation': 'rotate',
+  'transformations_dilation': 'dilate',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
