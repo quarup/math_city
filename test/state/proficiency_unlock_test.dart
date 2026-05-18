@@ -59,14 +59,14 @@ void main() {
 
         expect(unlock, isNotNull);
         expect(unlock!.masteredConcept?.id, 'add_within_5');
-        // After Chunk 55 the starter pack is {count_to_10, add_within_5,
-        // classify_count_categories, count_to_20} — three categories with
-        // a row-0 K-grade concept each. Mastering add_within_5 makes both
-        // sub_within_5 and add_within_10 eligible (each has add_within_5
-        // as its sole prereq). The active-category tiebreak prefers
-        // add_sub (which is now at 0 active concepts post-mastery) over
-        // counting/stats (each at >=1 active); within add_sub the lowest
-        // row order wins, so the pick is sub_within_5.
+        // After Chunk 59 the starter pack is {count_to_10, add_within_5,
+        // identify_shape_2d, classify_count_categories} — four categories
+        // each contributing a row-0 G0 concept. Mastering add_within_5
+        // makes both sub_within_5 and add_within_10 eligible (each has
+        // add_within_5 as its sole prereq). The active-category tiebreak
+        // prefers add_sub (now at 0 active concepts post-mastery) over
+        // the other three (each at >=1 active); within add_sub the
+        // lowest row order wins, so the pick is sub_within_5.
         expect(unlock.newConcept.id, 'sub_within_5');
 
         // The newly-unlocked concept is now persisted as introduced.
@@ -156,17 +156,18 @@ void main() {
         );
         expect(introduced, hasLength(4));
         // Starter pack pulls the four easiest implemented G0 concepts
-        // sorted by (grade, categoryRowOrder). After Chunk 55, three
+        // sorted by (grade, categoryRowOrder). After Chunk 59, four
         // categories carry a row-0 G0 concept: counting (count_to_10),
-        // add_sub (add_within_5), and stats (classify_count_categories);
-        // the fourth slot rolls over to counting:1 (count_to_20).
+        // add_sub (add_within_5), geometry (identify_shape_2d), and
+        // stats (classify_count_categories) — exactly four, no roll-
+        // over needed.
         expect(
           introduced,
           containsAll([
             'count_to_10',
             'add_within_5',
+            'identify_shape_2d',
             'classify_count_categories',
-            'count_to_20',
           ]),
         );
 

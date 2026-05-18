@@ -395,6 +395,10 @@ const _shortLabelOverrides = <String, String>{
   'measure_to_half_quarter_inch': 'ruler ½/¼',
   'measure_angle_protractor': 'measure ∠',
   'draw_angle_protractor': 'draw ∠',
+  'identify_shape_2d': 'name 2D',
+  'identify_shape_3d': 'name 3D',
+  'shape_attributes_basic': 'sides?',
+  'identify_polygons': 'polygon?',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
@@ -560,19 +564,14 @@ const _prereqOverrides = <String, List<String>>{
   // prereq is met, no override needed.
   // length_diff_units: measure_with_ruler_inches now lives (Chunk 57), so
   // the curriculum prereq is met — no override needed.
-  // drop shape_attributes_basic (no generator — needs shape widget).
-  // Substitute perimeter_polygon since "sides of a triangle" is the
-  // same surface and kids who can compute perimeter already understand
-  // that sides bound a polygon.
-  'triangle_inequality_recognize': ['perimeter_polygon'],
+  // triangle_inequality_recognize: shape_attributes_basic now lives
+  // (Chunk 59), so the curriculum prereq is met — no override needed.
   // length_word_problems: measure_with_ruler_inches now lives (Chunk 57),
   // so the curriculum prereq is met — no override needed.
   // money_word_problems: count_bills_coins now lives (Chunk 56), so the
   // curriculum prereq is met — no override needed.
-  // drop identify_shape_2d (no generator — needs a Shape widget).
-  // partition_into_rows_columns is really an arithmetic skill once
-  // the rectangle has been drawn.
-  'partition_into_rows_columns': ['add_within_100'],
+  // partition_into_rows_columns: identify_shape_2d now lives (Chunk 59),
+  // so the curriculum prereq is met — no override needed.
 };
 
 // ─────────────────────────────────────────────────────────────────────────
