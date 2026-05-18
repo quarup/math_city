@@ -271,6 +271,8 @@ const _shortLabelOverrides = <String, String>{
   'compound_event_probability': 'P(A∩B)',
   'two_way_table_construct': '2-way?',
   'two_way_relative_frequency': '2-way %',
+  'ratio_to_coordinate_pairs': 'ratio plot',
+  'dependent_independent_vars': 'indep var',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
