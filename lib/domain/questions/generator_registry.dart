@@ -37,6 +37,7 @@ import 'package:math_city/domain/questions/generators/statistics_generators.dart
 import 'package:math_city/domain/questions/generators/time_generators.dart';
 import 'package:math_city/domain/questions/generators/tree_diagram_generators.dart';
 import 'package:math_city/domain/questions/generators/two_way_table_generators.dart';
+import 'package:math_city/domain/questions/generators/word_problems_extra_generators.dart';
 import 'package:math_city/domain/questions/word_problems/word_problem_generators.dart';
 
 /// A pure function that produces one question for a given concept.
@@ -390,5 +391,14 @@ class GeneratorRegistry {
     'identify_parts_expression': identifyPartsExpression,
     'convert_units_within_system': convertUnitsWithinSystem,
     'volume_prism_fractional_edges': volumePrismFractionalEdges,
+    // Word problems (dataset-marked but algorithmically generated)
+    'length_word_problems': lengthWordProblems,
+    'money_word_problems': moneyWordProblems,
+    'liquid_volume_mass': liquidVolumeMass,
+    'mult_div_word_2step': multDivWord2step,
+    'area_perimeter_word': areaPerimeterWord,
+    'convert_units_multistep': convertUnitsMultistep,
+    'statistical_question': statisticalQuestion,
+    'sampling_representativeness': samplingRepresentativeness,
   };
 }
