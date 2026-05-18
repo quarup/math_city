@@ -2008,7 +2008,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'ratio_to_coordinate_pairs',
     name: 'Plot ratios as ordered pairs',
-    shortLabel: 'Plot ratios as ordered pairs',
+    shortLabel: 'ratio plot',
     categoryId: 'ratios',
     primaryGrade: 6,
     prereqIds: ['equivalent_ratios', 'plot_first_quadrant'],
@@ -3318,7 +3318,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'dependent_independent_vars',
     name: 'Independent vs. dependent variable',
-    shortLabel: 'Independent vs. dependent variable',
+    shortLabel: 'indep var',
     categoryId: 'prealgebra',
     primaryGrade: 6,
     prereqIds: ['solve_one_step_eq_mult', 'plot_first_quadrant'],

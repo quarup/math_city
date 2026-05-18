@@ -22,6 +22,7 @@ import 'package:math_city/domain/questions/generators/percent_generators.dart';
 import 'package:math_city/domain/questions/generators/place_value_generators.dart';
 import 'package:math_city/domain/questions/generators/polygon_coord_generators.dart';
 import 'package:math_city/domain/questions/generators/probability_generators.dart';
+import 'package:math_city/domain/questions/generators/ratio_coord_generators.dart';
 import 'package:math_city/domain/questions/generators/ratio_generators.dart';
 import 'package:math_city/domain/questions/generators/rationals_generators.dart';
 import 'package:math_city/domain/questions/generators/scatter_plot_generators.dart';
@@ -302,5 +303,8 @@ class GeneratorRegistry {
     // Two-way tables
     'two_way_table_construct': twoWayTableConstruct,
     'two_way_relative_frequency': twoWayRelativeFrequency,
+    // Ratios on the coordinate plane + dependent/independent vars
+    'ratio_to_coordinate_pairs': ratioToCoordinatePairs,
+    'dependent_independent_vars': dependentIndependentVars,
   };
 }
