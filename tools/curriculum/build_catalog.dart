@@ -412,6 +412,9 @@ const _shortLabelOverrides = <String, String>{
   'describe_attribute': 'measure?',
   'compare_two_objects': 'longer?',
   'order_three_objects_length': 'sort 3',
+  'positional_words': 'where?',
+  'partition_circle_rect_halves': 'halves?',
+  'estimate_length': 'estimate',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.

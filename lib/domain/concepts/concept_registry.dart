@@ -2152,7 +2152,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'estimate_length',
     name: 'Estimate length',
-    shortLabel: 'Estimate length',
+    shortLabel: 'estimate',
     categoryId: 'measurement',
     primaryGrade: 2,
     prereqIds: ['measure_with_ruler_inches', 'measure_with_ruler_cm'],
@@ -2505,7 +2505,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'positional_words',
     name: 'Above, below, beside',
-    shortLabel: 'Above, below, beside',
+    shortLabel: 'where?',
     categoryId: 'geometry',
     primaryGrade: 0,
     prereqIds: [],
@@ -2538,7 +2538,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'partition_circle_rect_halves',
     name: 'Halves of circle/rectangle',
-    shortLabel: 'Halves of circle/rectangle',
+    shortLabel: 'halves?',
     categoryId: 'geometry',
     primaryGrade: 1,
     prereqIds: ['partition_halves_fourths'],
