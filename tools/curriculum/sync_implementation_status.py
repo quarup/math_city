@@ -239,7 +239,16 @@ def main() -> int:
     found_ids: set[str] = set()
     found_widgets: set[str] = set()
     out_lines = []
+    # Track which §3.x table we're currently in so the rollup count
+    # below only includes real sub-concept rows. §2 has a category-
+    # rollup table whose row IDs match the same regex (e.g. `counting`)
+    # but they're not implementable atoms.
+    in_concept_section = False
+    line_in_section: list[bool] = []
     for line in lines:
+        stripped = line.strip()
+        if stripped.startswith("## ") or stripped.startswith("### "):
+            in_concept_section = stripped.startswith("### 3.")
         new_line, info = toggle_concept_row(line, impl_concepts)
         if info is not None:
             action, cid = info
@@ -249,6 +258,7 @@ def main() -> int:
             elif action == "removed":
                 removed += 1
             out_lines.append(new_line)
+            line_in_section.append(in_concept_section)
             continue
         new_line, info = toggle_widget_row(line, impl_widget_files)
         if info is not None:
@@ -259,15 +269,22 @@ def main() -> int:
             elif action == "removed":
                 removed += 1
         out_lines.append(new_line)
+        line_in_section.append(in_concept_section)
 
     text = "".join(out_lines)
 
     # Count totals from the document itself so the rollup matches what we just
     # walked (avoids drift between "what's in the catalog" and "what we know about").
-    n_concepts_total = sum(1 for line in out_lines if CONCEPT_ROW_RE.match(line))
+    n_concepts_total = sum(
+        1
+        for line, in_sec in zip(out_lines, line_in_section)
+        if in_sec and CONCEPT_ROW_RE.match(line)
+    )
     n_widgets_total = sum(1 for line in out_lines if WIDGET_ROW_RE.match(line))
     n_concepts_done = sum(
-        1 for line in out_lines if (m := CONCEPT_ROW_RE.match(line)) and m.group(1)
+        1
+        for line, in_sec in zip(out_lines, line_in_section)
+        if in_sec and (m := CONCEPT_ROW_RE.match(line)) and m.group(1)
     )
     n_widgets_done = sum(
         1 for line in out_lines if (m := WIDGET_ROW_RE.match(line)) and m.group(1)
