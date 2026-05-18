@@ -3501,7 +3501,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'identify_linear_vs_nonlinear',
     name: 'Linear or nonlinear?',
-    shortLabel: 'Linear or nonlinear?',
+    shortLabel: 'linear?',
     categoryId: 'prealgebra',
     primaryGrade: 8,
     prereqIds: ['graph_linear_equation'],
@@ -3545,7 +3545,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'solve_system_by_graphing',
     name: 'System: graph and find intersect',
-    shortLabel: 'System: graph and find intersect',
+    shortLabel: 'lines meet',
     categoryId: 'prealgebra',
     primaryGrade: 8,
     prereqIds: ['graph_linear_equation'],

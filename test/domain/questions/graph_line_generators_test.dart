@@ -29,7 +29,7 @@ void main() {
   group('graph_linear_equation', () {
     test(
       'diagram has exactly one solid line; correctAnswer matches the '
-      'line\'s slope and intercept; all 4 slopes in {±1, ±2} appear',
+      'slope and intercept of the line; all 4 slopes in {±1, ±2} appear',
       () {
         final slopesSeen = <int>{};
         for (var i = 0; i < _iterations; i++) {
@@ -46,8 +46,8 @@ void main() {
           //   => m = (y2 - y1) / 2, b = (y2 + y1) / 2
           expect(line.x1, -1);
           expect(line.x2, 1);
-          final m = ((line.y2 - line.y1) ~/ 2).toInt();
-          final b = ((line.y2 + line.y1) ~/ 2).toInt();
+          final m = (line.y2 - line.y1) ~/ 2;
+          final b = (line.y2 + line.y1) ~/ 2;
           expect(m, isIn(const [-2, -1, 1, 2]));
           expect(b, isNot(0)); // b == 0 is excluded
           slopesSeen.add(m);
@@ -81,7 +81,7 @@ void main() {
 
           expect(line.x1, -1);
           expect(line.x2, 1);
-          final m = ((line.y2 - line.y1) ~/ 2).toInt();
+          final m = (line.y2 - line.y1) ~/ 2;
           expect(m, isIn(const [-2, -1, 1, 2]));
           expect(_parseSigned(q.correctAnswer), m);
           slopesSeen.add(m);
