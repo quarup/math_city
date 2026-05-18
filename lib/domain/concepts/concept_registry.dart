@@ -79,7 +79,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'read_numerals_0_20',
     name: 'Read numbers 0–20',
-    shortLabel: 'Read numbers 0–20',
+    shortLabel: 'read 0-20',
     categoryId: 'counting',
     primaryGrade: 0,
     prereqIds: ['count_to_20'],
@@ -90,7 +90,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'write_numerals_0_20',
     name: 'Write numbers 0–20',
-    shortLabel: 'Write numbers 0–20',
+    shortLabel: 'write 0-20',
     categoryId: 'counting',
     primaryGrade: 0,
     prereqIds: ['read_numerals_0_20'],
@@ -137,7 +137,7 @@ const List<Concept> allConcepts = [
     shortLabel: 'compare',
     categoryId: 'counting',
     primaryGrade: 0,
-    prereqIds: ['count_to_10'],
+    prereqIds: ['read_numerals_0_20'],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
     categoryRowOrder: 11,
@@ -1116,7 +1116,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'interpret_remainder_word',
     name: 'Interpret remainder in story',
-    shortLabel: 'Interpret remainder in story',
+    shortLabel: 'rem story',
     categoryId: 'mult_div',
     primaryGrade: 4,
     prereqIds: ['div_with_remainder'],
@@ -1583,7 +1583,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'fraction_word_problems',
     name: 'Fraction word problems',
-    shortLabel: 'Fraction word problems',
+    shortLabel: 'frac word',
     categoryId: 'fractions',
     primaryGrade: 5,
     prereqIds: ['add_fractions_unlike_denom', 'mult_fraction_by_whole'],
@@ -2063,7 +2063,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'multistep_ratio_word',
     name: 'Multi-step ratio problems',
-    shortLabel: 'Multi-step ratio problems',
+    shortLabel: 'rate word',
     categoryId: 'ratios',
     primaryGrade: 7,
     prereqIds: ['unit_rate', 'percent_of_quantity'],
@@ -3130,7 +3130,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'rationals_four_op_word',
     name: 'Word problems with rationals',
-    shortLabel: 'Word problems with rationals',
+    shortLabel: 'rat word',
     categoryId: 'rationals',
     primaryGrade: 7,
     prereqIds: ['rationals_add_sub', 'rationals_multiply_divide'],
@@ -3399,7 +3399,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'word_problem_two_step_eq',
     name: 'Two-step equation word problem',
-    shortLabel: 'Two-step equation word problem',
+    shortLabel: '2-step eq',
     categoryId: 'prealgebra',
     primaryGrade: 7,
     prereqIds: ['solve_two_step_eq'],
@@ -3589,7 +3589,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'system_word_problem',
     name: 'Word problem → system',
-    shortLabel: 'Word problem → system',
+    shortLabel: 'sys word',
     categoryId: 'prealgebra',
     primaryGrade: 8,
     prereqIds: ['solve_system_substitution'],

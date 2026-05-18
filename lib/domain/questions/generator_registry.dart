@@ -22,6 +22,7 @@ import 'package:math_city/domain/questions/generators/misc_extra_generators.dart
 import 'package:math_city/domain/questions/generators/mult_div_generators.dart';
 import 'package:math_city/domain/questions/generators/mult_facts_extra_generators.dart';
 import 'package:math_city/domain/questions/generators/number_theory_generators.dart';
+import 'package:math_city/domain/questions/generators/numerals_word_generators.dart';
 import 'package:math_city/domain/questions/generators/percent_generators.dart';
 import 'package:math_city/domain/questions/generators/place_value_extra_generators.dart';
 import 'package:math_city/domain/questions/generators/place_value_generators.dart';
@@ -370,5 +371,14 @@ class GeneratorRegistry {
     'exterior_angle_triangle': exteriorAngleTriangle,
     'inspect_system_no_solution': inspectSystemNoSolution,
     'unit_rate_with_fractions': unitRateWithFractions,
+    // K read/write numerals + word problems
+    'read_numerals_0_20': readNumerals0to20,
+    'write_numerals_0_20': writeNumerals0to20,
+    'interpret_remainder_word': interpretRemainderWord,
+    'fraction_word_problems': fractionWordProblems,
+    'multistep_ratio_word': multistepRatioWord,
+    'rationals_four_op_word': rationalsFourOpWord,
+    'word_problem_two_step_eq': wordProblemTwoStepEq,
+    'system_word_problem': systemWordProblem,
   };
 }
