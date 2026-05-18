@@ -3744,7 +3744,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'histogram',
     name: 'Histogram',
-    shortLabel: 'Histogram',
+    shortLabel: 'histogram',
     categoryId: 'stats',
     primaryGrade: 6,
     prereqIds: ['bar_graph_read'],
@@ -3832,10 +3832,10 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'describe_distribution',
     name: 'Describe shape/center/spread',
-    shortLabel: 'Describe shape/center/spread',
+    shortLabel: 'shape?',
     categoryId: 'stats',
     primaryGrade: 6,
-    prereqIds: ['histogram', 'box_plot'],
+    prereqIds: ['histogram'],
     source: ConceptSource.algorithmicWithDiagram,
     diagramRequirement: DiagramRequired('histogram'),
     categoryRowOrder: 21,

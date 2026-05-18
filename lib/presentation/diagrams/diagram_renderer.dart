@@ -6,6 +6,7 @@ import 'package:math_city/presentation/diagrams/clock.dart';
 import 'package:math_city/presentation/diagrams/coordinate_plane.dart';
 import 'package:math_city/presentation/diagrams/dot_plot.dart';
 import 'package:math_city/presentation/diagrams/fraction_bar.dart';
+import 'package:math_city/presentation/diagrams/histogram.dart';
 import 'package:math_city/presentation/diagrams/number_line.dart';
 import 'package:math_city/presentation/diagrams/percent_grid.dart';
 
@@ -27,5 +28,6 @@ class DiagramRenderer extends StatelessWidget {
     final CoordinatePlaneSpec s => CoordinatePlane(spec: s),
     final BarChartSpec s => BarChart(spec: s),
     final DotPlotSpec s => DotPlot(spec: s),
+    final HistogramSpec s => Histogram(spec: s),
   };
 }
