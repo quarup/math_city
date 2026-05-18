@@ -5,6 +5,7 @@ import 'package:math_city/domain/questions/generators/add_sub_extra_generators.d
 import 'package:math_city/domain/questions/generators/add_sub_generators.dart';
 import 'package:math_city/domain/questions/generators/advanced_generators.dart';
 import 'package:math_city/domain/questions/generators/algebra_extra_generators.dart';
+import 'package:math_city/domain/questions/generators/angle_generators.dart';
 import 'package:math_city/domain/questions/generators/array_grid_extra_generators.dart';
 import 'package:math_city/domain/questions/generators/bar_graph_generators.dart';
 import 'package:math_city/domain/questions/generators/box_plot_generators.dart';
@@ -432,5 +433,10 @@ class GeneratorRegistry {
     'qualitative_graph_features': qualitativeGraphFeatures,
     'interpret_slope_intercept_data': interpretSlopeInterceptData,
     'simulate_compound': simulateCompound,
+    // G4 angle generators using the new Angle widget + G3 fraction
+    // on a number line using the existing NumberLine widget
+    'right_acute_obtuse_angle': rightAcuteObtuseAngle,
+    'angle_addition': angleAddition,
+    'fraction_on_number_line': fractionOnNumberLine,
   };
 }

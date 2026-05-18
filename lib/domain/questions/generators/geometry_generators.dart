@@ -1,15 +1,18 @@
 import 'dart:math';
 
 import 'package:math_city/domain/questions/decimal.dart';
+import 'package:math_city/domain/questions/diagram_spec.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
 
 /// Geometry generators — area + perimeter (Grades 3 & 6), angle
 /// relationships (Grade 7 & 8), and π-bearing circles + 3D volumes.
 ///
-/// Implemented without the curriculum-suggested `Shape` / `Angle` /
-/// `Circle` widgets — the math works verbally ("rectangle with length
-/// 5 and width 7", "circle with radius 4"). The visual widgets can be
-/// added later for richer UX.
+/// Area/perimeter and circle/volume generators still work text-only —
+/// the visual `Shape` / `Circle` widgets are follow-ups. Angle-relationship
+/// generators (supplementary / complementary / vertical / triangle-angle-
+/// sum) emit `AngleSpec` / `TriangleAnglesSpec` so the figure is shown.
+/// `parallel_lines_transversal` still text-only pending a parallel-lines
+/// widget.
 ///
 /// **π convention (locked).** π is approximated as **3.14** (the K–8
 /// CCSS standard). Generators that use π emit the answer as a
@@ -288,7 +291,8 @@ GeneratedQuestion areaTriangle(Random rand) {
 // ─────────────────────────────────────────────────────────────────────────
 
 /// "Two angles are supplementary. One is 65°. What is the other?" → 115°.
-/// Implemented text-only; the visual `Angle` widget can wire in later.
+/// Diagram: three rays from a vertex forming a straight line, the
+/// adjacent pair labelled `a°` and `?`.
 GeneratedQuestion supplementaryAngles(Random rand) {
   // Pick angle1 in [10, 170] excluding 90 (would give a == b = 90°).
   int a;
@@ -312,6 +316,16 @@ GeneratedQuestion supplementaryAngles(Random rand) {
   return GeneratedQuestion(
     conceptId: 'supplementary_angles',
     prompt: 'Two angles are supplementary. One is $a°. What is the other?',
+    diagram: AngleSpec(
+      // Straight line: ray at 0° + ray at 180°; the divider ray at a°
+      // splits it into the known angle (left wedge, a°) and the unknown
+      // angle (right wedge, ?).
+      rayAnglesDeg: [0, a, 180],
+      wedgeLabels: [
+        AngleWedgeLabel(rayIndex: 0, label: '$a°'),
+        const AngleWedgeLabel(rayIndex: 1, label: '?'),
+      ],
+    ),
     correctAnswer: correct,
     distractors: _wholeDistractors(b, candidates, rand),
     explanation: [
@@ -347,6 +361,15 @@ GeneratedQuestion complementaryAngles(Random rand) {
   return GeneratedQuestion(
     conceptId: 'complementary_angles',
     prompt: 'Two angles are complementary. One is $a°. What is the other?',
+    diagram: AngleSpec(
+      // Right angle: ray at 0° + ray at 90°; the divider ray at a°
+      // splits the 90° wedge into a° and (90 − a)°.
+      rayAnglesDeg: [0, a, 90],
+      wedgeLabels: [
+        AngleWedgeLabel(rayIndex: 0, label: '$a°'),
+        const AngleWedgeLabel(rayIndex: 1, label: '?'),
+      ],
+    ),
     correctAnswer: correct,
     distractors: _wholeDistractors(b, candidates, rand),
     explanation: [
@@ -388,6 +411,16 @@ GeneratedQuestion verticalAngles(Random rand) {
     prompt:
         'Two lines cross. One angle measures $a°. What is the angle '
         '$relation it?',
+    diagram: AngleSpec(
+      // Two crossing lines = 4 rays. The east-going ray at 0° and the
+      // ray at a° form the "given" wedge (a°). The vertical wedge is
+      // between rays 2 and 3 (opposite); the adjacent wedges are 1 and 3.
+      rayAnglesDeg: [0, a, 180, (a + 180) % 360],
+      wedgeLabels: [
+        AngleWedgeLabel(rayIndex: 0, label: '$a°'),
+        AngleWedgeLabel(rayIndex: askVertical ? 2 : 1, label: '?'),
+      ],
+    ),
     correctAnswer: correct,
     distractors: _wholeDistractors(answer, candidates, rand),
     explanation: [
@@ -431,6 +464,14 @@ GeneratedQuestion triangleAngleSum(Random rand) {
   return GeneratedQuestion(
     conceptId: 'triangle_angle_sum',
     prompt: 'A triangle has angles $a° and $b°. What is the third angle?',
+    diagram: TriangleAnglesSpec(
+      angleDegA: a,
+      angleDegB: b,
+      angleDegC: c,
+      labelA: '$a°',
+      labelB: '$b°',
+      labelC: '?',
+    ),
     correctAnswer: correct,
     distractors: _wholeDistractors(c, candidates, rand),
     explanation: [

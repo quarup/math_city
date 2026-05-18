@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:math_city/domain/questions/diagram_spec.dart';
+import 'package:math_city/presentation/diagrams/angle.dart';
 import 'package:math_city/presentation/diagrams/area_grid.dart';
 import 'package:math_city/presentation/diagrams/bar_chart.dart';
 import 'package:math_city/presentation/diagrams/box_plot.dart';
@@ -11,6 +12,7 @@ import 'package:math_city/presentation/diagrams/histogram.dart';
 import 'package:math_city/presentation/diagrams/number_line.dart';
 import 'package:math_city/presentation/diagrams/percent_grid.dart';
 import 'package:math_city/presentation/diagrams/tree_diagram.dart';
+import 'package:math_city/presentation/diagrams/triangle_angles.dart';
 import 'package:math_city/presentation/diagrams/two_way_table.dart';
 
 /// Dispatches a [DiagramSpec] (pure-Dart value type) to the corresponding
@@ -35,5 +37,7 @@ class DiagramRenderer extends StatelessWidget {
     final BoxPlotSpec s => BoxPlot(spec: s),
     final TreeDiagramSpec s => TreeDiagram(spec: s),
     final TwoWayTableSpec s => TwoWayTable(spec: s),
+    final AngleSpec s => Angle(spec: s),
+    final TriangleAnglesSpec s => TriangleAngles(spec: s),
   };
 }

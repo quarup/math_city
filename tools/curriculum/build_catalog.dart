@@ -379,6 +379,9 @@ const _shortLabelOverrides = <String, String>{
   'qualitative_graph_features': 'incr/decr',
   'interpret_slope_intercept_data': 'pred y',
   'simulate_compound': 'P sim',
+  'right_acute_obtuse_angle': '∠ kind?',
+  'angle_addition': '∠ + ∠',
+  'fraction_on_number_line': 'frac line',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
@@ -483,14 +486,20 @@ const _prereqOverrides = <String, List<String>>{
   'slope_from_two_points': ['proportional_relationship'],
   // function_definition_check: graph_linear_equation now lives (Chunk 33),
   // so the curriculum.md prereq is met — no override needed.
-  // drop right_acute_obtuse_angle (no generator yet — needs Angle
-  // diagram). Supplementary/complementary are fundamentally arithmetic
-  // (subtract from 180 / 90), so add_within_100 is a fair background.
-  'supplementary_angles': ['add_within_100'],
-  'complementary_angles': ['add_within_100'],
+  // supplementary_angles / complementary_angles: right_acute_obtuse_angle
+  // now lives (Chunk 54), so the curriculum prereq is met — no overrides
+  // needed.
   // vertical_angles / triangle_angle_sum / parallel_lines_transversal:
   // their curriculum prereqs (supplementary_angles, vertical_angles) now
   // live — no override needed.
+  // drop identify_lines_rays_segments (still no generator — needs Shape
+  // widget). Substitute add_within_100 as basic arithmetic background;
+  // classifying an angle as acute/right/obtuse doesn't really require
+  // the line/ray/segment vocabulary to play.
+  'right_acute_obtuse_angle': ['add_within_100'],
+  // drop measure_angle_protractor (no generator — needs Protractor
+  // widget). The angle-addition arithmetic only needs basic + skill.
+  'angle_addition': ['add_within_100'],
   // plot_first_quadrant: number_line_add_sub now lives — curriculum
   // prereq is met, no override needed.
   // drop integers_on_number_line (no generator yet). Substitute

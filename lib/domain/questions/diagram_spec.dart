@@ -418,6 +418,81 @@ enum CoordinatePlanePolygonStyle {
   dashed,
 }
 
+/// One labelled wedge in an [AngleSpec]: the arc lives between rays
+/// `rayIndex` and `rayIndex + 1` (mod `rayAnglesDeg.length`), and shows
+/// [label] inside the arc.
+class AngleWedgeLabel {
+  const AngleWedgeLabel({required this.rayIndex, required this.label})
+    : assert(rayIndex >= 0, 'rayIndex must be >= 0');
+
+  final int rayIndex;
+  final String label;
+}
+
+/// A figure made of rays emerging from a single vertex, with optional
+/// labels inside the wedges between consecutive rays. Covers most basic
+/// angle questions: single labelled angle (rays at 2 directions), two
+/// adjacent angles (3 rays), and two intersecting lines (4 rays).
+///
+/// Ray directions are in degrees, with 0° pointing east and CCW positive
+/// (so 90° points north). Rays are drawn in `rayAnglesDeg` order; wedge i
+/// is the arc from ray i to ray i+1 (no wrap-around wedge unless one is
+/// explicitly emitted by repeating the first ray index in [wedgeLabels]).
+class AngleSpec extends DiagramSpec {
+  const AngleSpec({
+    required this.rayAnglesDeg,
+    this.wedgeLabels = const [],
+  }) : assert(rayAnglesDeg.length >= 2, 'need at least 2 rays');
+
+  final List<int> rayAnglesDeg;
+  final List<AngleWedgeLabel> wedgeLabels;
+}
+
+/// A triangle with three vertices and a label placed inside the angle at
+/// each vertex (e.g. "35°", "?", or "x°"). Vertex positions are computed
+/// by the renderer; the spec only constrains the *appearance* of the
+/// triangle (size class) so kids see a triangle that's visibly scalene
+/// vs. isoceles when the angle measures warrant it.
+///
+/// Used by `triangle_angle_sum` and `exterior_angle_triangle`. For
+/// exterior-angle questions, the third angle's label is `"?"` and the
+/// generator pairs the diagram with a prompt about the exterior angle.
+class TriangleAnglesSpec extends DiagramSpec {
+  const TriangleAnglesSpec({
+    required this.angleDegA,
+    required this.angleDegB,
+    required this.angleDegC,
+    required this.labelA,
+    required this.labelB,
+    required this.labelC,
+    this.showExteriorAtC = false,
+  }) : assert(
+         angleDegA > 0 && angleDegB > 0 && angleDegC > 0,
+         'all three interior angles must be positive',
+       ),
+       assert(
+         angleDegA + angleDegB + angleDegC == 180,
+         'interior angles must sum to 180°',
+       );
+
+  /// Interior angle at vertex A, B, C (in degrees). Sum must be 180°.
+  /// Drives the *shape* of the rendered triangle.
+  final int angleDegA;
+  final int angleDegB;
+  final int angleDegC;
+
+  /// Labels shown inside each vertex's interior angle. Typically the
+  /// numeric measure with a degree sign, or `"?"` for the unknown.
+  final String labelA;
+  final String labelB;
+  final String labelC;
+
+  /// If true, the renderer draws a dashed extension of one side past
+  /// vertex C and marks the exterior wedge — used by
+  /// `exterior_angle_triangle`.
+  final bool showExteriorAtC;
+}
+
 /// A 2-D coordinate plane spanning `[minX, maxX] × [minY, maxY]` (inclusive
 /// integer ranges), with a grid at every integer step, labelled axes, and
 /// zero or more marked points or lines. Covers both first-quadrant
