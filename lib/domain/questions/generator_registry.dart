@@ -10,6 +10,7 @@ import 'package:math_city/domain/questions/generators/box_plot_generators.dart';
 import 'package:math_city/domain/questions/generators/coordinate_plane_generators.dart';
 import 'package:math_city/domain/questions/generators/counting_generators.dart';
 import 'package:math_city/domain/questions/generators/decimal_generators.dart';
+import 'package:math_city/domain/questions/generators/diagram_extra_generators.dart';
 import 'package:math_city/domain/questions/generators/dot_plot_generators.dart';
 import 'package:math_city/domain/questions/generators/equation_generators.dart';
 import 'package:math_city/domain/questions/generators/fraction_generators.dart';
@@ -400,5 +401,15 @@ class GeneratorRegistry {
     'convert_units_multistep': convertUnitsMultistep,
     'statistical_question': statisticalQuestion,
     'sampling_representativeness': samplingRepresentativeness,
+    // Diagram-using generators (reusing existing widgets)
+    'partition_halves_fourths': partitionHalvesFourths,
+    'partition_thirds': partitionThirds,
+    'unit_fraction_intro': unitFractionIntro,
+    'number_line_add_sub': numberLineAddSub,
+    'decimal_on_number_line': decimalOnNumberLine,
+    'integers_on_number_line': integersOnNumberLine,
+    'area_rectangle_count_squares': areaRectangleCountSquares,
+    'partition_into_rows_columns': partitionIntoRowsColumns,
+    'inference_from_sample': inferenceFromSample,
   };
 }

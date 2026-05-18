@@ -353,6 +353,15 @@ const _shortLabelOverrides = <String, String>{
   'convert_units_multistep': 'unit 2-step',
   'statistical_question': 'stat Q?',
   'sampling_representativeness': 'fair?',
+  'partition_halves_fourths': '½ ¼',
+  'partition_thirds': '⅓',
+  'unit_fraction_intro': '1/b',
+  'number_line_add_sub': '± line',
+  'decimal_on_number_line': 'dec line',
+  'integers_on_number_line': '± int line',
+  'area_rectangle_count_squares': 'count □',
+  'partition_into_rows_columns': 'rows × cols',
+  'inference_from_sample': 'estimate',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
@@ -386,8 +395,8 @@ const _prereqOverrides = <String, List<String>>{
   'mult_facts_within_100': ['add_within_100'],
   // drop div_meaning_share (no generator).
   'div_facts_within_100': ['mult_facts_within_100'],
-  // drop unit_fraction_intro (no generator).
-  'fraction_a_over_b': <String>[],
+  // fraction_a_over_b: unit_fraction_intro now lives (Chunk 51), so
+  // the curriculum prereq is met — no override needed.
   // time_to_5_min: skip_count_5 now lives (Chunk 42), so the curriculum
   // prereq [time_to_hour_half, skip_count_5] is met — no override needed.
   // drop teen_numbers_as_ten_plus (no generator) — it's a foundational
@@ -432,27 +441,23 @@ const _prereqOverrides = <String, List<String>>{
   // curriculum.md prereq
   // [add_subtract_linear_expressions, distributive_with_gcf] is met,
   // no override needed.
-  // drop integers_on_number_line (no generator yet — needs NumberLine
-  // diagram wiring for decimals support). Use add_within_100 as
-  // basic background for both absolute value and opposites.
-  'absolute_value': ['add_within_100'],
-  'opposites_and_zero': ['add_within_100'],
+  // absolute_value / opposites_and_zero: integers_on_number_line now
+  // lives (Chunk 51), so the curriculum prereq is met — no override
+  // needed.
   // multiples_of_n: skip_count_2 now lives (Chunk 41), so the curriculum
   // prereq is met — no override needed.
-  // drop area_rectangle_count_squares (no generator) — substitute the
-  // mult-facts background since area-by-formula IS multiplication.
-  'area_rectangle_formula': ['mult_facts_within_100'],
+  // area_rectangle_formula: area_rectangle_count_squares now lives —
+  // curriculum prereq is met, no override needed.
   // drop powers_of_10 (no generator) — substitute mult facts as the
   // basic multiplicative background.
   'exponents_whole_number': ['mult_facts_within_100'],
   // drop powers_of_10 (no generator yet) — substitute mult_facts.
   'scientific_notation_read': ['mult_facts_within_100'],
-  // drop volume_unit_cubes (no generator); area_rectangle_count_squares
-  // also missing. Substitute mult facts (V = lwh is just multiplication).
-  'volume_rect_prism_formula': ['mult_facts_within_100'],
-  // drop integers_on_number_line (no generator yet — needs decimal-aware
-  // NumberLine spec). compare_decimals_thousandths is already a prereq.
-  'compare_order_rationals': ['compare_decimals_thousandths'],
+  // drop volume_unit_cubes (still no generator — needs a Box3D widget).
+  // area_rectangle_count_squares now lives, so substitute that.
+  'volume_rect_prism_formula': ['area_rectangle_count_squares'],
+  // compare_order_rationals: integers_on_number_line now lives —
+  // curriculum prereq is met, no override needed.
   // irrational_recognize: rational_to_decimal_repeating now lives —
   // curriculum.md prereq is met, no override needed.
   // pythagorean_apply_2d: prereqs are sqrt_perfect_squares ✓ and
@@ -473,9 +478,8 @@ const _prereqOverrides = <String, List<String>>{
   // vertical_angles / triangle_angle_sum / parallel_lines_transversal:
   // their curriculum prereqs (supplementary_angles, vertical_angles) now
   // live — no override needed.
-  // drop number_line_add_sub (no generator yet — needs NumberLine-driven
-  // ± generator). Substitute add_within_100 as basic arithmetic background.
-  'plot_first_quadrant': ['add_within_100'],
+  // plot_first_quadrant: number_line_add_sub now lives — curriculum
+  // prereq is met, no override needed.
   // drop integers_on_number_line (no generator yet). Substitute
   // opposites_and_zero, which carries the same "negative integers
   // exist on a number line" intuition needed for Q2/Q3/Q4 plotting.
@@ -543,6 +547,10 @@ const _prereqOverrides = <String, List<String>>{
   // coin-counting variant is implemented arithmetically; the dollar
   // variant only needs sub_within_100.
   'money_word_problems': ['add_within_100'],
+  // drop identify_shape_2d (no generator — needs a Shape widget).
+  // partition_into_rows_columns is really an arithmetic skill once
+  // the rectangle has been drawn.
+  'partition_into_rows_columns': ['add_within_100'],
 };
 
 // ─────────────────────────────────────────────────────────────────────────
