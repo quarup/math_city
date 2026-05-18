@@ -15,6 +15,7 @@ import 'package:math_city/presentation/diagrams/percent_grid.dart';
 import 'package:math_city/presentation/diagrams/picture_graph.dart';
 import 'package:math_city/presentation/diagrams/protractor.dart';
 import 'package:math_city/presentation/diagrams/ruler.dart';
+import 'package:math_city/presentation/diagrams/shape.dart';
 import 'package:math_city/presentation/diagrams/tree_diagram.dart';
 import 'package:math_city/presentation/diagrams/triangle_angles.dart';
 import 'package:math_city/presentation/diagrams/two_way_table.dart';
@@ -47,5 +48,6 @@ class DiagramRenderer extends StatelessWidget {
     final MoneySpec s => Money(spec: s),
     final RulerSpec s => Ruler(spec: s),
     final ProtractorSpec s => Protractor(spec: s),
+    final ShapeSpec s => Shape(spec: s),
   };
 }

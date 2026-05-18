@@ -2483,7 +2483,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'identify_shape_2d',
     name: 'Name 2D shapes',
-    shortLabel: 'Name 2D shapes',
+    shortLabel: 'name 2D',
     categoryId: 'geometry',
     primaryGrade: 0,
     prereqIds: [],
@@ -2494,7 +2494,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'identify_shape_3d',
     name: 'Name 3D shapes',
-    shortLabel: 'Name 3D shapes',
+    shortLabel: 'name 3D',
     categoryId: 'geometry',
     primaryGrade: 0,
     prereqIds: ['identify_shape_2d'],
@@ -2516,7 +2516,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'shape_attributes_basic',
     name: 'Sides and corners',
-    shortLabel: 'Sides and corners',
+    shortLabel: 'sides?',
     categoryId: 'geometry',
     primaryGrade: 1,
     prereqIds: ['identify_shape_2d'],
@@ -2549,7 +2549,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'identify_polygons',
     name: 'Triangles, quads, pentagons, hexagons',
-    shortLabel: 'Triangles, quads, pentagons, hexagons',
+    shortLabel: 'polygon?',
     categoryId: 'geometry',
     primaryGrade: 2,
     prereqIds: ['shape_attributes_basic'],
@@ -2563,7 +2563,7 @@ const List<Concept> allConcepts = [
     shortLabel: 'rows × cols',
     categoryId: 'geometry',
     primaryGrade: 2,
-    prereqIds: ['add_within_100'],
+    prereqIds: ['identify_shape_2d'],
     source: ConceptSource.algorithmicWithDiagram,
     diagramRequirement: DiagramRequired('array_grid'),
     categoryRowOrder: 7,
@@ -2772,7 +2772,7 @@ const List<Concept> allConcepts = [
     shortLabel: '△ valid?',
     categoryId: 'geometry',
     primaryGrade: 7,
-    prereqIds: ['perimeter_polygon'],
+    prereqIds: ['shape_attributes_basic'],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
     categoryRowOrder: 26,

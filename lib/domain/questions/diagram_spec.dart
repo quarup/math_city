@@ -634,6 +634,163 @@ class TriangleAnglesSpec extends DiagramSpec {
 /// integer ranges), with a grid at every integer step, labelled axes, and
 /// zero or more marked points or lines. Covers both first-quadrant
 /// (`minX = minY = 0`) and four-quadrant (`minX, minY < 0`) flavours.
+/// What kind of figure a [ShapeSpec] renders. Splits 2D polygons by name
+/// (so a triangle is its own kind) and gives 3D solids schematic
+/// outlines. The renderer is expected to draw each kind at a single
+/// canonical orientation so kids can tell two squares from a square +
+/// rectangle (e.g. rectangle is always wider than tall).
+enum ShapeKind {
+  // 2D — closed curves
+  circle,
+  // 2D — triangles by shape
+  triangleRight,
+  triangleEquilateral,
+  triangleIsosceles,
+  triangleScalene,
+  // 2D — quadrilaterals
+  square,
+  rectangle,
+  parallelogram,
+  rhombus,
+  trapezoid,
+  // 2D — regular polygons (≥ 5 sides)
+  pentagon,
+  hexagon,
+  octagon,
+  // 3D — schematic outlines
+  cube,
+  sphere,
+  cylinder,
+  cone;
+
+  /// Number of straight sides (0 for circle / sphere). Triangles = 3,
+  /// quads = 4, etc. For 3D solids, returns the number of *visible*
+  /// straight edges so the value can be used as a "how many sides /
+  /// faces" answer — but most generators only ask about the 2D kinds.
+  int get sideCount {
+    switch (this) {
+      case ShapeKind.circle:
+      case ShapeKind.sphere:
+        return 0;
+      case ShapeKind.triangleRight:
+      case ShapeKind.triangleEquilateral:
+      case ShapeKind.triangleIsosceles:
+      case ShapeKind.triangleScalene:
+        return 3;
+      case ShapeKind.square:
+      case ShapeKind.rectangle:
+      case ShapeKind.parallelogram:
+      case ShapeKind.rhombus:
+      case ShapeKind.trapezoid:
+        return 4;
+      case ShapeKind.pentagon:
+        return 5;
+      case ShapeKind.hexagon:
+        return 6;
+      case ShapeKind.octagon:
+        return 8;
+      case ShapeKind.cube:
+      case ShapeKind.cylinder:
+      case ShapeKind.cone:
+        // Not meaningful as a side count — leave to specific generators.
+        return -1;
+    }
+  }
+
+  /// Kid-friendly display name. Triangles collapse to "triangle" so
+  /// `identify_shape_2d` keeps a small answer pool; specialised
+  /// generators (e.g. `triangleRight`) can override the prompt as
+  /// needed.
+  String get displayName {
+    switch (this) {
+      case ShapeKind.circle:
+        return 'circle';
+      case ShapeKind.triangleRight:
+      case ShapeKind.triangleEquilateral:
+      case ShapeKind.triangleIsosceles:
+      case ShapeKind.triangleScalene:
+        return 'triangle';
+      case ShapeKind.square:
+        return 'square';
+      case ShapeKind.rectangle:
+        return 'rectangle';
+      case ShapeKind.parallelogram:
+        return 'parallelogram';
+      case ShapeKind.rhombus:
+        return 'rhombus';
+      case ShapeKind.trapezoid:
+        return 'trapezoid';
+      case ShapeKind.pentagon:
+        return 'pentagon';
+      case ShapeKind.hexagon:
+        return 'hexagon';
+      case ShapeKind.octagon:
+        return 'octagon';
+      case ShapeKind.cube:
+        return 'cube';
+      case ShapeKind.sphere:
+        return 'sphere';
+      case ShapeKind.cylinder:
+        return 'cylinder';
+      case ShapeKind.cone:
+        return 'cone';
+    }
+  }
+
+  /// True for the 3D solids (cube/sphere/cylinder/cone). 2D shapes
+  /// return false.
+  bool get is3D {
+    switch (this) {
+      case ShapeKind.cube:
+      case ShapeKind.sphere:
+      case ShapeKind.cylinder:
+      case ShapeKind.cone:
+        return true;
+      case ShapeKind.circle:
+      case ShapeKind.triangleRight:
+      case ShapeKind.triangleEquilateral:
+      case ShapeKind.triangleIsosceles:
+      case ShapeKind.triangleScalene:
+      case ShapeKind.square:
+      case ShapeKind.rectangle:
+      case ShapeKind.parallelogram:
+      case ShapeKind.rhombus:
+      case ShapeKind.trapezoid:
+      case ShapeKind.pentagon:
+      case ShapeKind.hexagon:
+      case ShapeKind.octagon:
+        return false;
+    }
+  }
+}
+
+/// A schematic 2D or 3D figure used by shape-recognition, polygon-
+/// classification, and basic geometry generators. Drawn outline-only at
+/// a canonical orientation so kids can tell shape kinds apart at a
+/// glance (e.g. rectangle is wider than tall; trapezoid is shown with
+/// the longer base on the bottom).
+///
+/// Used by `identify_shape_2d`, `identify_shape_3d`,
+/// `shape_attributes_basic`, `identify_polygons`.
+class ShapeSpec extends DiagramSpec {
+  const ShapeSpec({
+    required this.kind,
+    this.label,
+    this.showRightAngleMark = false,
+  });
+
+  final ShapeKind kind;
+
+  /// Optional text label drawn near the figure (e.g. "A" for a labelled
+  /// triangle, or a measurement like "5 cm"). Not used by the first
+  /// shape generators but available for later geometry questions.
+  final String? label;
+
+  /// If true on a right triangle, draws the small square symbol at the
+  /// right-angle vertex.
+  final bool showRightAngleMark;
+}
+
 class CoordinatePlaneSpec extends DiagramSpec {
   const CoordinatePlaneSpec({
     required this.minX,

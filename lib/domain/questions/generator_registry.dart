@@ -41,6 +41,7 @@ import 'package:math_city/domain/questions/generators/ratio_generators.dart';
 import 'package:math_city/domain/questions/generators/rationals_generators.dart';
 import 'package:math_city/domain/questions/generators/ruler_generators.dart';
 import 'package:math_city/domain/questions/generators/scatter_plot_generators.dart';
+import 'package:math_city/domain/questions/generators/shape_generators.dart';
 import 'package:math_city/domain/questions/generators/statistics_generators.dart';
 import 'package:math_city/domain/questions/generators/time_generators.dart';
 import 'package:math_city/domain/questions/generators/tree_diagram_generators.dart';
@@ -459,5 +460,10 @@ class GeneratorRegistry {
     // G4 protractor family
     'measure_angle_protractor': measureAngleProtractor,
     'draw_angle_protractor': drawAngleProtractor,
+    // K-G2 shape-recognition family using the new Shape widget
+    'identify_shape_2d': identifyShape2d,
+    'identify_shape_3d': identifyShape3d,
+    'shape_attributes_basic': shapeAttributesBasic,
+    'identify_polygons': identifyPolygons,
   };
 }

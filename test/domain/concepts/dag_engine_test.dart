@@ -230,17 +230,17 @@ void main() {
         final pack = engine.pickStarterPack(0);
         expect(pack, hasLength(4));
         // pickStarterPack sorts by (grade, categoryRowOrder) and takes
-        // the first 4. After Chunk 55, three categories now ship a G0
-        // row-0 concept: counting (count_to_10), add_sub (add_within_5),
-        // and stats (classify_count_categories). The 4th slot rolls
-        // over to the counting category at row order 1 (count_to_20).
+        // the first 4. After Chunk 59, four categories ship a G0 row-0
+        // concept: counting (count_to_10), add_sub (add_within_5),
+        // geometry (identify_shape_2d), and stats
+        // (classify_count_categories) — exactly fills the four slots.
         expect(
           pack.map((c) => c.id).toList(),
           [
             'count_to_10',
             'add_within_5',
+            'identify_shape_2d',
             'classify_count_categories',
-            'count_to_20',
           ],
         );
       },
@@ -292,22 +292,26 @@ void main() {
         final engine = DripFeedEngine(
           registry: GeneratorRegistry.defaultRegistry(),
         );
-        // Include the counting concepts in `introduced` so the category-
-        // tiebreak doesn't pull the pick away from add_sub. With both
-        // categories having ≥ 1 active concept, the lowest-grade DAG
-        // child wins — add_within_10 (G0, prereq met).
+        // Include row-0 G0 concepts from every other K-grade-rooted
+        // category in `introduced` so the category tiebreak doesn't
+        // pull the pick away from add_sub. With every category at
+        // ≥ 1 active concept and add_sub at the minimum, the lowest
+        // row order within add_sub wins — add_within_10.
         final next = engine.pickNext(
           introduced: {
             'add_within_5',
             'sub_within_5',
             'count_to_10',
             'count_to_20',
+            // Chunk 59: geometry root.
+            'identify_shape_2d',
           },
           profMap: const {
             'add_within_5': 0.9,
             'sub_within_5': 0.4,
             'count_to_10': 0.4,
             'count_to_20': 0.4,
+            'identify_shape_2d': 0.4,
           },
           playerGrade: 0,
         );
