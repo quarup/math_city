@@ -399,6 +399,10 @@ const _shortLabelOverrides = <String, String>{
   'identify_shape_3d': 'name 3D',
   'shape_attributes_basic': 'sides?',
   'identify_polygons': 'polygon?',
+  'classify_quadrilaterals': 'name quad',
+  'line_of_symmetry': 'symmetry',
+  'classify_2d_hierarchy': 'is a __?',
+  'pythagorean_apply_3d': 'a²+b²+c²',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
@@ -572,6 +576,10 @@ const _prereqOverrides = <String, List<String>>{
   // curriculum prereq is met — no override needed.
   // partition_into_rows_columns: identify_shape_2d now lives (Chunk 59),
   // so the curriculum prereq is met — no override needed.
+  // drop classify_2d_by_lines_angles (still no generator — needs the
+  // line/ray/segment vocab gens first). classify_quadrilaterals is the
+  // closest implemented step.
+  'classify_2d_hierarchy': ['classify_quadrilaterals'],
 };
 
 // ─────────────────────────────────────────────────────────────────────────

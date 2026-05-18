@@ -86,6 +86,93 @@ void main() {
     });
   });
 
+  group('classify_quadrilaterals', () {
+    test('answer equals the quad-specific name; all five names appear', () {
+      const expectedNames = <String>{
+        'square',
+        'rectangle',
+        'parallelogram',
+        'rhombus',
+        'trapezoid',
+      };
+      final seen = <String>{};
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'classify_quadrilaterals', i);
+        final spec = _spec(q);
+        expect(spec.kind.sideCount, 4);
+        expect(expectedNames, contains(q.correctAnswer));
+        expect(q.correctAnswer, spec.kind.displayName);
+        _expectThreeDistinctDistractors(q);
+        seen.add(q.correctAnswer);
+      }
+      expect(seen, expectedNames);
+    });
+  });
+
+  group('line_of_symmetry', () {
+    test('answer matches the known symmetry-count for the rendered kind',
+        () {
+      // Mirror of _symmetryCounts in shape_generators.dart.
+      const expected = {
+        ShapeKind.triangleEquilateral: 3,
+        ShapeKind.triangleIsosceles: 1,
+        ShapeKind.triangleScalene: 0,
+        ShapeKind.triangleRight: 0,
+        ShapeKind.square: 4,
+        ShapeKind.rectangle: 2,
+        ShapeKind.parallelogram: 0,
+        ShapeKind.rhombus: 2,
+        ShapeKind.trapezoid: 1,
+        ShapeKind.pentagon: 5,
+        ShapeKind.hexagon: 6,
+        ShapeKind.octagon: 8,
+      };
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'line_of_symmetry', i);
+        final spec = _spec(q);
+        expect(expected.containsKey(spec.kind), isTrue,
+            reason: 'kind ${spec.kind} should have a known symmetry count');
+        expect(int.parse(q.correctAnswer), expected[spec.kind]);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
+  group('classify_2d_hierarchy', () {
+    test('both True and False appear across seeds; answer is one of them',
+        () {
+      final seen = <String>{};
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'classify_2d_hierarchy', i);
+        expect(['True', 'False'], contains(q.correctAnswer));
+        expect(q.answerFormat, AnswerFormat.string);
+        _expectThreeDistinctDistractors(q);
+        seen.add(q.correctAnswer);
+      }
+      expect(seen, containsAll(<String>['True', 'False']));
+    });
+  });
+
+  group('pythagorean_apply_3d', () {
+    test('answer squared equals l² + w² + h²', () {
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'pythagorean_apply_3d', i);
+        final spec = _spec(q);
+        expect(spec.kind, ShapeKind.cube);
+        // Parse the three numbers out of the prompt.
+        final nums =
+            RegExp(r'-?\d+').allMatches(q.prompt).map((m) => m.group(0)!).toList();
+        expect(nums.length, greaterThanOrEqualTo(3));
+        final l = int.parse(nums[0]);
+        final w = int.parse(nums[1]);
+        final h = int.parse(nums[2]);
+        final d = int.parse(q.correctAnswer);
+        expect(d * d, l * l + w * w + h * h);
+        _expectThreeDistinctDistractors(q);
+      }
+    });
+  });
+
   group('identify_polygons', () {
     test('correct name maps by side count; pool covers all four names', () {
       const expectedByCount = {

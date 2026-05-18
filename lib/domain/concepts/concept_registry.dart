@@ -2571,7 +2571,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'classify_quadrilaterals',
     name: 'Classify quadrilaterals',
-    shortLabel: 'Classify quadrilaterals',
+    shortLabel: 'name quad',
     categoryId: 'geometry',
     primaryGrade: 3,
     prereqIds: ['identify_polygons'],
@@ -2626,7 +2626,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'line_of_symmetry',
     name: 'Lines of symmetry',
-    shortLabel: 'Lines of symmetry',
+    shortLabel: 'symmetry',
     categoryId: 'geometry',
     primaryGrade: 4,
     prereqIds: ['identify_polygons'],
@@ -2670,10 +2670,10 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'classify_2d_hierarchy',
     name: 'Shape hierarchy',
-    shortLabel: 'Shape hierarchy',
+    shortLabel: 'is a __?',
     categoryId: 'geometry',
     primaryGrade: 5,
-    prereqIds: ['classify_quadrilaterals', 'classify_2d_by_lines_angles'],
+    prereqIds: ['classify_quadrilaterals'],
     source: ConceptSource.algorithmicWithDiagram,
     diagramRequirement: DiagramRequired('shape'),
     categoryRowOrder: 17,
@@ -2971,7 +2971,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'pythagorean_apply_3d',
     name: 'Pythagorean theorem (3D)',
-    shortLabel: 'Pythagorean theorem (3D)',
+    shortLabel: 'a²+b²+c²',
     categoryId: 'geometry',
     primaryGrade: 8,
     prereqIds: ['pythagorean_apply_2d'],
