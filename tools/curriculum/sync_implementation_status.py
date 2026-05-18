@@ -70,7 +70,7 @@ WIDGET_TO_FILE = {
     "Circle": "circle",
     "Protractor": "protractor",
     "Ruler": "ruler",
-    "Money": "money",
+    "Money": "money",  # widget file already in §6.2 row 10
     "BoxPlot": "box_plot",
     "ScatterPlot": "scatter_plot",
     "TwoWayTable": "two_way_table",

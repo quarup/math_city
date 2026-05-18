@@ -24,6 +24,7 @@ import 'package:math_city/domain/questions/generators/histogram_generators.dart'
 import 'package:math_city/domain/questions/generators/integer_generators.dart';
 import 'package:math_city/domain/questions/generators/linear_function_generators.dart';
 import 'package:math_city/domain/questions/generators/misc_extra_generators.dart';
+import 'package:math_city/domain/questions/generators/money_generators.dart';
 import 'package:math_city/domain/questions/generators/mult_div_generators.dart';
 import 'package:math_city/domain/questions/generators/mult_facts_extra_generators.dart';
 import 'package:math_city/domain/questions/generators/number_theory_generators.dart';
@@ -444,5 +445,10 @@ class GeneratorRegistry {
     'three_category_data': threeCategoryData,
     'picture_graph_read': pictureGraphRead,
     'scaled_picture_graph': scaledPictureGraph,
+    // G1-G2 money family using the new Money widget
+    'coins_id_value': coinsIdValue,
+    'count_coins': countCoins,
+    'count_bills_coins': countBillsCoins,
+    'change_from_purchase': changeFromPurchase,
   };
 }

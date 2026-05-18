@@ -386,6 +386,10 @@ const _shortLabelOverrides = <String, String>{
   'three_category_data': '3 cats',
   'picture_graph_read': 'pic graph',
   'scaled_picture_graph': 'pic scaled',
+  'coins_id_value': 'coin?',
+  'count_coins': 'coin sum',
+  'count_bills_coins': r'$ + ¢',
+  'change_from_purchase': 'change',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
@@ -560,10 +564,8 @@ const _prereqOverrides = <String, List<String>>{
   // drop measure_with_ruler_inches (no generator — needs Ruler widget).
   // The word-problem framing only needs +/− with two-digit operands.
   'length_word_problems': ['add_within_100'],
-  // drop count_bills_coins (no generator — needs Money widget). The
-  // coin-counting variant is implemented arithmetically; the dollar
-  // variant only needs sub_within_100.
-  'money_word_problems': ['add_within_100'],
+  // money_word_problems: count_bills_coins now lives (Chunk 56), so the
+  // curriculum prereq is met — no override needed.
   // drop identify_shape_2d (no generator — needs a Shape widget).
   // partition_into_rows_columns is really an arithmetic skill once
   // the rectangle has been drawn.
