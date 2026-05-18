@@ -4,9 +4,12 @@ import 'package:math_city/domain/questions/diagram_spec.dart';
 import 'package:math_city/domain/questions/distractors.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
 
-/// K-G2 shape-recognition generators using the new Shape widget:
-/// identify_shape_2d, identify_shape_3d, shape_attributes_basic,
-/// identify_polygons.
+/// Shape-widget generators:
+///   K-G2 recognition — identify_shape_2d, identify_shape_3d,
+///                      shape_attributes_basic, identify_polygons.
+///   G3-G8 classification / properties — classify_quadrilaterals,
+///                      line_of_symmetry, classify_2d_hierarchy,
+///                      pythagorean_apply_3d.
 
 // ─────────────────────────────────────────────────────────────────────────
 // identify_shape_2d (K)
@@ -156,6 +159,179 @@ GeneratedQuestion identifyPolygons(Random rand) {
     answerFormat: AnswerFormat.string,
     explanation: [
       'This polygon has ${kind.sideCount} sides, so it is a $answer.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// classify_quadrilaterals (G3)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "What kind of quadrilateral is this?" — five specific quad names
+/// (square / rectangle / parallelogram / rhombus / trapezoid). Drawn at
+/// the canonical orientation for each so kids can rely on a stable
+/// visual cue. CCSS 3.G.A.1.
+GeneratedQuestion classifyQuadrilaterals(Random rand) {
+  const pool = <ShapeKind>[
+    ShapeKind.square,
+    ShapeKind.rectangle,
+    ShapeKind.parallelogram,
+    ShapeKind.rhombus,
+    ShapeKind.trapezoid,
+  ];
+  final kind = pool[rand.nextInt(pool.length)];
+  final answer = kind.displayName;
+  return GeneratedQuestion(
+    conceptId: 'classify_quadrilaterals',
+    prompt: 'What kind of quadrilateral is this?',
+    diagram: ShapeSpec(kind: kind),
+    correctAnswer: answer,
+    distractors: stringDistractorsFromPool(
+      answer,
+      const ['square', 'rectangle', 'parallelogram', 'rhombus', 'trapezoid'],
+      rand,
+    ),
+    answerFormat: AnswerFormat.string,
+    explanation: ['This quadrilateral is a $answer.'],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// line_of_symmetry (G4)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// Lines-of-symmetry count for each shape kind we draw, at the
+/// canonical orientation the Shape widget renders. Circle is excluded
+/// (infinite) so the answer pool stays a clean integer.
+const Map<ShapeKind, int> _symmetryCounts = {
+  ShapeKind.triangleEquilateral: 3,
+  ShapeKind.triangleIsosceles: 1,
+  ShapeKind.triangleScalene: 0,
+  // The right triangle as we draw it (right angle at the bottom-left,
+  // legs equal? no — the canonical shape has unequal legs) is
+  // effectively scalene → 0 lines of symmetry.
+  ShapeKind.triangleRight: 0,
+  ShapeKind.square: 4,
+  ShapeKind.rectangle: 2,
+  ShapeKind.parallelogram: 0,
+  ShapeKind.rhombus: 2,
+  // Our trapezoid is an isosceles trapezoid (vertices symmetric about
+  // the vertical centreline) → 1 line of symmetry.
+  ShapeKind.trapezoid: 1,
+  ShapeKind.pentagon: 5,
+  ShapeKind.hexagon: 6,
+  ShapeKind.octagon: 8,
+};
+
+/// "How many lines of symmetry does this shape have?" — integer
+/// answer. Pool spans 0..8 across the supported kinds. CCSS 4.G.A.3.
+GeneratedQuestion lineOfSymmetry(Random rand) {
+  final pool = _symmetryCounts.keys.toList();
+  final kind = pool[rand.nextInt(pool.length)];
+  final n = _symmetryCounts[kind]!;
+  return GeneratedQuestion(
+    conceptId: 'line_of_symmetry',
+    prompt: 'How many lines of symmetry does this shape have?',
+    diagram: ShapeSpec(kind: kind),
+    correctAnswer: '$n',
+    distractors: integerDistractors(n, rand),
+    explanation: [
+      'A ${kind.displayName} has $n line${n == 1 ? '' : 's'} of symmetry.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// classify_2d_hierarchy (G5)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// "Is every {child} also a {parent}?" — true/false hierarchy items.
+/// CCSS 5.G.B.4. The diagram shows an instance of the *child* shape so
+/// the kid sees a concrete example. Pool covers the classic quad-
+/// hierarchy facts.
+GeneratedQuestion classify2dHierarchy(Random rand) {
+  // (childKind, childWord, parentWord, isTrue).
+  const facts = <(ShapeKind, String, String, bool)>[
+    (ShapeKind.square, 'square', 'rectangle', true),
+    (ShapeKind.square, 'square', 'parallelogram', true),
+    (ShapeKind.square, 'square', 'rhombus', true),
+    (ShapeKind.rectangle, 'rectangle', 'parallelogram', true),
+    (ShapeKind.rectangle, 'rectangle', 'square', false),
+    (ShapeKind.rhombus, 'rhombus', 'parallelogram', true),
+    (ShapeKind.rhombus, 'rhombus', 'square', false),
+    (ShapeKind.parallelogram, 'parallelogram', 'rectangle', false),
+    (ShapeKind.parallelogram, 'parallelogram', 'rhombus', false),
+    (ShapeKind.trapezoid, 'trapezoid', 'parallelogram', false),
+  ];
+  final fact = facts[rand.nextInt(facts.length)];
+  final (kind, child, parent, isTrue) = fact;
+  final answer = isTrue ? 'True' : 'False';
+  return GeneratedQuestion(
+    conceptId: 'classify_2d_hierarchy',
+    prompt: 'True or False: every $child is a $parent.',
+    diagram: ShapeSpec(kind: kind),
+    correctAnswer: answer,
+    // True/False question — distractor pool is fixed to the opposite
+    // plus two confidence-builders so the MC has 4 distinct choices.
+    distractors: stringDistractorsFromPool(
+      answer,
+      const ['True', 'False', 'Only sometimes', 'Cannot tell'],
+      rand,
+    ),
+    answerFormat: AnswerFormat.string,
+    explanation: [
+      if (isTrue)
+        'Every $child meets the defining attributes of a $parent.'
+      else
+        'Not every $child fits — they fail a defining attribute of a $parent.',
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// pythagorean_apply_3d (G8)
+// ─────────────────────────────────────────────────────────────────────────
+
+/// 3D Pythagorean triples (l, w, h, body diagonal) where
+/// l² + w² + h² is a perfect square — the body diagonal is an integer.
+/// All four corners ≥ 1. Kept small so the kid can compute by hand.
+const List<(int, int, int, int)> _pyth3dTriples = [
+  (1, 2, 2, 3),
+  (2, 3, 6, 7),
+  (1, 4, 8, 9),
+  (4, 4, 7, 9),
+  (4, 8, 8, 12),
+  (2, 6, 9, 11),
+  (3, 4, 12, 13),
+  (1, 6, 18, 19),
+  (6, 6, 7, 11),
+];
+
+/// "A box has length l, width w, height h. What is the length of the
+/// diagonal from one corner to the opposite corner?" — answer
+/// √(l² + w² + h²). CCSS 8.G.B.8.
+///
+/// The diagram is a schematic cube (the Shape widget doesn't yet take
+/// box dimensions); the numbers in the prompt do the visual work.
+GeneratedQuestion pythagoreanApply3d(Random rand) {
+  final t = _pyth3dTriples[rand.nextInt(_pyth3dTriples.length)];
+  final (l, w, h, d) = t;
+  return GeneratedQuestion(
+    conceptId: 'pythagorean_apply_3d',
+    prompt:
+        'A rectangular box has length $l, width $w, and height $h. What is '
+        'the length of the diagonal from one corner to the opposite corner?',
+    diagram: const ShapeSpec(kind: ShapeKind.cube),
+    correctAnswer: '$d',
+    // Misconception: kids often forget the third dimension and compute
+    // √(l² + w²) instead. Surface a magnitude-near distractor.
+    distractors: integerDistractorsWith(
+      d,
+      rand,
+      misconception: d - 1,
+    ),
+    explanation: [
+      'Use the 3D Pythagorean theorem: diagonal = √($l² + $w² + $h²) = $d.',
     ],
   );
 }

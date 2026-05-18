@@ -465,5 +465,10 @@ class GeneratorRegistry {
     'identify_shape_3d': identifyShape3d,
     'shape_attributes_basic': shapeAttributesBasic,
     'identify_polygons': identifyPolygons,
+    // G3-G8 classification + properties on the Shape widget
+    'classify_quadrilaterals': classifyQuadrilaterals,
+    'line_of_symmetry': lineOfSymmetry,
+    'classify_2d_hierarchy': classify2dHierarchy,
+    'pythagorean_apply_3d': pythagoreanApply3d,
   };
 }
