@@ -11,6 +11,7 @@ import 'package:math_city/presentation/diagrams/histogram.dart';
 import 'package:math_city/presentation/diagrams/number_line.dart';
 import 'package:math_city/presentation/diagrams/percent_grid.dart';
 import 'package:math_city/presentation/diagrams/tree_diagram.dart';
+import 'package:math_city/presentation/diagrams/two_way_table.dart';
 
 /// Dispatches a [DiagramSpec] (pure-Dart value type) to the corresponding
 /// Flutter widget. Used by the question screen so generators in
@@ -33,5 +34,6 @@ class DiagramRenderer extends StatelessWidget {
     final HistogramSpec s => Histogram(spec: s),
     final BoxPlotSpec s => BoxPlot(spec: s),
     final TreeDiagramSpec s => TreeDiagram(spec: s),
+    final TwoWayTableSpec s => TwoWayTable(spec: s),
   };
 }

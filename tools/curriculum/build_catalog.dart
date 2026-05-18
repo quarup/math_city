@@ -269,6 +269,8 @@ const _shortLabelOverrides = <String, String>{
   'similarity_via_transformations': 'similar?',
   'tree_diagram': 'tree',
   'compound_event_probability': 'P(A∩B)',
+  'two_way_table_construct': '2-way?',
+  'two_way_relative_frequency': '2-way %',
 };
 
 /// Phase-5/6 transitional simplifications of the curriculum.md DAG.
@@ -430,6 +432,12 @@ const _prereqOverrides = <String, List<String>>{
   // box_plot prereq is [median] — implemented, no override needed.
   // compare_two_distributions prereq is [describe_distribution] —
   // implemented, no override needed.
+  // drop classify_count_categories (no generator — needs kindergarten
+  // sort-and-count widget). Substitute add_within_100 as basic background;
+  // reading a two-way table is essentially cell lookup + add/subtract.
+  'two_way_table_construct': ['add_within_100'],
+  // two_way_relative_frequency prereqs are [two_way_table_construct,
+  // percent_intro] — both implemented, no override needed.
 };
 
 // ─────────────────────────────────────────────────────────────────────────

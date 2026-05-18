@@ -4008,10 +4008,10 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'two_way_table_construct',
     name: 'Two-way table',
-    shortLabel: 'Two-way table',
+    shortLabel: '2-way?',
     categoryId: 'stats',
     primaryGrade: 8,
-    prereqIds: ['classify_count_categories'],
+    prereqIds: ['add_within_100'],
     source: ConceptSource.algorithmicWithDiagram,
     diagramRequirement: DiagramRequired('two_way_table'),
     categoryRowOrder: 37,
@@ -4019,7 +4019,7 @@ const List<Concept> allConcepts = [
   Concept(
     id: 'two_way_relative_frequency',
     name: 'Relative frequency in 2-way table',
-    shortLabel: 'Relative frequency in 2-way table',
+    shortLabel: '2-way %',
     categoryId: 'stats',
     primaryGrade: 8,
     prereqIds: ['two_way_table_construct', 'percent_intro'],

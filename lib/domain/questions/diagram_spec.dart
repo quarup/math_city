@@ -146,6 +146,28 @@ class BoxPlotSummary {
   final int max;
 }
 
+/// A two-way frequency table with a header row + header column + body
+/// cells. `counts[r][c]` is the count for row `r` and column `c`. Row
+/// and column totals are computed on the fly when [showTotals] is true.
+///
+/// Used by `two_way_table_construct`, `two_way_relative_frequency`.
+class TwoWayTableSpec extends DiagramSpec {
+  const TwoWayTableSpec({
+    required this.title,
+    required this.rowLabels,
+    required this.colLabels,
+    required this.counts,
+    this.showTotals = true,
+  }) : assert(rowLabels.length >= 2, 'need ≥ 2 rows'),
+       assert(colLabels.length >= 2, 'need ≥ 2 cols');
+
+  final String title;
+  final List<String> rowLabels;
+  final List<String> colLabels;
+  final List<List<int>> counts;
+  final bool showTotals;
+}
+
 /// One stage of a compound experiment in a [TreeDiagramSpec]: a stage
 /// name (e.g. "Coin" or "Spinner") plus the possible outcome labels at
 /// that stage (e.g. `["H", "T"]`).
