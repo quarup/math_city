@@ -79,6 +79,7 @@ WIDGET_TO_FILE = {
     "ColumnArithmetic": "column_arithmetic",
     "PercentGrid": "percent_grid",
     "LineFigure": "line_figure",
+    "LengthBars": "length_bars",
 }
 
 # Total datasets tracked in §7.2.

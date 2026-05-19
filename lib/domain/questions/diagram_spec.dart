@@ -977,6 +977,34 @@ class ShapeSpec extends DiagramSpec {
   final bool showRightAngleMark;
 }
 
+/// One row in a [LengthBarsSpec] — a labelled object with a measured length.
+class LengthBar {
+  const LengthBar({required this.label, required this.length})
+    : assert(length >= 1, 'length must be >= 1');
+
+  /// The object name (e.g. "the pencil", "rope A").
+  final String label;
+
+  /// The measured length in the chosen unit (positive integer).
+  final int length;
+}
+
+/// A stack of horizontal bars whose widths are proportional to the
+/// measured length of each labelled object. Used for the K-G1
+/// length-/weight-comparison generators that previously surfaced the
+/// values only in the prompt text.
+class LengthBarsSpec extends DiagramSpec {
+  const LengthBarsSpec({required this.bars, required this.unit})
+    : assert(bars.length >= 2, 'need at least 2 bars'),
+      assert(bars.length <= 5, 'too many bars to render legibly');
+
+  final List<LengthBar> bars;
+
+  /// The unit noun shown after each bar's value (e.g. `cm`, `feet`,
+  /// `inches`, `pounds`, `grams`).
+  final String unit;
+}
+
 class CoordinatePlaneSpec extends DiagramSpec {
   const CoordinatePlaneSpec({
     required this.minX,

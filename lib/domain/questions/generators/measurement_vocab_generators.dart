@@ -1,11 +1,13 @@
 import 'dart:math';
 
+import 'package:math_city/domain/questions/diagram_spec.dart';
 import 'package:math_city/domain/questions/distractors.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
 
-/// K-G1 measurement-vocabulary generators (text-only; no diagram in
-/// v1 even though curriculum.md flags `required:shape` for these —
-/// the visual is implicit in the story context).
+/// K-G1 measurement-vocabulary generators. `describe_attribute` is
+/// text-only; the two comparison generators below render a proportional
+/// [LengthBarsSpec] diagram so the kid sees the relative lengths
+/// instead of reading them numerically out of the prompt.
 
 // ─────────────────────────────────────────────────────────────────────────
 // describe_attribute (K)
@@ -47,15 +49,16 @@ GeneratedQuestion describeAttribute(Random rand) {
 // compare_two_objects (K)
 // ─────────────────────────────────────────────────────────────────────────
 
-/// "A pencil is X cm long. A crayon is Y cm long. Which is longer?"
-/// Two-object direct comparison with given measurements. CCSS K.MD.A.2.
-const List<(String, String, String)> _pairScenarios = [
-  // (subject1, subject2, units suffix used in prompt)
-  ('the pencil', 'the crayon', 'cm long'),
-  ('the rope', 'the string', 'feet long'),
-  ('the cat', 'the dog', 'pounds'),
-  ('the apple', 'the orange', 'grams'),
-  ('the red ribbon', 'the blue ribbon', 'inches long'),
+/// "Which is longer/heavier/bigger?" — the two objects' lengths are
+/// shown as proportional bars on a [LengthBarsSpec] diagram so the
+/// kid compares them visually. CCSS K.MD.A.2.
+const List<(String, String, String, String)> _pairScenarios = [
+  // (subject1, subject2, unit noun, comparison word)
+  ('the pencil', 'the crayon', 'cm', 'longer'),
+  ('the rope', 'the string', 'feet', 'longer'),
+  ('the cat', 'the dog', 'pounds', 'heavier'),
+  ('the apple', 'the orange', 'grams', 'heavier'),
+  ('the red ribbon', 'the blue ribbon', 'inches', 'longer'),
 ];
 
 GeneratedQuestion compareTwoObjects(Random rand) {
@@ -68,22 +71,17 @@ GeneratedQuestion compareTwoObjects(Random rand) {
   }
   final s1Larger = a > b;
   final answer = s1Larger ? p.$1 : p.$2;
-  // Phrase the question consistently with the units (longer for
-  // length, heavier for weight, etc.).
-  String compWord;
-  if (p.$3.contains('long') || p.$3.contains('inches')) {
-    compWord = 'longer';
-  } else if (p.$3.contains('pound') || p.$3.contains('gram')) {
-    compWord = 'heavier';
-  } else {
-    compWord = 'bigger';
-  }
+  final compWord = p.$4;
   return GeneratedQuestion(
     conceptId: 'compare_two_objects',
-    prompt:
-        '${p.$1[0].toUpperCase()}${p.$1.substring(1)} is $a ${p.$3}. '
-        '${p.$2[0].toUpperCase()}${p.$2.substring(1)} is $b ${p.$3}. '
-        'Which is $compWord?',
+    prompt: 'Which is $compWord?',
+    diagram: LengthBarsSpec(
+      unit: p.$3,
+      bars: [
+        LengthBar(label: p.$1, length: a),
+        LengthBar(label: p.$2, length: b),
+      ],
+    ),
     correctAnswer: answer,
     distractors: stringDistractorsFromPool(
       answer,
@@ -101,13 +99,14 @@ GeneratedQuestion compareTwoObjects(Random rand) {
 // order_three_objects_length (G1)
 // ─────────────────────────────────────────────────────────────────────────
 
-/// "A is X long, B is Y long, C is Z long. Which is the shortest?"
-/// CCSS 1.MD.A.1.
+/// "Which is the shortest/longest?" — the three objects' lengths are
+/// shown as proportional bars on a [LengthBarsSpec] diagram. CCSS 1.MD.A.1.
 const List<(String, String, String, String)> _tripleScenarios = [
-  ('rope A', 'rope B', 'rope C', 'feet long'),
-  ('the pencil', 'the marker', 'the crayon', 'cm long'),
-  ('Anna', 'Beto', 'Cami', 'inches tall'),
-  ('the snake', 'the worm', 'the lizard', 'cm long'),
+  // (subject1, subject2, subject3, unit noun)
+  ('rope A', 'rope B', 'rope C', 'feet'),
+  ('the pencil', 'the marker', 'the crayon', 'cm'),
+  ('Anna', 'Beto', 'Cami', 'inches'),
+  ('the snake', 'the worm', 'the lizard', 'cm'),
 ];
 
 GeneratedQuestion orderThreeObjectsLength(Random rand) {
@@ -129,11 +128,13 @@ GeneratedQuestion orderThreeObjectsLength(Random rand) {
   final answer = wantShortest ? ordered.first.$1 : ordered.last.$1;
   return GeneratedQuestion(
     conceptId: 'order_three_objects_length',
-    prompt:
-        '${s.$1[0].toUpperCase()}${s.$1.substring(1)} is ${entries[0].$2} '
-        '${s.$4}, ${s.$2} is ${entries[1].$2} ${s.$4}, and ${s.$3} is '
-        '${entries[2].$2} ${s.$4}. Which is the '
-        '${wantShortest ? 'shortest' : 'longest'}?',
+    prompt: 'Which is the ${wantShortest ? 'shortest' : 'longest'}?',
+    diagram: LengthBarsSpec(
+      unit: s.$4,
+      bars: [
+        for (final e in entries) LengthBar(label: e.$1, length: e.$2),
+      ],
+    ),
     correctAnswer: answer,
     distractors: stringDistractorsFromPool(
       answer,

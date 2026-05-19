@@ -13,6 +13,7 @@ import 'package:math_city/presentation/diagrams/dot_plot.dart';
 import 'package:math_city/presentation/diagrams/double_number_line.dart';
 import 'package:math_city/presentation/diagrams/fraction_bar.dart';
 import 'package:math_city/presentation/diagrams/histogram.dart';
+import 'package:math_city/presentation/diagrams/length_bars.dart';
 import 'package:math_city/presentation/diagrams/line_figure.dart';
 import 'package:math_city/presentation/diagrams/money.dart';
 import 'package:math_city/presentation/diagrams/net_3d.dart';
@@ -61,6 +62,7 @@ class DiagramRenderer extends StatelessWidget {
     final TapeDiagramSpec s => TapeDiagram(spec: s),
     final DoubleNumberLineSpec s => DoubleNumberLine(spec: s),
     final LineFigureSpec s => LineFigure(spec: s),
+    final LengthBarsSpec s => LengthBars(spec: s),
     final Box3DSpec s => Box3D(spec: s),
     final Net3DSpec s => Net3D(spec: s),
     final CircleSpec s => Circle(spec: s),
