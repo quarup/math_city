@@ -1,14 +1,16 @@
 import 'dart:math';
 
+import 'package:math_city/domain/questions/diagram_spec.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
 
 /// Function-family generators — slope, line construction, function
 /// recognition (Grade 8).
 ///
 /// All math is integer-only in v1. Slopes are non-zero integers in
-/// [-3, 4]; the math works text-only ("through (3, 5) and (7, 13)") so
-/// no `CoordinatePlane` widget is required. The visual widget can be
-/// wired in later for a richer UX.
+/// [-3, 4]. `slope_from_two_points` and `linear_function_construct`
+/// render a `CoordinatePlane` diagram showing the two labelled points
+/// + the line through them — sampling is rejected when any coord
+/// would fall outside the visible plot ([-8, 8] square).
 
 const _minus = '−'; // U+2212
 
@@ -42,18 +44,27 @@ List<String> _uniqueDistractors(
 
 /// "What is the slope of the line through (3, 5) and (7, 13)?" → 2.
 /// Integer slopes only in v1 — m ∈ {-3, -2, -1, 1, 2, 3, 4}. Coords
-/// chosen so both x's and both y's are small signed integers.
+/// re-rolled until both points fit inside [-8, 8] so the diagram
+/// renders cleanly on a fixed plot.
 GeneratedQuestion slopeFromTwoPoints(Random rand) {
-  // Pick m from a non-zero integer set; bias toward small absolute values.
   const slopes = <int>[-3, -2, -1, 1, 2, 3, 4];
-  final m = slopes[rand.nextInt(slopes.length)];
-  // run = x2 - x1, positive so the prompt reads "(x1, y1) and (x2, y2)"
-  // with x2 > x1.
-  final run = rand.nextInt(4) + 1; // 1..4
-  final x1 = rand.nextInt(9) - 4; // -4..4
-  final x2 = x1 + run;
-  final y1 = rand.nextInt(15) - 5; // -5..9
-  final y2 = y1 + m * run;
+  late int m;
+  late int run;
+  late int x1;
+  late int x2;
+  late int y1;
+  late int y2;
+  for (var attempt = 0; attempt < 60; attempt++) {
+    m = slopes[rand.nextInt(slopes.length)];
+    run = rand.nextInt(4) + 1; // 1..4
+    x1 = rand.nextInt(9) - 4; // -4..4
+    x2 = x1 + run;
+    y1 = rand.nextInt(15) - 5; // -5..9
+    y2 = y1 + m * run;
+    if (x1 >= -8 && x2 <= 8 && y1 >= -8 && y1 <= 8 && y2 >= -8 && y2 <= 8) {
+      break;
+    }
+  }
   final correct = _signed(m);
 
   final candidates = <String>[
@@ -73,6 +84,19 @@ GeneratedQuestion slopeFromTwoPoints(Random rand) {
     prompt:
         'What is the slope of the line through '
         '${_coord(x1, y1)} and ${_coord(x2, y2)}?',
+    diagram: CoordinatePlaneSpec(
+      minX: -8,
+      maxX: 8,
+      minY: -8,
+      maxY: 8,
+      points: [
+        CoordinatePlanePoint(x: x1, y: y1, label: 'A'),
+        CoordinatePlanePoint(x: x2, y: y2, label: 'B'),
+      ],
+      lines: [
+        CoordinatePlaneLine(x1: x1, y1: y1, x2: x2, y2: y2),
+      ],
+    ),
     correctAnswer: correct,
     distractors: _uniqueDistractors(correct, candidates),
     explanation: [
@@ -91,17 +115,28 @@ GeneratedQuestion slopeFromTwoPoints(Random rand) {
 
 /// "Find the equation of the line through (1, 5) and (3, 11)" →
 /// "y = 3x + 2". Output is a slope-intercept string. m ∈ {-3..-1, 1..4}
-/// integer; b ∈ [-9, 12] integer.
+/// integer; b sampled so both points fit inside [-8, 8] for the diagram.
 GeneratedQuestion linearFunctionConstruct(Random rand) {
   const slopes = <int>[-3, -2, -1, 1, 2, 3, 4];
-  final m = slopes[rand.nextInt(slopes.length)];
-  final b = rand.nextInt(20) - 7; // -7..12
-  // Pick two distinct x's and derive y = m·x + b.
-  final x1 = rand.nextInt(7) - 3; // -3..3
-  final run = rand.nextInt(4) + 1; // 1..4
-  final x2 = x1 + run;
-  final y1 = m * x1 + b;
-  final y2 = m * x2 + b;
+  late int m;
+  late int b;
+  late int x1;
+  late int x2;
+  late int run;
+  late int y1;
+  late int y2;
+  for (var attempt = 0; attempt < 60; attempt++) {
+    m = slopes[rand.nextInt(slopes.length)];
+    b = rand.nextInt(20) - 7; // -7..12
+    x1 = rand.nextInt(7) - 3; // -3..3
+    run = rand.nextInt(4) + 1; // 1..4
+    x2 = x1 + run;
+    y1 = m * x1 + b;
+    y2 = m * x2 + b;
+    if (x1 >= -8 && x2 <= 8 && y1 >= -8 && y1 <= 8 && y2 >= -8 && y2 <= 8) {
+      break;
+    }
+  }
 
   String eqn(int mm, int bb) {
     final mPart = mm == 1
@@ -138,6 +173,19 @@ GeneratedQuestion linearFunctionConstruct(Random rand) {
     prompt:
         'Find the equation of the line through '
         '${_coord(x1, y1)} and ${_coord(x2, y2)}.',
+    diagram: CoordinatePlaneSpec(
+      minX: -8,
+      maxX: 8,
+      minY: -8,
+      maxY: 8,
+      points: [
+        CoordinatePlanePoint(x: x1, y: y1, label: 'A'),
+        CoordinatePlanePoint(x: x2, y: y2, label: 'B'),
+      ],
+      lines: [
+        CoordinatePlaneLine(x1: x1, y1: y1, x2: x2, y2: y2),
+      ],
+    ),
     correctAnswer: correct,
     distractors: _uniqueDistractors(correct, candidates, fallback),
     explanation: [
