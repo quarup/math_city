@@ -21,12 +21,24 @@ void main() {
   setUp(() => registry = GeneratorRegistry.defaultRegistry());
 
   group('positional_words', () {
-    test('answer is one of the four positions; all four appear', () {
+    test('answer matches scene.relation; all 4 positions appear', () {
       const valid = {'above', 'below', 'beside', 'inside'};
+      const relationWord = {
+        PositionRelation.above: 'above',
+        PositionRelation.below: 'below',
+        PositionRelation.beside: 'beside',
+        PositionRelation.inside: 'inside',
+      };
       final seen = <String>{};
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'positional_words', i);
         expect(valid, contains(q.correctAnswer));
+        final spec = q.diagram;
+        expect(spec, isA<PositionalSceneSpec>());
+        final scene = spec! as PositionalSceneSpec;
+        expect(q.correctAnswer, relationWord[scene.relation]);
+        expect(scene.subjectLabel.isNotEmpty, isTrue);
+        expect(scene.referenceLabel.isNotEmpty, isTrue);
         _expectThreeDistinctDistractors(q);
         seen.add(q.correctAnswer);
       }

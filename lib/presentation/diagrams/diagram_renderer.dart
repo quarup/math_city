@@ -20,6 +20,7 @@ import 'package:math_city/presentation/diagrams/net_3d.dart';
 import 'package:math_city/presentation/diagrams/number_line.dart';
 import 'package:math_city/presentation/diagrams/percent_grid.dart';
 import 'package:math_city/presentation/diagrams/picture_graph.dart';
+import 'package:math_city/presentation/diagrams/positional_scene.dart';
 import 'package:math_city/presentation/diagrams/protractor.dart';
 import 'package:math_city/presentation/diagrams/ruler.dart';
 import 'package:math_city/presentation/diagrams/shape.dart';
@@ -63,6 +64,7 @@ class DiagramRenderer extends StatelessWidget {
     final DoubleNumberLineSpec s => DoubleNumberLine(spec: s),
     final LineFigureSpec s => LineFigure(spec: s),
     final LengthBarsSpec s => LengthBars(spec: s),
+    final PositionalSceneSpec s => PositionalScene(spec: s),
     final Box3DSpec s => Box3D(spec: s),
     final Net3DSpec s => Net3D(spec: s),
     final CircleSpec s => Circle(spec: s),

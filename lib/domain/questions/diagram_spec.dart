@@ -1005,6 +1005,29 @@ class LengthBarsSpec extends DiagramSpec {
   final String unit;
 }
 
+/// Spatial relation between the subject and the reference object in a
+/// [PositionalSceneSpec].
+enum PositionRelation { above, below, beside, inside }
+
+/// Two labelled boxes placed in a [relation] (above / below / beside /
+/// inside). Used by `positional_words` so the K kid sees the scene
+/// rather than parsing prepositional phrases out of the prompt.
+class PositionalSceneSpec extends DiagramSpec {
+  const PositionalSceneSpec({
+    required this.subjectLabel,
+    required this.referenceLabel,
+    required this.relation,
+  });
+
+  /// The object whose position is being asked about (e.g. "book").
+  final String subjectLabel;
+
+  /// The object the subject is positioned relative to (e.g. "table").
+  final String referenceLabel;
+
+  final PositionRelation relation;
+}
+
 class CoordinatePlaneSpec extends DiagramSpec {
   const CoordinatePlaneSpec({
     required this.minX,

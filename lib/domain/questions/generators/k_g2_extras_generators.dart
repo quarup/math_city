@@ -13,32 +13,93 @@ import 'package:math_city/domain/questions/generated_question.dart';
 // positional_words (K)
 // ─────────────────────────────────────────────────────────────────────────
 
-/// "The book is on top of the table. Where is the book compared to
-/// the table?" — MC over above / below / beside / inside. CCSS K.G.A.1.
-const List<(String, String)> _positionalScenarios = [
-  ('The book is on top of the table. Where is the book?', 'above'),
-  ('The cat is sitting under the chair. Where is the cat?', 'below'),
-  ('The toy is in the box. Where is the toy?', 'inside'),
-  ('The lamp stands next to the bed. Where is the lamp?', 'beside'),
-  ('The bird flies over the tree. Where is the bird?', 'above'),
-  ('The dog is hiding under the sofa. Where is the dog?', 'below'),
-  ('Anna stands next to her brother. Where is Anna?', 'beside'),
-  ('The pencil is inside the case. Where is the pencil?', 'inside'),
+/// Two labelled objects in a spatial relation, rendered as a
+/// [PositionalSceneSpec] so the K kid sees the scene. MC over
+/// above / below / beside / inside. CCSS K.G.A.1.
+typedef _Scenario = ({
+  String prompt,
+  String subject,
+  String reference,
+  PositionRelation relation,
+});
+
+const List<_Scenario> _positionalScenarios = [
+  (
+    prompt: 'The book is on top of the table. Where is the book?',
+    subject: 'book',
+    reference: 'table',
+    relation: PositionRelation.above,
+  ),
+  (
+    prompt: 'The cat is sitting under the chair. Where is the cat?',
+    subject: 'cat',
+    reference: 'chair',
+    relation: PositionRelation.below,
+  ),
+  (
+    prompt: 'The toy is in the box. Where is the toy?',
+    subject: 'toy',
+    reference: 'box',
+    relation: PositionRelation.inside,
+  ),
+  (
+    prompt: 'The lamp stands next to the bed. Where is the lamp?',
+    subject: 'lamp',
+    reference: 'bed',
+    relation: PositionRelation.beside,
+  ),
+  (
+    prompt: 'The bird flies over the tree. Where is the bird?',
+    subject: 'bird',
+    reference: 'tree',
+    relation: PositionRelation.above,
+  ),
+  (
+    prompt: 'The dog is hiding under the sofa. Where is the dog?',
+    subject: 'dog',
+    reference: 'sofa',
+    relation: PositionRelation.below,
+  ),
+  (
+    prompt: 'Anna stands next to her brother. Where is Anna?',
+    subject: 'Anna',
+    reference: 'brother',
+    relation: PositionRelation.beside,
+  ),
+  (
+    prompt: 'The pencil is inside the case. Where is the pencil?',
+    subject: 'pencil',
+    reference: 'case',
+    relation: PositionRelation.inside,
+  ),
 ];
+
+String _relationWord(PositionRelation r) => switch (r) {
+  PositionRelation.above => 'above',
+  PositionRelation.below => 'below',
+  PositionRelation.beside => 'beside',
+  PositionRelation.inside => 'inside',
+};
 
 GeneratedQuestion positionalWords(Random rand) {
   final s = _positionalScenarios[rand.nextInt(_positionalScenarios.length)];
+  final answer = _relationWord(s.relation);
   return GeneratedQuestion(
     conceptId: 'positional_words',
-    prompt: s.$1,
-    correctAnswer: s.$2,
+    prompt: s.prompt,
+    diagram: PositionalSceneSpec(
+      subjectLabel: s.subject,
+      referenceLabel: s.reference,
+      relation: s.relation,
+    ),
+    correctAnswer: answer,
     distractors: stringDistractorsFromPool(
-      s.$2,
+      answer,
       const ['above', 'below', 'beside', 'inside'],
       rand,
     ),
     answerFormat: AnswerFormat.string,
-    explanation: ['The position word that fits this scene is ${s.$2}.'],
+    explanation: ['The position word that fits this scene is $answer.'],
   );
 }
 

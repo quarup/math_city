@@ -80,6 +80,7 @@ WIDGET_TO_FILE = {
     "PercentGrid": "percent_grid",
     "LineFigure": "line_figure",
     "LengthBars": "length_bars",
+    "PositionalScene": "positional_scene",
 }
 
 # Total datasets tracked in §7.2.
