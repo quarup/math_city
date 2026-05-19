@@ -142,6 +142,48 @@ void main() {
         expect(out, endsWith('How many apples does Diego $closing'));
       }
     });
+
+    test('multiplication context renders cleanly for each v1 context', () {
+      for (final ctx in multContextsV1) {
+        // Always pick an edible so the bakes context is happy.
+        final out = composeMultWordProblem(
+          name: 'Maria',
+          items: 'cookies',
+          a: 4,
+          b: 6,
+          context: ctx,
+        );
+        expect(out, isNot(contains('{')));
+        expect(out, contains('Maria'));
+        expect(out, contains('cookies'));
+        expect(out, contains('4'));
+        expect(out, contains('6'));
+        expect(out, endsWith('How many cookies in all?'));
+      }
+    });
+
+    test('composeMultActionSentence omits the closing question', () {
+      final out = composeMultActionSentence(
+        name: 'Yusuf',
+        items: 'bricks',
+        a: 5,
+        b: 7,
+        context: multContextsV1.first, // builds
+      );
+      expect(out, 'Yusuf builds 5 bricks each day, for 7 days.');
+      expect(out, isNot(contains('How many')));
+    });
+  });
+
+  group('multCompareTemplatesV1', () {
+    test('every template uses all five placeholders', () {
+      const placeholders = ['{Name1}', '{Name2}', '{k}', '{n}', '{items}'];
+      for (final tpl in multCompareTemplatesV1) {
+        for (final p in placeholders) {
+          expect(tpl, contains(p), reason: '$tpl is missing $p');
+        }
+      }
+    });
   });
 
   group('add_word_problems_within_100 (add+sub)', () {
@@ -343,23 +385,67 @@ void main() {
         registry.generate('mult_compare_word', random: Random(seed));
 
     test('correct = k × n; k ∈ [2,9], n ∈ [2,11]; distinct names', () {
-      final promptRe = RegExp(
-        r'^(\S+) has (\d+) times as many (.+?) as (\S+)\. '
-        r'\4 has (\d+) \3\. How many \3 does \1 have\?$',
-      );
+      // Three possible templates mirroring multCompareTemplatesV1. The
+      // prompt must match at least one. We check each in turn so the
+      // randomly-picked template is recovered correctly.
+      final patterns = <RegExp>[
+        // Template 1: original "{Name1} has {k} times as many ..."
+        RegExp(
+          r'^(\S+) has (\d+) times as many (.+?) as (\S+)\. '
+          r'\4 has (\d+) \3\. How many \3 does \1 have\?$',
+        ),
+        // Template 2: "For every {items} {Name2} owns, {Name1} owns {k}. ..."
+        RegExp(
+          r'^For every (.+?) (\S+) owns, (\S+) owns (\d+)\. '
+          r'\2 has (\d+) \1\. How many \1 does \3 have\?$',
+        ),
+        // Template 3: "{Name1} collected {k} times the {items} ..."
+        RegExp(
+          r'^(\S+) collected (\d+) times the (.+?) that (\S+) did\. '
+          r'\4 collected (\d+) \3\. How many \3 did \1 collect\?$',
+        ),
+      ];
 
+      final templatesSeen = <int>{};
       for (var i = 0; i < _iterations; i++) {
         final q = gen(i);
         expect(q.conceptId, 'mult_compare_word');
         expect(q.diagram, isNull);
 
-        final m = promptRe.firstMatch(q.prompt);
-        expect(m, isNotNull, reason: 'prompt did not match: ${q.prompt}');
-        final name1 = m!.group(1)!;
-        final k = int.parse(m.group(2)!);
-        final items = m.group(3)!;
-        final name2 = m.group(4)!;
-        final n = int.parse(m.group(5)!);
+        int? matchedIdx;
+        String? name1;
+        String? name2;
+        String? items;
+        var k = 0;
+        var n = 0;
+        for (var idx = 0; idx < patterns.length; idx++) {
+          final m = patterns[idx].firstMatch(q.prompt);
+          if (m == null) continue;
+          matchedIdx = idx;
+          if (idx == 1) {
+            // Template 2 has groups in order: items, name2, name1, k, n.
+            items = m.group(1);
+            name2 = m.group(2);
+            name1 = m.group(3);
+            k = int.parse(m.group(4)!);
+            n = int.parse(m.group(5)!);
+          } else {
+            // Templates 1 and 3 share group order: name1, k, items,
+            // name2, n.
+            name1 = m.group(1);
+            k = int.parse(m.group(2)!);
+            items = m.group(3);
+            name2 = m.group(4);
+            n = int.parse(m.group(5)!);
+          }
+          break;
+        }
+        expect(
+          matchedIdx,
+          isNotNull,
+          reason: 'no template matched: ${q.prompt}',
+        );
+        templatesSeen.add(matchedIdx!);
 
         expect(wordProblemNames, contains(name1));
         expect(wordProblemNames, contains(name2));
@@ -374,6 +460,8 @@ void main() {
         expect(q.distractors.toSet(), hasLength(3));
         expect(q.distractors, isNot(contains(q.correctAnswer)));
       }
+      // All three templates should appear across 300 iterations.
+      expect(templatesSeen, {0, 1, 2});
     });
   });
 }

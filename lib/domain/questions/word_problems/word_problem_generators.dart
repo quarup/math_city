@@ -169,7 +169,9 @@ GeneratedQuestion addSub2stepWordProblems(Random rand) {
 ///
 /// Constraints: k ∈ [2, 9], n ∈ [2, 11], so the product k·n ≤ 99 (within
 /// 100). Items use the full word-problem pool (not restricted to edibles
-/// — the verbs don't require edibility).
+/// — the verbs don't require edibility). Prompt template is picked at
+/// random from [multCompareTemplatesV1] so kids see varied phrasing of
+/// the same multiplicative-comparison concept.
 ///
 /// Misconception distractor: added instead of multiplied (k + n).
 GeneratedQuestion multCompareWord(Random rand) {
@@ -184,9 +186,13 @@ GeneratedQuestion multCompareWord(Random rand) {
   final k = rand.nextInt(8) + 2; // 2..9
   final n = rand.nextInt(10) + 2; // 2..11
   final correct = k * n;
-  final prompt =
-      '$name1 has $k times as many $items as $name2. '
-      '$name2 has $n $items. How many $items does $name1 have?';
+  final template = pickRandom(multCompareTemplatesV1, rand);
+  final prompt = template
+      .replaceAll('{Name1}', name1)
+      .replaceAll('{Name2}', name2)
+      .replaceAll('{k}', '$k')
+      .replaceAll('{n}', '$n')
+      .replaceAll('{items}', items);
 
   return GeneratedQuestion(
     conceptId: 'mult_compare_word',

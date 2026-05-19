@@ -71,7 +71,7 @@ const List<String> edibleWordProblemItems = [
 // Templates use placeholders {Name}, {b}, {items}.
 // ─────────────────────────────────────────────────────────────────────────
 
-enum WordProblemOp { add, sub }
+enum WordProblemOp { add, sub, mult }
 
 class WordProblemContext {
   const WordProblemContext({
@@ -84,12 +84,16 @@ class WordProblemContext {
   final String id;
   final WordProblemOp op;
 
-  /// Action sentence inserted between the setup and the question.
-  /// Placeholders: {Name}, {b}, {items}.
+  /// Action sentence. For [WordProblemOp.add] and [WordProblemOp.sub],
+  /// the sentence is inserted between the setup ("{name} has {a}
+  /// {items}.") and the closing question — placeholders supported are
+  /// {Name}, {b}, {items}. For [WordProblemOp.mult] the sentence is
+  /// the entire setup — placeholders are {Name}, {a}, {b}, {items}.
   final String action;
 
   /// When true, the generator must pick an item from
-  /// [edibleWordProblemItems] (used by the `eats` context).
+  /// [edibleWordProblemItems] (used by the `eats` and `bakes`
+  /// contexts).
   final bool requiresEdibleItems;
 }
 
@@ -129,6 +133,47 @@ const List<WordProblemContext> addSubContextsV1 = [
   ),
 ];
 
+/// Multiplication contexts: full setup sentence that produces `a × b`
+/// items. Each context names a natural "per unit / for N units" frame
+/// (per day, per batch, per week). Used standalone for single-step
+/// mult word problems, or chained with an add/sub context to make a
+/// two-step problem (e.g. `mult_div_word_2step`).
+const List<WordProblemContext> multContextsV1 = [
+  WordProblemContext(
+    id: 'builds',
+    op: WordProblemOp.mult,
+    action: '{Name} builds {a} {items} each day, for {b} days.',
+  ),
+  WordProblemContext(
+    id: 'bakes',
+    op: WordProblemOp.mult,
+    action: '{Name} bakes {a} {items} in each batch, '
+        'and makes {b} batches.',
+    requiresEdibleItems: true,
+  ),
+  WordProblemContext(
+    id: 'saves',
+    op: WordProblemOp.mult,
+    action: '{Name} saves {a} {items} each week, for {b} weeks.',
+  ),
+];
+
+/// Comparison-framing templates for `mult_compare_word`. Each template
+/// uses placeholders {Name1}, {Name2}, {k}, {n}, {items}. Picked at
+/// random per question so kids see varied phrasing of the same
+/// multiplicative-comparison concept.
+const List<String> multCompareTemplatesV1 = [
+  // ignore: no_adjacent_strings_in_list — single template wrapped for length
+  '{Name1} has {k} times as many {items} as {Name2}. '
+      '{Name2} has {n} {items}. How many {items} does {Name1} have?',
+  // ignore: no_adjacent_strings_in_list — single template wrapped for length
+  'For every {items} {Name2} owns, {Name1} owns {k}. '
+      '{Name2} has {n} {items}. How many {items} does {Name1} have?',
+  // ignore: no_adjacent_strings_in_list — single template wrapped for length
+  '{Name1} collected {k} times the {items} that {Name2} did. '
+      '{Name2} collected {n} {items}. How many {items} did {Name1} collect?',
+];
+
 // ─────────────────────────────────────────────────────────────────────────
 // Composer
 // ─────────────────────────────────────────────────────────────────────────
@@ -156,6 +201,50 @@ String composeWordProblem({
   final closing = context.op == WordProblemOp.add ? 'have now' : 'have left';
   return '$name has $a $items. $action '
       'How many $items does $name $closing?';
+}
+
+/// Composes the setup sentence for a 1-step multiplication word
+/// problem. Returns just the action sentence (no closing question) so
+/// callers can either append `"How many {items} in all?"` for a 1-step
+/// shape or chain with another action for a 2-step shape.
+///
+/// Structure:
+///   "{name} builds {a} {items} each day, for {b} days."
+String composeMultActionSentence({
+  required String name,
+  required String items,
+  required int a,
+  required int b,
+  required WordProblemContext context,
+}) {
+  assert(
+    context.op == WordProblemOp.mult,
+    'composeMultActionSentence requires a WordProblemOp.mult context',
+  );
+  return context.action
+      .replaceAll('{Name}', name)
+      .replaceAll('{a}', '$a')
+      .replaceAll('{b}', '$b')
+      .replaceAll('{items}', items);
+}
+
+/// Composes a 1-step multiplication word problem prompt — setup
+/// sentence + "How many {items} in all?" closing question.
+String composeMultWordProblem({
+  required String name,
+  required String items,
+  required int a,
+  required int b,
+  required WordProblemContext context,
+}) {
+  final action = composeMultActionSentence(
+    name: name,
+    items: items,
+    a: a,
+    b: b,
+    context: context,
+  );
+  return '$action How many $items in all?';
 }
 
 /// Picks a context-compatible item from the pool. Filters to edibles when

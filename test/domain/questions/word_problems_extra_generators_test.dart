@@ -66,11 +66,15 @@ void main() {
     test('answer is positive integer; both flavors appear', () {
       var sawMul = false;
       var sawDiv = false;
+      // Flavor 0 (mult-then-sub) is built on the word_problem_framework's
+      // multContextsV1 (builds / bakes / saves). Flavor 1 (add-then-div)
+      // uses the hardcoded baskets prompt.
+      final mulVerbRe = RegExp(r'\b(builds|bakes|saves)\b');
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'mult_div_word_2step', i);
         final answer = int.parse(q.correctAnswer);
         expect(answer, greaterThan(0));
-        if (q.prompt.contains('boxes')) sawMul = true;
+        if (mulVerbRe.hasMatch(q.prompt)) sawMul = true;
         if (q.prompt.contains('baskets')) sawDiv = true;
         _expectThreeDistinctDistractors(q);
       }
