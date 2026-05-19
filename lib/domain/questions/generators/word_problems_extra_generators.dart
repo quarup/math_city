@@ -166,24 +166,53 @@ GeneratedQuestion liquidVolumeMass(Random rand) {
 // mult_div_word_2step (G4)
 // ─────────────────────────────────────────────────────────────────────────
 
-/// "Maria has 5 boxes with 12 apples each. She gives 8 apples to a
-/// friend. How many apples are left?" → 5 × 12 − 8 = 52. Two-step
-/// mult-then-sub. CCSS 4.OA.A.3.
+/// Two-step word problem. Flavor 0: mult-then-sub (a × b − c) using
+/// a multiplication context from [multContextsV1] to set up the
+/// product, then a subtraction context from [addSubContextsV1] to
+/// take away c. Flavor 1: add-then-divide ((a + b) ÷ c). CCSS 4.OA.A.3.
 GeneratedQuestion multDivWord2step(Random rand) {
   final name = pickRandom(wordProblemNames, rand);
   final flavor = rand.nextInt(2);
   if (flavor == 0) {
-    // a × b − c
+    // a × b − c, framed via a mult context + a sub context.
     final a = rand.nextInt(7) + 3; // 3..9
     final b = rand.nextInt(8) + 4; // 4..11
     final c = rand.nextInt(a * b - 5) + 3; // 3..(a*b-3)
     final correct = a * b - c;
+
+    // Pick a mult context first; the sub context must use the same
+    // item pool (subset of edibles if the mult context demands it).
+    final multCtx = pickRandom(multContextsV1, rand);
+    final subCtxPool = addSubContextsV1
+        .where((c) => c.op == WordProblemOp.sub)
+        .where((c) => !multCtx.requiresEdibleItems || c.requiresEdibleItems
+            // sub `eats` requires edibles; only block when the mult
+            // context is bakes (edibles) and the sub context would
+            // otherwise pick a non-edible verb.
+            || !c.requiresEdibleItems)
+        .toList();
+    final subCtx = pickRandom(subCtxPool, rand);
+    final items = (multCtx.requiresEdibleItems || subCtx.requiresEdibleItems)
+        ? pickRandom(edibleWordProblemItems, rand)
+        : pickRandom(wordProblemItems, rand);
+
+    final setup = composeMultActionSentence(
+      name: name,
+      items: items,
+      a: a,
+      b: b,
+      context: multCtx,
+    );
+    final subAction = subCtx.action
+        .replaceAll('{Name}', name)
+        .replaceAll('{b}', '$c')
+        .replaceAll('{items}', items);
+    final prompt = '$setup Then $subAction '
+        'How many $items does $name have left?';
+
     return GeneratedQuestion(
       conceptId: 'mult_div_word_2step',
-      prompt:
-          '$name has $a boxes with $b apples in each. '
-          '$name gives $c apples to a friend. '
-          'How many apples does $name have left?',
+      prompt: prompt,
       correctAnswer: '$correct',
       distractors: integerDistractorsWith(
         correct,
