@@ -91,27 +91,20 @@ GeneratedQuestion identifyShape3d(Random rand) {
 // shape_attributes_basic (G1)
 // ─────────────────────────────────────────────────────────────────────────
 
-/// "How many sides does this shape have?" Drawn from 2D polygons with
-/// a stable sideCount (triangle = 3 … octagon = 8). Misconception
-/// distractor: ±1 (kids miscount corners). CCSS 1.G.A.1.
+/// "How many sides does this shape have?" Drawn as a regular polygon
+/// with N sides ∈ {3, 4, 5, 6, 8} so the kid sees a clean figure with
+/// no visual ambiguity. Misconception distractor: ±1 (kids miscount
+/// corners). CCSS 1.G.A.1.
 GeneratedQuestion shapeAttributesBasic(Random rand) {
-  const pool = <ShapeKind>[
-    ShapeKind.triangleRight,
-    ShapeKind.triangleEquilateral,
-    ShapeKind.triangleIsosceles,
-    ShapeKind.square,
-    ShapeKind.rectangle,
-    ShapeKind.trapezoid,
-    ShapeKind.pentagon,
-    ShapeKind.hexagon,
-    ShapeKind.octagon,
-  ];
-  final kind = pool[rand.nextInt(pool.length)];
-  final n = kind.sideCount;
+  // Heptagon (7) is excluded — not part of the K-G1 curriculum
+  // vocabulary; including it would just generate "answer 7" without
+  // anchoring to a named shape kids would recognize later.
+  const sidesPool = <int>[3, 4, 5, 6, 8];
+  final n = sidesPool[rand.nextInt(sidesPool.length)];
   return GeneratedQuestion(
     conceptId: 'shape_attributes_basic',
     prompt: 'How many sides does this shape have?',
-    diagram: ShapeSpec(kind: kind),
+    diagram: PolygonSpec(sides: n),
     correctAnswer: '$n',
     // Misconception: kids often miscount by ±1, especially on hexagons
     // and octagons. integerDistractors already biases toward ±1.

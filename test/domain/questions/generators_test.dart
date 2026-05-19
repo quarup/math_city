@@ -98,6 +98,12 @@ void main() {
         expect((a % 10) + (b % 10), greaterThanOrEqualTo(10));
         expect(a + b, int.parse(q.correctAnswer));
         _expectThreeDistinctDistractors(q);
+        // ColumnArithmetic explanation diagram with carry of 1.
+        final diag = q.explanationDiagram! as ColumnArithmeticSpec;
+        expect(diag.operands, [a, b]);
+        expect(diag.op, ColumnArithmeticOp.add);
+        expect(diag.result, a + b);
+        expect(diag.carries, [1]);
       }
     });
   });
@@ -115,6 +121,11 @@ void main() {
         expect(a, greaterThanOrEqualTo(b));
         expect(a - b, int.parse(q.correctAnswer));
         _expectThreeDistinctDistractors(q);
+        // ColumnArithmetic explanation diagram for the subtraction.
+        final diag = q.explanationDiagram! as ColumnArithmeticSpec;
+        expect(diag.operands, [a, b]);
+        expect(diag.op, ColumnArithmeticOp.sub);
+        expect(diag.result, a - b);
       }
     });
   });

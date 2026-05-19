@@ -8,6 +8,7 @@ import 'package:math_city/presentation/diagrams/box_3d.dart';
 import 'package:math_city/presentation/diagrams/box_plot.dart';
 import 'package:math_city/presentation/diagrams/circle.dart';
 import 'package:math_city/presentation/diagrams/clock.dart';
+import 'package:math_city/presentation/diagrams/column_arithmetic.dart';
 import 'package:math_city/presentation/diagrams/coordinate_plane.dart';
 import 'package:math_city/presentation/diagrams/dot_plot.dart';
 import 'package:math_city/presentation/diagrams/double_number_line.dart';
@@ -20,9 +21,11 @@ import 'package:math_city/presentation/diagrams/net_3d.dart';
 import 'package:math_city/presentation/diagrams/number_line.dart';
 import 'package:math_city/presentation/diagrams/percent_grid.dart';
 import 'package:math_city/presentation/diagrams/picture_graph.dart';
+import 'package:math_city/presentation/diagrams/polygon.dart';
 import 'package:math_city/presentation/diagrams/positional_scene.dart';
 import 'package:math_city/presentation/diagrams/protractor.dart';
 import 'package:math_city/presentation/diagrams/ruler.dart';
+import 'package:math_city/presentation/diagrams/scatter_plot.dart';
 import 'package:math_city/presentation/diagrams/shape.dart';
 import 'package:math_city/presentation/diagrams/spinner.dart';
 import 'package:math_city/presentation/diagrams/tape_diagram.dart';
@@ -59,6 +62,9 @@ class DiagramRenderer extends StatelessWidget {
     final RulerSpec s => Ruler(spec: s),
     final ProtractorSpec s => Protractor(spec: s),
     final ShapeSpec s => Shape(spec: s),
+    final PolygonSpec s => Polygon(spec: s),
+    final ScatterPlotSpec s => ScatterPlot(spec: s),
+    final ColumnArithmeticSpec s => ColumnArithmetic(spec: s),
     final BaseTenBlocksSpec s => BaseTenBlocks(spec: s),
     final TapeDiagramSpec s => TapeDiagram(spec: s),
     final DoubleNumberLineSpec s => DoubleNumberLine(spec: s),

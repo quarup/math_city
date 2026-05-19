@@ -69,12 +69,12 @@ void main() {
   });
 
   group('shape_attributes_basic', () {
-    test('answer equals sideCount of the rendered shape', () {
+    test('answer equals sides of the rendered polygon', () {
       final seenSides = <int>{};
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'shape_attributes_basic', i);
-        final spec = _spec(q);
-        final n = spec.kind.sideCount;
+        final spec = q.diagram! as PolygonSpec;
+        final n = spec.sides;
         // Must come from the 2D polygon pool (3, 4, 5, 6, or 8 sides).
         expect([3, 4, 5, 6, 8], contains(n));
         expect(int.parse(q.correctAnswer), n);

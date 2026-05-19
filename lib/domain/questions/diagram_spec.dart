@@ -977,6 +977,127 @@ class ShapeSpec extends DiagramSpec {
   final bool showRightAngleMark;
 }
 
+/// Operation supported by [ColumnArithmeticSpec]. Subtraction renders
+/// borrows below the relevant column instead of carries above it.
+enum ColumnArithmeticOp { add, sub }
+
+/// Stacked multi-digit arithmetic in column form, with optional small
+/// carry / borrow digits above each column. Used on the explanation
+/// screen after a wrong answer to multi-digit ± so the kid sees the
+/// regrouping that produced the right answer.
+///
+/// Operands are written top-down in the order given; the operator
+/// symbol sits to the left of the last operand. A horizontal rule
+/// separates operands from [result].
+class ColumnArithmeticSpec extends DiagramSpec {
+  const ColumnArithmeticSpec({
+    required this.operands,
+    required this.op,
+    required this.result,
+    this.carries = const [],
+  }) : assert(operands.length >= 2, 'need at least 2 operands'),
+       assert(result >= 0, 'negative results are out of v1 scope');
+
+  /// Operands, top-to-bottom. All non-negative.
+  final List<int> operands;
+
+  final ColumnArithmeticOp op;
+
+  /// The computed result (a + b or a − b).
+  final int result;
+
+  /// Small annotation digits to render *above* each column. Index 0 is
+  /// the ones place; index 1 the tens, etc. Zero or omitted entries
+  /// render nothing. For addition these are carry-ins to the column;
+  /// for subtraction the widget renders them as small "borrow" marks.
+  final List<int> carries;
+}
+
+/// One point on a [ScatterPlotSpec]. Parallel to [CoordinatePlanePoint]
+/// but without a per-point label — scatter plots show un-named dots.
+class ScatterPlotPoint {
+  const ScatterPlotPoint({required this.x, required this.y});
+
+  final int x;
+  final int y;
+}
+
+/// Dashed best-fit line anchored at two distinct points. Used by
+/// `informal_line_of_fit` (G8) and `interpret_slope_intercept_data` (G8)
+/// to overlay the trend on the scatter.
+class ScatterPlotLineOfFit {
+  const ScatterPlotLineOfFit({
+    required this.x1,
+    required this.y1,
+    required this.x2,
+    required this.y2,
+  }) : assert(
+         x1 != x2 || y1 != y2,
+         'line-of-fit anchor points must differ',
+       );
+
+  final int x1;
+  final int y1;
+  final int x2;
+  final int y2;
+}
+
+/// A scatter plot — a coordinate-plane variant tuned for displaying
+/// (x, y) data points with optional axis labels and an optional dashed
+/// best-fit line. Visually distinct from [CoordinatePlaneSpec]: lighter
+/// grid, axis labels along the bottom and left, dots without per-point
+/// letter labels.
+///
+/// Used by `scatter_plot_construct`, `scatter_plot_describe`,
+/// `informal_line_of_fit`, `interpret_slope_intercept_data`.
+class ScatterPlotSpec extends DiagramSpec {
+  const ScatterPlotSpec({
+    required this.minX,
+    required this.maxX,
+    required this.minY,
+    required this.maxY,
+    required this.points,
+    this.lineOfFit,
+    this.xAxisLabel,
+    this.yAxisLabel,
+  }) : assert(maxX > minX, 'maxX must be > minX'),
+       assert(maxY > minY, 'maxY must be > minY');
+
+  final int minX;
+  final int maxX;
+  final int minY;
+  final int maxY;
+  final List<ScatterPlotPoint> points;
+
+  /// Optional dashed line of best fit overlaid on the points.
+  final ScatterPlotLineOfFit? lineOfFit;
+
+  /// Optional axis label drawn below the x-axis (e.g. "Hours studied").
+  final String? xAxisLabel;
+
+  /// Optional axis label drawn to the left of the y-axis, rotated 90°
+  /// (e.g. "Score").
+  final String? yAxisLabel;
+}
+
+/// A regular polygon parameterized by side count. Distinct from
+/// [ShapeSpec] (which carries a specific [ShapeKind] with a canonical
+/// orientation): this is the bare "polygon with N sides" shape used by
+/// `shape_attributes_basic` so the kid sees a clean regular figure to
+/// count sides on. The widget always draws the polygon with one vertex
+/// pointing up so triangles look like triangles regardless of N.
+class PolygonSpec extends DiagramSpec {
+  const PolygonSpec({required this.sides, this.label})
+    : assert(sides >= 3 && sides <= 12, 'sides must be in [3, 12]');
+
+  /// Number of sides (= number of vertices). 3 = triangle, 4 = square,
+  /// 5 = pentagon, 6 = hexagon, 8 = octagon, etc.
+  final int sides;
+
+  /// Optional text label drawn below the figure.
+  final String? label;
+}
+
 /// One row in a [LengthBarsSpec] — a labelled object with a measured length.
 class LengthBar {
   const LengthBar({required this.label, required this.length})

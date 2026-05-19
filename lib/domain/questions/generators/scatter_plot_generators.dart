@@ -5,9 +5,9 @@ import 'package:math_city/domain/questions/generated_question.dart';
 
 /// Scatter-plot generators (Grade 8, `stats` category).
 ///
-/// Both generators reuse the existing `CoordinatePlane` widget — points
-/// with `label: null` render as plain dots, which is exactly what a
-/// scatter plot needs. No widget changes.
+/// Both generators use the `ScatterPlot` widget — a coordinate-plot
+/// variant with lighter grid, optional axis labels, and no per-point
+/// letter labels.
 ///
 /// `scatter_plot_construct` (G8): a small table of (x, y) pairs is shown
 /// in the prompt; the diagram is a scatter plot with all but one point
@@ -57,7 +57,7 @@ GeneratedQuestion scatterPlotConstruct(Random rand) {
   final plotted = [
     for (var i = 0; i < 5; i++)
       if (i != missingIdx)
-        CoordinatePlanePoint(x: pairs[i][0], y: pairs[i][1]),
+        ScatterPlotPoint(x: pairs[i][0], y: pairs[i][1]),
   ];
 
   // Distractors:
@@ -109,7 +109,7 @@ GeneratedQuestion scatterPlotConstruct(Random rand) {
     prompt:
         'These ordered pairs should all be plotted: $tableRows. '
         'Which point is missing from the diagram?',
-    diagram: CoordinatePlaneSpec(
+    diagram: ScatterPlotSpec(
       minX: 0,
       maxX: 11,
       minY: 0,
@@ -143,7 +143,7 @@ GeneratedQuestion scatterPlotDescribe(Random rand) {
   ];
   final pattern = patterns[rand.nextInt(patterns.length)];
   const xs = [1, 2, 3, 4, 6, 8, 10, 11];
-  final points = <CoordinatePlanePoint>[];
+  final points = <ScatterPlotPoint>[];
 
   for (final x in xs) {
     int y;
@@ -163,13 +163,13 @@ GeneratedQuestion scatterPlotDescribe(Random rand) {
       default:
         throw StateError('unknown pattern $pattern');
     }
-    points.add(CoordinatePlanePoint(x: x, y: y));
+    points.add(ScatterPlotPoint(x: x, y: y));
   }
 
   return GeneratedQuestion(
     conceptId: 'scatter_plot_describe',
     prompt: 'What pattern does this scatter plot show?',
-    diagram: CoordinatePlaneSpec(
+    diagram: ScatterPlotSpec(
       minX: 0,
       maxX: 12,
       minY: 0,

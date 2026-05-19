@@ -188,11 +188,11 @@ GeneratedQuestion interpretSlopeInterceptData(Random rand) {
   final m = rand.nextInt(4) + 2; // 2..5
   final b = rand.nextInt(10) + 1; // 1..10
   // Generate sample scatter points along y ≈ mx + b with small noise.
-  final points = <CoordinatePlanePoint>[];
+  final points = <ScatterPlotPoint>[];
   for (var x = 1; x <= 8; x++) {
     final noise = rand.nextInt(3) - 1; // -1..1
     points.add(
-      CoordinatePlanePoint(x: x, y: m * x + b + noise),
+      ScatterPlotPoint(x: x, y: m * x + b + noise),
     );
   }
   // Show the best-fit line as a dashed overlay.
@@ -203,21 +203,18 @@ GeneratedQuestion interpretSlopeInterceptData(Random rand) {
     prompt:
         'The line of best fit for these data is y = ${m}x + $b. '
         'Predict y when x = $askX.',
-    diagram: CoordinatePlaneSpec(
+    diagram: ScatterPlotSpec(
       minX: 0,
       maxX: 10,
       minY: 0,
       maxY: m * 10 + b + 2,
       points: points,
-      lines: [
-        CoordinatePlaneLine(
-          x1: 0,
-          y1: b,
-          x2: 8,
-          y2: m * 8 + b,
-          style: CoordinatePlaneLineStyle.dashed,
-        ),
-      ],
+      lineOfFit: ScatterPlotLineOfFit(
+        x1: 0,
+        y1: b,
+        x2: 8,
+        y2: m * 8 + b,
+      ),
     ),
     correctAnswer: '$correct',
     distractors: integerDistractorsWith(

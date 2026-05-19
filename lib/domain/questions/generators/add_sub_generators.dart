@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:math_city/domain/questions/diagram_spec.dart';
 import 'package:math_city/domain/questions/distractors.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
 import 'package:math_city/domain/questions/generator_registry.dart';
@@ -74,6 +75,13 @@ GeneratedQuestion addWithCarry(Random rand) {
       'Tens: $aTens + $bTens + 1 = ${aTens + bTens + 1}',
       'Total: $correct',
     ],
+    explanationDiagram: ColumnArithmeticSpec(
+      operands: [a, b],
+      op: ColumnArithmeticOp.add,
+      result: correct,
+      // carries[0] = carry from the ones place into the tens.
+      carries: const [1],
+    ),
   );
 }
 
@@ -97,6 +105,11 @@ GeneratedQuestion subWithBorrow(Random rand) {
       'Tens: ${aTens - 1} $_minus $bTens = ${aTens - 1 - bTens}',
       'Total: $correct',
     ],
+    explanationDiagram: ColumnArithmeticSpec(
+      operands: [a, b],
+      op: ColumnArithmeticOp.sub,
+      result: correct,
+    ),
   );
 }
 
