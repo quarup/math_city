@@ -1,0 +1,8 @@
+# Build-time-only dependencies for tools/question_generation/.
+# Not required to build or run the Flutter app.
+
+mathematics_dataset==1.0.1
+# DeepMind's package was pinned against pre-1.5 sympy. Newer sympy releases
+# moved `base_solution_linear` and break the import. Pin both for now.
+sympy<1.5
+numpy<2

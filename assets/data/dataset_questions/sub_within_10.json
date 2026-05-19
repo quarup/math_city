@@ -1,0 +1,46 @@
+{
+  "items": [
+    {
+      "id": "deepmind_mathematics_dataset_arith_2c4fe032ca",
+      "concept_id": "sub_within_10",
+      "prompt": "What is 10 − 1?",
+      "correct_answer": "9",
+      "distractors": [
+        "11",
+        "8",
+        "6"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_a27474afc6",
+      "concept_id": "sub_within_10",
+      "prompt": "What is the difference between 0 and 10?",
+      "correct_answer": "10",
+      "distractors": [
+        "5",
+        "14",
+        "13"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_f13bb2a56f",
+      "concept_id": "sub_within_10",
+      "prompt": "Work out 9 − 1.",
+      "correct_answer": "8",
+      "distractors": [
+        "3",
+        "7",
+        "10"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    }
+  ]
+}
