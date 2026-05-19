@@ -45,8 +45,8 @@ void main() {
           }).toList();
           expect(tablePairs, hasLength(5));
 
-          expect(q.diagram, isA<CoordinatePlaneSpec>());
-          final spec = q.diagram! as CoordinatePlaneSpec;
+          expect(q.diagram, isA<ScatterPlotSpec>());
+          final spec = q.diagram! as ScatterPlotSpec;
           expect(spec.points, hasLength(4));
 
           // Plotted points are a strict subset of table pairs.
@@ -86,8 +86,8 @@ void main() {
           expect(q.correctAnswer, isIn(patterns));
           expect(q.distractors.toSet(),
               patterns.difference({q.correctAnswer}));
-          expect(q.diagram, isA<CoordinatePlaneSpec>());
-          final spec = q.diagram! as CoordinatePlaneSpec;
+          expect(q.diagram, isA<ScatterPlotSpec>());
+          final spec = q.diagram! as ScatterPlotSpec;
           expect(spec.points, hasLength(8));
 
           // Loose pattern-recognition checks: count strictly-increasing

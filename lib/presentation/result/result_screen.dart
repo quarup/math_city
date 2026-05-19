@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_city/domain/concepts/dag_engine.dart';
 import 'package:math_city/domain/questions/answer_check.dart';
+import 'package:math_city/domain/questions/diagram_spec.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
+import 'package:math_city/presentation/diagrams/diagram_renderer.dart';
 import 'package:math_city/presentation/spin/spin_screen.dart';
 import 'package:math_city/presentation/theme/app_palette.dart';
 import 'package:math_city/state/game_session_provider.dart';
@@ -185,6 +187,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                 _ExplanationCard(
                   selectedAnswer: widget.selectedAnswer,
                   explanation: widget.question.explanation,
+                  diagram: widget.question.explanationDiagram,
                 ),
               ],
               const Spacer(),
@@ -235,10 +238,12 @@ class _ExplanationCard extends StatelessWidget {
   const _ExplanationCard({
     required this.selectedAnswer,
     required this.explanation,
+    this.diagram,
   });
 
   final String selectedAnswer;
   final List<String> explanation;
+  final DiagramSpec? diagram;
 
   @override
   Widget build(BuildContext context) {
@@ -258,6 +263,10 @@ class _ExplanationCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 12),
+            if (diagram != null) ...[
+              Center(child: DiagramRenderer(spec: diagram!)),
+              const SizedBox(height: 12),
+            ],
             for (final step in explanation)
               Padding(
                 padding: const EdgeInsets.only(bottom: 6),

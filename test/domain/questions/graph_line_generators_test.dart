@@ -72,12 +72,11 @@ void main() {
         final slopesSeen = <int>{};
         for (var i = 0; i < _iterations; i++) {
           final q = _gen(registry, 'informal_line_of_fit', i);
-          expect(q.diagram, isA<CoordinatePlaneSpec>());
-          final spec = q.diagram! as CoordinatePlaneSpec;
+          expect(q.diagram, isA<ScatterPlotSpec>());
+          final spec = q.diagram! as ScatterPlotSpec;
           expect(spec.points, hasLength(8));
-          expect(spec.lines, hasLength(1));
-          final line = spec.lines.single;
-          expect(line.style, CoordinatePlaneLineStyle.dashed);
+          expect(spec.lineOfFit, isNotNull);
+          final line = spec.lineOfFit!;
 
           expect(line.x1, -1);
           expect(line.x2, 1);

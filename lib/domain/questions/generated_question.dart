@@ -67,6 +67,7 @@ class GeneratedQuestion {
     required this.distractors,
     required this.explanation,
     this.diagram,
+    this.explanationDiagram,
     this.answerFormat = AnswerFormat.integer,
     this.answerShape = AnswerShape.any,
   });
@@ -79,6 +80,13 @@ class GeneratedQuestion {
 
   /// Optional diagram rendered above/alongside the prompt.
   final DiagramSpec? diagram;
+
+  /// Optional diagram rendered on the wrong-answer explanation screen
+  /// in addition to the text steps in [explanation]. Used for
+  /// regrouping visualisations (column arithmetic) and similar
+  /// post-mortem illustrations. Independent of [diagram] — the
+  /// question may have neither, either, or both.
+  final DiagramSpec? explanationDiagram;
 
   /// Canonical (lowest-terms, kid-textbook) answer string. The
   /// answer-checker uses this as the reference; equivalent forms may also

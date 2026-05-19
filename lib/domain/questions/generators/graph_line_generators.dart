@@ -114,11 +114,11 @@ GeneratedQuestion informalLineOfFit(Random rand) {
   // [-6, 6] × [-6, 6] plot at reasonable x values.
   final b = rand.nextInt(3) - 1; // -1, 0, 1
   const xs = [-5, -4, -2, -1, 1, 2, 4, 5];
-  final points = <CoordinatePlanePoint>[];
+  final points = <ScatterPlotPoint>[];
   for (final x in xs) {
     // y = mx + b with small symmetric jitter (-1, 0, +1)
     final y = (m * x + b + rand.nextInt(3) - 1).clamp(-6, 6);
-    points.add(CoordinatePlanePoint(x: x, y: y));
+    points.add(ScatterPlotPoint(x: x, y: y));
   }
   // Two anchor points for the dashed best-fit line.
   final p1 = (x: -1, y: -m + b);
@@ -136,21 +136,18 @@ GeneratedQuestion informalLineOfFit(Random rand) {
   return GeneratedQuestion(
     conceptId: 'informal_line_of_fit',
     prompt: 'What is the slope of the dashed line of best fit?',
-    diagram: CoordinatePlaneSpec(
+    diagram: ScatterPlotSpec(
       minX: -6,
       maxX: 6,
       minY: -6,
       maxY: 6,
       points: points,
-      lines: [
-        CoordinatePlaneLine(
-          x1: p1.x,
-          y1: p1.y,
-          x2: p2.x,
-          y2: p2.y,
-          style: CoordinatePlaneLineStyle.dashed,
-        ),
-      ],
+      lineOfFit: ScatterPlotLineOfFit(
+        x1: p1.x,
+        y1: p1.y,
+        x2: p2.x,
+        y2: p2.y,
+      ),
     ),
     correctAnswer: correct,
     distractors: _distinctStrings(correct, candidates),
