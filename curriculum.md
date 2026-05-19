@@ -822,6 +822,36 @@ The pattern: **the open ML-dataset ecosystem covers grades 3–8 word/symbolic a
 
 ---
 
+### 7.7 Per-dataset audits
+
+Each of the §7.2 priority datasets gets an in-depth audit before broad
+ingestion: which submodules / categories cover real K–8 sub-concepts (and
+add either *coverage* — items our generators can't produce — or *variety*
+— alternative phrasings of math we already cover), and which are out of
+scope. The audit informs which slices we ingest and which we skip.
+
+Verdicts (one per dataset, hand-edited around an auto-sampled Markdown
+report):
+
+| Dataset | Status | Detail |
+|---|---|---|
+| DeepMind `mathematics_dataset` | audited 2026-05-19 | [tools/question_generation/audits/deepmind.md](tools/question_generation/audits/deepmind.md) |
+| GSM8K | not yet audited | — |
+| MathDataset-ElementarySchool | not yet audited | — |
+| MathQA | not yet audited | — |
+| SVAMP | not yet audited | — |
+
+**TL;DR from the DeepMind audit:** of ~39 K–8-eligible submodules, ~15
+are realistically worth ingesting and most of those add *variety* not
+*coverage*. The genuinely gap-fill candidates are 2–3 submodules
+(`comparison.{closest, kth_biggest, sort}` and `polynomials.evaluate`),
+all of which require runtime support for new answer-format shapes
+(letter-MC, comma-list, function-evaluation notation). Chunk 80 ingested
+`arithmetic.add_or_sub` (variety only); subsequent ingestion is gated on
+this audit shaping which submodules to prioritise.
+
+---
+
 ## 8. Coverage analysis
 
 Estimated share of K–8 CCSS content reachable each way:
