@@ -1,0 +1,88 @@
+{
+  "items": [
+    {
+      "id": "deepmind_mathematics_dataset_arith_304f0875dc",
+      "concept_id": "sub_within_5",
+      "prompt": "Subtract 0 from 1.",
+      "correct_answer": "1",
+      "distractors": [
+        "3",
+        "6",
+        "2"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_45d31908e4",
+      "concept_id": "sub_within_5",
+      "prompt": "What is the difference between 0 and 4?",
+      "correct_answer": "4",
+      "distractors": [
+        "1",
+        "0",
+        "9"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_45fe141fb7",
+      "concept_id": "sub_within_5",
+      "prompt": "What is 4 − 3?",
+      "correct_answer": "1",
+      "distractors": [
+        "5",
+        "7",
+        "2"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_81b1757b45",
+      "concept_id": "sub_within_5",
+      "prompt": "What is the distance between 3 and 3?",
+      "correct_answer": "0",
+      "distractors": [
+        "3",
+        "6",
+        "5"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_b7162cf765",
+      "concept_id": "sub_within_5",
+      "prompt": "What is 4 − 0?",
+      "correct_answer": "4",
+      "distractors": [
+        "7",
+        "2",
+        "9"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_e0fa3a4e31",
+      "concept_id": "sub_within_5",
+      "prompt": "3 − 1",
+      "correct_answer": "2",
+      "distractors": [
+        "4",
+        "6",
+        "7"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    }
+  ]
+}

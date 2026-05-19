@@ -113,9 +113,34 @@ def read_implemented_widget_files() -> set[str]:
 
 
 def count_integrated_datasets() -> int:
+    """Count distinct upstream datasets present in bundled JSON.
+
+    A bundled question file is a JSON object ``{"items": [{...}, ...]}``
+    where each row has a ``source`` field (e.g. ``deepmind_mathematics_dataset``).
+    We count the number of distinct ``source`` values across every JSON file
+    under ``assets/data/``. That's robust to whatever directory layout we
+    end up with as more datasets land.
+    """
+    import json
+
     if not os.path.isdir(DATA_DIR):
         return 0
-    return sum(1 for e in os.listdir(DATA_DIR) if not e.startswith("."))
+    sources: set[str] = set()
+    for root, _dirs, files in os.walk(DATA_DIR):
+        for fname in files:
+            if not fname.endswith(".json"):
+                continue
+            path = os.path.join(root, fname)
+            try:
+                with open(path, encoding="utf-8") as f:
+                    data = json.load(f)
+            except (OSError, json.JSONDecodeError):
+                continue
+            for item in data.get("items", []):
+                src = item.get("source")
+                if isinstance(src, str) and src:
+                    sources.add(src)
+    return len(sources)
 
 
 # ---- curriculum.md transforms ----------------------------------------------

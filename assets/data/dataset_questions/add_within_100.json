@@ -1,0 +1,704 @@
+{
+  "items": [
+    {
+      "id": "deepmind_mathematics_dataset_arith_085c0f93ea",
+      "concept_id": "add_within_100",
+      "prompt": "What is 16 plus 22?",
+      "correct_answer": "38",
+      "distractors": [
+        "34",
+        "41",
+        "42"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_12ce4f52e0",
+      "concept_id": "add_within_100",
+      "prompt": "Work out 61 + 14.",
+      "correct_answer": "75",
+      "distractors": [
+        "47",
+        "76",
+        "77"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_1526781101",
+      "concept_id": "add_within_100",
+      "prompt": "Sum 76 and 4.",
+      "correct_answer": "80",
+      "distractors": [
+        "72",
+        "84",
+        "76"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_15690d96e5",
+      "concept_id": "add_within_100",
+      "prompt": "Add 5 and 93.",
+      "correct_answer": "98",
+      "distractors": [
+        "100",
+        "95",
+        "93"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_1b2572ea92",
+      "concept_id": "add_within_100",
+      "prompt": "Calculate 11 + 58.",
+      "correct_answer": "69",
+      "distractors": [
+        "70",
+        "65",
+        "73"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_1e29b8932d",
+      "concept_id": "add_within_100",
+      "prompt": "26 + 0",
+      "correct_answer": "26",
+      "distractors": [
+        "27",
+        "21",
+        "23"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_1ea33ac711",
+      "concept_id": "add_within_100",
+      "prompt": "Add 0 and 89.",
+      "correct_answer": "89",
+      "distractors": [
+        "91",
+        "88",
+        "90"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_203005f146",
+      "concept_id": "add_within_100",
+      "prompt": "Add together 42 and 33.",
+      "correct_answer": "75",
+      "distractors": [
+        "78",
+        "76",
+        "9"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_2564af0d05",
+      "concept_id": "add_within_100",
+      "prompt": "Sum 36 and 1.",
+      "correct_answer": "37",
+      "distractors": [
+        "34",
+        "35",
+        "41"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_2640b298e7",
+      "concept_id": "add_within_100",
+      "prompt": "1 + 78",
+      "correct_answer": "79",
+      "distractors": [
+        "81",
+        "80",
+        "76"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_306f157505",
+      "concept_id": "add_within_100",
+      "prompt": "What is 20 plus 12?",
+      "correct_answer": "32",
+      "distractors": [
+        "34",
+        "27",
+        "8"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_331665fe63",
+      "concept_id": "add_within_100",
+      "prompt": "7 + 47",
+      "correct_answer": "54",
+      "distractors": [
+        "50",
+        "57",
+        "59"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_39df60b51c",
+      "concept_id": "add_within_100",
+      "prompt": "Calculate 10 + 36.",
+      "correct_answer": "46",
+      "distractors": [
+        "41",
+        "48",
+        "42"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_3c8778f5d3",
+      "concept_id": "add_within_100",
+      "prompt": "Total of 19 and 3.",
+      "correct_answer": "22",
+      "distractors": [
+        "27",
+        "16",
+        "17"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_44732259b6",
+      "concept_id": "add_within_100",
+      "prompt": "Total of 26 and 61.",
+      "correct_answer": "87",
+      "distractors": [
+        "84",
+        "90",
+        "82"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_541367067f",
+      "concept_id": "add_within_100",
+      "prompt": "Add 5 and 50.",
+      "correct_answer": "55",
+      "distractors": [
+        "51",
+        "58",
+        "53"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_55379497b4",
+      "concept_id": "add_within_100",
+      "prompt": "What is 11 + 25?",
+      "correct_answer": "36",
+      "distractors": [
+        "34",
+        "37",
+        "41"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_558fc78899",
+      "concept_id": "add_within_100",
+      "prompt": "Calculate 3 + 25.",
+      "correct_answer": "28",
+      "distractors": [
+        "30",
+        "27",
+        "26"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_5944ff60aa",
+      "concept_id": "add_within_100",
+      "prompt": "Sum 14 and 75.",
+      "correct_answer": "89",
+      "distractors": [
+        "84",
+        "86",
+        "90"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_6274399e07",
+      "concept_id": "add_within_100",
+      "prompt": "62 + 5",
+      "correct_answer": "67",
+      "distractors": [
+        "69",
+        "57",
+        "72"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_6fe73ccb13",
+      "concept_id": "add_within_100",
+      "prompt": "What is 30 plus 48?",
+      "correct_answer": "78",
+      "distractors": [
+        "82",
+        "76",
+        "80"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_745023aa9a",
+      "concept_id": "add_within_100",
+      "prompt": "Sum 6 and 17.",
+      "correct_answer": "23",
+      "distractors": [
+        "22",
+        "20",
+        "26"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_7862ed8b21",
+      "concept_id": "add_within_100",
+      "prompt": "Sum 25 and 24.",
+      "correct_answer": "49",
+      "distractors": [
+        "45",
+        "46",
+        "1"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_85cf2b188e",
+      "concept_id": "add_within_100",
+      "prompt": "Add together 93 and 2.",
+      "correct_answer": "95",
+      "distractors": [
+        "96",
+        "99",
+        "91"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_8e12f65fb7",
+      "concept_id": "add_within_100",
+      "prompt": "Sum 5 and 90.",
+      "correct_answer": "95",
+      "distractors": [
+        "97",
+        "98",
+        "91"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_91ca565834",
+      "concept_id": "add_within_100",
+      "prompt": "16 + 33",
+      "correct_answer": "49",
+      "distractors": [
+        "44",
+        "50",
+        "47"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_958ed7fd47",
+      "concept_id": "add_within_100",
+      "prompt": "Add together 28 and 60.",
+      "correct_answer": "88",
+      "distractors": [
+        "86",
+        "92",
+        "87"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_9641a72889",
+      "concept_id": "add_within_100",
+      "prompt": "Total of 11 and 45.",
+      "correct_answer": "56",
+      "distractors": [
+        "55",
+        "52",
+        "60"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_9f1d1dbd44",
+      "concept_id": "add_within_100",
+      "prompt": "Total of 64 and 10.",
+      "correct_answer": "74",
+      "distractors": [
+        "54",
+        "70",
+        "72"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_a1f9f9a4f7",
+      "concept_id": "add_within_100",
+      "prompt": "Add together 3 and 67.",
+      "correct_answer": "70",
+      "distractors": [
+        "66",
+        "67",
+        "73"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_a2cc5f778c",
+      "concept_id": "add_within_100",
+      "prompt": "What is 20 plus 9?",
+      "correct_answer": "29",
+      "distractors": [
+        "25",
+        "34",
+        "11"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_ad5be822e6",
+      "concept_id": "add_within_100",
+      "prompt": "Sum 7 and 91.",
+      "correct_answer": "98",
+      "distractors": [
+        "102",
+        "99",
+        "96"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_b05ba26cda",
+      "concept_id": "add_within_100",
+      "prompt": "Sum 7 and 76.",
+      "correct_answer": "83",
+      "distractors": [
+        "85",
+        "82",
+        "80"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_b9aa8f0564",
+      "concept_id": "add_within_100",
+      "prompt": "Calculate 26 + 60.",
+      "correct_answer": "86",
+      "distractors": [
+        "85",
+        "91",
+        "83"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_ba1f42d6e9",
+      "concept_id": "add_within_100",
+      "prompt": "Sum 1 and 86.",
+      "correct_answer": "87",
+      "distractors": [
+        "92",
+        "90",
+        "85"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_c9326b49c2",
+      "concept_id": "add_within_100",
+      "prompt": "Sum 86 and 12.",
+      "correct_answer": "98",
+      "distractors": [
+        "93",
+        "95",
+        "74"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_caa3771c59",
+      "concept_id": "add_within_100",
+      "prompt": "8+42",
+      "correct_answer": "50",
+      "distractors": [
+        "49",
+        "51",
+        "55"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_cf61ca86e1",
+      "concept_id": "add_within_100",
+      "prompt": "What is 49 + 1?",
+      "correct_answer": "50",
+      "distractors": [
+        "48",
+        "47",
+        "45"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_d426be31c6",
+      "concept_id": "add_within_100",
+      "prompt": "Add together 0 and 53.",
+      "correct_answer": "53",
+      "distractors": [
+        "50",
+        "55",
+        "58"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_d86caec9c1",
+      "concept_id": "add_within_100",
+      "prompt": "Add together 60 and 11.",
+      "correct_answer": "71",
+      "distractors": [
+        "68",
+        "70",
+        "49"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_d8ea5aeb90",
+      "concept_id": "add_within_100",
+      "prompt": "Add together 18 and 3.",
+      "correct_answer": "21",
+      "distractors": [
+        "16",
+        "15",
+        "25"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_db65e56d39",
+      "concept_id": "add_within_100",
+      "prompt": "34 + 3",
+      "correct_answer": "37",
+      "distractors": [
+        "31",
+        "35",
+        "40"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_deafe168f3",
+      "concept_id": "add_within_100",
+      "prompt": "Work out 21 + 33.",
+      "correct_answer": "54",
+      "distractors": [
+        "58",
+        "53",
+        "55"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_e05f9170d7",
+      "concept_id": "add_within_100",
+      "prompt": "What is 64 plus 14?",
+      "correct_answer": "78",
+      "distractors": [
+        "50",
+        "74",
+        "73"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_e85cb3c934",
+      "concept_id": "add_within_100",
+      "prompt": "Work out 4 + 92.",
+      "correct_answer": "96",
+      "distractors": [
+        "91",
+        "93",
+        "100"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_e885dc9c6e",
+      "concept_id": "add_within_100",
+      "prompt": "Work out 11 + 66.",
+      "correct_answer": "77",
+      "distractors": [
+        "76",
+        "80",
+        "78"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_e92d417cac",
+      "concept_id": "add_within_100",
+      "prompt": "31+2",
+      "correct_answer": "33",
+      "distractors": [
+        "36",
+        "31",
+        "29"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_eee9ef8b77",
+      "concept_id": "add_within_100",
+      "prompt": "Add together 50 and 12.",
+      "correct_answer": "62",
+      "distractors": [
+        "38",
+        "57",
+        "66"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_ef8ddafa78",
+      "concept_id": "add_within_100",
+      "prompt": "Total of 44 and 20.",
+      "correct_answer": "64",
+      "distractors": [
+        "24",
+        "60",
+        "62"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_f2f91785a5",
+      "concept_id": "add_within_100",
+      "prompt": "What is 29 + 4?",
+      "correct_answer": "33",
+      "distractors": [
+        "31",
+        "25",
+        "36"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    }
+  ]
+}

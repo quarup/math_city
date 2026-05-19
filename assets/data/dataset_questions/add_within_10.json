@@ -1,0 +1,102 @@
+{
+  "items": [
+    {
+      "id": "deepmind_mathematics_dataset_arith_06f9a33518",
+      "concept_id": "add_within_10",
+      "prompt": "Add 2 and 4.",
+      "correct_answer": "6",
+      "distractors": [
+        "1",
+        "4",
+        "2"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_20822b719c",
+      "concept_id": "add_within_10",
+      "prompt": "What is 2 + 7?",
+      "correct_answer": "9",
+      "distractors": [
+        "7",
+        "13",
+        "8"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_41d16fb507",
+      "concept_id": "add_within_10",
+      "prompt": "0+8",
+      "correct_answer": "8",
+      "distractors": [
+        "4",
+        "7",
+        "11"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_4f3f9e3c77",
+      "concept_id": "add_within_10",
+      "prompt": "What is 0 plus 9?",
+      "correct_answer": "9",
+      "distractors": [
+        "7",
+        "11",
+        "10"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_52ba78dfa8",
+      "concept_id": "add_within_10",
+      "prompt": "Sum 2 and 4.",
+      "correct_answer": "6",
+      "distractors": [
+        "1",
+        "3",
+        "7"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_6b45aa97d8",
+      "concept_id": "add_within_10",
+      "prompt": "Calculate 2 + 4.",
+      "correct_answer": "6",
+      "distractors": [
+        "7",
+        "9",
+        "1"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_be30971069",
+      "concept_id": "add_within_10",
+      "prompt": "Total of 8 and 1.",
+      "correct_answer": "9",
+      "distractors": [
+        "14",
+        "12",
+        "7"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    }
+  ]
+}

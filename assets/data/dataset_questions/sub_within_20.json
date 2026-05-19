@@ -1,0 +1,340 @@
+{
+  "items": [
+    {
+      "id": "deepmind_mathematics_dataset_arith_029d58d340",
+      "concept_id": "sub_within_20",
+      "prompt": "What is 12 − 8?",
+      "correct_answer": "4",
+      "distractors": [
+        "20",
+        "2",
+        "8"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_03b5992ba2",
+      "concept_id": "sub_within_20",
+      "prompt": "What is 5 less than 16?",
+      "correct_answer": "11",
+      "distractors": [
+        "21",
+        "9",
+        "10"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_178e6edba4",
+      "concept_id": "sub_within_20",
+      "prompt": "What is the difference between 2 and 17?",
+      "correct_answer": "15",
+      "distractors": [
+        "13",
+        "19",
+        "16"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_3be1197176",
+      "concept_id": "sub_within_20",
+      "prompt": "19 − 13",
+      "correct_answer": "6",
+      "distractors": [
+        "10",
+        "7",
+        "32"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_447f577909",
+      "concept_id": "sub_within_20",
+      "prompt": "What is 20 minus 3?",
+      "correct_answer": "17",
+      "distractors": [
+        "16",
+        "13",
+        "23"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_55d3ed17ab",
+      "concept_id": "sub_within_20",
+      "prompt": "Work out 20 − 13.",
+      "correct_answer": "7",
+      "distractors": [
+        "4",
+        "33",
+        "10"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_57c503d3c1",
+      "concept_id": "sub_within_20",
+      "prompt": "What is the difference between 15 and 15?",
+      "correct_answer": "0",
+      "distractors": [
+        "5",
+        "2",
+        "30"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_58d7a3f6df",
+      "concept_id": "sub_within_20",
+      "prompt": "What is the distance between 5 and 12?",
+      "correct_answer": "7",
+      "distractors": [
+        "6",
+        "8",
+        "17"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_5b6befd5c4",
+      "concept_id": "sub_within_20",
+      "prompt": "What is 19 − 11?",
+      "correct_answer": "8",
+      "distractors": [
+        "4",
+        "11",
+        "30"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_62ef7a2912",
+      "concept_id": "sub_within_20",
+      "prompt": "What is the distance between 1 and 14?",
+      "correct_answer": "13",
+      "distractors": [
+        "17",
+        "15",
+        "9"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_701697b70c",
+      "concept_id": "sub_within_20",
+      "prompt": "Calculate 15 − 4.",
+      "correct_answer": "11",
+      "distractors": [
+        "15",
+        "19",
+        "14"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_701d2ea22a",
+      "concept_id": "sub_within_20",
+      "prompt": "What is 18 take away 16?",
+      "correct_answer": "2",
+      "distractors": [
+        "6",
+        "1",
+        "34"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_797797d7be",
+      "concept_id": "sub_within_20",
+      "prompt": "What is the distance between 16 and 15?",
+      "correct_answer": "1",
+      "distractors": [
+        "2",
+        "0",
+        "31"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_79a09809cb",
+      "concept_id": "sub_within_20",
+      "prompt": "What is 16 take away 3?",
+      "correct_answer": "13",
+      "distractors": [
+        "17",
+        "19",
+        "8"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_88a48edb95",
+      "concept_id": "sub_within_20",
+      "prompt": "What is the difference between 4 and 11?",
+      "correct_answer": "7",
+      "distractors": [
+        "9",
+        "15",
+        "3"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_960ffcbc65",
+      "concept_id": "sub_within_20",
+      "prompt": "What is the distance between 7 and 18?",
+      "correct_answer": "11",
+      "distractors": [
+        "9",
+        "25",
+        "13"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_b0f11ce0a9",
+      "concept_id": "sub_within_20",
+      "prompt": "What is 18 − 5?",
+      "correct_answer": "13",
+      "distractors": [
+        "23",
+        "16",
+        "18"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_b12ba698c0",
+      "concept_id": "sub_within_20",
+      "prompt": "What is the difference between 13 and 10?",
+      "correct_answer": "3",
+      "distractors": [
+        "23",
+        "4",
+        "0"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_b2e4144ed5",
+      "concept_id": "sub_within_20",
+      "prompt": "What is 13 take away 0?",
+      "correct_answer": "13",
+      "distractors": [
+        "17",
+        "15",
+        "12"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_bcd12c22ae",
+      "concept_id": "sub_within_20",
+      "prompt": "What is the difference between 12 and 4?",
+      "correct_answer": "8",
+      "distractors": [
+        "5",
+        "16",
+        "9"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_ce73535d54",
+      "concept_id": "sub_within_20",
+      "prompt": "What is the difference between 15 and 16?",
+      "correct_answer": "1",
+      "distractors": [
+        "31",
+        "2",
+        "0"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_d3d35b442d",
+      "concept_id": "sub_within_20",
+      "prompt": "Subtract 19 from 20.",
+      "correct_answer": "1",
+      "distractors": [
+        "39",
+        "6",
+        "4"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_d5a3a2f8d9",
+      "concept_id": "sub_within_20",
+      "prompt": "What is the difference between 8 and 16?",
+      "correct_answer": "8",
+      "distractors": [
+        "11",
+        "24",
+        "7"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_f9c6624c5b",
+      "concept_id": "sub_within_20",
+      "prompt": "What is the distance between 18 and 11?",
+      "correct_answer": "7",
+      "distractors": [
+        "8",
+        "29",
+        "10"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    }
+  ]
+}

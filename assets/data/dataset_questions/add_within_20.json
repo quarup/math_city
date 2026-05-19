@@ -1,0 +1,340 @@
+{
+  "items": [
+    {
+      "id": "deepmind_mathematics_dataset_arith_0b8fddae3a",
+      "concept_id": "add_within_20",
+      "prompt": "Total of 9 and 8.",
+      "correct_answer": "17",
+      "distractors": [
+        "19",
+        "1",
+        "21"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_1442caeacf",
+      "concept_id": "add_within_20",
+      "prompt": "Work out 8 + 8.",
+      "correct_answer": "16",
+      "distractors": [
+        "19",
+        "17",
+        "0"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_15331a08be",
+      "concept_id": "add_within_20",
+      "prompt": "Calculate 16 + 1.",
+      "correct_answer": "17",
+      "distractors": [
+        "14",
+        "15",
+        "18"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_2d694d9420",
+      "concept_id": "add_within_20",
+      "prompt": "14+1",
+      "correct_answer": "15",
+      "distractors": [
+        "13",
+        "10",
+        "14"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_5f777f04d7",
+      "concept_id": "add_within_20",
+      "prompt": "Add together 4 and 15.",
+      "correct_answer": "19",
+      "distractors": [
+        "23",
+        "24",
+        "15"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_6284624e37",
+      "concept_id": "add_within_20",
+      "prompt": "Put together 12 and 4.",
+      "correct_answer": "16",
+      "distractors": [
+        "20",
+        "15",
+        "8"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_704f0e0281",
+      "concept_id": "add_within_20",
+      "prompt": "Work out 11 + 8.",
+      "correct_answer": "19",
+      "distractors": [
+        "15",
+        "3",
+        "17"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_80e58ff93f",
+      "concept_id": "add_within_20",
+      "prompt": "Add together 10 and 1.",
+      "correct_answer": "11",
+      "distractors": [
+        "12",
+        "9",
+        "13"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_86f9bcbe55",
+      "concept_id": "add_within_20",
+      "prompt": "What is 2 + 15?",
+      "correct_answer": "17",
+      "distractors": [
+        "21",
+        "19",
+        "16"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_982d1ca51a",
+      "concept_id": "add_within_20",
+      "prompt": "Add together 15 and 1.",
+      "correct_answer": "16",
+      "distractors": [
+        "11",
+        "13",
+        "14"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_982f01b756",
+      "concept_id": "add_within_20",
+      "prompt": "Sum 9 and 2.",
+      "correct_answer": "11",
+      "distractors": [
+        "16",
+        "7",
+        "15"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_9e14ac1992",
+      "concept_id": "add_within_20",
+      "prompt": "Sum 0 and 17.",
+      "correct_answer": "17",
+      "distractors": [
+        "21",
+        "18",
+        "15"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_9f9b98a128",
+      "concept_id": "add_within_20",
+      "prompt": "Add together 0 and 14.",
+      "correct_answer": "14",
+      "distractors": [
+        "16",
+        "13",
+        "17"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_a362b0c2cb",
+      "concept_id": "add_within_20",
+      "prompt": "Total of 13 and 7.",
+      "correct_answer": "20",
+      "distractors": [
+        "17",
+        "18",
+        "6"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_b5313c5efc",
+      "concept_id": "add_within_20",
+      "prompt": "What is 13 plus 3?",
+      "correct_answer": "16",
+      "distractors": [
+        "10",
+        "17",
+        "13"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_c7dbf0ce67",
+      "concept_id": "add_within_20",
+      "prompt": "What is 7 + 8?",
+      "correct_answer": "15",
+      "distractors": [
+        "11",
+        "20",
+        "14"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_cf722dfb72",
+      "concept_id": "add_within_20",
+      "prompt": "1+14",
+      "correct_answer": "15",
+      "distractors": [
+        "14",
+        "11",
+        "16"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_d2507c1847",
+      "concept_id": "add_within_20",
+      "prompt": "0 + 17",
+      "correct_answer": "17",
+      "distractors": [
+        "14",
+        "15",
+        "20"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_d528ff4cf5",
+      "concept_id": "add_within_20",
+      "prompt": "Work out 9 + 2.",
+      "correct_answer": "11",
+      "distractors": [
+        "10",
+        "7",
+        "8"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_df9783871e",
+      "concept_id": "add_within_20",
+      "prompt": "Calculate 7 + 6.",
+      "correct_answer": "13",
+      "distractors": [
+        "8",
+        "1",
+        "14"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_e593e6930a",
+      "concept_id": "add_within_20",
+      "prompt": "Calculate 11 + 2.",
+      "correct_answer": "13",
+      "distractors": [
+        "12",
+        "11",
+        "9"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_ec8781cea8",
+      "concept_id": "add_within_20",
+      "prompt": "What is 10 plus 1?",
+      "correct_answer": "11",
+      "distractors": [
+        "9",
+        "10",
+        "12"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_ecfe093ffe",
+      "concept_id": "add_within_20",
+      "prompt": "Put together 0 and 14.",
+      "correct_answer": "14",
+      "distractors": [
+        "11",
+        "17",
+        "10"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_arith_f8ef81861e",
+      "concept_id": "add_within_20",
+      "prompt": "Work out 3 + 8.",
+      "correct_answer": "11",
+      "distractors": [
+        "7",
+        "6",
+        "15"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.add_or_sub",
+      "license": "Apache-2.0"
+    }
+  ]
+}
