@@ -430,7 +430,8 @@ enum MoneyDenom {
   oneDollar(100, r'$1', isCoin: false),
   fiveDollar(500, r'$5', isCoin: false),
   tenDollar(1000, r'$10', isCoin: false),
-  twentyDollar(2000, r'$20', isCoin: false);
+  twentyDollar(2000, r'$20', isCoin: false)
+  ;
 
   const MoneyDenom(this.cents, this.label, {required this.isCoin});
 
@@ -472,9 +473,10 @@ class PictureGraphSpec extends DiagramSpec {
     required this.title,
     required this.rowLabels,
     required this.values,
-    required this.icon,
+    required this.icons,
     this.scale = 1,
   }) : assert(rowLabels.length == values.length, 'rows and values align'),
+       assert(rowLabels.length == icons.length, 'rows and icons align'),
        assert(rowLabels.length >= 2, 'need at least 2 rows'),
        assert(scale > 0, 'scale must be > 0');
 
@@ -489,9 +491,9 @@ class PictureGraphSpec extends DiagramSpec {
   /// `value ~/ scale` icons in that row.
   final List<int> values;
 
-  /// Single character / short glyph repeated across each row. Typically
-  /// a Unicode emoji.
-  final String icon;
+  /// Per-row icon glyph (one per category, aligned with [rowLabels]).
+  /// Typically Unicode emoji.
+  final List<String> icons;
 
   /// "1 icon = $scale units". 1 for unscaled picture graphs (the K-G2
   /// case); >1 for scaled (G3 — `scaled_picture_graph`).
@@ -661,7 +663,8 @@ enum ShapeKind {
   cube,
   sphere,
   cylinder,
-  cone;
+  cone
+  ;
 
   /// Number of straight sides (0 for circle / sphere). Triangles = 3,
   /// quads = 4, etc. For 3D solids, returns the number of *visible*
@@ -770,7 +773,7 @@ enum ShapeKind {
 /// the same paint. Used by probability generators.
 class SpinnerSpec extends DiagramSpec {
   const SpinnerSpec({required this.sectors})
-      : assert(sectors.length >= 2, 'spinner needs at least 2 sectors');
+    : assert(sectors.length >= 2, 'spinner needs at least 2 sectors');
 
   /// The color label for each sector. e.g. `['red', 'red', 'blue']`
   /// means 3 equal sectors, 2 red and 1 blue.
@@ -785,7 +788,7 @@ class CircleSpec extends DiagramSpec {
     required this.radius,
     this.showRadius = true,
     this.showDiameter = false,
-  })  : assert(radius >= 1, 'radius must be >= 1');
+  }) : assert(radius >= 1, 'radius must be >= 1');
 
   /// The numeric radius value to label on the diagram. Visual size of
   /// the circle is normalized by the widget — the label is what the
@@ -812,9 +815,9 @@ class Box3DSpec extends DiagramSpec {
     required this.height,
     this.showUnitGrid = false,
     this.showDimensionLabels = true,
-  })  : assert(length >= 1, 'length must be >= 1'),
-        assert(width >= 1, 'width must be >= 1'),
-        assert(height >= 1, 'height must be >= 1');
+  }) : assert(length >= 1, 'length must be >= 1'),
+       assert(width >= 1, 'width must be >= 1'),
+       assert(height >= 1, 'height must be >= 1');
 
   final int length;
   final int width;
@@ -833,7 +836,7 @@ class Box3DSpec extends DiagramSpec {
 /// "plus / cross" layout. Used by `surface_area_from_net`.
 class Net3DSpec extends DiagramSpec {
   const Net3DSpec({required this.edgeLength})
-      : assert(edgeLength >= 1, 'edgeLength must be >= 1');
+    : assert(edgeLength >= 1, 'edgeLength must be >= 1');
 
   /// Edge length of the cube. Each of the 6 net squares is this size
   /// (label is shown on one of them so the kid sees the scale).
@@ -850,7 +853,8 @@ enum LineFigureKind {
   segment,
   parallelLines,
   perpendicularLines,
-  intersectingLines;
+  intersectingLines
+  ;
 
   String get displayName {
     switch (this) {
@@ -893,8 +897,8 @@ class TapeDiagramSpec extends DiagramSpec {
     required this.bottomUnits,
     this.topLabel,
     this.bottomLabel,
-  })  : assert(topUnits >= 1, 'topUnits must be >= 1'),
-        assert(bottomUnits >= 1, 'bottomUnits must be >= 1');
+  }) : assert(topUnits >= 1, 'topUnits must be >= 1'),
+       assert(bottomUnits >= 1, 'bottomUnits must be >= 1');
 
   final int topUnits;
   final int bottomUnits;
@@ -941,9 +945,9 @@ class BaseTenBlocksSpec extends DiagramSpec {
     this.hundreds = 0,
     this.tens = 0,
     this.ones = 0,
-  })  : assert(hundreds >= 0, 'hundreds must be >= 0'),
-        assert(tens >= 0, 'tens must be >= 0'),
-        assert(ones >= 0, 'ones must be >= 0');
+  }) : assert(hundreds >= 0, 'hundreds must be >= 0'),
+       assert(tens >= 0, 'tens must be >= 0'),
+       assert(ones >= 0, 'ones must be >= 0');
 
   final int hundreds;
   final int tens;

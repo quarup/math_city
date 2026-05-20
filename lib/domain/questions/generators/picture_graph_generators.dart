@@ -70,7 +70,7 @@ GeneratedQuestion classifyCountCategories(Random rand) {
   final ctx = _contexts[rand.nextInt(_contexts.length)];
   // Use the first two rows of the context.
   final labels = [ctx.rows[0].$1, ctx.rows[1].$1];
-  final icon = ctx.rows[0].$2; // single icon used across rows
+  final icons = [ctx.rows[0].$2, ctx.rows[1].$2];
   // Counts in [1, 5], pairwise distinct so the wrong-row distractor is
   // unambiguous.
   late int a;
@@ -89,7 +89,7 @@ GeneratedQuestion classifyCountCategories(Random rand) {
       title: ctx.title,
       rowLabels: labels,
       values: values,
-      icon: icon,
+      icons: icons,
     ),
     correctAnswer: '$correct',
     distractors: integerDistractorsWith(
@@ -111,7 +111,7 @@ GeneratedQuestion classifyCountCategories(Random rand) {
 GeneratedQuestion threeCategoryData(Random rand) {
   final ctx = _contexts[rand.nextInt(_contexts.length)];
   final labels = [ctx.rows[0].$1, ctx.rows[1].$1, ctx.rows[2].$1];
-  final icon = ctx.rows[0].$2;
+  final icons = [ctx.rows[0].$2, ctx.rows[1].$2, ctx.rows[2].$2];
   final values = <int>[];
   while (values.length < 3) {
     final v = rand.nextInt(6) + 1;
@@ -128,7 +128,7 @@ GeneratedQuestion threeCategoryData(Random rand) {
         title: ctx.title,
         rowLabels: labels,
         values: values,
-        icon: icon,
+        icons: icons,
       ),
       correctAnswer: '$total',
       distractors: integerDistractorsWith(
@@ -149,7 +149,7 @@ GeneratedQuestion threeCategoryData(Random rand) {
         title: ctx.title,
         rowLabels: labels,
         values: values,
-        icon: icon,
+        icons: icons,
       ),
       correctAnswer: '$correct',
       distractors: integerDistractorsWith(
@@ -173,7 +173,7 @@ GeneratedQuestion threeCategoryData(Random rand) {
 GeneratedQuestion pictureGraphRead(Random rand) {
   final ctx = _contexts[rand.nextInt(_contexts.length)];
   final labels = ctx.rows.map((r) => r.$1).toList();
-  final icon = ctx.rows[0].$2;
+  final icons = ctx.rows.map((r) => r.$2).toList();
   final values = <int>[];
   while (values.length < 4) {
     final v = rand.nextInt(8) + 2; // 2..9
@@ -191,7 +191,7 @@ GeneratedQuestion pictureGraphRead(Random rand) {
         title: ctx.title,
         rowLabels: labels,
         values: values,
-        icon: icon,
+        icons: icons,
       ),
       correctAnswer: '$correct',
       distractors: integerDistractorsWith(
@@ -222,7 +222,7 @@ GeneratedQuestion pictureGraphRead(Random rand) {
         title: ctx.title,
         rowLabels: labels,
         values: values,
-        icon: icon,
+        icons: icons,
       ),
       correctAnswer: '$correct',
       distractors: integerDistractorsWith(
@@ -247,7 +247,7 @@ GeneratedQuestion pictureGraphRead(Random rand) {
 GeneratedQuestion scaledPictureGraph(Random rand) {
   final ctx = _contexts[rand.nextInt(_contexts.length)];
   final labels = ctx.rows.map((r) => r.$1).toList();
-  final icon = ctx.rows[0].$2;
+  final icons = ctx.rows.map((r) => r.$2).toList();
   final scale = [2, 5, 10][rand.nextInt(3)];
   final iconCounts = <int>[];
   while (iconCounts.length < 4) {
@@ -264,7 +264,7 @@ GeneratedQuestion scaledPictureGraph(Random rand) {
       title: ctx.title,
       rowLabels: labels,
       values: values,
-      icon: icon,
+      icons: icons,
       scale: scale,
     ),
     correctAnswer: '$correct',

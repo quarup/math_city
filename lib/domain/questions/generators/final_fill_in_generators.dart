@@ -41,7 +41,7 @@ GeneratedQuestion compareGroupsByCount(Random rand) {
       title: 'Comparing ${item.name}',
       rowLabels: const ['Group A', 'Group B'],
       values: [a, b],
-      icon: item.icon,
+      icons: [item.icon, item.icon],
     ),
     correctAnswer: answer,
     distractors: stringDistractorsFromPool(

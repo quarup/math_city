@@ -16,8 +16,9 @@ class PictureGraph extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final titleStyle =
-        (theme.textTheme.titleSmall ?? const TextStyle(fontSize: 13))
-            .copyWith(fontWeight: FontWeight.bold);
+        (theme.textTheme.titleSmall ?? const TextStyle(fontSize: 13)).copyWith(
+          fontWeight: FontWeight.bold,
+        );
     final labelStyle =
         theme.textTheme.labelMedium ?? const TextStyle(fontSize: 12);
     const iconStyle = TextStyle(fontSize: 20);
@@ -47,7 +48,7 @@ class PictureGraph extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 4),
                     child: Text(
-                      spec.icon * iconCount,
+                      spec.icons[i] * iconCount,
                       style: iconStyle,
                     ),
                   ),
@@ -58,7 +59,7 @@ class PictureGraph extends StatelessWidget {
           if (spec.scale > 1) ...[
             const SizedBox(height: 6),
             Text(
-              'Each ${spec.icon} = ${spec.scale}',
+              'Each picture = ${spec.scale}',
               style: labelStyle.copyWith(fontStyle: FontStyle.italic),
             ),
           ],
