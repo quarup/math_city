@@ -8,9 +8,10 @@ import 'package:math_city/domain/questions/generated_question.dart';
 /// `classify_count_categories` (K), `three_category_data` (G1),
 /// `picture_graph_read` (G2), `scaled_picture_graph` (G3).
 
-/// Themed contexts: each context is a title + a list of (label, icon)
-/// rows. The picture-graph generators all rotate through this pool so
-/// kids see varied scenarios.
+/// Themed contexts: each context is a title + a list of
+/// (label, plural, icon) rows. `label` is the short row header on the
+/// chart; `plural` is the human-readable noun phrase used in prompts
+/// ("How many {plural} are there?").
 class _PictureContext {
   const _PictureContext({
     required this.title,
@@ -18,44 +19,44 @@ class _PictureContext {
   });
 
   final String title;
-  final List<(String label, String icon)> rows;
+  final List<(String label, String plural, String icon)> rows;
 }
 
 const _contexts = <_PictureContext>[
   _PictureContext(
     title: 'Favourite fruit',
     rows: [
-      ('Apple', '🍎'),
-      ('Banana', '🍌'),
-      ('Grape', '🍇'),
-      ('Orange', '🍊'),
+      ('Apple', 'apples', '🍎'),
+      ('Banana', 'bananas', '🍌'),
+      ('Grape', 'grapes', '🍇'),
+      ('Orange', 'oranges', '🍊'),
     ],
   ),
   _PictureContext(
     title: 'Pets at home',
     rows: [
-      ('Dog', '🐶'),
-      ('Cat', '🐱'),
-      ('Fish', '🐟'),
-      ('Bird', '🐦'),
+      ('Dog', 'dogs', '🐶'),
+      ('Cat', 'cats', '🐱'),
+      ('Fish', 'fish', '🐟'),
+      ('Bird', 'birds', '🐦'),
     ],
   ),
   _PictureContext(
     title: 'Cars on the street',
     rows: [
-      ('Red', '🚗'),
-      ('Blue', '🚙'),
-      ('Black', '🚕'),
-      ('White', '🚐'),
+      ('Red', 'red cars', '🚗'),
+      ('Blue', 'blue SUVs', '🚙'),
+      ('Black', 'black taxis', '🚕'),
+      ('White', 'white vans', '🚐'),
     ],
   ),
   _PictureContext(
     title: "Today's weather log",
     rows: [
-      ('Sunny', '☀️'),
-      ('Cloudy', '☁️'),
-      ('Rainy', '🌧️'),
-      ('Snowy', '❄️'),
+      ('Sunny', 'sunny days', '☀️'),
+      ('Cloudy', 'cloudy days', '☁️'),
+      ('Rainy', 'rainy days', '🌧️'),
+      ('Snowy', 'snowy days', '❄️'),
     ],
   ),
 ];
@@ -70,7 +71,8 @@ GeneratedQuestion classifyCountCategories(Random rand) {
   final ctx = _contexts[rand.nextInt(_contexts.length)];
   // Use the first two rows of the context.
   final labels = [ctx.rows[0].$1, ctx.rows[1].$1];
-  final icons = [ctx.rows[0].$2, ctx.rows[1].$2];
+  final plurals = [ctx.rows[0].$2, ctx.rows[1].$2];
+  final icons = [ctx.rows[0].$3, ctx.rows[1].$3];
   // Counts in [1, 5], pairwise distinct so the wrong-row distractor is
   // unambiguous.
   late int a;
@@ -84,7 +86,7 @@ GeneratedQuestion classifyCountCategories(Random rand) {
   final correct = values[askIdx];
   return GeneratedQuestion(
     conceptId: 'classify_count_categories',
-    prompt: 'How many ${labels[askIdx].toLowerCase()}s are there?',
+    prompt: 'How many ${plurals[askIdx]} are there?',
     diagram: PictureGraphSpec(
       title: ctx.title,
       rowLabels: labels,
@@ -111,7 +113,8 @@ GeneratedQuestion classifyCountCategories(Random rand) {
 GeneratedQuestion threeCategoryData(Random rand) {
   final ctx = _contexts[rand.nextInt(_contexts.length)];
   final labels = [ctx.rows[0].$1, ctx.rows[1].$1, ctx.rows[2].$1];
-  final icons = [ctx.rows[0].$2, ctx.rows[1].$2, ctx.rows[2].$2];
+  final plurals = [ctx.rows[0].$2, ctx.rows[1].$2, ctx.rows[2].$2];
+  final icons = [ctx.rows[0].$3, ctx.rows[1].$3, ctx.rows[2].$3];
   final values = <int>[];
   while (values.length < 3) {
     final v = rand.nextInt(6) + 1;
@@ -144,7 +147,7 @@ GeneratedQuestion threeCategoryData(Random rand) {
     final correct = values[askIdx];
     return GeneratedQuestion(
       conceptId: 'three_category_data',
-      prompt: 'How many ${labels[askIdx].toLowerCase()}s are there?',
+      prompt: 'How many ${plurals[askIdx]} are there?',
       diagram: PictureGraphSpec(
         title: ctx.title,
         rowLabels: labels,
@@ -173,7 +176,8 @@ GeneratedQuestion threeCategoryData(Random rand) {
 GeneratedQuestion pictureGraphRead(Random rand) {
   final ctx = _contexts[rand.nextInt(_contexts.length)];
   final labels = ctx.rows.map((r) => r.$1).toList();
-  final icons = ctx.rows.map((r) => r.$2).toList();
+  final plurals = ctx.rows.map((r) => r.$2).toList();
+  final icons = ctx.rows.map((r) => r.$3).toList();
   final values = <int>[];
   while (values.length < 4) {
     final v = rand.nextInt(8) + 2; // 2..9
@@ -186,7 +190,7 @@ GeneratedQuestion pictureGraphRead(Random rand) {
     final correct = values[askIdx];
     return GeneratedQuestion(
       conceptId: 'picture_graph_read',
-      prompt: 'How many ${labels[askIdx].toLowerCase()}s are there?',
+      prompt: 'How many ${plurals[askIdx]} are there?',
       diagram: PictureGraphSpec(
         title: ctx.title,
         rowLabels: labels,
@@ -216,8 +220,8 @@ GeneratedQuestion pictureGraphRead(Random rand) {
     return GeneratedQuestion(
       conceptId: 'picture_graph_read',
       prompt:
-          'How many more ${labels[i].toLowerCase()}s than '
-          '${labels[j].toLowerCase()}s are there?',
+          'How many more ${plurals[i]} than '
+          '${plurals[j]} are there?',
       diagram: PictureGraphSpec(
         title: ctx.title,
         rowLabels: labels,
@@ -247,7 +251,8 @@ GeneratedQuestion pictureGraphRead(Random rand) {
 GeneratedQuestion scaledPictureGraph(Random rand) {
   final ctx = _contexts[rand.nextInt(_contexts.length)];
   final labels = ctx.rows.map((r) => r.$1).toList();
-  final icons = ctx.rows.map((r) => r.$2).toList();
+  final plurals = ctx.rows.map((r) => r.$2).toList();
+  final icons = ctx.rows.map((r) => r.$3).toList();
   final scale = [2, 5, 10][rand.nextInt(3)];
   final iconCounts = <int>[];
   while (iconCounts.length < 4) {
@@ -259,7 +264,7 @@ GeneratedQuestion scaledPictureGraph(Random rand) {
   final correct = values[askIdx];
   return GeneratedQuestion(
     conceptId: 'scaled_picture_graph',
-    prompt: 'How many ${labels[askIdx].toLowerCase()}s are there?',
+    prompt: 'How many ${plurals[askIdx]} are there?',
     diagram: PictureGraphSpec(
       title: ctx.title,
       rowLabels: labels,
