@@ -15,8 +15,9 @@ class TwoWayTable extends StatelessWidget {
     final theme = Theme.of(context);
     final borderColor = theme.colorScheme.outline;
     final headerStyle =
-        (theme.textTheme.labelMedium ?? const TextStyle(fontSize: 12))
-            .copyWith(fontWeight: FontWeight.bold);
+        (theme.textTheme.labelMedium ?? const TextStyle(fontSize: 12)).copyWith(
+          fontWeight: FontWeight.bold,
+        );
     final cellStyle =
         theme.textTheme.bodyMedium ?? const TextStyle(fontSize: 14);
     final totalStyle = cellStyle.copyWith(
@@ -37,10 +38,7 @@ class TwoWayTable extends StatelessWidget {
     Widget cell(String text, {TextStyle? style, Color? fill}) {
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-        decoration: BoxDecoration(
-          color: fill,
-          border: Border.all(color: borderColor, width: 0.8),
-        ),
+        color: fill,
         alignment: Alignment.center,
         child: Text(text, style: style ?? cellStyle),
       );
@@ -57,6 +55,7 @@ class TwoWayTable extends StatelessWidget {
         ),
         Table(
           defaultColumnWidth: const IntrinsicColumnWidth(),
+          border: TableBorder.all(color: borderColor),
           children: [
             TableRow(
               children: [
