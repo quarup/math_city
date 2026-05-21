@@ -1,0 +1,1466 @@
+{
+  "items": [
+    {
+      "id": "deepmind_mathematics_dataset_mul_054a2581eb",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "Work out 50 * 2.",
+      "correct_answer": "100",
+      "distractors": [
+        "104",
+        "52",
+        "105"
+      ],
+      "explanation": [
+        "50 × 2 = 100"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_0690155fad",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "Multiply 7 and 20.",
+      "correct_answer": "140",
+      "distractors": [
+        "27",
+        "135",
+        "142"
+      ],
+      "explanation": [
+        "7 × 20 = 140"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_0722877255",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "Product of 8 and 50.",
+      "correct_answer": "400",
+      "distractors": [
+        "403",
+        "402",
+        "58"
+      ],
+      "explanation": [
+        "8 × 50 = 400"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_0af329539e",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "Work out 80 * 2.",
+      "correct_answer": "160",
+      "distractors": [
+        "165",
+        "82",
+        "156"
+      ],
+      "explanation": [
+        "80 × 2 = 160"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_0fada74426",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "Multiply 2 and 60.",
+      "correct_answer": "120",
+      "distractors": [
+        "117",
+        "62",
+        "116"
+      ],
+      "explanation": [
+        "2 × 60 = 120"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_13277c23fd",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "What is the product of 70 and 4?",
+      "correct_answer": "280",
+      "distractors": [
+        "74",
+        "275",
+        "278"
+      ],
+      "explanation": [
+        "70 × 4 = 280"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_176247fe20",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "Calculate 3*40.",
+      "correct_answer": "120",
+      "distractors": [
+        "43",
+        "118",
+        "121"
+      ],
+      "explanation": [
+        "3 × 40 = 120"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_18b2992dec",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "5*30",
+      "correct_answer": "150",
+      "distractors": [
+        "35",
+        "149",
+        "148"
+      ],
+      "explanation": [
+        "5 × 30 = 150"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_1df156c309",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "What is 80 times 2?",
+      "correct_answer": "160",
+      "distractors": [
+        "156",
+        "82",
+        "164"
+      ],
+      "explanation": [
+        "80 × 2 = 160"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_200e77e417",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "80 * 2",
+      "correct_answer": "160",
+      "distractors": [
+        "156",
+        "159",
+        "82"
+      ],
+      "explanation": [
+        "80 × 2 = 160"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_23816aafb5",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "Product of 1 and 30.",
+      "correct_answer": "30",
+      "distractors": [
+        "31",
+        "25",
+        "32"
+      ],
+      "explanation": [
+        "1 × 30 = 30"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_2af3beca4c",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "1 times 40",
+      "correct_answer": "40",
+      "distractors": [
+        "38",
+        "41",
+        "39"
+      ],
+      "explanation": [
+        "1 × 40 = 40"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_2bd3483023",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "What is the product of 90 and 1?",
+      "correct_answer": "90",
+      "distractors": [
+        "89",
+        "91",
+        "88"
+      ],
+      "explanation": [
+        "90 × 1 = 90"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_2fa4bdc938",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "4 * 40",
+      "correct_answer": "160",
+      "distractors": [
+        "163",
+        "44",
+        "159"
+      ],
+      "explanation": [
+        "4 × 40 = 160"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_34eafdd32b",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "Work out 5 * 50.",
+      "correct_answer": "250",
+      "distractors": [
+        "247",
+        "245",
+        "55"
+      ],
+      "explanation": [
+        "5 × 50 = 250"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_388abe9fcd",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "3 * 10",
+      "correct_answer": "30",
+      "distractors": [
+        "13",
+        "34",
+        "35"
+      ],
+      "explanation": [
+        "3 × 10 = 30"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_3d4168e862",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "Work out 20 * 1.",
+      "correct_answer": "20",
+      "distractors": [
+        "23",
+        "25",
+        "21"
+      ],
+      "explanation": [
+        "20 × 1 = 20"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_4a030a3e70",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "Multiply 70 and 2.",
+      "correct_answer": "140",
+      "distractors": [
+        "138",
+        "72",
+        "135"
+      ],
+      "explanation": [
+        "70 × 2 = 140"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_4e4dc34bba",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "4*10",
+      "correct_answer": "40",
+      "distractors": [
+        "45",
+        "14",
+        "41"
+      ],
+      "explanation": [
+        "4 × 10 = 40"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_54c6c9af32",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "8 * 50",
+      "correct_answer": "400",
+      "distractors": [
+        "404",
+        "405",
+        "58"
+      ],
+      "explanation": [
+        "8 × 50 = 400"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_581c322515",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "Product of 10 and 4.",
+      "correct_answer": "40",
+      "distractors": [
+        "44",
+        "43",
+        "14"
+      ],
+      "explanation": [
+        "10 × 4 = 40"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_599bb33fb9",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "8*10",
+      "correct_answer": "80",
+      "distractors": [
+        "18",
+        "79",
+        "76"
+      ],
+      "explanation": [
+        "8 × 10 = 80"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_5a52e83335",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "60*4",
+      "correct_answer": "240",
+      "distractors": [
+        "64",
+        "243",
+        "242"
+      ],
+      "explanation": [
+        "60 × 4 = 240"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_5c3a886bcd",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "What is 30 times 4?",
+      "correct_answer": "120",
+      "distractors": [
+        "34",
+        "116",
+        "119"
+      ],
+      "explanation": [
+        "30 × 4 = 120"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_5d3062fd5c",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "Product of 9 and 20.",
+      "correct_answer": "180",
+      "distractors": [
+        "29",
+        "184",
+        "178"
+      ],
+      "explanation": [
+        "9 × 20 = 180"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_62dddd5c6e",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "Multiply 2 and 50.",
+      "correct_answer": "100",
+      "distractors": [
+        "101",
+        "103",
+        "52"
+      ],
+      "explanation": [
+        "2 × 50 = 100"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_65d298c807",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "What is 1 times 50?",
+      "correct_answer": "50",
+      "distractors": [
+        "51",
+        "54",
+        "49"
+      ],
+      "explanation": [
+        "1 × 50 = 50"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_6c1ed4719d",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "Product of 50 and 1.",
+      "correct_answer": "50",
+      "distractors": [
+        "46",
+        "51",
+        "45"
+      ],
+      "explanation": [
+        "50 × 1 = 50"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_6cd380bfe1",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "What is the product of 9 and 20?",
+      "correct_answer": "180",
+      "distractors": [
+        "182",
+        "29",
+        "184"
+      ],
+      "explanation": [
+        "9 × 20 = 180"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_705cb64d4e",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "2 * 40",
+      "correct_answer": "80",
+      "distractors": [
+        "81",
+        "85",
+        "42"
+      ],
+      "explanation": [
+        "2 × 40 = 80"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_724e02b070",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "What is 1 times 90?",
+      "correct_answer": "90",
+      "distractors": [
+        "91",
+        "87",
+        "89"
+      ],
+      "explanation": [
+        "1 × 90 = 90"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_72b29c3343",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "3 times 20",
+      "correct_answer": "60",
+      "distractors": [
+        "57",
+        "23",
+        "56"
+      ],
+      "explanation": [
+        "3 × 20 = 60"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_73c3185a20",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "What is 20 times 1?",
+      "correct_answer": "20",
+      "distractors": [
+        "23",
+        "21",
+        "22"
+      ],
+      "explanation": [
+        "20 × 1 = 20"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_7b901c67b6",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "What is 10 times 2?",
+      "correct_answer": "20",
+      "distractors": [
+        "15",
+        "19",
+        "12"
+      ],
+      "explanation": [
+        "10 × 2 = 20"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_7e13340ac4",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "Calculate 10*4.",
+      "correct_answer": "40",
+      "distractors": [
+        "14",
+        "39",
+        "36"
+      ],
+      "explanation": [
+        "10 × 4 = 40"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_7f9f348d70",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "Product of 20 and 5.",
+      "correct_answer": "100",
+      "distractors": [
+        "25",
+        "104",
+        "99"
+      ],
+      "explanation": [
+        "20 × 5 = 100"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_7fb1f1bdd1",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "Multiply 3 and 50.",
+      "correct_answer": "150",
+      "distractors": [
+        "151",
+        "149",
+        "53"
+      ],
+      "explanation": [
+        "3 × 50 = 150"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_7fd9aa81a3",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "8 * 10",
+      "correct_answer": "80",
+      "distractors": [
+        "76",
+        "18",
+        "78"
+      ],
+      "explanation": [
+        "8 × 10 = 80"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_8095af519e",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "What is 2 times 30?",
+      "correct_answer": "60",
+      "distractors": [
+        "64",
+        "32",
+        "61"
+      ],
+      "explanation": [
+        "2 × 30 = 60"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_8141c17eec",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "Multiply 5 and 80.",
+      "correct_answer": "400",
+      "distractors": [
+        "399",
+        "85",
+        "403"
+      ],
+      "explanation": [
+        "5 × 80 = 400"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_83788552b8",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "What is the product of 4 and 20?",
+      "correct_answer": "80",
+      "distractors": [
+        "24",
+        "83",
+        "82"
+      ],
+      "explanation": [
+        "4 × 20 = 80"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_8437e9d559",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "Multiply 50 and 9.",
+      "correct_answer": "450",
+      "distractors": [
+        "446",
+        "447",
+        "59"
+      ],
+      "explanation": [
+        "50 × 9 = 450"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_8680e91ace",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "Work out 10 * 6.",
+      "correct_answer": "60",
+      "distractors": [
+        "63",
+        "59",
+        "16"
+      ],
+      "explanation": [
+        "10 × 6 = 60"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_8b2a82c57e",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "What is 70 times 8?",
+      "correct_answer": "560",
+      "distractors": [
+        "561",
+        "78",
+        "559"
+      ],
+      "explanation": [
+        "70 × 8 = 560"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_8dbcc1109b",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "5*90",
+      "correct_answer": "450",
+      "distractors": [
+        "452",
+        "455",
+        "95"
+      ],
+      "explanation": [
+        "5 × 90 = 450"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_8e17adaa2a",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "Calculate 1*10.",
+      "correct_answer": "10",
+      "distractors": [
+        "14",
+        "13",
+        "11"
+      ],
+      "explanation": [
+        "1 × 10 = 10"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_8fce88ecfe",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "Product of 5 and 40.",
+      "correct_answer": "200",
+      "distractors": [
+        "205",
+        "45",
+        "196"
+      ],
+      "explanation": [
+        "5 × 40 = 200"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_9e10ea9234",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "10*8",
+      "correct_answer": "80",
+      "distractors": [
+        "18",
+        "78",
+        "84"
+      ],
+      "explanation": [
+        "10 × 8 = 80"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_a031d59756",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "What is 20 times 4?",
+      "correct_answer": "80",
+      "distractors": [
+        "75",
+        "24",
+        "85"
+      ],
+      "explanation": [
+        "20 × 4 = 80"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_a622f3599c",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "20 * 4",
+      "correct_answer": "80",
+      "distractors": [
+        "24",
+        "76",
+        "77"
+      ],
+      "explanation": [
+        "20 × 4 = 80"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_a9a6a4da16",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "3 times 10",
+      "correct_answer": "30",
+      "distractors": [
+        "26",
+        "13",
+        "29"
+      ],
+      "explanation": [
+        "3 × 10 = 30"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_acace547df",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "What is 5 times 80?",
+      "correct_answer": "400",
+      "distractors": [
+        "398",
+        "85",
+        "401"
+      ],
+      "explanation": [
+        "5 × 80 = 400"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_adae6c4f5b",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "8 * 20",
+      "correct_answer": "160",
+      "distractors": [
+        "161",
+        "159",
+        "28"
+      ],
+      "explanation": [
+        "8 × 20 = 160"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_b55e278a9e",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "9 * 60",
+      "correct_answer": "540",
+      "distractors": [
+        "536",
+        "545",
+        "69"
+      ],
+      "explanation": [
+        "9 × 60 = 540"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_b59b03f089",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "Multiply 30 and 4.",
+      "correct_answer": "120",
+      "distractors": [
+        "34",
+        "122",
+        "124"
+      ],
+      "explanation": [
+        "30 × 4 = 120"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_b6856726a4",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "Work out 10 * 3.",
+      "correct_answer": "30",
+      "distractors": [
+        "13",
+        "28",
+        "26"
+      ],
+      "explanation": [
+        "10 × 3 = 30"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_b6e1840636",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "9 * 30",
+      "correct_answer": "270",
+      "distractors": [
+        "39",
+        "275",
+        "273"
+      ],
+      "explanation": [
+        "9 × 30 = 270"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_b7c6306713",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "1 * 30",
+      "correct_answer": "30",
+      "distractors": [
+        "31",
+        "35",
+        "34"
+      ],
+      "explanation": [
+        "1 × 30 = 30"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_b8561067ff",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "Calculate 4*50.",
+      "correct_answer": "200",
+      "distractors": [
+        "54",
+        "204",
+        "201"
+      ],
+      "explanation": [
+        "4 × 50 = 200"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_b94e1f00e5",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "Product of 3 and 40.",
+      "correct_answer": "120",
+      "distractors": [
+        "43",
+        "119",
+        "117"
+      ],
+      "explanation": [
+        "3 × 40 = 120"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_bb1bb45d65",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "4*40",
+      "correct_answer": "160",
+      "distractors": [
+        "44",
+        "165",
+        "161"
+      ],
+      "explanation": [
+        "4 × 40 = 160"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_bfd8a60dec",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "What is the product of 2 and 50?",
+      "correct_answer": "100",
+      "distractors": [
+        "103",
+        "98",
+        "52"
+      ],
+      "explanation": [
+        "2 × 50 = 100"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_c0415b5e36",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "What is 40 times 1?",
+      "correct_answer": "40",
+      "distractors": [
+        "44",
+        "41",
+        "35"
+      ],
+      "explanation": [
+        "40 × 1 = 40"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_c16ab1c7cb",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "What is the product of 10 and 4?",
+      "correct_answer": "40",
+      "distractors": [
+        "14",
+        "35",
+        "41"
+      ],
+      "explanation": [
+        "10 × 4 = 40"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_c2deb0a910",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "Calculate 3*80.",
+      "correct_answer": "240",
+      "distractors": [
+        "83",
+        "241",
+        "244"
+      ],
+      "explanation": [
+        "3 × 80 = 240"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_c94bb12d27",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "What is the product of 50 and 9?",
+      "correct_answer": "450",
+      "distractors": [
+        "59",
+        "448",
+        "453"
+      ],
+      "explanation": [
+        "50 × 9 = 450"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_d2bb107589",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "40 * 5",
+      "correct_answer": "200",
+      "distractors": [
+        "205",
+        "201",
+        "45"
+      ],
+      "explanation": [
+        "40 × 5 = 200"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_d4f7cff3a9",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "Calculate 2*30.",
+      "correct_answer": "60",
+      "distractors": [
+        "57",
+        "32",
+        "59"
+      ],
+      "explanation": [
+        "2 × 30 = 60"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_d8524188a1",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "Work out 1 * 40.",
+      "correct_answer": "40",
+      "distractors": [
+        "36",
+        "41",
+        "39"
+      ],
+      "explanation": [
+        "1 × 40 = 40"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_dea83c0c50",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "1 * 50",
+      "correct_answer": "50",
+      "distractors": [
+        "51",
+        "49",
+        "55"
+      ],
+      "explanation": [
+        "1 × 50 = 50"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_e116c45721",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "1 times 80",
+      "correct_answer": "80",
+      "distractors": [
+        "75",
+        "82",
+        "81"
+      ],
+      "explanation": [
+        "1 × 80 = 80"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_e2970ab36a",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "Product of 7 and 20.",
+      "correct_answer": "140",
+      "distractors": [
+        "27",
+        "136",
+        "145"
+      ],
+      "explanation": [
+        "7 × 20 = 140"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_e3b64e373d",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "Product of 90 and 5.",
+      "correct_answer": "450",
+      "distractors": [
+        "95",
+        "452",
+        "449"
+      ],
+      "explanation": [
+        "90 × 5 = 450"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_e67f578bdf",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "Calculate 1*50.",
+      "correct_answer": "50",
+      "distractors": [
+        "48",
+        "51",
+        "47"
+      ],
+      "explanation": [
+        "1 × 50 = 50"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_e98668052d",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "What is 10 times 9?",
+      "correct_answer": "90",
+      "distractors": [
+        "94",
+        "19",
+        "93"
+      ],
+      "explanation": [
+        "10 × 9 = 90"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_ea4a4dd433",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "8 times 40",
+      "correct_answer": "320",
+      "distractors": [
+        "48",
+        "325",
+        "321"
+      ],
+      "explanation": [
+        "8 × 40 = 320"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_ed79b01db4",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "What is 2 times 10?",
+      "correct_answer": "20",
+      "distractors": [
+        "12",
+        "15",
+        "23"
+      ],
+      "explanation": [
+        "2 × 10 = 20"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_f17f6b7c9e",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "6 * 90",
+      "correct_answer": "540",
+      "distractors": [
+        "96",
+        "535",
+        "537"
+      ],
+      "explanation": [
+        "6 × 90 = 540"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_f3333f0475",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "6 times 80",
+      "correct_answer": "480",
+      "distractors": [
+        "86",
+        "482",
+        "485"
+      ],
+      "explanation": [
+        "6 × 80 = 480"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_f576423de7",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "Work out 70 * 4.",
+      "correct_answer": "280",
+      "distractors": [
+        "284",
+        "283",
+        "74"
+      ],
+      "explanation": [
+        "70 × 4 = 280"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_f8b2b8d415",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "Product of 30 and 5.",
+      "correct_answer": "150",
+      "distractors": [
+        "147",
+        "35",
+        "152"
+      ],
+      "explanation": [
+        "30 × 5 = 150"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_f9eb00bb0d",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "Calculate 5*20.",
+      "correct_answer": "100",
+      "distractors": [
+        "98",
+        "101",
+        "25"
+      ],
+      "explanation": [
+        "5 × 20 = 100"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_fa137c435e",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "Calculate 6*10.",
+      "correct_answer": "60",
+      "distractors": [
+        "16",
+        "55",
+        "58"
+      ],
+      "explanation": [
+        "6 × 10 = 60"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_fad0223851",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "Multiply 10 and 2.",
+      "correct_answer": "20",
+      "distractors": [
+        "24",
+        "12",
+        "17"
+      ],
+      "explanation": [
+        "10 × 2 = 20"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_fe495e1237",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "Multiply 2 and 80.",
+      "correct_answer": "160",
+      "distractors": [
+        "165",
+        "164",
+        "82"
+      ],
+      "explanation": [
+        "2 × 80 = 160"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_fe80161dd7",
+      "concept_id": "mult_1digit_by_multiple_of_10",
+      "prompt": "What is 3 times 80?",
+      "correct_answer": "240",
+      "distractors": [
+        "242",
+        "237",
+        "83"
+      ],
+      "explanation": [
+        "3 × 80 = 240"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    }
+  ]
+}

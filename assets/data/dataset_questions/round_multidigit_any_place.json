@@ -1,0 +1,3404 @@
+{
+  "items": [
+    {
+      "id": "deepmind_mathematics_dataset_round_0401df4874",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 4969562 to the nearest one million.",
+      "correct_answer": "5000000",
+      "distractors": [
+        "6000000",
+        "4999996",
+        "4999999"
+      ],
+      "explanation": [
+        "Round 4.96956e+06 to nearest 1000000 gives 5000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_04b2b30dca",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 35983666 to the nearest 1000000.",
+      "correct_answer": "36000000",
+      "distractors": [
+        "37000000",
+        "35999997",
+        "36000002"
+      ],
+      "explanation": [
+        "Round 3.59837e+07 to nearest 1000000 gives 36000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_051dba0829",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 9900600 to the nearest 100000.",
+      "correct_answer": "9900000",
+      "distractors": [
+        "9900001",
+        "9899995",
+        "9800000"
+      ],
+      "explanation": [
+        "Round 9.9006e+06 to nearest 100000 gives 9900000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_05f3ba6985",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 2571180 to the nearest ten thousand.",
+      "correct_answer": "2570000",
+      "distractors": [
+        "2570002",
+        "2560000",
+        "2569998"
+      ],
+      "explanation": [
+        "Round 2.57118e+06 to nearest 10000 gives 2570000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_0a27d70b48",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 1606000 to the nearest 100000.",
+      "correct_answer": "1600000",
+      "distractors": [
+        "1500000",
+        "1599998",
+        "1600004"
+      ],
+      "explanation": [
+        "Round 1.606e+06 to nearest 100000 gives 1600000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_0c18a3853a",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 226850000 to the nearest one million.",
+      "correct_answer": "227000000",
+      "distractors": [
+        "226999999",
+        "227000001",
+        "228000000"
+      ],
+      "explanation": [
+        "Round 2.2685e+08 to nearest 1000000 gives 227000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_0c660b2a64",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 70540 to the nearest ten thousand.",
+      "correct_answer": "70000",
+      "distractors": [
+        "60000",
+        "69996",
+        "69998"
+      ],
+      "explanation": [
+        "Round 70540 to nearest 10000 gives 70000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_0daae64504",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 60386299 to the nearest 100000.",
+      "correct_answer": "60400000",
+      "distractors": [
+        "60500000",
+        "60400005",
+        "60400001"
+      ],
+      "explanation": [
+        "Round 6.03863e+07 to nearest 100000 gives 60400000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_0ec7819251",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 44500 to the nearest one thousand.",
+      "correct_answer": "45000",
+      "distractors": [
+        "45003",
+        "46000",
+        "44996"
+      ],
+      "explanation": [
+        "Round 44500 to nearest 1000 gives 45000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_0ee69bd5c9",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 850750 to the nearest 10000.",
+      "correct_answer": "850000",
+      "distractors": [
+        "840000",
+        "850005",
+        "849997"
+      ],
+      "explanation": [
+        "Round 850750 to nearest 10000 gives 850000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_0fe04fa8aa",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 16340 to the nearest 1000.",
+      "correct_answer": "16000",
+      "distractors": [
+        "15000",
+        "16001",
+        "15995"
+      ],
+      "explanation": [
+        "Round 16340 to nearest 1000 gives 16000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_10a9bd7398",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 5539800 rounded to the nearest 10000?",
+      "correct_answer": "5540000",
+      "distractors": [
+        "5550000",
+        "5539999",
+        "5539997"
+      ],
+      "explanation": [
+        "Round 5.5398e+06 to nearest 10000 gives 5540000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_1107e4cfe9",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 138400 to the nearest ten thousand.",
+      "correct_answer": "140000",
+      "distractors": [
+        "150000",
+        "140004",
+        "139996"
+      ],
+      "explanation": [
+        "Round 138400 to nearest 10000 gives 140000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_119c38be39",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 131830 rounded to the nearest 10000?",
+      "correct_answer": "130000",
+      "distractors": [
+        "130004",
+        "120000",
+        "129998"
+      ],
+      "explanation": [
+        "Round 131830 to nearest 10000 gives 130000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_12ac795fe9",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 27937600 rounded to the nearest 1000000?",
+      "correct_answer": "28000000",
+      "distractors": [
+        "29000000",
+        "27999998",
+        "27999996"
+      ],
+      "explanation": [
+        "Round 2.79376e+07 to nearest 1000000 gives 28000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_1302a07162",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 30843010100 rounded to the nearest 1000000?",
+      "correct_answer": "30843000000",
+      "distractors": [
+        "30842999999",
+        "30842000000",
+        "30843000004"
+      ],
+      "explanation": [
+        "Round 3.0843e+10 to nearest 1000000 gives 30843000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_14d1ed0712",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 3926000 to the nearest 10000.",
+      "correct_answer": "3930000",
+      "distractors": [
+        "3929996",
+        "3929997",
+        "3940000"
+      ],
+      "explanation": [
+        "Round 3.926e+06 to nearest 10000 gives 3930000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_17f61ce3d8",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 299350 rounded to the nearest one thousand?",
+      "correct_answer": "299000",
+      "distractors": [
+        "298000",
+        "299002",
+        "299003"
+      ],
+      "explanation": [
+        "Round 299350 to nearest 1000 gives 299000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_18858e4fcf",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 702000 to the nearest 10000.",
+      "correct_answer": "700000",
+      "distractors": [
+        "699996",
+        "690000",
+        "700005"
+      ],
+      "explanation": [
+        "Round 702000 to nearest 10000 gives 700000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_1b8a6786c2",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 384059 rounded to the nearest ten thousand?",
+      "correct_answer": "380000",
+      "distractors": [
+        "380003",
+        "380004",
+        "370000"
+      ],
+      "explanation": [
+        "Round 384059 to nearest 10000 gives 380000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_1d51315a93",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 10350 rounded to the nearest 1000?",
+      "correct_answer": "10000",
+      "distractors": [
+        "10001",
+        "9997",
+        "9000"
+      ],
+      "explanation": [
+        "Round 10350 to nearest 1000 gives 10000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_1ed475252b",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 718809910 rounded to the nearest 1000000?",
+      "correct_answer": "719000000",
+      "distractors": [
+        "718999997",
+        "720000000",
+        "718999999"
+      ],
+      "explanation": [
+        "Round 7.1881e+08 to nearest 1000000 gives 719000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_20c7bde7d0",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 5321467340 to the nearest 1000000.",
+      "correct_answer": "5321000000",
+      "distractors": [
+        "5320000000",
+        "5321000002",
+        "5320999996"
+      ],
+      "explanation": [
+        "Round 5.32147e+09 to nearest 1000000 gives 5321000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_219d9883eb",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 172240 to the nearest one thousand.",
+      "correct_answer": "172000",
+      "distractors": [
+        "171000",
+        "172003",
+        "171995"
+      ],
+      "explanation": [
+        "Round 172240 to nearest 1000 gives 172000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_220ede6a7c",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 51325 rounded to the nearest ten thousand?",
+      "correct_answer": "50000",
+      "distractors": [
+        "49996",
+        "40000",
+        "49999"
+      ],
+      "explanation": [
+        "Round 51325 to nearest 10000 gives 50000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_230e17b31a",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 14315 to the nearest 10000.",
+      "correct_answer": "10000",
+      "distractors": [
+        "9999",
+        "10004",
+        "0"
+      ],
+      "explanation": [
+        "Round 14315 to nearest 10000 gives 10000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_243cff9847",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 276507750 to the nearest one million.",
+      "correct_answer": "277000000",
+      "distractors": [
+        "276999995",
+        "276999997",
+        "278000000"
+      ],
+      "explanation": [
+        "Round 2.76508e+08 to nearest 1000000 gives 277000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_245b4b76a9",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 119000 to the nearest ten thousand.",
+      "correct_answer": "120000",
+      "distractors": [
+        "119998",
+        "119995",
+        "130000"
+      ],
+      "explanation": [
+        "Round 119000 to nearest 10000 gives 120000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_255cc41707",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 141800 rounded to the nearest 100000?",
+      "correct_answer": "100000",
+      "distractors": [
+        "0",
+        "99996",
+        "100004"
+      ],
+      "explanation": [
+        "Round 141800 to nearest 100000 gives 100000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_26adf2eb5d",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 1485356200 rounded to the nearest 1000000?",
+      "correct_answer": "1485000000",
+      "distractors": [
+        "1485000005",
+        "1484000000",
+        "1484999996"
+      ],
+      "explanation": [
+        "Round 1.48536e+09 to nearest 1000000 gives 1485000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_28f7b2a7ff",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 5967719 rounded to the nearest 10000?",
+      "correct_answer": "5970000",
+      "distractors": [
+        "5970005",
+        "5980000",
+        "5970002"
+      ],
+      "explanation": [
+        "Round 5.96772e+06 to nearest 10000 gives 5970000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_2c15f8097f",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 130098 rounded to the nearest ten thousand?",
+      "correct_answer": "130000",
+      "distractors": [
+        "130003",
+        "130005",
+        "120000"
+      ],
+      "explanation": [
+        "Round 130098 to nearest 10000 gives 130000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_2d16e0c932",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 748088 rounded to the nearest 1000?",
+      "correct_answer": "748000",
+      "distractors": [
+        "748001",
+        "748003",
+        "747000"
+      ],
+      "explanation": [
+        "Round 748088 to nearest 1000 gives 748000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_2dde39cad0",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 76480 to the nearest 10000.",
+      "correct_answer": "80000",
+      "distractors": [
+        "80002",
+        "80004",
+        "90000"
+      ],
+      "explanation": [
+        "Round 76480 to nearest 10000 gives 80000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_2e2038f4ea",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 71660100 to the nearest 1000000.",
+      "correct_answer": "72000000",
+      "distractors": [
+        "73000000",
+        "72000004",
+        "72000002"
+      ],
+      "explanation": [
+        "Round 7.16601e+07 to nearest 1000000 gives 72000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_2f7d858a77",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 160340000 to the nearest one million.",
+      "correct_answer": "160000000",
+      "distractors": [
+        "160000004",
+        "159999996",
+        "159000000"
+      ],
+      "explanation": [
+        "Round 1.6034e+08 to nearest 1000000 gives 160000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_2fc27390e5",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 1181000 rounded to the nearest 10000?",
+      "correct_answer": "1180000",
+      "distractors": [
+        "1170000",
+        "1180005",
+        "1179995"
+      ],
+      "explanation": [
+        "Round 1.181e+06 to nearest 10000 gives 1180000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_31ba29894d",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 78974 rounded to the nearest 10000?",
+      "correct_answer": "80000",
+      "distractors": [
+        "90000",
+        "79996",
+        "80005"
+      ],
+      "explanation": [
+        "Round 78974 to nearest 10000 gives 80000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_32c521f559",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 136415550 to the nearest ten thousand.",
+      "correct_answer": "136420000",
+      "distractors": [
+        "136430000",
+        "136419995",
+        "136419998"
+      ],
+      "explanation": [
+        "Round 1.36416e+08 to nearest 10000 gives 136420000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_331fa6433d",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 254250 to the nearest 1000.",
+      "correct_answer": "254000",
+      "distractors": [
+        "254004",
+        "254003",
+        "253000"
+      ],
+      "explanation": [
+        "Round 254250 to nearest 1000 gives 254000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_33dc56b335",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 27740074 to the nearest 10000.",
+      "correct_answer": "27740000",
+      "distractors": [
+        "27730000",
+        "27740005",
+        "27739996"
+      ],
+      "explanation": [
+        "Round 2.77401e+07 to nearest 10000 gives 27740000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_3713341299",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 394860 to the nearest 100000.",
+      "correct_answer": "400000",
+      "distractors": [
+        "400002",
+        "500000",
+        "399996"
+      ],
+      "explanation": [
+        "Round 394860 to nearest 100000 gives 400000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_376169a190",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 1703187 rounded to the nearest 100000?",
+      "correct_answer": "1700000",
+      "distractors": [
+        "1700002",
+        "1700001",
+        "1600000"
+      ],
+      "explanation": [
+        "Round 1.70319e+06 to nearest 100000 gives 1700000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_385385f34d",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 4984751 rounded to the nearest one thousand?",
+      "correct_answer": "4985000",
+      "distractors": [
+        "4984998",
+        "4984996",
+        "4986000"
+      ],
+      "explanation": [
+        "Round 4.98475e+06 to nearest 1000 gives 4985000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_39f3c2a2e0",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 107780 rounded to the nearest 10000?",
+      "correct_answer": "110000",
+      "distractors": [
+        "109996",
+        "120000",
+        "110003"
+      ],
+      "explanation": [
+        "Round 107780 to nearest 10000 gives 110000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_3a296e1cac",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 205470 to the nearest 10000.",
+      "correct_answer": "210000",
+      "distractors": [
+        "209998",
+        "209996",
+        "220000"
+      ],
+      "explanation": [
+        "Round 205470 to nearest 10000 gives 210000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_3b9b4283c0",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 39340500 to the nearest 1000000.",
+      "correct_answer": "39000000",
+      "distractors": [
+        "39000002",
+        "38000000",
+        "39000001"
+      ],
+      "explanation": [
+        "Round 3.93405e+07 to nearest 1000000 gives 39000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_3bc65eec8e",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 6418400 rounded to the nearest one million?",
+      "correct_answer": "6000000",
+      "distractors": [
+        "5000000",
+        "6000002",
+        "5999996"
+      ],
+      "explanation": [
+        "Round 6.4184e+06 to nearest 1000000 gives 6000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_3fb38b334e",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 172600000 to the nearest 1000000.",
+      "correct_answer": "173000000",
+      "distractors": [
+        "172999996",
+        "174000000",
+        "172999999"
+      ],
+      "explanation": [
+        "Round 1.726e+08 to nearest 1000000 gives 173000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_43dc5260ea",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 22556832 rounded to the nearest 100000?",
+      "correct_answer": "22600000",
+      "distractors": [
+        "22599996",
+        "22700000",
+        "22599999"
+      ],
+      "explanation": [
+        "Round 2.25568e+07 to nearest 100000 gives 22600000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_444366fb69",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 19231100 rounded to the nearest one million?",
+      "correct_answer": "19000000",
+      "distractors": [
+        "19000001",
+        "18999998",
+        "18000000"
+      ],
+      "explanation": [
+        "Round 1.92311e+07 to nearest 1000000 gives 19000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_45b7cdb639",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 76282830 rounded to the nearest 1000000?",
+      "correct_answer": "76000000",
+      "distractors": [
+        "76000002",
+        "75000000",
+        "76000003"
+      ],
+      "explanation": [
+        "Round 7.62828e+07 to nearest 1000000 gives 76000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_46a3959b30",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 18190 to the nearest one thousand.",
+      "correct_answer": "18000",
+      "distractors": [
+        "17000",
+        "17996",
+        "18003"
+      ],
+      "explanation": [
+        "Round 18190 to nearest 1000 gives 18000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_48191f302c",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 310830000 rounded to the nearest 1000000?",
+      "correct_answer": "311000000",
+      "distractors": [
+        "312000000",
+        "311000001",
+        "311000004"
+      ],
+      "explanation": [
+        "Round 3.1083e+08 to nearest 1000000 gives 311000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_4851bb584f",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 111934050 rounded to the nearest one million?",
+      "correct_answer": "112000000",
+      "distractors": [
+        "113000000",
+        "111999995",
+        "112000005"
+      ],
+      "explanation": [
+        "Round 1.11934e+08 to nearest 1000000 gives 112000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_4933683a87",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 13001500 to the nearest 100000.",
+      "correct_answer": "13000000",
+      "distractors": [
+        "12900000",
+        "13000004",
+        "13000001"
+      ],
+      "explanation": [
+        "Round 1.30015e+07 to nearest 100000 gives 13000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_49a9da6c9c",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 3080000 to the nearest 1000000.",
+      "correct_answer": "3000000",
+      "distractors": [
+        "2000000",
+        "2999996",
+        "2999998"
+      ],
+      "explanation": [
+        "Round 3.08e+06 to nearest 1000000 gives 3000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_4b5b814742",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 3783348650 rounded to the nearest one million?",
+      "correct_answer": "3783000000",
+      "distractors": [
+        "3782000000",
+        "3782999997",
+        "3783000004"
+      ],
+      "explanation": [
+        "Round 3.78335e+09 to nearest 1000000 gives 3783000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_4d0c7b8076",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 10820 to the nearest 1000.",
+      "correct_answer": "11000",
+      "distractors": [
+        "12000",
+        "10995",
+        "10997"
+      ],
+      "explanation": [
+        "Round 10820 to nearest 1000 gives 11000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_4f3587f45f",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 307780370 to the nearest 100000.",
+      "correct_answer": "307800000",
+      "distractors": [
+        "307799999",
+        "307900000",
+        "307800001"
+      ],
+      "explanation": [
+        "Round 3.0778e+08 to nearest 100000 gives 307800000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_4f37243f5d",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 3533900 rounded to the nearest 10000?",
+      "correct_answer": "3530000",
+      "distractors": [
+        "3520000",
+        "3530003",
+        "3529998"
+      ],
+      "explanation": [
+        "Round 3.5339e+06 to nearest 10000 gives 3530000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_4f77ae3e5d",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 2623866420 to the nearest one million.",
+      "correct_answer": "2624000000",
+      "distractors": [
+        "2624000002",
+        "2624000004",
+        "2625000000"
+      ],
+      "explanation": [
+        "Round 2.62387e+09 to nearest 1000000 gives 2624000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_50905d543f",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 68842380 to the nearest one million.",
+      "correct_answer": "69000000",
+      "distractors": [
+        "70000000",
+        "69000001",
+        "68999998"
+      ],
+      "explanation": [
+        "Round 6.88424e+07 to nearest 1000000 gives 69000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_50b9427759",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 33773 to the nearest 1000.",
+      "correct_answer": "34000",
+      "distractors": [
+        "34004",
+        "34003",
+        "35000"
+      ],
+      "explanation": [
+        "Round 33773 to nearest 1000 gives 34000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_548830981f",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 7154000 to the nearest one million.",
+      "correct_answer": "7000000",
+      "distractors": [
+        "7000002",
+        "7000005",
+        "6000000"
+      ],
+      "explanation": [
+        "Round 7.154e+06 to nearest 1000000 gives 7000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_54a19d9c9f",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 4240000 rounded to the nearest 100000?",
+      "correct_answer": "4200000",
+      "distractors": [
+        "4200001",
+        "4100000",
+        "4199996"
+      ],
+      "explanation": [
+        "Round 4.24e+06 to nearest 100000 gives 4200000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_55ad5938ae",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 29194 to the nearest one thousand.",
+      "correct_answer": "29000",
+      "distractors": [
+        "29002",
+        "28000",
+        "29005"
+      ],
+      "explanation": [
+        "Round 29194 to nearest 1000 gives 29000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_576666f528",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 1643600 rounded to the nearest 10000?",
+      "correct_answer": "1640000",
+      "distractors": [
+        "1639995",
+        "1630000",
+        "1640002"
+      ],
+      "explanation": [
+        "Round 1.6436e+06 to nearest 10000 gives 1640000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_58383bb7a8",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 238990070 rounded to the nearest 1000000?",
+      "correct_answer": "239000000",
+      "distractors": [
+        "238999996",
+        "239000004",
+        "240000000"
+      ],
+      "explanation": [
+        "Round 2.3899e+08 to nearest 1000000 gives 239000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_5a016a73e4",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 15854000 to the nearest one million.",
+      "correct_answer": "16000000",
+      "distractors": [
+        "15999997",
+        "16000004",
+        "17000000"
+      ],
+      "explanation": [
+        "Round 1.5854e+07 to nearest 1000000 gives 16000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_5becc6be29",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 8920000 rounded to the nearest one million?",
+      "correct_answer": "9000000",
+      "distractors": [
+        "8999996",
+        "9000001",
+        "10000000"
+      ],
+      "explanation": [
+        "Round 8.92e+06 to nearest 1000000 gives 9000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_5d11cfe23d",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 5121598 rounded to the nearest one million?",
+      "correct_answer": "5000000",
+      "distractors": [
+        "5000002",
+        "4000000",
+        "4999995"
+      ],
+      "explanation": [
+        "Round 5.1216e+06 to nearest 1000000 gives 5000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_6030fd3eb3",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 252455 rounded to the nearest 10000?",
+      "correct_answer": "250000",
+      "distractors": [
+        "250004",
+        "240000",
+        "250002"
+      ],
+      "explanation": [
+        "Round 252455 to nearest 10000 gives 250000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_604390c0f8",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 317752920 to the nearest 100000.",
+      "correct_answer": "317800000",
+      "distractors": [
+        "317800005",
+        "317900000",
+        "317799998"
+      ],
+      "explanation": [
+        "Round 3.17753e+08 to nearest 100000 gives 317800000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_61069c11b2",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 8548 to the nearest 1000.",
+      "correct_answer": "9000",
+      "distractors": [
+        "10000",
+        "8998",
+        "9001"
+      ],
+      "explanation": [
+        "Round 8548 to nearest 1000 gives 9000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_6283e12094",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 189100000 rounded to the nearest 1000000?",
+      "correct_answer": "189000000",
+      "distractors": [
+        "189000005",
+        "188999996",
+        "188000000"
+      ],
+      "explanation": [
+        "Round 1.891e+08 to nearest 1000000 gives 189000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_6287544488",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 701164848 rounded to the nearest one million?",
+      "correct_answer": "701000000",
+      "distractors": [
+        "701000005",
+        "700000000",
+        "701000001"
+      ],
+      "explanation": [
+        "Round 7.01165e+08 to nearest 1000000 gives 701000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_65befe623b",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 17640 rounded to the nearest one thousand?",
+      "correct_answer": "18000",
+      "distractors": [
+        "17999",
+        "19000",
+        "18004"
+      ],
+      "explanation": [
+        "Round 17640 to nearest 1000 gives 18000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_65ce964018",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 123232380 rounded to the nearest one million?",
+      "correct_answer": "123000000",
+      "distractors": [
+        "123000001",
+        "122000000",
+        "123000003"
+      ],
+      "explanation": [
+        "Round 1.23232e+08 to nearest 1000000 gives 123000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_6650e25c22",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 100960 to the nearest one thousand.",
+      "correct_answer": "101000",
+      "distractors": [
+        "100997",
+        "102000",
+        "100999"
+      ],
+      "explanation": [
+        "Round 100960 to nearest 1000 gives 101000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_66b22e1083",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 2988411000 rounded to the nearest 1000000?",
+      "correct_answer": "2988000000",
+      "distractors": [
+        "2987999999",
+        "2988000002",
+        "2987000000"
+      ],
+      "explanation": [
+        "Round 2.98841e+09 to nearest 1000000 gives 2988000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_679a5ece40",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 57110 rounded to the nearest 10000?",
+      "correct_answer": "60000",
+      "distractors": [
+        "59996",
+        "60001",
+        "70000"
+      ],
+      "explanation": [
+        "Round 57110 to nearest 10000 gives 60000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_69af23d436",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 138920 rounded to the nearest 10000?",
+      "correct_answer": "140000",
+      "distractors": [
+        "140003",
+        "150000",
+        "139997"
+      ],
+      "explanation": [
+        "Round 138920 to nearest 10000 gives 140000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_6a5dc1cbcf",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 55170 rounded to the nearest ten thousand?",
+      "correct_answer": "60000",
+      "distractors": [
+        "60005",
+        "70000",
+        "60002"
+      ],
+      "explanation": [
+        "Round 55170 to nearest 10000 gives 60000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_6cbdef669e",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 92500000 to the nearest one million.",
+      "correct_answer": "93000000",
+      "distractors": [
+        "92999997",
+        "92999995",
+        "94000000"
+      ],
+      "explanation": [
+        "Round 9.25e+07 to nearest 1000000 gives 93000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_6f19ab9c52",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 110220 to the nearest ten thousand.",
+      "correct_answer": "110000",
+      "distractors": [
+        "100000",
+        "110002",
+        "110004"
+      ],
+      "explanation": [
+        "Round 110220 to nearest 10000 gives 110000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_6f6f6d25c1",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 7041 to the nearest 1000.",
+      "correct_answer": "7000",
+      "distractors": [
+        "7004",
+        "7002",
+        "6000"
+      ],
+      "explanation": [
+        "Round 7041 to nearest 1000 gives 7000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_706e78e7c2",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 10310 to the nearest one thousand.",
+      "correct_answer": "10000",
+      "distractors": [
+        "9996",
+        "10003",
+        "9000"
+      ],
+      "explanation": [
+        "Round 10310 to nearest 1000 gives 10000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_7286681365",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 1313341202 to the nearest 100000.",
+      "correct_answer": "1313300000",
+      "distractors": [
+        "1313200000",
+        "1313299998",
+        "1313299997"
+      ],
+      "explanation": [
+        "Round 1.31334e+09 to nearest 100000 gives 1313300000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_7403b43c4e",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 139912000 to the nearest one million.",
+      "correct_answer": "140000000",
+      "distractors": [
+        "139999995",
+        "141000000",
+        "139999997"
+      ],
+      "explanation": [
+        "Round 1.39912e+08 to nearest 1000000 gives 140000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_74b02d2a67",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 26095676 rounded to the nearest 10000?",
+      "correct_answer": "26100000",
+      "distractors": [
+        "26110000",
+        "26100001",
+        "26100003"
+      ],
+      "explanation": [
+        "Round 2.60957e+07 to nearest 10000 gives 26100000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_7551b8aed7",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 681526 rounded to the nearest 1000000?",
+      "correct_answer": "1000000",
+      "distractors": [
+        "1000005",
+        "999997",
+        "2000000"
+      ],
+      "explanation": [
+        "Round 681526 to nearest 1000000 gives 1000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_7798d13470",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 52376 rounded to the nearest ten thousand?",
+      "correct_answer": "50000",
+      "distractors": [
+        "49995",
+        "50005",
+        "40000"
+      ],
+      "explanation": [
+        "Round 52376 to nearest 10000 gives 50000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_77cf5cb682",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 95309659000 to the nearest 1000000.",
+      "correct_answer": "95310000000",
+      "distractors": [
+        "95309999999",
+        "95309999996",
+        "95311000000"
+      ],
+      "explanation": [
+        "Round 9.53097e+10 to nearest 1000000 gives 95310000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_780077596a",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 6099280 rounded to the nearest 10000?",
+      "correct_answer": "6100000",
+      "distractors": [
+        "6110000",
+        "6099999",
+        "6100005"
+      ],
+      "explanation": [
+        "Round 6.09928e+06 to nearest 10000 gives 6100000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_79750c2a45",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 263687 to the nearest 1000.",
+      "correct_answer": "264000",
+      "distractors": [
+        "265000",
+        "264003",
+        "263998"
+      ],
+      "explanation": [
+        "Round 263687 to nearest 1000 gives 264000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_7998fb93e3",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 25551860 rounded to the nearest 100000?",
+      "correct_answer": "25600000",
+      "distractors": [
+        "25599998",
+        "25700000",
+        "25600004"
+      ],
+      "explanation": [
+        "Round 2.55519e+07 to nearest 100000 gives 25600000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_7a3c104258",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 227317 to the nearest 10000.",
+      "correct_answer": "230000",
+      "distractors": [
+        "229998",
+        "229996",
+        "240000"
+      ],
+      "explanation": [
+        "Round 227317 to nearest 10000 gives 230000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_7af41a44f5",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 4255944600 rounded to the nearest 1000000?",
+      "correct_answer": "4256000000",
+      "distractors": [
+        "4257000000",
+        "4256000002",
+        "4255999998"
+      ],
+      "explanation": [
+        "Round 4.25594e+09 to nearest 1000000 gives 4256000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_7bf915df74",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 206100 to the nearest 10000.",
+      "correct_answer": "210000",
+      "distractors": [
+        "210003",
+        "220000",
+        "209995"
+      ],
+      "explanation": [
+        "Round 206100 to nearest 10000 gives 210000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_7cb13fc86f",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 2237185 to the nearest 100000.",
+      "correct_answer": "2200000",
+      "distractors": [
+        "2199995",
+        "2100000",
+        "2199997"
+      ],
+      "explanation": [
+        "Round 2.23718e+06 to nearest 100000 gives 2200000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_7d1607ee42",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 8272980 to the nearest 100000.",
+      "correct_answer": "8300000",
+      "distractors": [
+        "8400000",
+        "8300004",
+        "8299996"
+      ],
+      "explanation": [
+        "Round 8.27298e+06 to nearest 100000 gives 8300000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_7f632ede98",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 18481380 rounded to the nearest ten thousand?",
+      "correct_answer": "18480000",
+      "distractors": [
+        "18470000",
+        "18480005",
+        "18480004"
+      ],
+      "explanation": [
+        "Round 1.84814e+07 to nearest 10000 gives 18480000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_83f0c14304",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 9742549 rounded to the nearest 1000000?",
+      "correct_answer": "10000000",
+      "distractors": [
+        "9999995",
+        "9999997",
+        "11000000"
+      ],
+      "explanation": [
+        "Round 9.74255e+06 to nearest 1000000 gives 10000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_86fb510dd2",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 7336168700 to the nearest 1000000.",
+      "correct_answer": "7336000000",
+      "distractors": [
+        "7335999996",
+        "7335999997",
+        "7335000000"
+      ],
+      "explanation": [
+        "Round 7.33617e+09 to nearest 1000000 gives 7336000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_88a999f475",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 75743000 to the nearest 1000000.",
+      "correct_answer": "76000000",
+      "distractors": [
+        "75999997",
+        "76000001",
+        "77000000"
+      ],
+      "explanation": [
+        "Round 7.5743e+07 to nearest 1000000 gives 76000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_8c07347377",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 4424660000 to the nearest one million.",
+      "correct_answer": "4425000000",
+      "distractors": [
+        "4425000002",
+        "4426000000",
+        "4424999995"
+      ],
+      "explanation": [
+        "Round 4.42466e+09 to nearest 1000000 gives 4425000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_8c3bf2cfa7",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 5500000 rounded to the nearest one million?",
+      "correct_answer": "6000000",
+      "distractors": [
+        "5999996",
+        "6000003",
+        "7000000"
+      ],
+      "explanation": [
+        "Round 5.5e+06 to nearest 1000000 gives 6000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_8dd316078b",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 1560192989 rounded to the nearest one million?",
+      "correct_answer": "1560000000",
+      "distractors": [
+        "1559000000",
+        "1560000004",
+        "1559999996"
+      ],
+      "explanation": [
+        "Round 1.56019e+09 to nearest 1000000 gives 1560000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_8e4f3e1538",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 6879 rounded to the nearest 1000?",
+      "correct_answer": "7000",
+      "distractors": [
+        "7004",
+        "7005",
+        "8000"
+      ],
+      "explanation": [
+        "Round 6879 to nearest 1000 gives 7000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_927978639b",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 186596 rounded to the nearest ten thousand?",
+      "correct_answer": "190000",
+      "distractors": [
+        "200000",
+        "189995",
+        "189998"
+      ],
+      "explanation": [
+        "Round 186596 to nearest 10000 gives 190000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_94fd50b99f",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 15725700 rounded to the nearest 100000?",
+      "correct_answer": "15700000",
+      "distractors": [
+        "15699996",
+        "15699999",
+        "15600000"
+      ],
+      "explanation": [
+        "Round 1.57257e+07 to nearest 100000 gives 15700000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_958047185c",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 14670 rounded to the nearest ten thousand?",
+      "correct_answer": "10000",
+      "distractors": [
+        "0",
+        "10004",
+        "10001"
+      ],
+      "explanation": [
+        "Round 14670 to nearest 10000 gives 10000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_9701874e60",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 1415622200 rounded to the nearest 1000000?",
+      "correct_answer": "1416000000",
+      "distractors": [
+        "1415999995",
+        "1416000005",
+        "1417000000"
+      ],
+      "explanation": [
+        "Round 1.41562e+09 to nearest 1000000 gives 1416000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_987a22870e",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 1616578060 rounded to the nearest 100000?",
+      "correct_answer": "1616600000",
+      "distractors": [
+        "1616599997",
+        "1616600005",
+        "1616700000"
+      ],
+      "explanation": [
+        "Round 1.61658e+09 to nearest 100000 gives 1616600000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_99ad409efd",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 46364249 to the nearest one million.",
+      "correct_answer": "46000000",
+      "distractors": [
+        "45000000",
+        "45999995",
+        "45999999"
+      ],
+      "explanation": [
+        "Round 4.63642e+07 to nearest 1000000 gives 46000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_9d38b10491",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 1162000 rounded to the nearest 10000?",
+      "correct_answer": "1160000",
+      "distractors": [
+        "1159997",
+        "1150000",
+        "1160003"
+      ],
+      "explanation": [
+        "Round 1.162e+06 to nearest 10000 gives 1160000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_9f4bffb2ab",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 2786000 to the nearest 100000.",
+      "correct_answer": "2800000",
+      "distractors": [
+        "2800003",
+        "2800001",
+        "2900000"
+      ],
+      "explanation": [
+        "Round 2.786e+06 to nearest 100000 gives 2800000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_9f939d247f",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 7243600 to the nearest 100000.",
+      "correct_answer": "7200000",
+      "distractors": [
+        "7100000",
+        "7200001",
+        "7199996"
+      ],
+      "explanation": [
+        "Round 7.2436e+06 to nearest 100000 gives 7200000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_a008439556",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 155213320 to the nearest one million.",
+      "correct_answer": "155000000",
+      "distractors": [
+        "154999999",
+        "155000002",
+        "154000000"
+      ],
+      "explanation": [
+        "Round 1.55213e+08 to nearest 1000000 gives 155000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_a305c31d77",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 1825000 to the nearest 100000.",
+      "correct_answer": "1800000",
+      "distractors": [
+        "1799997",
+        "1800004",
+        "1700000"
+      ],
+      "explanation": [
+        "Round 1.825e+06 to nearest 100000 gives 1800000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_a3973700f5",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 13411400 rounded to the nearest 1000000?",
+      "correct_answer": "13000000",
+      "distractors": [
+        "12999997",
+        "12000000",
+        "12999995"
+      ],
+      "explanation": [
+        "Round 1.34114e+07 to nearest 1000000 gives 13000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_a3dadbeeac",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 10069600 to the nearest 1000000.",
+      "correct_answer": "10000000",
+      "distractors": [
+        "9999999",
+        "9999997",
+        "9000000"
+      ],
+      "explanation": [
+        "Round 1.00696e+07 to nearest 1000000 gives 10000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_a4349ebc10",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 190500 to the nearest 100000.",
+      "correct_answer": "200000",
+      "distractors": [
+        "300000",
+        "199996",
+        "200002"
+      ],
+      "explanation": [
+        "Round 190500 to nearest 100000 gives 200000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_a463474603",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 32959 to the nearest one thousand.",
+      "correct_answer": "33000",
+      "distractors": [
+        "32997",
+        "34000",
+        "33003"
+      ],
+      "explanation": [
+        "Round 32959 to nearest 1000 gives 33000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_a4c46e0163",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 20300000 to the nearest one million.",
+      "correct_answer": "20000000",
+      "distractors": [
+        "20000005",
+        "19999995",
+        "19000000"
+      ],
+      "explanation": [
+        "Round 2.03e+07 to nearest 1000000 gives 20000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_a888af18fe",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 16944000 rounded to the nearest one million?",
+      "correct_answer": "17000000",
+      "distractors": [
+        "16999995",
+        "17000001",
+        "18000000"
+      ],
+      "explanation": [
+        "Round 1.6944e+07 to nearest 1000000 gives 17000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_a90aff6c02",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 398655 rounded to the nearest 10000?",
+      "correct_answer": "400000",
+      "distractors": [
+        "410000",
+        "400003",
+        "399999"
+      ],
+      "explanation": [
+        "Round 398655 to nearest 10000 gives 400000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_a97d79ac68",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 20986040 rounded to the nearest 1000000?",
+      "correct_answer": "21000000",
+      "distractors": [
+        "20999999",
+        "22000000",
+        "20999997"
+      ],
+      "explanation": [
+        "Round 2.0986e+07 to nearest 1000000 gives 21000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_a9c1e94e43",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 235909 to the nearest 100000.",
+      "correct_answer": "200000",
+      "distractors": [
+        "199999",
+        "100000",
+        "199997"
+      ],
+      "explanation": [
+        "Round 235909 to nearest 100000 gives 200000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_ab0a000161",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 1730901000 to the nearest one million.",
+      "correct_answer": "1731000000",
+      "distractors": [
+        "1732000000",
+        "1730999997",
+        "1730999996"
+      ],
+      "explanation": [
+        "Round 1.7309e+09 to nearest 1000000 gives 1731000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_ab698cb80d",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 679850 rounded to the nearest one million?",
+      "correct_answer": "1000000",
+      "distractors": [
+        "2000000",
+        "1000003",
+        "1000004"
+      ],
+      "explanation": [
+        "Round 679850 to nearest 1000000 gives 1000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_ab9fff6d20",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 660300 to the nearest 100000.",
+      "correct_answer": "700000",
+      "distractors": [
+        "699996",
+        "700001",
+        "800000"
+      ],
+      "explanation": [
+        "Round 660300 to nearest 100000 gives 700000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_ad2289051c",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 99131420500 to the nearest 1000000.",
+      "correct_answer": "99131000000",
+      "distractors": [
+        "99130999998",
+        "99131000002",
+        "99130000000"
+      ],
+      "explanation": [
+        "Round 9.91314e+10 to nearest 1000000 gives 99131000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_ad95936f49",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 390261 rounded to the nearest 10000?",
+      "correct_answer": "390000",
+      "distractors": [
+        "390003",
+        "380000",
+        "389998"
+      ],
+      "explanation": [
+        "Round 390261 to nearest 10000 gives 390000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_af8e0605b2",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 5133680 to the nearest 10000.",
+      "correct_answer": "5130000",
+      "distractors": [
+        "5120000",
+        "5129998",
+        "5129995"
+      ],
+      "explanation": [
+        "Round 5.13368e+06 to nearest 10000 gives 5130000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_b10a96ef65",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 3379250710 rounded to the nearest 1000000?",
+      "correct_answer": "3379000000",
+      "distractors": [
+        "3378000000",
+        "3378999995",
+        "3379000001"
+      ],
+      "explanation": [
+        "Round 3.37925e+09 to nearest 1000000 gives 3379000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_b33324578a",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 3489000 rounded to the nearest 100000?",
+      "correct_answer": "3500000",
+      "distractors": [
+        "3500003",
+        "3500002",
+        "3600000"
+      ],
+      "explanation": [
+        "Round 3.489e+06 to nearest 100000 gives 3500000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_b5b1a37a80",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 733200 to the nearest 100000.",
+      "correct_answer": "700000",
+      "distractors": [
+        "700004",
+        "600000",
+        "699999"
+      ],
+      "explanation": [
+        "Round 733200 to nearest 100000 gives 700000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_b631b8cfd8",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 14431685000 rounded to the nearest 1000000?",
+      "correct_answer": "14432000000",
+      "distractors": [
+        "14432000002",
+        "14433000000",
+        "14432000005"
+      ],
+      "explanation": [
+        "Round 1.44317e+10 to nearest 1000000 gives 14432000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_b64e91ae69",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 41480000 to the nearest one million.",
+      "correct_answer": "41000000",
+      "distractors": [
+        "40000000",
+        "40999997",
+        "40999999"
+      ],
+      "explanation": [
+        "Round 4.148e+07 to nearest 1000000 gives 41000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_b916c37c55",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 546390 rounded to the nearest one thousand?",
+      "correct_answer": "546000",
+      "distractors": [
+        "545995",
+        "546005",
+        "545000"
+      ],
+      "explanation": [
+        "Round 546390 to nearest 1000 gives 546000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_b9cf296343",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 24582000 rounded to the nearest 1000000?",
+      "correct_answer": "25000000",
+      "distractors": [
+        "25000004",
+        "26000000",
+        "25000003"
+      ],
+      "explanation": [
+        "Round 2.4582e+07 to nearest 1000000 gives 25000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_bbecec1cd6",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 309200000 rounded to the nearest one million?",
+      "correct_answer": "309000000",
+      "distractors": [
+        "308999998",
+        "308000000",
+        "308999997"
+      ],
+      "explanation": [
+        "Round 3.092e+08 to nearest 1000000 gives 309000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_beb0271e57",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 12630 rounded to the nearest one thousand?",
+      "correct_answer": "13000",
+      "distractors": [
+        "12996",
+        "12999",
+        "14000"
+      ],
+      "explanation": [
+        "Round 12630 to nearest 1000 gives 13000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_bf87e3f848",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 1116630 rounded to the nearest 100000?",
+      "correct_answer": "1100000",
+      "distractors": [
+        "1099997",
+        "1000000",
+        "1099999"
+      ],
+      "explanation": [
+        "Round 1.11663e+06 to nearest 100000 gives 1100000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_bfdb3d40f4",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 68300 to the nearest ten thousand.",
+      "correct_answer": "70000",
+      "distractors": [
+        "70005",
+        "80000",
+        "70004"
+      ],
+      "explanation": [
+        "Round 68300 to nearest 10000 gives 70000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_bfdcf1b0ce",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 1411583900 rounded to the nearest 1000000?",
+      "correct_answer": "1412000000",
+      "distractors": [
+        "1412000003",
+        "1412000002",
+        "1413000000"
+      ],
+      "explanation": [
+        "Round 1.41158e+09 to nearest 1000000 gives 1412000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_c0b71a1cb8",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 17283907690 rounded to the nearest 1000000?",
+      "correct_answer": "17284000000",
+      "distractors": [
+        "17283999997",
+        "17285000000",
+        "17284000003"
+      ],
+      "explanation": [
+        "Round 1.72839e+10 to nearest 1000000 gives 17284000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_c44cb5deab",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 13 to the nearest 1000.",
+      "correct_answer": "0",
+      "distractors": [
+        "4",
+        "5",
+        "1"
+      ],
+      "explanation": [
+        "Round 13 to nearest 1000 gives 0."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_c4cacf0076",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 5932728700 rounded to the nearest one million?",
+      "correct_answer": "5933000000",
+      "distractors": [
+        "5933000001",
+        "5932999999",
+        "5934000000"
+      ],
+      "explanation": [
+        "Round 5.93273e+09 to nearest 1000000 gives 5933000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_c69b69bf3f",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 27200 to the nearest 1000.",
+      "correct_answer": "27000",
+      "distractors": [
+        "26000",
+        "27003",
+        "27004"
+      ],
+      "explanation": [
+        "Round 27200 to nearest 1000 gives 27000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_c69f23acba",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 18879289540 to the nearest 1000000.",
+      "correct_answer": "18879000000",
+      "distractors": [
+        "18879000002",
+        "18879000004",
+        "18878000000"
+      ],
+      "explanation": [
+        "Round 1.88793e+10 to nearest 1000000 gives 18879000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_c6edefe5aa",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 223100 rounded to the nearest 10000?",
+      "correct_answer": "220000",
+      "distractors": [
+        "220001",
+        "219998",
+        "210000"
+      ],
+      "explanation": [
+        "Round 223100 to nearest 10000 gives 220000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_c77f3aeb86",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 71938 to the nearest ten thousand.",
+      "correct_answer": "70000",
+      "distractors": [
+        "60000",
+        "70004",
+        "69999"
+      ],
+      "explanation": [
+        "Round 71938 to nearest 10000 gives 70000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_c91cbd5af9",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 7580840 rounded to the nearest one million?",
+      "correct_answer": "8000000",
+      "distractors": [
+        "8000005",
+        "9000000",
+        "8000001"
+      ],
+      "explanation": [
+        "Round 7.58084e+06 to nearest 1000000 gives 8000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_ccc587a940",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 2901800 rounded to the nearest 1000?",
+      "correct_answer": "2902000",
+      "distractors": [
+        "2901996",
+        "2901997",
+        "2903000"
+      ],
+      "explanation": [
+        "Round 2.9018e+06 to nearest 1000 gives 2902000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_cce66e40be",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 32695570 rounded to the nearest one million?",
+      "correct_answer": "33000000",
+      "distractors": [
+        "33000004",
+        "34000000",
+        "32999995"
+      ],
+      "explanation": [
+        "Round 3.26956e+07 to nearest 1000000 gives 33000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_ce6e293e4a",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 1105390050 rounded to the nearest 100000?",
+      "correct_answer": "1105400000",
+      "distractors": [
+        "1105399998",
+        "1105400001",
+        "1105500000"
+      ],
+      "explanation": [
+        "Round 1.10539e+09 to nearest 100000 gives 1105400000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_d0538415d5",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 552950 to the nearest one thousand.",
+      "correct_answer": "553000",
+      "distractors": [
+        "552995",
+        "553001",
+        "554000"
+      ],
+      "explanation": [
+        "Round 552950 to nearest 1000 gives 553000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_d36fc7e469",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 142403800 rounded to the nearest 100000?",
+      "correct_answer": "142400000",
+      "distractors": [
+        "142400004",
+        "142300000",
+        "142400002"
+      ],
+      "explanation": [
+        "Round 1.42404e+08 to nearest 100000 gives 142400000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_d6350c0a03",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 150700 to the nearest ten thousand.",
+      "correct_answer": "150000",
+      "distractors": [
+        "149999",
+        "149996",
+        "140000"
+      ],
+      "explanation": [
+        "Round 150700 to nearest 10000 gives 150000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_d652445706",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 1100967062 to the nearest 10000.",
+      "correct_answer": "1100970000",
+      "distractors": [
+        "1100970004",
+        "1100980000",
+        "1100969995"
+      ],
+      "explanation": [
+        "Round 1.10097e+09 to nearest 10000 gives 1100970000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_d80703979c",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 59230762 to the nearest 100000.",
+      "correct_answer": "59200000",
+      "distractors": [
+        "59100000",
+        "59199996",
+        "59199995"
+      ],
+      "explanation": [
+        "Round 5.92308e+07 to nearest 100000 gives 59200000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_dc2589df99",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 9457000 to the nearest 1000000.",
+      "correct_answer": "9000000",
+      "distractors": [
+        "8000000",
+        "8999997",
+        "9000003"
+      ],
+      "explanation": [
+        "Round 9.457e+06 to nearest 1000000 gives 9000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_ddbb958eb2",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 6719480 rounded to the nearest one million?",
+      "correct_answer": "7000000",
+      "distractors": [
+        "6999995",
+        "6999997",
+        "8000000"
+      ],
+      "explanation": [
+        "Round 6.71948e+06 to nearest 1000000 gives 7000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_de70f652f4",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 105240 to the nearest ten thousand.",
+      "correct_answer": "110000",
+      "distractors": [
+        "120000",
+        "110001",
+        "109999"
+      ],
+      "explanation": [
+        "Round 105240 to nearest 10000 gives 110000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_df99241dff",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 7691670 to the nearest 1000000.",
+      "correct_answer": "8000000",
+      "distractors": [
+        "8000002",
+        "7999999",
+        "9000000"
+      ],
+      "explanation": [
+        "Round 7.69167e+06 to nearest 1000000 gives 8000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_e05824a0d6",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 83579100 rounded to the nearest 100000?",
+      "correct_answer": "83600000",
+      "distractors": [
+        "83700000",
+        "83599995",
+        "83599999"
+      ],
+      "explanation": [
+        "Round 8.35791e+07 to nearest 100000 gives 83600000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_e15b6413e0",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 787339 rounded to the nearest 10000?",
+      "correct_answer": "790000",
+      "distractors": [
+        "790001",
+        "800000",
+        "789997"
+      ],
+      "explanation": [
+        "Round 787339 to nearest 10000 gives 790000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_e3ab699541",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 41555 rounded to the nearest ten thousand?",
+      "correct_answer": "40000",
+      "distractors": [
+        "39995",
+        "30000",
+        "39996"
+      ],
+      "explanation": [
+        "Round 41555 to nearest 10000 gives 40000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_e41be26ca7",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 79120 to the nearest ten thousand.",
+      "correct_answer": "80000",
+      "distractors": [
+        "80004",
+        "79997",
+        "90000"
+      ],
+      "explanation": [
+        "Round 79120 to nearest 10000 gives 80000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_e603db3d06",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 103600 to the nearest one thousand.",
+      "correct_answer": "104000",
+      "distractors": [
+        "103998",
+        "104005",
+        "105000"
+      ],
+      "explanation": [
+        "Round 103600 to nearest 1000 gives 104000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_e6dfadd15f",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 32268911 rounded to the nearest ten thousand?",
+      "correct_answer": "32270000",
+      "distractors": [
+        "32270005",
+        "32269997",
+        "32280000"
+      ],
+      "explanation": [
+        "Round 3.22689e+07 to nearest 10000 gives 32270000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_e743aa7316",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 82390 to the nearest 10000.",
+      "correct_answer": "80000",
+      "distractors": [
+        "80005",
+        "80004",
+        "70000"
+      ],
+      "explanation": [
+        "Round 82390 to nearest 10000 gives 80000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_e7d6d78b0d",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 4714468390 to the nearest 1000000.",
+      "correct_answer": "4714000000",
+      "distractors": [
+        "4714000005",
+        "4713999999",
+        "4713000000"
+      ],
+      "explanation": [
+        "Round 4.71447e+09 to nearest 1000000 gives 4714000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_e7edf8600d",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 1770910500 to the nearest 1000000.",
+      "correct_answer": "1771000000",
+      "distractors": [
+        "1772000000",
+        "1771000005",
+        "1771000003"
+      ],
+      "explanation": [
+        "Round 1.77091e+09 to nearest 1000000 gives 1771000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_e86bdab6da",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 1269000 to the nearest 1000000.",
+      "correct_answer": "1000000",
+      "distractors": [
+        "0",
+        "999999",
+        "999995"
+      ],
+      "explanation": [
+        "Round 1.269e+06 to nearest 1000000 gives 1000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_e908e24b96",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 478654000 rounded to the nearest one million?",
+      "correct_answer": "479000000",
+      "distractors": [
+        "480000000",
+        "478999996",
+        "479000003"
+      ],
+      "explanation": [
+        "Round 4.78654e+08 to nearest 1000000 gives 479000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_eb5cb7cd0c",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 219950000 to the nearest one million.",
+      "correct_answer": "220000000",
+      "distractors": [
+        "221000000",
+        "220000003",
+        "219999999"
+      ],
+      "explanation": [
+        "Round 2.1995e+08 to nearest 1000000 gives 220000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_ed06c66c8c",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 290182 to the nearest 10000.",
+      "correct_answer": "290000",
+      "distractors": [
+        "290003",
+        "290001",
+        "280000"
+      ],
+      "explanation": [
+        "Round 290182 to nearest 10000 gives 290000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_ed9cfcefbd",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 10284510 rounded to the nearest 10000?",
+      "correct_answer": "10280000",
+      "distractors": [
+        "10279997",
+        "10280001",
+        "10270000"
+      ],
+      "explanation": [
+        "Round 1.02845e+07 to nearest 10000 gives 10280000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_ee6867e951",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 176239800 to the nearest one million.",
+      "correct_answer": "176000000",
+      "distractors": [
+        "176000004",
+        "175000000",
+        "175999996"
+      ],
+      "explanation": [
+        "Round 1.7624e+08 to nearest 1000000 gives 176000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_efc50fd0df",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 36998500 rounded to the nearest 100000?",
+      "correct_answer": "37000000",
+      "distractors": [
+        "37100000",
+        "36999998",
+        "37000001"
+      ],
+      "explanation": [
+        "Round 3.69985e+07 to nearest 100000 gives 37000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_efcdd87e94",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 502200 to the nearest 10000.",
+      "correct_answer": "500000",
+      "distractors": [
+        "490000",
+        "500005",
+        "499999"
+      ],
+      "explanation": [
+        "Round 502200 to nearest 10000 gives 500000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_f015c24765",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 2348304 rounded to the nearest ten thousand?",
+      "correct_answer": "2350000",
+      "distractors": [
+        "2350001",
+        "2349998",
+        "2360000"
+      ],
+      "explanation": [
+        "Round 2.3483e+06 to nearest 10000 gives 2350000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_f02d67e328",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 6793 rounded to the nearest one thousand?",
+      "correct_answer": "7000",
+      "distractors": [
+        "6997",
+        "6995",
+        "8000"
+      ],
+      "explanation": [
+        "Round 6793 to nearest 1000 gives 7000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_f0dbdeda21",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 6265920 rounded to the nearest ten thousand?",
+      "correct_answer": "6270000",
+      "distractors": [
+        "6270005",
+        "6269998",
+        "6280000"
+      ],
+      "explanation": [
+        "Round 6.26592e+06 to nearest 10000 gives 6270000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_f1ab08627c",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 256341 to the nearest 1000.",
+      "correct_answer": "256000",
+      "distractors": [
+        "255997",
+        "255000",
+        "256001"
+      ],
+      "explanation": [
+        "Round 256341 to nearest 1000 gives 256000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_f2a047acc2",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 3965760 to the nearest one million.",
+      "correct_answer": "4000000",
+      "distractors": [
+        "4000001",
+        "4000005",
+        "5000000"
+      ],
+      "explanation": [
+        "Round 3.96576e+06 to nearest 1000000 gives 4000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_f2c9c1501d",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 442296000 to the nearest one million.",
+      "correct_answer": "442000000",
+      "distractors": [
+        "442000002",
+        "442000001",
+        "441000000"
+      ],
+      "explanation": [
+        "Round 4.42296e+08 to nearest 1000000 gives 442000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_f37dbe0d06",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 5040930 to the nearest one million.",
+      "correct_answer": "5000000",
+      "distractors": [
+        "4999998",
+        "5000004",
+        "4000000"
+      ],
+      "explanation": [
+        "Round 5.04093e+06 to nearest 1000000 gives 5000000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_f3bd587d97",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 712910 to the nearest 1000.",
+      "correct_answer": "713000",
+      "distractors": [
+        "714000",
+        "712999",
+        "713004"
+      ],
+      "explanation": [
+        "Round 712910 to nearest 1000 gives 713000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_f5aca8e46d",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 17552135 to the nearest 100000.",
+      "correct_answer": "17600000",
+      "distractors": [
+        "17599995",
+        "17600003",
+        "17700000"
+      ],
+      "explanation": [
+        "Round 1.75521e+07 to nearest 100000 gives 17600000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_f650404357",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 6460 rounded to the nearest 1000?",
+      "correct_answer": "6000",
+      "distractors": [
+        "5999",
+        "5000",
+        "6003"
+      ],
+      "explanation": [
+        "Round 6460 to nearest 1000 gives 6000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_f6d307b352",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 23852070 to the nearest 100000.",
+      "correct_answer": "23900000",
+      "distractors": [
+        "23900002",
+        "24000000",
+        "23899995"
+      ],
+      "explanation": [
+        "Round 2.38521e+07 to nearest 100000 gives 23900000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_f7f6523483",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 1369000 rounded to the nearest 100000?",
+      "correct_answer": "1400000",
+      "distractors": [
+        "1399997",
+        "1400004",
+        "1500000"
+      ],
+      "explanation": [
+        "Round 1.369e+06 to nearest 100000 gives 1400000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_f977b53e6c",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "What is 239643 rounded to the nearest 1000?",
+      "correct_answer": "240000",
+      "distractors": [
+        "241000",
+        "239999",
+        "240001"
+      ],
+      "explanation": [
+        "Round 239643 to nearest 1000 gives 240000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_f9da655042",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 496187 to the nearest ten thousand.",
+      "correct_answer": "500000",
+      "distractors": [
+        "499998",
+        "500004",
+        "510000"
+      ],
+      "explanation": [
+        "Round 496187 to nearest 10000 gives 500000."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_fe9662e3fd",
+      "concept_id": "round_multidigit_any_place",
+      "prompt": "Round 307100 to the nearest 1000000.",
+      "correct_answer": "0",
+      "distractors": [
+        "5",
+        "1",
+        "3"
+      ],
+      "explanation": [
+        "Round 307100 to nearest 1000000 gives 0."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    }
+  ]
+}

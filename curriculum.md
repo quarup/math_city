@@ -113,18 +113,18 @@ The columns:
 | ID | Display | Grade | Prereqs | Source | Diagram |
 |---|---|---|---|---|---|
 | ✅ `teen_numbers_as_ten_plus` | Teens as ten + ones | 0 | [count_to_20] | algorithmic_with_diagram | required:base_ten_blocks |
-| ✅ `place_value_2digit` | Tens and ones | 1 | [teen_numbers_as_ten_plus] | algorithmic | optional |
+| ✅ `place_value_2digit` | Tens and ones | 1 | [teen_numbers_as_ten_plus] | algorithmic+dataset | optional |
 | ✅ `compare_2digit` | Compare 2-digit numbers | 1 | [place_value_2digit] | algorithmic | none |
-| ✅ `place_value_3digit` | Hundreds, tens, ones | 2 | [place_value_2digit] | algorithmic | optional |
+| ✅ `place_value_3digit` | Hundreds, tens, ones | 2 | [place_value_2digit] | algorithmic+dataset | optional |
 | ✅ `read_write_3digit` | Read/write to 1000 | 2 | [place_value_3digit] | algorithmic | none |
 | ✅ `expanded_form_3digit` | Expanded form (3-digit) | 2 | [place_value_3digit] | algorithmic | none |
 | ✅ `compare_3digit` | Compare 3-digit numbers | 2 | [place_value_3digit, compare_2digit] | algorithmic | none |
-| ✅ `round_to_10` | Round to nearest 10 | 3 | [compare_2digit] | algorithmic | optional |
-| ✅ `round_to_100` | Round to nearest 100 | 3 | [compare_3digit] | algorithmic | optional |
-| ✅ `place_value_multidigit` | Multi-digit place value | 4 | [place_value_3digit] | algorithmic | none |
+| ✅ `round_to_10` | Round to nearest 10 | 3 | [compare_2digit] | algorithmic+dataset | optional |
+| ✅ `round_to_100` | Round to nearest 100 | 3 | [compare_3digit] | algorithmic+dataset | optional |
+| ✅ `place_value_multidigit` | Multi-digit place value | 4 | [place_value_3digit] | algorithmic+dataset | none |
 | ✅ `read_write_multidigit` | Read/write big numbers | 4 | [place_value_multidigit] | algorithmic | none |
 | ✅ `compare_multidigit` | Compare big numbers | 4 | [read_write_multidigit] | algorithmic | none |
-| ✅ `round_multidigit_any_place` | Round to any place | 4 | [round_to_100, place_value_multidigit] | algorithmic | none |
+| ✅ `round_multidigit_any_place` | Round to any place | 4 | [round_to_100, place_value_multidigit] | algorithmic+dataset | none |
 | ✅ `place_value_relationship_10x` | Each place is 10× the next | 5 | [place_value_multidigit] | algorithmic | none |
 | ✅ `factors_of_n` | Find factors | 4 | [mult_facts_within_100] | algorithmic | none |
 | ✅ `multiples_of_n` | Find multiples | 4 | [skip_count_2] | algorithmic | none |
@@ -183,7 +183,7 @@ The columns:
 | ✅ `equal_groups_intro` | Equal groups (rows × cols) | 2 | [skip_count_5, add_within_100] | algorithmic_with_diagram | required:array_grid |
 | ✅ `array_repeated_addition` | Arrays as repeated + | 2 | [equal_groups_intro] | algorithmic_with_diagram | required:array_grid |
 | ✅ `mult_meaning_groups` | What does 5 × 7 mean? | 3 | [equal_groups_intro] | algorithmic_with_diagram | required:array_grid |
-| ✅ `mult_facts_within_100` | × facts to 100 | 3 | [mult_meaning_groups, skip_count_2, skip_count_5, skip_count_10] | algorithmic | none |
+| ✅ `mult_facts_within_100` | × facts to 100 | 3 | [mult_meaning_groups, skip_count_2, skip_count_5, skip_count_10] | algorithmic+dataset | none |
 | ✅ `mult_facts_2` | ×2 facts | 3 | [skip_count_2] | algorithmic | none |
 | ✅ `mult_facts_5` | ×5 facts | 3 | [skip_count_5] | algorithmic | none |
 | ✅ `mult_facts_10` | ×10 facts | 3 | [skip_count_10] | algorithmic | none |
@@ -200,14 +200,14 @@ The columns:
 | ✅ `commutative_mult` | a × b = b × a | 3 | [mult_facts_within_100] | algorithmic | none |
 | ✅ `associative_mult` | (a·b)·c = a·(b·c) | 3 | [mult_facts_within_100] | algorithmic | none |
 | ✅ `distributive_mult_over_add` | Distributive property | 3 | [mult_facts_within_100] | algorithmic_with_diagram | required:array_grid |
-| ✅ `mult_1digit_by_multiple_of_10` | 1-digit × multiple of 10 | 3 | [mult_facts_within_100, skip_count_10] | algorithmic | none |
+| ✅ `mult_1digit_by_multiple_of_10` | 1-digit × multiple of 10 | 3 | [mult_facts_within_100, skip_count_10] | algorithmic+dataset | none |
 | ✅ `div_with_remainder` | ÷ with remainder | 4 | [div_facts_within_100] | algorithmic | none |
 | ✅ `interpret_remainder_word` | Interpret remainder in story | 4 | [div_with_remainder] | dataset | optional |
 | ✅ `mult_compare_word` | Multiplicative comparison | 4 | [mult_facts_within_100] | algorithmic+dataset | optional |
-| ✅ `mult_4digit_by_1digit` | 4-digit × 1-digit | 4 | [mult_facts_within_100, place_value_multidigit] | algorithmic | none |
-| ✅ `mult_2digit_by_2digit` | 2-digit × 2-digit | 4 | [mult_4digit_by_1digit] | algorithmic | none |
+| ✅ `mult_4digit_by_1digit` | 4-digit × 1-digit | 4 | [mult_facts_within_100, place_value_multidigit] | algorithmic+dataset | none |
+| ✅ `mult_2digit_by_2digit` | 2-digit × 2-digit | 4 | [mult_4digit_by_1digit] | algorithmic+dataset | none |
 | ✅ `div_4digit_by_1digit` | 4-digit ÷ 1-digit | 4 | [div_with_remainder, place_value_multidigit] | algorithmic | none |
-| ✅ `mult_multidigit_standard_alg` | Multi-digit × (algorithm) | 5 | [mult_2digit_by_2digit] | algorithmic | none |
+| ✅ `mult_multidigit_standard_alg` | Multi-digit × (algorithm) | 5 | [mult_2digit_by_2digit] | algorithmic+dataset | none |
 | ✅ `div_4digit_by_2digit` | 4-digit ÷ 2-digit | 5 | [div_4digit_by_1digit] | algorithmic | none |
 | ✅ `mult_div_word_2step` | Multi-step word problems | 4 | [mult_compare_word, add_sub_2step_word_problems] | algorithmic+dataset | optional |
 | ✅ `arithmetic_patterns_in_tables` | Patterns in × and + tables | 3 | [mult_facts_within_100] | algorithmic | none |
@@ -262,7 +262,7 @@ The columns:
 | ✅ `compare_decimals_hundredths` | Compare decimals to 0.01 | 4 | [decimal_notation_hundredths] | algorithmic | none |
 | ✅ `decimal_to_thousandths_read` | Read decimals to 0.001 | 5 | [compare_decimals_hundredths] | algorithmic | none |
 | ✅ `compare_decimals_thousandths` | Compare decimals to 0.001 | 5 | [decimal_to_thousandths_read] | algorithmic | none |
-| ✅ `round_decimals` | Round decimals | 5 | [decimal_to_thousandths_read, round_to_100] | algorithmic | none |
+| ✅ `round_decimals` | Round decimals | 5 | [decimal_to_thousandths_read, round_to_100] | algorithmic+dataset | none |
 | ✅ `add_decimals` | Add decimals (to 0.01) | 5 | [decimal_notation_hundredths, add_multidigit_standard_alg] | algorithmic | none |
 | ✅ `sub_decimals` | Subtract decimals (to 0.01) | 5 | [add_decimals] | algorithmic | none |
 | ✅ `mult_decimal_by_whole` | Decimal × whole | 5 | [mult_multidigit_standard_alg, decimal_notation_hundredths] | algorithmic | none |
@@ -323,7 +323,7 @@ The columns:
 | ✅ `time_to_5_min` | Time to 5 minutes | 2 | [time_to_hour_half, skip_count_5] | algorithmic_with_diagram | required:clock_analog |
 | ✅ `time_to_minute` | Time to the minute | 3 | [time_to_5_min] | algorithmic_with_diagram | required:clock_analog |
 | ✅ `am_pm` | a.m. vs. p.m. | 2 | [time_to_5_min] | algorithmic | none |
-| ✅ `elapsed_time` | Elapsed time | 3 | [time_to_minute, add_within_100] | algorithmic_with_diagram | required:clock_analog |
+| ✅ `elapsed_time` | Elapsed time | 3 | [time_to_minute, add_within_100] | algorithmic_with_diagram+dataset | required:clock_analog |
 | ✅ `coins_id_value` | Coin values | 1 | [] | algorithmic_with_diagram | required:money |
 | ✅ `count_coins` | Count coins | 2 | [coins_id_value, skip_count_5, skip_count_10] | algorithmic_with_diagram | required:money |
 | ✅ `count_bills_coins` | Bills and coins | 2 | [count_coins] | algorithmic_with_diagram | required:money |

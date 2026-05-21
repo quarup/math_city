@@ -1,0 +1,2129 @@
+{
+  "items": [
+    {
+      "id": "deepmind_mathematics_dataset_mul_03e1c458b9",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "5*4",
+      "correct_answer": "20",
+      "distractors": [
+        "9",
+        "16",
+        "25"
+      ],
+      "explanation": [
+        "5 × 4 = 20"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_053b06a133",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Product of 3 and 9.",
+      "correct_answer": "27",
+      "distractors": [
+        "26",
+        "28",
+        "12"
+      ],
+      "explanation": [
+        "3 × 9 = 27"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_065cdfca4c",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "What is the product of 7 and 5?",
+      "correct_answer": "35",
+      "distractors": [
+        "12",
+        "33",
+        "36"
+      ],
+      "explanation": [
+        "7 × 5 = 35"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_06b2769529",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Work out 5 * 8.",
+      "correct_answer": "40",
+      "distractors": [
+        "45",
+        "13",
+        "43"
+      ],
+      "explanation": [
+        "5 × 8 = 40"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_0a26eae6c4",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "What is the product of 9 and 3?",
+      "correct_answer": "27",
+      "distractors": [
+        "22",
+        "12",
+        "28"
+      ],
+      "explanation": [
+        "9 × 3 = 27"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_0e3abbb6e8",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Multiply 2 and 2.",
+      "correct_answer": "4",
+      "distractors": [
+        "2",
+        "5",
+        "1"
+      ],
+      "explanation": [
+        "2 × 2 = 4"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_0efa7fd319",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Product of 7 and 9.",
+      "correct_answer": "63",
+      "distractors": [
+        "58",
+        "16",
+        "68"
+      ],
+      "explanation": [
+        "7 × 9 = 63"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_0f473cd861",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "2*4",
+      "correct_answer": "8",
+      "distractors": [
+        "6",
+        "10",
+        "4"
+      ],
+      "explanation": [
+        "2 × 4 = 8"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_141cbe5e5b",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Calculate 9*8.",
+      "correct_answer": "72",
+      "distractors": [
+        "17",
+        "70",
+        "67"
+      ],
+      "explanation": [
+        "9 × 8 = 72"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_151e079fd7",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "4 times 3",
+      "correct_answer": "12",
+      "distractors": [
+        "7",
+        "15",
+        "13"
+      ],
+      "explanation": [
+        "4 × 3 = 12"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_16db261092",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "What is the product of 7 and 9?",
+      "correct_answer": "63",
+      "distractors": [
+        "64",
+        "16",
+        "60"
+      ],
+      "explanation": [
+        "7 × 9 = 63"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_199e58a634",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Calculate 7*7.",
+      "correct_answer": "49",
+      "distractors": [
+        "44",
+        "45",
+        "14"
+      ],
+      "explanation": [
+        "7 × 7 = 49"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_1b333d11f3",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "3 times 9",
+      "correct_answer": "27",
+      "distractors": [
+        "31",
+        "26",
+        "12"
+      ],
+      "explanation": [
+        "3 × 9 = 27"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_1d5bc03df4",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Calculate 5*4.",
+      "correct_answer": "20",
+      "distractors": [
+        "22",
+        "24",
+        "9"
+      ],
+      "explanation": [
+        "5 × 4 = 20"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_1dcaee8a2a",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "3 * 5",
+      "correct_answer": "15",
+      "distractors": [
+        "18",
+        "8",
+        "13"
+      ],
+      "explanation": [
+        "3 × 5 = 15"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_23067630a9",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "7 * 7",
+      "correct_answer": "49",
+      "distractors": [
+        "44",
+        "52",
+        "14"
+      ],
+      "explanation": [
+        "7 × 7 = 49"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_2670633c47",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Multiply 7 and 4.",
+      "correct_answer": "28",
+      "distractors": [
+        "33",
+        "11",
+        "26"
+      ],
+      "explanation": [
+        "7 × 4 = 28"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_28b5a13bc8",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Calculate 7*5.",
+      "correct_answer": "35",
+      "distractors": [
+        "34",
+        "12",
+        "39"
+      ],
+      "explanation": [
+        "7 × 5 = 35"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_2a494fff02",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "What is 7 times 1?",
+      "correct_answer": "7",
+      "distractors": [
+        "9",
+        "2",
+        "8"
+      ],
+      "explanation": [
+        "7 × 1 = 7"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_2d0f26de18",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Product of 5 and 8.",
+      "correct_answer": "40",
+      "distractors": [
+        "45",
+        "13",
+        "36"
+      ],
+      "explanation": [
+        "5 × 8 = 40"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_2f5c7b768b",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "What is the product of 9 and 4?",
+      "correct_answer": "36",
+      "distractors": [
+        "40",
+        "13",
+        "32"
+      ],
+      "explanation": [
+        "9 × 4 = 36"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_2f6241a4de",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "2 times 4",
+      "correct_answer": "8",
+      "distractors": [
+        "6",
+        "9",
+        "12"
+      ],
+      "explanation": [
+        "2 × 4 = 8"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_32b201051f",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Calculate 3*9.",
+      "correct_answer": "27",
+      "distractors": [
+        "12",
+        "28",
+        "30"
+      ],
+      "explanation": [
+        "3 × 9 = 27"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_34923cc19c",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Calculate 3*1.",
+      "correct_answer": "3",
+      "distractors": [
+        "4",
+        "1",
+        "7"
+      ],
+      "explanation": [
+        "3 × 1 = 3"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_3679f85f68",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "What is 6 times 6?",
+      "correct_answer": "36",
+      "distractors": [
+        "12",
+        "34",
+        "32"
+      ],
+      "explanation": [
+        "6 × 6 = 36"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_36cf65d02e",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "3 * 1",
+      "correct_answer": "3",
+      "distractors": [
+        "4",
+        "1",
+        "0"
+      ],
+      "explanation": [
+        "3 × 1 = 3"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_38e071ef27",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Work out 9 * 6.",
+      "correct_answer": "54",
+      "distractors": [
+        "55",
+        "56",
+        "15"
+      ],
+      "explanation": [
+        "9 × 6 = 54"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_3b86caac42",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Multiply 8 and 8.",
+      "correct_answer": "64",
+      "distractors": [
+        "69",
+        "16",
+        "63"
+      ],
+      "explanation": [
+        "8 × 8 = 64"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_3bb001415c",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "3*2",
+      "correct_answer": "6",
+      "distractors": [
+        "2",
+        "5",
+        "3"
+      ],
+      "explanation": [
+        "3 × 2 = 6"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_3be54e1ed6",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Product of 5 and 2.",
+      "correct_answer": "10",
+      "distractors": [
+        "7",
+        "9",
+        "13"
+      ],
+      "explanation": [
+        "5 × 2 = 10"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_3c5dda7715",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Calculate 7*1.",
+      "correct_answer": "7",
+      "distractors": [
+        "9",
+        "12",
+        "8"
+      ],
+      "explanation": [
+        "7 × 1 = 7"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_3f7ce0394e",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Calculate 6*1.",
+      "correct_answer": "6",
+      "distractors": [
+        "8",
+        "10",
+        "7"
+      ],
+      "explanation": [
+        "6 × 1 = 6"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_3fc1c62477",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "What is 2 times 5?",
+      "correct_answer": "10",
+      "distractors": [
+        "7",
+        "6",
+        "15"
+      ],
+      "explanation": [
+        "2 × 5 = 10"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_40cf75624a",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Work out 1 * 2.",
+      "correct_answer": "2",
+      "distractors": [
+        "4",
+        "3",
+        "7"
+      ],
+      "explanation": [
+        "1 × 2 = 2"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_44df472a5f",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "What is 4 times 1?",
+      "correct_answer": "4",
+      "distractors": [
+        "0",
+        "3",
+        "5"
+      ],
+      "explanation": [
+        "4 × 1 = 4"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_4524c08df9",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Product of 6 and 9.",
+      "correct_answer": "54",
+      "distractors": [
+        "15",
+        "49",
+        "56"
+      ],
+      "explanation": [
+        "6 × 9 = 54"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_4681ce6fb3",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Calculate 9*1.",
+      "correct_answer": "9",
+      "distractors": [
+        "5",
+        "14",
+        "10"
+      ],
+      "explanation": [
+        "9 × 1 = 9"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_49e71bf1c8",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "8*4",
+      "correct_answer": "32",
+      "distractors": [
+        "12",
+        "36",
+        "29"
+      ],
+      "explanation": [
+        "8 × 4 = 32"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_4a019c3ecc",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Product of 5 and 7.",
+      "correct_answer": "35",
+      "distractors": [
+        "12",
+        "33",
+        "36"
+      ],
+      "explanation": [
+        "5 × 7 = 35"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_4b18b79bba",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "What is the product of 7 and 6?",
+      "correct_answer": "42",
+      "distractors": [
+        "46",
+        "13",
+        "44"
+      ],
+      "explanation": [
+        "7 × 6 = 42"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_4be2a7bd04",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "2 times 6",
+      "correct_answer": "12",
+      "distractors": [
+        "9",
+        "10",
+        "8"
+      ],
+      "explanation": [
+        "2 × 6 = 12"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_4da40158e0",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "1 times 2",
+      "correct_answer": "2",
+      "distractors": [
+        "3",
+        "4",
+        "1"
+      ],
+      "explanation": [
+        "1 × 2 = 2"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_50b8129363",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "What is 8 times 6?",
+      "correct_answer": "48",
+      "distractors": [
+        "14",
+        "44",
+        "53"
+      ],
+      "explanation": [
+        "8 × 6 = 48"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_50d2075840",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Product of 3 and 5.",
+      "correct_answer": "15",
+      "distractors": [
+        "11",
+        "8",
+        "16"
+      ],
+      "explanation": [
+        "3 × 5 = 15"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_524be20fa3",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Calculate 7*6.",
+      "correct_answer": "42",
+      "distractors": [
+        "40",
+        "13",
+        "38"
+      ],
+      "explanation": [
+        "7 × 6 = 42"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_53135a1461",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "What is the product of 1 and 5?",
+      "correct_answer": "5",
+      "distractors": [
+        "4",
+        "9",
+        "6"
+      ],
+      "explanation": [
+        "1 × 5 = 5"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_559bb5fa25",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "What is the product of 4 and 5?",
+      "correct_answer": "20",
+      "distractors": [
+        "25",
+        "22",
+        "9"
+      ],
+      "explanation": [
+        "4 × 5 = 20"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_564eb1693d",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Multiply 1 and 3.",
+      "correct_answer": "3",
+      "distractors": [
+        "1",
+        "4",
+        "8"
+      ],
+      "explanation": [
+        "1 × 3 = 3"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_570fbc7426",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "What is the product of 8 and 9?",
+      "correct_answer": "72",
+      "distractors": [
+        "17",
+        "74",
+        "76"
+      ],
+      "explanation": [
+        "8 × 9 = 72"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_5959661aad",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "What is 4 times 4?",
+      "correct_answer": "16",
+      "distractors": [
+        "8",
+        "18",
+        "20"
+      ],
+      "explanation": [
+        "4 × 4 = 16"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_5b6d16544e",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "9 * 2",
+      "correct_answer": "18",
+      "distractors": [
+        "16",
+        "11",
+        "17"
+      ],
+      "explanation": [
+        "9 × 2 = 18"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_6263933c98",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Multiply 8 and 7.",
+      "correct_answer": "56",
+      "distractors": [
+        "59",
+        "15",
+        "60"
+      ],
+      "explanation": [
+        "8 × 7 = 56"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_63b43a84e5",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "What is the product of 4 and 1?",
+      "correct_answer": "4",
+      "distractors": [
+        "6",
+        "8",
+        "5"
+      ],
+      "explanation": [
+        "4 × 1 = 4"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_67d64a3654",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "3 * 4",
+      "correct_answer": "12",
+      "distractors": [
+        "9",
+        "7",
+        "14"
+      ],
+      "explanation": [
+        "3 × 4 = 12"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_69e282e170",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Calculate 2*2.",
+      "correct_answer": "4",
+      "distractors": [
+        "2",
+        "6",
+        "9"
+      ],
+      "explanation": [
+        "2 × 2 = 4"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_6b41839712",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Multiply 2 and 1.",
+      "correct_answer": "2",
+      "distractors": [
+        "6",
+        "5",
+        "3"
+      ],
+      "explanation": [
+        "2 × 1 = 2"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_6e093e5773",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Calculate 2*4.",
+      "correct_answer": "8",
+      "distractors": [
+        "6",
+        "3",
+        "13"
+      ],
+      "explanation": [
+        "2 × 4 = 8"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_6f13056021",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Work out 5 * 5.",
+      "correct_answer": "25",
+      "distractors": [
+        "26",
+        "10",
+        "24"
+      ],
+      "explanation": [
+        "5 × 5 = 25"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_78ed1b8fd3",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "8*1",
+      "correct_answer": "8",
+      "distractors": [
+        "7",
+        "12",
+        "9"
+      ],
+      "explanation": [
+        "8 × 1 = 8"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_7e7ebb265c",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "2 times 1",
+      "correct_answer": "2",
+      "distractors": [
+        "1",
+        "3",
+        "4"
+      ],
+      "explanation": [
+        "2 × 1 = 2"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_7eb80894e9",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "What is the product of 5 and 1?",
+      "correct_answer": "5",
+      "distractors": [
+        "6",
+        "3",
+        "7"
+      ],
+      "explanation": [
+        "5 × 1 = 5"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_80f3013e11",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Multiply 1 and 5.",
+      "correct_answer": "5",
+      "distractors": [
+        "2",
+        "6",
+        "9"
+      ],
+      "explanation": [
+        "1 × 5 = 5"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_81591de54b",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "1 times 3",
+      "correct_answer": "3",
+      "distractors": [
+        "1",
+        "4",
+        "8"
+      ],
+      "explanation": [
+        "1 × 3 = 3"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_83cab35a63",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "2 * 5",
+      "correct_answer": "10",
+      "distractors": [
+        "13",
+        "7",
+        "5"
+      ],
+      "explanation": [
+        "2 × 5 = 10"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_86becdd3e1",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "9 times 1",
+      "correct_answer": "9",
+      "distractors": [
+        "14",
+        "10",
+        "12"
+      ],
+      "explanation": [
+        "9 × 1 = 9"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_872a0d7095",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "1 * 5",
+      "correct_answer": "5",
+      "distractors": [
+        "2",
+        "6",
+        "4"
+      ],
+      "explanation": [
+        "1 × 5 = 5"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_8b5673f502",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "2 * 8",
+      "correct_answer": "16",
+      "distractors": [
+        "14",
+        "10",
+        "20"
+      ],
+      "explanation": [
+        "2 × 8 = 16"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_8cef016bc9",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "What is the product of 8 and 3?",
+      "correct_answer": "24",
+      "distractors": [
+        "27",
+        "11",
+        "23"
+      ],
+      "explanation": [
+        "8 × 3 = 24"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_8e3534a121",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Work out 3 * 3.",
+      "correct_answer": "9",
+      "distractors": [
+        "14",
+        "12",
+        "6"
+      ],
+      "explanation": [
+        "3 × 3 = 9"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_8f1e83c42f",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "6 times 5",
+      "correct_answer": "30",
+      "distractors": [
+        "29",
+        "11",
+        "27"
+      ],
+      "explanation": [
+        "6 × 5 = 30"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_9030357b1c",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Calculate 3*3.",
+      "correct_answer": "9",
+      "distractors": [
+        "6",
+        "8",
+        "12"
+      ],
+      "explanation": [
+        "3 × 3 = 9"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_9141eb9115",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "What is 9 times 3?",
+      "correct_answer": "27",
+      "distractors": [
+        "31",
+        "12",
+        "25"
+      ],
+      "explanation": [
+        "9 × 3 = 27"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_943a52a19e",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "3 times 1",
+      "correct_answer": "3",
+      "distractors": [
+        "2",
+        "4",
+        "0"
+      ],
+      "explanation": [
+        "3 × 1 = 3"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_962dcb911a",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Calculate 4*1.",
+      "correct_answer": "4",
+      "distractors": [
+        "7",
+        "5",
+        "2"
+      ],
+      "explanation": [
+        "4 × 1 = 4"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_96a28a8922",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "2 * 4",
+      "correct_answer": "8",
+      "distractors": [
+        "12",
+        "11",
+        "6"
+      ],
+      "explanation": [
+        "2 × 4 = 8"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_99ee871d59",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Multiply 3 and 6.",
+      "correct_answer": "18",
+      "distractors": [
+        "23",
+        "9",
+        "19"
+      ],
+      "explanation": [
+        "3 × 6 = 18"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_9fd4af00a2",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Work out 6 * 4.",
+      "correct_answer": "24",
+      "distractors": [
+        "21",
+        "10",
+        "28"
+      ],
+      "explanation": [
+        "6 × 4 = 24"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_a1e4c19a1b",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "What is the product of 8 and 4?",
+      "correct_answer": "32",
+      "distractors": [
+        "28",
+        "36",
+        "12"
+      ],
+      "explanation": [
+        "8 × 4 = 32"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_a365e675bd",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Work out 5 * 4.",
+      "correct_answer": "20",
+      "distractors": [
+        "9",
+        "24",
+        "18"
+      ],
+      "explanation": [
+        "5 × 4 = 20"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_a687642bb1",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Product of 1 and 5.",
+      "correct_answer": "5",
+      "distractors": [
+        "6",
+        "3",
+        "2"
+      ],
+      "explanation": [
+        "1 × 5 = 5"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_a8b446ca05",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "3*8",
+      "correct_answer": "24",
+      "distractors": [
+        "11",
+        "23",
+        "29"
+      ],
+      "explanation": [
+        "3 × 8 = 24"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_a9c29d9b2a",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "5 * 8",
+      "correct_answer": "40",
+      "distractors": [
+        "42",
+        "13",
+        "44"
+      ],
+      "explanation": [
+        "5 × 8 = 40"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_a9ce5b7f1b",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Work out 6 * 9.",
+      "correct_answer": "54",
+      "distractors": [
+        "58",
+        "15",
+        "51"
+      ],
+      "explanation": [
+        "6 × 9 = 54"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_b3663e4462",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Work out 2 * 1.",
+      "correct_answer": "2",
+      "distractors": [
+        "1",
+        "0",
+        "3"
+      ],
+      "explanation": [
+        "2 × 1 = 2"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_b5cc174cd4",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "What is 2 times 3?",
+      "correct_answer": "6",
+      "distractors": [
+        "7",
+        "4",
+        "5"
+      ],
+      "explanation": [
+        "2 × 3 = 6"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_b60bec8bfb",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Work out 8 * 3.",
+      "correct_answer": "24",
+      "distractors": [
+        "11",
+        "29",
+        "21"
+      ],
+      "explanation": [
+        "8 × 3 = 24"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_b6a55ce706",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Product of 7 and 5.",
+      "correct_answer": "35",
+      "distractors": [
+        "38",
+        "32",
+        "12"
+      ],
+      "explanation": [
+        "7 × 5 = 35"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_b6d2cae050",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Multiply 7 and 1.",
+      "correct_answer": "7",
+      "distractors": [
+        "8",
+        "4",
+        "3"
+      ],
+      "explanation": [
+        "7 × 1 = 7"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_b8f7c0dd4a",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "7 times 5",
+      "correct_answer": "35",
+      "distractors": [
+        "38",
+        "30",
+        "12"
+      ],
+      "explanation": [
+        "7 × 5 = 35"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_ba739b8717",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Work out 3 * 1.",
+      "correct_answer": "3",
+      "distractors": [
+        "1",
+        "4",
+        "0"
+      ],
+      "explanation": [
+        "3 × 1 = 3"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_bb3279714d",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Multiply 5 and 1.",
+      "correct_answer": "5",
+      "distractors": [
+        "3",
+        "7",
+        "6"
+      ],
+      "explanation": [
+        "5 × 1 = 5"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_beeb50ae03",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "What is the product of 2 and 2?",
+      "correct_answer": "4",
+      "distractors": [
+        "1",
+        "7",
+        "6"
+      ],
+      "explanation": [
+        "2 × 2 = 4"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_bf0a32ca6d",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Product of 3 and 7.",
+      "correct_answer": "21",
+      "distractors": [
+        "25",
+        "10",
+        "20"
+      ],
+      "explanation": [
+        "3 × 7 = 21"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_bf24712189",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Product of 2 and 5.",
+      "correct_answer": "10",
+      "distractors": [
+        "8",
+        "12",
+        "7"
+      ],
+      "explanation": [
+        "2 × 5 = 10"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_bfee522336",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Work out 2 * 2.",
+      "correct_answer": "4",
+      "distractors": [
+        "3",
+        "9",
+        "5"
+      ],
+      "explanation": [
+        "2 × 2 = 4"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_c053d0f753",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Calculate 2*8.",
+      "correct_answer": "16",
+      "distractors": [
+        "17",
+        "20",
+        "10"
+      ],
+      "explanation": [
+        "2 × 8 = 16"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_c0b832d188",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Calculate 3*2.",
+      "correct_answer": "6",
+      "distractors": [
+        "2",
+        "9",
+        "5"
+      ],
+      "explanation": [
+        "3 × 2 = 6"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_c30e5edb60",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Product of 8 and 5.",
+      "correct_answer": "40",
+      "distractors": [
+        "13",
+        "44",
+        "39"
+      ],
+      "explanation": [
+        "8 × 5 = 40"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_c4ee3472ff",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "What is the product of 2 and 1?",
+      "correct_answer": "2",
+      "distractors": [
+        "5",
+        "7",
+        "3"
+      ],
+      "explanation": [
+        "2 × 1 = 2"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_d600304c7c",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "4 * 7",
+      "correct_answer": "28",
+      "distractors": [
+        "27",
+        "11",
+        "32"
+      ],
+      "explanation": [
+        "4 × 7 = 28"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_d64d566f97",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Multiply 3 and 9.",
+      "correct_answer": "27",
+      "distractors": [
+        "12",
+        "26",
+        "23"
+      ],
+      "explanation": [
+        "3 × 9 = 27"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_d68a5957ec",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Multiply 4 and 4.",
+      "correct_answer": "16",
+      "distractors": [
+        "18",
+        "8",
+        "19"
+      ],
+      "explanation": [
+        "4 × 4 = 16"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_d77d7277c7",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "5 * 2",
+      "correct_answer": "10",
+      "distractors": [
+        "7",
+        "8",
+        "12"
+      ],
+      "explanation": [
+        "5 × 2 = 10"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_d8bf2ac72e",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Product of 1 and 1.",
+      "correct_answer": "1",
+      "distractors": [
+        "4",
+        "6",
+        "2"
+      ],
+      "explanation": [
+        "1 × 1 = 1"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_dadd745f8d",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Product of 7 and 2.",
+      "correct_answer": "14",
+      "distractors": [
+        "12",
+        "9",
+        "11"
+      ],
+      "explanation": [
+        "7 × 2 = 14"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_db662a9438",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "6*7",
+      "correct_answer": "42",
+      "distractors": [
+        "41",
+        "13",
+        "43"
+      ],
+      "explanation": [
+        "6 × 7 = 42"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_e276653cee",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "7 * 3",
+      "correct_answer": "21",
+      "distractors": [
+        "10",
+        "22",
+        "16"
+      ],
+      "explanation": [
+        "7 × 3 = 21"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_e4e66a761b",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "7*7",
+      "correct_answer": "49",
+      "distractors": [
+        "54",
+        "45",
+        "14"
+      ],
+      "explanation": [
+        "7 × 7 = 49"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_e71cf6b8ca",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "What is the product of 6 and 5?",
+      "correct_answer": "30",
+      "distractors": [
+        "32",
+        "11",
+        "27"
+      ],
+      "explanation": [
+        "6 × 5 = 30"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_e79d60f8e6",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Multiply 4 and 2.",
+      "correct_answer": "8",
+      "distractors": [
+        "4",
+        "9",
+        "6"
+      ],
+      "explanation": [
+        "4 × 2 = 8"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_e8b968cb1a",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "3*3",
+      "correct_answer": "9",
+      "distractors": [
+        "4",
+        "6",
+        "14"
+      ],
+      "explanation": [
+        "3 × 3 = 9"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_eab823f5e8",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Calculate 1*5.",
+      "correct_answer": "5",
+      "distractors": [
+        "6",
+        "1",
+        "4"
+      ],
+      "explanation": [
+        "1 × 5 = 5"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_ebc8e975d9",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "3 times 6",
+      "correct_answer": "18",
+      "distractors": [
+        "9",
+        "13",
+        "17"
+      ],
+      "explanation": [
+        "3 × 6 = 18"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_ee48b95aa5",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "1 * 6",
+      "correct_answer": "6",
+      "distractors": [
+        "9",
+        "11",
+        "7"
+      ],
+      "explanation": [
+        "1 × 6 = 6"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_eec189290a",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Multiply 7 and 9.",
+      "correct_answer": "63",
+      "distractors": [
+        "68",
+        "16",
+        "65"
+      ],
+      "explanation": [
+        "7 × 9 = 63"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_eefddc3f35",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Work out 3 * 7.",
+      "correct_answer": "21",
+      "distractors": [
+        "22",
+        "10",
+        "24"
+      ],
+      "explanation": [
+        "3 × 7 = 21"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_f011495a16",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Calculate 8*8.",
+      "correct_answer": "64",
+      "distractors": [
+        "59",
+        "65",
+        "16"
+      ],
+      "explanation": [
+        "8 × 8 = 64"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_f02ad4cf7e",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "What is the product of 3 and 9?",
+      "correct_answer": "27",
+      "distractors": [
+        "26",
+        "12",
+        "25"
+      ],
+      "explanation": [
+        "3 × 9 = 27"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_f11cdf2960",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Work out 7 * 8.",
+      "correct_answer": "56",
+      "distractors": [
+        "53",
+        "15",
+        "61"
+      ],
+      "explanation": [
+        "7 × 8 = 56"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_f2047d71f9",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Work out 2 * 5.",
+      "correct_answer": "10",
+      "distractors": [
+        "9",
+        "11",
+        "7"
+      ],
+      "explanation": [
+        "2 × 5 = 10"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_f3bf49d8b8",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "What is 6 times 2?",
+      "correct_answer": "12",
+      "distractors": [
+        "8",
+        "7",
+        "13"
+      ],
+      "explanation": [
+        "6 × 2 = 12"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_f72468c8ff",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Calculate 3*5.",
+      "correct_answer": "15",
+      "distractors": [
+        "8",
+        "14",
+        "12"
+      ],
+      "explanation": [
+        "3 × 5 = 15"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_fd175fd9c4",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Product of 8 and 1.",
+      "correct_answer": "8",
+      "distractors": [
+        "11",
+        "9",
+        "7"
+      ],
+      "explanation": [
+        "8 × 1 = 8"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_ff5852b33b",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Work out 5 * 1.",
+      "correct_answer": "5",
+      "distractors": [
+        "6",
+        "2",
+        "1"
+      ],
+      "explanation": [
+        "5 × 1 = 5"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_ff904f53c1",
+      "concept_id": "mult_facts_within_100",
+      "prompt": "Multiply 9 and 9.",
+      "correct_answer": "81",
+      "distractors": [
+        "18",
+        "77",
+        "76"
+      ],
+      "explanation": [
+        "9 × 9 = 81"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    }
+  ]
+}

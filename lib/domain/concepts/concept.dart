@@ -4,6 +4,7 @@ enum ConceptSource {
   algorithmicWithDiagram,
   dataset,
   algorithmicPlusDataset,
+  algorithmicWithDiagramPlusDataset,
   deferred,
 }
 

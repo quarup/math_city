@@ -1,0 +1,3404 @@
+{
+  "items": [
+    {
+      "id": "deepmind_mathematics_dataset_mul_00b38ff103",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "27*23",
+      "correct_answer": "621",
+      "distractors": [
+        "622",
+        "616",
+        "50"
+      ],
+      "explanation": [
+        "27 × 23 = 621"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_037bed4e50",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Work out 19 * 35.",
+      "correct_answer": "665",
+      "distractors": [
+        "54",
+        "669",
+        "661"
+      ],
+      "explanation": [
+        "19 × 35 = 665"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_03f2843911",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Calculate 11*22.",
+      "correct_answer": "242",
+      "distractors": [
+        "33",
+        "237",
+        "247"
+      ],
+      "explanation": [
+        "11 × 22 = 242"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_048d218eee",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is the product of 26 and 29?",
+      "correct_answer": "754",
+      "distractors": [
+        "753",
+        "752",
+        "55"
+      ],
+      "explanation": [
+        "26 × 29 = 754"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_04bd9168aa",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is the product of 12 and 65?",
+      "correct_answer": "780",
+      "distractors": [
+        "775",
+        "77",
+        "781"
+      ],
+      "explanation": [
+        "12 × 65 = 780"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_05f949219f",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "11 times 10",
+      "correct_answer": "110",
+      "distractors": [
+        "105",
+        "114",
+        "21"
+      ],
+      "explanation": [
+        "11 × 10 = 110"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_066ce03cbc",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Calculate 98*42.",
+      "correct_answer": "4116",
+      "distractors": [
+        "140",
+        "4120",
+        "4118"
+      ],
+      "explanation": [
+        "98 × 42 = 4116"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_08bcfb8d1d",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Multiply 39 and 31.",
+      "correct_answer": "1209",
+      "distractors": [
+        "1210",
+        "70",
+        "1208"
+      ],
+      "explanation": [
+        "39 × 31 = 1209"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_0a1f918577",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Calculate 53*18.",
+      "correct_answer": "954",
+      "distractors": [
+        "958",
+        "71",
+        "952"
+      ],
+      "explanation": [
+        "53 × 18 = 954"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_0e7518cc53",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Work out 75 * 39.",
+      "correct_answer": "2925",
+      "distractors": [
+        "114",
+        "2929",
+        "2922"
+      ],
+      "explanation": [
+        "75 × 39 = 2925"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_11a68303a8",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Work out 89 * 78.",
+      "correct_answer": "6942",
+      "distractors": [
+        "6946",
+        "6938",
+        "167"
+      ],
+      "explanation": [
+        "89 × 78 = 6942"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_15be71d25f",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Multiply 39 and 15.",
+      "correct_answer": "585",
+      "distractors": [
+        "587",
+        "54",
+        "589"
+      ],
+      "explanation": [
+        "39 × 15 = 585"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_172e8728ff",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Product of 96 and 73.",
+      "correct_answer": "7008",
+      "distractors": [
+        "7009",
+        "7007",
+        "169"
+      ],
+      "explanation": [
+        "96 × 73 = 7008"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_18d528ea54",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Calculate 11*24.",
+      "correct_answer": "264",
+      "distractors": [
+        "35",
+        "268",
+        "262"
+      ],
+      "explanation": [
+        "11 × 24 = 264"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_19ae76b53d",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Calculate 19*10.",
+      "correct_answer": "190",
+      "distractors": [
+        "186",
+        "192",
+        "29"
+      ],
+      "explanation": [
+        "19 × 10 = 190"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_19c507f953",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Multiply 60 and 32.",
+      "correct_answer": "1920",
+      "distractors": [
+        "92",
+        "1918",
+        "1919"
+      ],
+      "explanation": [
+        "60 × 32 = 1920"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_1c11d727ec",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is the product of 94 and 62?",
+      "correct_answer": "5828",
+      "distractors": [
+        "156",
+        "5826",
+        "5831"
+      ],
+      "explanation": [
+        "94 × 62 = 5828"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_1c2ac22358",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Calculate 44*38.",
+      "correct_answer": "1672",
+      "distractors": [
+        "1677",
+        "82",
+        "1670"
+      ],
+      "explanation": [
+        "44 × 38 = 1672"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_1e1275fe6c",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Product of 13 and 20.",
+      "correct_answer": "260",
+      "distractors": [
+        "33",
+        "258",
+        "257"
+      ],
+      "explanation": [
+        "13 × 20 = 260"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_1e8aa4cdfe",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is 20 times 31?",
+      "correct_answer": "620",
+      "distractors": [
+        "623",
+        "51",
+        "622"
+      ],
+      "explanation": [
+        "20 × 31 = 620"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_23ce6eb360",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "90 times 58",
+      "correct_answer": "5220",
+      "distractors": [
+        "148",
+        "5216",
+        "5224"
+      ],
+      "explanation": [
+        "90 × 58 = 5220"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_24dfbe19bb",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "16*22",
+      "correct_answer": "352",
+      "distractors": [
+        "38",
+        "357",
+        "349"
+      ],
+      "explanation": [
+        "16 × 22 = 352"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_24f1dd98b7",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "34*69",
+      "correct_answer": "2346",
+      "distractors": [
+        "2348",
+        "2351",
+        "103"
+      ],
+      "explanation": [
+        "34 × 69 = 2346"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_2503c77d64",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "40 times 17",
+      "correct_answer": "680",
+      "distractors": [
+        "675",
+        "57",
+        "685"
+      ],
+      "explanation": [
+        "40 × 17 = 680"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_266452a8f9",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Multiply 72 and 43.",
+      "correct_answer": "3096",
+      "distractors": [
+        "3091",
+        "3094",
+        "115"
+      ],
+      "explanation": [
+        "72 × 43 = 3096"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_26aee29499",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "36 times 31",
+      "correct_answer": "1116",
+      "distractors": [
+        "1114",
+        "67",
+        "1119"
+      ],
+      "explanation": [
+        "36 × 31 = 1116"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_27ba01b76e",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Work out 85 * 13.",
+      "correct_answer": "1105",
+      "distractors": [
+        "1108",
+        "1102",
+        "98"
+      ],
+      "explanation": [
+        "85 × 13 = 1105"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_2a5e074357",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Product of 13 and 23.",
+      "correct_answer": "299",
+      "distractors": [
+        "296",
+        "36",
+        "298"
+      ],
+      "explanation": [
+        "13 × 23 = 299"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_2b5d7bf839",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Product of 87 and 38.",
+      "correct_answer": "3306",
+      "distractors": [
+        "3308",
+        "3311",
+        "125"
+      ],
+      "explanation": [
+        "87 × 38 = 3306"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_2b85301e37",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Work out 50 * 27.",
+      "correct_answer": "1350",
+      "distractors": [
+        "1354",
+        "1345",
+        "77"
+      ],
+      "explanation": [
+        "50 × 27 = 1350"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_2c26c20c8b",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Multiply 39 and 46.",
+      "correct_answer": "1794",
+      "distractors": [
+        "1789",
+        "85",
+        "1796"
+      ],
+      "explanation": [
+        "39 × 46 = 1794"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_2d53b0f900",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Calculate 87*50.",
+      "correct_answer": "4350",
+      "distractors": [
+        "137",
+        "4353",
+        "4351"
+      ],
+      "explanation": [
+        "87 × 50 = 4350"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_2eac6dffe7",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "37*50",
+      "correct_answer": "1850",
+      "distractors": [
+        "1851",
+        "87",
+        "1849"
+      ],
+      "explanation": [
+        "37 × 50 = 1850"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_335f251ca6",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Work out 25 * 11.",
+      "correct_answer": "275",
+      "distractors": [
+        "274",
+        "276",
+        "36"
+      ],
+      "explanation": [
+        "25 × 11 = 275"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_33c94dcd08",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is the product of 12 and 68?",
+      "correct_answer": "816",
+      "distractors": [
+        "80",
+        "811",
+        "817"
+      ],
+      "explanation": [
+        "12 × 68 = 816"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_3822549fd8",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "17*14",
+      "correct_answer": "238",
+      "distractors": [
+        "31",
+        "237",
+        "240"
+      ],
+      "explanation": [
+        "17 × 14 = 238"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_394817876b",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "12 * 18",
+      "correct_answer": "216",
+      "distractors": [
+        "211",
+        "30",
+        "215"
+      ],
+      "explanation": [
+        "12 × 18 = 216"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_39a6825f24",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is the product of 15 and 30?",
+      "correct_answer": "450",
+      "distractors": [
+        "45",
+        "454",
+        "446"
+      ],
+      "explanation": [
+        "15 × 30 = 450"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_3b927d9c72",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "10 times 43",
+      "correct_answer": "430",
+      "distractors": [
+        "425",
+        "432",
+        "53"
+      ],
+      "explanation": [
+        "10 × 43 = 430"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_3d9a33bd51",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Product of 16 and 25.",
+      "correct_answer": "400",
+      "distractors": [
+        "397",
+        "41",
+        "399"
+      ],
+      "explanation": [
+        "16 × 25 = 400"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_3e80f4ccfe",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Calculate 27*28.",
+      "correct_answer": "756",
+      "distractors": [
+        "758",
+        "759",
+        "55"
+      ],
+      "explanation": [
+        "27 × 28 = 756"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_4004962296",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Calculate 13*14.",
+      "correct_answer": "182",
+      "distractors": [
+        "27",
+        "183",
+        "181"
+      ],
+      "explanation": [
+        "13 × 14 = 182"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_40498fc052",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Product of 15 and 13.",
+      "correct_answer": "195",
+      "distractors": [
+        "193",
+        "194",
+        "28"
+      ],
+      "explanation": [
+        "15 × 13 = 195"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_40f4010842",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is the product of 26 and 73?",
+      "correct_answer": "1898",
+      "distractors": [
+        "1900",
+        "99",
+        "1903"
+      ],
+      "explanation": [
+        "26 × 73 = 1898"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_414e99d189",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "39 * 10",
+      "correct_answer": "390",
+      "distractors": [
+        "394",
+        "49",
+        "392"
+      ],
+      "explanation": [
+        "39 × 10 = 390"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_422204d67b",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "11*27",
+      "correct_answer": "297",
+      "distractors": [
+        "298",
+        "38",
+        "293"
+      ],
+      "explanation": [
+        "11 × 27 = 297"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_43250171ea",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is the product of 62 and 70?",
+      "correct_answer": "4340",
+      "distractors": [
+        "4343",
+        "4344",
+        "132"
+      ],
+      "explanation": [
+        "62 × 70 = 4340"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_44c67391ed",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Product of 18 and 19.",
+      "correct_answer": "342",
+      "distractors": [
+        "347",
+        "343",
+        "37"
+      ],
+      "explanation": [
+        "18 × 19 = 342"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_44ffe135c4",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Work out 16 * 22.",
+      "correct_answer": "352",
+      "distractors": [
+        "355",
+        "353",
+        "38"
+      ],
+      "explanation": [
+        "16 × 22 = 352"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_453ab79d27",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "53*20",
+      "correct_answer": "1060",
+      "distractors": [
+        "73",
+        "1064",
+        "1056"
+      ],
+      "explanation": [
+        "53 × 20 = 1060"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_458ba5d4ee",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Product of 27 and 21.",
+      "correct_answer": "567",
+      "distractors": [
+        "566",
+        "48",
+        "564"
+      ],
+      "explanation": [
+        "27 × 21 = 567"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_45c617cf8a",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "37 times 17",
+      "correct_answer": "629",
+      "distractors": [
+        "54",
+        "625",
+        "634"
+      ],
+      "explanation": [
+        "37 × 17 = 629"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_46b23a5793",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "61 * 41",
+      "correct_answer": "2501",
+      "distractors": [
+        "2502",
+        "102",
+        "2506"
+      ],
+      "explanation": [
+        "61 × 41 = 2501"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_46b344c14d",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is 53 times 21?",
+      "correct_answer": "1113",
+      "distractors": [
+        "1111",
+        "1118",
+        "74"
+      ],
+      "explanation": [
+        "53 × 21 = 1113"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_47f33efc43",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is 17 times 18?",
+      "correct_answer": "306",
+      "distractors": [
+        "303",
+        "308",
+        "35"
+      ],
+      "explanation": [
+        "17 × 18 = 306"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_4872bba8a4",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "14*94",
+      "correct_answer": "1316",
+      "distractors": [
+        "1318",
+        "1319",
+        "108"
+      ],
+      "explanation": [
+        "14 × 94 = 1316"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_48ae22ee01",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "13*40",
+      "correct_answer": "520",
+      "distractors": [
+        "53",
+        "523",
+        "525"
+      ],
+      "explanation": [
+        "13 × 40 = 520"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_48fb781e50",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "84*23",
+      "correct_answer": "1932",
+      "distractors": [
+        "1931",
+        "107",
+        "1933"
+      ],
+      "explanation": [
+        "84 × 23 = 1932"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_490539f6d6",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is 10 times 11?",
+      "correct_answer": "110",
+      "distractors": [
+        "21",
+        "105",
+        "115"
+      ],
+      "explanation": [
+        "10 × 11 = 110"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_4955bb5b81",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Multiply 22 and 10.",
+      "correct_answer": "220",
+      "distractors": [
+        "224",
+        "32",
+        "216"
+      ],
+      "explanation": [
+        "22 × 10 = 220"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_497b34d904",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is 95 times 35?",
+      "correct_answer": "3325",
+      "distractors": [
+        "3327",
+        "130",
+        "3329"
+      ],
+      "explanation": [
+        "95 × 35 = 3325"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_4a3d26a8b2",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Multiply 36 and 15.",
+      "correct_answer": "540",
+      "distractors": [
+        "51",
+        "542",
+        "538"
+      ],
+      "explanation": [
+        "36 × 15 = 540"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_4b7019f76b",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is 48 times 18?",
+      "correct_answer": "864",
+      "distractors": [
+        "66",
+        "862",
+        "865"
+      ],
+      "explanation": [
+        "48 × 18 = 864"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_4cdff9364b",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "14*39",
+      "correct_answer": "546",
+      "distractors": [
+        "543",
+        "548",
+        "53"
+      ],
+      "explanation": [
+        "14 × 39 = 546"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_4e27c841c9",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "18*83",
+      "correct_answer": "1494",
+      "distractors": [
+        "1495",
+        "1491",
+        "101"
+      ],
+      "explanation": [
+        "18 × 83 = 1494"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_546a9ca87c",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "59*21",
+      "correct_answer": "1239",
+      "distractors": [
+        "1240",
+        "80",
+        "1241"
+      ],
+      "explanation": [
+        "59 × 21 = 1239"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_5513bf2da7",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Product of 11 and 40.",
+      "correct_answer": "440",
+      "distractors": [
+        "442",
+        "435",
+        "51"
+      ],
+      "explanation": [
+        "11 × 40 = 440"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_57963fd291",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "34 * 13",
+      "correct_answer": "442",
+      "distractors": [
+        "441",
+        "47",
+        "445"
+      ],
+      "explanation": [
+        "34 × 13 = 442"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_57c8c4758e",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "18*20",
+      "correct_answer": "360",
+      "distractors": [
+        "362",
+        "365",
+        "38"
+      ],
+      "explanation": [
+        "18 × 20 = 360"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_57cfbcf877",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is 84 times 13?",
+      "correct_answer": "1092",
+      "distractors": [
+        "1088",
+        "97",
+        "1096"
+      ],
+      "explanation": [
+        "84 × 13 = 1092"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_5806bb8782",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is 23 times 51?",
+      "correct_answer": "1173",
+      "distractors": [
+        "1178",
+        "74",
+        "1175"
+      ],
+      "explanation": [
+        "23 × 51 = 1173"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_58414d5726",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Multiply 12 and 12.",
+      "correct_answer": "144",
+      "distractors": [
+        "24",
+        "139",
+        "147"
+      ],
+      "explanation": [
+        "12 × 12 = 144"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_5a3d25950f",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is 65 times 18?",
+      "correct_answer": "1170",
+      "distractors": [
+        "1167",
+        "1169",
+        "83"
+      ],
+      "explanation": [
+        "65 × 18 = 1170"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_5c3db5a6d3",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "12 times 22",
+      "correct_answer": "264",
+      "distractors": [
+        "261",
+        "262",
+        "34"
+      ],
+      "explanation": [
+        "12 × 22 = 264"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_5d7557908a",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Product of 41 and 11.",
+      "correct_answer": "451",
+      "distractors": [
+        "52",
+        "454",
+        "452"
+      ],
+      "explanation": [
+        "41 × 11 = 451"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_5db48d9efe",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Product of 34 and 24.",
+      "correct_answer": "816",
+      "distractors": [
+        "821",
+        "58",
+        "812"
+      ],
+      "explanation": [
+        "34 × 24 = 816"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_5e04a6874a",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is 44 times 22?",
+      "correct_answer": "968",
+      "distractors": [
+        "66",
+        "969",
+        "973"
+      ],
+      "explanation": [
+        "44 × 22 = 968"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_60256755d0",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "46 * 13",
+      "correct_answer": "598",
+      "distractors": [
+        "597",
+        "593",
+        "59"
+      ],
+      "explanation": [
+        "46 × 13 = 598"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_61abed0aca",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Product of 13 and 40.",
+      "correct_answer": "520",
+      "distractors": [
+        "515",
+        "521",
+        "53"
+      ],
+      "explanation": [
+        "13 × 40 = 520"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_64447ad545",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is the product of 28 and 11?",
+      "correct_answer": "308",
+      "distractors": [
+        "306",
+        "310",
+        "39"
+      ],
+      "explanation": [
+        "28 × 11 = 308"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_675f568f45",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Calculate 21*20.",
+      "correct_answer": "420",
+      "distractors": [
+        "41",
+        "417",
+        "425"
+      ],
+      "explanation": [
+        "21 × 20 = 420"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_67768cc105",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "90*36",
+      "correct_answer": "3240",
+      "distractors": [
+        "3245",
+        "126",
+        "3238"
+      ],
+      "explanation": [
+        "90 × 36 = 3240"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_67c3ad8916",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Product of 17 and 17.",
+      "correct_answer": "289",
+      "distractors": [
+        "34",
+        "293",
+        "286"
+      ],
+      "explanation": [
+        "17 × 17 = 289"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_67ee53ad3b",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is the product of 26 and 67?",
+      "correct_answer": "1742",
+      "distractors": [
+        "1741",
+        "1743",
+        "93"
+      ],
+      "explanation": [
+        "26 × 67 = 1742"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_690118c560",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Product of 23 and 41.",
+      "correct_answer": "943",
+      "distractors": [
+        "64",
+        "940",
+        "939"
+      ],
+      "explanation": [
+        "23 × 41 = 943"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_6a6bc1aa02",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Calculate 40*28.",
+      "correct_answer": "1120",
+      "distractors": [
+        "1121",
+        "1123",
+        "68"
+      ],
+      "explanation": [
+        "40 × 28 = 1120"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_6e33f3c7ec",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "11*17",
+      "correct_answer": "187",
+      "distractors": [
+        "190",
+        "28",
+        "188"
+      ],
+      "explanation": [
+        "11 × 17 = 187"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_6e8ab4bc3c",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is 15 times 17?",
+      "correct_answer": "255",
+      "distractors": [
+        "257",
+        "32",
+        "258"
+      ],
+      "explanation": [
+        "15 × 17 = 255"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_7116c41771",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Multiply 19 and 57.",
+      "correct_answer": "1083",
+      "distractors": [
+        "1084",
+        "1082",
+        "76"
+      ],
+      "explanation": [
+        "19 × 57 = 1083"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_71fe96cd52",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is the product of 70 and 25?",
+      "correct_answer": "1750",
+      "distractors": [
+        "1749",
+        "95",
+        "1747"
+      ],
+      "explanation": [
+        "70 × 25 = 1750"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_722d96f0b3",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is the product of 20 and 37?",
+      "correct_answer": "740",
+      "distractors": [
+        "736",
+        "57",
+        "739"
+      ],
+      "explanation": [
+        "20 × 37 = 740"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_76b699c602",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Product of 10 and 46.",
+      "correct_answer": "460",
+      "distractors": [
+        "56",
+        "461",
+        "463"
+      ],
+      "explanation": [
+        "10 × 46 = 460"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_772d9f97ce",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "13*58",
+      "correct_answer": "754",
+      "distractors": [
+        "749",
+        "750",
+        "71"
+      ],
+      "explanation": [
+        "13 × 58 = 754"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_77669edddf",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Multiply 19 and 10.",
+      "correct_answer": "190",
+      "distractors": [
+        "194",
+        "191",
+        "29"
+      ],
+      "explanation": [
+        "19 × 10 = 190"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_7873f85890",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is the product of 45 and 33?",
+      "correct_answer": "1485",
+      "distractors": [
+        "1488",
+        "78",
+        "1481"
+      ],
+      "explanation": [
+        "45 × 33 = 1485"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_7c4985dc8d",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "24 times 73",
+      "correct_answer": "1752",
+      "distractors": [
+        "1755",
+        "1757",
+        "97"
+      ],
+      "explanation": [
+        "24 × 73 = 1752"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_7e829e3b28",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "23 * 65",
+      "correct_answer": "1495",
+      "distractors": [
+        "88",
+        "1490",
+        "1498"
+      ],
+      "explanation": [
+        "23 × 65 = 1495"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_7f0b2e0020",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "40 times 40",
+      "correct_answer": "1600",
+      "distractors": [
+        "1601",
+        "1602",
+        "80"
+      ],
+      "explanation": [
+        "40 × 40 = 1600"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_7fbb99b30c",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "24*67",
+      "correct_answer": "1608",
+      "distractors": [
+        "91",
+        "1604",
+        "1605"
+      ],
+      "explanation": [
+        "24 × 67 = 1608"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_7fd48cdbae",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is 10 times 13?",
+      "correct_answer": "130",
+      "distractors": [
+        "23",
+        "128",
+        "129"
+      ],
+      "explanation": [
+        "10 × 13 = 130"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_801c2041d8",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is 13 times 51?",
+      "correct_answer": "663",
+      "distractors": [
+        "662",
+        "666",
+        "64"
+      ],
+      "explanation": [
+        "13 × 51 = 663"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_809a13074d",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is 85 times 30?",
+      "correct_answer": "2550",
+      "distractors": [
+        "2549",
+        "115",
+        "2551"
+      ],
+      "explanation": [
+        "85 × 30 = 2550"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_80b76fbee7",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Product of 21 and 16.",
+      "correct_answer": "336",
+      "distractors": [
+        "337",
+        "37",
+        "331"
+      ],
+      "explanation": [
+        "21 × 16 = 336"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_818f701413",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Multiply 15 and 16.",
+      "correct_answer": "240",
+      "distractors": [
+        "236",
+        "31",
+        "244"
+      ],
+      "explanation": [
+        "15 × 16 = 240"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_834c371d82",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "79 times 45",
+      "correct_answer": "3555",
+      "distractors": [
+        "3554",
+        "124",
+        "3560"
+      ],
+      "explanation": [
+        "79 × 45 = 3555"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_84f6f8d8a6",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Calculate 30*22.",
+      "correct_answer": "660",
+      "distractors": [
+        "52",
+        "661",
+        "658"
+      ],
+      "explanation": [
+        "30 × 22 = 660"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_86a2ad65af",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Multiply 22 and 75.",
+      "correct_answer": "1650",
+      "distractors": [
+        "97",
+        "1655",
+        "1646"
+      ],
+      "explanation": [
+        "22 × 75 = 1650"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_8904ac3f4b",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Product of 44 and 12.",
+      "correct_answer": "528",
+      "distractors": [
+        "56",
+        "529",
+        "523"
+      ],
+      "explanation": [
+        "44 × 12 = 528"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_8b386c7ed3",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "30*59",
+      "correct_answer": "1770",
+      "distractors": [
+        "1769",
+        "1768",
+        "89"
+      ],
+      "explanation": [
+        "30 × 59 = 1770"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_8b7b9b299e",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Calculate 10*85.",
+      "correct_answer": "850",
+      "distractors": [
+        "853",
+        "848",
+        "95"
+      ],
+      "explanation": [
+        "10 × 85 = 850"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_8bd1b072ab",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "40*15",
+      "correct_answer": "600",
+      "distractors": [
+        "605",
+        "604",
+        "55"
+      ],
+      "explanation": [
+        "40 × 15 = 600"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_910242ed32",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "93 times 17",
+      "correct_answer": "1581",
+      "distractors": [
+        "1577",
+        "110",
+        "1582"
+      ],
+      "explanation": [
+        "93 × 17 = 1581"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_9327e11a4f",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is the product of 86 and 12?",
+      "correct_answer": "1032",
+      "distractors": [
+        "1031",
+        "98",
+        "1035"
+      ],
+      "explanation": [
+        "86 × 12 = 1032"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_9b8d2a70bd",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "11 * 96",
+      "correct_answer": "1056",
+      "distractors": [
+        "107",
+        "1060",
+        "1052"
+      ],
+      "explanation": [
+        "11 × 96 = 1056"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_9bce56c0e7",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "26 * 49",
+      "correct_answer": "1274",
+      "distractors": [
+        "1279",
+        "1277",
+        "75"
+      ],
+      "explanation": [
+        "26 × 49 = 1274"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_9cb2d0a2f1",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Product of 14 and 36.",
+      "correct_answer": "504",
+      "distractors": [
+        "505",
+        "50",
+        "503"
+      ],
+      "explanation": [
+        "14 × 36 = 504"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_9e504ad8e0",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Product of 44 and 61.",
+      "correct_answer": "2684",
+      "distractors": [
+        "2685",
+        "2683",
+        "105"
+      ],
+      "explanation": [
+        "44 × 61 = 2684"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_9e81211621",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "13 * 30",
+      "correct_answer": "390",
+      "distractors": [
+        "385",
+        "392",
+        "43"
+      ],
+      "explanation": [
+        "13 × 30 = 390"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_9f3ca401f0",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Work out 96 * 14.",
+      "correct_answer": "1344",
+      "distractors": [
+        "1339",
+        "1349",
+        "110"
+      ],
+      "explanation": [
+        "96 × 14 = 1344"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_9fec352e8a",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is the product of 16 and 19?",
+      "correct_answer": "304",
+      "distractors": [
+        "303",
+        "35",
+        "308"
+      ],
+      "explanation": [
+        "16 × 19 = 304"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_a1751938b4",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Calculate 47*18.",
+      "correct_answer": "846",
+      "distractors": [
+        "847",
+        "65",
+        "851"
+      ],
+      "explanation": [
+        "47 × 18 = 846"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_a4561912ea",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Multiply 82 and 10.",
+      "correct_answer": "820",
+      "distractors": [
+        "92",
+        "818",
+        "822"
+      ],
+      "explanation": [
+        "82 × 10 = 820"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_a4953545d9",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "87*14",
+      "correct_answer": "1218",
+      "distractors": [
+        "1220",
+        "1213",
+        "101"
+      ],
+      "explanation": [
+        "87 × 14 = 1218"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_a92e09b559",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is 26 times 11?",
+      "correct_answer": "286",
+      "distractors": [
+        "287",
+        "284",
+        "37"
+      ],
+      "explanation": [
+        "26 × 11 = 286"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_aa1375e6e9",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Product of 53 and 30.",
+      "correct_answer": "1590",
+      "distractors": [
+        "1587",
+        "83",
+        "1592"
+      ],
+      "explanation": [
+        "53 × 30 = 1590"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_ac57f8d77e",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "10 * 80",
+      "correct_answer": "800",
+      "distractors": [
+        "797",
+        "803",
+        "90"
+      ],
+      "explanation": [
+        "10 × 80 = 800"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_ace92fe4a8",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "17 * 95",
+      "correct_answer": "1615",
+      "distractors": [
+        "1613",
+        "1618",
+        "112"
+      ],
+      "explanation": [
+        "17 × 95 = 1615"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_ada3483076",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is 66 times 30?",
+      "correct_answer": "1980",
+      "distractors": [
+        "1977",
+        "96",
+        "1985"
+      ],
+      "explanation": [
+        "66 × 30 = 1980"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_ae556b9cfc",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "77*77",
+      "correct_answer": "5929",
+      "distractors": [
+        "5931",
+        "154",
+        "5928"
+      ],
+      "explanation": [
+        "77 × 77 = 5929"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_ae5fb6b890",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "29*31",
+      "correct_answer": "899",
+      "distractors": [
+        "904",
+        "894",
+        "60"
+      ],
+      "explanation": [
+        "29 × 31 = 899"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_ae6bdacaa8",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Calculate 33*14.",
+      "correct_answer": "462",
+      "distractors": [
+        "457",
+        "466",
+        "47"
+      ],
+      "explanation": [
+        "33 × 14 = 462"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_af96412054",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "29*11",
+      "correct_answer": "319",
+      "distractors": [
+        "320",
+        "322",
+        "40"
+      ],
+      "explanation": [
+        "29 × 11 = 319"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_b1512d66b8",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "70 times 15",
+      "correct_answer": "1050",
+      "distractors": [
+        "1055",
+        "1052",
+        "85"
+      ],
+      "explanation": [
+        "70 × 15 = 1050"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_b2b9ac97eb",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Product of 22 and 14.",
+      "correct_answer": "308",
+      "distractors": [
+        "36",
+        "303",
+        "309"
+      ],
+      "explanation": [
+        "22 × 14 = 308"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_b5565968ad",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is the product of 58 and 25?",
+      "correct_answer": "1450",
+      "distractors": [
+        "83",
+        "1445",
+        "1447"
+      ],
+      "explanation": [
+        "58 × 25 = 1450"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_b87c200787",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is the product of 82 and 13?",
+      "correct_answer": "1066",
+      "distractors": [
+        "1065",
+        "1071",
+        "95"
+      ],
+      "explanation": [
+        "82 × 13 = 1066"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_bc4f6711d7",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Multiply 84 and 14.",
+      "correct_answer": "1176",
+      "distractors": [
+        "1172",
+        "1171",
+        "98"
+      ],
+      "explanation": [
+        "84 × 14 = 1176"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_bdd99c165a",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "34 times 97",
+      "correct_answer": "3298",
+      "distractors": [
+        "3296",
+        "131",
+        "3293"
+      ],
+      "explanation": [
+        "34 × 97 = 3298"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_c0d9a687da",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is the product of 10 and 66?",
+      "correct_answer": "660",
+      "distractors": [
+        "76",
+        "662",
+        "665"
+      ],
+      "explanation": [
+        "10 × 66 = 660"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_c1462d3787",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Calculate 42*14.",
+      "correct_answer": "588",
+      "distractors": [
+        "56",
+        "590",
+        "584"
+      ],
+      "explanation": [
+        "42 × 14 = 588"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_c2826bbe3f",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is 36 times 18?",
+      "correct_answer": "648",
+      "distractors": [
+        "652",
+        "653",
+        "54"
+      ],
+      "explanation": [
+        "36 × 18 = 648"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_c41b3b5abc",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Product of 75 and 12.",
+      "correct_answer": "900",
+      "distractors": [
+        "904",
+        "896",
+        "87"
+      ],
+      "explanation": [
+        "75 × 12 = 900"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_c44001cf07",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "18*50",
+      "correct_answer": "900",
+      "distractors": [
+        "68",
+        "905",
+        "895"
+      ],
+      "explanation": [
+        "18 × 50 = 900"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_c92b672c0b",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is the product of 33 and 21?",
+      "correct_answer": "693",
+      "distractors": [
+        "54",
+        "691",
+        "694"
+      ],
+      "explanation": [
+        "33 × 21 = 693"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_c998dec7e6",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is the product of 18 and 19?",
+      "correct_answer": "342",
+      "distractors": [
+        "343",
+        "37",
+        "347"
+      ],
+      "explanation": [
+        "18 × 19 = 342"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_ca7eeaa160",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Work out 24 * 90.",
+      "correct_answer": "2160",
+      "distractors": [
+        "114",
+        "2164",
+        "2165"
+      ],
+      "explanation": [
+        "24 × 90 = 2160"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_cc1575fa91",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "22*36",
+      "correct_answer": "792",
+      "distractors": [
+        "58",
+        "791",
+        "797"
+      ],
+      "explanation": [
+        "22 × 36 = 792"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_ccdb874eba",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is 47 times 21?",
+      "correct_answer": "987",
+      "distractors": [
+        "991",
+        "68",
+        "982"
+      ],
+      "explanation": [
+        "47 × 21 = 987"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_cce1eb2ae7",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Calculate 29*22.",
+      "correct_answer": "638",
+      "distractors": [
+        "642",
+        "51",
+        "637"
+      ],
+      "explanation": [
+        "29 × 22 = 638"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_cce4b71f5d",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Product of 10 and 81.",
+      "correct_answer": "810",
+      "distractors": [
+        "809",
+        "91",
+        "812"
+      ],
+      "explanation": [
+        "10 × 81 = 810"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_cda22cd840",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "46 times 20",
+      "correct_answer": "920",
+      "distractors": [
+        "916",
+        "923",
+        "66"
+      ],
+      "explanation": [
+        "46 × 20 = 920"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_d042b9511f",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Work out 24 * 48.",
+      "correct_answer": "1152",
+      "distractors": [
+        "1156",
+        "72",
+        "1151"
+      ],
+      "explanation": [
+        "24 × 48 = 1152"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_d12bc74d22",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Calculate 17*76.",
+      "correct_answer": "1292",
+      "distractors": [
+        "1290",
+        "93",
+        "1287"
+      ],
+      "explanation": [
+        "17 × 76 = 1292"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_d3218982bb",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Product of 38 and 53.",
+      "correct_answer": "2014",
+      "distractors": [
+        "2016",
+        "91",
+        "2015"
+      ],
+      "explanation": [
+        "38 × 53 = 2014"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_d3f60ec3aa",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "21*90",
+      "correct_answer": "1890",
+      "distractors": [
+        "1889",
+        "111",
+        "1887"
+      ],
+      "explanation": [
+        "21 × 90 = 1890"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_d414c4a68d",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is 10 times 14?",
+      "correct_answer": "140",
+      "distractors": [
+        "24",
+        "138",
+        "137"
+      ],
+      "explanation": [
+        "10 × 14 = 140"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_d422681463",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Work out 21 * 14.",
+      "correct_answer": "294",
+      "distractors": [
+        "291",
+        "289",
+        "35"
+      ],
+      "explanation": [
+        "21 × 14 = 294"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_d555b77322",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is 12 times 47?",
+      "correct_answer": "564",
+      "distractors": [
+        "567",
+        "560",
+        "59"
+      ],
+      "explanation": [
+        "12 × 47 = 564"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_d608d4a0f2",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is the product of 92 and 90?",
+      "correct_answer": "8280",
+      "distractors": [
+        "8282",
+        "8285",
+        "182"
+      ],
+      "explanation": [
+        "92 × 90 = 8280"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_d7efc553a3",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "62 * 10",
+      "correct_answer": "620",
+      "distractors": [
+        "623",
+        "621",
+        "72"
+      ],
+      "explanation": [
+        "62 × 10 = 620"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_d941c89967",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "49*41",
+      "correct_answer": "2009",
+      "distractors": [
+        "2005",
+        "90",
+        "2004"
+      ],
+      "explanation": [
+        "49 × 41 = 2009"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_dc4bd68e60",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "88 times 21",
+      "correct_answer": "1848",
+      "distractors": [
+        "1849",
+        "1847",
+        "109"
+      ],
+      "explanation": [
+        "88 × 21 = 1848"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_dcb0553937",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Product of 76 and 19.",
+      "correct_answer": "1444",
+      "distractors": [
+        "1440",
+        "1441",
+        "95"
+      ],
+      "explanation": [
+        "76 × 19 = 1444"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_dd3bad5dd6",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Work out 32 * 20.",
+      "correct_answer": "640",
+      "distractors": [
+        "52",
+        "636",
+        "644"
+      ],
+      "explanation": [
+        "32 × 20 = 640"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_dd3e915af4",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Multiply 80 and 28.",
+      "correct_answer": "2240",
+      "distractors": [
+        "2238",
+        "2235",
+        "108"
+      ],
+      "explanation": [
+        "80 × 28 = 2240"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_ddc0b6ff19",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Product of 12 and 15.",
+      "correct_answer": "180",
+      "distractors": [
+        "181",
+        "27",
+        "185"
+      ],
+      "explanation": [
+        "12 × 15 = 180"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_de7bc28bc5",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Product of 21 and 23.",
+      "correct_answer": "483",
+      "distractors": [
+        "480",
+        "44",
+        "482"
+      ],
+      "explanation": [
+        "21 × 23 = 483"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_de92e01131",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "13 * 54",
+      "correct_answer": "702",
+      "distractors": [
+        "67",
+        "703",
+        "700"
+      ],
+      "explanation": [
+        "13 × 54 = 702"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_df693a43f8",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is 77 times 12?",
+      "correct_answer": "924",
+      "distractors": [
+        "928",
+        "89",
+        "920"
+      ],
+      "explanation": [
+        "77 × 12 = 924"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_df90e04c4f",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is the product of 71 and 43?",
+      "correct_answer": "3053",
+      "distractors": [
+        "114",
+        "3051",
+        "3057"
+      ],
+      "explanation": [
+        "71 × 43 = 3053"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_dfdfd66e14",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Product of 13 and 59.",
+      "correct_answer": "767",
+      "distractors": [
+        "72",
+        "772",
+        "766"
+      ],
+      "explanation": [
+        "13 × 59 = 767"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_e071ab61d7",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is the product of 57 and 15?",
+      "correct_answer": "855",
+      "distractors": [
+        "856",
+        "72",
+        "860"
+      ],
+      "explanation": [
+        "57 × 15 = 855"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_e1388453d4",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "26 times 35",
+      "correct_answer": "910",
+      "distractors": [
+        "61",
+        "911",
+        "912"
+      ],
+      "explanation": [
+        "26 × 35 = 910"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_e14edb5bd7",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Work out 20 * 22.",
+      "correct_answer": "440",
+      "distractors": [
+        "437",
+        "42",
+        "444"
+      ],
+      "explanation": [
+        "20 × 22 = 440"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_e15e879b56",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is the product of 10 and 24?",
+      "correct_answer": "240",
+      "distractors": [
+        "34",
+        "235",
+        "242"
+      ],
+      "explanation": [
+        "10 × 24 = 240"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_e36e7fc97f",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "63 times 29",
+      "correct_answer": "1827",
+      "distractors": [
+        "92",
+        "1832",
+        "1825"
+      ],
+      "explanation": [
+        "63 × 29 = 1827"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_e55a3c4df8",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Product of 16 and 13.",
+      "correct_answer": "208",
+      "distractors": [
+        "209",
+        "29",
+        "210"
+      ],
+      "explanation": [
+        "16 × 13 = 208"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_e6689eb0ac",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "38 * 27",
+      "correct_answer": "1026",
+      "distractors": [
+        "1028",
+        "65",
+        "1021"
+      ],
+      "explanation": [
+        "38 × 27 = 1026"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_e691668da8",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "20*21",
+      "correct_answer": "420",
+      "distractors": [
+        "415",
+        "417",
+        "41"
+      ],
+      "explanation": [
+        "20 × 21 = 420"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_e9233b5d4d",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "12 * 63",
+      "correct_answer": "756",
+      "distractors": [
+        "75",
+        "757",
+        "759"
+      ],
+      "explanation": [
+        "12 × 63 = 756"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_e93c59027e",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "14*14",
+      "correct_answer": "196",
+      "distractors": [
+        "28",
+        "200",
+        "195"
+      ],
+      "explanation": [
+        "14 × 14 = 196"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_e9f3a52b47",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Multiply 12 and 16.",
+      "correct_answer": "192",
+      "distractors": [
+        "187",
+        "197",
+        "28"
+      ],
+      "explanation": [
+        "12 × 16 = 192"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_ea5f86308e",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Work out 54 * 66.",
+      "correct_answer": "3564",
+      "distractors": [
+        "3568",
+        "3567",
+        "120"
+      ],
+      "explanation": [
+        "54 × 66 = 3564"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_eae580c442",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "61 * 40",
+      "correct_answer": "2440",
+      "distractors": [
+        "101",
+        "2438",
+        "2435"
+      ],
+      "explanation": [
+        "61 × 40 = 2440"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_eb161586c3",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Product of 10 and 68.",
+      "correct_answer": "680",
+      "distractors": [
+        "679",
+        "685",
+        "78"
+      ],
+      "explanation": [
+        "10 × 68 = 680"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_eb186c131a",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "97 times 10",
+      "correct_answer": "970",
+      "distractors": [
+        "974",
+        "107",
+        "971"
+      ],
+      "explanation": [
+        "97 × 10 = 970"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_eb6a6c0a48",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is the product of 34 and 26?",
+      "correct_answer": "884",
+      "distractors": [
+        "60",
+        "880",
+        "889"
+      ],
+      "explanation": [
+        "34 × 26 = 884"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_ee961a1731",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "39 times 62",
+      "correct_answer": "2418",
+      "distractors": [
+        "2417",
+        "101",
+        "2419"
+      ],
+      "explanation": [
+        "39 × 62 = 2418"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_f1c4623fc8",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Work out 10 * 31.",
+      "correct_answer": "310",
+      "distractors": [
+        "313",
+        "41",
+        "315"
+      ],
+      "explanation": [
+        "10 × 31 = 310"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_f269f903b0",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "16 * 31",
+      "correct_answer": "496",
+      "distractors": [
+        "494",
+        "499",
+        "47"
+      ],
+      "explanation": [
+        "16 × 31 = 496"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_f37de5ff2b",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "10 * 60",
+      "correct_answer": "600",
+      "distractors": [
+        "598",
+        "70",
+        "601"
+      ],
+      "explanation": [
+        "10 × 60 = 600"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_f3953570f8",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is 26 times 10?",
+      "correct_answer": "260",
+      "distractors": [
+        "255",
+        "262",
+        "36"
+      ],
+      "explanation": [
+        "26 × 10 = 260"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_f3a088c5c3",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Calculate 27*23.",
+      "correct_answer": "621",
+      "distractors": [
+        "50",
+        "620",
+        "626"
+      ],
+      "explanation": [
+        "27 × 23 = 621"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_f3c9ec20f4",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is 39 times 15?",
+      "correct_answer": "585",
+      "distractors": [
+        "54",
+        "587",
+        "586"
+      ],
+      "explanation": [
+        "39 × 15 = 585"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_f78cded12f",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "75 * 16",
+      "correct_answer": "1200",
+      "distractors": [
+        "1199",
+        "1201",
+        "91"
+      ],
+      "explanation": [
+        "75 × 16 = 1200"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_f7bf521532",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "29 times 15",
+      "correct_answer": "435",
+      "distractors": [
+        "433",
+        "44",
+        "436"
+      ],
+      "explanation": [
+        "29 × 15 = 435"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_f9b406150e",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "What is 17 times 66?",
+      "correct_answer": "1122",
+      "distractors": [
+        "1120",
+        "1125",
+        "83"
+      ],
+      "explanation": [
+        "17 × 66 = 1122"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_f9d003d0f3",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "43 * 13",
+      "correct_answer": "559",
+      "distractors": [
+        "56",
+        "561",
+        "558"
+      ],
+      "explanation": [
+        "43 × 13 = 559"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_fce36093e5",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Calculate 16*11.",
+      "correct_answer": "176",
+      "distractors": [
+        "175",
+        "178",
+        "27"
+      ],
+      "explanation": [
+        "16 × 11 = 176"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_fd764b9c23",
+      "concept_id": "mult_2digit_by_2digit",
+      "prompt": "Calculate 10*46.",
+      "correct_answer": "460",
+      "distractors": [
+        "459",
+        "56",
+        "458"
+      ],
+      "explanation": [
+        "10 × 46 = 460"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    }
+  ]
+}
