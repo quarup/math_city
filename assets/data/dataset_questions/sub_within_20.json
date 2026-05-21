@@ -6,9 +6,12 @@
       "prompt": "What is 12 − 8?",
       "correct_answer": "4",
       "distractors": [
+        "8",
         "20",
-        "2",
-        "8"
+        "6"
+      ],
+      "explanation": [
+        "12 − 8 = 4"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -21,8 +24,11 @@
       "correct_answer": "11",
       "distractors": [
         "21",
-        "9",
-        "10"
+        "12",
+        "6"
+      ],
+      "explanation": [
+        "16 − 5 = 11"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -35,8 +41,11 @@
       "correct_answer": "15",
       "distractors": [
         "13",
-        "19",
-        "16"
+        "11",
+        "19"
+      ],
+      "explanation": [
+        "17 − 2 = 15"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -48,9 +57,12 @@
       "prompt": "19 − 13",
       "correct_answer": "6",
       "distractors": [
-        "10",
-        "7",
-        "32"
+        "1",
+        "32",
+        "9"
+      ],
+      "explanation": [
+        "19 − 13 = 6"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -62,9 +74,12 @@
       "prompt": "What is 20 minus 3?",
       "correct_answer": "17",
       "distractors": [
-        "16",
-        "13",
-        "23"
+        "19",
+        "23",
+        "14"
+      ],
+      "explanation": [
+        "20 − 3 = 17"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -80,6 +95,9 @@
         "33",
         "10"
       ],
+      "explanation": [
+        "20 − 13 = 7"
+      ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
       "license": "Apache-2.0"
@@ -90,9 +108,12 @@
       "prompt": "What is the difference between 15 and 15?",
       "correct_answer": "0",
       "distractors": [
-        "5",
-        "2",
-        "30"
+        "4",
+        "30",
+        "5"
+      ],
+      "explanation": [
+        "15 − 15 = 0"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -104,9 +125,12 @@
       "prompt": "What is the distance between 5 and 12?",
       "correct_answer": "7",
       "distractors": [
-        "6",
-        "8",
+        "12",
+        "4",
         "17"
+      ],
+      "explanation": [
+        "12 − 5 = 7"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -118,9 +142,12 @@
       "prompt": "What is 19 − 11?",
       "correct_answer": "8",
       "distractors": [
-        "4",
-        "11",
-        "30"
+        "6",
+        "30",
+        "13"
+      ],
+      "explanation": [
+        "19 − 11 = 8"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -132,9 +159,12 @@
       "prompt": "What is the distance between 1 and 14?",
       "correct_answer": "13",
       "distractors": [
-        "17",
-        "15",
-        "9"
+        "14",
+        "18",
+        "15"
+      ],
+      "explanation": [
+        "14 − 1 = 13"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -146,9 +176,12 @@
       "prompt": "Calculate 15 − 4.",
       "correct_answer": "11",
       "distractors": [
-        "15",
         "19",
+        "12",
         "14"
+      ],
+      "explanation": [
+        "15 − 4 = 11"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -160,9 +193,12 @@
       "prompt": "What is 18 take away 16?",
       "correct_answer": "2",
       "distractors": [
-        "6",
-        "1",
+        "5",
+        "7",
         "34"
+      ],
+      "explanation": [
+        "18 − 16 = 2"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -174,9 +210,12 @@
       "prompt": "What is the distance between 16 and 15?",
       "correct_answer": "1",
       "distractors": [
+        "31",
         "2",
-        "0",
-        "31"
+        "3"
+      ],
+      "explanation": [
+        "16 − 15 = 1"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -188,9 +227,12 @@
       "prompt": "What is 16 take away 3?",
       "correct_answer": "13",
       "distractors": [
-        "17",
-        "19",
-        "8"
+        "15",
+        "9",
+        "19"
+      ],
+      "explanation": [
+        "16 − 3 = 13"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -202,9 +244,12 @@
       "prompt": "What is the difference between 4 and 11?",
       "correct_answer": "7",
       "distractors": [
-        "9",
         "15",
-        "3"
+        "6",
+        "5"
+      ],
+      "explanation": [
+        "11 − 4 = 7"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -216,9 +261,12 @@
       "prompt": "What is the distance between 7 and 18?",
       "correct_answer": "11",
       "distractors": [
-        "9",
-        "25",
-        "13"
+        "6",
+        "7",
+        "25"
+      ],
+      "explanation": [
+        "18 − 7 = 11"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -231,8 +279,11 @@
       "correct_answer": "13",
       "distractors": [
         "23",
-        "16",
-        "18"
+        "17",
+        "9"
+      ],
+      "explanation": [
+        "18 − 5 = 13"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -244,9 +295,12 @@
       "prompt": "What is the difference between 13 and 10?",
       "correct_answer": "3",
       "distractors": [
-        "23",
-        "4",
-        "0"
+        "6",
+        "1",
+        "23"
+      ],
+      "explanation": [
+        "13 − 10 = 3"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -258,9 +312,12 @@
       "prompt": "What is 13 take away 0?",
       "correct_answer": "13",
       "distractors": [
-        "17",
         "15",
-        "12"
+        "10",
+        "14"
+      ],
+      "explanation": [
+        "13 − 0 = 13"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -272,9 +329,12 @@
       "prompt": "What is the difference between 12 and 4?",
       "correct_answer": "8",
       "distractors": [
-        "5",
-        "16",
-        "9"
+        "12",
+        "13",
+        "16"
+      ],
+      "explanation": [
+        "12 − 4 = 8"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -286,9 +346,12 @@
       "prompt": "What is the difference between 15 and 16?",
       "correct_answer": "1",
       "distractors": [
+        "5",
         "31",
-        "2",
-        "0"
+        "6"
+      ],
+      "explanation": [
+        "16 − 15 = 1"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -300,9 +363,12 @@
       "prompt": "Subtract 19 from 20.",
       "correct_answer": "1",
       "distractors": [
-        "39",
+        "2",
         "6",
-        "4"
+        "39"
+      ],
+      "explanation": [
+        "20 − 19 = 1"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -314,9 +380,12 @@
       "prompt": "What is the difference between 8 and 16?",
       "correct_answer": "8",
       "distractors": [
-        "11",
-        "24",
-        "7"
+        "9",
+        "4",
+        "24"
+      ],
+      "explanation": [
+        "16 − 8 = 8"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -331,6 +400,9 @@
         "8",
         "29",
         "10"
+      ],
+      "explanation": [
+        "18 − 11 = 7"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",

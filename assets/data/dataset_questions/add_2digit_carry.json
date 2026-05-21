@@ -6,9 +6,12 @@
       "prompt": "28 + 18",
       "correct_answer": "46",
       "distractors": [
-        "47",
-        "45",
+        "51",
+        "48",
         "10"
+      ],
+      "explanation": [
+        "28 + 18 = 46"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -20,9 +23,12 @@
       "prompt": "Add 38 and 36.",
       "correct_answer": "74",
       "distractors": [
-        "77",
-        "78",
+        "75",
+        "71",
         "2"
+      ],
+      "explanation": [
+        "38 + 36 = 74"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -34,9 +40,12 @@
       "prompt": "Sum 36 and 28.",
       "correct_answer": "64",
       "distractors": [
-        "69",
-        "60",
+        "61",
+        "59",
         "8"
+      ],
+      "explanation": [
+        "36 + 28 = 64"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -48,9 +57,12 @@
       "prompt": "Sum 39 and 36.",
       "correct_answer": "75",
       "distractors": [
-        "77",
+        "3",
         "74",
-        "3"
+        "72"
+      ],
+      "explanation": [
+        "39 + 36 = 75"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -62,9 +74,12 @@
       "prompt": "What is 22 plus 19?",
       "correct_answer": "41",
       "distractors": [
-        "42",
         "3",
-        "46"
+        "45",
+        "36"
+      ],
+      "explanation": [
+        "22 + 19 = 41"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -76,9 +91,12 @@
       "prompt": "46 + 14",
       "correct_answer": "60",
       "distractors": [
-        "55",
-        "58",
+        "63",
+        "64",
         "32"
+      ],
+      "explanation": [
+        "46 + 14 = 60"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -94,6 +112,9 @@
         "48",
         "12"
       ],
+      "explanation": [
+        "29 + 17 = 46"
+      ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
       "license": "Apache-2.0"
@@ -104,9 +125,12 @@
       "prompt": "Total of 17 and 27.",
       "correct_answer": "44",
       "distractors": [
-        "47",
-        "40",
-        "46"
+        "49",
+        "39",
+        "42"
+      ],
+      "explanation": [
+        "17 + 27 = 44"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -122,6 +146,9 @@
         "33",
         "28"
       ],
+      "explanation": [
+        "15 + 16 = 31"
+      ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
       "license": "Apache-2.0"
@@ -132,9 +159,12 @@
       "prompt": "Total of 15 and 45.",
       "correct_answer": "60",
       "distractors": [
-        "59",
         "62",
-        "63"
+        "57",
+        "59"
+      ],
+      "explanation": [
+        "15 + 45 = 60"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -146,9 +176,12 @@
       "prompt": "Calculate 28 + 14.",
       "correct_answer": "42",
       "distractors": [
-        "37",
-        "14",
-        "41"
+        "47",
+        "38",
+        "14"
+      ],
+      "explanation": [
+        "28 + 14 = 42"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -160,9 +193,12 @@
       "prompt": "Total of 54 and 16.",
       "correct_answer": "70",
       "distractors": [
-        "65",
+        "67",
         "38",
-        "72"
+        "75"
+      ],
+      "explanation": [
+        "54 + 16 = 70"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -174,9 +210,12 @@
       "prompt": "What is 27 + 23?",
       "correct_answer": "50",
       "distractors": [
-        "4",
         "54",
-        "55"
+        "4",
+        "51"
+      ],
+      "explanation": [
+        "27 + 23 = 50"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -188,9 +227,12 @@
       "prompt": "Work out 49 + 16.",
       "correct_answer": "65",
       "distractors": [
-        "60",
-        "68",
+        "62",
+        "64",
         "33"
+      ],
+      "explanation": [
+        "49 + 16 = 65"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -202,9 +244,12 @@
       "prompt": "14 + 69",
       "correct_answer": "83",
       "distractors": [
-        "85",
-        "81",
-        "87"
+        "88",
+        "82",
+        "79"
+      ],
+      "explanation": [
+        "14 + 69 = 83"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -216,9 +261,12 @@
       "prompt": "Total of 43 and 29.",
       "correct_answer": "72",
       "distractors": [
-        "67",
         "14",
-        "69"
+        "71",
+        "70"
+      ],
+      "explanation": [
+        "43 + 29 = 72"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -230,9 +278,12 @@
       "prompt": "Total of 47 and 38.",
       "correct_answer": "85",
       "distractors": [
-        "82",
-        "83",
-        "9"
+        "86",
+        "9",
+        "84"
+      ],
+      "explanation": [
+        "47 + 38 = 85"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -244,9 +295,12 @@
       "prompt": "What is 39 plus 53?",
       "correct_answer": "92",
       "distractors": [
-        "91",
+        "89",
         "90",
-        "94"
+        "88"
+      ],
+      "explanation": [
+        "39 + 53 = 92"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -258,9 +312,12 @@
       "prompt": "What is 49 plus 43?",
       "correct_answer": "92",
       "distractors": [
-        "93",
+        "90",
         "6",
-        "96"
+        "97"
+      ],
+      "explanation": [
+        "49 + 43 = 92"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -272,9 +329,12 @@
       "prompt": "56 + 14",
       "correct_answer": "70",
       "distractors": [
+        "67",
         "42",
-        "73",
-        "67"
+        "75"
+      ],
+      "explanation": [
+        "56 + 14 = 70"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -286,9 +346,12 @@
       "prompt": "Total of 29 and 22.",
       "correct_answer": "51",
       "distractors": [
-        "48",
+        "7",
         "55",
-        "7"
+        "46"
+      ],
+      "explanation": [
+        "29 + 22 = 51"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -300,9 +363,12 @@
       "prompt": "Sum 17 and 19.",
       "correct_answer": "36",
       "distractors": [
-        "32",
+        "33",
         "37",
         "39"
+      ],
+      "explanation": [
+        "17 + 19 = 36"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -314,9 +380,12 @@
       "prompt": "Add together 22 and 68.",
       "correct_answer": "90",
       "distractors": [
-        "86",
         "95",
-        "88"
+        "93",
+        "94"
+      ],
+      "explanation": [
+        "22 + 68 = 90"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -328,9 +397,12 @@
       "prompt": "Calculate 64 + 29.",
       "correct_answer": "93",
       "distractors": [
-        "94",
-        "95",
+        "90",
+        "97",
         "35"
+      ],
+      "explanation": [
+        "64 + 29 = 93"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -346,6 +418,9 @@
         "101",
         "99"
       ],
+      "explanation": [
+        "44 + 56 = 100"
+      ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
       "license": "Apache-2.0"
@@ -356,9 +431,12 @@
       "prompt": "Put together 66 and 15.",
       "correct_answer": "81",
       "distractors": [
-        "78",
+        "79",
         "51",
-        "80"
+        "85"
+      ],
+      "explanation": [
+        "66 + 15 = 81"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -371,8 +449,11 @@
       "correct_answer": "41",
       "distractors": [
         "46",
-        "36",
-        "43"
+        "38",
+        "37"
+      ],
+      "explanation": [
+        "19 + 22 = 41"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -384,9 +465,12 @@
       "prompt": "Sum 47 and 14.",
       "correct_answer": "61",
       "distractors": [
-        "62",
-        "33",
-        "57"
+        "59",
+        "66",
+        "33"
+      ],
+      "explanation": [
+        "47 + 14 = 61"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -398,9 +482,12 @@
       "prompt": "Work out 47 + 46.",
       "correct_answer": "93",
       "distractors": [
-        "94",
-        "95",
+        "92",
+        "88",
         "1"
+      ],
+      "explanation": [
+        "47 + 46 = 93"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -413,8 +500,11 @@
       "correct_answer": "31",
       "distractors": [
         "30",
-        "29",
+        "33",
         "34"
+      ],
+      "explanation": [
+        "12 + 19 = 31"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -426,9 +516,12 @@
       "prompt": "Put together 15 and 56.",
       "correct_answer": "71",
       "distractors": [
-        "76",
-        "73",
-        "70"
+        "69",
+        "70",
+        "76"
+      ],
+      "explanation": [
+        "15 + 56 = 71"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -440,9 +533,12 @@
       "prompt": "26+66",
       "correct_answer": "92",
       "distractors": [
-        "96",
-        "89",
-        "90"
+        "94",
+        "88",
+        "91"
+      ],
+      "explanation": [
+        "26 + 66 = 92"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -454,9 +550,12 @@
       "prompt": "Put together 33 and 19.",
       "correct_answer": "52",
       "distractors": [
-        "47",
         "14",
-        "48"
+        "49",
+        "56"
+      ],
+      "explanation": [
+        "33 + 19 = 52"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -468,9 +567,12 @@
       "prompt": "What is 27 plus 47?",
       "correct_answer": "74",
       "distractors": [
-        "71",
+        "75",
         "76",
         "73"
+      ],
+      "explanation": [
+        "27 + 47 = 74"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -482,9 +584,12 @@
       "prompt": "59 + 28",
       "correct_answer": "87",
       "distractors": [
-        "89",
-        "83",
+        "92",
+        "82",
         "31"
+      ],
+      "explanation": [
+        "59 + 28 = 87"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -496,9 +601,12 @@
       "prompt": "What is 18 plus 34?",
       "correct_answer": "52",
       "distractors": [
-        "49",
-        "47",
-        "57"
+        "57",
+        "48",
+        "53"
+      ],
+      "explanation": [
+        "18 + 34 = 52"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -510,9 +618,12 @@
       "prompt": "Add together 25 and 27.",
       "correct_answer": "52",
       "distractors": [
-        "48",
         "51",
+        "50",
         "56"
+      ],
+      "explanation": [
+        "25 + 27 = 52"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -524,9 +635,12 @@
       "prompt": "Put together 23 and 19.",
       "correct_answer": "42",
       "distractors": [
+        "46",
         "4",
-        "37",
-        "40"
+        "47"
+      ],
+      "explanation": [
+        "23 + 19 = 42"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -538,9 +652,12 @@
       "prompt": "Calculate 66 + 19.",
       "correct_answer": "85",
       "distractors": [
-        "89",
-        "87",
-        "47"
+        "47",
+        "88",
+        "86"
+      ],
+      "explanation": [
+        "66 + 19 = 85"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -552,9 +669,12 @@
       "prompt": "What is 39 plus 15?",
       "correct_answer": "54",
       "distractors": [
-        "56",
+        "57",
         "24",
-        "57"
+        "52"
+      ],
+      "explanation": [
+        "39 + 15 = 54"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -566,9 +686,12 @@
       "prompt": "What is 49 + 22?",
       "correct_answer": "71",
       "distractors": [
-        "67",
         "70",
+        "74",
         "27"
+      ],
+      "explanation": [
+        "49 + 22 = 71"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -580,9 +703,12 @@
       "prompt": "Total of 68 and 19.",
       "correct_answer": "87",
       "distractors": [
+        "82",
         "92",
-        "49",
-        "90"
+        "49"
+      ],
+      "explanation": [
+        "68 + 19 = 87"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -594,9 +720,12 @@
       "prompt": "Work out 59 + 35.",
       "correct_answer": "94",
       "distractors": [
-        "99",
-        "90",
-        "24"
+        "24",
+        "97",
+        "89"
+      ],
+      "explanation": [
+        "59 + 35 = 94"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -608,9 +737,12 @@
       "prompt": "What is 79 plus 13?",
       "correct_answer": "92",
       "distractors": [
+        "96",
         "66",
-        "95",
-        "97"
+        "87"
+      ],
+      "explanation": [
+        "79 + 13 = 92"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -623,8 +755,11 @@
       "correct_answer": "53",
       "distractors": [
         "19",
-        "57",
-        "49"
+        "55",
+        "50"
+      ],
+      "explanation": [
+        "36 + 17 = 53"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -636,9 +771,12 @@
       "prompt": "18 + 13",
       "correct_answer": "31",
       "distractors": [
-        "35",
         "5",
-        "27"
+        "32",
+        "29"
+      ],
+      "explanation": [
+        "18 + 13 = 31"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -650,9 +788,12 @@
       "prompt": "Calculate 45 + 27.",
       "correct_answer": "72",
       "distractors": [
+        "69",
         "18",
-        "74",
-        "67"
+        "74"
+      ],
+      "explanation": [
+        "45 + 27 = 72"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -664,9 +805,12 @@
       "prompt": "Put together 48 and 22.",
       "correct_answer": "70",
       "distractors": [
-        "65",
         "26",
-        "69"
+        "72",
+        "71"
+      ],
+      "explanation": [
+        "48 + 22 = 70"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -678,9 +822,12 @@
       "prompt": "Work out 67 + 33.",
       "correct_answer": "100",
       "distractors": [
-        "34",
-        "95",
-        "105"
+        "104",
+        "98",
+        "34"
+      ],
+      "explanation": [
+        "67 + 33 = 100"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",

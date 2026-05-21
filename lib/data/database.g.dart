@@ -1784,6 +1784,587 @@ class ConceptsCompanion extends UpdateCompanion<CatalogConcept> {
   }
 }
 
+class $DatasetQuestionsTable extends DatasetQuestions
+    with TableInfo<$DatasetQuestionsTable, DatasetQuestionRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DatasetQuestionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _conceptIdMeta = const VerificationMeta(
+    'conceptId',
+  );
+  @override
+  late final GeneratedColumn<String> conceptId = GeneratedColumn<String>(
+    'concept_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _promptMeta = const VerificationMeta('prompt');
+  @override
+  late final GeneratedColumn<String> prompt = GeneratedColumn<String>(
+    'prompt',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _correctAnswerMeta = const VerificationMeta(
+    'correctAnswer',
+  );
+  @override
+  late final GeneratedColumn<String> correctAnswer = GeneratedColumn<String>(
+    'correct_answer',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _distractorsJsonMeta = const VerificationMeta(
+    'distractorsJson',
+  );
+  @override
+  late final GeneratedColumn<String> distractorsJson = GeneratedColumn<String>(
+    'distractors_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _explanationJsonMeta = const VerificationMeta(
+    'explanationJson',
+  );
+  @override
+  late final GeneratedColumn<String> explanationJson = GeneratedColumn<String>(
+    'explanation_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sourceMeta = const VerificationMeta('source');
+  @override
+  late final GeneratedColumn<String> source = GeneratedColumn<String>(
+    'source',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sourceModuleMeta = const VerificationMeta(
+    'sourceModule',
+  );
+  @override
+  late final GeneratedColumn<String> sourceModule = GeneratedColumn<String>(
+    'source_module',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _licenseMeta = const VerificationMeta(
+    'license',
+  );
+  @override
+  late final GeneratedColumn<String> license = GeneratedColumn<String>(
+    'license',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    conceptId,
+    prompt,
+    correctAnswer,
+    distractorsJson,
+    explanationJson,
+    source,
+    sourceModule,
+    license,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'dataset_questions';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<DatasetQuestionRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('concept_id')) {
+      context.handle(
+        _conceptIdMeta,
+        conceptId.isAcceptableOrUnknown(data['concept_id']!, _conceptIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_conceptIdMeta);
+    }
+    if (data.containsKey('prompt')) {
+      context.handle(
+        _promptMeta,
+        prompt.isAcceptableOrUnknown(data['prompt']!, _promptMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_promptMeta);
+    }
+    if (data.containsKey('correct_answer')) {
+      context.handle(
+        _correctAnswerMeta,
+        correctAnswer.isAcceptableOrUnknown(
+          data['correct_answer']!,
+          _correctAnswerMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_correctAnswerMeta);
+    }
+    if (data.containsKey('distractors_json')) {
+      context.handle(
+        _distractorsJsonMeta,
+        distractorsJson.isAcceptableOrUnknown(
+          data['distractors_json']!,
+          _distractorsJsonMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_distractorsJsonMeta);
+    }
+    if (data.containsKey('explanation_json')) {
+      context.handle(
+        _explanationJsonMeta,
+        explanationJson.isAcceptableOrUnknown(
+          data['explanation_json']!,
+          _explanationJsonMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_explanationJsonMeta);
+    }
+    if (data.containsKey('source')) {
+      context.handle(
+        _sourceMeta,
+        source.isAcceptableOrUnknown(data['source']!, _sourceMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sourceMeta);
+    }
+    if (data.containsKey('source_module')) {
+      context.handle(
+        _sourceModuleMeta,
+        sourceModule.isAcceptableOrUnknown(
+          data['source_module']!,
+          _sourceModuleMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_sourceModuleMeta);
+    }
+    if (data.containsKey('license')) {
+      context.handle(
+        _licenseMeta,
+        license.isAcceptableOrUnknown(data['license']!, _licenseMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_licenseMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  DatasetQuestionRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DatasetQuestionRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      conceptId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}concept_id'],
+      )!,
+      prompt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}prompt'],
+      )!,
+      correctAnswer: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}correct_answer'],
+      )!,
+      distractorsJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}distractors_json'],
+      )!,
+      explanationJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}explanation_json'],
+      )!,
+      source: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source'],
+      )!,
+      sourceModule: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source_module'],
+      )!,
+      license: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}license'],
+      )!,
+    );
+  }
+
+  @override
+  $DatasetQuestionsTable createAlias(String alias) {
+    return $DatasetQuestionsTable(attachedDatabase, alias);
+  }
+}
+
+class DatasetQuestionRow extends DataClass
+    implements Insertable<DatasetQuestionRow> {
+  final String id;
+  final String conceptId;
+  final String prompt;
+  final String correctAnswer;
+
+  /// JSON-encoded `List<String>` of exactly three wrong answers.
+  final String distractorsJson;
+
+  /// JSON-encoded `List<String>` of 1–4 explanation lines.
+  final String explanationJson;
+  final String source;
+  final String sourceModule;
+  final String license;
+  const DatasetQuestionRow({
+    required this.id,
+    required this.conceptId,
+    required this.prompt,
+    required this.correctAnswer,
+    required this.distractorsJson,
+    required this.explanationJson,
+    required this.source,
+    required this.sourceModule,
+    required this.license,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['concept_id'] = Variable<String>(conceptId);
+    map['prompt'] = Variable<String>(prompt);
+    map['correct_answer'] = Variable<String>(correctAnswer);
+    map['distractors_json'] = Variable<String>(distractorsJson);
+    map['explanation_json'] = Variable<String>(explanationJson);
+    map['source'] = Variable<String>(source);
+    map['source_module'] = Variable<String>(sourceModule);
+    map['license'] = Variable<String>(license);
+    return map;
+  }
+
+  DatasetQuestionsCompanion toCompanion(bool nullToAbsent) {
+    return DatasetQuestionsCompanion(
+      id: Value(id),
+      conceptId: Value(conceptId),
+      prompt: Value(prompt),
+      correctAnswer: Value(correctAnswer),
+      distractorsJson: Value(distractorsJson),
+      explanationJson: Value(explanationJson),
+      source: Value(source),
+      sourceModule: Value(sourceModule),
+      license: Value(license),
+    );
+  }
+
+  factory DatasetQuestionRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DatasetQuestionRow(
+      id: serializer.fromJson<String>(json['id']),
+      conceptId: serializer.fromJson<String>(json['conceptId']),
+      prompt: serializer.fromJson<String>(json['prompt']),
+      correctAnswer: serializer.fromJson<String>(json['correctAnswer']),
+      distractorsJson: serializer.fromJson<String>(json['distractorsJson']),
+      explanationJson: serializer.fromJson<String>(json['explanationJson']),
+      source: serializer.fromJson<String>(json['source']),
+      sourceModule: serializer.fromJson<String>(json['sourceModule']),
+      license: serializer.fromJson<String>(json['license']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'conceptId': serializer.toJson<String>(conceptId),
+      'prompt': serializer.toJson<String>(prompt),
+      'correctAnswer': serializer.toJson<String>(correctAnswer),
+      'distractorsJson': serializer.toJson<String>(distractorsJson),
+      'explanationJson': serializer.toJson<String>(explanationJson),
+      'source': serializer.toJson<String>(source),
+      'sourceModule': serializer.toJson<String>(sourceModule),
+      'license': serializer.toJson<String>(license),
+    };
+  }
+
+  DatasetQuestionRow copyWith({
+    String? id,
+    String? conceptId,
+    String? prompt,
+    String? correctAnswer,
+    String? distractorsJson,
+    String? explanationJson,
+    String? source,
+    String? sourceModule,
+    String? license,
+  }) => DatasetQuestionRow(
+    id: id ?? this.id,
+    conceptId: conceptId ?? this.conceptId,
+    prompt: prompt ?? this.prompt,
+    correctAnswer: correctAnswer ?? this.correctAnswer,
+    distractorsJson: distractorsJson ?? this.distractorsJson,
+    explanationJson: explanationJson ?? this.explanationJson,
+    source: source ?? this.source,
+    sourceModule: sourceModule ?? this.sourceModule,
+    license: license ?? this.license,
+  );
+  DatasetQuestionRow copyWithCompanion(DatasetQuestionsCompanion data) {
+    return DatasetQuestionRow(
+      id: data.id.present ? data.id.value : this.id,
+      conceptId: data.conceptId.present ? data.conceptId.value : this.conceptId,
+      prompt: data.prompt.present ? data.prompt.value : this.prompt,
+      correctAnswer: data.correctAnswer.present
+          ? data.correctAnswer.value
+          : this.correctAnswer,
+      distractorsJson: data.distractorsJson.present
+          ? data.distractorsJson.value
+          : this.distractorsJson,
+      explanationJson: data.explanationJson.present
+          ? data.explanationJson.value
+          : this.explanationJson,
+      source: data.source.present ? data.source.value : this.source,
+      sourceModule: data.sourceModule.present
+          ? data.sourceModule.value
+          : this.sourceModule,
+      license: data.license.present ? data.license.value : this.license,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DatasetQuestionRow(')
+          ..write('id: $id, ')
+          ..write('conceptId: $conceptId, ')
+          ..write('prompt: $prompt, ')
+          ..write('correctAnswer: $correctAnswer, ')
+          ..write('distractorsJson: $distractorsJson, ')
+          ..write('explanationJson: $explanationJson, ')
+          ..write('source: $source, ')
+          ..write('sourceModule: $sourceModule, ')
+          ..write('license: $license')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    conceptId,
+    prompt,
+    correctAnswer,
+    distractorsJson,
+    explanationJson,
+    source,
+    sourceModule,
+    license,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DatasetQuestionRow &&
+          other.id == this.id &&
+          other.conceptId == this.conceptId &&
+          other.prompt == this.prompt &&
+          other.correctAnswer == this.correctAnswer &&
+          other.distractorsJson == this.distractorsJson &&
+          other.explanationJson == this.explanationJson &&
+          other.source == this.source &&
+          other.sourceModule == this.sourceModule &&
+          other.license == this.license);
+}
+
+class DatasetQuestionsCompanion extends UpdateCompanion<DatasetQuestionRow> {
+  final Value<String> id;
+  final Value<String> conceptId;
+  final Value<String> prompt;
+  final Value<String> correctAnswer;
+  final Value<String> distractorsJson;
+  final Value<String> explanationJson;
+  final Value<String> source;
+  final Value<String> sourceModule;
+  final Value<String> license;
+  final Value<int> rowid;
+  const DatasetQuestionsCompanion({
+    this.id = const Value.absent(),
+    this.conceptId = const Value.absent(),
+    this.prompt = const Value.absent(),
+    this.correctAnswer = const Value.absent(),
+    this.distractorsJson = const Value.absent(),
+    this.explanationJson = const Value.absent(),
+    this.source = const Value.absent(),
+    this.sourceModule = const Value.absent(),
+    this.license = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  DatasetQuestionsCompanion.insert({
+    required String id,
+    required String conceptId,
+    required String prompt,
+    required String correctAnswer,
+    required String distractorsJson,
+    required String explanationJson,
+    required String source,
+    required String sourceModule,
+    required String license,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       conceptId = Value(conceptId),
+       prompt = Value(prompt),
+       correctAnswer = Value(correctAnswer),
+       distractorsJson = Value(distractorsJson),
+       explanationJson = Value(explanationJson),
+       source = Value(source),
+       sourceModule = Value(sourceModule),
+       license = Value(license);
+  static Insertable<DatasetQuestionRow> custom({
+    Expression<String>? id,
+    Expression<String>? conceptId,
+    Expression<String>? prompt,
+    Expression<String>? correctAnswer,
+    Expression<String>? distractorsJson,
+    Expression<String>? explanationJson,
+    Expression<String>? source,
+    Expression<String>? sourceModule,
+    Expression<String>? license,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (conceptId != null) 'concept_id': conceptId,
+      if (prompt != null) 'prompt': prompt,
+      if (correctAnswer != null) 'correct_answer': correctAnswer,
+      if (distractorsJson != null) 'distractors_json': distractorsJson,
+      if (explanationJson != null) 'explanation_json': explanationJson,
+      if (source != null) 'source': source,
+      if (sourceModule != null) 'source_module': sourceModule,
+      if (license != null) 'license': license,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  DatasetQuestionsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? conceptId,
+    Value<String>? prompt,
+    Value<String>? correctAnswer,
+    Value<String>? distractorsJson,
+    Value<String>? explanationJson,
+    Value<String>? source,
+    Value<String>? sourceModule,
+    Value<String>? license,
+    Value<int>? rowid,
+  }) {
+    return DatasetQuestionsCompanion(
+      id: id ?? this.id,
+      conceptId: conceptId ?? this.conceptId,
+      prompt: prompt ?? this.prompt,
+      correctAnswer: correctAnswer ?? this.correctAnswer,
+      distractorsJson: distractorsJson ?? this.distractorsJson,
+      explanationJson: explanationJson ?? this.explanationJson,
+      source: source ?? this.source,
+      sourceModule: sourceModule ?? this.sourceModule,
+      license: license ?? this.license,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (conceptId.present) {
+      map['concept_id'] = Variable<String>(conceptId.value);
+    }
+    if (prompt.present) {
+      map['prompt'] = Variable<String>(prompt.value);
+    }
+    if (correctAnswer.present) {
+      map['correct_answer'] = Variable<String>(correctAnswer.value);
+    }
+    if (distractorsJson.present) {
+      map['distractors_json'] = Variable<String>(distractorsJson.value);
+    }
+    if (explanationJson.present) {
+      map['explanation_json'] = Variable<String>(explanationJson.value);
+    }
+    if (source.present) {
+      map['source'] = Variable<String>(source.value);
+    }
+    if (sourceModule.present) {
+      map['source_module'] = Variable<String>(sourceModule.value);
+    }
+    if (license.present) {
+      map['license'] = Variable<String>(license.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DatasetQuestionsCompanion(')
+          ..write('id: $id, ')
+          ..write('conceptId: $conceptId, ')
+          ..write('prompt: $prompt, ')
+          ..write('correctAnswer: $correctAnswer, ')
+          ..write('distractorsJson: $distractorsJson, ')
+          ..write('explanationJson: $explanationJson, ')
+          ..write('source: $source, ')
+          ..write('sourceModule: $sourceModule, ')
+          ..write('license: $license, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -1793,6 +2374,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $IntroducedConceptsTable introducedConcepts =
       $IntroducedConceptsTable(this);
   late final $ConceptsTable concepts = $ConceptsTable(this);
+  late final $DatasetQuestionsTable datasetQuestions = $DatasetQuestionsTable(
+    this,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -1802,6 +2386,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     conceptProficiencies,
     introducedConcepts,
     concepts,
+    datasetQuestions,
   ];
 }
 
@@ -3222,6 +3807,300 @@ typedef $$ConceptsTableProcessedTableManager =
       CatalogConcept,
       PrefetchHooks Function()
     >;
+typedef $$DatasetQuestionsTableCreateCompanionBuilder =
+    DatasetQuestionsCompanion Function({
+      required String id,
+      required String conceptId,
+      required String prompt,
+      required String correctAnswer,
+      required String distractorsJson,
+      required String explanationJson,
+      required String source,
+      required String sourceModule,
+      required String license,
+      Value<int> rowid,
+    });
+typedef $$DatasetQuestionsTableUpdateCompanionBuilder =
+    DatasetQuestionsCompanion Function({
+      Value<String> id,
+      Value<String> conceptId,
+      Value<String> prompt,
+      Value<String> correctAnswer,
+      Value<String> distractorsJson,
+      Value<String> explanationJson,
+      Value<String> source,
+      Value<String> sourceModule,
+      Value<String> license,
+      Value<int> rowid,
+    });
+
+class $$DatasetQuestionsTableFilterComposer
+    extends Composer<_$AppDatabase, $DatasetQuestionsTable> {
+  $$DatasetQuestionsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get conceptId => $composableBuilder(
+    column: $table.conceptId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get prompt => $composableBuilder(
+    column: $table.prompt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get correctAnswer => $composableBuilder(
+    column: $table.correctAnswer,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get distractorsJson => $composableBuilder(
+    column: $table.distractorsJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get explanationJson => $composableBuilder(
+    column: $table.explanationJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sourceModule => $composableBuilder(
+    column: $table.sourceModule,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get license => $composableBuilder(
+    column: $table.license,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$DatasetQuestionsTableOrderingComposer
+    extends Composer<_$AppDatabase, $DatasetQuestionsTable> {
+  $$DatasetQuestionsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get conceptId => $composableBuilder(
+    column: $table.conceptId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get prompt => $composableBuilder(
+    column: $table.prompt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get correctAnswer => $composableBuilder(
+    column: $table.correctAnswer,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get distractorsJson => $composableBuilder(
+    column: $table.distractorsJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get explanationJson => $composableBuilder(
+    column: $table.explanationJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sourceModule => $composableBuilder(
+    column: $table.sourceModule,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get license => $composableBuilder(
+    column: $table.license,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$DatasetQuestionsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $DatasetQuestionsTable> {
+  $$DatasetQuestionsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get conceptId =>
+      $composableBuilder(column: $table.conceptId, builder: (column) => column);
+
+  GeneratedColumn<String> get prompt =>
+      $composableBuilder(column: $table.prompt, builder: (column) => column);
+
+  GeneratedColumn<String> get correctAnswer => $composableBuilder(
+    column: $table.correctAnswer,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get distractorsJson => $composableBuilder(
+    column: $table.distractorsJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get explanationJson => $composableBuilder(
+    column: $table.explanationJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get source =>
+      $composableBuilder(column: $table.source, builder: (column) => column);
+
+  GeneratedColumn<String> get sourceModule => $composableBuilder(
+    column: $table.sourceModule,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get license =>
+      $composableBuilder(column: $table.license, builder: (column) => column);
+}
+
+class $$DatasetQuestionsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $DatasetQuestionsTable,
+          DatasetQuestionRow,
+          $$DatasetQuestionsTableFilterComposer,
+          $$DatasetQuestionsTableOrderingComposer,
+          $$DatasetQuestionsTableAnnotationComposer,
+          $$DatasetQuestionsTableCreateCompanionBuilder,
+          $$DatasetQuestionsTableUpdateCompanionBuilder,
+          (
+            DatasetQuestionRow,
+            BaseReferences<
+              _$AppDatabase,
+              $DatasetQuestionsTable,
+              DatasetQuestionRow
+            >,
+          ),
+          DatasetQuestionRow,
+          PrefetchHooks Function()
+        > {
+  $$DatasetQuestionsTableTableManager(
+    _$AppDatabase db,
+    $DatasetQuestionsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DatasetQuestionsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DatasetQuestionsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DatasetQuestionsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> conceptId = const Value.absent(),
+                Value<String> prompt = const Value.absent(),
+                Value<String> correctAnswer = const Value.absent(),
+                Value<String> distractorsJson = const Value.absent(),
+                Value<String> explanationJson = const Value.absent(),
+                Value<String> source = const Value.absent(),
+                Value<String> sourceModule = const Value.absent(),
+                Value<String> license = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => DatasetQuestionsCompanion(
+                id: id,
+                conceptId: conceptId,
+                prompt: prompt,
+                correctAnswer: correctAnswer,
+                distractorsJson: distractorsJson,
+                explanationJson: explanationJson,
+                source: source,
+                sourceModule: sourceModule,
+                license: license,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String conceptId,
+                required String prompt,
+                required String correctAnswer,
+                required String distractorsJson,
+                required String explanationJson,
+                required String source,
+                required String sourceModule,
+                required String license,
+                Value<int> rowid = const Value.absent(),
+              }) => DatasetQuestionsCompanion.insert(
+                id: id,
+                conceptId: conceptId,
+                prompt: prompt,
+                correctAnswer: correctAnswer,
+                distractorsJson: distractorsJson,
+                explanationJson: explanationJson,
+                source: source,
+                sourceModule: sourceModule,
+                license: license,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$DatasetQuestionsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $DatasetQuestionsTable,
+      DatasetQuestionRow,
+      $$DatasetQuestionsTableFilterComposer,
+      $$DatasetQuestionsTableOrderingComposer,
+      $$DatasetQuestionsTableAnnotationComposer,
+      $$DatasetQuestionsTableCreateCompanionBuilder,
+      $$DatasetQuestionsTableUpdateCompanionBuilder,
+      (
+        DatasetQuestionRow,
+        BaseReferences<
+          _$AppDatabase,
+          $DatasetQuestionsTable,
+          DatasetQuestionRow
+        >,
+      ),
+      DatasetQuestionRow,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -3234,4 +4113,6 @@ class $AppDatabaseManager {
       $$IntroducedConceptsTableTableManager(_db, _db.introducedConcepts);
   $$ConceptsTableTableManager get concepts =>
       $$ConceptsTableTableManager(_db, _db.concepts);
+  $$DatasetQuestionsTableTableManager get datasetQuestions =>
+      $$DatasetQuestionsTableTableManager(_db, _db.datasetQuestions);
 }

@@ -6,9 +6,12 @@
       "prompt": "Total of 9 and 8.",
       "correct_answer": "17",
       "distractors": [
-        "19",
+        "22",
         "1",
-        "21"
+        "15"
+      ],
+      "explanation": [
+        "9 + 8 = 17"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -20,9 +23,12 @@
       "prompt": "Work out 8 + 8.",
       "correct_answer": "16",
       "distractors": [
-        "19",
+        "0",
         "17",
-        "0"
+        "20"
+      ],
+      "explanation": [
+        "8 + 8 = 16"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -34,9 +40,12 @@
       "prompt": "Calculate 16 + 1.",
       "correct_answer": "17",
       "distractors": [
-        "14",
-        "15",
-        "18"
+        "21",
+        "13",
+        "15"
+      ],
+      "explanation": [
+        "16 + 1 = 17"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -50,7 +59,10 @@
       "distractors": [
         "13",
         "10",
-        "14"
+        "12"
+      ],
+      "explanation": [
+        "14 + 1 = 15"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -62,9 +74,12 @@
       "prompt": "Add together 4 and 15.",
       "correct_answer": "19",
       "distractors": [
-        "23",
-        "24",
-        "15"
+        "22",
+        "20",
+        "14"
+      ],
+      "explanation": [
+        "4 + 15 = 19"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -76,9 +91,12 @@
       "prompt": "Put together 12 and 4.",
       "correct_answer": "16",
       "distractors": [
+        "8",
         "20",
-        "15",
-        "8"
+        "15"
+      ],
+      "explanation": [
+        "12 + 4 = 16"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -90,9 +108,12 @@
       "prompt": "Work out 11 + 8.",
       "correct_answer": "19",
       "distractors": [
+        "20",
         "15",
-        "3",
-        "17"
+        "3"
+      ],
+      "explanation": [
+        "11 + 8 = 19"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -104,9 +125,12 @@
       "prompt": "Add together 10 and 1.",
       "correct_answer": "11",
       "distractors": [
-        "12",
-        "9",
-        "13"
+        "6",
+        "7",
+        "9"
+      ],
+      "explanation": [
+        "10 + 1 = 11"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -118,9 +142,12 @@
       "prompt": "What is 2 + 15?",
       "correct_answer": "17",
       "distractors": [
-        "21",
-        "19",
-        "16"
+        "15",
+        "18",
+        "22"
+      ],
+      "explanation": [
+        "2 + 15 = 17"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -132,9 +159,12 @@
       "prompt": "Add together 15 and 1.",
       "correct_answer": "16",
       "distractors": [
-        "11",
-        "13",
+        "19",
+        "15",
         "14"
+      ],
+      "explanation": [
+        "15 + 1 = 16"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -146,9 +176,12 @@
       "prompt": "Sum 9 and 2.",
       "correct_answer": "11",
       "distractors": [
-        "16",
-        "7",
-        "15"
+        "15",
+        "10",
+        "7"
+      ],
+      "explanation": [
+        "9 + 2 = 11"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -160,9 +193,12 @@
       "prompt": "Sum 0 and 17.",
       "correct_answer": "17",
       "distractors": [
-        "21",
-        "18",
-        "15"
+        "19",
+        "22",
+        "18"
+      ],
+      "explanation": [
+        "0 + 17 = 17"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -174,9 +210,12 @@
       "prompt": "Add together 0 and 14.",
       "correct_answer": "14",
       "distractors": [
-        "16",
-        "13",
-        "17"
+        "11",
+        "12",
+        "9"
+      ],
+      "explanation": [
+        "0 + 14 = 14"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -188,9 +227,12 @@
       "prompt": "Total of 13 and 7.",
       "correct_answer": "20",
       "distractors": [
-        "17",
-        "18",
-        "6"
+        "6",
+        "25",
+        "24"
+      ],
+      "explanation": [
+        "13 + 7 = 20"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -202,9 +244,12 @@
       "prompt": "What is 13 plus 3?",
       "correct_answer": "16",
       "distractors": [
+        "11",
         "10",
-        "17",
-        "13"
+        "17"
+      ],
+      "explanation": [
+        "13 + 3 = 16"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -216,9 +261,12 @@
       "prompt": "What is 7 + 8?",
       "correct_answer": "15",
       "distractors": [
-        "11",
-        "20",
-        "14"
+        "10",
+        "19",
+        "16"
+      ],
+      "explanation": [
+        "7 + 8 = 15"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -230,9 +278,12 @@
       "prompt": "1+14",
       "correct_answer": "15",
       "distractors": [
-        "14",
-        "11",
-        "16"
+        "16",
+        "19",
+        "12"
+      ],
+      "explanation": [
+        "1 + 14 = 15"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -244,9 +295,12 @@
       "prompt": "0 + 17",
       "correct_answer": "17",
       "distractors": [
-        "14",
-        "15",
-        "20"
+        "21",
+        "19",
+        "15"
+      ],
+      "explanation": [
+        "0 + 17 = 17"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -258,9 +312,12 @@
       "prompt": "Work out 9 + 2.",
       "correct_answer": "11",
       "distractors": [
-        "10",
         "7",
-        "8"
+        "6",
+        "13"
+      ],
+      "explanation": [
+        "9 + 2 = 11"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -272,9 +329,12 @@
       "prompt": "Calculate 7 + 6.",
       "correct_answer": "13",
       "distractors": [
-        "8",
-        "1",
-        "14"
+        "11",
+        "17",
+        "1"
+      ],
+      "explanation": [
+        "7 + 6 = 13"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -286,9 +346,12 @@
       "prompt": "Calculate 11 + 2.",
       "correct_answer": "13",
       "distractors": [
-        "12",
-        "11",
-        "9"
+        "8",
+        "9",
+        "12"
+      ],
+      "explanation": [
+        "11 + 2 = 13"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -301,8 +364,11 @@
       "correct_answer": "11",
       "distractors": [
         "9",
-        "10",
-        "12"
+        "14",
+        "15"
+      ],
+      "explanation": [
+        "10 + 1 = 11"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -314,9 +380,12 @@
       "prompt": "Put together 0 and 14.",
       "correct_answer": "14",
       "distractors": [
-        "11",
-        "17",
-        "10"
+        "15",
+        "10",
+        "13"
+      ],
+      "explanation": [
+        "0 + 14 = 14"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -328,9 +397,12 @@
       "prompt": "Work out 3 + 8.",
       "correct_answer": "11",
       "distractors": [
-        "7",
         "6",
-        "15"
+        "7",
+        "10"
+      ],
+      "explanation": [
+        "3 + 8 = 11"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",

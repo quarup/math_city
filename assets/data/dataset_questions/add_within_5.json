@@ -6,9 +6,12 @@
       "prompt": "What is 0 plus 0?",
       "correct_answer": "0",
       "distractors": [
-        "3",
-        "5",
-        "1"
+        "2",
+        "1",
+        "4"
+      ],
+      "explanation": [
+        "0 + 0 = 0"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",

@@ -37,23 +37,33 @@ class QuestionScreen extends ConsumerStatefulWidget {
 }
 
 class _QuestionScreenState extends ConsumerState<QuestionScreen> {
-  late final GeneratedQuestion _question;
-  late final List<String> _shuffledChoices;
+  GeneratedQuestion? _question;
+  List<String> _shuffledChoices = const [];
   bool _answered = false;
 
   @override
   void initState() {
     super.initState();
-    final registry = ref.read(generatorRegistryProvider);
-    _question = registry.generate(widget.conceptId);
-    _shuffledChoices = List.of(_question.allChoices)..shuffle();
+    unawaited(_loadQuestion());
+  }
+
+  Future<void> _loadQuestion() async {
+    final source = await ref.read(questionSourceProvider.future);
+    if (!mounted) return;
+    final q = source.generate(widget.conceptId);
+    setState(() {
+      _question = q;
+      _shuffledChoices = List.of(q.allChoices)..shuffle();
+    });
   }
 
   Future<void> _onAnswerSubmitted(String answer) async {
     if (_answered) return;
+    final question = _question;
+    if (question == null) return;
     _answered = true;
 
-    final outcome = checkAnswer(_question, answer);
+    final outcome = checkAnswer(question, answer);
     final isCorrect = outcome != AnswerOutcome.wrong;
 
     // Debug mode: skip every persisted side-effect (proficiency, drip-feed,
@@ -74,7 +84,7 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen> {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute<void>(
           builder: (_) => ResultScreen(
-            question: _question,
+            question: question,
             selectedAnswer: answer,
             outcome: outcome,
             starsEarned: stars,
@@ -90,6 +100,20 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen> {
   Widget build(BuildContext context) {
     final conceptName =
         findConceptById(widget.conceptId)?.name ?? widget.conceptId;
+    final question = _question;
+
+    if (question == null) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(conceptName),
+          automaticallyImplyLeading: false,
+        ),
+        body: const SafeArea(
+          child: Center(child: CircularProgressIndicator()),
+        ),
+      );
+    }
+
     final useNumberPad = widget.band == ProficiencyBand.comfortable;
 
     return Scaffold(
@@ -110,16 +134,16 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen> {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        if (_question.diagram != null) ...[
+                        if (question.diagram != null) ...[
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8),
                             child: Center(
-                              child: DiagramRenderer(spec: _question.diagram!),
+                              child: DiagramRenderer(spec: question.diagram!),
                             ),
                           ),
                           const SizedBox(height: 24),
                         ],
-                        _PromptCard(prompt: _question.prompt),
+                        _PromptCard(prompt: question.prompt),
                       ],
                     ),
                   ),
@@ -129,7 +153,7 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen> {
               if (useNumberPad)
                 NumberPadWidget(
                   onSubmit: _onAnswerSubmitted,
-                  extraChars: _extraCharsFor(_question.correctAnswer),
+                  extraChars: _extraCharsFor(question.correctAnswer),
                 )
               else
                 ..._shuffledChoices.map(
