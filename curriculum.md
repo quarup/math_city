@@ -836,7 +836,7 @@ report):
 | Dataset | Status | Detail |
 |---|---|---|
 | DeepMind `mathematics_dataset` | audited 2026-05-19 | [tools/question_generation/audits/deepmind.md](tools/question_generation/audits/deepmind.md) |
-| GSM8K | not yet audited | — |
+| GSM8K | audited 2026-05-21 | [tools/question_generation/audits/gsm8k.md](tools/question_generation/audits/gsm8k.md) |
 | MathDataset-ElementarySchool | audited 2026-05-21 — **skip dataset** | [tools/question_generation/audits/md_es.md](tools/question_generation/audits/md_es.md) |
 | MathQA | not yet audited | — |
 | SVAMP | audited 2026-05-21 — **dropped** (licence) | [tools/question_generation/audits/svamp.md](tools/question_generation/audits/svamp.md) |
@@ -849,6 +849,20 @@ all of which require runtime support for new answer-format shapes
 (letter-MC, comma-list, function-evaluation notation). Chunk 80 ingested
 `arithmetic.add_or_sub` (variety only); subsequent ingestion is gated on
 this audit shaping which submodules to prioritise.
+
+**TL;DR from the GSM8K audit:** narrower fit than §7.2 anticipated.
+GSM8K has *zero* true single-step items (every rationale has ≥2
+lines), so `add_word_problems_within_100` (G2) and the implicit
+`money_word_problems` (G2) slot cannot be sourced from GSM8K — those
+sub-concepts stay on algorithmic generators. The sweet spot is grades
+3–5 multi-step arithmetic word problems with × or ÷: the
+`mult_div_word_2step` bucket alone yields ~4000 items, plus ~1200
+multiplicative-comparison items, ~450 two-step ± items, and ~230
+fraction-context items. The audit also surfaces a **gap-fill candidate**
+(`word_problem_two_step_eq`, G7) with ~250 algebraic "Let x" items
+not in §7.2's mapping — defer until a sub-classifier can split it
+from systems / percent-equation framings. No new runtime answer formats
+needed (every final answer is integer).
 
 **TL;DR from the MD-ES audit:** MD-ES is structurally a re-bundling of
 6 upstream datasets. 14 of its 18 `(source, subcategory)` buckets are
