@@ -29,9 +29,18 @@ class QuestionSource {
   /// Pool size at which the dataset share saturates at 50%. A pool of
   /// [poolSaturationSize] or more yields a 50/50 mix; a pool of `k <
   /// poolSaturationSize` yields a `0.5 * k / poolSaturationSize` dataset
-  /// share. Tunable as we learn from playtest data; surfaced as a constant
-  /// so the policy stays inspectable.
-  static const int poolSaturationSize = 20;
+  /// share.
+  ///
+  /// **The pool is the union across every ingested dataset for the
+  /// concept** — e.g. when GSM8K and DeepMind both contribute items to
+  /// `add_within_20`, the saturation check sees the combined count, not
+  /// per-dataset counts. This makes the policy stable as new datasets
+  /// land: more sources only reduce per-item repetition, never inflate
+  /// the dataset share past 50%.
+  ///
+  /// Tunable as we learn from playtest data; surfaced as a constant so
+  /// the policy stays inspectable.
+  static const int poolSaturationSize = 50;
 
   final GeneratorRegistry registry;
   final Map<String, List<DatasetQuestion>> _datasetByConcept;

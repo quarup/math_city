@@ -128,15 +128,15 @@ void main() {
     });
 
     test('small pool yields proportionally smaller dataset share', () {
-      // pool=5, saturation=20 → expected dataset share 0.5 * 5/20 = 0.125
+      // pool=5, saturation=50 → expected dataset share 0.5 * 5/50 = 0.05
       final share = observedDatasetShare(5);
-      expect(share, closeTo(0.125, 0.03));
+      expect(share, closeTo(0.05, 0.02));
     });
 
     test('singleton pool yields a thin dataset share', () {
-      // pool=1, saturation=20 → expected 0.5 * 1/20 = 0.025
+      // pool=1, saturation=50 → expected 0.5 * 1/50 = 0.01
       final share = observedDatasetShare(1);
-      expect(share, closeTo(0.025, 0.02));
+      expect(share, closeTo(0.01, 0.01));
     });
   });
 
