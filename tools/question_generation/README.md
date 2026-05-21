@@ -45,7 +45,7 @@ dataset:
 |---|---|---|
 | DeepMind | [audit_deepmind.py](audit_deepmind.py) | [audits/deepmind.md](audits/deepmind.md) |
 | GSM8K | _not yet audited_ | _not yet audited_ |
-| MathDataset-ES | _not yet audited_ | _not yet audited_ |
+| MathDataset-ES | [audit_md_es.py](audit_md_es.py) | [audits/md_es.md](audits/md_es.md) (verdict: **skip — redundant or license-blocked**) |
 | MathQA | _not yet audited_ | _not yet audited_ |
 | SVAMP | _not yet audited_ | _not yet audited_ |
 
