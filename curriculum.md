@@ -839,7 +839,7 @@ report):
 | GSM8K | not yet audited | — |
 | MathDataset-ElementarySchool | audited 2026-05-21 — **skip dataset** | [tools/question_generation/audits/md_es.md](tools/question_generation/audits/md_es.md) |
 | MathQA | not yet audited | — |
-| SVAMP | not yet audited | — |
+| SVAMP | audited 2026-05-21 — **dropped** (licence) | [tools/question_generation/audits/svamp.md](tools/question_generation/audits/svamp.md) |
 
 **TL;DR from the DeepMind audit:** of ~39 K–8-eligible submodules, ~15
 are realistically worth ingesting and most of those add *variety* not
@@ -860,6 +860,20 @@ is the §7.4-flagged unclear case. **Net verdict: skip MD-ES entirely;
 audit SVAMP / MathQA / GSM8K directly instead.** Useful negative result:
 MAWPS-derived K-2 word problems looked tempting (high content quality)
 but the license trail blocks v1 inclusion.
+
+**TL;DR from the SVAMP audit:** SVAMP's own LICENSE file is MIT, but
+the SVAMP paper (Patel et al., NAACL 2021, §3) is explicit that the 1000
+items are constructed by applying three documented variation families
+(Question Sensitivity, Reasoning Ability, Structural Invariance) to seed
+problems drawn from ASDiv-A (CC-BY-NC 4.0) and MAWPS (unclear). A
+name+number overlap heuristic across all 1000 SVAMP items vs. 2305 ASDiv
+items finds only 1 strong text-overlap match, so derivation isn't
+surface-detectable — the dataset must be treated as one provenance
+class, no clean slice carvable. **Net verdict: drop SVAMP.** Marginal
+value over Chunk 79's word-problem framework + queued GSM8K is small;
+SVAMP's 1000 G2–G4 +/-/×/÷ word problems are 100% integer-answer and
+already covered. SVAMP stays on the §7.2 list (and in §7.5's coverage
+matrix) for traceability but won't be ingested.
 
 ---
 

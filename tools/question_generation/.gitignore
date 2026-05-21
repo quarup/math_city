@@ -1,0 +1,5 @@
+# audit_svamp.py caches the upstream SVAMP.json here on first fetch.
+# Do not commit it — SVAMP is derivative of CC-BY-NC ASDiv-A (see
+# audits/svamp.md), so the cached file shouldn't enter version control
+# even though it's only used at build-time for the audit script.
+.cache/
