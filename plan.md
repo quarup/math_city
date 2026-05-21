@@ -107,7 +107,9 @@
   - **Adaptive system tuning** — refine band thresholds per grade-band, refine α learning rate, consider asymmetric reward/penalty. Needs playtest data first.
   - **Validate full catalog with kids** in grades K, 2, 4, 6, 8 (Phase 6 exit criterion).
   - **Spoiler-aware retrofits skipped** — `unit_rate`, `unit_pricing`, `convert_units_using_ratio`, `constant_speed` (3 question shapes) would all want DoubleNumberLine but the unit-rate position **is** the answer — putting it on the diagram defeats the question. Either need a "value-hidden" tick variant or stay text-only. `equivalent_ratios` would want TapeDiagram but scaled values reach 36 — too many cells. All five deferred.
-- **Deferred:** Audio SFX + background music (CC0 assets not sourced yet — stub in place). iOS verification. Both revisit before Phase 11 at latest.
+- **Deferred:** Audio SFX + background music (CC0 assets not sourced yet — stub in place). iOS verification. Both revisit before Phase 12 at latest.
+
+- **City builder design (planning, 2026-05-21):** Phases 7–8 (city builder) were restructured into Phases 7–9 in a planning conversation. Phase 7 now ships a small "Simple DAG Proof" (~10 buildings, ~5 beats, multi-gate DAG, citizen-bubble UI); Phase 8 is a research + content-design phase that produces a new `city_builder.md` cataloging the full DAG (hundreds of buildings) and beat scripts; Phase 9 implements that content. Phases 9–12 from the old plan shifted to 10–13. PRD City Builder section rewritten accordingly. Currency model (rename `stars` → e.g. `bricks`, or multi-resource by concept family) is now an Open Question to lock at Phase 7 start.
 
 ---
 
@@ -154,8 +156,8 @@ State management (Riverpod) sits at the boundary between presentation and domain
 Player
   id, name, gradeLevel, createdAt
   avatarConfig          // JSON: DiceBear Adventurer slot picks (hair, skin, eyes, mouth, glasses, etc.)
-  currentStars          // spendable balance
-  lifetimeStarsEarned   // never decreases — drives progressive unlocks
+  currencyBalance       // spendable balance — name and shape (single int vs. multi-resource map) decided in Phase 7
+  lifetimeCurrencyEarned// never decreases — drives progressive unlocks
   currentStreak, lastPlayedDate
 
 ConceptProficiency
@@ -174,29 +176,45 @@ Question (static catalog for non-arithmetic concepts; arithmetic generated at ru
   distractors (for multiple-choice), explanation (for wrong-answer screen)
   source (algorithmic | curated | ai_generated), license
 
-// --- City builder (Phase 7+) ---
+// --- City builder (Phase 7+; full catalog populated through Phase 9) ---
 
 City (per player, per map)
   id, playerId, mapId,
-  gridWidth, gridHeight,         // grows on land expansion (Phase 8)
+  gridWidth, gridHeight,         // grows on land expansion (Phase 9)
   population
 
 CityMap (static catalog)
   id, name, theme (countryside | city | futuristic | …),
   baseGridWidth, baseGridHeight,
-  starCostToUnlock (0 for the beginner map),
+  unlockCost,                    // 0 for the beginner map; recipe depends on currency model
   terrainSeed                    // deterministic terrain layout
 
-BuildingType (static catalog)
-  id, name, category (residential | services | utilities | commercial),
-  starCost,
-  unlockedAtLifetimeStars,
-  populationContribution,         // residents this building can house, if any
-  serviceProvision,               // map of {school: N, hospital: N, power: N, …}
+BuildingType (static catalog — registry in code, mirrored in `city_builder.md §3`)
+  id, name, category (civicHousing | services | commercial | entertainment),
+  cost,                          // currency cost — shape depends on Phase 7 currency decision
+  unlockRule,                    // typed value: AND-combination of {minLifetimeCurrency, requiredBuildingsPlaced[], minPopulation, requiredBeatsFired[]}
+  populationContribution,         // residents this building houses, if any
+  serviceProvision,               // map of {clinic: N, power: N, school: N, …}
+  varietyContribution,            // 0/1 — whether this type counts toward its category's variety multiplier
   maxTier, assetRefByTier
 
 BuildingPlacement
   id, cityId, buildingTypeId, currentTier, gridX, gridY, placedAt
+  // placedAt enables the "building age" beat trigger
+
+StoryBeat (static catalog — registry in code, mirrored in `city_builder.md §4`)
+  id, category (demand | praise | warning),
+  triggerRule,                   // typed value: AND-combination of {buildingsPresent[], buildingsAbsent[], minPopulation, minBuildingAgeForX, requiredBeatsFired[], minCurrencyEarnedSinceLastBeat}
+  emoji, shortStickerLabel,
+  longText,                       // shown when the bubble is tapped
+  tone (silly | civic | cozy),    // for narrative-mix tuning
+  cooldownAfterAck                // how many rounds before this beat can re-fire
+
+StoryBeatState (per player, per beat)
+  playerId, beatId,
+  state (neverFired | onScreen | dismissed | acked),
+  lastFiredAtRound,
+  fireCount
 
 GameSession (in-memory only)
   startedAt, players (list), roundsPlayed
@@ -204,9 +222,12 @@ GameSession (in-memory only)
 ```
 
 **Notes:**
-- `Item`, `Milestone`, and `AvatarAccessory` from earlier sketches are removed. The only star sink is the city builder; the avatar is free to customize.
-- `currentStars` vs. `lifetimeStarsEarned`: spending stars decreases `currentStars`; both correct *and* spent stars count toward `lifetimeStarsEarned` for unlock gating (so spending doesn't lock players out of progression).
-- `serviceProvision` lets the city growth model use simple aggregate ratios (e.g. "1 school per 50 residents") rather than per-building dependency graphs.
+- `Item`, `Milestone`, and `AvatarAccessory` from earlier sketches are removed. The only currency sink is the city builder; the avatar is free to customize.
+- **Currency naming/shape is deliberately abstract** in this sketch because the choice between a single-currency rename and a multi-resource model is an Open Question. When the decision lands in Phase 7, the `currencyBalance` / `lifetimeCurrencyEarned` / `cost` / `unlockCost` fields become either single ints or maps keyed by material.
+- `currencyBalance` vs. `lifetimeCurrencyEarned`: spending decreases `currencyBalance`; both correct *and* spent currency count toward `lifetimeCurrencyEarned` for unlock gating (so spending doesn't lock players out of progression).
+- `unlockRule` and `triggerRule` are AND combinations of multiple optional conditions. The shape is intentionally typed-but-extensible — Phase 7 ships with the conditions listed above; Phase 9 may add more (e.g. "season" or "time-of-day") if research surfaces a need.
+- `serviceProvision` + `varietyContribution` together drive the growth model: aggregate service ratios cap population for under-served categories, and category variety bonuses encourage a balanced mix (monotone cities stall).
+- The static `BuildingType` / `StoryBeat` catalogs live as Dart registries (`building_registry.dart` / `beat_registry.dart`) authored against `city_builder.md`, mirroring how `generator_registry.dart` mirrors `curriculum.md`. A sync script (Phase 9) keeps the ✅ markers in `city_builder.md` honest.
 
 ---
 
@@ -285,7 +306,7 @@ math_city/
 │   ├── presentation/      # Flutter widgets: screens, navigation
 │   │   ├── home/
 │   │   ├── player/        # includes avatar editor (DiceBear slot pickers)
-│   │   ├── city/          # city-builder screen (Phase 7+)
+│   │   ├── city/          # city-builder screen + bubble overlays (Phase 7+)
 │   │   ├── progress/
 │   │   └── settings/
 │   ├── game/              # Flame components
@@ -299,7 +320,12 @@ math_city/
 │   │   ├── questions/
 │   │   ├── stars/
 │   │   ├── avatar/        # AdventurerConfig + curated slot catalogs
-│   │   └── city/          # buildings, growth model, population math (Phase 7+)
+│   │   └── city/          # buildings, beats, DAG unlock engine, growth model (Phase 7+)
+│   │       ├── building_registry.dart   # mirrors city_builder.md §3
+│   │       ├── beat_registry.dart       # mirrors city_builder.md §4
+│   │       ├── beats/                   # individual hand-written beats
+│   │       ├── unlock_engine.dart       # multi-gate DAG evaluation
+│   │       └── growth_model.dart        # service ratios + variety multiplier
 │   ├── data/              # Drift schema, repositories, cloud-save bridge
 │   │   ├── database.dart
 │   │   ├── repositories/
@@ -499,55 +525,98 @@ Each phase ends with something demonstrable. We do **not** start a phase until t
 
 ---
 
-### Phase 7 — City Builder: Foundations (target: ~3–4 weeks)
+### Phase 7 — City Builder: Simple DAG Proof (target: ~3–4 weeks)
 
-**Goal:** Each player has their own persistent isometric city. They spend stars to place buildings; population grows when the right mix is built.
+**Goal:** Ship a playable, persistent city with the *mechanics* of the full design — multi-gate DAG unlocks, citizen-bubble UI, growth that responds to building mix — but with a deliberately small content set (~10 buildings, ~5–10 hand-written beats). The point is to validate the system end-to-end before scaling content in Phase 8/9.
 
-- [ ] Source/curate isometric building art (start: Kenney City Kit Industrial; supplement if needed). Confirm CC0 status, log in eventual `LICENSES_THIRD_PARTY.md`
-- [ ] Drift schema (v4): `City`, `CityMap`, `BuildingType`, `BuildingPlacement` tables
-- [ ] One beginner `CityMap` definition: ~10×10 tile grid, fixed terrain (grass + decorative water/stone)
-- [ ] Initial `BuildingType` catalog (5 types): own house, apartment, school, hospital, power plant
-- [ ] Isometric tile renderer (Flame component) — render terrain + placed buildings, support pinch-zoom and pan
-- [ ] Build-mode UI: building catalog at the bottom, tap building → tap free tile → placed; insufficient stars greys out the option
-- [ ] Move-mode UI: pick up an existing building, tap a new free tile to drop it (no star cost)
+**Out of scope for this phase:** the full hundreds-of-buildings DAG (Phase 8), themed maps and events (Phase 9), final building art (Phase 9). Use placeholder or temporary CC0 art that's good enough to play.
+
+**Resolve before starting:**
+- [ ] **Decide the currency model** — single "bricks" rename of `stars`, or multi-resource (bricks / paint / gears / …) where different concept families yield different materials. Lock the decision and update [prd.md](prd.md) + the Data Model section here. Affects all later phases.
+- [ ] **Decide the initial ~10 building catalog** — must cover all 4 categories (civic-core/housing, services, commercial, entertainment) so the variety-multiplier mechanic has something to chew on. Sketch:
+  - Civic-core / housing: mayor's office, single home, apartment, school
+  - Services: clinic, power plant, waste management
+  - Commercial: grocery, coffee shop
+  - Entertainment: park
+
+**Build:**
+- [ ] Drift schema (v6): `City`, `CityMap`, `BuildingType`, `BuildingPlacement`, `StoryBeat`, `StoryBeatState` tables (the last two new vs. earlier sketches — see Data Model section)
+- [ ] One beginner `CityMap` definition: ~12×12 tile grid, fixed terrain
+- [ ] Initial `BuildingType` catalog (the ~10 from the catalog decision above), each with `category`, currency cost, `populationContribution`, `serviceProvision`, and unlock rule
+- [ ] **DAG unlock engine** (pure-Dart, well unit-tested) — a building's `unlockRule` is a typed value combining any of `{minLifetimeCurrency, requiredBuildingsPlaced, minPopulation, requiredBeatsFired}` with AND semantics. Engine evaluates the rule against current city + player state and returns the unlocked set; emits "newly unlocked" events on transitions
+- [ ] **Story-beat engine** (pure-Dart, well unit-tested) — each beat has trigger conditions (`buildingsPresent` / `buildingsAbsent` / `minPopulation` / `minBuildingAgeForX` / `requiredBeatsFired` / `minCurrencyEarnedSinceLastBeat`), emoji + sticker payload, and short + long text. Engine maintains a `(beatId → state)` map across sessions; "rotates" unack'd bubbles by hiding them after N rounds and re-firing later
+- [ ] ~5–10 hand-written beats in code (`lib/domain/city/beats/`) covering: pre-unlock demand for each Service-category building, recurring "we want more parks" praise/demand, "trash is everywhere" anti-prereq beat for waste mgmt, post-placement praise for at least one commercial
+- [ ] Isometric tile renderer (Flame component) — render terrain + placed buildings, support pinch-zoom and pan; render emoji-bubble overlays at building positions, tap-to-expand for full sentence
+- [ ] Build-mode UI: building catalog at the bottom, **discovery-based — locked buildings are not visible at all**; tap building → tap free tile → placed; insufficient currency greys out the option
+- [ ] Move-mode UI: pick up an existing building, tap a new free tile to drop it (no currency cost)
 - [ ] Auto-road generation: roads automatically connect every placed building (recompute on placement / move). Render under buildings on the road tiles
-- [ ] Population counter clearly visible on the city screen
-- [ ] Population growth model (pure-Dart, well unit-tested): population grows toward `sum(populationContribution)` capped by service ratios (e.g. 1 school per 50 residents, 1 hospital per 100, 1 power plant per 200). Below the lowest-satisfied ratio, growth stalls
-- [ ] One feedback message when stalled (cycle through if multiple constraints fail): "Your residents need a school to keep growing"
+- [ ] Population counter visible on the city screen
+- [ ] **Population growth model v1** (pure-Dart, well unit-tested): grows toward `sum(populationContribution)` modulated by:
+  - service ratios (e.g. 1 clinic per 50 residents, 1 power plant per 200)
+  - category-variety multiplier (a small bonus per distinct commercial / entertainment building type placed; a small penalty for category lopsidedness like "all entertainment, no housing")
 - [ ] "My City" screen accessible from the home screen
-- [ ] **Exit criteria:** Player places 5 buildings, sees population grow, hits a service-ratio cap, reads the feedback message, builds the missing service, sees population resume growth — all surviving an app restart
+- [ ] **Exit criteria:** Player starts empty, places the mayor's office as their first build, sees a citizen bubble demand a service that isn't unlocked yet, hits the unlock conditions (currency + prereqs + pop) for that service, places it, sees a praise bubble appear, hits a growth-stalling service-ratio cap on a different service, sees the corresponding demand bubble, builds the missing service, watches population resume growing — all surviving an app restart.
 
 ---
 
-### Phase 8 — City Builder: Depth (target: ~2–3 weeks)
+### Phase 8 — City Builder: Research & Rich Design (target: ~2–3 weeks)
 
-**Goal:** City has long-arc progression — bigger land, more building types, themed maps, events.
+**Goal:** Design the full DAG (target: hundreds of buildings across the 4 categories) and the rich beat catalog (target: hundreds of beats) that Phase 9 will implement. This is a content-authoring phase with **no code changes** — its primary deliverable is a new `city_builder.md` that plays the same role for the city builder that `curriculum.md` plays for the math curriculum.
 
-- [ ] Land expansion: spend stars to grow the grid symmetrically outward by 2 tiles per side. Cap at, say, 20×20 for v1
-- [ ] Progressive `BuildingType` unlocks gated by `lifetimeStarsEarned` (e.g. coffee shop at 200, gas station at 400, hotel at 800)
-- [ ] Expand catalog to ~12–15 building types (add: coffee shop, restaurant, gas station, hotel, waste management, office, fire station — final list set during the phase)
-- [ ] Building upgrade tiers: each `BuildingType` has up to 3 tiers; upgrading costs stars; **footprint stays the same**, only the texture/style changes
-- [ ] Additional `CityMap`s with themes (countryside, big-city, futuristic) — each has its own `starCostToUnlock` and its own independent placement state per player
+**Why this is a phase, not a chunk:** the design needs to *feel infinite* without becoming a junk drawer. That requires studying what existing city-builders do well, then producing a coherent design — not improvising hundreds of buildings ad hoc.
+
+- [ ] **Research phase** — study existing city-builders for what makes their progression feel rewarding vs. grindy. SimCity (original through *SimCity 4*) is the obvious primary reference; secondary candidates: Cities: Skylines (unlock pacing), Township / Stardew Valley (cozy progression), CivCity, Anno series. Capture findings in `city_builder.md` §1 "References & Lessons Learned"
+- [ ] Author **`city_builder.md`** at the repo root, structured to mirror `curriculum.md`:
+  - **Status block** — current state of the design (which sections are stable, last edited, etc.)
+  - **§1 References & Lessons Learned** — what other games did, what we'll borrow / reject
+  - **§2 Categories** — civic-core/housing, services, commercial, entertainment — with role definitions and growth contribution
+  - **§3 Building catalog** — the full DAG. Each entry: id, name, category, currency cost (per the v1 currency decision), unlock rule (the multi-gate DAG), population contribution, service-provision profile, expected unlock arc (early / mid / late game). Group by category. Aim for a coherent progression within each category (e.g. housing arc: single home → duplex → apartment → high rise → luxury condo); avoid "random" multi-parent prereqs
+  - **§4 Story beat catalog** — every beat: id, trigger conditions (buildingsPresent / buildingsAbsent / minPop / minBuildingAge / requiredBeatsFired / spacing), emoji + sticker, short text, expanded text, tone (silly / civic / praise / demand). Cross-reference back to §3 building IDs
+  - **§5 Asset checklist** — for each §3 building, what art / sound assets are needed; sourcing strategy (Kenney / OpenGameArt / commission / generate). Must hit the licensing rules: CC0, CC-BY, or equivalent only; CC-BY-NC and CC-BY-NC-SA excluded (matches curriculum.md / `LICENSES_THIRD_PARTY.md`)
+  - **§6 Implementation status** — ✅ markers for each §3 building & §4 beat indicating whether it's wired up in code yet. Initially all blank; Phase 9 ticks them. Auto-managed by a `tools/city_builder/sync_implementation_status.py` script (deferred until §6 has rows worth syncing)
+  - **§7 Open Questions** — items that need playtesting or further research before they can be locked
+- [ ] Sanity-check the DAG: no cycles, every multi-parent node makes narrative sense, every building has at least one trigger beat in §4
+- [ ] Lock the design enough that Phase 9 can implement without designing as it goes — but expect to iterate during Phase 9 as content meets reality
+- [ ] **Exit criteria:** `city_builder.md` exists with §1–§7 populated; the DAG is reviewed for narrative coherence; Phase 9 has a clear queue of buildings + beats to implement.
+
+---
+
+### Phase 9 — City Builder: Rich Implementation & Graphics (target: ~6–10 weeks)
+
+**Goal:** Implement the full `city_builder.md` design — every building in §3 is placeable, every beat in §4 fires, every art asset in §5 is in the app. Significantly larger phase than the others.
+
+- [ ] Stand up `tools/city_builder/sync_implementation_status.py` (mirroring `tools/curriculum/sync_implementation_status.py`) — syncs ✅ markers in `city_builder.md` §3 / §4 / §6 against `building_registry.dart` / `beat_registry.dart` / `assets/data/city/`
+- [ ] **Authoring loop** — iterate building-by-building (or in small clusters):
+  - Add to `building_registry.dart` with category, costs, unlock rule, population/service data
+  - Add the building's triggering beats to `beat_registry.dart`
+  - Source / generate the building art per §5
+  - Run the sync script; tick the ✅
+- [ ] **Building art pipeline** — this is the big unknown. Options to evaluate early:
+  - **(a) CC0 isometric kits** — Kenney City Kit packs + supplementary OpenGameArt; sufficient for ~30–50 buildings but unlikely to scale to hundreds
+  - **(b) Procedural building widgets** — analogous to curriculum.md's procedural diagram strategy: parameterized Flutter `CustomPainter` widgets driven by `BuildingType` params. Scales infinitely but takes art-direction work to make hundreds of buildings feel distinct
+  - **(c) Hybrid** — kits for the "anchor" buildings, procedural for the long tail of variants. Likely choice; lock in the first 2 weeks of this phase
+- [ ] Themed maps (countryside, big-city, futuristic) — each with its own `starCostToUnlock` (or equivalent in the chosen currency model) and independent placement state per player
 - [ ] Map switcher UI on the city screen
-- [ ] Star-funded events: "Festival" (+population for X rounds), "Marketing campaign" (boosts attractiveness), 2–3 event types
-- [ ] Aggregate-needs system extended: parameterize service ratios from `serviceProvision` data, so adding a new building type is data-only
-- [ ] **Exit criteria:** A returning player has unlocked at least one new building type via lifetime stars, expanded their land once, switched between two map themes, and run an event
+- [ ] Land expansion — spend currency to grow the grid symmetrically outward by 2 tiles per side. Cap at 24×24 for v1
+- [ ] Building upgrade tiers — up to 3 visual tiers per building; upgrading costs currency; footprint stays the same
+- [ ] Currency-funded events: 3–5 event types (festival, marketing campaign, etc.) — temporary growth boost in exchange for spend
+- [ ] **Exit criteria:** Every row in `city_builder.md` §3 and §4 is ticked. A returning player can place at least 30 distinct building types, see varied citizen reactions across both demand and praise bubbles, unlock and switch between map themes, run an event, and expand their land at least twice — all surviving an app restart.
 
 ---
 
-### Phase 9 — Player Progress Screen (target: ~1 week)
+### Phase 10 — Player Progress Screen (target: ~1 week)
 - [ ] Concept proficiency visualization (radar chart or color grid) — rolled up to category
 - [ ] Strengths and growing edges sections with positive framing
-- [ ] Lifetime stats: stars earned, sessions, questions answered
+- [ ] Lifetime stats: currency earned, sessions, questions answered
 - [ ] **Exit criteria:** Player can see and feel proud of their own progress
 
 ---
 
-### Phase 10 — Sound, Polish, Engagement (target: ~2–3 weeks)
-- [ ] Final SFX library (CC0/royalty-free); per-event audio (spin, correct, wrong, building-placed, level-up)
+### Phase 11 — Sound, Polish, Engagement (target: ~2–3 weeks)
+- [ ] Final SFX library (CC0/royalty-free); per-event audio (spin, correct, wrong, building-placed, level-up, bubble-pop)
 - [ ] Background music (looping, with mute toggle)
-- [ ] Animation polish (character reactions on correct/wrong; screen transitions)
-- [ ] Daily streak tracking + bonus stars
+- [ ] Animation polish (character reactions on correct/wrong; screen transitions; bubble float/pop)
+- [ ] Daily streak tracking + bonus currency
 - [ ] Daily challenge mechanic
 - [ ] First-launch tutorial (skippable)
 - [ ] Settings screen (audio mute, reset profile, change grade level, dyslexia-friendly font toggle if time)
@@ -560,18 +629,18 @@ Each phase ends with something demonstrable. We do **not** start a phase until t
 
 ---
 
-### Phase 11 — Cloud Save (target: ~1–2 weeks)
-- [ ] **Prerequisite:** Replace the wipe-and-recreate Drift migration pattern (used through v3 and v4) with proper additive migrations. Once player data lives off-device, schema wipes destroy real data — this must land *before* the cloud-save round-trip is enabled
+### Phase 12 — Cloud Save (target: ~1–2 weeks)
+- [ ] **Prerequisite:** Replace the wipe-and-recreate Drift migration pattern (used through v3 / v4 / v6) with proper additive migrations. Once player data lives off-device, schema wipes destroy real data — this must land *before* the cloud-save round-trip is enabled
 - [ ] Integrate `games_services` save game API
 - [ ] Sign-in flow (Game Center / Play Games) — graceful skip if signed out
-- [ ] Save-on-meaningful-event (round end, avatar edit, building placed, map unlocked)
+- [ ] Save-on-meaningful-event (round end, avatar edit, building placed, map unlocked, beat acked)
 - [ ] Load on app start; conflict resolution (prefer most recent)
 - [ ] iOS verification (deferred from Phase 0 — `flutter run` on iOS simulator must succeed before this phase ships)
-- [ ] **Exit criteria:** Install on a second device, sign in, see same player data including avatar, stars, and city state
+- [ ] **Exit criteria:** Install on a second device, sign in, see same player data including avatar, currency balance, city state, and citizen-bubble history
 
 ---
 
-### Phase 12 — Beta + Store Submission (ongoing)
+### Phase 13 — Beta + Store Submission (ongoing)
 - [ ] **Apple Developer Program** enrollment ($99/yr) — only when ready to submit; not blocking earlier work
 - [ ] **Google Play Console** enrollment ($25 one-time)
 - [ ] App Store Connect: register bundle ID, fill listing metadata, age rating questionnaire, kids-category settings ("Made for Kids")
@@ -597,11 +666,17 @@ These are not blockers for Phase 0 or 1 but need to be resolved by the phase not
 - **By Phase 5 (resolved):** Question dataset sourcing strategy — curate from GREEN-licensed datasets only (DeepMind `mathematics_dataset`, GSM8K, MathDataset-ElementarySchool, MathQA, SVAMP). CC-BY-NC content excluded. See [curriculum.md §7](curriculum.md).
 - **By Phase 5:** Open taxonomy questions — see [curriculum.md §9](curriculum.md) (12 items needing human review during implementation: counting/place-value boundary, fluency tier modeling, geometry hierarchy duplication, word-problem axis, etc.).
 - **By Phase 6 (resolved):** Hand-curation budget for the ~1500 gap-fill items — **punted out of v1**. Rely on algorithmic + GREEN datasets for coverage; revisit post-launch if real play exposes the §7.6 gaps. See Phase 6 task list for the punted scope.
-- **By Phase 7:** Specific isometric-asset packs — Kenney's [City Kit Industrial](https://kenney.nl/assets/city-kit-industrial) is a strong starting point but coverage is limited. Identify supplementary packs (Kenney's other city packs, [OpenGameArt isometric tag](https://opengameart.org/art-search-advanced?keys=isometric)) before catalog work begins.
-- **By Phase 8:** Specific list of building types and their service-ratio numbers (residents-per-school, etc.) — can only be tuned by play-testing.
-- **By Phase 10:** Music + SFX sourcing (CC0 from Freesound.org and OpenGameArt.org).
-- **By Phase 11:** Are we OK requiring the user to sign in to Game Center / Play Games for cloud save? Otherwise local-only is the only option.
-- **By Phase 12:** Privacy policy text — minimal since we collect ~nothing, but COPPA considerations for under-13 audience need legal review or a template.
+- **By Phase 7 start:** **Currency model** — rename "stars" to a city-themed single currency (likely "bricks"), or move to a multi-resource scheme where different concept families yield different building materials (e.g. bricks from arithmetic, paint from geometry, gears from algebra) and each building requires a recipe. Multi-resource adds narrative depth and a natural reason to spread practice across the curriculum; single rename is simpler. Lock this before Phase 7 mechanics ship so the Drift schema + UI don't churn.
+- **By Phase 7:** **Initial ~10-building catalog** for the simple DAG proof — must cover all 4 categories (civic-core/housing, services, commercial, entertainment) so the variety-multiplier mechanic has something to chew on.
+- **By Phase 7:** **Placeholder art for ~10 buildings** — Kenney's [City Kit Industrial](https://kenney.nl/assets/city-kit-industrial) covers some of these but not all. Settle on "good-enough" temporary art for Phase 7; the full art pipeline decision moves to Phase 9.
+- **By Phase 8:** **References research** — which existing city-builders to study (SimCity series, Cities: Skylines, Township, etc.) and what to capture from each. Lives in `city_builder.md §1`.
+- **By Phase 8:** **Full DAG design** — hundreds of buildings across 4 categories, with coherent within-category progressions and narratively-sensible multi-parent prereqs. Lives in `city_builder.md §3`.
+- **By Phase 8:** **Beat catalog & tone calibration** — hundreds of citizen requests / praise items, mixing kid-friendly silly with civic. Lives in `city_builder.md §4`.
+- **By Phase 9:** **Building art pipeline** — pure CC0 isometric kits (won't scale to hundreds of buildings), procedural Flutter `CustomPainter` widgets analogous to the diagram-widget strategy in curriculum.md, or a hybrid (kits for anchors, procedural for the long tail). Lock in the first 2 weeks of Phase 9.
+- **By Phase 9:** **Building service-ratio numbers** (residents per clinic, per power plant, etc.) and **variety-multiplier curves** — can only be tuned by play-testing.
+- **By Phase 11:** Music + SFX sourcing (CC0 from Freesound.org and OpenGameArt.org).
+- **By Phase 12:** Are we OK requiring the user to sign in to Game Center / Play Games for cloud save? Otherwise local-only is the only option.
+- **By Phase 13:** Privacy policy text — minimal since we collect ~nothing, but COPPA considerations for under-13 audience need legal review or a template.
 
 ---
 
@@ -612,11 +687,13 @@ These are not blockers for Phase 0 or 1 but need to be resolved by the phase not
 | Core loop isn't fun for kids | Medium | Critical | Phase 1 explicitly tested this with a real kid before any further investment — passed |
 | Question dataset gap | Medium | High | Algorithmic generation handles arithmetic; for everything else, multiple datasets identified (GSM8K, MathDataset-ElementarySchool, Illustrative Mathematics) |
 | ~~Avatar library doesn't cover all 8 slots~~ | — | — | Resolved: avatar accessories dropped from scope after Phase 4 spike — single star sink is the city builder |
-| City UX on small screens (placement, panning, zoom on a phone) | Medium | High | Auto-roads (no precision needed); tile-snap with generous tap targets; pinch-zoom + pan; play-test on smallest target device early in Phase 7 |
-| Isometric asset coverage gap | Medium | Medium | Kenney's City Kit packs are the starting point but limited; identify 1–2 supplementary CC0 packs in early Phase 7. If coverage is still sparse, narrow the v1 building catalog rather than ship inconsistent art |
-| Population growth model feels arbitrary or unmotivating | Medium | Medium | Keep model simple (aggregate ratios, not per-building dependency graphs); tune via play-testing. Vague-but-themed feedback messages keep the player oriented even if numbers shift |
-| City save state migration as schema evolves across phases | Medium | Medium | Drift migrations are version-checked; player's city is purely cosmetic so a wipe is a survivable last resort. Bias toward additive schema changes |
-| Cloud save platform divergence | Low (single package) | Medium | `games_services` abstracts both — but test on both platforms early in Phase 11 |
+| City UX on small screens (placement, panning, zoom, bubble tap targets on a phone) | Medium | High | Auto-roads (no precision needed); tile-snap with generous tap targets; pinch-zoom + pan; cap on-screen citizen bubbles at ~5 to keep tap targets large; play-test on smallest target device early in Phase 7 |
+| Building art coverage at "hundreds of buildings" scale | High | High | Phase 9 evaluates the hybrid art pipeline (CC0 isometric kits for anchors + procedural `CustomPainter` widgets for the long tail) in its first 2 weeks. If procedural can't carry the long tail, narrow the v1 building catalog to what kits + a small art-direction effort can actually cover. Phase 7's placeholder art is explicit so the kit gap doesn't block mechanics work |
+| DAG design becomes a junk drawer (hundreds of buildings without coherent progression) | Medium | High | Phase 8 is a dedicated research-and-design phase whose deliverable is `city_builder.md` with within-category arcs and narratively-sensible multi-parent prereqs. Phase 9 implements against that doc, not ad hoc. Sanity-check before Phase 9: no cycles, every multi-parent prereq makes sense, every building has at least one triggering beat |
+| Citizen-bubble system becomes annoying / nags the player | Medium | Medium | Cap at ~5 bubbles on-screen; unack'd bubbles auto-rotate; mix demand bubbles with praise bubbles (positive feedback) so the channel isn't pure pressure; per-beat spacing rules pace requests by currency-earned-since-last-beat. Validate in Phase 7 playtest before scaling content in Phase 9 |
+| Population growth model feels arbitrary or unmotivating | Medium | Medium | Keep model simple (aggregate service ratios + variety-multiplier, not per-building dependency graphs); tune via play-testing. Vague-but-themed bubble feedback keeps the player oriented even if numbers shift |
+| City save state migration as schema evolves across phases | Medium | Medium | Drift migrations are version-checked; player's city is purely cosmetic so a wipe is a survivable last resort. Bias toward additive schema changes. Phase 7 ships schema v6 including the new `StoryBeat` / `StoryBeatState` tables — additive on v5 |
+| Cloud save platform divergence | Low (single package) | Medium | `games_services` abstracts both — but test on both platforms early in Phase 12 |
 | `games_services` package abandonment | Low | Medium | If it goes stale, fall back to platform-specific packages (`cloud_kit` for iOS, `googleapis` Drive for Android) |
 | Hive/Isar abandonment pattern repeats with Drift | Low | Low | Drift is built on SQLite; worst-case migration to raw `sqflite` is straightforward |
 | COPPA / children's-app compliance | Medium | High (could block store submission) | No data collection; address this explicitly in Phase 12 with a minimal privacy policy and store-listing kids-category settings |
@@ -655,10 +732,16 @@ Since this is a two-person project (you + Claude), some norms to keep us efficie
 - [`dice_bear` Flutter package](https://pub.dev/packages/dice_bear) — Dart wrapper for the DiceBear API; renders SVG locally or via URL
 - [`flutter_svg` package](https://pub.dev/packages/flutter_svg) — required to render the SVG output
 
-**City builder asset candidates (Phase 7)**
+**City builder asset candidates (Phase 7 placeholder + Phase 9 anchor kits)**
 - [Kenney City Kit Industrial](https://kenney.nl/assets/city-kit-industrial) — CC0 isometric
 - [Kenney all assets](https://kenney.nl/assets) — search "city" / "isometric"
 - [OpenGameArt isometric tag](https://opengameart.org/art-search-advanced?keys=isometric) — CC0 / CC-BY mix
+
+**City-builder reference games (Phase 8 research targets)**
+- SimCity series (the original through *SimCity 4*) — for the unlock-by-population / unlock-by-need pattern
+- Cities: Skylines — for milestone unlock pacing
+- Township / Stardew Valley — for cozy progression and citizen-request tone
+- Anno series / CivCity — for category-balance ("need housing + food + entertainment") feedback loops
 
 **Curriculum & math content** (full inventory + licensing in [curriculum.md](curriculum.md) §7)
 - [curriculum.md](curriculum.md) — canonical K–8 taxonomy, generator priority, diagram widget catalog, dataset inventory
