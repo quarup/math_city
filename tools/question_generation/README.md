@@ -29,6 +29,13 @@ package importable.
 More modules and datasets will be added incrementally. See plan.md §
 "Dataset ingestion sub-track" for the priority list.
 
+Audit scripts (separate from ingestion — these emit per-dataset audit
+reports under `audits/`, no JSON output):
+
+| Script | Source dataset | License | Cache |
+|---|---|---|---|
+| `audit_gsm8k.py` | [GSM8K](https://github.com/openai/grade-school-math) (8792 items, main split) | MIT | `.cache/gsm8k/` (gitignored, re-downloadable) |
+
 ## Per-dataset audits
 
 Before broad ingestion of a new dataset, an **audit** establishes per-submodule
@@ -44,7 +51,7 @@ dataset:
 | Dataset | Audit script | Verdict |
 |---|---|---|
 | DeepMind | [audit_deepmind.py](audit_deepmind.py) | [audits/deepmind.md](audits/deepmind.md) |
-| GSM8K | _not yet audited_ | _not yet audited_ |
+| GSM8K | [audit_gsm8k.py](audit_gsm8k.py) | [audits/gsm8k.md](audits/gsm8k.md) |
 | MathDataset-ES | [audit_md_es.py](audit_md_es.py) | [audits/md_es.md](audits/md_es.md) (verdict: **skip — redundant or license-blocked**) |
 | MathQA | _not yet audited_ | _not yet audited_ |
 | SVAMP | [audit_svamp.py](audit_svamp.py) | [audits/svamp.md](audits/svamp.md) — **dropped** (CC-BY-NC derivation) |
