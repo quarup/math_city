@@ -30,6 +30,24 @@ CC-BY-NC, CC-BY-NC-SA, and unclear-provenance content are excluded.
   DeepMind's). All transformations preserve attribution to the upstream
   source in the per-item `source` and `source_module` JSON fields.
 
+### GSM8K (MIT)
+
+- **Project:** [openai/grade-school-math](https://github.com/openai/grade-school-math)
+- **Authors:** Karl Cobbe, Vineet Kosaraju, Mohammad Bavarian, Mark Chen, Heewoo Jun, Lukasz Kaiser, Matthias Plappert, Jerry Tworek, Jacob Hilton, Reiichiro Nakano, Christopher Hesse, John Schulman (OpenAI)
+- **Reference:** Cobbe et al., 2021, *Training Verifiers to Solve Math Word Problems* ([arXiv:2110.14168](https://arxiv.org/abs/2110.14168))
+- **Licence:** MIT (Copyright (c) 2021 OpenAI)
+- **Used in:** `assets/data/dataset_questions/*.json` — items with `"source": "gsm8k"`
+- **Ingestion tooling:** [tools/question_generation/ingest_gsm8k.py](tools/question_generation/ingest_gsm8k.py)
+- **Splits ingested:** `main` (train + test, 8792 items considered)
+- **Notes:** Math City bundles the verbatim ``question`` text of selected
+  GSM8K items along with their integer final answer. The upstream rationale
+  is *not* bundled — only its calculator annotations (``<<expr=result>>``)
+  are parsed at ingest time to verify the math and to pull intermediate
+  values for distractor generation. Distractors are Math City's own work,
+  composed from extracted intermediates + question-text integers + ±jitter.
+  The audit verdict ([tools/question_generation/audits/gsm8k.md](tools/question_generation/audits/gsm8k.md))
+  documents which sub-concept buckets GSM8K serves and which it skips.
+
 ---
 
 ## Code dependencies
