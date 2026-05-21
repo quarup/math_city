@@ -763,7 +763,7 @@ In priority order:
 1. **DeepMind `mathematics_dataset`** — Apache 2.0. Code-based generator (8 modules, millions of items procedurally generated). Covers arithmetic, algebra, calculus(!), comparison, measurement, numbers, polynomials, probability. We use *only* the modules within K–8 scope. Best for high-volume drill content. https://github.com/google-deepmind/mathematics_dataset
 2. **GSM8K** — MIT (Copyright OpenAI 2021). 8,500 grade-school word problems with step-by-step rationales. Best for grades 3–6 word problems (`add_word_problems_within_100`, `add_sub_2step_word_problems`, `mult_compare_word`, `mult_div_word_2step`, `fraction_word_problems`). https://github.com/openai/grade-school-math
 3. **MathDataset-ElementarySchool** — MIT (Ramon Kaspar). Pre-aggregated arithmetic + word problems + geometry for ~grade-4 level, with `category/subcategory/source` provenance. Useful "first 1000 items" seed for K–5. https://github.com/RamonKaspar/MathDataset-ElementarySchool
-4. **MathQA** — Apache 2.0 (Allen AI). 37K cleaned multiple-choice algebra problems with executable formula annotations (gold for free distractor generation and answer verification). Grades 6–8 (`ratios`, `prealgebra`, `rationals`). https://math-qa.github.io/
+4. **MathQA** — Apache 2.0 (Allen AI). 37K multiple-choice items with executable formula annotations. Grades 6–8 (`ratios`, `prealgebra`, `rationals`, plus a geometry slice). https://math-qa.github.io/ **Audit verdict (2026-05-21): skip broad ingestion** — text quality is poor corpus-wide, the formula tagger fabricates formulas for items it can't classify, and the multiple-choice options have malformed-letter errors plus "none of these" as a frequent correct answer. The cleanest slice is ~1,300 geometry items but yields only ~500 usable items of *variety* after cleanup; deferred. See [tools/question_generation/audits/mathqa.md](tools/question_generation/audits/mathqa.md).
 5. **SVAMP** — MIT (with provenance audit needed: some items derive from CC-BY-NC ASDiv). 1K curated grades 2–4 arithmetic word problems. Small but high-quality. https://github.com/arkilpatel/SVAMP
 
 ### 7.3 Open educational resources (curriculum, not Q&A datasets)
@@ -838,7 +838,7 @@ report):
 | DeepMind `mathematics_dataset` | audited 2026-05-19 | [tools/question_generation/audits/deepmind.md](tools/question_generation/audits/deepmind.md) |
 | GSM8K | audited 2026-05-21 | [tools/question_generation/audits/gsm8k.md](tools/question_generation/audits/gsm8k.md) |
 | MathDataset-ElementarySchool | audited 2026-05-21 — **skip dataset** | [tools/question_generation/audits/md_es.md](tools/question_generation/audits/md_es.md) |
-| MathQA | not yet audited | — |
+| MathQA | audited 2026-05-21 — **skip dataset** (narrow geometry slice optional, deferred) | [tools/question_generation/audits/mathqa.md](tools/question_generation/audits/mathqa.md) |
 | SVAMP | audited 2026-05-21 — **dropped** (licence) | [tools/question_generation/audits/svamp.md](tools/question_generation/audits/svamp.md) |
 
 **TL;DR from the DeepMind audit:** of ~39 K–8-eligible submodules, ~15
@@ -888,6 +888,29 @@ value over Chunk 79's word-problem framework + queued GSM8K is small;
 SVAMP's 1000 G2–G4 +/-/×/÷ word problems are 100% integer-answer and
 already covered. SVAMP stays on the §7.2 list (and in §7.5's coverage
 matrix) for traceability but won't be ingested.
+
+**TL;DR from the MathQA audit:** the dataset's three headline value
+claims (37K cleaned items, executable formula annotations, gold for
+distractor / answer verification) don't survive sample inspection.
+Text quality is poor corpus-wide (heavy tokenization artifacts +
+Unicode garbage); the `annotated_formula` tagger fabricates formulas
+for items it can't classify (every `(non-geometry-category,
+geom_*_encoded)` bucket is fabricated nonsense like
+`circle_area(divide(5, multiply(const_2, const_pi)))` for "what is 5
++ 7"); the `options` field has malformed-letter errors and a
+non-trivial fraction of items have "none of these" as the correct
+answer — neither usable for our format. The license is fine (Apache
+2.0); the issue is content quality. **Net verdict: skip broad
+ingestion.** The cleanest slice is ~1,300 geometry items
+(`(geometry, geom_{2d,3d}_encoded)` + `(geometry, arith_sqrt)`) which
+would yield ~500 usable items of *variety* on top of our existing
+G3–G8 area / perimeter / volume / Pythagorean generators after
+substantial text-normalization + filter work. **Defer** the narrow
+geometry ingest; revisit post-launch only if real play exposes
+repetitive geometry phrasing. With SVAMP also dropped (license) and
+GSM8K already ingested (Chunk 86), the §7.2 list is now exhausted —
+the dataset sub-track is effectively complete pending a possible
+future MathQA-geometry top-up.
 
 ---
 

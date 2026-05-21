@@ -54,7 +54,7 @@ dataset:
 | DeepMind | [audit_deepmind.py](audit_deepmind.py) | [audits/deepmind.md](audits/deepmind.md) |
 | GSM8K | [audit_gsm8k.py](audit_gsm8k.py) | [audits/gsm8k.md](audits/gsm8k.md) |
 | MathDataset-ES | [audit_md_es.py](audit_md_es.py) | [audits/md_es.md](audits/md_es.md) (verdict: **skip — redundant or license-blocked**) |
-| MathQA | _not yet audited_ | _not yet audited_ |
+| MathQA | [audit_mathqa.py](audit_mathqa.py) | [audits/mathqa.md](audits/mathqa.md) — **skip** (content quality); narrow geometry slice deferred |
 | SVAMP | [audit_svamp.py](audit_svamp.py) | [audits/svamp.md](audits/svamp.md) — **dropped** (CC-BY-NC derivation) |
 
 **Pattern for adding a new dataset audit** (followed for DeepMind, reusable):
