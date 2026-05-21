@@ -1,0 +1,3404 @@
+{
+  "items": [
+    {
+      "id": "deepmind_mathematics_dataset_kth_005da18493",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the third smallest value?",
+      "correct_answer": "4",
+      "distractors": [
+        "16/5",
+        "26",
+        "3"
+      ],
+      "explanation": [
+        "Ordered, the third smallest value is 4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_01083066d3",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the sixth biggest value?",
+      "correct_answer": "−122",
+      "distractors": [
+        "2",
+        "3/8",
+        "−19"
+      ],
+      "explanation": [
+        "Ordered, the sixth biggest value is −122."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_015f1bd732",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the sixth smallest value?",
+      "correct_answer": "32/11",
+      "distractors": [
+        "−2/5",
+        "0.3",
+        "−8179"
+      ],
+      "explanation": [
+        "Ordered, the sixth smallest value is 32/11."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_01b59c2c3e",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the third smallest value?",
+      "correct_answer": "1",
+      "distractors": [
+        "−0.49",
+        "−1",
+        "2"
+      ],
+      "explanation": [
+        "Ordered, the third smallest value is 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_01c5377f08",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fourth biggest value?",
+      "correct_answer": "0",
+      "distractors": [
+        "1/4",
+        "−68",
+        "0.1"
+      ],
+      "explanation": [
+        "Ordered, the fourth biggest value is 0."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_02d0016a9d",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the smallest value?",
+      "correct_answer": "−11",
+      "distractors": [
+        "−2/17",
+        "−2.3",
+        "−0.3"
+      ],
+      "explanation": [
+        "Ordered, the smallest value is −11."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_031cac511b",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the smallest value?",
+      "correct_answer": "−27",
+      "distractors": [
+        "3/295",
+        "−14/15",
+        "−26"
+      ],
+      "explanation": [
+        "Ordered, the smallest value is −27."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_0416d7d0d1",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the smallest value?",
+      "correct_answer": "−1/3",
+      "distractors": [
+        "9/28",
+        "0.2",
+        "3"
+      ],
+      "explanation": [
+        "Ordered, the smallest value is −1/3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_054c606889",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the second biggest value?",
+      "correct_answer": "0.4",
+      "distractors": [
+        "0.160623",
+        "1",
+        "1/15"
+      ],
+      "explanation": [
+        "Ordered, the second biggest value is 0.4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_07536df41e",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the sixth smallest value?",
+      "correct_answer": "4",
+      "distractors": [
+        "69",
+        "−5",
+        "0.4"
+      ],
+      "explanation": [
+        "Ordered, the sixth smallest value is 4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_092573f3f2",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the third smallest value?",
+      "correct_answer": "55.9",
+      "distractors": [
+        "4",
+        "0.3",
+        "569/10"
+      ],
+      "explanation": [
+        "Ordered, the third smallest value is 55.9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_0a8b59a4ab",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the second smallest value?",
+      "correct_answer": "0.3",
+      "distractors": [
+        "−4",
+        "2/5",
+        "13/10"
+      ],
+      "explanation": [
+        "Ordered, the second smallest value is 0.3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_0d22f5e465",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the third biggest value?",
+      "correct_answer": "0.06",
+      "distractors": [
+        "2/9",
+        "−16911",
+        "−4"
+      ],
+      "explanation": [
+        "Ordered, the third biggest value is 0.06."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_0f823cc253",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fourth smallest value?",
+      "correct_answer": "1",
+      "distractors": [
+        "22",
+        "−12",
+        "−4"
+      ],
+      "explanation": [
+        "Ordered, the fourth smallest value is 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_0fead5593a",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the second biggest value?",
+      "correct_answer": "25",
+      "distractors": [
+        "5",
+        "−0.2",
+        "1596"
+      ],
+      "explanation": [
+        "Ordered, the second biggest value is 25."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_111673e226",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the third biggest value?",
+      "correct_answer": "0.3",
+      "distractors": [
+        "7",
+        "48",
+        "13/10"
+      ],
+      "explanation": [
+        "Ordered, the third biggest value is 0.3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_128d462c7c",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fifth biggest value?",
+      "correct_answer": "−3/2",
+      "distractors": [
+        "−1",
+        "3",
+        "−80/97"
+      ],
+      "explanation": [
+        "Ordered, the fifth biggest value is −3/2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_139f677ecc",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the second biggest value?",
+      "correct_answer": "45",
+      "distractors": [
+        "786",
+        "3/25",
+        "46"
+      ],
+      "explanation": [
+        "Ordered, the second biggest value is 45."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_1494b9137e",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the third biggest value?",
+      "correct_answer": "−98.94",
+      "distractors": [
+        "−915",
+        "−0.2",
+        "−3"
+      ],
+      "explanation": [
+        "Ordered, the third biggest value is −98.94."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_15598ebb59",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fourth smallest value?",
+      "correct_answer": "3",
+      "distractors": [
+        "−5",
+        "−1/2",
+        "0.196"
+      ],
+      "explanation": [
+        "Ordered, the fourth smallest value is 3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_15fe836882",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the biggest value?",
+      "correct_answer": "7/4",
+      "distractors": [
+        "0.3",
+        "0.9",
+        "11/4"
+      ],
+      "explanation": [
+        "Ordered, the biggest value is 7/4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_1621ee39b6",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the second biggest value?",
+      "correct_answer": "−4/31",
+      "distractors": [
+        "−2/5",
+        "4",
+        "27/31"
+      ],
+      "explanation": [
+        "Ordered, the second biggest value is −4/31."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_163b741bca",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fourth biggest value?",
+      "correct_answer": "1/4",
+      "distractors": [
+        "12",
+        "35",
+        "−5"
+      ],
+      "explanation": [
+        "Ordered, the fourth biggest value is 1/4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_1bc938bc63",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the second biggest value?",
+      "correct_answer": "0.4",
+      "distractors": [
+        "−1",
+        "1/399",
+        "0"
+      ],
+      "explanation": [
+        "Ordered, the second biggest value is 0.4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_1c6fb4fba5",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the sixth biggest value?",
+      "correct_answer": "−81",
+      "distractors": [
+        "−6",
+        "2/11",
+        "4"
+      ],
+      "explanation": [
+        "Ordered, the sixth biggest value is −81."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_1d93655023",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the third biggest value?",
+      "correct_answer": "−1",
+      "distractors": [
+        "3",
+        "−12320",
+        "2"
+      ],
+      "explanation": [
+        "Ordered, the third biggest value is −1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_1ead782072",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fourth biggest value?",
+      "correct_answer": "0",
+      "distractors": [
+        "−1/2",
+        "3",
+        "0.09"
+      ],
+      "explanation": [
+        "Ordered, the fourth biggest value is 0."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_2046123dbc",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the biggest value?",
+      "correct_answer": "−3/2",
+      "distractors": [
+        "−35",
+        "−64",
+        "−58"
+      ],
+      "explanation": [
+        "Ordered, the biggest value is −3/2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_20527710f8",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fifth biggest value?",
+      "correct_answer": "−1",
+      "distractors": [
+        "−543",
+        "3/62",
+        "12"
+      ],
+      "explanation": [
+        "Ordered, the fifth biggest value is −1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_20f45b11a5",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fourth biggest value?",
+      "correct_answer": "−0.2",
+      "distractors": [
+        "−1",
+        "2/197",
+        "2636"
+      ],
+      "explanation": [
+        "Ordered, the fourth biggest value is −0.2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_214a935cd8",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the second biggest value?",
+      "correct_answer": "3",
+      "distractors": [
+        "0.2",
+        "0.02",
+        "−1/2"
+      ],
+      "explanation": [
+        "Ordered, the second biggest value is 3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_2231e8170e",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the biggest value?",
+      "correct_answer": "0.6",
+      "distractors": [
+        "−0.7",
+        "−0.3",
+        "−1/2"
+      ],
+      "explanation": [
+        "Ordered, the biggest value is 0.6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_2374f17376",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the biggest value?",
+      "correct_answer": "17",
+      "distractors": [
+        "−0.5",
+        "0.5",
+        "0.3"
+      ],
+      "explanation": [
+        "Ordered, the biggest value is 17."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_237c205af2",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the third smallest value?",
+      "correct_answer": "1186",
+      "distractors": [
+        "2",
+        "−1.8",
+        "1187"
+      ],
+      "explanation": [
+        "Ordered, the third smallest value is 1186."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_26b7bb2bf4",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the biggest value?",
+      "correct_answer": "5",
+      "distractors": [
+        "−0.1",
+        "−42",
+        "−0.748"
+      ],
+      "explanation": [
+        "Ordered, the biggest value is 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_279aa024a4",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the biggest value?",
+      "correct_answer": "0.4",
+      "distractors": [
+        "0.1",
+        "0.03",
+        "0.10797"
+      ],
+      "explanation": [
+        "Ordered, the biggest value is 0.4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_2bd86d9f8c",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fourth biggest value?",
+      "correct_answer": "−4",
+      "distractors": [
+        "1",
+        "9/20",
+        "2/17"
+      ],
+      "explanation": [
+        "Ordered, the fourth biggest value is −4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_2ca766073b",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the biggest value?",
+      "correct_answer": "2",
+      "distractors": [
+        "−2/15",
+        "2/5",
+        "−1"
+      ],
+      "explanation": [
+        "Ordered, the biggest value is 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_2d1ad0d04b",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the second biggest value?",
+      "correct_answer": "447",
+      "distractors": [
+        "0.33",
+        "−1/5",
+        "−5"
+      ],
+      "explanation": [
+        "Ordered, the second biggest value is 447."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_2e353c151b",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the third biggest value?",
+      "correct_answer": "−1/9",
+      "distractors": [
+        "278",
+        "1244",
+        "8/9"
+      ],
+      "explanation": [
+        "Ordered, the third biggest value is −1/9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_2e72d7213c",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the second smallest value?",
+      "correct_answer": "0.43",
+      "distractors": [
+        "3825",
+        "−111",
+        "143/100"
+      ],
+      "explanation": [
+        "Ordered, the second smallest value is 0.43."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_2ec7b1fbf5",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the second smallest value?",
+      "correct_answer": "−1/29",
+      "distractors": [
+        "−616",
+        "1574",
+        "28/29"
+      ],
+      "explanation": [
+        "Ordered, the second smallest value is −1/29."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_2f4b6213ff",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the second smallest value?",
+      "correct_answer": "−2",
+      "distractors": [
+        "−5/2",
+        "−2/11",
+        "−0.15"
+      ],
+      "explanation": [
+        "Ordered, the second smallest value is −2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_2feadf65cf",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the biggest value?",
+      "correct_answer": "3",
+      "distractors": [
+        "−2/127",
+        "−4287.5",
+        "4"
+      ],
+      "explanation": [
+        "Ordered, the biggest value is 3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_31498e7193",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the biggest value?",
+      "correct_answer": "273",
+      "distractors": [
+        "−2",
+        "−0.3",
+        "−0.626"
+      ],
+      "explanation": [
+        "Ordered, the biggest value is 273."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_335d74cd87",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the third smallest value?",
+      "correct_answer": "1",
+      "distractors": [
+        "−51",
+        "0.2004",
+        "2"
+      ],
+      "explanation": [
+        "Ordered, the third smallest value is 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_34380d9c55",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fourth smallest value?",
+      "correct_answer": "0.5",
+      "distractors": [
+        "0.2",
+        "−0.3",
+        "−32158"
+      ],
+      "explanation": [
+        "Ordered, the fourth smallest value is 0.5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_3568abca9f",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the third biggest value?",
+      "correct_answer": "−0.4",
+      "distractors": [
+        "0.8",
+        "2",
+        "−1722"
+      ],
+      "explanation": [
+        "Ordered, the third biggest value is −0.4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_37f0457b00",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fourth smallest value?",
+      "correct_answer": "1",
+      "distractors": [
+        "8",
+        "0.4",
+        "1418"
+      ],
+      "explanation": [
+        "Ordered, the fourth smallest value is 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_39cd27fa59",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the second smallest value?",
+      "correct_answer": "−1/2",
+      "distractors": [
+        "0.2",
+        "24",
+        "−4/5"
+      ],
+      "explanation": [
+        "Ordered, the second smallest value is −1/2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_3aa25c1abb",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the third biggest value?",
+      "correct_answer": "−15",
+      "distractors": [
+        "−2/29",
+        "−2",
+        "−14"
+      ],
+      "explanation": [
+        "Ordered, the third biggest value is −15."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_3bcf9f362b",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the third smallest value?",
+      "correct_answer": "0.3",
+      "distractors": [
+        "5",
+        "−4/99",
+        "−597"
+      ],
+      "explanation": [
+        "Ordered, the third smallest value is 0.3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_3dd5744b62",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the biggest value?",
+      "correct_answer": "3",
+      "distractors": [
+        "−2.15",
+        "2",
+        "−117281"
+      ],
+      "explanation": [
+        "Ordered, the biggest value is 3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_3ddb848920",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the third smallest value?",
+      "correct_answer": "−15/7",
+      "distractors": [
+        "−3",
+        "−214791",
+        "−8/7"
+      ],
+      "explanation": [
+        "Ordered, the third smallest value is −15/7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_414246f635",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fourth smallest value?",
+      "correct_answer": "−0.1",
+      "distractors": [
+        "1/6",
+        "−4/17",
+        "−0.02"
+      ],
+      "explanation": [
+        "Ordered, the fourth smallest value is −0.1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_41a7945aa4",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the smallest value?",
+      "correct_answer": "0.2",
+      "distractors": [
+        "1",
+        "149/4",
+        "6/5"
+      ],
+      "explanation": [
+        "Ordered, the smallest value is 0.2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_41ea98d9a3",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the third smallest value?",
+      "correct_answer": "0.3",
+      "distractors": [
+        "−2",
+        "3/211273",
+        "13/10"
+      ],
+      "explanation": [
+        "Ordered, the third smallest value is 0.3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_428859d8aa",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the biggest value?",
+      "correct_answer": "38",
+      "distractors": [
+        "12",
+        "1",
+        "39"
+      ],
+      "explanation": [
+        "Ordered, the biggest value is 38."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_42b3950ce3",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the third biggest value?",
+      "correct_answer": "1.2",
+      "distractors": [
+        "15/7",
+        "1287.75",
+        "11/5"
+      ],
+      "explanation": [
+        "Ordered, the third biggest value is 1.2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_42c29c63c4",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fifth smallest value?",
+      "correct_answer": "3",
+      "distractors": [
+        "−1/3",
+        "2/7",
+        "−4"
+      ],
+      "explanation": [
+        "Ordered, the fifth smallest value is 3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_431096dda5",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the smallest value?",
+      "correct_answer": "−1/2",
+      "distractors": [
+        "0",
+        "7307/106",
+        "5"
+      ],
+      "explanation": [
+        "Ordered, the smallest value is −1/2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_4370767344",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the third smallest value?",
+      "correct_answer": "22/21",
+      "distractors": [
+        "0",
+        "0.5",
+        "43/21"
+      ],
+      "explanation": [
+        "Ordered, the third smallest value is 22/21."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_45b4786668",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the biggest value?",
+      "correct_answer": "1807",
+      "distractors": [
+        "−0.2",
+        "−2/13",
+        "−214"
+      ],
+      "explanation": [
+        "Ordered, the biggest value is 1807."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_47bb9a3538",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the third biggest value?",
+      "correct_answer": "1/3",
+      "distractors": [
+        "−1.2",
+        "143117",
+        "0.2"
+      ],
+      "explanation": [
+        "Ordered, the third biggest value is 1/3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_4883fc7dd9",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the sixth smallest value?",
+      "correct_answer": "57/2",
+      "distractors": [
+        "−0.97",
+        "0",
+        "−5"
+      ],
+      "explanation": [
+        "Ordered, the sixth smallest value is 57/2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_4a01ccc721",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fourth smallest value?",
+      "correct_answer": "5",
+      "distractors": [
+        "−1/6",
+        "−7",
+        "−12"
+      ],
+      "explanation": [
+        "Ordered, the fourth smallest value is 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_4a4495d7bd",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the second smallest value?",
+      "correct_answer": "−4",
+      "distractors": [
+        "−49/156",
+        "−0.1",
+        "3/4"
+      ],
+      "explanation": [
+        "Ordered, the second smallest value is −4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_4be2a19c7f",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the second smallest value?",
+      "correct_answer": "−1",
+      "distractors": [
+        "−8.3",
+        "2",
+        "0.1"
+      ],
+      "explanation": [
+        "Ordered, the second smallest value is −1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_4d20974eb3",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the biggest value?",
+      "correct_answer": "0.5",
+      "distractors": [
+        "1/73",
+        "−5",
+        "−14"
+      ],
+      "explanation": [
+        "Ordered, the biggest value is 0.5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_4d69faf446",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the second biggest value?",
+      "correct_answer": "−18/7",
+      "distractors": [
+        "−4",
+        "0.1",
+        "−3"
+      ],
+      "explanation": [
+        "Ordered, the second biggest value is −18/7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_4e467b45b1",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the smallest value?",
+      "correct_answer": "−34/15",
+      "distractors": [
+        "−0.3",
+        "−2/7",
+        "−19/15"
+      ],
+      "explanation": [
+        "Ordered, the smallest value is −34/15."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_4ea6402d81",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the seventh biggest value?",
+      "correct_answer": "−1",
+      "distractors": [
+        "22.87",
+        "0.1",
+        "−0.4"
+      ],
+      "explanation": [
+        "Ordered, the seventh biggest value is −1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_502d3ac815",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the second smallest value?",
+      "correct_answer": "−3",
+      "distractors": [
+        "−0.18",
+        "−1089437",
+        "6"
+      ],
+      "explanation": [
+        "Ordered, the second smallest value is −3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_514abde912",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the biggest value?",
+      "correct_answer": "0.03",
+      "distractors": [
+        "−86",
+        "−1/4",
+        "−5"
+      ],
+      "explanation": [
+        "Ordered, the biggest value is 0.03."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_5196919aac",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the smallest value?",
+      "correct_answer": "−19",
+      "distractors": [
+        "0.5",
+        "0.007",
+        "1"
+      ],
+      "explanation": [
+        "Ordered, the smallest value is −19."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_529488c214",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the biggest value?",
+      "correct_answer": "1/6",
+      "distractors": [
+        "−1928",
+        "−1",
+        "−5"
+      ],
+      "explanation": [
+        "Ordered, the biggest value is 1/6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_532db6d82d",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the biggest value?",
+      "correct_answer": "6",
+      "distractors": [
+        "−1/10",
+        "−430",
+        "2"
+      ],
+      "explanation": [
+        "Ordered, the biggest value is 6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_57bf54c301",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the second smallest value?",
+      "correct_answer": "−4",
+      "distractors": [
+        "10",
+        "−10",
+        "4"
+      ],
+      "explanation": [
+        "Ordered, the second smallest value is −4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_581d1744f7",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the third smallest value?",
+      "correct_answer": "0.1",
+      "distractors": [
+        "0.5",
+        "−14",
+        "−11.4"
+      ],
+      "explanation": [
+        "Ordered, the third smallest value is 0.1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_5a250a6ff7",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the third biggest value?",
+      "correct_answer": "0",
+      "distractors": [
+        "36057",
+        "4",
+        "1"
+      ],
+      "explanation": [
+        "Ordered, the third biggest value is 0."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_5bd8c72ac6",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the third smallest value?",
+      "correct_answer": "0.4",
+      "distractors": [
+        "2.7",
+        "−5",
+        "−0.3"
+      ],
+      "explanation": [
+        "Ordered, the third smallest value is 0.4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_5cfe229421",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the smallest value?",
+      "correct_answer": "−4",
+      "distractors": [
+        "0",
+        "2/4253",
+        "−0.4"
+      ],
+      "explanation": [
+        "Ordered, the smallest value is −4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_5ff2725f6c",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the smallest value?",
+      "correct_answer": "−7",
+      "distractors": [
+        "16",
+        "−5",
+        "−6"
+      ],
+      "explanation": [
+        "Ordered, the smallest value is −7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_606f083e88",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the second biggest value?",
+      "correct_answer": "−0.3",
+      "distractors": [
+        "0.3",
+        "−878202",
+        "7/10"
+      ],
+      "explanation": [
+        "Ordered, the second biggest value is −0.3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_621bdb5483",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the biggest value?",
+      "correct_answer": "26",
+      "distractors": [
+        "−0.5",
+        "18",
+        "−3"
+      ],
+      "explanation": [
+        "Ordered, the biggest value is 26."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_62eb4bd2d1",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the second biggest value?",
+      "correct_answer": "−0.1803846",
+      "distractors": [
+        "−2",
+        "−1/7",
+        "4098077/5000000"
+      ],
+      "explanation": [
+        "Ordered, the second biggest value is −0.1803846."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_62f2e64e54",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the biggest value?",
+      "correct_answer": "5",
+      "distractors": [
+        "3",
+        "−112",
+        "1.4"
+      ],
+      "explanation": [
+        "Ordered, the biggest value is 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_63eef8e690",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the smallest value?",
+      "correct_answer": "1/3",
+      "distractors": [
+        "29",
+        "8543927",
+        "4/3"
+      ],
+      "explanation": [
+        "Ordered, the smallest value is 1/3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_64a8c80f68",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fifth biggest value?",
+      "correct_answer": "−31",
+      "distractors": [
+        "−4",
+        "−2/9",
+        "0.1"
+      ],
+      "explanation": [
+        "Ordered, the fifth biggest value is −31."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_64f027c4c6",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fourth smallest value?",
+      "correct_answer": "3",
+      "distractors": [
+        "−49/3",
+        "−0.2",
+        "4"
+      ],
+      "explanation": [
+        "Ordered, the fourth smallest value is 3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_65c3371a96",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fourth smallest value?",
+      "correct_answer": "6",
+      "distractors": [
+        "0",
+        "−1",
+        "3.79"
+      ],
+      "explanation": [
+        "Ordered, the fourth smallest value is 6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_674d933979",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the third biggest value?",
+      "correct_answer": "−4/7",
+      "distractors": [
+        "1/28",
+        "0",
+        "3/7"
+      ],
+      "explanation": [
+        "Ordered, the third biggest value is −4/7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_6a18ac3210",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fifth smallest value?",
+      "correct_answer": "1/6",
+      "distractors": [
+        "−578",
+        "2",
+        "0.04"
+      ],
+      "explanation": [
+        "Ordered, the fifth smallest value is 1/6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_6cce5b6f39",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fourth biggest value?",
+      "correct_answer": "−1",
+      "distractors": [
+        "18.6",
+        "51.902",
+        "−5"
+      ],
+      "explanation": [
+        "Ordered, the fourth biggest value is −1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_6ee631655a",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fourth smallest value?",
+      "correct_answer": "3/5",
+      "distractors": [
+        "0.3",
+        "−0.5",
+        "0.4"
+      ],
+      "explanation": [
+        "Ordered, the fourth smallest value is 3/5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_6f0624db3f",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fifth smallest value?",
+      "correct_answer": "−1/4",
+      "distractors": [
+        "−39",
+        "−0.09",
+        "−1054"
+      ],
+      "explanation": [
+        "Ordered, the fifth smallest value is −1/4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_6fbbe5c228",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fifth smallest value?",
+      "correct_answer": "5",
+      "distractors": [
+        "−2",
+        "−0.04",
+        "−0.4"
+      ],
+      "explanation": [
+        "Ordered, the fifth smallest value is 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_70228cfd69",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the second smallest value?",
+      "correct_answer": "−5/18",
+      "distractors": [
+        "−1",
+        "2",
+        "13/18"
+      ],
+      "explanation": [
+        "Ordered, the second smallest value is −5/18."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_7035b75f03",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the biggest value?",
+      "correct_answer": "628275",
+      "distractors": [
+        "2/23",
+        "−6/5",
+        "6"
+      ],
+      "explanation": [
+        "Ordered, the biggest value is 628275."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_71d2bdeda6",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the second biggest value?",
+      "correct_answer": "1/4",
+      "distractors": [
+        "−34",
+        "1/55",
+        "2.092"
+      ],
+      "explanation": [
+        "Ordered, the second biggest value is 1/4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_7224989f3a",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the second biggest value?",
+      "correct_answer": "3",
+      "distractors": [
+        "0.5",
+        "2",
+        "1/4"
+      ],
+      "explanation": [
+        "Ordered, the second biggest value is 3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_723698c47c",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the third smallest value?",
+      "correct_answer": "7",
+      "distractors": [
+        "−5",
+        "−133",
+        "8"
+      ],
+      "explanation": [
+        "Ordered, the third smallest value is 7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_74745646a6",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fourth smallest value?",
+      "correct_answer": "5/2",
+      "distractors": [
+        "1",
+        "−0.3",
+        "−22.457"
+      ],
+      "explanation": [
+        "Ordered, the fourth smallest value is 5/2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_75e59f1a5c",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the third smallest value?",
+      "correct_answer": "0.02",
+      "distractors": [
+        "−21",
+        "3/2",
+        "−0.5"
+      ],
+      "explanation": [
+        "Ordered, the third smallest value is 0.02."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_762f94f813",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fourth biggest value?",
+      "correct_answer": "−0.01",
+      "distractors": [
+        "17",
+        "0",
+        "3"
+      ],
+      "explanation": [
+        "Ordered, the fourth biggest value is −0.01."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_7720127499",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the second biggest value?",
+      "correct_answer": "−4/41",
+      "distractors": [
+        "−0.3",
+        "−423",
+        "0.5"
+      ],
+      "explanation": [
+        "Ordered, the second biggest value is −4/41."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_7902cae0c3",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the third smallest value?",
+      "correct_answer": "1/9",
+      "distractors": [
+        "−5",
+        "−2",
+        "2"
+      ],
+      "explanation": [
+        "Ordered, the third smallest value is 1/9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_7951c0d24e",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fourth smallest value?",
+      "correct_answer": "1/5",
+      "distractors": [
+        "−3/5",
+        "0.5",
+        "−0.5"
+      ],
+      "explanation": [
+        "Ordered, the fourth smallest value is 1/5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_7a6c69b51d",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the second biggest value?",
+      "correct_answer": "24",
+      "distractors": [
+        "−0.4",
+        "−12",
+        "423"
+      ],
+      "explanation": [
+        "Ordered, the second biggest value is 24."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_7d8138d022",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the sixth biggest value?",
+      "correct_answer": "−1993",
+      "distractors": [
+        "4",
+        "−0.1",
+        "−3/8"
+      ],
+      "explanation": [
+        "Ordered, the sixth biggest value is −1993."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_7e1abf9fe6",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the second biggest value?",
+      "correct_answer": "18",
+      "distractors": [
+        "47",
+        "7",
+        "19"
+      ],
+      "explanation": [
+        "Ordered, the second biggest value is 18."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_7f1e0f4415",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the third biggest value?",
+      "correct_answer": "−2",
+      "distractors": [
+        "57",
+        "−4/79",
+        "−1"
+      ],
+      "explanation": [
+        "Ordered, the third biggest value is −2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_80c1fd74de",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the third smallest value?",
+      "correct_answer": "−2/11",
+      "distractors": [
+        "6",
+        "1",
+        "−8"
+      ],
+      "explanation": [
+        "Ordered, the third smallest value is −2/11."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_8365c6c97a",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fifth biggest value?",
+      "correct_answer": "−8",
+      "distractors": [
+        "−4",
+        "0.1",
+        "5"
+      ],
+      "explanation": [
+        "Ordered, the fifth biggest value is −8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_847ddbdb2c",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the second smallest value?",
+      "correct_answer": "−1/3",
+      "distractors": [
+        "3/7",
+        "−3.5",
+        "657"
+      ],
+      "explanation": [
+        "Ordered, the second smallest value is −1/3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_8859956287",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fourth smallest value?",
+      "correct_answer": "−1/4",
+      "distractors": [
+        "0.7",
+        "−0.5",
+        "−65.1"
+      ],
+      "explanation": [
+        "Ordered, the fourth smallest value is −1/4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_89bb2aa8d3",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fourth smallest value?",
+      "correct_answer": "0.3",
+      "distractors": [
+        "0.4",
+        "−0.28",
+        "−649760"
+      ],
+      "explanation": [
+        "Ordered, the fourth smallest value is 0.3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_8a963fb1d4",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fourth smallest value?",
+      "correct_answer": "−0.1",
+      "distractors": [
+        "4",
+        "−10",
+        "−4/17"
+      ],
+      "explanation": [
+        "Ordered, the fourth smallest value is −0.1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_8d4c7a7d31",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the biggest value?",
+      "correct_answer": "1",
+      "distractors": [
+        "2/13",
+        "−0.3",
+        "3/52"
+      ],
+      "explanation": [
+        "Ordered, the biggest value is 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_8e6bf77baf",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the biggest value?",
+      "correct_answer": "4",
+      "distractors": [
+        "2/15",
+        "1",
+        "−0.7"
+      ],
+      "explanation": [
+        "Ordered, the biggest value is 4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_8e7c41754f",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the smallest value?",
+      "correct_answer": "−76/11",
+      "distractors": [
+        "−6.53",
+        "2",
+        "−65/11"
+      ],
+      "explanation": [
+        "Ordered, the smallest value is −76/11."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_8f09dada6c",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fourth smallest value?",
+      "correct_answer": "7",
+      "distractors": [
+        "1/4",
+        "−0.4",
+        "−0.1"
+      ],
+      "explanation": [
+        "Ordered, the fourth smallest value is 7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_901fccc1a7",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the second biggest value?",
+      "correct_answer": "4",
+      "distractors": [
+        "97",
+        "−5",
+        "−2"
+      ],
+      "explanation": [
+        "Ordered, the second biggest value is 4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_90c44590f6",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fourth biggest value?",
+      "correct_answer": "−1",
+      "distractors": [
+        "23",
+        "3/7",
+        "−2/127"
+      ],
+      "explanation": [
+        "Ordered, the fourth biggest value is −1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_91ac27b4cd",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the smallest value?",
+      "correct_answer": "−63",
+      "distractors": [
+        "−2",
+        "−2/35",
+        "−1"
+      ],
+      "explanation": [
+        "Ordered, the smallest value is −63."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_922209fbcb",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fifth biggest value?",
+      "correct_answer": "−2/7",
+      "distractors": [
+        "7",
+        "5",
+        "−4846"
+      ],
+      "explanation": [
+        "Ordered, the fifth biggest value is −2/7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_92b98a7fc9",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the smallest value?",
+      "correct_answer": "−0.0359",
+      "distractors": [
+        "1/29",
+        "0.1",
+        "9641/10000"
+      ],
+      "explanation": [
+        "Ordered, the smallest value is −0.0359."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_938a566afe",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the smallest value?",
+      "correct_answer": "2/11",
+      "distractors": [
+        "1.3",
+        "0.9",
+        "13/11"
+      ],
+      "explanation": [
+        "Ordered, the smallest value is 2/11."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_985a1828a3",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the third biggest value?",
+      "correct_answer": "−0.5",
+      "distractors": [
+        "1/3",
+        "71",
+        "1/2"
+      ],
+      "explanation": [
+        "Ordered, the third biggest value is −0.5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_98aa079076",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the seventh smallest value?",
+      "correct_answer": "3/2",
+      "distractors": [
+        "−4/37",
+        "−12",
+        "2/11"
+      ],
+      "explanation": [
+        "Ordered, the seventh smallest value is 3/2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_9bdf2de475",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the second biggest value?",
+      "correct_answer": "0.4803",
+      "distractors": [
+        "319",
+        "−1/9",
+        "−1/5"
+      ],
+      "explanation": [
+        "Ordered, the second biggest value is 0.4803."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_9d2e5e8305",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fourth biggest value?",
+      "correct_answer": "−8",
+      "distractors": [
+        "−2",
+        "−4/7",
+        "5"
+      ],
+      "explanation": [
+        "Ordered, the fourth biggest value is −8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_9e4e2507fb",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the third smallest value?",
+      "correct_answer": "4",
+      "distractors": [
+        "−0.1",
+        "27/8",
+        "5"
+      ],
+      "explanation": [
+        "Ordered, the third smallest value is 4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_9e8a4b240d",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the second smallest value?",
+      "correct_answer": "12/19",
+      "distractors": [
+        "2",
+        "6",
+        "−1/5"
+      ],
+      "explanation": [
+        "Ordered, the second smallest value is 12/19."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_9fcdeae1bd",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the second biggest value?",
+      "correct_answer": "2",
+      "distractors": [
+        "3",
+        "−248",
+        "−4/3"
+      ],
+      "explanation": [
+        "Ordered, the second biggest value is 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_a060dcbefe",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fourth smallest value?",
+      "correct_answer": "198.28",
+      "distractors": [
+        "−1/6",
+        "−5",
+        "−144"
+      ],
+      "explanation": [
+        "Ordered, the fourth smallest value is 198.28."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_a0d212b059",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the third smallest value?",
+      "correct_answer": "0.03",
+      "distractors": [
+        "0.01",
+        "−4",
+        "3"
+      ],
+      "explanation": [
+        "Ordered, the third smallest value is 0.03."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_a5306d9160",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fourth biggest value?",
+      "correct_answer": "0.4",
+      "distractors": [
+        "43",
+        "10",
+        "5"
+      ],
+      "explanation": [
+        "Ordered, the fourth biggest value is 0.4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_a666504080",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fifth biggest value?",
+      "correct_answer": "−4",
+      "distractors": [
+        "338",
+        "4",
+        "−4/3"
+      ],
+      "explanation": [
+        "Ordered, the fifth biggest value is −4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_a84d9e3ac1",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the sixth smallest value?",
+      "correct_answer": "7",
+      "distractors": [
+        "5",
+        "−5",
+        "4"
+      ],
+      "explanation": [
+        "Ordered, the sixth smallest value is 7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_a948294092",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the third biggest value?",
+      "correct_answer": "−2.6",
+      "distractors": [
+        "1",
+        "0.090116",
+        "−8/5"
+      ],
+      "explanation": [
+        "Ordered, the third biggest value is −2.6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_ab3a074cbc",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the third biggest value?",
+      "correct_answer": "4/3",
+      "distractors": [
+        "29",
+        "1548128",
+        "−3"
+      ],
+      "explanation": [
+        "Ordered, the third biggest value is 4/3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_ae4b75cc3c",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fourth biggest value?",
+      "correct_answer": "0.1",
+      "distractors": [
+        "86",
+        "1",
+        "4"
+      ],
+      "explanation": [
+        "Ordered, the fourth biggest value is 0.1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_b156d2418e",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the biggest value?",
+      "correct_answer": "25.7",
+      "distractors": [
+        "−26",
+        "1",
+        "267/10"
+      ],
+      "explanation": [
+        "Ordered, the biggest value is 25.7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_b446924ad8",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fourth biggest value?",
+      "correct_answer": "−1291",
+      "distractors": [
+        "−4",
+        "−8",
+        "6/7"
+      ],
+      "explanation": [
+        "Ordered, the fourth biggest value is −1291."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_b47fbe1612",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the smallest value?",
+      "correct_answer": "−31",
+      "distractors": [
+        "1/41",
+        "−2/17",
+        "−0.1"
+      ],
+      "explanation": [
+        "Ordered, the smallest value is −31."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_b4f7875d7d",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the third smallest value?",
+      "correct_answer": "−0.1",
+      "distractors": [
+        "−2/13",
+        "5/6",
+        "−6"
+      ],
+      "explanation": [
+        "Ordered, the third smallest value is −0.1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_b6cea231ff",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the second smallest value?",
+      "correct_answer": "−1/3",
+      "distractors": [
+        "−10639",
+        "0.1",
+        "−1/5"
+      ],
+      "explanation": [
+        "Ordered, the second smallest value is −1/3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_b908562284",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fifth smallest value?",
+      "correct_answer": "−0.1",
+      "distractors": [
+        "1",
+        "−1892",
+        "−1/2"
+      ],
+      "explanation": [
+        "Ordered, the fifth smallest value is −0.1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_baa7a286e0",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fourth biggest value?",
+      "correct_answer": "−10774",
+      "distractors": [
+        "−427/3",
+        "1/3",
+        "0.1"
+      ],
+      "explanation": [
+        "Ordered, the fourth biggest value is −10774."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_bb460565b8",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the smallest value?",
+      "correct_answer": "−342",
+      "distractors": [
+        "3",
+        "5",
+        "1"
+      ],
+      "explanation": [
+        "Ordered, the smallest value is −342."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_bb484ce902",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the third biggest value?",
+      "correct_answer": "−0.5",
+      "distractors": [
+        "−6/13",
+        "−1/9",
+        "−2"
+      ],
+      "explanation": [
+        "Ordered, the third biggest value is −0.5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_bb509e0b64",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the biggest value?",
+      "correct_answer": "0.2",
+      "distractors": [
+        "−0.4",
+        "−1",
+        "−0.5"
+      ],
+      "explanation": [
+        "Ordered, the biggest value is 0.2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_bc60e551c0",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the third smallest value?",
+      "correct_answer": "574",
+      "distractors": [
+        "0.4",
+        "5",
+        "575"
+      ],
+      "explanation": [
+        "Ordered, the third smallest value is 574."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_be3712cdab",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the third biggest value?",
+      "correct_answer": "−1",
+      "distractors": [
+        "−6",
+        "2",
+        "5"
+      ],
+      "explanation": [
+        "Ordered, the third biggest value is −1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_bf503f6c38",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the third biggest value?",
+      "correct_answer": "−46",
+      "distractors": [
+        "−5",
+        "3",
+        "−45"
+      ],
+      "explanation": [
+        "Ordered, the third biggest value is −46."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_c311cd9701",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fifth biggest value?",
+      "correct_answer": "−3",
+      "distractors": [
+        "1",
+        "26",
+        "−0.2"
+      ],
+      "explanation": [
+        "Ordered, the fifth biggest value is −3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_c3f33b3d70",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the smallest value?",
+      "correct_answer": "−7/10",
+      "distractors": [
+        "1/2",
+        "−0.4",
+        "189"
+      ],
+      "explanation": [
+        "Ordered, the smallest value is −7/10."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_c5515dad22",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the second biggest value?",
+      "correct_answer": "0.4",
+      "distractors": [
+        "8",
+        "−1/5",
+        "−3"
+      ],
+      "explanation": [
+        "Ordered, the second biggest value is 0.4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_c63f939f3b",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the second biggest value?",
+      "correct_answer": "−1/14",
+      "distractors": [
+        "−897/214",
+        "1",
+        "13/14"
+      ],
+      "explanation": [
+        "Ordered, the second biggest value is −1/14."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_c72f9453be",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the third smallest value?",
+      "correct_answer": "4/7",
+      "distractors": [
+        "−0.25",
+        "−2/9",
+        "3"
+      ],
+      "explanation": [
+        "Ordered, the third smallest value is 4/7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_c921ba1729",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the biggest value?",
+      "correct_answer": "−0.2",
+      "distractors": [
+        "−7/4",
+        "−16",
+        "−2"
+      ],
+      "explanation": [
+        "Ordered, the biggest value is −0.2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_ca00598104",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the second biggest value?",
+      "correct_answer": "−3/676",
+      "distractors": [
+        "−1/4",
+        "336",
+        "673/676"
+      ],
+      "explanation": [
+        "Ordered, the second biggest value is −3/676."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_cb4037126d",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the second biggest value?",
+      "correct_answer": "−3",
+      "distractors": [
+        "−621/8",
+        "−2",
+        "−4"
+      ],
+      "explanation": [
+        "Ordered, the second biggest value is −3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_cb56d70d64",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the biggest value?",
+      "correct_answer": "0.3",
+      "distractors": [
+        "−0.0363",
+        "−0.2",
+        "13/10"
+      ],
+      "explanation": [
+        "Ordered, the biggest value is 0.3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_cd1d7e05c3",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the biggest value?",
+      "correct_answer": "0.5",
+      "distractors": [
+        "−1026979",
+        "−0.2",
+        "0"
+      ],
+      "explanation": [
+        "Ordered, the biggest value is 0.5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_cd2f6eae23",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the smallest value?",
+      "correct_answer": "−22",
+      "distractors": [
+        "1",
+        "2",
+        "1911647"
+      ],
+      "explanation": [
+        "Ordered, the smallest value is −22."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_cd3e9153ff",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the smallest value?",
+      "correct_answer": "−12",
+      "distractors": [
+        "−0.3",
+        "2/17",
+        "−11"
+      ],
+      "explanation": [
+        "Ordered, the smallest value is −12."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_cfbdb25f66",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the second smallest value?",
+      "correct_answer": "0.5",
+      "distractors": [
+        "2760",
+        "4",
+        "0"
+      ],
+      "explanation": [
+        "Ordered, the second smallest value is 0.5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_d01aa1e37c",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the second smallest value?",
+      "correct_answer": "−0.012",
+      "distractors": [
+        "0.3",
+        "0.1",
+        "36224"
+      ],
+      "explanation": [
+        "Ordered, the second smallest value is −0.012."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_d4bee256ba",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the smallest value?",
+      "correct_answer": "−4",
+      "distractors": [
+        "0.3",
+        "0",
+        "−0.03"
+      ],
+      "explanation": [
+        "Ordered, the smallest value is −4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_d5c1f22cbd",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the third biggest value?",
+      "correct_answer": "0",
+      "distractors": [
+        "0.06",
+        "2",
+        "−0.017"
+      ],
+      "explanation": [
+        "Ordered, the third biggest value is 0."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_d636f8fc54",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the biggest value?",
+      "correct_answer": "1.6",
+      "distractors": [
+        "−1/4",
+        "−1",
+        "13/5"
+      ],
+      "explanation": [
+        "Ordered, the biggest value is 1.6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_d6f4dca013",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the biggest value?",
+      "correct_answer": "5",
+      "distractors": [
+        "5/8",
+        "−5",
+        "6"
+      ],
+      "explanation": [
+        "Ordered, the biggest value is 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_d73ddc318c",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fourth biggest value?",
+      "correct_answer": "−6/11",
+      "distractors": [
+        "−6",
+        "−2/17",
+        "0.7"
+      ],
+      "explanation": [
+        "Ordered, the fourth biggest value is −6/11."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_d8dbb5136c",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fifth biggest value?",
+      "correct_answer": "−17",
+      "distractors": [
+        "0.4",
+        "−0.4",
+        "−1/3"
+      ],
+      "explanation": [
+        "Ordered, the fifth biggest value is −17."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_d9b2970354",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the third smallest value?",
+      "correct_answer": "−3",
+      "distractors": [
+        "0.3",
+        "0",
+        "0.11"
+      ],
+      "explanation": [
+        "Ordered, the third smallest value is −3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_da39aeb694",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fourth biggest value?",
+      "correct_answer": "1/12",
+      "distractors": [
+        "5",
+        "0.2",
+        "4"
+      ],
+      "explanation": [
+        "Ordered, the fourth biggest value is 1/12."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_da853d3dfa",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the biggest value?",
+      "correct_answer": "1",
+      "distractors": [
+        "0.191",
+        "−40/3",
+        "2"
+      ],
+      "explanation": [
+        "Ordered, the biggest value is 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_dc69411683",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the second smallest value?",
+      "correct_answer": "−0.2",
+      "distractors": [
+        "−5",
+        "1/4",
+        "33"
+      ],
+      "explanation": [
+        "Ordered, the second smallest value is −0.2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_de8ac54c4e",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fourth biggest value?",
+      "correct_answer": "−2969",
+      "distractors": [
+        "−12",
+        "39",
+        "0.5"
+      ],
+      "explanation": [
+        "Ordered, the fourth biggest value is −2969."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_dfff8984e6",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the biggest value?",
+      "correct_answer": "1158.9",
+      "distractors": [
+        "−3",
+        "2/3",
+        "11599/10"
+      ],
+      "explanation": [
+        "Ordered, the biggest value is 1158.9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_e56aac6282",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the biggest value?",
+      "correct_answer": "6",
+      "distractors": [
+        "0",
+        "0.4",
+        "−1021"
+      ],
+      "explanation": [
+        "Ordered, the biggest value is 6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_e5ce937d1f",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fourth smallest value?",
+      "correct_answer": "0.5",
+      "distractors": [
+        "0",
+        "6/2069",
+        "−5"
+      ],
+      "explanation": [
+        "Ordered, the fourth smallest value is 0.5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_e64d848eb1",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the biggest value?",
+      "correct_answer": "7/4",
+      "distractors": [
+        "−40",
+        "0",
+        "−36"
+      ],
+      "explanation": [
+        "Ordered, the biggest value is 7/4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_e6a25d4f0b",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the second biggest value?",
+      "correct_answer": "38.9",
+      "distractors": [
+        "584531",
+        "4",
+        "399/10"
+      ],
+      "explanation": [
+        "Ordered, the second biggest value is 38.9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_e85976c17f",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fourth smallest value?",
+      "correct_answer": "5",
+      "distractors": [
+        "−2/11",
+        "1",
+        "0.113"
+      ],
+      "explanation": [
+        "Ordered, the fourth smallest value is 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_e863d9c34b",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fourth biggest value?",
+      "correct_answer": "−0.4",
+      "distractors": [
+        "1",
+        "−0.2",
+        "−2/18443"
+      ],
+      "explanation": [
+        "Ordered, the fourth biggest value is −0.4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_eb50afa0e4",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fifth biggest value?",
+      "correct_answer": "−5",
+      "distractors": [
+        "1/82",
+        "−2/9",
+        "9/5"
+      ],
+      "explanation": [
+        "Ordered, the fifth biggest value is −5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_ec8f19c5b0",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the third biggest value?",
+      "correct_answer": "−1.814",
+      "distractors": [
+        "0",
+        "−0.4",
+        "−407/500"
+      ],
+      "explanation": [
+        "Ordered, the third biggest value is −1.814."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_ee994a1a19",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the biggest value?",
+      "correct_answer": "1/3",
+      "distractors": [
+        "−0.3",
+        "−0.067",
+        "4/3"
+      ],
+      "explanation": [
+        "Ordered, the biggest value is 1/3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_ef4c3de430",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fourth biggest value?",
+      "correct_answer": "−4",
+      "distractors": [
+        "−5",
+        "1321",
+        "2/17"
+      ],
+      "explanation": [
+        "Ordered, the fourth biggest value is −4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_ef5d8277c6",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fifth biggest value?",
+      "correct_answer": "−0.2",
+      "distractors": [
+        "1/4",
+        "−0.17",
+        "−3/5"
+      ],
+      "explanation": [
+        "Ordered, the fifth biggest value is −0.2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_f02aec0757",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the third smallest value?",
+      "correct_answer": "41/16",
+      "distractors": [
+        "0.4",
+        "−5572",
+        "57/16"
+      ],
+      "explanation": [
+        "Ordered, the third smallest value is 41/16."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_f307542484",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the biggest value?",
+      "correct_answer": "2/9",
+      "distractors": [
+        "1/5",
+        "−0.2",
+        "−1/12"
+      ],
+      "explanation": [
+        "Ordered, the biggest value is 2/9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_f3ddba44a9",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the biggest value?",
+      "correct_answer": "−0.02",
+      "distractors": [
+        "−62.3",
+        "−0.1",
+        "49/50"
+      ],
+      "explanation": [
+        "Ordered, the biggest value is −0.02."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_f67aec4ada",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the second biggest value?",
+      "correct_answer": "1",
+      "distractors": [
+        "0.4",
+        "30",
+        "−148"
+      ],
+      "explanation": [
+        "Ordered, the second biggest value is 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_fcf93e102a",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fourth biggest value?",
+      "correct_answer": "−1339",
+      "distractors": [
+        "−2",
+        "11",
+        "−0.2"
+      ],
+      "explanation": [
+        "Ordered, the fourth biggest value is −1339."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_fdd46ef042",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the fourth biggest value?",
+      "correct_answer": "−1",
+      "distractors": [
+        "3",
+        "70",
+        "−4"
+      ],
+      "explanation": [
+        "Ordered, the fourth biggest value is −1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_kth_fdf3ed1205",
+      "concept_id": "kth_value_in_list",
+      "prompt": "Which is the biggest value?",
+      "correct_answer": "11351",
+      "distractors": [
+        "−19",
+        "1",
+        "11352"
+      ],
+      "explanation": [
+        "Ordered, the biggest value is 11351."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.kth_biggest",
+      "license": "Apache-2.0"
+    }
+  ]
+}

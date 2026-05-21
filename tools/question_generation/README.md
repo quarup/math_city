@@ -28,6 +28,7 @@ package importable.
 | `ingest_deepmind_arithmetic_mul.py` | DeepMind | `arithmetic.mul` (whole-number subset) | Apache 2.0 |
 | `ingest_deepmind_numbers.py` | DeepMind | `numbers.place_value` + `numbers.round_number` | Apache 2.0 |
 | `ingest_deepmind_measurement.py` | DeepMind | `measurement.time` (after/before variants) | Apache 2.0 |
+| `ingest_deepmind_gap_fills.py` | DeepMind | `comparison.{closest, kth_biggest, sort}` + `polynomials.evaluate` (4 new dataset-only sub-concepts; sort uses `AnswerFormat.commaList`) | Apache 2.0 |
 | `ingest_gsm8k.py` | [GSM8K](https://github.com/openai/grade-school-math) | `main` (4 sub-concept buckets — see audit) | MIT |
 
 Shared helpers live in [deepmind_common.py](deepmind_common.py): item-ID
@@ -104,12 +105,18 @@ dataset:
     "explanation": ["7 + 9 = 16"],
     "source": "deepmind_mathematics_dataset",
     "source_module": "arithmetic.add_or_sub",
-    "license": "Apache-2.0"
+    "license": "Apache-2.0",
+    "answer_format": "integer"
   }
   ```
   `explanation` is a list of 1–4 short step-by-step lines shown on the
   wrong-answer screen, matching the shape of `GeneratedQuestion.explanation`
-  emitted by Dart algorithmic generators.
+  emitted by Dart algorithmic generators. `answer_format` is optional and
+  defaults to `"integer"`; valid values mirror Dart's `AnswerFormat` enum
+  (`"integer"`, `"fraction"`, `"mixedNumber"`, `"decimal"`, `"commaList"`,
+  `"string"`). Items with non-`integer` formats route to a matching
+  checkAnswer branch and (for non-numeric formats like `commaList`) force
+  MC mode even at the comfortable proficiency band.
 - **Per-sub-concept item cap** is `--items-per-concept` (default 200). When a
   bucket fills, additional items from that bucket are dropped.
 - **Determinism**: each ingester takes a `--seed` so re-runs produce

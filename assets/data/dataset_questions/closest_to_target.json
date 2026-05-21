@@ -1,0 +1,3404 @@
+{
+  "items": [
+    {
+      "id": "deepmind_mathematics_dataset_closest_039baf24d1",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 348/19?",
+      "correct_answer": "31",
+      "distractors": [
+        "4",
+        "−2",
+        "−5"
+      ],
+      "explanation": [
+        "Among the choices, 31 is the closest to 348/19."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_041e661e12",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 2?",
+      "correct_answer": "4",
+      "distractors": [
+        "−107",
+        "−7/3",
+        "−9"
+      ],
+      "explanation": [
+        "Among the choices, 4 is the closest to 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_0ade511af2",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −5/2?",
+      "correct_answer": "−2",
+      "distractors": [
+        "20/9",
+        "5/3",
+        "5"
+      ],
+      "explanation": [
+        "Among the choices, −2 is the closest to −5/2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_0b9c15397e",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −0.3?",
+      "correct_answer": "0.3",
+      "distractors": [
+        "5",
+        "29/20",
+        "−6"
+      ],
+      "explanation": [
+        "Among the choices, 0.3 is the closest to −0.3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_0cb64feeac",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 8/15?",
+      "correct_answer": "−0.017",
+      "distractors": [
+        "4",
+        "−0.5",
+        "−2"
+      ],
+      "explanation": [
+        "Among the choices, −0.017 is the closest to 8/15."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_0e91431656",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −2?",
+      "correct_answer": "−4",
+      "distractors": [
+        "0.1",
+        "1/3",
+        "23204"
+      ],
+      "explanation": [
+        "Among the choices, −4 is the closest to −2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_116133290f",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −8?",
+      "correct_answer": "−1",
+      "distractors": [
+        "4",
+        "−0.5",
+        "34"
+      ],
+      "explanation": [
+        "Among the choices, −1 is the closest to −8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_12a3567ba6",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 2/5?",
+      "correct_answer": "0.3",
+      "distractors": [
+        "0.6",
+        "3/2",
+        "14/9"
+      ],
+      "explanation": [
+        "Among the choices, 0.3 is the closest to 2/5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_13aaf4830a",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 10?",
+      "correct_answer": "2",
+      "distractors": [
+        "0.5",
+        "40",
+        "−2"
+      ],
+      "explanation": [
+        "Among the choices, 2 is the closest to 10."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_1442fbe22d",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −2?",
+      "correct_answer": "−5",
+      "distractors": [
+        "3",
+        "81",
+        "119"
+      ],
+      "explanation": [
+        "Among the choices, −5 is the closest to −2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_164eaceb38",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 1/4?",
+      "correct_answer": "0.3",
+      "distractors": [
+        "5/38",
+        "−1",
+        "−4"
+      ],
+      "explanation": [
+        "Among the choices, 0.3 is the closest to 1/4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_18823d4872",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −2/3?",
+      "correct_answer": "−0.1",
+      "distractors": [
+        "−0.07",
+        "288",
+        "5"
+      ],
+      "explanation": [
+        "Among the choices, −0.1 is the closest to −2/3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_1b1103413d",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 1/3?",
+      "correct_answer": "1",
+      "distractors": [
+        "3/2",
+        "18",
+        "1.33"
+      ],
+      "explanation": [
+        "Among the choices, 1 is the closest to 1/3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_1c78c4350e",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −2/5?",
+      "correct_answer": "−3/7",
+      "distractors": [
+        "−0.27",
+        "250",
+        "4/7"
+      ],
+      "explanation": [
+        "Among the choices, −3/7 is the closest to −2/5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_1e0d9fca49",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −2/5?",
+      "correct_answer": "−0.5",
+      "distractors": [
+        "−8",
+        "−18",
+        "0.1"
+      ],
+      "explanation": [
+        "Among the choices, −0.5 is the closest to −2/5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_1f9ea460bb",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −2/15?",
+      "correct_answer": "−1/9",
+      "distractors": [
+        "4",
+        "−0.3",
+        "0.5"
+      ],
+      "explanation": [
+        "Among the choices, −1/9 is the closest to −2/15."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_24f06de408",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 164?",
+      "correct_answer": "5",
+      "distractors": [
+        "−3",
+        "−1/7",
+        "1/3"
+      ],
+      "explanation": [
+        "Among the choices, 5 is the closest to 164."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_2748d32535",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 1/3?",
+      "correct_answer": "−1",
+      "distractors": [
+        "4",
+        "2",
+        "−99"
+      ],
+      "explanation": [
+        "Among the choices, −1 is the closest to 1/3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_2b88b8b615",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 12931?",
+      "correct_answer": "0.3",
+      "distractors": [
+        "−0.099",
+        "−0.1",
+        "−5"
+      ],
+      "explanation": [
+        "Among the choices, 0.3 is the closest to 12931."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_2b8c834bc9",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 1?",
+      "correct_answer": "4/9",
+      "distractors": [
+        "−18",
+        "7506",
+        "−1/21"
+      ],
+      "explanation": [
+        "Among the choices, 4/9 is the closest to 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_2c7500edae",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 1?",
+      "correct_answer": "4/3",
+      "distractors": [
+        "−4",
+        "−3/8",
+        "89"
+      ],
+      "explanation": [
+        "Among the choices, 4/3 is the closest to 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_2d50b677c2",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −1/2?",
+      "correct_answer": "−0.2",
+      "distractors": [
+        "−5/2",
+        "2/15",
+        "5"
+      ],
+      "explanation": [
+        "Among the choices, −0.2 is the closest to −1/2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_2e44128348",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −0.1?",
+      "correct_answer": "−0.19",
+      "distractors": [
+        "1",
+        "−24/7",
+        "−0.3"
+      ],
+      "explanation": [
+        "Among the choices, −0.19 is the closest to −0.1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_2f20c7a46a",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −1/27?",
+      "correct_answer": "1/4",
+      "distractors": [
+        "56",
+        "−4",
+        "0.3"
+      ],
+      "explanation": [
+        "Among the choices, 1/4 is the closest to −1/27."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_3082d5285a",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 27?",
+      "correct_answer": "0.2",
+      "distractors": [
+        "0.02",
+        "−0.4",
+        "−0.5"
+      ],
+      "explanation": [
+        "Among the choices, 0.2 is the closest to 27."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_344b99c4e0",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −0.188?",
+      "correct_answer": "−0.2",
+      "distractors": [
+        "9",
+        "3.6",
+        "2/9"
+      ],
+      "explanation": [
+        "Among the choices, −0.2 is the closest to −0.188."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_34bd4627c1",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 2/7?",
+      "correct_answer": "−0.3",
+      "distractors": [
+        "69",
+        "3",
+        "−0.39904"
+      ],
+      "explanation": [
+        "Among the choices, −0.3 is the closest to 2/7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_36f7a79643",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 3?",
+      "correct_answer": "3",
+      "distractors": [
+        "−1555",
+        "−31/2",
+        "1/2"
+      ],
+      "explanation": [
+        "Among the choices, 3 is the closest to 3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_3724da8d8f",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 0?",
+      "correct_answer": "0.1",
+      "distractors": [
+        "−3/2",
+        "4",
+        "−7"
+      ],
+      "explanation": [
+        "Among the choices, 0.1 is the closest to 0."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_3d972272dd",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −0.2?",
+      "correct_answer": "0",
+      "distractors": [
+        "4.9",
+        "−5",
+        "1/4"
+      ],
+      "explanation": [
+        "Among the choices, 0 is the closest to −0.2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_3e4602a4d2",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −3?",
+      "correct_answer": "0.05",
+      "distractors": [
+        "1",
+        "117",
+        "3/10"
+      ],
+      "explanation": [
+        "Among the choices, 0.05 is the closest to −3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_3f0851588d",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 2/7?",
+      "correct_answer": "1/4",
+      "distractors": [
+        "−71",
+        "−0.027",
+        "−5"
+      ],
+      "explanation": [
+        "Among the choices, 1/4 is the closest to 2/7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_414955b481",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −6?",
+      "correct_answer": "−3/5",
+      "distractors": [
+        "3/8",
+        "1/2",
+        "2/7"
+      ],
+      "explanation": [
+        "Among the choices, −3/5 is the closest to −6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_430093c54c",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −2/7?",
+      "correct_answer": "−0.3",
+      "distractors": [
+        "0.97",
+        "1",
+        "0"
+      ],
+      "explanation": [
+        "Among the choices, −0.3 is the closest to −2/7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_433dd2b91e",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 3?",
+      "correct_answer": "1",
+      "distractors": [
+        "−0.2",
+        "−5",
+        "−505"
+      ],
+      "explanation": [
+        "Among the choices, 1 is the closest to 3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_43997b89e5",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 1.5?",
+      "correct_answer": "−1/5",
+      "distractors": [
+        "−8",
+        "−2",
+        "−3"
+      ],
+      "explanation": [
+        "Among the choices, −1/5 is the closest to 1.5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_44de2dd8f3",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 0.1?",
+      "correct_answer": "−0.1",
+      "distractors": [
+        "−10",
+        "−0.3",
+        "5"
+      ],
+      "explanation": [
+        "Among the choices, −0.1 is the closest to 0.1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_47c4f450ed",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 116?",
+      "correct_answer": "0.3",
+      "distractors": [
+        "−578",
+        "−34/3",
+        "0"
+      ],
+      "explanation": [
+        "Among the choices, 0.3 is the closest to 116."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_48e6a41aa5",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −1?",
+      "correct_answer": "−1",
+      "distractors": [
+        "−1.8",
+        "−0.26",
+        "5/17"
+      ],
+      "explanation": [
+        "Among the choices, −1 is the closest to −1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_494ba2fdd3",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −26?",
+      "correct_answer": "−1",
+      "distractors": [
+        "−869",
+        "−0.071",
+        "4"
+      ],
+      "explanation": [
+        "Among the choices, −1 is the closest to −26."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_4caf7eb2d9",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −1?",
+      "correct_answer": "−5/6",
+      "distractors": [
+        "0.5",
+        "0.7",
+        "−0.454"
+      ],
+      "explanation": [
+        "Among the choices, −5/6 is the closest to −1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_4d01768881",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −0.4?",
+      "correct_answer": "0",
+      "distractors": [
+        "0.4",
+        "5",
+        "0.5"
+      ],
+      "explanation": [
+        "Among the choices, 0 is the closest to −0.4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_4d84b1e40f",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 30?",
+      "correct_answer": "1/2",
+      "distractors": [
+        "0.03",
+        "−2/3",
+        "0.2"
+      ],
+      "explanation": [
+        "Among the choices, 1/2 is the closest to 30."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_4d9a65a5d1",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −0.4?",
+      "correct_answer": "−3/79",
+      "distractors": [
+        "−2165",
+        "2/19",
+        "12"
+      ],
+      "explanation": [
+        "Among the choices, −3/79 is the closest to −0.4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_4e710822f9",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −2?",
+      "correct_answer": "0.2",
+      "distractors": [
+        "0.5",
+        "3",
+        "4"
+      ],
+      "explanation": [
+        "Among the choices, 0.2 is the closest to −2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_4f1ffb1e57",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −3?",
+      "correct_answer": "−0.4",
+      "distractors": [
+        "−2/7",
+        "−8",
+        "1.5"
+      ],
+      "explanation": [
+        "Among the choices, −0.4 is the closest to −3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_4fd1276a18",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 5786?",
+      "correct_answer": "3",
+      "distractors": [
+        "−5",
+        "−4",
+        "0.2"
+      ],
+      "explanation": [
+        "Among the choices, 3 is the closest to 5786."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_4fd3a867b3",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −1.1?",
+      "correct_answer": "−0.025",
+      "distractors": [
+        "1/7",
+        "0.4",
+        "0.1"
+      ],
+      "explanation": [
+        "Among the choices, −0.025 is the closest to −1.1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_515e33eada",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 1/2?",
+      "correct_answer": "0.4",
+      "distractors": [
+        "−4",
+        "−5/8",
+        "0.3"
+      ],
+      "explanation": [
+        "Among the choices, 0.4 is the closest to 1/2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_51974b5e82",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 1?",
+      "correct_answer": "2/75",
+      "distractors": [
+        "0.0124",
+        "−2/5",
+        "35"
+      ],
+      "explanation": [
+        "Among the choices, 2/75 is the closest to 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_52df1bd350",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −1?",
+      "correct_answer": "0.1",
+      "distractors": [
+        "0.9",
+        "3",
+        "−3"
+      ],
+      "explanation": [
+        "Among the choices, 0.1 is the closest to −1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_547cb13ee8",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 1?",
+      "correct_answer": "−0.1",
+      "distractors": [
+        "−975",
+        "−1828",
+        "−4/3"
+      ],
+      "explanation": [
+        "Among the choices, −0.1 is the closest to 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_54befa6cb9",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −2/3?",
+      "correct_answer": "−2/5",
+      "distractors": [
+        "−1/7",
+        "4",
+        "−0.3"
+      ],
+      "explanation": [
+        "Among the choices, −2/5 is the closest to −2/3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_557fc57bb6",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −0.06?",
+      "correct_answer": "2/7",
+      "distractors": [
+        "−1",
+        "−2.15",
+        "−164"
+      ],
+      "explanation": [
+        "Among the choices, 2/7 is the closest to −0.06."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_558e993230",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 1?",
+      "correct_answer": "−0.2",
+      "distractors": [
+        "−5",
+        "4",
+        "−3"
+      ],
+      "explanation": [
+        "Among the choices, −0.2 is the closest to 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_59476fabd9",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −0.2?",
+      "correct_answer": "−3/4",
+      "distractors": [
+        "5",
+        "1",
+        "4"
+      ],
+      "explanation": [
+        "Among the choices, −3/4 is the closest to −0.2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_594a5b919d",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 0.05?",
+      "correct_answer": "1/4",
+      "distractors": [
+        "2/3",
+        "0.3",
+        "−3"
+      ],
+      "explanation": [
+        "Among the choices, 1/4 is the closest to 0.05."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_5b7ad2bf3f",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 1/6?",
+      "correct_answer": "3/19",
+      "distractors": [
+        "63",
+        "5",
+        "4"
+      ],
+      "explanation": [
+        "Among the choices, 3/19 is the closest to 1/6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_5fbf28ff8c",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 0?",
+      "correct_answer": "1/87458",
+      "distractors": [
+        "−1",
+        "−8",
+        "−2/15"
+      ],
+      "explanation": [
+        "Among the choices, 1/87458 is the closest to 0."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_62435e1ba2",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 1/3?",
+      "correct_answer": "3/47",
+      "distractors": [
+        "−0.3",
+        "2",
+        "0.01"
+      ],
+      "explanation": [
+        "Among the choices, 3/47 is the closest to 1/3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_62d3bbf6cb",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 1/4?",
+      "correct_answer": "0.063",
+      "distractors": [
+        "49",
+        "3/5",
+        "−2/11"
+      ],
+      "explanation": [
+        "Among the choices, 0.063 is the closest to 1/4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_64bb395df7",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 23?",
+      "correct_answer": "1",
+      "distractors": [
+        "−4",
+        "1/11",
+        "66"
+      ],
+      "explanation": [
+        "Among the choices, 1 is the closest to 23."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_6544c8d577",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −8?",
+      "correct_answer": "−4/5",
+      "distractors": [
+        "3",
+        "−1/7",
+        "1"
+      ],
+      "explanation": [
+        "Among the choices, −4/5 is the closest to −8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_65b750a6c7",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −99?",
+      "correct_answer": "−162",
+      "distractors": [
+        "2/15",
+        "14",
+        "9/2"
+      ],
+      "explanation": [
+        "Among the choices, −162 is the closest to −99."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_68e892834d",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −0.294?",
+      "correct_answer": "0.3",
+      "distractors": [
+        "−1",
+        "3",
+        "4"
+      ],
+      "explanation": [
+        "Among the choices, 0.3 is the closest to −0.294."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_6aac41dfa0",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 11?",
+      "correct_answer": "18/49573",
+      "distractors": [
+        "−2",
+        "−5",
+        "−0.3"
+      ],
+      "explanation": [
+        "Among the choices, 18/49573 is the closest to 11."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_6dc090b3bb",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 25?",
+      "correct_answer": "0.5",
+      "distractors": [
+        "−3",
+        "−1",
+        "−31/5"
+      ],
+      "explanation": [
+        "Among the choices, 0.5 is the closest to 25."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_6de885e8d3",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 3/7?",
+      "correct_answer": "0.5",
+      "distractors": [
+        "−2/11",
+        "0.15",
+        "0"
+      ],
+      "explanation": [
+        "Among the choices, 0.5 is the closest to 3/7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_6f6810c3a5",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 0.1?",
+      "correct_answer": "3/49",
+      "distractors": [
+        "0.2",
+        "−2/5",
+        "3"
+      ],
+      "explanation": [
+        "Among the choices, 3/49 is the closest to 0.1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_6f94b723ed",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −1/3?",
+      "correct_answer": "1.1",
+      "distractors": [
+        "−4",
+        "−7",
+        "3"
+      ],
+      "explanation": [
+        "Among the choices, 1.1 is the closest to −1/3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_6fa399d786",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 0.2?",
+      "correct_answer": "6/11",
+      "distractors": [
+        "−0.5",
+        "−2",
+        "−0.6"
+      ],
+      "explanation": [
+        "Among the choices, 6/11 is the closest to 0.2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_6ff8c4f69b",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 6?",
+      "correct_answer": "6",
+      "distractors": [
+        "21",
+        "1/3",
+        "−1/5"
+      ],
+      "explanation": [
+        "Among the choices, 6 is the closest to 6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_7172b5d4d8",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −162?",
+      "correct_answer": "−1.2",
+      "distractors": [
+        "2",
+        "725/6",
+        "−0.1"
+      ],
+      "explanation": [
+        "Among the choices, −1.2 is the closest to −162."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_71a719fd4b",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −2/9?",
+      "correct_answer": "0",
+      "distractors": [
+        "−3",
+        "−0.5",
+        "3"
+      ],
+      "explanation": [
+        "Among the choices, 0 is the closest to −2/9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_7201bbefdc",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 2?",
+      "correct_answer": "−1",
+      "distractors": [
+        "36",
+        "8",
+        "−2"
+      ],
+      "explanation": [
+        "Among the choices, −1 is the closest to 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_7351ac1f1e",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −660?",
+      "correct_answer": "−23",
+      "distractors": [
+        "−5",
+        "0.3",
+        "1/7"
+      ],
+      "explanation": [
+        "Among the choices, −23 is the closest to −660."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_772aae91a8",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 1?",
+      "correct_answer": "0.2",
+      "distractors": [
+        "−27/8",
+        "3",
+        "−1/15"
+      ],
+      "explanation": [
+        "Among the choices, 0.2 is the closest to 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_7870721efa",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 1?",
+      "correct_answer": "−5",
+      "distractors": [
+        "4662",
+        "53",
+        "13"
+      ],
+      "explanation": [
+        "Among the choices, −5 is the closest to 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_7a813cef03",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −2/15?",
+      "correct_answer": "0.2",
+      "distractors": [
+        "−92",
+        "3",
+        "7"
+      ],
+      "explanation": [
+        "Among the choices, 0.2 is the closest to −2/15."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_7aa304098e",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −562?",
+      "correct_answer": "−5",
+      "distractors": [
+        "0.7",
+        "−2/3",
+        "0.051"
+      ],
+      "explanation": [
+        "Among the choices, −5 is the closest to −562."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_7c0c4ca8d4",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 0?",
+      "correct_answer": "1/4",
+      "distractors": [
+        "−0.4",
+        "3",
+        "−2"
+      ],
+      "explanation": [
+        "Among the choices, 1/4 is the closest to 0."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_7d1f0e6c32",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 61?",
+      "correct_answer": "13",
+      "distractors": [
+        "−2/51",
+        "3",
+        "0.2"
+      ],
+      "explanation": [
+        "Among the choices, 13 is the closest to 61."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_7dcc77f28f",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −2/3?",
+      "correct_answer": "−1/3",
+      "distractors": [
+        "0.038",
+        "1.54",
+        "0.1"
+      ],
+      "explanation": [
+        "Among the choices, −1/3 is the closest to −2/3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_7e4e16d1cb",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −1?",
+      "correct_answer": "0",
+      "distractors": [
+        "0.3",
+        "−23",
+        "−4"
+      ],
+      "explanation": [
+        "Among the choices, 0 is the closest to −1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_81684474db",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 0.1?",
+      "correct_answer": "1/7",
+      "distractors": [
+        "−1",
+        "−4",
+        "−0.0282"
+      ],
+      "explanation": [
+        "Among the choices, 1/7 is the closest to 0.1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_86b1dac875",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −0.1?",
+      "correct_answer": "−2/11",
+      "distractors": [
+        "1",
+        "−8",
+        "−5"
+      ],
+      "explanation": [
+        "Among the choices, −2/11 is the closest to −0.1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_87616ea489",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 1?",
+      "correct_answer": "−0.1",
+      "distractors": [
+        "−0.105",
+        "−0.2",
+        "4"
+      ],
+      "explanation": [
+        "Among the choices, −0.1 is the closest to 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_89cafdde16",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 24?",
+      "correct_answer": "0.59",
+      "distractors": [
+        "−4",
+        "48",
+        "0.2"
+      ],
+      "explanation": [
+        "Among the choices, 0.59 is the closest to 24."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_8ae9e6d4f4",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −5/8?",
+      "correct_answer": "−1",
+      "distractors": [
+        "−8",
+        "17",
+        "0"
+      ],
+      "explanation": [
+        "Among the choices, −1 is the closest to −5/8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_8b2037ef83",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 0?",
+      "correct_answer": "0.059",
+      "distractors": [
+        "−0.1",
+        "−2",
+        "0.2"
+      ],
+      "explanation": [
+        "Among the choices, 0.059 is the closest to 0."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_8bddb9f7fd",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −1?",
+      "correct_answer": "−2/3",
+      "distractors": [
+        "−2/15",
+        "−180/7",
+        "0.3"
+      ],
+      "explanation": [
+        "Among the choices, −2/3 is the closest to −1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_8c7d57afd8",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 17?",
+      "correct_answer": "1",
+      "distractors": [
+        "−2/3",
+        "0.4",
+        "4/7"
+      ],
+      "explanation": [
+        "Among the choices, 1 is the closest to 17."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_8c9ce8303d",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −3795?",
+      "correct_answer": "−4",
+      "distractors": [
+        "3",
+        "0",
+        "0.2"
+      ],
+      "explanation": [
+        "Among the choices, −4 is the closest to −3795."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_8caf62c8c8",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −2/9?",
+      "correct_answer": "−0.3",
+      "distractors": [
+        "−8/5",
+        "−5",
+        "5/16"
+      ],
+      "explanation": [
+        "Among the choices, −0.3 is the closest to −2/9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_8f0f624bdc",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −1/22?",
+      "correct_answer": "−0.4",
+      "distractors": [
+        "−45",
+        "0.5",
+        "0.39"
+      ],
+      "explanation": [
+        "Among the choices, −0.4 is the closest to −1/22."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_8f250e835b",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 0?",
+      "correct_answer": "0",
+      "distractors": [
+        "2",
+        "−134",
+        "−0.06"
+      ],
+      "explanation": [
+        "Among the choices, 0 is the closest to 0."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_8f5c9c18a6",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 7?",
+      "correct_answer": "3",
+      "distractors": [
+        "−3",
+        "2",
+        "−0.1"
+      ],
+      "explanation": [
+        "Among the choices, 3 is the closest to 7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_8f78475238",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 0.176?",
+      "correct_answer": "0.1",
+      "distractors": [
+        "31991",
+        "−2",
+        "−8/7"
+      ],
+      "explanation": [
+        "Among the choices, 0.1 is the closest to 0.176."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_906f22f031",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 2?",
+      "correct_answer": "2",
+      "distractors": [
+        "−0.6",
+        "30",
+        "203"
+      ],
+      "explanation": [
+        "Among the choices, 2 is the closest to 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_932d9024f8",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −0.3?",
+      "correct_answer": "−0.3",
+      "distractors": [
+        "−1",
+        "−1/8",
+        "1/2"
+      ],
+      "explanation": [
+        "Among the choices, −0.3 is the closest to −0.3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_9765828d02",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 2/3?",
+      "correct_answer": "−2/3",
+      "distractors": [
+        "4",
+        "−3",
+        "−8"
+      ],
+      "explanation": [
+        "Among the choices, −2/3 is the closest to 2/3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_9a3807c8b4",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −0.09803?",
+      "correct_answer": "0",
+      "distractors": [
+        "1",
+        "3/4",
+        "−0.2"
+      ],
+      "explanation": [
+        "Among the choices, 0 is the closest to −0.09803."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_9ab12639f3",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 0.1?",
+      "correct_answer": "−2/11",
+      "distractors": [
+        "−4",
+        "33",
+        "4/7"
+      ],
+      "explanation": [
+        "Among the choices, −2/11 is the closest to 0.1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_9ae2fc0e60",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 266?",
+      "correct_answer": "5/2",
+      "distractors": [
+        "−6",
+        "4/3",
+        "−0.3"
+      ],
+      "explanation": [
+        "Among the choices, 5/2 is the closest to 266."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_9b20078819",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 272/5?",
+      "correct_answer": "5",
+      "distractors": [
+        "1/2",
+        "0.1",
+        "3"
+      ],
+      "explanation": [
+        "Among the choices, 5 is the closest to 272/5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_9b7f461dac",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −264/7?",
+      "correct_answer": "−4",
+      "distractors": [
+        "1",
+        "0.3",
+        "2/2497"
+      ],
+      "explanation": [
+        "Among the choices, −4 is the closest to −264/7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_9cf62d9518",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 2/5?",
+      "correct_answer": "1/9",
+      "distractors": [
+        "−0.3",
+        "−15",
+        "−1"
+      ],
+      "explanation": [
+        "Among the choices, 1/9 is the closest to 2/5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_9d7cb0785c",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −1/4?",
+      "correct_answer": "−2/3891",
+      "distractors": [
+        "7",
+        "0.5",
+        "−3"
+      ],
+      "explanation": [
+        "Among the choices, −2/3891 is the closest to −1/4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_9d9dbc1edc",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 2?",
+      "correct_answer": "0.1",
+      "distractors": [
+        "−0.095",
+        "10",
+        "−5"
+      ],
+      "explanation": [
+        "Among the choices, 0.1 is the closest to 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_9df15ab60c",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −1?",
+      "correct_answer": "2/7",
+      "distractors": [
+        "20",
+        "−1975",
+        "1"
+      ],
+      "explanation": [
+        "Among the choices, 2/7 is the closest to −1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_9ea3418db5",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −2/7?",
+      "correct_answer": "−0.5",
+      "distractors": [
+        "72.84",
+        "2/5",
+        "−4"
+      ],
+      "explanation": [
+        "Among the choices, −0.5 is the closest to −2/7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_9f994b1451",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −3?",
+      "correct_answer": "−3",
+      "distractors": [
+        "−2/3",
+        "−10/9",
+        "5/461"
+      ],
+      "explanation": [
+        "Among the choices, −3 is the closest to −3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_a1d66364d5",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −0.9?",
+      "correct_answer": "−4/5",
+      "distractors": [
+        "3/2",
+        "−6",
+        "6/19"
+      ],
+      "explanation": [
+        "Among the choices, −4/5 is the closest to −0.9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_a2f22fafa3",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −0.1?",
+      "correct_answer": "−0.05",
+      "distractors": [
+        "−31",
+        "1",
+        "3"
+      ],
+      "explanation": [
+        "Among the choices, −0.05 is the closest to −0.1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_a3002f7b4b",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −0.1?",
+      "correct_answer": "−0.091",
+      "distractors": [
+        "3",
+        "−0.4",
+        "0.4"
+      ],
+      "explanation": [
+        "Among the choices, −0.091 is the closest to −0.1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_a32896017e",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −0.1?",
+      "correct_answer": "−6/11",
+      "distractors": [
+        "7/4",
+        "−4/5",
+        "−4"
+      ],
+      "explanation": [
+        "Among the choices, −6/11 is the closest to −0.1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_a4efc04bcd",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 1/2?",
+      "correct_answer": "−5/6",
+      "distractors": [
+        "−788",
+        "−19",
+        "3"
+      ],
+      "explanation": [
+        "Among the choices, −5/6 is the closest to 1/2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_a64bd0ff68",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −246?",
+      "correct_answer": "−3",
+      "distractors": [
+        "−4/7",
+        "1",
+        "80"
+      ],
+      "explanation": [
+        "Among the choices, −3 is the closest to −246."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_a834bfd01d",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −1?",
+      "correct_answer": "2/15",
+      "distractors": [
+        "1/7",
+        "3",
+        "2/7"
+      ],
+      "explanation": [
+        "Among the choices, 2/15 is the closest to −1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_ab9eb92539",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 0.1?",
+      "correct_answer": "0",
+      "distractors": [
+        "−3",
+        "−0.5",
+        "1/4"
+      ],
+      "explanation": [
+        "Among the choices, 0 is the closest to 0.1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_ac01c72a90",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 1/4?",
+      "correct_answer": "0.2",
+      "distractors": [
+        "35",
+        "1/3",
+        "2"
+      ],
+      "explanation": [
+        "Among the choices, 0.2 is the closest to 1/4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_ac48bf0524",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 1?",
+      "correct_answer": "1/3",
+      "distractors": [
+        "0.2",
+        "−2/5",
+        "−0.5"
+      ],
+      "explanation": [
+        "Among the choices, 1/3 is the closest to 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_acd6cb389f",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −461?",
+      "correct_answer": "−2",
+      "distractors": [
+        "0.3",
+        "0.2",
+        "0.5"
+      ],
+      "explanation": [
+        "Among the choices, −2 is the closest to −461."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_ad429bf6d5",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 0.1?",
+      "correct_answer": "1/10",
+      "distractors": [
+        "1102/9",
+        "−1",
+        "0.2"
+      ],
+      "explanation": [
+        "Among the choices, 1/10 is the closest to 0.1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_addd5c637d",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 2?",
+      "correct_answer": "3",
+      "distractors": [
+        "−12/13",
+        "−1/4",
+        "2/7"
+      ],
+      "explanation": [
+        "Among the choices, 3 is the closest to 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_b1534f73b4",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −1?",
+      "correct_answer": "−1/5",
+      "distractors": [
+        "0.2",
+        "3",
+        "160"
+      ],
+      "explanation": [
+        "Among the choices, −1/5 is the closest to −1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_b239d221b3",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 1/3?",
+      "correct_answer": "−0.1",
+      "distractors": [
+        "−1/5",
+        "9",
+        "96/35"
+      ],
+      "explanation": [
+        "Among the choices, −0.1 is the closest to 1/3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_b2e50b0785",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 1/5?",
+      "correct_answer": "1/5",
+      "distractors": [
+        "3.5",
+        "0.017",
+        "−2/7"
+      ],
+      "explanation": [
+        "Among the choices, 1/5 is the closest to 1/5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_b392894e4a",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 0.1?",
+      "correct_answer": "0.0765",
+      "distractors": [
+        "−0.2",
+        "−51",
+        "3/5"
+      ],
+      "explanation": [
+        "Among the choices, 0.0765 is the closest to 0.1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_b705c84b3b",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 2/7?",
+      "correct_answer": "0.2",
+      "distractors": [
+        "−3",
+        "−6.87",
+        "0.5"
+      ],
+      "explanation": [
+        "Among the choices, 0.2 is the closest to 2/7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_b870241c7d",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 2?",
+      "correct_answer": "0.9",
+      "distractors": [
+        "−0.2",
+        "−0.1",
+        "4"
+      ],
+      "explanation": [
+        "Among the choices, 0.9 is the closest to 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_b8a09c3048",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 1.6?",
+      "correct_answer": "0.1",
+      "distractors": [
+        "−2",
+        "−3",
+        "−5/4"
+      ],
+      "explanation": [
+        "Among the choices, 0.1 is the closest to 1.6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_b9fae7e946",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 1/2?",
+      "correct_answer": "0",
+      "distractors": [
+        "3",
+        "−3",
+        "−0.5"
+      ],
+      "explanation": [
+        "Among the choices, 0 is the closest to 1/2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_bb58e0db24",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −2?",
+      "correct_answer": "−1/2",
+      "distractors": [
+        "−2/13",
+        "−15",
+        "−2/15"
+      ],
+      "explanation": [
+        "Among the choices, −1/2 is the closest to −2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_bdaeac25af",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 2?",
+      "correct_answer": "1",
+      "distractors": [
+        "−2",
+        "10",
+        "−0.2"
+      ],
+      "explanation": [
+        "Among the choices, 1 is the closest to 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_bf6eb97f9f",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 1?",
+      "correct_answer": "1",
+      "distractors": [
+        "1.8",
+        "0.3",
+        "−173"
+      ],
+      "explanation": [
+        "Among the choices, 1 is the closest to 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_c087394544",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 3/47?",
+      "correct_answer": "0.034",
+      "distractors": [
+        "−2",
+        "1",
+        "0.5"
+      ],
+      "explanation": [
+        "Among the choices, 0.034 is the closest to 3/47."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_c257c2f4ef",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 1/3?",
+      "correct_answer": "−0.06",
+      "distractors": [
+        "57",
+        "−5",
+        "−4682"
+      ],
+      "explanation": [
+        "Among the choices, −0.06 is the closest to 1/3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_c361614b0c",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 0.1?",
+      "correct_answer": "0.3",
+      "distractors": [
+        "3",
+        "−6",
+        "86"
+      ],
+      "explanation": [
+        "Among the choices, 0.3 is the closest to 0.1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_c4e07c0096",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 0?",
+      "correct_answer": "−1/20845",
+      "distractors": [
+        "−1",
+        "2/7",
+        "0.3"
+      ],
+      "explanation": [
+        "Among the choices, −1/20845 is the closest to 0."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_c813585663",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −276?",
+      "correct_answer": "−6",
+      "distractors": [
+        "−2/7",
+        "−655",
+        "−4"
+      ],
+      "explanation": [
+        "Among the choices, −6 is the closest to −276."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_c898cf2262",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −4/257?",
+      "correct_answer": "−1/4",
+      "distractors": [
+        "−1",
+        "−2",
+        "1.1"
+      ],
+      "explanation": [
+        "Among the choices, −1/4 is the closest to −4/257."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_c8b219296c",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 18.8?",
+      "correct_answer": "1/9",
+      "distractors": [
+        "46",
+        "−6",
+        "−0.38"
+      ],
+      "explanation": [
+        "Among the choices, 1/9 is the closest to 18.8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_c8db7b14dd",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −4?",
+      "correct_answer": "−0.7",
+      "distractors": [
+        "−1/8",
+        "0",
+        "−0.3"
+      ],
+      "explanation": [
+        "Among the choices, −0.7 is the closest to −4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_c95eb8760e",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −1/134?",
+      "correct_answer": "0",
+      "distractors": [
+        "0.1",
+        "−1/2",
+        "−25"
+      ],
+      "explanation": [
+        "Among the choices, 0 is the closest to −1/134."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_ca230c484d",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 230?",
+      "correct_answer": "4",
+      "distractors": [
+        "−12",
+        "6/7",
+        "0.3"
+      ],
+      "explanation": [
+        "Among the choices, 4 is the closest to 230."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_caa4c8450d",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −45?",
+      "correct_answer": "−3/4",
+      "distractors": [
+        "2",
+        "1/120",
+        "1"
+      ],
+      "explanation": [
+        "Among the choices, −3/4 is the closest to −45."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_cb92ec8c9c",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 0?",
+      "correct_answer": "−0.05",
+      "distractors": [
+        "2",
+        "289472",
+        "4"
+      ],
+      "explanation": [
+        "Among the choices, −0.05 is the closest to 0."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_cd210ec889",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 0?",
+      "correct_answer": "0",
+      "distractors": [
+        "5",
+        "−37",
+        "261"
+      ],
+      "explanation": [
+        "Among the choices, 0 is the closest to 0."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_cd258bb5f9",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −112?",
+      "correct_answer": "−0.5",
+      "distractors": [
+        "0",
+        "0.5",
+        "85.3"
+      ],
+      "explanation": [
+        "Among the choices, −0.5 is the closest to −112."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_cd5c7c81ee",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 0?",
+      "correct_answer": "−1/13",
+      "distractors": [
+        "3",
+        "0.114",
+        "0.1"
+      ],
+      "explanation": [
+        "Among the choices, −1/13 is the closest to 0."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_cd779cc650",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 2/3?",
+      "correct_answer": "0.5",
+      "distractors": [
+        "−0.13",
+        "−199",
+        "44"
+      ],
+      "explanation": [
+        "Among the choices, 0.5 is the closest to 2/3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_cf0d8ce2b3",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −6?",
+      "correct_answer": "−4",
+      "distractors": [
+        "−3",
+        "3",
+        "5"
+      ],
+      "explanation": [
+        "Among the choices, −4 is the closest to −6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_cf5b4fcd79",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 1?",
+      "correct_answer": "1/23934",
+      "distractors": [
+        "−2/15",
+        "4",
+        "−5"
+      ],
+      "explanation": [
+        "Among the choices, 1/23934 is the closest to 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_cfc3e17001",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 35334?",
+      "correct_answer": "4/9",
+      "distractors": [
+        "−3",
+        "0",
+        "−0.03"
+      ],
+      "explanation": [
+        "Among the choices, 4/9 is the closest to 35334."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_d414ded696",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 2?",
+      "correct_answer": "1",
+      "distractors": [
+        "7",
+        "2/9",
+        "4"
+      ],
+      "explanation": [
+        "Among the choices, 1 is the closest to 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_d4b0d4e7da",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −2/11?",
+      "correct_answer": "−0.3",
+      "distractors": [
+        "−2",
+        "−7",
+        "0.4"
+      ],
+      "explanation": [
+        "Among the choices, −0.3 is the closest to −2/11."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_d4fc631cc0",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −0.1?",
+      "correct_answer": "1",
+      "distractors": [
+        "−251",
+        "14",
+        "3"
+      ],
+      "explanation": [
+        "Among the choices, 1 is the closest to −0.1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_d758b43be7",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 0.1?",
+      "correct_answer": "−0.2",
+      "distractors": [
+        "−8.7",
+        "3/4",
+        "3"
+      ],
+      "explanation": [
+        "Among the choices, −0.2 is the closest to 0.1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_d7aaf36145",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 2.9?",
+      "correct_answer": "1",
+      "distractors": [
+        "−0.4",
+        "−4.104",
+        "−1/29"
+      ],
+      "explanation": [
+        "Among the choices, 1 is the closest to 2.9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_d8e312ad6c",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 277?",
+      "correct_answer": "3/5",
+      "distractors": [
+        "0.3",
+        "−5",
+        "−160"
+      ],
+      "explanation": [
+        "Among the choices, 3/5 is the closest to 277."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_d98a22a04a",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 19/3?",
+      "correct_answer": "4/5",
+      "distractors": [
+        "0",
+        "0.1",
+        "−55"
+      ],
+      "explanation": [
+        "Among the choices, 4/5 is the closest to 19/3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_daa36bc4f9",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −4/29?",
+      "correct_answer": "−0.1",
+      "distractors": [
+        "0.06",
+        "2",
+        "−1"
+      ],
+      "explanation": [
+        "Among the choices, −0.1 is the closest to −4/29."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_dbef1f7731",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 0.1?",
+      "correct_answer": "0.2",
+      "distractors": [
+        "−10",
+        "0.3",
+        "−3/2"
+      ],
+      "explanation": [
+        "Among the choices, 0.2 is the closest to 0.1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_dd055007e8",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 0.4?",
+      "correct_answer": "−0.05",
+      "distractors": [
+        "−3",
+        "6",
+        "9"
+      ],
+      "explanation": [
+        "Among the choices, −0.05 is the closest to 0.4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_dd6c92c2d3",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 2/7?",
+      "correct_answer": "0.4",
+      "distractors": [
+        "4",
+        "7/6",
+        "−2/5"
+      ],
+      "explanation": [
+        "Among the choices, 0.4 is the closest to 2/7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_dd78e7587c",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 1/3?",
+      "correct_answer": "0.28",
+      "distractors": [
+        "7",
+        "−0.1",
+        "−0.4"
+      ],
+      "explanation": [
+        "Among the choices, 0.28 is the closest to 1/3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_dda14afe74",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 0?",
+      "correct_answer": "5/29",
+      "distractors": [
+        "−2",
+        "0.5",
+        "3"
+      ],
+      "explanation": [
+        "Among the choices, 5/29 is the closest to 0."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_de299e98e9",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −8?",
+      "correct_answer": "−12",
+      "distractors": [
+        "0.1",
+        "0.3",
+        "5"
+      ],
+      "explanation": [
+        "Among the choices, −12 is the closest to −8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_e021383c41",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −0.1?",
+      "correct_answer": "−1/4",
+      "distractors": [
+        "16/9",
+        "6",
+        "4"
+      ],
+      "explanation": [
+        "Among the choices, −1/4 is the closest to −0.1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_e1ad635fb7",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 3569/2?",
+      "correct_answer": "0.4",
+      "distractors": [
+        "−8",
+        "−1/3",
+        "−5"
+      ],
+      "explanation": [
+        "Among the choices, 0.4 is the closest to 3569/2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_e1f8bf8ee0",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −0.1?",
+      "correct_answer": "−1/4",
+      "distractors": [
+        "5",
+        "7",
+        "−1.1"
+      ],
+      "explanation": [
+        "Among the choices, −1/4 is the closest to −0.1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_e42d8318c8",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 2?",
+      "correct_answer": "3/200",
+      "distractors": [
+        "−2",
+        "−4",
+        "758"
+      ],
+      "explanation": [
+        "Among the choices, 3/200 is the closest to 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_e492ff6e75",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −1?",
+      "correct_answer": "−1",
+      "distractors": [
+        "−0.4",
+        "0.15",
+        "0.4"
+      ],
+      "explanation": [
+        "Among the choices, −1 is the closest to −1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_e493a8a18d",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −2/5?",
+      "correct_answer": "−0.25",
+      "distractors": [
+        "1/14",
+        "−1.9",
+        "0.1"
+      ],
+      "explanation": [
+        "Among the choices, −0.25 is the closest to −2/5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_e4fbe493d1",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 0?",
+      "correct_answer": "1/6",
+      "distractors": [
+        "−0.5",
+        "−2/5",
+        "−68"
+      ],
+      "explanation": [
+        "Among the choices, 1/6 is the closest to 0."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_e54773b2f5",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −3?",
+      "correct_answer": "−3",
+      "distractors": [
+        "−0.3",
+        "0.4",
+        "4"
+      ],
+      "explanation": [
+        "Among the choices, −3 is the closest to −3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_e6483178f5",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 3?",
+      "correct_answer": "1/2",
+      "distractors": [
+        "−4",
+        "9",
+        "−0.1"
+      ],
+      "explanation": [
+        "Among the choices, 1/2 is the closest to 3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_e653c26f7b",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 2/59?",
+      "correct_answer": "3",
+      "distractors": [
+        "−30",
+        "−8.861",
+        "−3"
+      ],
+      "explanation": [
+        "Among the choices, 3 is the closest to 2/59."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_e65bc24a1e",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −2/7?",
+      "correct_answer": "0.14",
+      "distractors": [
+        "6",
+        "−5",
+        "−17"
+      ],
+      "explanation": [
+        "Among the choices, 0.14 is the closest to −2/7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_e67f7589a9",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 0?",
+      "correct_answer": "2",
+      "distractors": [
+        "7",
+        "−1807",
+        "−4"
+      ],
+      "explanation": [
+        "Among the choices, 2 is the closest to 0."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_e6f6900646",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 1.2?",
+      "correct_answer": "1",
+      "distractors": [
+        "7",
+        "3/14",
+        "−1/3"
+      ],
+      "explanation": [
+        "Among the choices, 1 is the closest to 1.2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_e7faaaa2b5",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −18?",
+      "correct_answer": "−7",
+      "distractors": [
+        "0.4",
+        "−1/4",
+        "−4"
+      ],
+      "explanation": [
+        "Among the choices, −7 is the closest to −18."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_e8bf37fea0",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 106?",
+      "correct_answer": "2/3",
+      "distractors": [
+        "−2/11",
+        "−1",
+        "−0.4"
+      ],
+      "explanation": [
+        "Among the choices, 2/3 is the closest to 106."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_e9b6087608",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −17?",
+      "correct_answer": "−2",
+      "distractors": [
+        "0.075",
+        "−2/7",
+        "−151"
+      ],
+      "explanation": [
+        "Among the choices, −2 is the closest to −17."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_ef3c78790b",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 1/4?",
+      "correct_answer": "−2/15",
+      "distractors": [
+        "−3/19",
+        "−0.5",
+        "5"
+      ],
+      "explanation": [
+        "Among the choices, −2/15 is the closest to 1/4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_efd4f7cf22",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −1?",
+      "correct_answer": "−0.479",
+      "distractors": [
+        "−0.1",
+        "1.286",
+        "3/7"
+      ],
+      "explanation": [
+        "Among the choices, −0.479 is the closest to −1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_f109dcf7dd",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −0.1?",
+      "correct_answer": "1/6",
+      "distractors": [
+        "−1",
+        "−10",
+        "5"
+      ],
+      "explanation": [
+        "Among the choices, 1/6 is the closest to −0.1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_f263754071",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 2?",
+      "correct_answer": "−2/13",
+      "distractors": [
+        "−12",
+        "−0.5",
+        "−1.8"
+      ],
+      "explanation": [
+        "Among the choices, −2/13 is the closest to 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_f344daa28a",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 0.1?",
+      "correct_answer": "2/9",
+      "distractors": [
+        "−3",
+        "−0.5",
+        "−55"
+      ],
+      "explanation": [
+        "Among the choices, 2/9 is the closest to 0.1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_f472086371",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 7?",
+      "correct_answer": "5/2",
+      "distractors": [
+        "−1/3",
+        "1/24",
+        "0.6"
+      ],
+      "explanation": [
+        "Among the choices, 5/2 is the closest to 7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_f6790b0650",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 2/27?",
+      "correct_answer": "−1/9",
+      "distractors": [
+        "−0.4",
+        "1",
+        "62"
+      ],
+      "explanation": [
+        "Among the choices, −1/9 is the closest to 2/27."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_f6a46076ca",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 5/4?",
+      "correct_answer": "3/5",
+      "distractors": [
+        "32",
+        "−0.5",
+        "−2/7"
+      ],
+      "explanation": [
+        "Among the choices, 3/5 is the closest to 5/4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_f7344cde9c",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −1?",
+      "correct_answer": "−0.3",
+      "distractors": [
+        "3/5",
+        "0.1",
+        "−86"
+      ],
+      "explanation": [
+        "Among the choices, −0.3 is the closest to −1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_f79a651976",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 1?",
+      "correct_answer": "0.003",
+      "distractors": [
+        "−2/9",
+        "−0.1",
+        "−1"
+      ],
+      "explanation": [
+        "Among the choices, 0.003 is the closest to 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_f92743f39f",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 0.1?",
+      "correct_answer": "2/11",
+      "distractors": [
+        "3591/10",
+        "−9",
+        "−0.06"
+      ],
+      "explanation": [
+        "Among the choices, 2/11 is the closest to 0.1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_fa4baada12",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 0.6?",
+      "correct_answer": "−2/15",
+      "distractors": [
+        "4",
+        "−1/2",
+        "−4"
+      ],
+      "explanation": [
+        "Among the choices, −2/15 is the closest to 0.6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_fcd8a3e94d",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −2/9?",
+      "correct_answer": "−3",
+      "distractors": [
+        "3",
+        "8",
+        "−10"
+      ],
+      "explanation": [
+        "Among the choices, −3 is the closest to −2/9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_fe671fa0fb",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to 0.1?",
+      "correct_answer": "1",
+      "distractors": [
+        "−4",
+        "−13/2",
+        "5"
+      ],
+      "explanation": [
+        "Among the choices, 1 is the closest to 0.1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_closest_fec77529ab",
+      "concept_id": "closest_to_target",
+      "prompt": "Which is the closest to −2/3?",
+      "correct_answer": "−1.6",
+      "distractors": [
+        "5/6",
+        "112/5",
+        "1"
+      ],
+      "explanation": [
+        "Among the choices, −1.6 is the closest to −2/3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.closest",
+      "license": "Apache-2.0"
+    }
+  ]
+}

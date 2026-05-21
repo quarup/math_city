@@ -1,6 +1,7 @@
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:math_city/data/database.dart';
+import 'package:math_city/domain/questions/generated_question.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -17,7 +18,9 @@ void main() {
     // DeepMind: 12 from `arithmetic.add_or_sub` (Chunk 80) + 5 from
     // `arithmetic.mul` (Chunk 88) + 3 from `numbers.place_value` (Chunk
     // 88) + 4 from `numbers.round_number` (Chunk 88) + 1 from
-    // `measurement.time` (Chunk 88) = 25 buckets.
+    // `measurement.time` (Chunk 88) + 4 gap-fill buckets from
+    // `comparison.{closest, kth_biggest, sort}` + `polynomials.evaluate`
+    // (this chunk) = 29 buckets.
     // GSM8K: 4 buckets (Chunk 86).
     const deepMindBuckets = {
       // arithmetic.add_or_sub (Chunk 80)
@@ -50,6 +53,11 @@ void main() {
       'round_decimals',
       // measurement.time (Chunk 88)
       'elapsed_time',
+      // Gap-fills (this chunk)
+      'closest_to_target',
+      'kth_value_in_list',
+      'sort_rationals',
+      'function_evaluate_at_point',
     };
     const gsm8kBuckets = {
       'mult_div_word_2step',
@@ -78,6 +86,31 @@ void main() {
         reason: 'wrong source in ${entry.key}',
       );
     }
+  });
+
+  test('sort_rationals items round-trip with AnswerFormat.commaList',
+      () async {
+    final db = AppDatabase(NativeDatabase.memory());
+    addTearDown(db.close);
+    final byConcept = await db.allDatasetQuestionsByConcept();
+    final sortItems = byConcept['sort_rationals'];
+    expect(sortItems, isNotNull);
+    expect(sortItems, isNotEmpty);
+    for (final item in sortItems!) {
+      expect(item.answerFormat, AnswerFormat.commaList);
+      // Sort answers are comma-separated, length ≥ 3 (we drop 2-value
+      // sorts at ingest as they overlap with compare_pair).
+      expect(item.correctAnswer.split(',').length, greaterThanOrEqualTo(3));
+    }
+  });
+
+  test('integer-default dataset items keep AnswerFormat.integer', () async {
+    final db = AppDatabase(NativeDatabase.memory());
+    addTearDown(db.close);
+    final byConcept = await db.allDatasetQuestionsByConcept();
+    final addItems = byConcept['add_within_100'];
+    expect(addItems, isNotNull);
+    expect(addItems!.first.answerFormat, AnswerFormat.integer);
   });
 
   test(

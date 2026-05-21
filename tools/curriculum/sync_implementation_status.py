@@ -103,6 +103,36 @@ def read_implemented_generators() -> set[str]:
     return set(re.findall(r"'([a-z0-9_]+)'\s*:", body))
 
 
+def read_implemented_dataset_concepts() -> set[str]:
+    """Concept IDs covered by at least one bundled dataset item.
+
+    Dataset-only concepts (no algorithmic generator, source is plain
+    ``dataset`` in curriculum.md) are still "implemented" — they surface
+    through ``QuestionSource`` at runtime once their JSON ships. Without
+    this lookup the sync script would strip their ✅ marks every time it
+    ran.
+    """
+    import json
+
+    if not os.path.isdir(DATA_DIR):
+        return set()
+    out: set[str] = set()
+    for root, _dirs, files in os.walk(DATA_DIR):
+        for fname in files:
+            if not fname.endswith(".json"):
+                continue
+            try:
+                with open(os.path.join(root, fname), encoding="utf-8") as f:
+                    data = json.load(f)
+            except (OSError, json.JSONDecodeError):
+                continue
+            for item in data.get("items", []):
+                cid = item.get("concept_id")
+                if isinstance(cid, str) and cid:
+                    out.add(cid)
+    return out
+
+
 def read_implemented_widget_files() -> set[str]:
     if not os.path.isdir(DIAGRAMS_DIR):
         return set()
@@ -254,7 +284,7 @@ def update_dataset_block(text: str, n_done: int, n_total: int) -> str:
 
 
 def main() -> int:
-    impl_concepts = read_implemented_generators()
+    impl_concepts = read_implemented_generators() | read_implemented_dataset_concepts()
     impl_widget_files = read_implemented_widget_files()
     n_datasets = count_integrated_datasets()
     today = datetime.date.today().isoformat()

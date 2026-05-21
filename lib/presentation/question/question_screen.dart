@@ -114,7 +114,13 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen> {
       );
     }
 
-    final useNumberPad = widget.band == ProficiencyBand.comfortable;
+    // Keypad eligibility is gated by BOTH band AND answer format. The
+    // keypad can only enter numeric values (digits + a small extra-chars
+    // row); answer formats whose surface form is text-shaped (string,
+    // commaList) force MC even at the comfortable band.
+    final useNumberPad =
+        widget.band == ProficiencyBand.comfortable &&
+        formatSupportsKeypad(question.answerFormat);
 
     return Scaffold(
       appBar: AppBar(
@@ -170,6 +176,26 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen> {
         ),
       ),
     );
+  }
+}
+
+/// Whether the on-screen number pad can produce a valid answer for this
+/// format. `string` and `commaList` are text-shaped (English words,
+/// comma-separated mixed-form lists) and don't fit the pad's digit + few
+/// extra-chars model — those force MC even at the comfortable band.
+///
+/// Exposed (rather than file-private) so the keypad/MC gate has a
+/// unit-test contract that doesn't require pumping a widget.
+bool formatSupportsKeypad(AnswerFormat fmt) {
+  switch (fmt) {
+    case AnswerFormat.integer:
+    case AnswerFormat.fraction:
+    case AnswerFormat.mixedNumber:
+    case AnswerFormat.decimal:
+      return true;
+    case AnswerFormat.string:
+    case AnswerFormat.commaList:
+      return false;
   }
 }
 

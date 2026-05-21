@@ -1883,6 +1883,18 @@ class $DatasetQuestionsTable extends DatasetQuestions
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _answerFormatMeta = const VerificationMeta(
+    'answerFormat',
+  );
+  @override
+  late final GeneratedColumn<String> answerFormat = GeneratedColumn<String>(
+    'answer_format',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('integer'),
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -1894,6 +1906,7 @@ class $DatasetQuestionsTable extends DatasetQuestions
     source,
     sourceModule,
     license,
+    answerFormat,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -1988,6 +2001,15 @@ class $DatasetQuestionsTable extends DatasetQuestions
     } else if (isInserting) {
       context.missing(_licenseMeta);
     }
+    if (data.containsKey('answer_format')) {
+      context.handle(
+        _answerFormatMeta,
+        answerFormat.isAcceptableOrUnknown(
+          data['answer_format']!,
+          _answerFormatMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -2033,6 +2055,10 @@ class $DatasetQuestionsTable extends DatasetQuestions
         DriftSqlType.string,
         data['${effectivePrefix}license'],
       )!,
+      answerFormat: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}answer_format'],
+      )!,
     );
   }
 
@@ -2057,6 +2083,10 @@ class DatasetQuestionRow extends DataClass
   final String source;
   final String sourceModule;
   final String license;
+
+  /// `AnswerFormat` enum name (e.g. `"integer"`, `"commaList"`).
+  /// Carried into [GeneratedQuestion.answerFormat] at read time.
+  final String answerFormat;
   const DatasetQuestionRow({
     required this.id,
     required this.conceptId,
@@ -2067,6 +2097,7 @@ class DatasetQuestionRow extends DataClass
     required this.source,
     required this.sourceModule,
     required this.license,
+    required this.answerFormat,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -2080,6 +2111,7 @@ class DatasetQuestionRow extends DataClass
     map['source'] = Variable<String>(source);
     map['source_module'] = Variable<String>(sourceModule);
     map['license'] = Variable<String>(license);
+    map['answer_format'] = Variable<String>(answerFormat);
     return map;
   }
 
@@ -2094,6 +2126,7 @@ class DatasetQuestionRow extends DataClass
       source: Value(source),
       sourceModule: Value(sourceModule),
       license: Value(license),
+      answerFormat: Value(answerFormat),
     );
   }
 
@@ -2112,6 +2145,7 @@ class DatasetQuestionRow extends DataClass
       source: serializer.fromJson<String>(json['source']),
       sourceModule: serializer.fromJson<String>(json['sourceModule']),
       license: serializer.fromJson<String>(json['license']),
+      answerFormat: serializer.fromJson<String>(json['answerFormat']),
     );
   }
   @override
@@ -2127,6 +2161,7 @@ class DatasetQuestionRow extends DataClass
       'source': serializer.toJson<String>(source),
       'sourceModule': serializer.toJson<String>(sourceModule),
       'license': serializer.toJson<String>(license),
+      'answerFormat': serializer.toJson<String>(answerFormat),
     };
   }
 
@@ -2140,6 +2175,7 @@ class DatasetQuestionRow extends DataClass
     String? source,
     String? sourceModule,
     String? license,
+    String? answerFormat,
   }) => DatasetQuestionRow(
     id: id ?? this.id,
     conceptId: conceptId ?? this.conceptId,
@@ -2150,6 +2186,7 @@ class DatasetQuestionRow extends DataClass
     source: source ?? this.source,
     sourceModule: sourceModule ?? this.sourceModule,
     license: license ?? this.license,
+    answerFormat: answerFormat ?? this.answerFormat,
   );
   DatasetQuestionRow copyWithCompanion(DatasetQuestionsCompanion data) {
     return DatasetQuestionRow(
@@ -2170,6 +2207,9 @@ class DatasetQuestionRow extends DataClass
           ? data.sourceModule.value
           : this.sourceModule,
       license: data.license.present ? data.license.value : this.license,
+      answerFormat: data.answerFormat.present
+          ? data.answerFormat.value
+          : this.answerFormat,
     );
   }
 
@@ -2184,7 +2224,8 @@ class DatasetQuestionRow extends DataClass
           ..write('explanationJson: $explanationJson, ')
           ..write('source: $source, ')
           ..write('sourceModule: $sourceModule, ')
-          ..write('license: $license')
+          ..write('license: $license, ')
+          ..write('answerFormat: $answerFormat')
           ..write(')'))
         .toString();
   }
@@ -2200,6 +2241,7 @@ class DatasetQuestionRow extends DataClass
     source,
     sourceModule,
     license,
+    answerFormat,
   );
   @override
   bool operator ==(Object other) =>
@@ -2213,7 +2255,8 @@ class DatasetQuestionRow extends DataClass
           other.explanationJson == this.explanationJson &&
           other.source == this.source &&
           other.sourceModule == this.sourceModule &&
-          other.license == this.license);
+          other.license == this.license &&
+          other.answerFormat == this.answerFormat);
 }
 
 class DatasetQuestionsCompanion extends UpdateCompanion<DatasetQuestionRow> {
@@ -2226,6 +2269,7 @@ class DatasetQuestionsCompanion extends UpdateCompanion<DatasetQuestionRow> {
   final Value<String> source;
   final Value<String> sourceModule;
   final Value<String> license;
+  final Value<String> answerFormat;
   final Value<int> rowid;
   const DatasetQuestionsCompanion({
     this.id = const Value.absent(),
@@ -2237,6 +2281,7 @@ class DatasetQuestionsCompanion extends UpdateCompanion<DatasetQuestionRow> {
     this.source = const Value.absent(),
     this.sourceModule = const Value.absent(),
     this.license = const Value.absent(),
+    this.answerFormat = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   DatasetQuestionsCompanion.insert({
@@ -2249,6 +2294,7 @@ class DatasetQuestionsCompanion extends UpdateCompanion<DatasetQuestionRow> {
     required String source,
     required String sourceModule,
     required String license,
+    this.answerFormat = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        conceptId = Value(conceptId),
@@ -2269,6 +2315,7 @@ class DatasetQuestionsCompanion extends UpdateCompanion<DatasetQuestionRow> {
     Expression<String>? source,
     Expression<String>? sourceModule,
     Expression<String>? license,
+    Expression<String>? answerFormat,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -2281,6 +2328,7 @@ class DatasetQuestionsCompanion extends UpdateCompanion<DatasetQuestionRow> {
       if (source != null) 'source': source,
       if (sourceModule != null) 'source_module': sourceModule,
       if (license != null) 'license': license,
+      if (answerFormat != null) 'answer_format': answerFormat,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -2295,6 +2343,7 @@ class DatasetQuestionsCompanion extends UpdateCompanion<DatasetQuestionRow> {
     Value<String>? source,
     Value<String>? sourceModule,
     Value<String>? license,
+    Value<String>? answerFormat,
     Value<int>? rowid,
   }) {
     return DatasetQuestionsCompanion(
@@ -2307,6 +2356,7 @@ class DatasetQuestionsCompanion extends UpdateCompanion<DatasetQuestionRow> {
       source: source ?? this.source,
       sourceModule: sourceModule ?? this.sourceModule,
       license: license ?? this.license,
+      answerFormat: answerFormat ?? this.answerFormat,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -2341,6 +2391,9 @@ class DatasetQuestionsCompanion extends UpdateCompanion<DatasetQuestionRow> {
     if (license.present) {
       map['license'] = Variable<String>(license.value);
     }
+    if (answerFormat.present) {
+      map['answer_format'] = Variable<String>(answerFormat.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -2359,6 +2412,7 @@ class DatasetQuestionsCompanion extends UpdateCompanion<DatasetQuestionRow> {
           ..write('source: $source, ')
           ..write('sourceModule: $sourceModule, ')
           ..write('license: $license, ')
+          ..write('answerFormat: $answerFormat, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -3818,6 +3872,7 @@ typedef $$DatasetQuestionsTableCreateCompanionBuilder =
       required String source,
       required String sourceModule,
       required String license,
+      Value<String> answerFormat,
       Value<int> rowid,
     });
 typedef $$DatasetQuestionsTableUpdateCompanionBuilder =
@@ -3831,6 +3886,7 @@ typedef $$DatasetQuestionsTableUpdateCompanionBuilder =
       Value<String> source,
       Value<String> sourceModule,
       Value<String> license,
+      Value<String> answerFormat,
       Value<int> rowid,
     });
 
@@ -3885,6 +3941,11 @@ class $$DatasetQuestionsTableFilterComposer
 
   ColumnFilters<String> get license => $composableBuilder(
     column: $table.license,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get answerFormat => $composableBuilder(
+    column: $table.answerFormat,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -3942,6 +4003,11 @@ class $$DatasetQuestionsTableOrderingComposer
     column: $table.license,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get answerFormat => $composableBuilder(
+    column: $table.answerFormat,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$DatasetQuestionsTableAnnotationComposer
@@ -3987,6 +4053,11 @@ class $$DatasetQuestionsTableAnnotationComposer
 
   GeneratedColumn<String> get license =>
       $composableBuilder(column: $table.license, builder: (column) => column);
+
+  GeneratedColumn<String> get answerFormat => $composableBuilder(
+    column: $table.answerFormat,
+    builder: (column) => column,
+  );
 }
 
 class $$DatasetQuestionsTableTableManager
@@ -4035,6 +4106,7 @@ class $$DatasetQuestionsTableTableManager
                 Value<String> source = const Value.absent(),
                 Value<String> sourceModule = const Value.absent(),
                 Value<String> license = const Value.absent(),
+                Value<String> answerFormat = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => DatasetQuestionsCompanion(
                 id: id,
@@ -4046,6 +4118,7 @@ class $$DatasetQuestionsTableTableManager
                 source: source,
                 sourceModule: sourceModule,
                 license: license,
+                answerFormat: answerFormat,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -4059,6 +4132,7 @@ class $$DatasetQuestionsTableTableManager
                 required String source,
                 required String sourceModule,
                 required String license,
+                Value<String> answerFormat = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => DatasetQuestionsCompanion.insert(
                 id: id,
@@ -4070,6 +4144,7 @@ class $$DatasetQuestionsTableTableManager
                 source: source,
                 sourceModule: sourceModule,
                 license: license,
+                answerFormat: answerFormat,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

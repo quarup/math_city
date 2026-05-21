@@ -1,0 +1,3604 @@
+{
+  "items": [
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_002a7e8535",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let d(b) = 6b² + 20b − 10. Calculate d(−6).",
+      "correct_answer": "86",
+      "distractors": [
+        "−166",
+        "−86",
+        "87"
+      ],
+      "explanation": [
+        "Substitute b = −6:",
+        "d(−6) = 86."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_005958e48c",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let t(x) = −2x² − 5x − 3. Calculate t(−6).",
+      "correct_answer": "−45",
+      "distractors": [
+        "−46",
+        "39",
+        "45"
+      ],
+      "explanation": [
+        "Substitute x = −6:",
+        "t(−6) = −45."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_039662f1db",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let v(k) = 6k² − 5k + 4. Calculate v(3).",
+      "correct_answer": "43",
+      "distractors": [
+        "7",
+        "44",
+        "45"
+      ],
+      "explanation": [
+        "Substitute k = 3:",
+        "v(3) = 43."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_03ae2e6b6f",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let c(j) = 4j² − 2j. Calculate c(4).",
+      "correct_answer": "56",
+      "distractors": [
+        "8",
+        "55",
+        "57"
+      ],
+      "explanation": [
+        "Substitute j = 4:",
+        "c(4) = 56."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_03ca4f134c",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let b(r) = −r² − 9r + 8. Calculate b(−13).",
+      "correct_answer": "−44",
+      "distractors": [
+        "−278",
+        "−45",
+        "−43"
+      ],
+      "explanation": [
+        "Substitute r = −13:",
+        "b(−13) = −44."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_05038e3b68",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let y(s) = s² − 28. Calculate y(0).",
+      "correct_answer": "−28",
+      "distractors": [
+        "−29",
+        "−27",
+        "−23"
+      ],
+      "explanation": [
+        "Substitute s = 0:",
+        "y(0) = −28."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_069dbdd1cb",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let x(g) = 21g + 5. Calculate x(−6).",
+      "correct_answer": "−121",
+      "distractors": [
+        "−122",
+        "−120",
+        "131"
+      ],
+      "explanation": [
+        "Substitute g = −6:",
+        "x(−6) = −121."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_0a968e258c",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let b(d) = −8d² − 13d − 45. Calculate b(−3).",
+      "correct_answer": "−78",
+      "distractors": [
+        "−79",
+        "−76",
+        "−77"
+      ],
+      "explanation": [
+        "Substitute d = −3:",
+        "b(−3) = −78."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_0c0ec5bb18",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let q(d) = −d² + 6d − 7. Calculate q(5).",
+      "correct_answer": "−2",
+      "distractors": [
+        "−3",
+        "−1",
+        "18"
+      ],
+      "explanation": [
+        "Substitute d = 5:",
+        "q(5) = −2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_0d15e458b2",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let i(d) = −11d + 2. Calculate i(3).",
+      "correct_answer": "−31",
+      "distractors": [
+        "−29",
+        "35",
+        "−32"
+      ],
+      "explanation": [
+        "Substitute d = 3:",
+        "i(3) = −31."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_0efa94fad2",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let d(x) = 5x − 22. Calculate d(11).",
+      "correct_answer": "33",
+      "distractors": [
+        "−33",
+        "31",
+        "34"
+      ],
+      "explanation": [
+        "Substitute x = 11:",
+        "d(11) = 33."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_0f098d3d40",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let y(x) = −x² − 5x + 27. Calculate y(−7).",
+      "correct_answer": "13",
+      "distractors": [
+        "−13",
+        "12",
+        "−57"
+      ],
+      "explanation": [
+        "Substitute x = −7:",
+        "y(−7) = 13."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_0f5ecf4267",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let p(y) = y − 9. Calculate p(3).",
+      "correct_answer": "−6",
+      "distractors": [
+        "−5",
+        "−12",
+        "−4"
+      ],
+      "explanation": [
+        "Substitute y = 3:",
+        "p(3) = −6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_110a85c0b1",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let v(w) = w² + 17w + 13. Calculate v(−17).",
+      "correct_answer": "13",
+      "distractors": [
+        "−13",
+        "12",
+        "−293"
+      ],
+      "explanation": [
+        "Substitute w = −17:",
+        "v(−17) = 13."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_12eaf6a099",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let x(n) = −6n + 25. Calculate x(7).",
+      "correct_answer": "−17",
+      "distractors": [
+        "−15",
+        "−18",
+        "67"
+      ],
+      "explanation": [
+        "Substitute n = 7:",
+        "x(7) = −17."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_131ae2bfbf",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let p(n) = −2n + 23. Calculate p(14).",
+      "correct_answer": "−5",
+      "distractors": [
+        "−7",
+        "−4",
+        "−6"
+      ],
+      "explanation": [
+        "Substitute n = 14:",
+        "p(14) = −5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_153e458554",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let o(z) = −z − 5. Calculate o(16).",
+      "correct_answer": "−21",
+      "distractors": [
+        "−22",
+        "−23",
+        "−20"
+      ],
+      "explanation": [
+        "Substitute z = 16:",
+        "o(16) = −21."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_157856a293",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let f(h) = 2h + 3. Calculate f(−3).",
+      "correct_answer": "−3",
+      "distractors": [
+        "−2",
+        "−4",
+        "9"
+      ],
+      "explanation": [
+        "Substitute h = −3:",
+        "f(−3) = −3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_15f4133b17",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let n(r) = −r + 7. Calculate n(8).",
+      "correct_answer": "−1",
+      "distractors": [
+        "−2",
+        "4",
+        "−3"
+      ],
+      "explanation": [
+        "Substitute r = 8:",
+        "n(8) = −1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_1748b2d13b",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let m(b) = 19b² − b + 6. Calculate m(2).",
+      "correct_answer": "80",
+      "distractors": [
+        "−80",
+        "84",
+        "81"
+      ],
+      "explanation": [
+        "Substitute b = 2:",
+        "m(2) = 80."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_1853ce18fa",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let n(s) = −s. Calculate n(4).",
+      "correct_answer": "−4",
+      "distractors": [
+        "1",
+        "−2",
+        "−6"
+      ],
+      "explanation": [
+        "Substitute s = 4:",
+        "n(4) = −4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_1878e011d0",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let f(o) = −30o − 22. Calculate f(−1).",
+      "correct_answer": "8",
+      "distractors": [
+        "7",
+        "10",
+        "6"
+      ],
+      "explanation": [
+        "Substitute o = −1:",
+        "f(−1) = 8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_1ab089202d",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let c(q) = 3q + 9. Calculate c(0).",
+      "correct_answer": "9",
+      "distractors": [
+        "8",
+        "7",
+        "11"
+      ],
+      "explanation": [
+        "Substitute q = 0:",
+        "c(0) = 9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_1c743fdf7e",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let f(t) = −t² + 15t + 2. Calculate f(13).",
+      "correct_answer": "28",
+      "distractors": [
+        "−362",
+        "27",
+        "29"
+      ],
+      "explanation": [
+        "Substitute t = 13:",
+        "f(13) = 28."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_1ce642119e",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let n(t) = 6t² − 5t + 3. Calculate n(3).",
+      "correct_answer": "42",
+      "distractors": [
+        "41",
+        "6",
+        "−42"
+      ],
+      "explanation": [
+        "Substitute t = 3:",
+        "n(3) = 42."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_1d7bc475a8",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let b(k) = k² + 2k. Calculate b(0).",
+      "correct_answer": "0",
+      "distractors": [
+        "1",
+        "−1",
+        "−5"
+      ],
+      "explanation": [
+        "Substitute k = 0:",
+        "b(0) = 0."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_1f96051330",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let x(k) = k² + 5k − 12. Calculate x(−6).",
+      "correct_answer": "−6",
+      "distractors": [
+        "54",
+        "−7",
+        "−48"
+      ],
+      "explanation": [
+        "Substitute k = −6:",
+        "x(−6) = −6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_20125b0d75",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let m(u) = 11u² + 6u − 5. Calculate m(1).",
+      "correct_answer": "12",
+      "distractors": [
+        "0",
+        "13",
+        "11"
+      ],
+      "explanation": [
+        "Substitute u = 1:",
+        "m(1) = 12."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_20f4e15142",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let u(t) = 14t + 40. Calculate u(−7).",
+      "correct_answer": "−58",
+      "distractors": [
+        "138",
+        "−56",
+        "−59"
+      ],
+      "explanation": [
+        "Substitute t = −7:",
+        "u(−7) = −58."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_240d578e9f",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let j(g) = −g + 10. Calculate j(9).",
+      "correct_answer": "1",
+      "distractors": [
+        "0",
+        "6",
+        "2"
+      ],
+      "explanation": [
+        "Substitute g = 9:",
+        "j(9) = 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_2620775b48",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let g(a) = 5a² + 41a − 1. Calculate g(−8).",
+      "correct_answer": "−9",
+      "distractors": [
+        "−10",
+        "−8",
+        "−7"
+      ],
+      "explanation": [
+        "Substitute a = −8:",
+        "g(−8) = −9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_268fc95804",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let q(l) = 2l + 6. Calculate q(−5).",
+      "correct_answer": "−4",
+      "distractors": [
+        "−6",
+        "−2",
+        "16"
+      ],
+      "explanation": [
+        "Substitute l = −5:",
+        "q(−5) = −4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_27b92d00cd",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let j(g) = −4g − 3. Calculate j(−10).",
+      "correct_answer": "37",
+      "distractors": [
+        "−43",
+        "39",
+        "38"
+      ],
+      "explanation": [
+        "Substitute g = −10:",
+        "j(−10) = 37."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_290a47cfe2",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let h(m) = −m² − 13m − 23. Calculate h(−11).",
+      "correct_answer": "−1",
+      "distractors": [
+        "−2",
+        "131",
+        "−3"
+      ],
+      "explanation": [
+        "Substitute m = −11:",
+        "h(−11) = −1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_3107aa18e0",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let a(x) = −x + 12. Calculate a(12).",
+      "correct_answer": "0",
+      "distractors": [
+        "−2",
+        "1",
+        "2"
+      ],
+      "explanation": [
+        "Substitute x = 12:",
+        "a(12) = 0."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_31b4d6b54e",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let u(s) = 2s − 3. Calculate u(−3).",
+      "correct_answer": "−9",
+      "distractors": [
+        "−10",
+        "−7",
+        "−11"
+      ],
+      "explanation": [
+        "Substitute s = −3:",
+        "u(−3) = −9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_320e2dc1d5",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let v(j) = −j + 8. Calculate v(12).",
+      "correct_answer": "−4",
+      "distractors": [
+        "−5",
+        "−2",
+        "20"
+      ],
+      "explanation": [
+        "Substitute j = 12:",
+        "v(12) = −4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_330b90eea2",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let a(c) = 10c + 18. Calculate a(−2).",
+      "correct_answer": "−2",
+      "distractors": [
+        "−4",
+        "0",
+        "−1"
+      ],
+      "explanation": [
+        "Substitute c = −2:",
+        "a(−2) = −2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_33da4d00ab",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let y(i) = i² − 8i + 14. Calculate y(3).",
+      "correct_answer": "−1",
+      "distractors": [
+        "−2",
+        "−7",
+        "47"
+      ],
+      "explanation": [
+        "Substitute i = 3:",
+        "y(3) = −1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_35028e31e2",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let p(j) = j² − 10. Calculate p(−4).",
+      "correct_answer": "6",
+      "distractors": [
+        "8",
+        "7",
+        "−6"
+      ],
+      "explanation": [
+        "Substitute j = −4:",
+        "p(−4) = 6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_359ffd47a7",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let y(z) = 3z − 2. Calculate y(−1).",
+      "correct_answer": "−5",
+      "distractors": [
+        "−3",
+        "−7",
+        "1"
+      ],
+      "explanation": [
+        "Substitute z = −1:",
+        "y(−1) = −5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_3717de3966",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let o(g) = −15g² + 3g − 39. Calculate o(−5).",
+      "correct_answer": "−429",
+      "distractors": [
+        "429",
+        "−427",
+        "−399"
+      ],
+      "explanation": [
+        "Substitute g = −5:",
+        "o(−5) = −429."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_377bc75c12",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let u(l) = 3l − 1. Calculate u(−5).",
+      "correct_answer": "−16",
+      "distractors": [
+        "−18",
+        "−17",
+        "16"
+      ],
+      "explanation": [
+        "Substitute l = −5:",
+        "u(−5) = −16."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_38b2c479f8",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let k(u) = 2u + 8. Calculate k(0).",
+      "correct_answer": "8",
+      "distractors": [
+        "10",
+        "9",
+        "−8"
+      ],
+      "explanation": [
+        "Substitute u = 0:",
+        "k(0) = 8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_38b9cb71eb",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let s(x) = 7x − 5. Calculate s(−5).",
+      "correct_answer": "−40",
+      "distractors": [
+        "−42",
+        "40",
+        "30"
+      ],
+      "explanation": [
+        "Substitute x = −5:",
+        "s(−5) = −40."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_38c6aba762",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let s(r) = −27r² + 15r + 42. Calculate s(−5).",
+      "correct_answer": "−708",
+      "distractors": [
+        "−706",
+        "−707",
+        "102"
+      ],
+      "explanation": [
+        "Substitute r = −5:",
+        "s(−5) = −708."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_3c8b7e8180",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let x(r) = −r² − 12r − 15. Calculate x(−12).",
+      "correct_answer": "−15",
+      "distractors": [
+        "−14",
+        "15",
+        "−16"
+      ],
+      "explanation": [
+        "Substitute r = −12:",
+        "x(−12) = −15."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_3cba5fffa5",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let l(v) = −2v − 4. Calculate l(7).",
+      "correct_answer": "−18",
+      "distractors": [
+        "10",
+        "−19",
+        "−20"
+      ],
+      "explanation": [
+        "Substitute v = 7:",
+        "l(7) = −18."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_3d549f7549",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let l(g) = −3g − 26. Calculate l(−14).",
+      "correct_answer": "16",
+      "distractors": [
+        "15",
+        "14",
+        "17"
+      ],
+      "explanation": [
+        "Substitute g = −14:",
+        "l(−14) = 16."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_3da597ac4f",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let s(n) = n − 21. Calculate s(15).",
+      "correct_answer": "−6",
+      "distractors": [
+        "−8",
+        "6",
+        "−4"
+      ],
+      "explanation": [
+        "Substitute n = 15:",
+        "s(15) = −6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_3f22164eb4",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let k(v) = −4v − 23. Calculate k(−7).",
+      "correct_answer": "5",
+      "distractors": [
+        "−51",
+        "4",
+        "6"
+      ],
+      "explanation": [
+        "Substitute v = −7:",
+        "k(−7) = 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_41bdb43dbb",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let m(p) = −2p² + 3p − 1. Calculate m(4).",
+      "correct_answer": "−21",
+      "distractors": [
+        "−45",
+        "−22",
+        "21"
+      ],
+      "explanation": [
+        "Substitute p = 4:",
+        "m(4) = −21."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_425e6df39a",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let w(t) = t² + 16t − 15. Calculate w(−18).",
+      "correct_answer": "21",
+      "distractors": [
+        "−321",
+        "23",
+        "20"
+      ],
+      "explanation": [
+        "Substitute t = −18:",
+        "w(−18) = 21."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_44dd47a7d6",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let t(s) = 2s² + 16s + 10. Calculate t(−7).",
+      "correct_answer": "−4",
+      "distractors": [
+        "−3",
+        "220",
+        "−5"
+      ],
+      "explanation": [
+        "Substitute s = −7:",
+        "t(−7) = −4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_459da76eaf",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let x(v) = −11v² + 2v. Calculate x(−1).",
+      "correct_answer": "−13",
+      "distractors": [
+        "−11",
+        "13",
+        "−9"
+      ],
+      "explanation": [
+        "Substitute v = −1:",
+        "x(−1) = −13."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_45fc550249",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let f(p) = −p − 3. Calculate f(5).",
+      "correct_answer": "−8",
+      "distractors": [
+        "2",
+        "−7",
+        "−6"
+      ],
+      "explanation": [
+        "Substitute p = 5:",
+        "f(5) = −8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_463e204a4b",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let p(v) = −v² + 2v − 3. Calculate p(3).",
+      "correct_answer": "−6",
+      "distractors": [
+        "−4",
+        "−18",
+        "0"
+      ],
+      "explanation": [
+        "Substitute v = 3:",
+        "p(3) = −6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_4987c8cf44",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let h(a) = a − 12. Calculate h(14).",
+      "correct_answer": "2",
+      "distractors": [
+        "4",
+        "3",
+        "1"
+      ],
+      "explanation": [
+        "Substitute a = 14:",
+        "h(14) = 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_4bba8c9a7c",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let x(l) = 2l + 1. Calculate x(6).",
+      "correct_answer": "13",
+      "distractors": [
+        "11",
+        "−11",
+        "15"
+      ],
+      "explanation": [
+        "Substitute l = 6:",
+        "x(6) = 13."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_4c495bcbbb",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let f(t) = t + 6. Calculate f(−5).",
+      "correct_answer": "1",
+      "distractors": [
+        "−1",
+        "6",
+        "2"
+      ],
+      "explanation": [
+        "Substitute t = −5:",
+        "f(−5) = 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_4ccdb1c972",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let m(p) = p + 17. Calculate m(0).",
+      "correct_answer": "17",
+      "distractors": [
+        "19",
+        "22",
+        "18"
+      ],
+      "explanation": [
+        "Substitute p = 0:",
+        "m(0) = 17."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_4ceb5fdc24",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let l(h) = −2h + 38. Calculate l(8).",
+      "correct_answer": "22",
+      "distractors": [
+        "24",
+        "54",
+        "20"
+      ],
+      "explanation": [
+        "Substitute h = 8:",
+        "l(8) = 22."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_4d09f239ed",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let r(t) = t² + t − 46. Calculate r(6).",
+      "correct_answer": "−4",
+      "distractors": [
+        "−2",
+        "−34",
+        "−16"
+      ],
+      "explanation": [
+        "Substitute t = 6:",
+        "r(6) = −4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_4d6c8c57a0",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let h(k) = 5k² − 14k − 50. Calculate h(5).",
+      "correct_answer": "5",
+      "distractors": [
+        "6",
+        "7",
+        "145"
+      ],
+      "explanation": [
+        "Substitute k = 5:",
+        "h(5) = 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_4e1cfbe864",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let q(a) = a² − 13a − 13. Calculate q(14).",
+      "correct_answer": "1",
+      "distractors": [
+        "365",
+        "−1",
+        "−181"
+      ],
+      "explanation": [
+        "Substitute a = 14:",
+        "q(14) = 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_516bfb7f38",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let k(w) = 3w − 17. Calculate k(8).",
+      "correct_answer": "7",
+      "distractors": [
+        "8",
+        "−41",
+        "−7"
+      ],
+      "explanation": [
+        "Substitute w = 8:",
+        "k(8) = 7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_523f5313c2",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let v(m) = 2m² + 7m − 29. Calculate v(−8).",
+      "correct_answer": "43",
+      "distractors": [
+        "45",
+        "−101",
+        "155"
+      ],
+      "explanation": [
+        "Substitute m = −8:",
+        "v(−8) = 43."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_531db4312b",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let z(q) = −q² − 19q − 40. Calculate z(−18).",
+      "correct_answer": "−22",
+      "distractors": [
+        "−20",
+        "22",
+        "−706"
+      ],
+      "explanation": [
+        "Substitute q = −18:",
+        "z(−18) = −22."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_538a467734",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let h(c) = 6c − 42. Calculate h(8).",
+      "correct_answer": "6",
+      "distractors": [
+        "−6",
+        "5",
+        "8"
+      ],
+      "explanation": [
+        "Substitute c = 8:",
+        "h(8) = 6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_5432641fb1",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let l(g) = −4g + 3. Calculate l(−1).",
+      "correct_answer": "7",
+      "distractors": [
+        "−1",
+        "6",
+        "8"
+      ],
+      "explanation": [
+        "Substitute g = −1:",
+        "l(−1) = 7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_5677406309",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let l(m) = −m² − 2m + 2. Calculate l(−7).",
+      "correct_answer": "−33",
+      "distractors": [
+        "−32",
+        "−31",
+        "−61"
+      ],
+      "explanation": [
+        "Substitute m = −7:",
+        "l(−7) = −33."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_57863fbfd7",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let z(k) = −2k − 5. Calculate z(2).",
+      "correct_answer": "−9",
+      "distractors": [
+        "−7",
+        "9",
+        "−1"
+      ],
+      "explanation": [
+        "Substitute k = 2:",
+        "z(2) = −9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_58fc7d7fad",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let i(y) = −15y² − 2y − 6. Calculate i(−2).",
+      "correct_answer": "−62",
+      "distractors": [
+        "28",
+        "62",
+        "−61"
+      ],
+      "explanation": [
+        "Substitute y = −2:",
+        "i(−2) = −62."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_59164dd111",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let a(q) = −q² − 2q − 10. Calculate a(−3).",
+      "correct_answer": "−13",
+      "distractors": [
+        "−12",
+        "−25",
+        "−14"
+      ],
+      "explanation": [
+        "Substitute q = −3:",
+        "a(−3) = −13."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_5b6aedac7a",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let r(s) = 7s² − 3s + 4. Calculate r(1).",
+      "correct_answer": "8",
+      "distractors": [
+        "14",
+        "9",
+        "10"
+      ],
+      "explanation": [
+        "Substitute s = 1:",
+        "r(1) = 8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_5f7383d30f",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let v(q) = −2q + 18. Calculate v(17).",
+      "correct_answer": "−16",
+      "distractors": [
+        "−14",
+        "−17",
+        "−18"
+      ],
+      "explanation": [
+        "Substitute q = 17:",
+        "v(17) = −16."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_6086a741b6",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let l(g) = −g² + 6g + 1. Calculate l(3).",
+      "correct_answer": "10",
+      "distractors": [
+        "−10",
+        "12",
+        "9"
+      ],
+      "explanation": [
+        "Substitute g = 3:",
+        "l(3) = 10."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_610d98de38",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let k(h) = −3h + 4. Calculate k(−12).",
+      "correct_answer": "40",
+      "distractors": [
+        "41",
+        "−40",
+        "39"
+      ],
+      "explanation": [
+        "Substitute h = −12:",
+        "k(−12) = 40."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_611a4c21e3",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let d(o) = −12o − 1. Calculate d(−20).",
+      "correct_answer": "239",
+      "distractors": [
+        "237",
+        "238",
+        "−239"
+      ],
+      "explanation": [
+        "Substitute o = −20:",
+        "d(−20) = 239."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_6296ca73f3",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let p(h) = 3h − 2. Calculate p(2).",
+      "correct_answer": "4",
+      "distractors": [
+        "6",
+        "−8",
+        "−4"
+      ],
+      "explanation": [
+        "Substitute h = 2:",
+        "p(2) = 4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_62fa017c6c",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let z(m) = 14m² + 2m − 1. Calculate z(2).",
+      "correct_answer": "59",
+      "distractors": [
+        "−59",
+        "31",
+        "58"
+      ],
+      "explanation": [
+        "Substitute m = 2:",
+        "z(2) = 59."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_63d6fbfb9d",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let l(b) = 2b² + 5b − 5. Calculate l(1).",
+      "correct_answer": "2",
+      "distractors": [
+        "−2",
+        "0",
+        "1"
+      ],
+      "explanation": [
+        "Substitute b = 1:",
+        "l(1) = 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_63ec9f015f",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let a(x) = −x² + 17x − 21. Calculate a(0).",
+      "correct_answer": "−21",
+      "distractors": [
+        "−20",
+        "−16",
+        "−22"
+      ],
+      "explanation": [
+        "Substitute x = 0:",
+        "a(0) = −21."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_64cf082511",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let r(b) = −b² + 15b − 23. Calculate r(10).",
+      "correct_answer": "27",
+      "distractors": [
+        "28",
+        "−273",
+        "117"
+      ],
+      "explanation": [
+        "Substitute b = 10:",
+        "r(10) = 27."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_65a5374bb2",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let f(i) = −5i + 20. Calculate f(−14).",
+      "correct_answer": "90",
+      "distractors": [
+        "−90",
+        "92",
+        "91"
+      ],
+      "explanation": [
+        "Substitute i = −14:",
+        "f(−14) = 90."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_66197cbe64",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let g(p) = 7p − 5. Calculate g(−6).",
+      "correct_answer": "−47",
+      "distractors": [
+        "−46",
+        "−45",
+        "−49"
+      ],
+      "explanation": [
+        "Substitute p = −6:",
+        "g(−6) = −47."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_670e6bfee1",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let p(n) = −n² + 2n − 3. Calculate p(2).",
+      "correct_answer": "−3",
+      "distractors": [
+        "−1",
+        "−5",
+        "−2"
+      ],
+      "explanation": [
+        "Substitute n = 2:",
+        "p(2) = −3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_6a4e6bc6fd",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let j(h) = −h² + 12h − 5. Calculate j(8).",
+      "correct_answer": "27",
+      "distractors": [
+        "29",
+        "83",
+        "26"
+      ],
+      "explanation": [
+        "Substitute h = 8:",
+        "j(8) = 27."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_6b73c6cd5e",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let a(h) = 3h² − 22h + 40. Calculate a(3).",
+      "correct_answer": "1",
+      "distractors": [
+        "2",
+        "3",
+        "133"
+      ],
+      "explanation": [
+        "Substitute h = 3:",
+        "a(3) = 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_6d65564a34",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let o(i) = −5i − 5. Calculate o(0).",
+      "correct_answer": "−5",
+      "distractors": [
+        "−3",
+        "−4",
+        "0"
+      ],
+      "explanation": [
+        "Substitute i = 0:",
+        "o(0) = −5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_6ed805e15b",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let p(a) = a² − 5a − 1. Calculate p(8).",
+      "correct_answer": "23",
+      "distractors": [
+        "103",
+        "25",
+        "24"
+      ],
+      "explanation": [
+        "Substitute a = 8:",
+        "p(8) = 23."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_6f0462e70d",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let g(o) = o² − 4. Calculate g(3).",
+      "correct_answer": "5",
+      "distractors": [
+        "6",
+        "3",
+        "−1"
+      ],
+      "explanation": [
+        "Substitute o = 3:",
+        "g(3) = 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_7040d394a6",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let m(t) = 2t − 34. Calculate m(−8).",
+      "correct_answer": "−50",
+      "distractors": [
+        "−18",
+        "−51",
+        "−49"
+      ],
+      "explanation": [
+        "Substitute t = −8:",
+        "m(−8) = −50."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_7049045fe7",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let k(f) = −f² + 14f − 13. Calculate k(11).",
+      "correct_answer": "20",
+      "distractors": [
+        "19",
+        "130",
+        "21"
+      ],
+      "explanation": [
+        "Substitute f = 11:",
+        "k(11) = 20."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_72ebb108ed",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let u(h) = h − 8. Calculate u(−3).",
+      "correct_answer": "−11",
+      "distractors": [
+        "−12",
+        "−9",
+        "−13"
+      ],
+      "explanation": [
+        "Substitute h = −3:",
+        "u(−3) = −11."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_736f0e6b3d",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let s(a) = 20a + 17. Calculate s(−3).",
+      "correct_answer": "−43",
+      "distractors": [
+        "77",
+        "−41",
+        "43"
+      ],
+      "explanation": [
+        "Substitute a = −3:",
+        "s(−3) = −43."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_74ec3f26c5",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let b(m) = −4m² − 2m − 13. Calculate b(−6).",
+      "correct_answer": "−145",
+      "distractors": [
+        "145",
+        "23",
+        "−143"
+      ],
+      "explanation": [
+        "Substitute m = −6:",
+        "b(−6) = −145."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_782964c34b",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let d(r) = r − 7. Calculate d(6).",
+      "correct_answer": "−1",
+      "distractors": [
+        "−2",
+        "1",
+        "4"
+      ],
+      "explanation": [
+        "Substitute r = 6:",
+        "d(6) = −1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_7b3e67ebb5",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let y(f) = −f² + 42f − 28. Calculate y(13).",
+      "correct_answer": "349",
+      "distractors": [
+        "348",
+        "−349",
+        "−743"
+      ],
+      "explanation": [
+        "Substitute f = 13:",
+        "y(13) = 349."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_7c301b0ffd",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let y(c) = −2c − 34. Calculate y(−13).",
+      "correct_answer": "−8",
+      "distractors": [
+        "−60",
+        "−6",
+        "−7"
+      ],
+      "explanation": [
+        "Substitute c = −13:",
+        "y(−13) = −8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_7c8b0b48f7",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let t(h) = −2h² − 11h + 14. Calculate t(2).",
+      "correct_answer": "−16",
+      "distractors": [
+        "28",
+        "−15",
+        "−14"
+      ],
+      "explanation": [
+        "Substitute h = 2:",
+        "t(2) = −16."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_7ce921e123",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let s(x) = x² − 9x + 7. Calculate s(7).",
+      "correct_answer": "−7",
+      "distractors": [
+        "−49",
+        "−8",
+        "119"
+      ],
+      "explanation": [
+        "Substitute x = 7:",
+        "s(7) = −7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_7e14606692",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let s(v) = −2v² − 22v + 15. Calculate s(−12).",
+      "correct_answer": "−9",
+      "distractors": [
+        "−537",
+        "303",
+        "−8"
+      ],
+      "explanation": [
+        "Substitute v = −12:",
+        "s(−12) = −9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_7ec7f98112",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let q(t) = t² + t − 21. Calculate q(5).",
+      "correct_answer": "9",
+      "distractors": [
+        "8",
+        "−11",
+        "−1"
+      ],
+      "explanation": [
+        "Substitute t = 5:",
+        "q(5) = 9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_7f5d33bcb7",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let m(y) = −38y² − 1. Calculate m(1).",
+      "correct_answer": "−39",
+      "distractors": [
+        "−37",
+        "−41",
+        "−34"
+      ],
+      "explanation": [
+        "Substitute y = 1:",
+        "m(1) = −39."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_7fd0adbfaa",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let g(z) = z² + 6z + 36. Calculate g(−6).",
+      "correct_answer": "36",
+      "distractors": [
+        "37",
+        "38",
+        "−36"
+      ],
+      "explanation": [
+        "Substitute z = −6:",
+        "g(−6) = 36."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_8159bff87c",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let d(i) = 6i² − 3i + 4. Calculate d(2).",
+      "correct_answer": "22",
+      "distractors": [
+        "−22",
+        "24",
+        "21"
+      ],
+      "explanation": [
+        "Substitute i = 2:",
+        "d(2) = 22."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_82c04ac5fb",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let w(i) = 2i − 6. Calculate w(−7).",
+      "correct_answer": "−20",
+      "distractors": [
+        "−18",
+        "20",
+        "−21"
+      ],
+      "explanation": [
+        "Substitute i = −7:",
+        "w(−7) = −20."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_834791131a",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let b(g) = g² + 2g − 7. Calculate b(−3).",
+      "correct_answer": "−4",
+      "distractors": [
+        "8",
+        "−3",
+        "−16"
+      ],
+      "explanation": [
+        "Substitute g = −3:",
+        "b(−3) = −4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_83ccdba83e",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let v(o) = o + 27. Calculate v(−13).",
+      "correct_answer": "14",
+      "distractors": [
+        "16",
+        "15",
+        "12"
+      ],
+      "explanation": [
+        "Substitute o = −13:",
+        "v(−13) = 14."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_83f1e8fc7e",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let q(y) = −y² + 19y − 47. Calculate q(14).",
+      "correct_answer": "23",
+      "distractors": [
+        "25",
+        "−23",
+        "205"
+      ],
+      "explanation": [
+        "Substitute y = 14:",
+        "q(14) = 23."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_84a47a164b",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let y(s) = −2s² + 2s − 2. Calculate y(3).",
+      "correct_answer": "−14",
+      "distractors": [
+        "−15",
+        "−26",
+        "−2"
+      ],
+      "explanation": [
+        "Substitute s = 3:",
+        "y(3) = −14."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_851b866523",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let i(u) = −u² + 15u − 21. Calculate i(15).",
+      "correct_answer": "−21",
+      "distractors": [
+        "−22",
+        "−471",
+        "−19"
+      ],
+      "explanation": [
+        "Substitute u = 15:",
+        "i(15) = −21."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_852691cd85",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let r(m) = m² − 10m − 11. Calculate r(10).",
+      "correct_answer": "−11",
+      "distractors": [
+        "−12",
+        "−10",
+        "11"
+      ],
+      "explanation": [
+        "Substitute m = 10:",
+        "r(10) = −11."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_86fee233a5",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let c(l) = −2l² − 15l + 6. Calculate c(−8).",
+      "correct_answer": "−2",
+      "distractors": [
+        "142",
+        "−242",
+        "−3"
+      ],
+      "explanation": [
+        "Substitute l = −8:",
+        "c(−8) = −2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_8771dccc71",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let d(w) = −8w + 13. Calculate d(5).",
+      "correct_answer": "−27",
+      "distractors": [
+        "−26",
+        "−25",
+        "27"
+      ],
+      "explanation": [
+        "Substitute w = 5:",
+        "d(5) = −27."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_8a4b0e4831",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let w(k) = 4k² − 15k + 40. Calculate w(8).",
+      "correct_answer": "176",
+      "distractors": [
+        "177",
+        "−176",
+        "416"
+      ],
+      "explanation": [
+        "Substitute k = 8:",
+        "w(8) = 176."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_8afcf7de3e",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let y(v) = v² + 3v − 11. Calculate y(−9).",
+      "correct_answer": "43",
+      "distractors": [
+        "97",
+        "−47",
+        "45"
+      ],
+      "explanation": [
+        "Substitute v = −9:",
+        "y(−9) = 43."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_8bb052e3a7",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let n(k) = k² − 10k − 5. Calculate n(11).",
+      "correct_answer": "6",
+      "distractors": [
+        "8",
+        "226",
+        "−104"
+      ],
+      "explanation": [
+        "Substitute k = 11:",
+        "n(11) = 6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_8cee7d2522",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let w(b) = −4b² − 48b + 14. Calculate w(−12).",
+      "correct_answer": "14",
+      "distractors": [
+        "638",
+        "13",
+        "−1138"
+      ],
+      "explanation": [
+        "Substitute b = −12:",
+        "w(−12) = 14."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_8d0f13aca4",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let d(n) = −6n − 40. Calculate d(−14).",
+      "correct_answer": "44",
+      "distractors": [
+        "42",
+        "−124",
+        "46"
+      ],
+      "explanation": [
+        "Substitute n = −14:",
+        "d(−14) = 44."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_9397e838aa",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let x(k) = −3k + 5. Calculate x(5).",
+      "correct_answer": "−10",
+      "distractors": [
+        "−11",
+        "−9",
+        "20"
+      ],
+      "explanation": [
+        "Substitute k = 5:",
+        "x(5) = −10."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_93f548193e",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let m(q) = −3q − 4. Calculate m(1).",
+      "correct_answer": "−7",
+      "distractors": [
+        "7",
+        "−9",
+        "−5"
+      ],
+      "explanation": [
+        "Substitute q = 1:",
+        "m(1) = −7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_9692763193",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let c(x) = x² + 4x + 20. Calculate c(−9).",
+      "correct_answer": "65",
+      "distractors": [
+        "67",
+        "137",
+        "64"
+      ],
+      "explanation": [
+        "Substitute x = −9:",
+        "c(−9) = 65."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_990b662563",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let h(c) = 2c − 9. Calculate h(5).",
+      "correct_answer": "1",
+      "distractors": [
+        "−19",
+        "6",
+        "2"
+      ],
+      "explanation": [
+        "Substitute c = 5:",
+        "h(5) = 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_99598152d0",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let p(g) = −g − 8. Calculate p(−6).",
+      "correct_answer": "−2",
+      "distractors": [
+        "−1",
+        "−4",
+        "0"
+      ],
+      "explanation": [
+        "Substitute g = −6:",
+        "p(−6) = −2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_9a7a3868ec",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let t(g) = −g + 19. Calculate t(14).",
+      "correct_answer": "5",
+      "distractors": [
+        "33",
+        "3",
+        "4"
+      ],
+      "explanation": [
+        "Substitute g = 14:",
+        "t(14) = 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_9c989d165e",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let f(s) = −2s² + 15s − 10. Calculate f(11).",
+      "correct_answer": "−87",
+      "distractors": [
+        "87",
+        "−88",
+        "−85"
+      ],
+      "explanation": [
+        "Substitute s = 11:",
+        "f(11) = −87."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_9cf211b5bc",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let m(v) = −9v − 4. Calculate m(16).",
+      "correct_answer": "−148",
+      "distractors": [
+        "148",
+        "−147",
+        "−149"
+      ],
+      "explanation": [
+        "Substitute v = 16:",
+        "m(16) = −148."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_9e091721e9",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let s(m) = −4m − 1. Calculate s(−4).",
+      "correct_answer": "15",
+      "distractors": [
+        "−15",
+        "13",
+        "16"
+      ],
+      "explanation": [
+        "Substitute m = −4:",
+        "s(−4) = 15."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_9e71097ac4",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let f(h) = h² − h − 9. Calculate f(0).",
+      "correct_answer": "−9",
+      "distractors": [
+        "−8",
+        "−7",
+        "−10"
+      ],
+      "explanation": [
+        "Substitute h = 0:",
+        "f(0) = −9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_9f4bdb3562",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let m(o) = −3o − 42. Calculate m(0).",
+      "correct_answer": "−42",
+      "distractors": [
+        "−37",
+        "−43",
+        "42"
+      ],
+      "explanation": [
+        "Substitute o = 0:",
+        "m(0) = −42."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_a07be9d320",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let j(u) = −2u² + 28u − 15. Calculate j(12).",
+      "correct_answer": "33",
+      "distractors": [
+        "−33",
+        "297",
+        "35"
+      ],
+      "explanation": [
+        "Substitute u = 12:",
+        "j(12) = 33."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_a141fc95d6",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let s(y) = 2y² + 41y + 27. Calculate s(−20).",
+      "correct_answer": "7",
+      "distractors": [
+        "−833",
+        "8",
+        "6"
+      ],
+      "explanation": [
+        "Substitute y = −20:",
+        "s(−20) = 7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_a224ebe99d",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let s(c) = c² + 7c − 2. Calculate s(−7).",
+      "correct_answer": "−2",
+      "distractors": [
+        "2",
+        "−58",
+        "0"
+      ],
+      "explanation": [
+        "Substitute c = −7:",
+        "s(−7) = −2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_a28af20b33",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let b(y) = −y + 41. Calculate b(16).",
+      "correct_answer": "25",
+      "distractors": [
+        "−25",
+        "24",
+        "27"
+      ],
+      "explanation": [
+        "Substitute y = 16:",
+        "b(16) = 25."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_a33d04388e",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let h(a) = 2a² + 26a − 21. Calculate h(−15).",
+      "correct_answer": "39",
+      "distractors": [
+        "40",
+        "41",
+        "819"
+      ],
+      "explanation": [
+        "Substitute a = −15:",
+        "h(−15) = 39."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_a3439ce575",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let o(z) = 5z² − 15z − 31. Calculate o(6).",
+      "correct_answer": "59",
+      "distractors": [
+        "239",
+        "58",
+        "−59"
+      ],
+      "explanation": [
+        "Substitute z = 6:",
+        "o(6) = 59."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_a6e8523409",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let c(j) = −j² + 21j − 11. Calculate c(20).",
+      "correct_answer": "9",
+      "distractors": [
+        "11",
+        "−9",
+        "389"
+      ],
+      "explanation": [
+        "Substitute j = 20:",
+        "c(20) = 9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_a78f0b6043",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let g(j) = j + 1. Calculate g(2).",
+      "correct_answer": "3",
+      "distractors": [
+        "1",
+        "4",
+        "−3"
+      ],
+      "explanation": [
+        "Substitute j = 2:",
+        "g(2) = 3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_a7a3aff3c4",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let c(l) = 10l² + 4l + 3. Calculate c(−1).",
+      "correct_answer": "9",
+      "distractors": [
+        "11",
+        "−9",
+        "10"
+      ],
+      "explanation": [
+        "Substitute l = −1:",
+        "c(−1) = 9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_a7c129f363",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let k(x) = 2x + 4. Calculate k(7).",
+      "correct_answer": "18",
+      "distractors": [
+        "−18",
+        "17",
+        "−10"
+      ],
+      "explanation": [
+        "Substitute x = 7:",
+        "k(7) = 18."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_a81fbe31f8",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let l(k) = −k − 15. Calculate l(−8).",
+      "correct_answer": "−7",
+      "distractors": [
+        "−9",
+        "−8",
+        "−6"
+      ],
+      "explanation": [
+        "Substitute k = −8:",
+        "l(−8) = −7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_a85af146ef",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let j(u) = 27u² + u. Calculate j(1).",
+      "correct_answer": "28",
+      "distractors": [
+        "29",
+        "−28",
+        "26"
+      ],
+      "explanation": [
+        "Substitute u = 1:",
+        "j(1) = 28."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_a86467fe50",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let i(q) = −q + 17. Calculate i(6).",
+      "correct_answer": "11",
+      "distractors": [
+        "12",
+        "9",
+        "23"
+      ],
+      "explanation": [
+        "Substitute q = 6:",
+        "i(6) = 11."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_aa362a66ae",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let h(i) = 2i − 7. Calculate h(17).",
+      "correct_answer": "27",
+      "distractors": [
+        "29",
+        "−27",
+        "−41"
+      ],
+      "explanation": [
+        "Substitute i = 17:",
+        "h(17) = 27."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_abb280aff9",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let u(x) = 22x² − 39x + 37. Calculate u(1).",
+      "correct_answer": "20",
+      "distractors": [
+        "19",
+        "98",
+        "18"
+      ],
+      "explanation": [
+        "Substitute x = 1:",
+        "u(1) = 20."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_abf83ee6a3",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let t(h) = 14h² + h + 4. Calculate t(−4).",
+      "correct_answer": "224",
+      "distractors": [
+        "232",
+        "226",
+        "225"
+      ],
+      "explanation": [
+        "Substitute h = −4:",
+        "t(−4) = 224."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_ac746aeaae",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let c(i) = 3i − 9. Calculate c(4).",
+      "correct_answer": "3",
+      "distractors": [
+        "−3",
+        "2",
+        "1"
+      ],
+      "explanation": [
+        "Substitute i = 4:",
+        "c(4) = 3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_ae9e183e90",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let p(h) = −2h² + h − 7. Calculate p(5).",
+      "correct_answer": "−52",
+      "distractors": [
+        "−12",
+        "−62",
+        "−53"
+      ],
+      "explanation": [
+        "Substitute h = 5:",
+        "p(5) = −52."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_af1b80aadf",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let w(a) = −a + 40. Calculate w(10).",
+      "correct_answer": "30",
+      "distractors": [
+        "32",
+        "28",
+        "31"
+      ],
+      "explanation": [
+        "Substitute a = 10:",
+        "w(10) = 30."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_afb4b8d0e4",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let n(a) = −10a² + a + 1. Calculate n(−2).",
+      "correct_answer": "−41",
+      "distractors": [
+        "−40",
+        "−42",
+        "−37"
+      ],
+      "explanation": [
+        "Substitute a = −2:",
+        "n(−2) = −41."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_b05250eb95",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let z(n) = 5n² − 3n − 11. Calculate z(4).",
+      "correct_answer": "57",
+      "distractors": [
+        "58",
+        "56",
+        "−57"
+      ],
+      "explanation": [
+        "Substitute n = 4:",
+        "z(4) = 57."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_b1ce17a9fa",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let i(t) = 23t² − 4t + 34. Calculate i(3).",
+      "correct_answer": "229",
+      "distractors": [
+        "231",
+        "91",
+        "230"
+      ],
+      "explanation": [
+        "Substitute t = 3:",
+        "i(3) = 229."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_b5a56dd3ed",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let p(k) = 5k − 12. Calculate p(4).",
+      "correct_answer": "8",
+      "distractors": [
+        "9",
+        "−32",
+        "7"
+      ],
+      "explanation": [
+        "Substitute k = 4:",
+        "p(4) = 8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_b6e10bf775",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let s(t) = 2t² + t − 20. Calculate s(−6).",
+      "correct_answer": "46",
+      "distractors": [
+        "58",
+        "−38",
+        "48"
+      ],
+      "explanation": [
+        "Substitute t = −6:",
+        "s(−6) = 46."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_b7199dcd49",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let m(a) = −17a + 4. Calculate m(1).",
+      "correct_answer": "−13",
+      "distractors": [
+        "21",
+        "−15",
+        "13"
+      ],
+      "explanation": [
+        "Substitute a = 1:",
+        "m(1) = −13."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_b8ea23687b",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let p(a) = −14a − 1. Calculate p(3).",
+      "correct_answer": "−43",
+      "distractors": [
+        "−44",
+        "−41",
+        "43"
+      ],
+      "explanation": [
+        "Substitute a = 3:",
+        "p(3) = −43."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_b9db681aea",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let k(v) = −3v − 22. Calculate k(−9).",
+      "correct_answer": "5",
+      "distractors": [
+        "−49",
+        "3",
+        "7"
+      ],
+      "explanation": [
+        "Substitute v = −9:",
+        "k(−9) = 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_ba37b10547",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let d(f) = 33f² − 4f + 29. Calculate d(0).",
+      "correct_answer": "29",
+      "distractors": [
+        "−29",
+        "34",
+        "28"
+      ],
+      "explanation": [
+        "Substitute f = 0:",
+        "d(0) = 29."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_bac70ea0d8",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let g(b) = −8b² − 3b + 3. Calculate g(1).",
+      "correct_answer": "−8",
+      "distractors": [
+        "−7",
+        "−10",
+        "−6"
+      ],
+      "explanation": [
+        "Substitute b = 1:",
+        "g(1) = −8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_bc8634471a",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let o(x) = −28x² − 26x − 8. Calculate o(0).",
+      "correct_answer": "−8",
+      "distractors": [
+        "8",
+        "−3",
+        "−7"
+      ],
+      "explanation": [
+        "Substitute x = 0:",
+        "o(0) = −8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_be1d675fc9",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let f(p) = −2p² − p + 7. Calculate f(2).",
+      "correct_answer": "−3",
+      "distractors": [
+        "1",
+        "−2",
+        "−4"
+      ],
+      "explanation": [
+        "Substitute p = 2:",
+        "f(2) = −3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_bece38ed91",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let k(h) = −3h − 46. Calculate k(−8).",
+      "correct_answer": "−22",
+      "distractors": [
+        "22",
+        "−23",
+        "−20"
+      ],
+      "explanation": [
+        "Substitute h = −8:",
+        "k(−8) = −22."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_bf4c34f21d",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let d(j) = j + 7. Calculate d(−18).",
+      "correct_answer": "−11",
+      "distractors": [
+        "11",
+        "25",
+        "−9"
+      ],
+      "explanation": [
+        "Substitute j = −18:",
+        "d(−18) = −11."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_bfa7c11368",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let q(f) = f² − 7f + 5. Calculate q(5).",
+      "correct_answer": "−5",
+      "distractors": [
+        "−4",
+        "−3",
+        "5"
+      ],
+      "explanation": [
+        "Substitute f = 5:",
+        "q(5) = −5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_c07cd77e6a",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let p(k) = −k + 5. Calculate p(−10).",
+      "correct_answer": "15",
+      "distractors": [
+        "14",
+        "−15",
+        "13"
+      ],
+      "explanation": [
+        "Substitute k = −10:",
+        "p(−10) = 15."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_c08730448d",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let g(p) = −p² − 2p + 1. Calculate g(1).",
+      "correct_answer": "−2",
+      "distractors": [
+        "2",
+        "−1",
+        "0"
+      ],
+      "explanation": [
+        "Substitute p = 1:",
+        "g(1) = −2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_c0b62516c1",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let h(f) = −3f + 6. Calculate h(13).",
+      "correct_answer": "−33",
+      "distractors": [
+        "33",
+        "45",
+        "−34"
+      ],
+      "explanation": [
+        "Substitute f = 13:",
+        "h(13) = −33."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_c3334734c8",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let k(w) = w² − 15w − 1. Calculate k(14).",
+      "correct_answer": "−15",
+      "distractors": [
+        "15",
+        "−197",
+        "−16"
+      ],
+      "explanation": [
+        "Substitute w = 14:",
+        "k(14) = −15."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_c71b6933d6",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let z(w) = 3w + 13. Calculate z(−8).",
+      "correct_answer": "−11",
+      "distractors": [
+        "37",
+        "−10",
+        "−12"
+      ],
+      "explanation": [
+        "Substitute w = −8:",
+        "z(−8) = −11."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_c7fa79c255",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let i(o) = 11o² − 7o − 24. Calculate i(−4).",
+      "correct_answer": "180",
+      "distractors": [
+        "124",
+        "179",
+        "181"
+      ],
+      "explanation": [
+        "Substitute o = −4:",
+        "i(−4) = 180."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_cab3eb102f",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let d(f) = f. Calculate d(−3).",
+      "correct_answer": "−3",
+      "distractors": [
+        "3",
+        "−2",
+        "−4"
+      ],
+      "explanation": [
+        "Substitute f = −3:",
+        "d(−3) = −3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_d06821d5a6",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let f(l) = −2l² + 30l − 30. Calculate f(13).",
+      "correct_answer": "22",
+      "distractors": [
+        "−22",
+        "−758",
+        "23"
+      ],
+      "explanation": [
+        "Substitute l = 13:",
+        "f(13) = 22."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_d1c62c17dc",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let t(x) = 32x + 7. Calculate t(2).",
+      "correct_answer": "71",
+      "distractors": [
+        "73",
+        "−57",
+        "69"
+      ],
+      "explanation": [
+        "Substitute x = 2:",
+        "t(2) = 71."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_d2cdb13354",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let z(s) = −30s + 1. Calculate z(−4).",
+      "correct_answer": "121",
+      "distractors": [
+        "122",
+        "123",
+        "120"
+      ],
+      "explanation": [
+        "Substitute s = −4:",
+        "z(−4) = 121."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_d4b46813b7",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let r(v) = −2v² − 11. Calculate r(0).",
+      "correct_answer": "−11",
+      "distractors": [
+        "−9",
+        "−10",
+        "−13"
+      ],
+      "explanation": [
+        "Substitute v = 0:",
+        "r(0) = −11."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_d536acfc6b",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let n(j) = 3j − 44. Calculate n(16).",
+      "correct_answer": "4",
+      "distractors": [
+        "5",
+        "−4",
+        "3"
+      ],
+      "explanation": [
+        "Substitute j = 16:",
+        "n(16) = 4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_d8f30e73de",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let h(v) = v² − 11v + 28. Calculate h(4).",
+      "correct_answer": "0",
+      "distractors": [
+        "1",
+        "−12",
+        "2"
+      ],
+      "explanation": [
+        "Substitute v = 4:",
+        "h(4) = 0."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_d8fb9304b6",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let g(h) = h² − 15. Calculate g(4).",
+      "correct_answer": "1",
+      "distractors": [
+        "3",
+        "−11",
+        "2"
+      ],
+      "explanation": [
+        "Substitute h = 4:",
+        "g(4) = 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_d9946782cc",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let u(z) = z² + 7z + 12. Calculate u(−6).",
+      "correct_answer": "6",
+      "distractors": [
+        "−36",
+        "90",
+        "8"
+      ],
+      "explanation": [
+        "Substitute z = −6:",
+        "u(−6) = 6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_db65073be4",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let t(k) = 8k + 41. Calculate t(−7).",
+      "correct_answer": "−15",
+      "distractors": [
+        "15",
+        "−16",
+        "−17"
+      ],
+      "explanation": [
+        "Substitute k = −7:",
+        "t(−7) = −15."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_dde8a0b437",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let q(t) = 18t² − 10. Calculate q(−3).",
+      "correct_answer": "152",
+      "distractors": [
+        "154",
+        "151",
+        "150"
+      ],
+      "explanation": [
+        "Substitute t = −3:",
+        "q(−3) = 152."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_e1575eac74",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let m(k) = −2k − 8. Calculate m(−1).",
+      "correct_answer": "−6",
+      "distractors": [
+        "6",
+        "−8",
+        "−5"
+      ],
+      "explanation": [
+        "Substitute k = −1:",
+        "m(−1) = −6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_e3e4d30020",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let u(w) = 2w² + 16w + 13. Calculate u(−6).",
+      "correct_answer": "−11",
+      "distractors": [
+        "−10",
+        "11",
+        "181"
+      ],
+      "explanation": [
+        "Substitute w = −6:",
+        "u(−6) = −11."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_e4c9d1265a",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let n(u) = −u² + u − 10. Calculate n(9).",
+      "correct_answer": "−82",
+      "distractors": [
+        "−80",
+        "−10",
+        "−81"
+      ],
+      "explanation": [
+        "Substitute u = 9:",
+        "n(9) = −82."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_e4f10f2539",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let s(k) = −3k² − 17k − 30. Calculate s(−4).",
+      "correct_answer": "−10",
+      "distractors": [
+        "−146",
+        "10",
+        "50"
+      ],
+      "explanation": [
+        "Substitute k = −4:",
+        "s(−4) = −10."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_e8140f31c6",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let c(d) = 2d² + 29d + 13. Calculate c(−13).",
+      "correct_answer": "−26",
+      "distractors": [
+        "−27",
+        "−25",
+        "728"
+      ],
+      "explanation": [
+        "Substitute d = −13:",
+        "c(−13) = −26."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_eaa44a4b4c",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let x(m) = −m − 13. Calculate x(−7).",
+      "correct_answer": "−6",
+      "distractors": [
+        "−4",
+        "−20",
+        "6"
+      ],
+      "explanation": [
+        "Substitute m = −7:",
+        "x(−7) = −6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_f04a53b8fd",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let p(i) = −2i − 13. Calculate p(−3).",
+      "correct_answer": "−7",
+      "distractors": [
+        "−8",
+        "7",
+        "−5"
+      ],
+      "explanation": [
+        "Substitute i = −3:",
+        "p(−3) = −7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_f48788c232",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let u(w) = −19w² + 41w − 16. Calculate u(3).",
+      "correct_answer": "−64",
+      "distractors": [
+        "−62",
+        "−63",
+        "−310"
+      ],
+      "explanation": [
+        "Substitute w = 3:",
+        "u(3) = −64."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_f6775a21d2",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let t(i) = −i − 43. Calculate t(−3).",
+      "correct_answer": "−40",
+      "distractors": [
+        "−41",
+        "−46",
+        "40"
+      ],
+      "explanation": [
+        "Substitute i = −3:",
+        "t(−3) = −40."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_f77cad37f5",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let b(m) = m + 1. Calculate b(−1).",
+      "correct_answer": "0",
+      "distractors": [
+        "−5",
+        "5",
+        "2"
+      ],
+      "explanation": [
+        "Substitute m = −1:",
+        "b(−1) = 0."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_f7dfce7917",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let w(s) = 21s + 10. Calculate w(2).",
+      "correct_answer": "52",
+      "distractors": [
+        "−52",
+        "50",
+        "53"
+      ],
+      "explanation": [
+        "Substitute s = 2:",
+        "w(2) = 52."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_f826f8028e",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let s(i) = −i² + i + 7. Calculate s(−3).",
+      "correct_answer": "−5",
+      "distractors": [
+        "−4",
+        "7",
+        "1"
+      ],
+      "explanation": [
+        "Substitute i = −3:",
+        "s(−3) = −5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_f8d06e3329",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let m(t) = t − 3. Calculate m(−3).",
+      "correct_answer": "−6",
+      "distractors": [
+        "6",
+        "−4",
+        "−8"
+      ],
+      "explanation": [
+        "Substitute t = −3:",
+        "m(−3) = −6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_f9c4b518c5",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let o(z) = −z² + 8z + 29. Calculate o(11).",
+      "correct_answer": "−4",
+      "distractors": [
+        "−3",
+        "4",
+        "−5"
+      ],
+      "explanation": [
+        "Substitute z = 11:",
+        "o(11) = −4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_fa47de2e1f",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let b(f) = −30f + 31. Calculate b(2).",
+      "correct_answer": "−29",
+      "distractors": [
+        "−28",
+        "−30",
+        "29"
+      ],
+      "explanation": [
+        "Substitute f = 2:",
+        "b(2) = −29."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_fb69ac539e",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let j(q) = 2q − 17. Calculate j(9).",
+      "correct_answer": "1",
+      "distractors": [
+        "2",
+        "0",
+        "−1"
+      ],
+      "explanation": [
+        "Substitute q = 9:",
+        "j(9) = 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_polyeval_fd3abfcfdf",
+      "concept_id": "function_evaluate_at_point",
+      "prompt": "Let n(g) = 3g + 18. Calculate n(−12).",
+      "correct_answer": "−18",
+      "distractors": [
+        "54",
+        "−17",
+        "−19"
+      ],
+      "explanation": [
+        "Substitute g = −12:",
+        "n(−12) = −18."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "polynomials.evaluate",
+      "license": "Apache-2.0"
+    }
+  ]
+}
