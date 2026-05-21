@@ -29,6 +29,49 @@ package importable.
 More modules and datasets will be added incrementally. See plan.md §
 "Dataset ingestion sub-track" for the priority list.
 
+## Per-dataset audits
+
+Before broad ingestion of a new dataset, an **audit** establishes per-submodule
+verdicts (variety / gap-fill / out_of_scope / skip) by sampling real items and
+mapping them to curriculum.md sub-concept IDs. The audit informs which slices
+we ingest and which we skip — most submodules turn out to be either out of
+K–8 scope or to add only phrasing variety on top of math we already generate
+algorithmically.
+
+Audit artifacts live under [`audits/`](audits/), one Markdown verdict per
+dataset:
+
+| Dataset | Audit script | Verdict |
+|---|---|---|
+| DeepMind | [audit_deepmind.py](audit_deepmind.py) | [audits/deepmind.md](audits/deepmind.md) |
+| GSM8K | _not yet audited_ | _not yet audited_ |
+| MathDataset-ES | _not yet audited_ | _not yet audited_ |
+| MathQA | _not yet audited_ | _not yet audited_ |
+| SVAMP | _not yet audited_ | _not yet audited_ |
+
+**Pattern for adding a new dataset audit** (followed for DeepMind, reusable):
+
+1. Write `audit_<dataset>.py` that enumerates the dataset's submodules /
+   categories, samples ~5 representative items each, and emits a
+   `audits/<dataset>_samples.md` file as a Markdown report.
+   - Script accepts `--samples N`, `--seed S`, and `--filter <substring>`.
+   - Output is deterministic per seed.
+   - Pre-classification verdicts (italics next to each submodule name) are
+     first-pass guesses; the hand-audit step refines them.
+2. Run the script, capture output to `audits/<dataset>_samples.md`.
+3. Hand-edit `audits/<dataset>.md` (the verdict document) around the samples
+   — per-submodule row mapping to curriculum.md sub-concept IDs + verdict +
+   notes on filtering work needed.
+4. Roll up: which submodules are worth ingesting (sorted by ROI), what
+   runtime support (new answer formats?) is required for the gap-fill
+   candidates.
+5. Update [`curriculum.md` §7.7](../../curriculum.md) — flip the dataset's
+   audit row from "not yet audited" to "audited YYYY-MM-DD" and link to the
+   verdict doc.
+6. Update this README's audit table.
+7. Only then is it worth writing an actual `ingest_<dataset>.py` against
+   the highest-ROI submodules from the audit.
+
 ## Conventions
 
 - **One JSON file per sub-concept**, at
