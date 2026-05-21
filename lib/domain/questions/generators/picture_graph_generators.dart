@@ -46,7 +46,7 @@ const _contexts = <_PictureContext>[
     rows: [
       ('Red', 'red cars', '🚗'),
       ('Blue', 'blue SUVs', '🚙'),
-      ('Black', 'black taxis', '🚕'),
+      ('Yellow', 'yellow taxis', '🚕'),
       ('White', 'white vans', '🚐'),
     ],
   ),
