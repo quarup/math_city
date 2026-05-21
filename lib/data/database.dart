@@ -1,10 +1,13 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
+import 'package:flutter/services.dart' show AssetManifest, rootBundle;
 import 'package:math_city/domain/avatar/adventurer_config.dart';
 import 'package:math_city/domain/concepts/concept.dart' as dom;
 import 'package:math_city/domain/concepts/concept_registry.dart' as dom;
+import 'package:math_city/domain/questions/dataset_question.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
@@ -78,30 +81,65 @@ class Concepts extends Table {
   Set<Column<Object>> get primaryKey => {id};
 }
 
+/// Bundled dataset-sourced questions (DeepMind, GSM8K, etc.). Seeded once
+/// from `assets/data/dataset_questions/*.json` on first launch and on
+/// schema migration; thereafter read at runtime by `QuestionSource` to
+/// mix with algorithmic generator output.
+@DataClassName('DatasetQuestionRow')
+class DatasetQuestions extends Table {
+  TextColumn get id => text()();
+  TextColumn get conceptId => text()();
+  TextColumn get prompt => text()();
+  TextColumn get correctAnswer => text()();
+
+  /// JSON-encoded `List<String>` of exactly three wrong answers.
+  TextColumn get distractorsJson => text()();
+
+  /// JSON-encoded `List<String>` of 1–4 explanation lines.
+  TextColumn get explanationJson => text()();
+
+  TextColumn get source => text()();
+  TextColumn get sourceModule => text()();
+  TextColumn get license => text()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {id};
+}
+
 // ---------------------------------------------------------------------------
 // Database class
 // ---------------------------------------------------------------------------
 
 @DriftDatabase(
-  tables: [Players, ConceptProficiencies, IntroducedConcepts, Concepts],
+  tables: [
+    Players,
+    ConceptProficiencies,
+    IntroducedConcepts,
+    Concepts,
+    DatasetQuestions,
+  ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (m) async {
       await m.createAll();
       await _seedConceptCatalog();
+      // Dataset-question seeding is deliberately deferred to the first
+      // call of [allDatasetQuestionsByConcept] — see note there.
     },
     onUpgrade: (m, from, to) async {
       // v4: replaced 6-row hardcoded registry with the curriculum.md catalog
-      // and added introduced_concepts. Wipe is acceptable while we have no
-      // real users; proper additive migrations land in Phase 11. See
-      // plan.md.
+      // and added introduced_concepts.
+      // v5: bundled-dataset Questions table; seeded lazily on first read.
+      // Wipe is acceptable while we have no real users; proper additive
+      // migrations land in Phase 11. See plan.md.
+      await customStatement('DROP TABLE IF EXISTS dataset_questions');
       await customStatement('DROP TABLE IF EXISTS introduced_concepts');
       await customStatement('DROP TABLE IF EXISTS concepts');
       await customStatement('DROP TABLE IF EXISTS concept_proficiencies');
@@ -118,6 +156,46 @@ class AppDatabase extends _$AppDatabase {
         dom.allConcepts.map(_conceptToCompanion).toList(),
       );
     });
+  }
+
+  Future<void> _seedDatasetQuestionsIfEmpty() async {
+    final existing =
+        await (selectOnly(datasetQuestions)
+              ..addColumns([datasetQuestions.id])
+              ..limit(1))
+            .get();
+    if (existing.isNotEmpty) return;
+    final items = await loadBundledDatasetQuestions();
+    if (items.isEmpty) return;
+    await batch((b) {
+      b.insertAll(
+        datasetQuestions,
+        items.map(_datasetQuestionToCompanion).toList(),
+      );
+    });
+  }
+
+  /// Returns every bundled dataset question grouped by concept ID. On
+  /// first call (table empty), reads `assets/data/dataset_questions/*.json`
+  /// into the persisted table; thereafter reads from the table directly.
+  ///
+  /// Lazy seeding (rather than seeding during migration) keeps `flutter
+  /// test`'s `pumpAndSettle` happy: the asset-bundle platform channel
+  /// doesn't dispatch inside the pump loop, so any migration-time
+  /// `rootBundle.loadString` would hang. By moving the asset I/O to the
+  /// first dataset query, widget tests that never touch dataset questions
+  /// don't pay the cost.
+  Future<Map<String, List<DatasetQuestion>>>
+  allDatasetQuestionsByConcept() async {
+    await _seedDatasetQuestionsIfEmpty();
+    final rows = await select(datasetQuestions).get();
+    final out = <String, List<DatasetQuestion>>{};
+    for (final r in rows) {
+      out
+          .putIfAbsent(r.conceptId, () => <DatasetQuestion>[])
+          .add(_rowToDatasetQuestion(r));
+    }
+    return out;
   }
 
   // ---- Player helpers ----
@@ -279,6 +357,79 @@ String _diagramToString(dom.DiagramRequirement d) => switch (d) {
   dom.DiagramOptional() => 'optional',
   dom.DiagramRequired(:final kind) => 'required:$kind',
 };
+
+// ---------------------------------------------------------------------------
+// Dataset-question seeding helpers
+// ---------------------------------------------------------------------------
+
+const String _datasetAssetPrefix = 'assets/data/dataset_questions/';
+
+/// Reads every `assets/data/dataset_questions/*.json` from the asset
+/// bundle and returns the parsed [DatasetQuestion]s. Used by the Drift
+/// onCreate/onUpgrade flow to seed the persisted Questions table on first
+/// run.
+///
+/// Returns an empty list when the asset bundle is not available (e.g.
+/// pure-Dart unit tests that spin up the database without
+/// `TestWidgetsFlutterBinding`). The seeded table is then empty and
+/// `QuestionSource` degrades to generator-only.
+Future<List<DatasetQuestion>> loadBundledDatasetQuestions() async {
+  final List<String> paths;
+  try {
+    final manifest = await AssetManifest.loadFromAssetBundle(rootBundle);
+    paths =
+        manifest
+            .listAssets()
+            .where(
+              (k) => k.startsWith(_datasetAssetPrefix) && k.endsWith('.json'),
+            )
+            .toList()
+          ..sort();
+  }
+  // Intentional broad catch: AssetManifest throws different exception
+  // types depending on what's missing (FlutterError for missing manifest,
+  // Exception for missing binding). Both should degrade to empty.
+  // ignore: avoid_catches_without_on_clauses
+  catch (_) {
+    return const [];
+  }
+
+  final out = <DatasetQuestion>[];
+  for (final path in paths) {
+    final raw = await rootBundle.loadString(path);
+    final decoded = json.decode(raw) as Map<String, dynamic>;
+    final items = decoded['items'] as List<dynamic>;
+    for (final item in items) {
+      out.add(DatasetQuestion.fromJson(item as Map<String, dynamic>));
+    }
+  }
+  return out;
+}
+
+DatasetQuestionsCompanion _datasetQuestionToCompanion(DatasetQuestion q) =>
+    DatasetQuestionsCompanion.insert(
+      id: q.id,
+      conceptId: q.conceptId,
+      prompt: q.prompt,
+      correctAnswer: q.correctAnswer,
+      distractorsJson: json.encode(q.distractors),
+      explanationJson: json.encode(q.explanation),
+      source: q.source,
+      sourceModule: q.sourceModule,
+      license: q.license,
+    );
+
+DatasetQuestion _rowToDatasetQuestion(DatasetQuestionRow r) => DatasetQuestion(
+  id: r.id,
+  conceptId: r.conceptId,
+  prompt: r.prompt,
+  correctAnswer: r.correctAnswer,
+  distractors: (json.decode(r.distractorsJson) as List<dynamic>).cast<String>(),
+  explanation: (json.decode(r.explanationJson) as List<dynamic>).cast<String>(),
+  source: r.source,
+  sourceModule: r.sourceModule,
+  license: r.license,
+);
 
 // ---------------------------------------------------------------------------
 // Factory — opens the SQLite file in the app's documents directory.

@@ -145,15 +145,15 @@ The columns:
 
 | ID | Display | Grade | Prereqs | Source | Diagram |
 |---|---|---|---|---|---|
-| ✅ `add_within_5` | Add within 5 | 0 | [] | algorithmic | optional |
-| ✅ `sub_within_5` | Subtract within 5 | 0 | [add_within_5] | algorithmic | optional |
-| ✅ `add_within_10` | Add within 10 | 0 | [add_within_5] | algorithmic | optional |
-| ✅ `sub_within_10` | Subtract within 10 | 0 | [sub_within_5, add_within_10] | algorithmic | optional |
+| ✅ `add_within_5` | Add within 5 | 0 | [] | algorithmic+dataset | optional |
+| ✅ `sub_within_5` | Subtract within 5 | 0 | [add_within_5] | algorithmic+dataset | optional |
+| ✅ `add_within_10` | Add within 10 | 0 | [add_within_5] | algorithmic+dataset | optional |
+| ✅ `sub_within_10` | Subtract within 10 | 0 | [sub_within_5, add_within_10] | algorithmic+dataset | optional |
 | ✅ `make_10_pair` | Pairs that make 10 | 0 | [add_within_10] | algorithmic | optional |
 | ✅ `decompose_10` | Decompose 10 (or less) | 0 | [add_within_10] | algorithmic | optional |
 | ✅ `add_3_addends_within_20` | Add three numbers | 1 | [add_within_10] | algorithmic | none |
-| ✅ `add_within_20` | Add within 20 | 1 | [add_within_10, make_10_pair] | algorithmic | none |
-| ✅ `sub_within_20` | Subtract within 20 | 1 | [sub_within_10, decompose_10] | algorithmic | none |
+| ✅ `add_within_20` | Add within 20 | 1 | [add_within_10, make_10_pair] | algorithmic+dataset | none |
+| ✅ `sub_within_20` | Subtract within 20 | 1 | [sub_within_10, decompose_10] | algorithmic+dataset | none |
 | ✅ `add_sub_unknown_position` | Find the missing number | 1 | [add_within_20, sub_within_20] | algorithmic | none |
 | ✅ `equal_sign_meaning` | Is the equation true? | 1 | [add_within_10] | algorithmic | none |
 | ✅ `commutative_add` | a + b = b + a | 1 | [add_within_20] | algorithmic | none |
@@ -161,13 +161,13 @@ The columns:
 | ✅ `add_2digit_1digit` | 2-digit + 1-digit | 1 | [add_within_20, place_value_2digit] | algorithmic | none |
 | ✅ `add_2digit_multiple_of_10` | 2-digit + multiple of 10 | 1 | [skip_count_10, add_within_20] | algorithmic | none |
 | ✅ `sub_multiples_of_10` | Subtract multiples of 10 | 1 | [skip_count_10] | algorithmic | none |
-| ✅ `add_within_100` | Add within 100 | 2 | [add_2digit_1digit, place_value_2digit] | algorithmic | none |
-| ✅ `sub_within_100` | Subtract within 100 | 2 | [sub_within_20, place_value_2digit] | algorithmic | none |
-| ✅ `add_2digit_carry` | 2-digit + with regrouping | 2 | [add_within_100] | algorithmic | none |
-| ✅ `sub_2digit_borrow` | 2-digit − with regrouping | 2 | [sub_within_100] | algorithmic | none |
+| ✅ `add_within_100` | Add within 100 | 2 | [add_2digit_1digit, place_value_2digit] | algorithmic+dataset | none |
+| ✅ `sub_within_100` | Subtract within 100 | 2 | [sub_within_20, place_value_2digit] | algorithmic+dataset | none |
+| ✅ `add_2digit_carry` | 2-digit + with regrouping | 2 | [add_within_100] | algorithmic+dataset | none |
+| ✅ `sub_2digit_borrow` | 2-digit − with regrouping | 2 | [sub_within_100] | algorithmic+dataset | none |
 | ✅ `add_up_to_4_2digit` | Add up to four 2-digit numbers | 2 | [add_within_100] | algorithmic | none |
-| ✅ `add_within_1000` | Add within 1000 | 2 | [add_2digit_carry, place_value_3digit] | algorithmic | none |
-| ✅ `sub_within_1000` | Subtract within 1000 | 2 | [sub_2digit_borrow, place_value_3digit] | algorithmic | none |
+| ✅ `add_within_1000` | Add within 1000 | 2 | [add_2digit_carry, place_value_3digit] | algorithmic+dataset | none |
+| ✅ `sub_within_1000` | Subtract within 1000 | 2 | [sub_2digit_borrow, place_value_3digit] | algorithmic+dataset | none |
 | ✅ `mental_add_10_or_100` | Mental ±10 / ±100 | 2 | [ten_more_ten_less, place_value_3digit] | algorithmic | none |
 | ✅ `add_word_problems_within_100` | +/− word problems (100) | 2 | [add_within_100, sub_within_100] | dataset | optional |
 | ✅ `add_sub_2step_word_problems` | Two-step word problems | 2 | [add_word_problems_within_100] | dataset | optional |

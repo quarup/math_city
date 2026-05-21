@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_city/domain/concepts/dag_engine.dart';
 import 'package:math_city/domain/questions/generator_registry.dart';
+import 'package:math_city/domain/questions/question_source.dart';
 import 'package:math_city/state/player_provider.dart';
 
 /// Singleton generator registry. Plain provider (override in tests if
@@ -13,6 +14,23 @@ final generatorRegistryProvider = Provider<GeneratorRegistry>(
 final dagEngineProvider = Provider<DripFeedEngine>(
   (ref) => DripFeedEngine(registry: ref.watch(generatorRegistryProvider)),
 );
+
+/// Unified question source: mixes generator-produced items with bundled
+/// dataset items per the [QuestionSource] mix policy.
+///
+/// Async because the dataset pool is read from Drift on first access (the
+/// table is itself populated from bundled JSON during the database's
+/// onCreate/onUpgrade flow). After the first resolution the result is
+/// cached for the lifetime of the provider container.
+final questionSourceProvider = FutureProvider<QuestionSource>((ref) async {
+  final registry = ref.watch(generatorRegistryProvider);
+  final db = ref.watch(appDatabaseProvider);
+  final datasetByConcept = await db.allDatasetQuestionsByConcept();
+  return QuestionSource(
+    registry: registry,
+    datasetByConcept: datasetByConcept,
+  );
+});
 
 /// Set of concept IDs the active player has been *introduced* to (the
 /// drip-feed has surfaced them onto the wheel).

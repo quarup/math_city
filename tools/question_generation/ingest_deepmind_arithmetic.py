@@ -343,12 +343,20 @@ def ingest(
         misconception = a - b if op == "add" else a + b
         distractors = make_distractors(answer, misconception, rand)
 
+        # One-line step-by-step shown on the wrong-answer screen. Mirrors
+        # the format the Dart algorithmic generators emit so the kid sees a
+        # consistent post-mortem regardless of which side produced the
+        # item. U+2212 minus for sub, matching normalize_prompt().
+        op_symbol = "+" if op == "add" else "−"
+        explanation = [f"{a} {op_symbol} {b} = {answer}"]
+
         item = {
             "id": item_id(prompt_raw),
             "concept_id": concept_id,
             "prompt": normalize_prompt(prompt_raw),
             "correct_answer": str(answer),
             "distractors": distractors,
+            "explanation": explanation,
             "source": SOURCE_NAME,
             "source_module": SOURCE_MODULE,
             "license": SOURCE_LICENSE,

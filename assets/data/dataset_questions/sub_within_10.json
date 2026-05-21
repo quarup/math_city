@@ -7,8 +7,11 @@
       "correct_answer": "9",
       "distractors": [
         "11",
-        "8",
-        "6"
+        "14",
+        "12"
+      ],
+      "explanation": [
+        "10 − 1 = 9"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -20,9 +23,12 @@
       "prompt": "What is the difference between 0 and 10?",
       "correct_answer": "10",
       "distractors": [
+        "9",
         "5",
-        "14",
-        "13"
+        "6"
+      ],
+      "explanation": [
+        "10 − 0 = 10"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -34,9 +40,12 @@
       "prompt": "Work out 9 − 1.",
       "correct_answer": "8",
       "distractors": [
-        "3",
-        "7",
+        "11",
+        "12",
         "10"
+      ],
+      "explanation": [
+        "9 − 1 = 8"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",

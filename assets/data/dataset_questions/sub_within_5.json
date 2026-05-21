@@ -6,9 +6,12 @@
       "prompt": "Subtract 0 from 1.",
       "correct_answer": "1",
       "distractors": [
-        "3",
-        "6",
-        "2"
+        "4",
+        "2",
+        "6"
+      ],
+      "explanation": [
+        "1 − 0 = 1"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -20,9 +23,12 @@
       "prompt": "What is the difference between 0 and 4?",
       "correct_answer": "4",
       "distractors": [
-        "1",
-        "0",
-        "9"
+        "7",
+        "3",
+        "1"
+      ],
+      "explanation": [
+        "4 − 0 = 4"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -34,9 +40,12 @@
       "prompt": "What is 4 − 3?",
       "correct_answer": "1",
       "distractors": [
-        "5",
         "7",
-        "2"
+        "2",
+        "5"
+      ],
+      "explanation": [
+        "4 − 3 = 1"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -48,9 +57,12 @@
       "prompt": "What is the distance between 3 and 3?",
       "correct_answer": "0",
       "distractors": [
-        "3",
-        "6",
-        "5"
+        "4",
+        "2",
+        "6"
+      ],
+      "explanation": [
+        "3 − 3 = 0"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -62,9 +74,12 @@
       "prompt": "What is 4 − 0?",
       "correct_answer": "4",
       "distractors": [
-        "7",
-        "2",
-        "9"
+        "5",
+        "9",
+        "1"
+      ],
+      "explanation": [
+        "4 − 0 = 4"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",
@@ -77,8 +92,11 @@
       "correct_answer": "2",
       "distractors": [
         "4",
-        "6",
-        "7"
+        "3",
+        "1"
+      ],
+      "explanation": [
+        "3 − 1 = 2"
       ],
       "source": "deepmind_mathematics_dataset",
       "source_module": "arithmetic.add_or_sub",

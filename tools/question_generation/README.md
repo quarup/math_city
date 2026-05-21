@@ -85,11 +85,15 @@ dataset:
     "prompt": "What is 7 plus 9?",
     "correct_answer": "16",
     "distractors": ["15", "17", "8"],
+    "explanation": ["7 + 9 = 16"],
     "source": "deepmind_mathematics_dataset",
     "source_module": "arithmetic.add_or_sub",
     "license": "Apache-2.0"
   }
   ```
+  `explanation` is a list of 1–4 short step-by-step lines shown on the
+  wrong-answer screen, matching the shape of `GeneratedQuestion.explanation`
+  emitted by Dart algorithmic generators.
 - **Per-sub-concept item cap** is `--items-per-concept` (default 200). When a
   bucket fills, additional items from that bucket are dropped.
 - **Determinism**: each ingester takes a `--seed` so re-runs produce
