@@ -25,6 +25,7 @@ package importable.
 | Script | Source dataset | Module(s) | License |
 |---|---|---|---|
 | `ingest_deepmind_arithmetic.py` | DeepMind [`mathematics_dataset`](https://github.com/google-deepmind/mathematics_dataset) | `arithmetic.add_or_sub` | Apache 2.0 |
+| `ingest_gsm8k.py` | [GSM8K](https://github.com/openai/grade-school-math) | `main` (4 sub-concept buckets — see audit) | MIT |
 
 More modules and datasets will be added incrementally. See plan.md §
 "Dataset ingestion sub-track" for the priority list.
