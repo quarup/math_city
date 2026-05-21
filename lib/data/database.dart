@@ -102,6 +102,12 @@ class DatasetQuestions extends Table {
   TextColumn get sourceModule => text()();
   TextColumn get license => text()();
 
+  /// `AnswerFormat` enum name (e.g. `"integer"`, `"commaList"`). Carried
+  /// into `DatasetQuestion.answerFormat` (and thence into the runtime
+  /// `GeneratedQuestion`) at read time.
+  TextColumn get answerFormat =>
+      text().withDefault(const Constant('integer'))();
+
   @override
   Set<Column<Object>> get primaryKey => {id};
 }
@@ -123,7 +129,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -137,6 +143,9 @@ class AppDatabase extends _$AppDatabase {
       // v4: replaced 6-row hardcoded registry with the curriculum.md catalog
       // and added introduced_concepts.
       // v5: bundled-dataset Questions table; seeded lazily on first read.
+      // v6: added answerFormat column to dataset_questions so commaList
+      //   (sort) and other non-integer dataset items can surface their
+      //   format to checkAnswer + the keypad/MC gate.
       // Wipe is acceptable while we have no real users; proper additive
       // migrations land in Phase 11. See plan.md.
       await customStatement('DROP TABLE IF EXISTS dataset_questions');
@@ -419,6 +428,7 @@ DatasetQuestionsCompanion _datasetQuestionToCompanion(DatasetQuestion q) =>
       source: q.source,
       sourceModule: q.sourceModule,
       license: q.license,
+      answerFormat: Value(answerFormatToString(q.answerFormat)),
     );
 
 DatasetQuestion _rowToDatasetQuestion(DatasetQuestionRow r) => DatasetQuestion(
@@ -431,6 +441,7 @@ DatasetQuestion _rowToDatasetQuestion(DatasetQuestionRow r) => DatasetQuestion(
   source: r.source,
   sourceModule: r.sourceModule,
   license: r.license,
+  answerFormat: answerFormatFromString(r.answerFormat),
 );
 
 // ---------------------------------------------------------------------------

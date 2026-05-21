@@ -94,5 +94,6 @@ class QuestionSource {
         explanation: q.explanation.isEmpty
             ? ['The correct answer is ${q.correctAnswer}.']
             : q.explanation,
+        answerFormat: q.answerFormat,
       );
 }

@@ -191,4 +191,62 @@ void main() {
       );
     });
   });
+
+  group('commaList format', () {
+    GeneratedQuestion ql(String correct) =>
+        _q(correct, fmt: AnswerFormat.commaList);
+
+    test('exact canonical match', () {
+      expect(
+        checkAnswer(ql('-167, -2, 0, 2, 3'), '-167, -2, 0, 2, 3'),
+        AnswerOutcome.canonical,
+      );
+    });
+
+    test('whitespace variations tolerated', () {
+      expect(
+        checkAnswer(ql('-167, -2, 0, 2, 3'), '-167,-2,0,2,3'),
+        AnswerOutcome.equivalentNonCanonical,
+      );
+      expect(
+        checkAnswer(ql('-167, -2, 0, 2, 3'), '  -167 , -2 , 0 , 2 , 3  '),
+        AnswerOutcome.equivalentNonCanonical,
+      );
+    });
+
+    test('mixed forms equivalent (fraction vs decimal)', () {
+      expect(
+        checkAnswer(ql('-2, -0.5, 0, 1/2, 5'), '-2, -1/2, 0, 0.5, 5'),
+        AnswerOutcome.equivalentNonCanonical,
+      );
+    });
+
+    test('order matters — reversed list is wrong', () {
+      expect(
+        checkAnswer(ql('-2, 0, 3'), '3, 0, -2'),
+        AnswerOutcome.wrong,
+      );
+    });
+
+    test('different length is wrong', () {
+      expect(
+        checkAnswer(ql('1, 2, 3'), '1, 2, 3, 4'),
+        AnswerOutcome.wrong,
+      );
+    });
+
+    test('unparseable entry is wrong', () {
+      expect(
+        checkAnswer(ql('1, 2, 3'), '1, x, 3'),
+        AnswerOutcome.wrong,
+      );
+    });
+
+    test('any single value off is wrong', () {
+      expect(
+        checkAnswer(ql('-167, -2, 0, 2, 3'), '-167, -2, 0, 2, 4'),
+        AnswerOutcome.wrong,
+      );
+    });
+  });
 }

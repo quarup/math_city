@@ -3047,6 +3047,39 @@ const List<Concept> allConcepts = [
     categoryRowOrder: 4,
   ),
   Concept(
+    id: 'closest_to_target',
+    name: 'Closest to a target',
+    shortLabel: 'Closest to a target',
+    categoryId: 'rationals',
+    primaryGrade: 6,
+    prereqIds: ['compare_order_rationals'],
+    source: ConceptSource.dataset,
+    diagramRequirement: DiagramNone(),
+    categoryRowOrder: 5,
+  ),
+  Concept(
+    id: 'kth_value_in_list',
+    name: 'Kth biggest / smallest in a list',
+    shortLabel: 'Kth biggest / smallest in a list',
+    categoryId: 'rationals',
+    primaryGrade: 6,
+    prereqIds: ['compare_order_rationals'],
+    source: ConceptSource.dataset,
+    diagramRequirement: DiagramNone(),
+    categoryRowOrder: 6,
+  ),
+  Concept(
+    id: 'sort_rationals',
+    name: 'Sort values',
+    shortLabel: 'Sort values',
+    categoryId: 'rationals',
+    primaryGrade: 6,
+    prereqIds: ['compare_order_rationals'],
+    source: ConceptSource.dataset,
+    diagramRequirement: DiagramNone(),
+    categoryRowOrder: 7,
+  ),
+  Concept(
     id: 'plot_four_quadrants',
     name: 'Plot in all 4 quadrants',
     shortLabel: 'Plot in all 4 quadrants',
@@ -3055,7 +3088,7 @@ const List<Concept> allConcepts = [
     prereqIds: ['plot_first_quadrant', 'opposites_and_zero'],
     source: ConceptSource.algorithmicWithDiagram,
     diagramRequirement: DiagramRequired('coordinate_plane_q4'),
-    categoryRowOrder: 5,
+    categoryRowOrder: 8,
   ),
   Concept(
     id: 'coord_distance_same_line',
@@ -3066,7 +3099,7 @@ const List<Concept> allConcepts = [
     prereqIds: ['plot_four_quadrants', 'absolute_value'],
     source: ConceptSource.algorithmicWithDiagram,
     diagramRequirement: DiagramRequired('coordinate_plane_q4'),
-    categoryRowOrder: 6,
+    categoryRowOrder: 9,
   ),
   Concept(
     id: 'integers_add',
@@ -3077,7 +3110,7 @@ const List<Concept> allConcepts = [
     prereqIds: ['opposites_and_zero'],
     source: ConceptSource.algorithmicWithDiagram,
     diagramRequirement: DiagramRequired('number_line'),
-    categoryRowOrder: 7,
+    categoryRowOrder: 10,
   ),
   Concept(
     id: 'integers_subtract',
@@ -3088,7 +3121,7 @@ const List<Concept> allConcepts = [
     prereqIds: ['integers_add'],
     source: ConceptSource.algorithmicWithDiagram,
     diagramRequirement: DiagramRequired('number_line'),
-    categoryRowOrder: 8,
+    categoryRowOrder: 11,
   ),
   Concept(
     id: 'integers_multiply_divide',
@@ -3099,7 +3132,7 @@ const List<Concept> allConcepts = [
     prereqIds: ['integers_subtract', 'mult_facts_within_100'],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
-    categoryRowOrder: 9,
+    categoryRowOrder: 12,
   ),
   Concept(
     id: 'rationals_add_sub',
@@ -3110,7 +3143,7 @@ const List<Concept> allConcepts = [
     prereqIds: ['integers_add', 'add_fractions_unlike_denom', 'add_decimals'],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
-    categoryRowOrder: 10,
+    categoryRowOrder: 13,
   ),
   Concept(
     id: 'rationals_multiply_divide',
@@ -3125,7 +3158,7 @@ const List<Concept> allConcepts = [
     ],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
-    categoryRowOrder: 11,
+    categoryRowOrder: 14,
   ),
   Concept(
     id: 'rationals_four_op_word',
@@ -3136,7 +3169,7 @@ const List<Concept> allConcepts = [
     prereqIds: ['rationals_add_sub', 'rationals_multiply_divide'],
     source: ConceptSource.dataset,
     diagramRequirement: DiagramOptional(),
-    categoryRowOrder: 12,
+    categoryRowOrder: 15,
   ),
   Concept(
     id: 'rational_to_decimal_terminating',
@@ -3147,7 +3180,7 @@ const List<Concept> allConcepts = [
     prereqIds: ['fraction_to_decimal'],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
-    categoryRowOrder: 13,
+    categoryRowOrder: 16,
   ),
   Concept(
     id: 'rational_to_decimal_repeating',
@@ -3158,7 +3191,7 @@ const List<Concept> allConcepts = [
     prereqIds: ['fraction_to_decimal', 'repeating_decimal_recognize'],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
-    categoryRowOrder: 14,
+    categoryRowOrder: 17,
   ),
   Concept(
     id: 'irrational_recognize',
@@ -3169,7 +3202,7 @@ const List<Concept> allConcepts = [
     prereqIds: ['rational_to_decimal_repeating'],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
-    categoryRowOrder: 15,
+    categoryRowOrder: 18,
   ),
   Concept(
     id: 'approximate_irrational',
@@ -3180,7 +3213,7 @@ const List<Concept> allConcepts = [
     prereqIds: ['irrational_recognize', 'sqrt_perfect_squares'],
     source: ConceptSource.algorithmicWithDiagram,
     diagramRequirement: DiagramRequired('number_line'),
-    categoryRowOrder: 16,
+    categoryRowOrder: 19,
   ),
   // ── prealgebra ──
   Concept(
@@ -3488,6 +3521,17 @@ const List<Concept> allConcepts = [
     categoryRowOrder: 26,
   ),
   Concept(
+    id: 'function_evaluate_at_point',
+    name: 'Evaluate f(x) at a value',
+    shortLabel: 'Evaluate f(x) at a value',
+    categoryId: 'prealgebra',
+    primaryGrade: 8,
+    prereqIds: ['evaluate_expression', 'linear_function_construct'],
+    source: ConceptSource.dataset,
+    diagramRequirement: DiagramNone(),
+    categoryRowOrder: 27,
+  ),
+  Concept(
     id: 'graph_linear_equation',
     name: 'Graph y = mx + b',
     shortLabel: 'graph y=mx+b',
@@ -3496,7 +3540,7 @@ const List<Concept> allConcepts = [
     prereqIds: ['linear_function_construct'],
     source: ConceptSource.algorithmicWithDiagram,
     diagramRequirement: DiagramRequired('coordinate_plane_q4'),
-    categoryRowOrder: 27,
+    categoryRowOrder: 28,
   ),
   Concept(
     id: 'identify_linear_vs_nonlinear',
@@ -3507,7 +3551,7 @@ const List<Concept> allConcepts = [
     prereqIds: ['graph_linear_equation'],
     source: ConceptSource.algorithmicWithDiagram,
     diagramRequirement: DiagramRequired('coordinate_plane_q4'),
-    categoryRowOrder: 28,
+    categoryRowOrder: 29,
   ),
   Concept(
     id: 'function_definition_check',
@@ -3518,7 +3562,7 @@ const List<Concept> allConcepts = [
     prereqIds: ['graph_linear_equation'],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
-    categoryRowOrder: 29,
+    categoryRowOrder: 30,
   ),
   Concept(
     id: 'compare_functions_representations',
@@ -3529,7 +3573,7 @@ const List<Concept> allConcepts = [
     prereqIds: ['function_definition_check'],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
-    categoryRowOrder: 30,
+    categoryRowOrder: 31,
   ),
   Concept(
     id: 'qualitative_graph_features',
@@ -3540,7 +3584,7 @@ const List<Concept> allConcepts = [
     prereqIds: ['graph_linear_equation'],
     source: ConceptSource.algorithmicWithDiagram,
     diagramRequirement: DiagramRequired('coordinate_plane_q4'),
-    categoryRowOrder: 31,
+    categoryRowOrder: 32,
   ),
   Concept(
     id: 'solve_system_by_graphing',
@@ -3551,7 +3595,7 @@ const List<Concept> allConcepts = [
     prereqIds: ['graph_linear_equation'],
     source: ConceptSource.algorithmicWithDiagram,
     diagramRequirement: DiagramRequired('coordinate_plane_q4'),
-    categoryRowOrder: 32,
+    categoryRowOrder: 33,
   ),
   Concept(
     id: 'solve_system_substitution',
@@ -3562,7 +3606,7 @@ const List<Concept> allConcepts = [
     prereqIds: ['solve_linear_eq_with_distrib_collect'],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
-    categoryRowOrder: 33,
+    categoryRowOrder: 34,
   ),
   Concept(
     id: 'solve_system_elimination',
@@ -3573,7 +3617,7 @@ const List<Concept> allConcepts = [
     prereqIds: ['solve_linear_eq_with_distrib_collect'],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
-    categoryRowOrder: 34,
+    categoryRowOrder: 35,
   ),
   Concept(
     id: 'inspect_system_no_solution',
@@ -3584,7 +3628,7 @@ const List<Concept> allConcepts = [
     prereqIds: ['solve_system_substitution'],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
-    categoryRowOrder: 35,
+    categoryRowOrder: 36,
   ),
   Concept(
     id: 'system_word_problem',
@@ -3595,7 +3639,7 @@ const List<Concept> allConcepts = [
     prereqIds: ['solve_system_substitution'],
     source: ConceptSource.dataset,
     diagramRequirement: DiagramOptional(),
-    categoryRowOrder: 36,
+    categoryRowOrder: 37,
   ),
   // ── stats ──
   Concept(

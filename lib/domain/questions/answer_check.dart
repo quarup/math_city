@@ -71,7 +71,50 @@ AnswerOutcome checkAnswer(GeneratedQuestion question, String playerAnswer) {
       return playerD.equalsByValue(correctD)
           ? AnswerOutcome.equivalentNonCanonical
           : AnswerOutcome.wrong;
+    case AnswerFormat.commaList:
+      return _checkCommaList(input, question.correctAnswer);
   }
+}
+
+/// Compares two comma-list answers entry-wise. Each entry is parsed as a
+/// `Fraction` (which already handles integers and mixed/improper forms);
+/// `Decimal` entries are converted to `Fraction` for cross-type
+/// equivalence (`0.5 == 1/2`). Lists must have the same length; order
+/// matters.
+AnswerOutcome _checkCommaList(String input, String correct) {
+  final playerEntries = _splitCommaList(input);
+  final correctEntries = _splitCommaList(correct);
+  if (playerEntries.length != correctEntries.length) return AnswerOutcome.wrong;
+  for (var i = 0; i < playerEntries.length; i++) {
+    final p = _parseListEntry(playerEntries[i]);
+    final c = _parseListEntry(correctEntries[i]);
+    if (p == null || c == null) return AnswerOutcome.wrong;
+    if (!p.equalsByValue(c)) return AnswerOutcome.wrong;
+  }
+  return AnswerOutcome.equivalentNonCanonical;
+}
+
+List<String> _splitCommaList(String s) =>
+    s.split(',').map((e) => e.trim()).toList();
+
+Fraction? _parseListEntry(String s) {
+  if (s.isEmpty) return null;
+  // Try decimal first — its parser is stricter (rejects "1/2") and lets
+  // us convert into a Fraction for cross-type comparison.
+  final d = Decimal.tryParse(s);
+  if (d != null) {
+    final pow10 = _pow10(d.scale);
+    return Fraction(d.scaled, pow10);
+  }
+  return Fraction.tryParse(s);
+}
+
+int _pow10(int n) {
+  var r = 1;
+  for (var i = 0; i < n; i++) {
+    r *= 10;
+  }
+  return r;
 }
 
 final _mixedFormPattern = RegExp(r'^-?\d+\s+\d+/\d+$');

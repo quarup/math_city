@@ -1,0 +1,3604 @@
+{
+  "items": [
+    {
+      "id": "deepmind_mathematics_dataset_sort_0010027145",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −3, 0.1, 631 in descending order.",
+      "correct_answer": "631, 0.1, −3",
+      "distractors": [
+        "−3, 0.1, 631",
+        "631, −3, 0.1",
+        "0.1, 631, −3"
+      ],
+      "explanation": [
+        "In descending order: 631, 0.1, −3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_005fa128aa",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −586, −38, 0, 5, −5 in ascending order.",
+      "correct_answer": "−586, −38, −5, 0, 5",
+      "distractors": [
+        "5, 0, −5, −38, −586",
+        "−586, −38, −5, 5, 0",
+        "−586, −5, −38, 0, 5"
+      ],
+      "explanation": [
+        "In ascending order: −586, −38, −5, 0, 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_006169972b",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 2, −1, 99, 4, −3, 1, −19 in ascending order.",
+      "correct_answer": "−19, −3, −1, 1, 2, 4, 99",
+      "distractors": [
+        "99, 4, 2, 1, −1, −3, −19",
+        "−19, −3, −1, 1, 4, 2, 99",
+        "−19, −3, 1, −1, 2, 4, 99"
+      ],
+      "explanation": [
+        "In ascending order: −19, −3, −1, 1, 2, 4, 99."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_00fb80946e",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −1/4, −49, 2, −4/9, −1/2, 0.4 in ascending order.",
+      "correct_answer": "−49, −1/2, −4/9, −1/4, 0.4, 2",
+      "distractors": [
+        "2, 0.4, −1/4, −4/9, −1/2, −49",
+        "−1/2, −49, −4/9, −1/4, 0.4, 2",
+        "−49, −1/2, −4/9, −1/4, 2, 0.4"
+      ],
+      "explanation": [
+        "In ascending order: −49, −1/2, −4/9, −1/4, 0.4, 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_025bc4236c",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 3, −58, −9, −2 in ascending order.",
+      "correct_answer": "−58, −9, −2, 3",
+      "distractors": [
+        "3, −2, −9, −58",
+        "−58, −9, 3, −2",
+        "−9, −58, −2, 3"
+      ],
+      "explanation": [
+        "In ascending order: −58, −9, −2, 3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_02f7fa6d65",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 12029, 1, 49, 3 in ascending order.",
+      "correct_answer": "1, 3, 49, 12029",
+      "distractors": [
+        "12029, 49, 3, 1",
+        "3, 1, 49, 12029",
+        "1, 3, 12029, 49"
+      ],
+      "explanation": [
+        "In ascending order: 1, 3, 49, 12029."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_058f5e5004",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 1/3, −0.3, 1/5, 241, 2, 263 in ascending order.",
+      "correct_answer": "−0.3, 1/5, 1/3, 2, 241, 263",
+      "distractors": [
+        "263, 241, 2, 1/3, 1/5, −0.3",
+        "1/5, −0.3, 1/3, 2, 241, 263",
+        "−0.3, 1/3, 1/5, 2, 241, 263"
+      ],
+      "explanation": [
+        "In ascending order: −0.3, 1/5, 1/3, 2, 241, 263."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_08c86e34aa",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −0.57, −1, 0.48, 1/21, −3 in descending order.",
+      "correct_answer": "0.48, 1/21, −0.57, −1, −3",
+      "distractors": [
+        "−3, −1, −0.57, 1/21, 0.48",
+        "1/21, 0.48, −0.57, −1, −3",
+        "0.48, 1/21, −1, −0.57, −3"
+      ],
+      "explanation": [
+        "In descending order: 0.48, 1/21, −0.57, −1, −3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_09b6f7aa3b",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 4, −0.01, −0.05629, −29 in ascending order.",
+      "correct_answer": "−29, −0.05629, −0.01, 4",
+      "distractors": [
+        "4, −0.01, −0.05629, −29",
+        "−0.05629, −29, −0.01, 4",
+        "−29, −0.01, −0.05629, 4"
+      ],
+      "explanation": [
+        "In ascending order: −29, −0.05629, −0.01, 4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_0a563284c0",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −5, 5, −2702, 0, 4, 1, 3 in descending order.",
+      "correct_answer": "5, 4, 3, 1, 0, −5, −2702",
+      "distractors": [
+        "−2702, −5, 0, 1, 3, 4, 5",
+        "5, 4, 1, 3, 0, −5, −2702",
+        "5, 3, 4, 1, 0, −5, −2702"
+      ],
+      "explanation": [
+        "In descending order: 5, 4, 3, 1, 0, −5, −2702."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_0ac5f0037c",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 22, −3, 168 in descending order.",
+      "correct_answer": "168, 22, −3",
+      "distractors": [
+        "−3, 22, 168",
+        "22, 168, −3",
+        "168, −3, 22"
+      ],
+      "explanation": [
+        "In descending order: 168, 22, −3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_0b430c40c3",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 5, −1, 1, 66, 9 in ascending order.",
+      "correct_answer": "−1, 1, 5, 9, 66",
+      "distractors": [
+        "66, 9, 5, 1, −1",
+        "−1, 5, 1, 9, 66",
+        "−1, 1, 9, 5, 66"
+      ],
+      "explanation": [
+        "In ascending order: −1, 1, 5, 9, 66."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_0c469437b6",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −11, 2, 3, 88, 140 in ascending order.",
+      "correct_answer": "−11, 2, 3, 88, 140",
+      "distractors": [
+        "140, 88, 3, 2, −11",
+        "−11, 2, 3, 140, 88",
+        "−11, 3, 2, 88, 140"
+      ],
+      "explanation": [
+        "In ascending order: −11, 2, 3, 88, 140."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_0d411c2513",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 1/2, 1, −2/5, −5, −122 in descending order.",
+      "correct_answer": "1, 1/2, −2/5, −5, −122",
+      "distractors": [
+        "−122, −5, −2/5, 1/2, 1",
+        "1, 1/2, −2/5, −122, −5",
+        "1/2, 1, −2/5, −5, −122"
+      ],
+      "explanation": [
+        "In descending order: 1, 1/2, −2/5, −5, −122."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_0d54e7b66a",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 12, −2, 1, 3/10, −55, −3 in ascending order.",
+      "correct_answer": "−55, −3, −2, 3/10, 1, 12",
+      "distractors": [
+        "12, 1, 3/10, −2, −3, −55",
+        "−55, −2, −3, 3/10, 1, 12",
+        "−55, −3, 3/10, −2, 1, 12"
+      ],
+      "explanation": [
+        "In ascending order: −55, −3, −2, 3/10, 1, 12."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_0f047f9b90",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −2, 77, 6599 in ascending order.",
+      "correct_answer": "−2, 77, 6599",
+      "distractors": [
+        "6599, 77, −2",
+        "77, −2, 6599",
+        "−2, 6599, 77"
+      ],
+      "explanation": [
+        "In ascending order: −2, 77, 6599."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_11b70462e1",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 1/2, −295, 2/39, −0.27 in descending order.",
+      "correct_answer": "1/2, 2/39, −0.27, −295",
+      "distractors": [
+        "−295, −0.27, 2/39, 1/2",
+        "2/39, 1/2, −0.27, −295",
+        "1/2, 2/39, −295, −0.27"
+      ],
+      "explanation": [
+        "In descending order: 1/2, 2/39, −0.27, −295."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_1740c51a61",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 5, 7, −5, 4 in descending order.",
+      "correct_answer": "7, 5, 4, −5",
+      "distractors": [
+        "−5, 4, 5, 7",
+        "5, 7, 4, −5",
+        "7, 4, 5, −5"
+      ],
+      "explanation": [
+        "In descending order: 7, 5, 4, −5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_17f5894f49",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −1, −0.3, 3, 4/87 in descending order.",
+      "correct_answer": "3, 4/87, −0.3, −1",
+      "distractors": [
+        "−1, −0.3, 4/87, 3",
+        "3, 4/87, −1, −0.3",
+        "3, −0.3, 4/87, −1"
+      ],
+      "explanation": [
+        "In descending order: 3, 4/87, −0.3, −1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_18209d824b",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 0, 5, 4, −2, −14 in descending order.",
+      "correct_answer": "5, 4, 0, −2, −14",
+      "distractors": [
+        "−14, −2, 0, 4, 5",
+        "5, 0, 4, −2, −14",
+        "5, 4, −2, 0, −14"
+      ],
+      "explanation": [
+        "In descending order: 5, 4, 0, −2, −14."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_1861926429",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 43, 3, −1, 1, −4 in descending order.",
+      "correct_answer": "43, 3, 1, −1, −4",
+      "distractors": [
+        "−4, −1, 1, 3, 43",
+        "43, 3, 1, −4, −1",
+        "43, 3, −1, 1, −4"
+      ],
+      "explanation": [
+        "In descending order: 43, 3, 1, −1, −4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_18a8aff995",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 60, −25, −168 in descending order.",
+      "correct_answer": "60, −25, −168",
+      "distractors": [
+        "−168, −25, 60",
+        "−25, 60, −168",
+        "60, −168, −25"
+      ],
+      "explanation": [
+        "In descending order: 60, −25, −168."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_19f463a034",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −91, 8, −3626, −3 in ascending order.",
+      "correct_answer": "−3626, −91, −3, 8",
+      "distractors": [
+        "8, −3, −91, −3626",
+        "−91, −3626, −3, 8",
+        "−3626, −91, 8, −3"
+      ],
+      "explanation": [
+        "In ascending order: −3626, −91, −3, 8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_1a97685eea",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 1, 4, −7, 26, −1, 204 in ascending order.",
+      "correct_answer": "−7, −1, 1, 4, 26, 204",
+      "distractors": [
+        "204, 26, 4, 1, −1, −7",
+        "−7, 1, −1, 4, 26, 204",
+        "−7, −1, 1, 4, 204, 26"
+      ],
+      "explanation": [
+        "In ascending order: −7, −1, 1, 4, 26, 204."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_1aff362156",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −68, −4, −7, 5, 2, 168 in descending order.",
+      "correct_answer": "168, 5, 2, −4, −7, −68",
+      "distractors": [
+        "−68, −7, −4, 2, 5, 168",
+        "168, 2, 5, −4, −7, −68",
+        "5, 168, 2, −4, −7, −68"
+      ],
+      "explanation": [
+        "In descending order: 168, 5, 2, −4, −7, −68."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_1b27211b79",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 30024, −3, −2 in descending order.",
+      "correct_answer": "30024, −2, −3",
+      "distractors": [
+        "−3, −2, 30024",
+        "30024, −3, −2",
+        "−2, 30024, −3"
+      ],
+      "explanation": [
+        "In descending order: 30024, −2, −3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_1c6bbd22d7",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 4, −18, 0, −64 in descending order.",
+      "correct_answer": "4, 0, −18, −64",
+      "distractors": [
+        "−64, −18, 0, 4",
+        "0, 4, −18, −64",
+        "4, −18, 0, −64"
+      ],
+      "explanation": [
+        "In descending order: 4, 0, −18, −64."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_1d2f76e6c2",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 4, 12, 3 in ascending order.",
+      "correct_answer": "3, 4, 12",
+      "distractors": [
+        "12, 4, 3",
+        "3, 12, 4",
+        "4, 3, 12"
+      ],
+      "explanation": [
+        "In ascending order: 3, 4, 12."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_1ec8d84c7c",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 15.688, 0.072, 0.1, −2, 5 in descending order.",
+      "correct_answer": "15.688, 5, 0.1, 0.072, −2",
+      "distractors": [
+        "−2, 0.072, 0.1, 5, 15.688",
+        "15.688, 5, 0.072, 0.1, −2",
+        "15.688, 5, 0.1, −2, 0.072"
+      ],
+      "explanation": [
+        "In descending order: 15.688, 5, 0.1, 0.072, −2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_203b7aa51c",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −14798, 5, −3 in descending order.",
+      "correct_answer": "5, −3, −14798",
+      "distractors": [
+        "−14798, −3, 5",
+        "−3, 5, −14798",
+        "5, −14798, −3"
+      ],
+      "explanation": [
+        "In descending order: 5, −3, −14798."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_2224780532",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −5, −5/6, 5, 3 in descending order.",
+      "correct_answer": "5, 3, −5/6, −5",
+      "distractors": [
+        "−5, −5/6, 3, 5",
+        "3, 5, −5/6, −5",
+        "5, −5/6, 3, −5"
+      ],
+      "explanation": [
+        "In descending order: 5, 3, −5/6, −5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_224ed43a5f",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 4/3, 1, −2, −1/2 in descending order.",
+      "correct_answer": "4/3, 1, −1/2, −2",
+      "distractors": [
+        "−2, −1/2, 1, 4/3",
+        "1, 4/3, −1/2, −2",
+        "4/3, 1, −2, −1/2"
+      ],
+      "explanation": [
+        "In descending order: 4/3, 1, −1/2, −2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_26f06da6eb",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −4, 1, 9, −52, −6, 0 in ascending order.",
+      "correct_answer": "−52, −6, −4, 0, 1, 9",
+      "distractors": [
+        "9, 1, 0, −4, −6, −52",
+        "−52, −6, −4, 1, 0, 9",
+        "−52, −6, 0, −4, 1, 9"
+      ],
+      "explanation": [
+        "In ascending order: −52, −6, −4, 0, 1, 9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_28af49f92a",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 35, −3, −4, 4 in descending order.",
+      "correct_answer": "35, 4, −3, −4",
+      "distractors": [
+        "−4, −3, 4, 35",
+        "35, 4, −4, −3",
+        "4, 35, −3, −4"
+      ],
+      "explanation": [
+        "In descending order: 35, 4, −3, −4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_292a5b1d8a",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 13, −133, 4 in ascending order.",
+      "correct_answer": "−133, 4, 13",
+      "distractors": [
+        "13, 4, −133",
+        "−133, 13, 4",
+        "4, −133, 13"
+      ],
+      "explanation": [
+        "In ascending order: −133, 4, 13."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_29485d6a78",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 0, −23, −1/12, 0.2, −0.1, −4 in descending order.",
+      "correct_answer": "0.2, 0, −1/12, −0.1, −4, −23",
+      "distractors": [
+        "−23, −4, −0.1, −1/12, 0, 0.2",
+        "0.2, −1/12, 0, −0.1, −4, −23",
+        "0.2, 0, −1/12, −0.1, −23, −4"
+      ],
+      "explanation": [
+        "In descending order: 0.2, 0, −1/12, −0.1, −4, −23."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_295fc5b436",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 1/6, 14, −3/4 in descending order.",
+      "correct_answer": "14, 1/6, −3/4",
+      "distractors": [
+        "−3/4, 1/6, 14",
+        "1/6, 14, −3/4",
+        "14, −3/4, 1/6"
+      ],
+      "explanation": [
+        "In descending order: 14, 1/6, −3/4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_29ba064403",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 8, 1526, −62, −1, 1, 4, 2 in ascending order.",
+      "correct_answer": "−62, −1, 1, 2, 4, 8, 1526",
+      "distractors": [
+        "1526, 8, 4, 2, 1, −1, −62",
+        "−62, −1, 1, 2, 8, 4, 1526",
+        "−62, −1, 1, 2, 4, 1526, 8"
+      ],
+      "explanation": [
+        "In ascending order: −62, −1, 1, 2, 4, 8, 1526."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_2a31ad5ced",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −41, −4, 3.314, 4, −1/4, −2/5, −2/17 in ascending order.",
+      "correct_answer": "−41, −4, −2/5, −1/4, −2/17, 3.314, 4",
+      "distractors": [
+        "4, 3.314, −2/17, −1/4, −2/5, −4, −41",
+        "−41, −2/5, −4, −1/4, −2/17, 3.314, 4",
+        "−4, −41, −2/5, −1/4, −2/17, 3.314, 4"
+      ],
+      "explanation": [
+        "In ascending order: −41, −4, −2/5, −1/4, −2/17, 3.314, 4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_2bfc215dc4",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −4, −0.0134, 0.07, −4/5 in ascending order.",
+      "correct_answer": "−4, −4/5, −0.0134, 0.07",
+      "distractors": [
+        "0.07, −0.0134, −4/5, −4",
+        "−4/5, −4, −0.0134, 0.07",
+        "−4, −4/5, 0.07, −0.0134"
+      ],
+      "explanation": [
+        "In ascending order: −4, −4/5, −0.0134, 0.07."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_2c77590b41",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −0.03, 130, −1.5, 0, 0.5, −5, −0.4 in descending order.",
+      "correct_answer": "130, 0.5, 0, −0.03, −0.4, −1.5, −5",
+      "distractors": [
+        "−5, −1.5, −0.4, −0.03, 0, 0.5, 130",
+        "130, 0.5, 0, −0.03, −0.4, −5, −1.5",
+        "130, 0.5, −0.03, 0, −0.4, −1.5, −5"
+      ],
+      "explanation": [
+        "In descending order: 130, 0.5, 0, −0.03, −0.4, −1.5, −5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_2ee3508379",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −611, 3, −2, −30, 2, 7 in descending order.",
+      "correct_answer": "7, 3, 2, −2, −30, −611",
+      "distractors": [
+        "−611, −30, −2, 2, 3, 7",
+        "7, 3, 2, −30, −2, −611",
+        "7, 3, 2, −2, −611, −30"
+      ],
+      "explanation": [
+        "In descending order: 7, 3, 2, −2, −30, −611."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_2ff1220a4c",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −1/3, 0, 5/2, 5 in ascending order.",
+      "correct_answer": "−1/3, 0, 5/2, 5",
+      "distractors": [
+        "5, 5/2, 0, −1/3",
+        "−1/3, 0, 5, 5/2",
+        "−1/3, 5/2, 0, 5"
+      ],
+      "explanation": [
+        "In ascending order: −1/3, 0, 5/2, 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_315c37f298",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 5, 2362, −3/5 in descending order.",
+      "correct_answer": "2362, 5, −3/5",
+      "distractors": [
+        "−3/5, 5, 2362",
+        "2362, −3/5, 5",
+        "5, 2362, −3/5"
+      ],
+      "explanation": [
+        "In descending order: 2362, 5, −3/5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_3262a146e5",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 376690, −2, 2 in ascending order.",
+      "correct_answer": "−2, 2, 376690",
+      "distractors": [
+        "376690, 2, −2",
+        "2, −2, 376690",
+        "−2, 376690, 2"
+      ],
+      "explanation": [
+        "In ascending order: −2, 2, 376690."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_3467115e8f",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −4, 5, −45, −0.7, −5, 19/2 in descending order.",
+      "correct_answer": "19/2, 5, −0.7, −4, −5, −45",
+      "distractors": [
+        "−45, −5, −4, −0.7, 5, 19/2",
+        "19/2, 5, −0.7, −4, −45, −5",
+        "19/2, 5, −0.7, −5, −4, −45"
+      ],
+      "explanation": [
+        "In descending order: 19/2, 5, −0.7, −4, −5, −45."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_34ed3db1e5",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 18, 0.3, −2/5 in ascending order.",
+      "correct_answer": "−2/5, 0.3, 18",
+      "distractors": [
+        "18, 0.3, −2/5",
+        "−2/5, 18, 0.3",
+        "0.3, −2/5, 18"
+      ],
+      "explanation": [
+        "In ascending order: −2/5, 0.3, 18."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_359889b130",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −33, 3, −4, −2 in ascending order.",
+      "correct_answer": "−33, −4, −2, 3",
+      "distractors": [
+        "3, −2, −4, −33",
+        "−33, −2, −4, 3",
+        "−4, −33, −2, 3"
+      ],
+      "explanation": [
+        "In ascending order: −33, −4, −2, 3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_368e8cbc68",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −5, −12, −85, 6, −9 in descending order.",
+      "correct_answer": "6, −5, −9, −12, −85",
+      "distractors": [
+        "−85, −12, −9, −5, 6",
+        "−5, 6, −9, −12, −85",
+        "6, −9, −5, −12, −85"
+      ],
+      "explanation": [
+        "In descending order: 6, −5, −9, −12, −85."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_3aff0e95bf",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 0.5, −1, 0, −52, 6 in descending order.",
+      "correct_answer": "6, 0.5, 0, −1, −52",
+      "distractors": [
+        "−52, −1, 0, 0.5, 6",
+        "0.5, 6, 0, −1, −52",
+        "6, 0.5, 0, −52, −1"
+      ],
+      "explanation": [
+        "In descending order: 6, 0.5, 0, −1, −52."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_3b6a492184",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −0.1, −260322, 1/3 in descending order.",
+      "correct_answer": "1/3, −0.1, −260322",
+      "distractors": [
+        "−260322, −0.1, 1/3",
+        "−0.1, 1/3, −260322",
+        "1/3, −260322, −0.1"
+      ],
+      "explanation": [
+        "In descending order: 1/3, −0.1, −260322."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_3d08a6b473",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −156, 24, −4, −0.3, 4, 3/4 in descending order.",
+      "correct_answer": "24, 4, 3/4, −0.3, −4, −156",
+      "distractors": [
+        "−156, −4, −0.3, 3/4, 4, 24",
+        "24, 4, −0.3, 3/4, −4, −156",
+        "24, 4, 3/4, −4, −0.3, −156"
+      ],
+      "explanation": [
+        "In descending order: 24, 4, 3/4, −0.3, −4, −156."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_3d305e67ff",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 0, 5, −2, 1, −18 in ascending order.",
+      "correct_answer": "−18, −2, 0, 1, 5",
+      "distractors": [
+        "5, 1, 0, −2, −18",
+        "−2, −18, 0, 1, 5",
+        "−18, 0, −2, 1, 5"
+      ],
+      "explanation": [
+        "In ascending order: −18, −2, 0, 1, 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_3e1e434be6",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −3, −2805/4, 5, 2, 0.1 in ascending order.",
+      "correct_answer": "−2805/4, −3, 0.1, 2, 5",
+      "distractors": [
+        "5, 2, 0.1, −3, −2805/4",
+        "−3, −2805/4, 0.1, 2, 5",
+        "−2805/4, −3, 2, 0.1, 5"
+      ],
+      "explanation": [
+        "In ascending order: −2805/4, −3, 0.1, 2, 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_3e6a2ed589",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 0, 317, −2, −1, 2 in descending order.",
+      "correct_answer": "317, 2, 0, −1, −2",
+      "distractors": [
+        "−2, −1, 0, 2, 317",
+        "317, 0, 2, −1, −2",
+        "2, 317, 0, −1, −2"
+      ],
+      "explanation": [
+        "In descending order: 317, 2, 0, −1, −2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_3f09003fb4",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −1, 2, 4, 23 in ascending order.",
+      "correct_answer": "−1, 2, 4, 23",
+      "distractors": [
+        "23, 4, 2, −1",
+        "−1, 4, 2, 23",
+        "2, −1, 4, 23"
+      ],
+      "explanation": [
+        "In ascending order: −1, 2, 4, 23."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_3fd670539a",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −5, −3, 5, 317, 0, −29 in descending order.",
+      "correct_answer": "317, 5, 0, −3, −5, −29",
+      "distractors": [
+        "−29, −5, −3, 0, 5, 317",
+        "317, 5, −3, 0, −5, −29",
+        "5, 317, 0, −3, −5, −29"
+      ],
+      "explanation": [
+        "In descending order: 317, 5, 0, −3, −5, −29."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_41594e2129",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −13, −6, 0, −9918, −3, 4 in ascending order.",
+      "correct_answer": "−9918, −13, −6, −3, 0, 4",
+      "distractors": [
+        "4, 0, −3, −6, −13, −9918",
+        "−9918, −13, −6, 0, −3, 4",
+        "−9918, −13, −3, −6, 0, 4"
+      ],
+      "explanation": [
+        "In ascending order: −9918, −13, −6, −3, 0, 4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_42ee1739dd",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 13, −0.1, 4, −0.2 in descending order.",
+      "correct_answer": "13, 4, −0.1, −0.2",
+      "distractors": [
+        "−0.2, −0.1, 4, 13",
+        "13, 4, −0.2, −0.1",
+        "4, 13, −0.1, −0.2"
+      ],
+      "explanation": [
+        "In descending order: 13, 4, −0.1, −0.2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_43ffed2ae4",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 3/5, −3, −5, 4 in descending order.",
+      "correct_answer": "4, 3/5, −3, −5",
+      "distractors": [
+        "−5, −3, 3/5, 4",
+        "4, −3, 3/5, −5",
+        "4, 3/5, −5, −3"
+      ],
+      "explanation": [
+        "In descending order: 4, 3/5, −3, −5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_486a325017",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −13/60, −0.2, −5, −37/5 in ascending order.",
+      "correct_answer": "−37/5, −5, −13/60, −0.2",
+      "distractors": [
+        "−0.2, −13/60, −5, −37/5",
+        "−37/5, −13/60, −5, −0.2",
+        "−37/5, −5, −0.2, −13/60"
+      ],
+      "explanation": [
+        "In ascending order: −37/5, −5, −13/60, −0.2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_494408f37e",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 7, 9, −2, −1 in ascending order.",
+      "correct_answer": "−2, −1, 7, 9",
+      "distractors": [
+        "9, 7, −1, −2",
+        "−2, −1, 9, 7",
+        "−1, −2, 7, 9"
+      ],
+      "explanation": [
+        "In ascending order: −2, −1, 7, 9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_4aac571f43",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 5, −2, 74, 0, −64 in descending order.",
+      "correct_answer": "74, 5, 0, −2, −64",
+      "distractors": [
+        "−64, −2, 0, 5, 74",
+        "74, 5, 0, −64, −2",
+        "74, 5, −2, 0, −64"
+      ],
+      "explanation": [
+        "In descending order: 74, 5, 0, −2, −64."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_4b6fef80ac",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 1.4, −0.3, 0 in descending order.",
+      "correct_answer": "1.4, 0, −0.3",
+      "distractors": [
+        "−0.3, 0, 1.4",
+        "0, 1.4, −0.3",
+        "1.4, −0.3, 0"
+      ],
+      "explanation": [
+        "In descending order: 1.4, 0, −0.3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_4be9994d28",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −1, −4, 28190 in descending order.",
+      "correct_answer": "28190, −1, −4",
+      "distractors": [
+        "−4, −1, 28190",
+        "−1, 28190, −4",
+        "28190, −4, −1"
+      ],
+      "explanation": [
+        "In descending order: 28190, −1, −4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_4f2769e9f4",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 1, −0.3, 1/3, 0.01 in ascending order.",
+      "correct_answer": "−0.3, 0.01, 1/3, 1",
+      "distractors": [
+        "1, 1/3, 0.01, −0.3",
+        "−0.3, 1/3, 0.01, 1",
+        "−0.3, 0.01, 1, 1/3"
+      ],
+      "explanation": [
+        "In ascending order: −0.3, 0.01, 1/3, 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_505dd4b974",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 3, −6.83, 10.14, −3 in ascending order.",
+      "correct_answer": "−6.83, −3, 3, 10.14",
+      "distractors": [
+        "10.14, 3, −3, −6.83",
+        "−6.83, −3, 10.14, 3",
+        "−3, −6.83, 3, 10.14"
+      ],
+      "explanation": [
+        "In ascending order: −6.83, −3, 3, 10.14."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_50fafb0ecd",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 2, 142, 1 in ascending order.",
+      "correct_answer": "1, 2, 142",
+      "distractors": [
+        "142, 2, 1",
+        "2, 1, 142",
+        "1, 142, 2"
+      ],
+      "explanation": [
+        "In ascending order: 1, 2, 142."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_552e260277",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −7, 55, −3 in descending order.",
+      "correct_answer": "55, −3, −7",
+      "distractors": [
+        "−7, −3, 55",
+        "−3, 55, −7",
+        "55, −7, −3"
+      ],
+      "explanation": [
+        "In descending order: 55, −3, −7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_5640421d17",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −3, −10/9, 1/13, −1 in ascending order.",
+      "correct_answer": "−3, −10/9, −1, 1/13",
+      "distractors": [
+        "1/13, −1, −10/9, −3",
+        "−3, −1, −10/9, 1/13",
+        "−10/9, −3, −1, 1/13"
+      ],
+      "explanation": [
+        "In ascending order: −3, −10/9, −1, 1/13."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_582cd7f44b",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 82, 3, 1 in ascending order.",
+      "correct_answer": "1, 3, 82",
+      "distractors": [
+        "82, 3, 1",
+        "1, 82, 3",
+        "3, 1, 82"
+      ],
+      "explanation": [
+        "In ascending order: 1, 3, 82."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_59d82f9e95",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −1, 5, 505, −2.2 in ascending order.",
+      "correct_answer": "−2.2, −1, 5, 505",
+      "distractors": [
+        "505, 5, −1, −2.2",
+        "−2.2, 5, −1, 505",
+        "−2.2, −1, 505, 5"
+      ],
+      "explanation": [
+        "In ascending order: −2.2, −1, 5, 505."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_5aa7e1b91d",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 420, 2, −32 in descending order.",
+      "correct_answer": "420, 2, −32",
+      "distractors": [
+        "−32, 2, 420",
+        "420, −32, 2",
+        "2, 420, −32"
+      ],
+      "explanation": [
+        "In descending order: 420, 2, −32."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_5bc2c0aa6f",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 0.14, 354, −2/19, 6/5, 5 in descending order.",
+      "correct_answer": "354, 5, 6/5, 0.14, −2/19",
+      "distractors": [
+        "−2/19, 0.14, 6/5, 5, 354",
+        "354, 6/5, 5, 0.14, −2/19",
+        "5, 354, 6/5, 0.14, −2/19"
+      ],
+      "explanation": [
+        "In descending order: 354, 5, 6/5, 0.14, −2/19."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_5d49730d39",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −16, 3/7, 1/804 in descending order.",
+      "correct_answer": "3/7, 1/804, −16",
+      "distractors": [
+        "−16, 1/804, 3/7",
+        "1/804, 3/7, −16",
+        "3/7, −16, 1/804"
+      ],
+      "explanation": [
+        "In descending order: 3/7, 1/804, −16."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_5e2a1fd0df",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 5, −8, 3/4, −0.5 in ascending order.",
+      "correct_answer": "−8, −0.5, 3/4, 5",
+      "distractors": [
+        "5, 3/4, −0.5, −8",
+        "−8, −0.5, 5, 3/4",
+        "−0.5, −8, 3/4, 5"
+      ],
+      "explanation": [
+        "In ascending order: −8, −0.5, 3/4, 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_60017019af",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −30, 2, −1, −3, −6 in ascending order.",
+      "correct_answer": "−30, −6, −3, −1, 2",
+      "distractors": [
+        "2, −1, −3, −6, −30",
+        "−30, −3, −6, −1, 2",
+        "−30, −6, −3, 2, −1"
+      ],
+      "explanation": [
+        "In ascending order: −30, −6, −3, −1, 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_60201c8d70",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −16/9, −0.073, −11/47 in descending order.",
+      "correct_answer": "−0.073, −11/47, −16/9",
+      "distractors": [
+        "−16/9, −11/47, −0.073",
+        "−11/47, −0.073, −16/9",
+        "−0.073, −16/9, −11/47"
+      ],
+      "explanation": [
+        "In descending order: −0.073, −11/47, −16/9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_60c054311a",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −1/7, −8, −100 in ascending order.",
+      "correct_answer": "−100, −8, −1/7",
+      "distractors": [
+        "−1/7, −8, −100",
+        "−100, −1/7, −8",
+        "−8, −100, −1/7"
+      ],
+      "explanation": [
+        "In ascending order: −100, −8, −1/7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_6206ea11cd",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −4, 0, −7, 10 in ascending order.",
+      "correct_answer": "−7, −4, 0, 10",
+      "distractors": [
+        "10, 0, −4, −7",
+        "−4, −7, 0, 10",
+        "−7, −4, 10, 0"
+      ],
+      "explanation": [
+        "In ascending order: −7, −4, 0, 10."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_62759f3053",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 11, 5, −14 in ascending order.",
+      "correct_answer": "−14, 5, 11",
+      "distractors": [
+        "11, 5, −14",
+        "5, −14, 11",
+        "−14, 11, 5"
+      ],
+      "explanation": [
+        "In ascending order: −14, 5, 11."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_63a4d8be71",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −1/3, −11, −0.3, 3, −21 in descending order.",
+      "correct_answer": "3, −0.3, −1/3, −11, −21",
+      "distractors": [
+        "−21, −11, −1/3, −0.3, 3",
+        "−0.3, 3, −1/3, −11, −21",
+        "3, −0.3, −1/3, −21, −11"
+      ],
+      "explanation": [
+        "In descending order: 3, −0.3, −1/3, −11, −21."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_63fbf1d95a",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 0.04, 4, 6/11, 1/4, 0.07, 194 in descending order.",
+      "correct_answer": "194, 4, 6/11, 1/4, 0.07, 0.04",
+      "distractors": [
+        "0.04, 0.07, 1/4, 6/11, 4, 194",
+        "194, 4, 1/4, 6/11, 0.07, 0.04",
+        "194, 6/11, 4, 1/4, 0.07, 0.04"
+      ],
+      "explanation": [
+        "In descending order: 194, 4, 6/11, 1/4, 0.07, 0.04."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_664130893a",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −1, 123, 0.056, −16 in ascending order.",
+      "correct_answer": "−16, −1, 0.056, 123",
+      "distractors": [
+        "123, 0.056, −1, −16",
+        "−16, −1, 123, 0.056",
+        "−1, −16, 0.056, 123"
+      ],
+      "explanation": [
+        "In ascending order: −16, −1, 0.056, 123."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_671c1f8d1d",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −1, 5, −2358, 3, −2 in ascending order.",
+      "correct_answer": "−2358, −2, −1, 3, 5",
+      "distractors": [
+        "5, 3, −1, −2, −2358",
+        "−2, −2358, −1, 3, 5",
+        "−2358, −2, 3, −1, 5"
+      ],
+      "explanation": [
+        "In ascending order: −2358, −2, −1, 3, 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_688d41bf59",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −13/5, −9/16, 2/7, −1 in descending order.",
+      "correct_answer": "2/7, −9/16, −1, −13/5",
+      "distractors": [
+        "−13/5, −1, −9/16, 2/7",
+        "−9/16, 2/7, −1, −13/5",
+        "2/7, −1, −9/16, −13/5"
+      ],
+      "explanation": [
+        "In descending order: 2/7, −9/16, −1, −13/5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_68cd82f51c",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 71, −9, −1, 10 in ascending order.",
+      "correct_answer": "−9, −1, 10, 71",
+      "distractors": [
+        "71, 10, −1, −9",
+        "−9, −1, 71, 10",
+        "−9, 10, −1, 71"
+      ],
+      "explanation": [
+        "In ascending order: −9, −1, 10, 71."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_6a07fcc72e",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 1, −44, 5, −1, −4 in ascending order.",
+      "correct_answer": "−44, −4, −1, 1, 5",
+      "distractors": [
+        "5, 1, −1, −4, −44",
+        "−44, −1, −4, 1, 5",
+        "−44, −4, −1, 5, 1"
+      ],
+      "explanation": [
+        "In ascending order: −44, −4, −1, 1, 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_6c2381715a",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 20, −5, 5, 0, −475 in ascending order.",
+      "correct_answer": "−475, −5, 0, 5, 20",
+      "distractors": [
+        "20, 5, 0, −5, −475",
+        "−5, −475, 0, 5, 20",
+        "−475, −5, 0, 20, 5"
+      ],
+      "explanation": [
+        "In ascending order: −475, −5, 0, 5, 20."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_6c42acddfd",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −3, −505, 5, 85 in descending order.",
+      "correct_answer": "85, 5, −3, −505",
+      "distractors": [
+        "−505, −3, 5, 85",
+        "85, −3, 5, −505",
+        "85, 5, −505, −3"
+      ],
+      "explanation": [
+        "In descending order: 85, 5, −3, −505."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_6d2a0771f2",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 12, −36, −3, −5, 39 in ascending order.",
+      "correct_answer": "−36, −5, −3, 12, 39",
+      "distractors": [
+        "39, 12, −3, −5, −36",
+        "−5, −36, −3, 12, 39",
+        "−36, −3, −5, 12, 39"
+      ],
+      "explanation": [
+        "In ascending order: −36, −5, −3, 12, 39."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_6e29fee36d",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 0, −110, −54 in ascending order.",
+      "correct_answer": "−110, −54, 0",
+      "distractors": [
+        "0, −54, −110",
+        "−110, 0, −54",
+        "−54, −110, 0"
+      ],
+      "explanation": [
+        "In ascending order: −110, −54, 0."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_6e8746978c",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 42, 374, 0, 10, −4, 11 in descending order.",
+      "correct_answer": "374, 42, 11, 10, 0, −4",
+      "distractors": [
+        "−4, 0, 10, 11, 42, 374",
+        "42, 374, 11, 10, 0, −4",
+        "374, 42, 11, 0, 10, −4"
+      ],
+      "explanation": [
+        "In descending order: 374, 42, 11, 10, 0, −4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_6f06858152",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −5, −472, −3, −1, 5 in descending order.",
+      "correct_answer": "5, −1, −3, −5, −472",
+      "distractors": [
+        "−472, −5, −3, −1, 5",
+        "5, −1, −3, −472, −5",
+        "5, −1, −5, −3, −472"
+      ],
+      "explanation": [
+        "In descending order: 5, −1, −3, −5, −472."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_70006201ea",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 6, 0.05, −32, −7/6, 129, 0.3, −3 in ascending order.",
+      "correct_answer": "−32, −3, −7/6, 0.05, 0.3, 6, 129",
+      "distractors": [
+        "129, 6, 0.3, 0.05, −7/6, −3, −32",
+        "−32, −7/6, −3, 0.05, 0.3, 6, 129",
+        "−32, −3, −7/6, 0.3, 0.05, 6, 129"
+      ],
+      "explanation": [
+        "In ascending order: −32, −3, −7/6, 0.05, 0.3, 6, 129."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_73a61721d7",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 17/2, 6, 0.2, 4, 5 in ascending order.",
+      "correct_answer": "0.2, 4, 5, 6, 17/2",
+      "distractors": [
+        "17/2, 6, 5, 4, 0.2",
+        "0.2, 4, 6, 5, 17/2",
+        "4, 0.2, 5, 6, 17/2"
+      ],
+      "explanation": [
+        "In ascending order: 0.2, 4, 5, 6, 17/2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_7449aa5422",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −222, −0.1, −220, 3 in ascending order.",
+      "correct_answer": "−222, −220, −0.1, 3",
+      "distractors": [
+        "3, −0.1, −220, −222",
+        "−222, −0.1, −220, 3",
+        "−220, −222, −0.1, 3"
+      ],
+      "explanation": [
+        "In ascending order: −222, −220, −0.1, 3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_7765688254",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 1, −19, −1 in descending order.",
+      "correct_answer": "1, −1, −19",
+      "distractors": [
+        "−19, −1, 1",
+        "1, −19, −1",
+        "−1, 1, −19"
+      ],
+      "explanation": [
+        "In descending order: 1, −1, −19."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_78ef6ab606",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −1, −3, 31, 2, 3 in ascending order.",
+      "correct_answer": "−3, −1, 2, 3, 31",
+      "distractors": [
+        "31, 3, 2, −1, −3",
+        "−3, −1, 2, 31, 3",
+        "−3, 2, −1, 3, 31"
+      ],
+      "explanation": [
+        "In ascending order: −3, −1, 2, 3, 31."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_798ff526e2",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 2, 0.5, −91, −2/7, −0.0336, −1/4, −4/5 in descending order.",
+      "correct_answer": "2, 0.5, −0.0336, −1/4, −2/7, −4/5, −91",
+      "distractors": [
+        "−91, −4/5, −2/7, −1/4, −0.0336, 0.5, 2",
+        "2, 0.5, −0.0336, −1/4, −2/7, −91, −4/5",
+        "2, 0.5, −0.0336, −1/4, −4/5, −2/7, −91"
+      ],
+      "explanation": [
+        "In descending order: 2, 0.5, −0.0336, −1/4, −2/7, −4/5, −91."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_7a77006b41",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −38, 96, 1 in descending order.",
+      "correct_answer": "96, 1, −38",
+      "distractors": [
+        "−38, 1, 96",
+        "96, −38, 1",
+        "1, 96, −38"
+      ],
+      "explanation": [
+        "In descending order: 96, 1, −38."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_7b5f99962b",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −11, −5, 10, −3, −2 in ascending order.",
+      "correct_answer": "−11, −5, −3, −2, 10",
+      "distractors": [
+        "10, −2, −3, −5, −11",
+        "−11, −5, −3, 10, −2",
+        "−5, −11, −3, −2, 10"
+      ],
+      "explanation": [
+        "In ascending order: −11, −5, −3, −2, 10."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_7c15754f8e",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 2, −5, −1/7 in ascending order.",
+      "correct_answer": "−5, −1/7, 2",
+      "distractors": [
+        "2, −1/7, −5",
+        "−1/7, −5, 2",
+        "−5, 2, −1/7"
+      ],
+      "explanation": [
+        "In ascending order: −5, −1/7, 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_7cdb345df8",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −21022, −2, 4, 1 in descending order.",
+      "correct_answer": "4, 1, −2, −21022",
+      "distractors": [
+        "−21022, −2, 1, 4",
+        "4, −2, 1, −21022",
+        "1, 4, −2, −21022"
+      ],
+      "explanation": [
+        "In descending order: 4, 1, −2, −21022."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_7dcc143b3f",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 4, 91, 101, 2 in descending order.",
+      "correct_answer": "101, 91, 4, 2",
+      "distractors": [
+        "2, 4, 91, 101",
+        "91, 101, 4, 2",
+        "101, 91, 2, 4"
+      ],
+      "explanation": [
+        "In descending order: 101, 91, 4, 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_802afb8eaf",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −1, −7, 4, 98, 1 in ascending order.",
+      "correct_answer": "−7, −1, 1, 4, 98",
+      "distractors": [
+        "98, 4, 1, −1, −7",
+        "−7, −1, 4, 1, 98",
+        "−1, −7, 1, 4, 98"
+      ],
+      "explanation": [
+        "In ascending order: −7, −1, 1, 4, 98."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_80ccc49423",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −2, 0.101, 4/7, 59 in descending order.",
+      "correct_answer": "59, 4/7, 0.101, −2",
+      "distractors": [
+        "−2, 0.101, 4/7, 59",
+        "4/7, 59, 0.101, −2",
+        "59, 4/7, −2, 0.101"
+      ],
+      "explanation": [
+        "In descending order: 59, 4/7, 0.101, −2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_820deb5519",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −2, 959, 6, 52, −3 in ascending order.",
+      "correct_answer": "−3, −2, 6, 52, 959",
+      "distractors": [
+        "959, 52, 6, −2, −3",
+        "−3, −2, 52, 6, 959",
+        "−2, −3, 6, 52, 959"
+      ],
+      "explanation": [
+        "In ascending order: −3, −2, 6, 52, 959."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_85465308f2",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −17, 1, −2, 26, 1/4, −4.1 in ascending order.",
+      "correct_answer": "−17, −4.1, −2, 1/4, 1, 26",
+      "distractors": [
+        "26, 1, 1/4, −2, −4.1, −17",
+        "−4.1, −17, −2, 1/4, 1, 26",
+        "−17, −4.1, −2, 1/4, 26, 1"
+      ],
+      "explanation": [
+        "In ascending order: −17, −4.1, −2, 1/4, 1, 26."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_8a29a4089e",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −9, 8, −2 in descending order.",
+      "correct_answer": "8, −2, −9",
+      "distractors": [
+        "−9, −2, 8",
+        "8, −9, −2",
+        "−2, 8, −9"
+      ],
+      "explanation": [
+        "In descending order: 8, −2, −9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_8ab02604fe",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −2/9, −0.0055, −5 in descending order.",
+      "correct_answer": "−0.0055, −2/9, −5",
+      "distractors": [
+        "−5, −2/9, −0.0055",
+        "−0.0055, −5, −2/9",
+        "−2/9, −0.0055, −5"
+      ],
+      "explanation": [
+        "In descending order: −0.0055, −2/9, −5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_8b10c7bfd4",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −4, 2, −1888 in ascending order.",
+      "correct_answer": "−1888, −4, 2",
+      "distractors": [
+        "2, −4, −1888",
+        "−1888, 2, −4",
+        "−4, −1888, 2"
+      ],
+      "explanation": [
+        "In ascending order: −1888, −4, 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_8ce5594092",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 489, 0.4, 5, 0.321, −2/3 in ascending order.",
+      "correct_answer": "−2/3, 0.321, 0.4, 5, 489",
+      "distractors": [
+        "489, 5, 0.4, 0.321, −2/3",
+        "−2/3, 0.321, 5, 0.4, 489",
+        "−2/3, 0.4, 0.321, 5, 489"
+      ],
+      "explanation": [
+        "In ascending order: −2/3, 0.321, 0.4, 5, 489."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_90a8515f2f",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −2, 3, 521, −1, −8 in ascending order.",
+      "correct_answer": "−8, −2, −1, 3, 521",
+      "distractors": [
+        "521, 3, −1, −2, −8",
+        "−2, −8, −1, 3, 521",
+        "−8, −2, −1, 521, 3"
+      ],
+      "explanation": [
+        "In ascending order: −8, −2, −1, 3, 521."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_9443e3c1ba",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 104, 0, 3, 2 in descending order.",
+      "correct_answer": "104, 3, 2, 0",
+      "distractors": [
+        "0, 2, 3, 104",
+        "104, 3, 0, 2",
+        "3, 104, 2, 0"
+      ],
+      "explanation": [
+        "In descending order: 104, 3, 2, 0."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_94a6595e86",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −9, 3, 4, −2/55 in descending order.",
+      "correct_answer": "4, 3, −2/55, −9",
+      "distractors": [
+        "−9, −2/55, 3, 4",
+        "4, 3, −9, −2/55",
+        "4, −2/55, 3, −9"
+      ],
+      "explanation": [
+        "In descending order: 4, 3, −2/55, −9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_94a6f02399",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 5, 4, 3, 11, −8 in descending order.",
+      "correct_answer": "11, 5, 4, 3, −8",
+      "distractors": [
+        "−8, 3, 4, 5, 11",
+        "11, 4, 5, 3, −8",
+        "5, 11, 4, 3, −8"
+      ],
+      "explanation": [
+        "In descending order: 11, 5, 4, 3, −8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_97427ea69b",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −2/7, −0.0361, 2/11, −1/2, 1/19 in ascending order.",
+      "correct_answer": "−1/2, −2/7, −0.0361, 1/19, 2/11",
+      "distractors": [
+        "2/11, 1/19, −0.0361, −2/7, −1/2",
+        "−2/7, −1/2, −0.0361, 1/19, 2/11",
+        "−1/2, −0.0361, −2/7, 1/19, 2/11"
+      ],
+      "explanation": [
+        "In ascending order: −1/2, −2/7, −0.0361, 1/19, 2/11."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_99ff5487d2",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −1/3, −20971, −3/4, −5/3 in descending order.",
+      "correct_answer": "−1/3, −3/4, −5/3, −20971",
+      "distractors": [
+        "−20971, −5/3, −3/4, −1/3",
+        "−1/3, −5/3, −3/4, −20971",
+        "−3/4, −1/3, −5/3, −20971"
+      ],
+      "explanation": [
+        "In descending order: −1/3, −3/4, −5/3, −20971."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_9a47e4fa30",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −5, 1, 19, 121, −15 in ascending order.",
+      "correct_answer": "−15, −5, 1, 19, 121",
+      "distractors": [
+        "121, 19, 1, −5, −15",
+        "−15, −5, 19, 1, 121",
+        "−15, −5, 1, 121, 19"
+      ],
+      "explanation": [
+        "In ascending order: −15, −5, 1, 19, 121."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_9f239852aa",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 11, −0.4, −0.03, −7, −1 in descending order.",
+      "correct_answer": "11, −0.03, −0.4, −1, −7",
+      "distractors": [
+        "−7, −1, −0.4, −0.03, 11",
+        "11, −0.03, −0.4, −7, −1",
+        "−0.03, 11, −0.4, −1, −7"
+      ],
+      "explanation": [
+        "In descending order: 11, −0.03, −0.4, −1, −7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_a13dab408d",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −9/4, −20, 12, 4, 5, −0.2 in descending order.",
+      "correct_answer": "12, 5, 4, −0.2, −9/4, −20",
+      "distractors": [
+        "−20, −9/4, −0.2, 4, 5, 12",
+        "5, 12, 4, −0.2, −9/4, −20",
+        "12, 4, 5, −0.2, −9/4, −20"
+      ],
+      "explanation": [
+        "In descending order: 12, 5, 4, −0.2, −9/4, −20."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_a14c72827e",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 22, −3, −2, 0, −1 in ascending order.",
+      "correct_answer": "−3, −2, −1, 0, 22",
+      "distractors": [
+        "22, 0, −1, −2, −3",
+        "−2, −3, −1, 0, 22",
+        "−3, −2, −1, 22, 0"
+      ],
+      "explanation": [
+        "In ascending order: −3, −2, −1, 0, 22."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_a15a5fd7e2",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 1/9, −1.68, 0, 119/5 in ascending order.",
+      "correct_answer": "−1.68, 0, 1/9, 119/5",
+      "distractors": [
+        "119/5, 1/9, 0, −1.68",
+        "−1.68, 1/9, 0, 119/5",
+        "−1.68, 0, 119/5, 1/9"
+      ],
+      "explanation": [
+        "In ascending order: −1.68, 0, 1/9, 119/5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_a6d3c4848a",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −32314, 6, 20 in ascending order.",
+      "correct_answer": "−32314, 6, 20",
+      "distractors": [
+        "20, 6, −32314",
+        "−32314, 20, 6",
+        "6, −32314, 20"
+      ],
+      "explanation": [
+        "In ascending order: −32314, 6, 20."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_b0ab4eacdb",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 2864, 2, 53 in ascending order.",
+      "correct_answer": "2, 53, 2864",
+      "distractors": [
+        "2864, 53, 2",
+        "2, 2864, 53",
+        "53, 2, 2864"
+      ],
+      "explanation": [
+        "In ascending order: 2, 53, 2864."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_b197a01e35",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 5, 17, −3, −157 in descending order.",
+      "correct_answer": "17, 5, −3, −157",
+      "distractors": [
+        "−157, −3, 5, 17",
+        "17, 5, −157, −3",
+        "5, 17, −3, −157"
+      ],
+      "explanation": [
+        "In descending order: 17, 5, −3, −157."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_b1ca50e56f",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −1, −5/3, −9760, 3, −0.9 in descending order.",
+      "correct_answer": "3, −0.9, −1, −5/3, −9760",
+      "distractors": [
+        "−9760, −5/3, −1, −0.9, 3",
+        "3, −0.9, −5/3, −1, −9760",
+        "3, −0.9, −1, −9760, −5/3"
+      ],
+      "explanation": [
+        "In descending order: 3, −0.9, −1, −5/3, −9760."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_b48896c959",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 0, 0.0209, 0.14, −7 in descending order.",
+      "correct_answer": "0.14, 0.0209, 0, −7",
+      "distractors": [
+        "−7, 0, 0.0209, 0.14",
+        "0.14, 0.0209, −7, 0",
+        "0.14, 0, 0.0209, −7"
+      ],
+      "explanation": [
+        "In descending order: 0.14, 0.0209, 0, −7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_b548a95853",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 76, −0.3, −0.24, 1/4, 0.5, 5 in ascending order.",
+      "correct_answer": "−0.3, −0.24, 1/4, 0.5, 5, 76",
+      "distractors": [
+        "76, 5, 0.5, 1/4, −0.24, −0.3",
+        "−0.24, −0.3, 1/4, 0.5, 5, 76",
+        "−0.3, −0.24, 0.5, 1/4, 5, 76"
+      ],
+      "explanation": [
+        "In ascending order: −0.3, −0.24, 1/4, 0.5, 5, 76."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_b587ced62c",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 4, −5, −1/2, −2/5, −218 in descending order.",
+      "correct_answer": "4, −2/5, −1/2, −5, −218",
+      "distractors": [
+        "−218, −5, −1/2, −2/5, 4",
+        "4, −2/5, −1/2, −218, −5",
+        "4, −2/5, −5, −1/2, −218"
+      ],
+      "explanation": [
+        "In descending order: 4, −2/5, −1/2, −5, −218."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_b6742d5142",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −2.3, 2/13, −0.4 in descending order.",
+      "correct_answer": "2/13, −0.4, −2.3",
+      "distractors": [
+        "−2.3, −0.4, 2/13",
+        "−0.4, 2/13, −2.3",
+        "2/13, −2.3, −0.4"
+      ],
+      "explanation": [
+        "In descending order: 2/13, −0.4, −2.3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_b791a2fd65",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 11, 4, −4, −1, 3 in ascending order.",
+      "correct_answer": "−4, −1, 3, 4, 11",
+      "distractors": [
+        "11, 4, 3, −1, −4",
+        "−1, −4, 3, 4, 11",
+        "−4, −1, 3, 11, 4"
+      ],
+      "explanation": [
+        "In ascending order: −4, −1, 3, 4, 11."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_b7f4fb7511",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −9316, 2/5, 461 in descending order.",
+      "correct_answer": "461, 2/5, −9316",
+      "distractors": [
+        "−9316, 2/5, 461",
+        "2/5, 461, −9316",
+        "461, −9316, 2/5"
+      ],
+      "explanation": [
+        "In descending order: 461, 2/5, −9316."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_b8a4032bd5",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 0.4, −1/2, 2, 154 in descending order.",
+      "correct_answer": "154, 2, 0.4, −1/2",
+      "distractors": [
+        "−1/2, 0.4, 2, 154",
+        "154, 0.4, 2, −1/2",
+        "154, 2, −1/2, 0.4"
+      ],
+      "explanation": [
+        "In descending order: 154, 2, 0.4, −1/2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_b8aac89916",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 0.5, 118659, −2/3 in descending order.",
+      "correct_answer": "118659, 0.5, −2/3",
+      "distractors": [
+        "−2/3, 0.5, 118659",
+        "0.5, 118659, −2/3",
+        "118659, −2/3, 0.5"
+      ],
+      "explanation": [
+        "In descending order: 118659, 0.5, −2/3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_b91cd3a2f8",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −36, −5, 4 in ascending order.",
+      "correct_answer": "−36, −5, 4",
+      "distractors": [
+        "4, −5, −36",
+        "−36, 4, −5",
+        "−5, −36, 4"
+      ],
+      "explanation": [
+        "In ascending order: −36, −5, 4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_ba61d0b9e4",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −7/767, 2/3, 0, 7, −4 in descending order.",
+      "correct_answer": "7, 2/3, 0, −7/767, −4",
+      "distractors": [
+        "−4, −7/767, 0, 2/3, 7",
+        "7, 0, 2/3, −7/767, −4",
+        "7, 2/3, 0, −4, −7/767"
+      ],
+      "explanation": [
+        "In descending order: 7, 2/3, 0, −7/767, −4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_baa95c3711",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −2, −8, 1533, 1, 13 in ascending order.",
+      "correct_answer": "−8, −2, 1, 13, 1533",
+      "distractors": [
+        "1533, 13, 1, −2, −8",
+        "−2, −8, 1, 13, 1533",
+        "−8, 1, −2, 13, 1533"
+      ],
+      "explanation": [
+        "In ascending order: −8, −2, 1, 13, 1533."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_bae1b97e87",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −24/11, 2, 0.5, 54, −2, −6/7 in ascending order.",
+      "correct_answer": "−24/11, −2, −6/7, 0.5, 2, 54",
+      "distractors": [
+        "54, 2, 0.5, −6/7, −2, −24/11",
+        "−24/11, −2, −6/7, 0.5, 54, 2",
+        "−2, −24/11, −6/7, 0.5, 2, 54"
+      ],
+      "explanation": [
+        "In ascending order: −24/11, −2, −6/7, 0.5, 2, 54."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_bb77c8ec21",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 2/145, 24174, 23 in ascending order.",
+      "correct_answer": "2/145, 23, 24174",
+      "distractors": [
+        "24174, 23, 2/145",
+        "2/145, 24174, 23",
+        "23, 2/145, 24174"
+      ],
+      "explanation": [
+        "In ascending order: 2/145, 23, 24174."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_bc5370d1d4",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 0.32, 5, −3, −2 in descending order.",
+      "correct_answer": "5, 0.32, −2, −3",
+      "distractors": [
+        "−3, −2, 0.32, 5",
+        "0.32, 5, −2, −3",
+        "5, 0.32, −3, −2"
+      ],
+      "explanation": [
+        "In descending order: 5, 0.32, −2, −3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_bc5677fae5",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −0.4, 7/908, −2, −0.1, 3, −5 in ascending order.",
+      "correct_answer": "−5, −2, −0.4, −0.1, 7/908, 3",
+      "distractors": [
+        "3, 7/908, −0.1, −0.4, −2, −5",
+        "−5, −2, −0.1, −0.4, 7/908, 3",
+        "−2, −5, −0.4, −0.1, 7/908, 3"
+      ],
+      "explanation": [
+        "In ascending order: −5, −2, −0.4, −0.1, 7/908, 3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_bd7148f705",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 81, 0, 1.9, −1/9 in descending order.",
+      "correct_answer": "81, 1.9, 0, −1/9",
+      "distractors": [
+        "−1/9, 0, 1.9, 81",
+        "1.9, 81, 0, −1/9",
+        "81, 1.9, −1/9, 0"
+      ],
+      "explanation": [
+        "In descending order: 81, 1.9, 0, −1/9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_bdf615bea9",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 0, 10, −3, 4 in descending order.",
+      "correct_answer": "10, 4, 0, −3",
+      "distractors": [
+        "−3, 0, 4, 10",
+        "10, 0, 4, −3",
+        "4, 10, 0, −3"
+      ],
+      "explanation": [
+        "In descending order: 10, 4, 0, −3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_bfa21a47f6",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −3, 4469, 3 in descending order.",
+      "correct_answer": "4469, 3, −3",
+      "distractors": [
+        "−3, 3, 4469",
+        "4469, −3, 3",
+        "3, 4469, −3"
+      ],
+      "explanation": [
+        "In descending order: 4469, 3, −3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_bfab7b5128",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −93, 0, 1/4, −4, −1 in ascending order.",
+      "correct_answer": "−93, −4, −1, 0, 1/4",
+      "distractors": [
+        "1/4, 0, −1, −4, −93",
+        "−93, −4, 0, −1, 1/4",
+        "−93, −4, −1, 1/4, 0"
+      ],
+      "explanation": [
+        "In ascending order: −93, −4, −1, 0, 1/4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_bfc1a0dcf6",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 0.3, −11/29, 80/17 in descending order.",
+      "correct_answer": "80/17, 0.3, −11/29",
+      "distractors": [
+        "−11/29, 0.3, 80/17",
+        "0.3, 80/17, −11/29",
+        "80/17, −11/29, 0.3"
+      ],
+      "explanation": [
+        "In descending order: 80/17, 0.3, −11/29."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_c0358edaf4",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 3, 15573, −17889 in descending order.",
+      "correct_answer": "15573, 3, −17889",
+      "distractors": [
+        "−17889, 3, 15573",
+        "15573, −17889, 3",
+        "3, 15573, −17889"
+      ],
+      "explanation": [
+        "In descending order: 15573, 3, −17889."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_c1434c49e5",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −3, 116, 2 in ascending order.",
+      "correct_answer": "−3, 2, 116",
+      "distractors": [
+        "116, 2, −3",
+        "−3, 116, 2",
+        "2, −3, 116"
+      ],
+      "explanation": [
+        "In ascending order: −3, 2, 116."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_c151d47aaa",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −4, −2/3, −9, 1 in ascending order.",
+      "correct_answer": "−9, −4, −2/3, 1",
+      "distractors": [
+        "1, −2/3, −4, −9",
+        "−9, −2/3, −4, 1",
+        "−4, −9, −2/3, 1"
+      ],
+      "explanation": [
+        "In ascending order: −9, −4, −2/3, 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_c21e91d7ce",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 2, 3, 3/7, 4, 2/9 in ascending order.",
+      "correct_answer": "2/9, 3/7, 2, 3, 4",
+      "distractors": [
+        "4, 3, 2, 3/7, 2/9",
+        "2/9, 2, 3/7, 3, 4",
+        "2/9, 3/7, 2, 4, 3"
+      ],
+      "explanation": [
+        "In ascending order: 2/9, 3/7, 2, 3, 4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_c3e401303c",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −3, 5, 24, 176 in descending order.",
+      "correct_answer": "176, 24, 5, −3",
+      "distractors": [
+        "−3, 5, 24, 176",
+        "176, 24, −3, 5",
+        "176, 5, 24, −3"
+      ],
+      "explanation": [
+        "In descending order: 176, 24, 5, −3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_c4306bfd62",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −2087, −10, 0, −0.15 in descending order.",
+      "correct_answer": "0, −0.15, −10, −2087",
+      "distractors": [
+        "−2087, −10, −0.15, 0",
+        "0, −0.15, −2087, −10",
+        "0, −10, −0.15, −2087"
+      ],
+      "explanation": [
+        "In descending order: 0, −0.15, −10, −2087."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_c4f2fba1de",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −2, 4/7, −34/3 in descending order.",
+      "correct_answer": "4/7, −2, −34/3",
+      "distractors": [
+        "−34/3, −2, 4/7",
+        "−2, 4/7, −34/3",
+        "4/7, −34/3, −2"
+      ],
+      "explanation": [
+        "In descending order: 4/7, −2, −34/3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_c504cf4a9b",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −1/2, −2/9, −63517, −200 in descending order.",
+      "correct_answer": "−2/9, −1/2, −200, −63517",
+      "distractors": [
+        "−63517, −200, −1/2, −2/9",
+        "−2/9, −200, −1/2, −63517",
+        "−2/9, −1/2, −63517, −200"
+      ],
+      "explanation": [
+        "In descending order: −2/9, −1/2, −200, −63517."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_c58d370074",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −1, −5, −5/2, 0.4 in descending order.",
+      "correct_answer": "0.4, −1, −5/2, −5",
+      "distractors": [
+        "−5, −5/2, −1, 0.4",
+        "0.4, −1, −5, −5/2",
+        "−1, 0.4, −5/2, −5"
+      ],
+      "explanation": [
+        "In descending order: 0.4, −1, −5/2, −5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_c64539041b",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −5, 65, 3 in ascending order.",
+      "correct_answer": "−5, 3, 65",
+      "distractors": [
+        "65, 3, −5",
+        "−5, 65, 3",
+        "3, −5, 65"
+      ],
+      "explanation": [
+        "In ascending order: −5, 3, 65."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_c6d558bbfd",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 4, −42, 12 in ascending order.",
+      "correct_answer": "−42, 4, 12",
+      "distractors": [
+        "12, 4, −42",
+        "4, −42, 12",
+        "−42, 12, 4"
+      ],
+      "explanation": [
+        "In ascending order: −42, 4, 12."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_c73752aba1",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −2, 0.5, 0.123 in ascending order.",
+      "correct_answer": "−2, 0.123, 0.5",
+      "distractors": [
+        "0.5, 0.123, −2",
+        "−2, 0.5, 0.123",
+        "0.123, −2, 0.5"
+      ],
+      "explanation": [
+        "In ascending order: −2, 0.123, 0.5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_c7d542c130",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 3/4, 0.327, 4, 2/15 in descending order.",
+      "correct_answer": "4, 3/4, 0.327, 2/15",
+      "distractors": [
+        "2/15, 0.327, 3/4, 4",
+        "4, 3/4, 2/15, 0.327",
+        "3/4, 4, 0.327, 2/15"
+      ],
+      "explanation": [
+        "In descending order: 4, 3/4, 0.327, 2/15."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_c939e7e1e4",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −3, −1, −0.2975, 3/47 in descending order.",
+      "correct_answer": "3/47, −0.2975, −1, −3",
+      "distractors": [
+        "−3, −1, −0.2975, 3/47",
+        "3/47, −1, −0.2975, −3",
+        "−0.2975, 3/47, −1, −3"
+      ],
+      "explanation": [
+        "In descending order: 3/47, −0.2975, −1, −3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_c94e807446",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 679, 0.3, 4/7, 2, −3 in ascending order.",
+      "correct_answer": "−3, 0.3, 4/7, 2, 679",
+      "distractors": [
+        "679, 2, 4/7, 0.3, −3",
+        "0.3, −3, 4/7, 2, 679",
+        "−3, 0.3, 4/7, 679, 2"
+      ],
+      "explanation": [
+        "In ascending order: −3, 0.3, 4/7, 2, 679."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_cb0fb05173",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −1/8, −1/7, 0.5, 7 in descending order.",
+      "correct_answer": "7, 0.5, −1/8, −1/7",
+      "distractors": [
+        "−1/7, −1/8, 0.5, 7",
+        "0.5, 7, −1/8, −1/7",
+        "7, 0.5, −1/7, −1/8"
+      ],
+      "explanation": [
+        "In descending order: 7, 0.5, −1/8, −1/7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_cb744f61aa",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −0.5, 5, −1, 0.5, 0.2, 541/15 in ascending order.",
+      "correct_answer": "−1, −0.5, 0.2, 0.5, 5, 541/15",
+      "distractors": [
+        "541/15, 5, 0.5, 0.2, −0.5, −1",
+        "−1, 0.2, −0.5, 0.5, 5, 541/15",
+        "−0.5, −1, 0.2, 0.5, 5, 541/15"
+      ],
+      "explanation": [
+        "In ascending order: −1, −0.5, 0.2, 0.5, 5, 541/15."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_cbebcfe58e",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −1, −107, 15, −380 in descending order.",
+      "correct_answer": "15, −1, −107, −380",
+      "distractors": [
+        "−380, −107, −1, 15",
+        "−1, 15, −107, −380",
+        "15, −107, −1, −380"
+      ],
+      "explanation": [
+        "In descending order: 15, −1, −107, −380."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_cc115b4c7c",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −4, −5, 7, 3, 2, 81 in descending order.",
+      "correct_answer": "81, 7, 3, 2, −4, −5",
+      "distractors": [
+        "−5, −4, 2, 3, 7, 81",
+        "81, 7, 3, 2, −5, −4",
+        "81, 3, 7, 2, −4, −5"
+      ],
+      "explanation": [
+        "In descending order: 81, 7, 3, 2, −4, −5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_ccc9dd1ed6",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 82257, 3, −1 in descending order.",
+      "correct_answer": "82257, 3, −1",
+      "distractors": [
+        "−1, 3, 82257",
+        "3, 82257, −1",
+        "82257, −1, 3"
+      ],
+      "explanation": [
+        "In descending order: 82257, 3, −1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_cef2a62d61",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 0.4, 32, −0.6, −6 in ascending order.",
+      "correct_answer": "−6, −0.6, 0.4, 32",
+      "distractors": [
+        "32, 0.4, −0.6, −6",
+        "−0.6, −6, 0.4, 32",
+        "−6, −0.6, 32, 0.4"
+      ],
+      "explanation": [
+        "In ascending order: −6, −0.6, 0.4, 32."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_d1c1105f31",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −28546, 14, −3, 5, −4 in ascending order.",
+      "correct_answer": "−28546, −4, −3, 5, 14",
+      "distractors": [
+        "14, 5, −3, −4, −28546",
+        "−28546, −4, −3, 14, 5",
+        "−4, −28546, −3, 5, 14"
+      ],
+      "explanation": [
+        "In ascending order: −28546, −4, −3, 5, 14."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_d69e404f15",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 5, −78, −69830 in ascending order.",
+      "correct_answer": "−69830, −78, 5",
+      "distractors": [
+        "5, −78, −69830",
+        "−78, −69830, 5",
+        "−69830, 5, −78"
+      ],
+      "explanation": [
+        "In ascending order: −69830, −78, 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_d7aa14e064",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 328, 0.105, 2/19, 11, −3 in ascending order.",
+      "correct_answer": "−3, 0.105, 2/19, 11, 328",
+      "distractors": [
+        "328, 11, 2/19, 0.105, −3",
+        "0.105, −3, 2/19, 11, 328",
+        "−3, 0.105, 2/19, 328, 11"
+      ],
+      "explanation": [
+        "In ascending order: −3, 0.105, 2/19, 11, 328."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_d7c4b07056",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 1, 0, −4, 2, 7, −431 in ascending order.",
+      "correct_answer": "−431, −4, 0, 1, 2, 7",
+      "distractors": [
+        "7, 2, 1, 0, −4, −431",
+        "−431, −4, 1, 0, 2, 7",
+        "−431, −4, 0, 2, 1, 7"
+      ],
+      "explanation": [
+        "In ascending order: −431, −4, 0, 1, 2, 7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_d9e7c734a4",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 1/32, 0.1, 1317, 4 in descending order.",
+      "correct_answer": "1317, 4, 0.1, 1/32",
+      "distractors": [
+        "1/32, 0.1, 4, 1317",
+        "4, 1317, 0.1, 1/32",
+        "1317, 0.1, 4, 1/32"
+      ],
+      "explanation": [
+        "In descending order: 1317, 4, 0.1, 1/32."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_da4a72ca88",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −3, 3, 43568428, 6 in descending order.",
+      "correct_answer": "43568428, 6, 3, −3",
+      "distractors": [
+        "−3, 3, 6, 43568428",
+        "43568428, 3, 6, −3",
+        "6, 43568428, 3, −3"
+      ],
+      "explanation": [
+        "In descending order: 43568428, 6, 3, −3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_daa6f0fcf4",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 161, −2, 0, −3, −58, −17 in ascending order.",
+      "correct_answer": "−58, −17, −3, −2, 0, 161",
+      "distractors": [
+        "161, 0, −2, −3, −17, −58",
+        "−17, −58, −3, −2, 0, 161",
+        "−58, −3, −17, −2, 0, 161"
+      ],
+      "explanation": [
+        "In ascending order: −58, −17, −3, −2, 0, 161."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_dbb2fdc1f1",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −2, −2194, 1814, 1 in ascending order.",
+      "correct_answer": "−2194, −2, 1, 1814",
+      "distractors": [
+        "1814, 1, −2, −2194",
+        "−2, −2194, 1, 1814",
+        "−2194, −2, 1814, 1"
+      ],
+      "explanation": [
+        "In ascending order: −2194, −2, 1, 1814."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_dd580434e8",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 1, 0.77161, −0.2 in descending order.",
+      "correct_answer": "1, 0.77161, −0.2",
+      "distractors": [
+        "−0.2, 0.77161, 1",
+        "1, −0.2, 0.77161",
+        "0.77161, 1, −0.2"
+      ],
+      "explanation": [
+        "In descending order: 1, 0.77161, −0.2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_e0eb346636",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 0, −747, 355 in ascending order.",
+      "correct_answer": "−747, 0, 355",
+      "distractors": [
+        "355, 0, −747",
+        "−747, 355, 0",
+        "0, −747, 355"
+      ],
+      "explanation": [
+        "In ascending order: −747, 0, 355."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_e11ec8ab0e",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 3/134, 3/13, 3/11 in ascending order.",
+      "correct_answer": "3/134, 3/13, 3/11",
+      "distractors": [
+        "3/11, 3/13, 3/134",
+        "3/134, 3/11, 3/13",
+        "3/13, 3/134, 3/11"
+      ],
+      "explanation": [
+        "In ascending order: 3/134, 3/13, 3/11."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_e578f7fdac",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −3/5, −593, −0.9, 0.2, −4 in descending order.",
+      "correct_answer": "0.2, −3/5, −0.9, −4, −593",
+      "distractors": [
+        "−593, −4, −0.9, −3/5, 0.2",
+        "0.2, −3/5, −4, −0.9, −593",
+        "−3/5, 0.2, −0.9, −4, −593"
+      ],
+      "explanation": [
+        "In descending order: 0.2, −3/5, −0.9, −4, −593."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_e5bab514a7",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −2651, −4, −2, −5 in ascending order.",
+      "correct_answer": "−2651, −5, −4, −2",
+      "distractors": [
+        "−2, −4, −5, −2651",
+        "−2651, −5, −2, −4",
+        "−5, −2651, −4, −2"
+      ],
+      "explanation": [
+        "In ascending order: −2651, −5, −4, −2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_e824984e36",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −2, 11, −0.9, 4 in descending order.",
+      "correct_answer": "11, 4, −0.9, −2",
+      "distractors": [
+        "−2, −0.9, 4, 11",
+        "11, 4, −2, −0.9",
+        "11, −0.9, 4, −2"
+      ],
+      "explanation": [
+        "In descending order: 11, 4, −0.9, −2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_e95176fcd3",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 132, −3, −4 in ascending order.",
+      "correct_answer": "−4, −3, 132",
+      "distractors": [
+        "132, −3, −4",
+        "−4, 132, −3",
+        "−3, −4, 132"
+      ],
+      "explanation": [
+        "In ascending order: −4, −3, 132."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_ea7ec38ba8",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −1, −3, −7 in descending order.",
+      "correct_answer": "−1, −3, −7",
+      "distractors": [
+        "−7, −3, −1",
+        "−3, −1, −7",
+        "−1, −7, −3"
+      ],
+      "explanation": [
+        "In descending order: −1, −3, −7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_eba03272a3",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −10/7, −0.05, 9, 1/6, −74, 0 in descending order.",
+      "correct_answer": "9, 1/6, 0, −0.05, −10/7, −74",
+      "distractors": [
+        "−74, −10/7, −0.05, 0, 1/6, 9",
+        "9, 1/6, 0, −0.05, −74, −10/7",
+        "9, 0, 1/6, −0.05, −10/7, −74"
+      ],
+      "explanation": [
+        "In descending order: 9, 1/6, 0, −0.05, −10/7, −74."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_ec91085096",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −117486, 18, −4 in ascending order.",
+      "correct_answer": "−117486, −4, 18",
+      "distractors": [
+        "18, −4, −117486",
+        "−117486, 18, −4",
+        "−4, −117486, 18"
+      ],
+      "explanation": [
+        "In ascending order: −117486, −4, 18."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_ecb3439f98",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −1, −75/2, 5, 1, 0 in ascending order.",
+      "correct_answer": "−75/2, −1, 0, 1, 5",
+      "distractors": [
+        "5, 1, 0, −1, −75/2",
+        "−75/2, −1, 1, 0, 5",
+        "−1, −75/2, 0, 1, 5"
+      ],
+      "explanation": [
+        "In ascending order: −75/2, −1, 0, 1, 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_ed0822100f",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 10, 1, −556, 15 in ascending order.",
+      "correct_answer": "−556, 1, 10, 15",
+      "distractors": [
+        "15, 10, 1, −556",
+        "1, −556, 10, 15",
+        "−556, 10, 1, 15"
+      ],
+      "explanation": [
+        "In ascending order: −556, 1, 10, 15."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_eea182fb9d",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −85, 2, −3 in ascending order.",
+      "correct_answer": "−85, −3, 2",
+      "distractors": [
+        "2, −3, −85",
+        "−3, −85, 2",
+        "−85, 2, −3"
+      ],
+      "explanation": [
+        "In ascending order: −85, −3, 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_efe3847b44",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −1, −2/9, 12, −2/7, 1/4 in descending order.",
+      "correct_answer": "12, 1/4, −2/9, −2/7, −1",
+      "distractors": [
+        "−1, −2/7, −2/9, 1/4, 12",
+        "12, 1/4, −2/9, −1, −2/7",
+        "12, 1/4, −2/7, −2/9, −1"
+      ],
+      "explanation": [
+        "In descending order: 12, 1/4, −2/9, −2/7, −1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_f170b3cbff",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 0.1, −2, 4, 5/106, 6/7 in ascending order.",
+      "correct_answer": "−2, 5/106, 0.1, 6/7, 4",
+      "distractors": [
+        "4, 6/7, 0.1, 5/106, −2",
+        "−2, 0.1, 5/106, 6/7, 4",
+        "−2, 5/106, 6/7, 0.1, 4"
+      ],
+      "explanation": [
+        "In ascending order: −2, 5/106, 0.1, 6/7, 4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_f1b77cf139",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −10, 2, 1 in ascending order.",
+      "correct_answer": "−10, 1, 2",
+      "distractors": [
+        "2, 1, −10",
+        "−10, 2, 1",
+        "1, −10, 2"
+      ],
+      "explanation": [
+        "In ascending order: −10, 1, 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_f752fc4ee5",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 1/3, 0.2, 5, −2, 2/5, −0.211306 in descending order.",
+      "correct_answer": "5, 2/5, 1/3, 0.2, −0.211306, −2",
+      "distractors": [
+        "−2, −0.211306, 0.2, 1/3, 2/5, 5",
+        "5, 2/5, 1/3, −0.211306, 0.2, −2",
+        "5, 2/5, 1/3, 0.2, −2, −0.211306"
+      ],
+      "explanation": [
+        "In descending order: 5, 2/5, 1/3, 0.2, −0.211306, −2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_f80fbbe162",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −64, −1032, −1 in ascending order.",
+      "correct_answer": "−1032, −64, −1",
+      "distractors": [
+        "−1, −64, −1032",
+        "−1032, −1, −64",
+        "−64, −1032, −1"
+      ],
+      "explanation": [
+        "In ascending order: −1032, −64, −1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_f9affa919a",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −2301, −1, 90, 2 in ascending order.",
+      "correct_answer": "−2301, −1, 2, 90",
+      "distractors": [
+        "90, 2, −1, −2301",
+        "−1, −2301, 2, 90",
+        "−2301, −1, 90, 2"
+      ],
+      "explanation": [
+        "In ascending order: −2301, −1, 2, 90."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_fb0e8dce9e",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 0, −12954, −1, 5, −3 in ascending order.",
+      "correct_answer": "−12954, −3, −1, 0, 5",
+      "distractors": [
+        "5, 0, −1, −3, −12954",
+        "−12954, −1, −3, 0, 5",
+        "−12954, −3, 0, −1, 5"
+      ],
+      "explanation": [
+        "In ascending order: −12954, −3, −1, 0, 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_fc0832ab0d",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −5/2, −330, −0.19 in descending order.",
+      "correct_answer": "−0.19, −5/2, −330",
+      "distractors": [
+        "−330, −5/2, −0.19",
+        "−0.19, −330, −5/2",
+        "−5/2, −0.19, −330"
+      ],
+      "explanation": [
+        "In descending order: −0.19, −5/2, −330."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_feea3cc9cd",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort −1, −103, −96, −5, −8, 4 in descending order.",
+      "correct_answer": "4, −1, −5, −8, −96, −103",
+      "distractors": [
+        "−103, −96, −8, −5, −1, 4",
+        "4, −5, −1, −8, −96, −103",
+        "4, −1, −5, −8, −103, −96"
+      ],
+      "explanation": [
+        "In descending order: 4, −1, −5, −8, −96, −103."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_sort_ff9caca2c6",
+      "concept_id": "sort_rationals",
+      "prompt": "Sort 9, 3, −5, −827, −1 in ascending order.",
+      "correct_answer": "−827, −5, −1, 3, 9",
+      "distractors": [
+        "9, 3, −1, −5, −827",
+        "−827, −5, 3, −1, 9",
+        "−827, −1, −5, 3, 9"
+      ],
+      "explanation": [
+        "In ascending order: −827, −5, −1, 3, 9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "comparison.sort",
+      "license": "Apache-2.0",
+      "answer_format": "commaList"
+    }
+  ]
+}

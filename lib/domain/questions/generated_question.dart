@@ -20,6 +20,13 @@ enum AnswerFormat {
   /// `1.50` is accepted for canonical `1.5` and vice versa.
   decimal,
 
+  /// Comma-separated ordered list of numeric values, e.g.
+  /// `"-167, -2, 0, 2, 3"`. Entry-wise equality by value (each entry
+  /// parsed as integer / Fraction / Decimal); order matters. Surface
+  /// tolerance: arbitrary whitespace around commas. Used for
+  /// `comparison.sort`-style "Sort these values" prompts.
+  commaList,
+
   /// Any other text answer (e.g. time-of-day `3:30`, comparison operator
   /// `>`). Equality is exact-string.
   string,
