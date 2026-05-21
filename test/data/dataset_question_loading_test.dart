@@ -14,9 +14,13 @@ void main() {
     // The sub-concepts currently filled by bundled ingestion. If an
     // ingester adds or removes a bucket this test will flag it.
     //
-    // 12 from DeepMind `arithmetic.add_or_sub` (Chunk 80) + 4 from GSM8K
-    // (Chunk 86).
+    // DeepMind: 12 from `arithmetic.add_or_sub` (Chunk 80) + 5 from
+    // `arithmetic.mul` (Chunk 88) + 3 from `numbers.place_value` (Chunk
+    // 88) + 4 from `numbers.round_number` (Chunk 88) + 1 from
+    // `measurement.time` (Chunk 88) = 25 buckets.
+    // GSM8K: 4 buckets (Chunk 86).
     const deepMindBuckets = {
+      // arithmetic.add_or_sub (Chunk 80)
       'add_within_5',
       'sub_within_5',
       'add_within_10',
@@ -29,6 +33,23 @@ void main() {
       'sub_within_1000',
       'add_2digit_carry',
       'sub_2digit_borrow',
+      // arithmetic.mul (Chunk 88)
+      'mult_facts_within_100',
+      'mult_1digit_by_multiple_of_10',
+      'mult_4digit_by_1digit',
+      'mult_2digit_by_2digit',
+      'mult_multidigit_standard_alg',
+      // numbers.place_value (Chunk 88)
+      'place_value_2digit',
+      'place_value_3digit',
+      'place_value_multidigit',
+      // numbers.round_number (Chunk 88)
+      'round_to_10',
+      'round_to_100',
+      'round_multidigit_any_place',
+      'round_decimals',
+      // measurement.time (Chunk 88)
+      'elapsed_time',
     };
     const gsm8kBuckets = {
       'mult_div_word_2step',

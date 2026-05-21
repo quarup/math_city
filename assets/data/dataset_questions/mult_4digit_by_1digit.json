@@ -1,0 +1,3404 @@
+{
+  "items": [
+    {
+      "id": "deepmind_mathematics_dataset_mul_0030357b48",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "1*34",
+      "correct_answer": "34",
+      "distractors": [
+        "32",
+        "35",
+        "33"
+      ],
+      "explanation": [
+        "1 × 34 = 34"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_00d1cf7c2a",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is the product of 2 and 185?",
+      "correct_answer": "370",
+      "distractors": [
+        "187",
+        "373",
+        "371"
+      ],
+      "explanation": [
+        "2 × 185 = 370"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_01c2cbc64b",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Work out 3 * 360.",
+      "correct_answer": "1080",
+      "distractors": [
+        "1078",
+        "1084",
+        "363"
+      ],
+      "explanation": [
+        "3 × 360 = 1080"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_01fdf2e480",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is 5 times 73?",
+      "correct_answer": "365",
+      "distractors": [
+        "361",
+        "78",
+        "367"
+      ],
+      "explanation": [
+        "5 × 73 = 365"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_03942b26db",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "85*4",
+      "correct_answer": "340",
+      "distractors": [
+        "335",
+        "89",
+        "336"
+      ],
+      "explanation": [
+        "85 × 4 = 340"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_03b310aac5",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Product of 8940 and 5.",
+      "correct_answer": "44700",
+      "distractors": [
+        "44695",
+        "44704",
+        "8945"
+      ],
+      "explanation": [
+        "8940 × 5 = 44700"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_05abbe7063",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Product of 69 and 4.",
+      "correct_answer": "276",
+      "distractors": [
+        "73",
+        "277",
+        "274"
+      ],
+      "explanation": [
+        "69 × 4 = 276"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_05e444190e",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Product of 609 and 5.",
+      "correct_answer": "3045",
+      "distractors": [
+        "3047",
+        "614",
+        "3043"
+      ],
+      "explanation": [
+        "609 × 5 = 3045"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_062076d3cc",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Work out 1 * 9608.",
+      "correct_answer": "9608",
+      "distractors": [
+        "9609",
+        "9606",
+        "9612"
+      ],
+      "explanation": [
+        "1 × 9608 = 9608"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_06e5cc041a",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Multiply 163 and 2.",
+      "correct_answer": "326",
+      "distractors": [
+        "321",
+        "330",
+        "165"
+      ],
+      "explanation": [
+        "163 × 2 = 326"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_07fc868103",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Work out 1 * 14.",
+      "correct_answer": "14",
+      "distractors": [
+        "11",
+        "15",
+        "18"
+      ],
+      "explanation": [
+        "1 × 14 = 14"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_08a580e905",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Multiply 8 and 334.",
+      "correct_answer": "2672",
+      "distractors": [
+        "2673",
+        "2671",
+        "342"
+      ],
+      "explanation": [
+        "8 × 334 = 2672"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_0a56998db9",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "1 times 2675",
+      "correct_answer": "2675",
+      "distractors": [
+        "2671",
+        "2677",
+        "2676"
+      ],
+      "explanation": [
+        "1 × 2675 = 2675"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_0bb3280c58",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "5*550",
+      "correct_answer": "2750",
+      "distractors": [
+        "2754",
+        "2751",
+        "555"
+      ],
+      "explanation": [
+        "5 × 550 = 2750"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_0cf21413f2",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "1 times 479",
+      "correct_answer": "479",
+      "distractors": [
+        "480",
+        "481",
+        "478"
+      ],
+      "explanation": [
+        "1 × 479 = 479"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_0df7f786ce",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Work out 7 * 13.",
+      "correct_answer": "91",
+      "distractors": [
+        "95",
+        "20",
+        "90"
+      ],
+      "explanation": [
+        "7 × 13 = 91"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_0edc65cab6",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Calculate 5*2285.",
+      "correct_answer": "11425",
+      "distractors": [
+        "11422",
+        "2290",
+        "11428"
+      ],
+      "explanation": [
+        "5 × 2285 = 11425"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_11b71896dc",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is 9637 times 5?",
+      "correct_answer": "48185",
+      "distractors": [
+        "48181",
+        "9642",
+        "48180"
+      ],
+      "explanation": [
+        "9637 × 5 = 48185"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_1227258bfa",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is the product of 8 and 65?",
+      "correct_answer": "520",
+      "distractors": [
+        "516",
+        "73",
+        "515"
+      ],
+      "explanation": [
+        "8 × 65 = 520"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_131d0831a1",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "5*24",
+      "correct_answer": "120",
+      "distractors": [
+        "118",
+        "121",
+        "29"
+      ],
+      "explanation": [
+        "5 × 24 = 120"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_13a6dfa0a2",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is 1 times 806?",
+      "correct_answer": "806",
+      "distractors": [
+        "809",
+        "805",
+        "807"
+      ],
+      "explanation": [
+        "1 × 806 = 806"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_13c9241340",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Work out 1 * 29.",
+      "correct_answer": "29",
+      "distractors": [
+        "25",
+        "32",
+        "30"
+      ],
+      "explanation": [
+        "1 × 29 = 29"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_14380d16ae",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "3 times 13",
+      "correct_answer": "39",
+      "distractors": [
+        "38",
+        "16",
+        "35"
+      ],
+      "explanation": [
+        "3 × 13 = 39"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_146437e5cc",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is 54 times 2?",
+      "correct_answer": "108",
+      "distractors": [
+        "111",
+        "56",
+        "113"
+      ],
+      "explanation": [
+        "54 × 2 = 108"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_15fac5304e",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is 87 times 2?",
+      "correct_answer": "174",
+      "distractors": [
+        "89",
+        "173",
+        "178"
+      ],
+      "explanation": [
+        "87 × 2 = 174"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_1639c51f48",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Work out 3 * 28.",
+      "correct_answer": "84",
+      "distractors": [
+        "31",
+        "79",
+        "87"
+      ],
+      "explanation": [
+        "3 × 28 = 84"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_199169e400",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is 1 times 142?",
+      "correct_answer": "142",
+      "distractors": [
+        "137",
+        "139",
+        "143"
+      ],
+      "explanation": [
+        "1 × 142 = 142"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_1d35f7ba39",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "5 * 619",
+      "correct_answer": "3095",
+      "distractors": [
+        "624",
+        "3097",
+        "3092"
+      ],
+      "explanation": [
+        "5 × 619 = 3095"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_1e083f3019",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is 120 times 1?",
+      "correct_answer": "120",
+      "distractors": [
+        "116",
+        "121",
+        "124"
+      ],
+      "explanation": [
+        "120 × 1 = 120"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_1f80effa28",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is 106 times 4?",
+      "correct_answer": "424",
+      "distractors": [
+        "421",
+        "428",
+        "110"
+      ],
+      "explanation": [
+        "106 × 4 = 424"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_23cac44a57",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Calculate 5*121.",
+      "correct_answer": "605",
+      "distractors": [
+        "608",
+        "126",
+        "604"
+      ],
+      "explanation": [
+        "5 × 121 = 605"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_23cccde2b1",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "76 * 7",
+      "correct_answer": "532",
+      "distractors": [
+        "83",
+        "533",
+        "531"
+      ],
+      "explanation": [
+        "76 × 7 = 532"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_2784689c0b",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Work out 5 * 84.",
+      "correct_answer": "420",
+      "distractors": [
+        "418",
+        "421",
+        "89"
+      ],
+      "explanation": [
+        "5 × 84 = 420"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_29b61e8592",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "58 times 9",
+      "correct_answer": "522",
+      "distractors": [
+        "525",
+        "67",
+        "523"
+      ],
+      "explanation": [
+        "58 × 9 = 522"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_2a9816307a",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Multiply 1 and 41.",
+      "correct_answer": "41",
+      "distractors": [
+        "43",
+        "44",
+        "42"
+      ],
+      "explanation": [
+        "1 × 41 = 41"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_2ddb0c08cc",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Work out 3 * 9981.",
+      "correct_answer": "29943",
+      "distractors": [
+        "29942",
+        "29940",
+        "9984"
+      ],
+      "explanation": [
+        "3 × 9981 = 29943"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_339a23f83d",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Calculate 8304*5.",
+      "correct_answer": "41520",
+      "distractors": [
+        "41515",
+        "41518",
+        "8309"
+      ],
+      "explanation": [
+        "8304 × 5 = 41520"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_363c4a7d02",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is the product of 199 and 3?",
+      "correct_answer": "597",
+      "distractors": [
+        "594",
+        "601",
+        "202"
+      ],
+      "explanation": [
+        "199 × 3 = 597"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_37c50a6498",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Calculate 4*1124.",
+      "correct_answer": "4496",
+      "distractors": [
+        "4492",
+        "1128",
+        "4495"
+      ],
+      "explanation": [
+        "4 × 1124 = 4496"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_39e04243bf",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is the product of 4 and 129?",
+      "correct_answer": "516",
+      "distractors": [
+        "133",
+        "513",
+        "514"
+      ],
+      "explanation": [
+        "4 × 129 = 516"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_39f7b8f3ce",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Calculate 4*45.",
+      "correct_answer": "180",
+      "distractors": [
+        "185",
+        "49",
+        "175"
+      ],
+      "explanation": [
+        "4 × 45 = 180"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_3a51698dbe",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Multiply 3 and 17.",
+      "correct_answer": "51",
+      "distractors": [
+        "48",
+        "53",
+        "20"
+      ],
+      "explanation": [
+        "3 × 17 = 51"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_3ab0e77d10",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Product of 98 and 7.",
+      "correct_answer": "686",
+      "distractors": [
+        "105",
+        "682",
+        "681"
+      ],
+      "explanation": [
+        "98 × 7 = 686"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_3b6aa57926",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "1*151",
+      "correct_answer": "151",
+      "distractors": [
+        "152",
+        "150",
+        "156"
+      ],
+      "explanation": [
+        "1 × 151 = 151"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_3da7d90df5",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Calculate 9890*5.",
+      "correct_answer": "49450",
+      "distractors": [
+        "9895",
+        "49447",
+        "49448"
+      ],
+      "explanation": [
+        "9890 × 5 = 49450"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_3eba2f4cca",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "1404 * 1",
+      "correct_answer": "1404",
+      "distractors": [
+        "1405",
+        "1406",
+        "1407"
+      ],
+      "explanation": [
+        "1404 × 1 = 1404"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_3f6aabf760",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "5*1149",
+      "correct_answer": "5745",
+      "distractors": [
+        "1154",
+        "5750",
+        "5740"
+      ],
+      "explanation": [
+        "5 × 1149 = 5745"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_41743390d9",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is 3 times 4068?",
+      "correct_answer": "12204",
+      "distractors": [
+        "12205",
+        "4071",
+        "12201"
+      ],
+      "explanation": [
+        "3 × 4068 = 12204"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_4287b520dd",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Work out 77 * 4.",
+      "correct_answer": "308",
+      "distractors": [
+        "81",
+        "312",
+        "309"
+      ],
+      "explanation": [
+        "77 × 4 = 308"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_4303e0cd1e",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Calculate 5*2522.",
+      "correct_answer": "12610",
+      "distractors": [
+        "12608",
+        "12605",
+        "2527"
+      ],
+      "explanation": [
+        "5 × 2522 = 12610"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_494da4e9a0",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is 336 times 6?",
+      "correct_answer": "2016",
+      "distractors": [
+        "342",
+        "2017",
+        "2018"
+      ],
+      "explanation": [
+        "336 × 6 = 2016"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_495892c074",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "5 times 1091",
+      "correct_answer": "5455",
+      "distractors": [
+        "1096",
+        "5460",
+        "5452"
+      ],
+      "explanation": [
+        "5 × 1091 = 5455"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_4b3a3951c9",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Calculate 1*103.",
+      "correct_answer": "103",
+      "distractors": [
+        "107",
+        "104",
+        "105"
+      ],
+      "explanation": [
+        "1 × 103 = 103"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_4cda5ad06d",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "1 * 2613",
+      "correct_answer": "2613",
+      "distractors": [
+        "2610",
+        "2612",
+        "2614"
+      ],
+      "explanation": [
+        "1 × 2613 = 2613"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_4d4f56d79c",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is the product of 4 and 817?",
+      "correct_answer": "3268",
+      "distractors": [
+        "3266",
+        "3265",
+        "821"
+      ],
+      "explanation": [
+        "4 × 817 = 3268"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_4e869a4674",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is the product of 25 and 9?",
+      "correct_answer": "225",
+      "distractors": [
+        "223",
+        "230",
+        "34"
+      ],
+      "explanation": [
+        "25 × 9 = 225"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_4eb2c3ee18",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Calculate 33*4.",
+      "correct_answer": "132",
+      "distractors": [
+        "131",
+        "37",
+        "137"
+      ],
+      "explanation": [
+        "33 × 4 = 132"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_4f20a6f556",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Calculate 1475*2.",
+      "correct_answer": "2950",
+      "distractors": [
+        "2951",
+        "1477",
+        "2946"
+      ],
+      "explanation": [
+        "1475 × 2 = 2950"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_4f8c243a9b",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "39 * 9",
+      "correct_answer": "351",
+      "distractors": [
+        "356",
+        "48",
+        "355"
+      ],
+      "explanation": [
+        "39 × 9 = 351"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_504963289b",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Product of 126 and 1.",
+      "correct_answer": "126",
+      "distractors": [
+        "122",
+        "129",
+        "127"
+      ],
+      "explanation": [
+        "126 × 1 = 126"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_52bd9170d3",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Product of 155 and 4.",
+      "correct_answer": "620",
+      "distractors": [
+        "618",
+        "615",
+        "159"
+      ],
+      "explanation": [
+        "155 × 4 = 620"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_52ede6bab4",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Multiply 5 and 119.",
+      "correct_answer": "595",
+      "distractors": [
+        "600",
+        "590",
+        "124"
+      ],
+      "explanation": [
+        "5 × 119 = 595"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_53afcc62ba",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "5 * 21",
+      "correct_answer": "105",
+      "distractors": [
+        "107",
+        "109",
+        "26"
+      ],
+      "explanation": [
+        "5 × 21 = 105"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_556436946e",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "3 * 620",
+      "correct_answer": "1860",
+      "distractors": [
+        "623",
+        "1858",
+        "1855"
+      ],
+      "explanation": [
+        "3 × 620 = 1860"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_563b53bba2",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Work out 1 * 1302.",
+      "correct_answer": "1302",
+      "distractors": [
+        "1297",
+        "1298",
+        "1303"
+      ],
+      "explanation": [
+        "1 × 1302 = 1302"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_57e48adc01",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is the product of 2 and 173?",
+      "correct_answer": "346",
+      "distractors": [
+        "347",
+        "175",
+        "341"
+      ],
+      "explanation": [
+        "2 × 173 = 346"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_597d9d81af",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is 3 times 34?",
+      "correct_answer": "102",
+      "distractors": [
+        "101",
+        "37",
+        "103"
+      ],
+      "explanation": [
+        "3 × 34 = 102"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_5bf5f0015b",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Calculate 9*69.",
+      "correct_answer": "621",
+      "distractors": [
+        "78",
+        "620",
+        "624"
+      ],
+      "explanation": [
+        "9 × 69 = 621"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_5c9700c9bd",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is 45 times 7?",
+      "correct_answer": "315",
+      "distractors": [
+        "312",
+        "314",
+        "52"
+      ],
+      "explanation": [
+        "45 × 7 = 315"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_5d0dfd8909",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "4 times 4834",
+      "correct_answer": "19336",
+      "distractors": [
+        "19335",
+        "4838",
+        "19334"
+      ],
+      "explanation": [
+        "4 × 4834 = 19336"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_5d2d0ee01c",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is the product of 7130 and 2?",
+      "correct_answer": "14260",
+      "distractors": [
+        "7132",
+        "14262",
+        "14256"
+      ],
+      "explanation": [
+        "7130 × 2 = 14260"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_5d71f0babb",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is the product of 6 and 3930?",
+      "correct_answer": "23580",
+      "distractors": [
+        "23578",
+        "23584",
+        "3936"
+      ],
+      "explanation": [
+        "6 × 3930 = 23580"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_5ef874bed6",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Multiply 3 and 263.",
+      "correct_answer": "789",
+      "distractors": [
+        "790",
+        "266",
+        "786"
+      ],
+      "explanation": [
+        "3 × 263 = 789"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_60baecb7df",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is 2 times 42?",
+      "correct_answer": "84",
+      "distractors": [
+        "44",
+        "85",
+        "79"
+      ],
+      "explanation": [
+        "2 × 42 = 84"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_64e7cfefd1",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is the product of 3 and 260?",
+      "correct_answer": "780",
+      "distractors": [
+        "781",
+        "784",
+        "263"
+      ],
+      "explanation": [
+        "3 × 260 = 780"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_65edd4905f",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Product of 3 and 275.",
+      "correct_answer": "825",
+      "distractors": [
+        "824",
+        "822",
+        "278"
+      ],
+      "explanation": [
+        "3 × 275 = 825"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_667fa6891a",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is the product of 4846 and 9?",
+      "correct_answer": "43614",
+      "distractors": [
+        "4855",
+        "43617",
+        "43618"
+      ],
+      "explanation": [
+        "4846 × 9 = 43614"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_686fbc00d0",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is 3 times 47?",
+      "correct_answer": "141",
+      "distractors": [
+        "50",
+        "136",
+        "146"
+      ],
+      "explanation": [
+        "3 × 47 = 141"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_68c5adbdc5",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Product of 176 and 8.",
+      "correct_answer": "1408",
+      "distractors": [
+        "1407",
+        "1411",
+        "184"
+      ],
+      "explanation": [
+        "176 × 8 = 1408"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_68ecd926ba",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Multiply 5 and 131.",
+      "correct_answer": "655",
+      "distractors": [
+        "136",
+        "659",
+        "657"
+      ],
+      "explanation": [
+        "5 × 131 = 655"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_690a83c88b",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Product of 1 and 33.",
+      "correct_answer": "33",
+      "distractors": [
+        "34",
+        "30",
+        "28"
+      ],
+      "explanation": [
+        "1 × 33 = 33"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_6bb903fbd7",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is the product of 6 and 6773?",
+      "correct_answer": "40638",
+      "distractors": [
+        "6779",
+        "40634",
+        "40636"
+      ],
+      "explanation": [
+        "6 × 6773 = 40638"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_6fbec3a217",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "331 times 5",
+      "correct_answer": "1655",
+      "distractors": [
+        "1656",
+        "336",
+        "1651"
+      ],
+      "explanation": [
+        "331 × 5 = 1655"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_71d5f65897",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "777 * 2",
+      "correct_answer": "1554",
+      "distractors": [
+        "779",
+        "1552",
+        "1551"
+      ],
+      "explanation": [
+        "777 × 2 = 1554"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_72dd26ea9a",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Product of 2 and 24.",
+      "correct_answer": "48",
+      "distractors": [
+        "51",
+        "26",
+        "44"
+      ],
+      "explanation": [
+        "2 × 24 = 48"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_73dc2b388e",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "3 times 28",
+      "correct_answer": "84",
+      "distractors": [
+        "85",
+        "80",
+        "31"
+      ],
+      "explanation": [
+        "3 × 28 = 84"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_74633a55a2",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Multiply 659 and 1.",
+      "correct_answer": "659",
+      "distractors": [
+        "660",
+        "662",
+        "655"
+      ],
+      "explanation": [
+        "659 × 1 = 659"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_771a02dbdb",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Calculate 2*362.",
+      "correct_answer": "724",
+      "distractors": [
+        "719",
+        "720",
+        "364"
+      ],
+      "explanation": [
+        "2 × 362 = 724"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_778500dee1",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "6317 * 2",
+      "correct_answer": "12634",
+      "distractors": [
+        "12639",
+        "6319",
+        "12633"
+      ],
+      "explanation": [
+        "6317 × 2 = 12634"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_77bc8ce0bd",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Calculate 3087*4.",
+      "correct_answer": "12348",
+      "distractors": [
+        "12351",
+        "3091",
+        "12353"
+      ],
+      "explanation": [
+        "3087 × 4 = 12348"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_7a5d45fdef",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Product of 5 and 15.",
+      "correct_answer": "75",
+      "distractors": [
+        "72",
+        "74",
+        "20"
+      ],
+      "explanation": [
+        "5 × 15 = 75"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_7b85118c73",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is the product of 3 and 1985?",
+      "correct_answer": "5955",
+      "distractors": [
+        "1988",
+        "5956",
+        "5958"
+      ],
+      "explanation": [
+        "3 × 1985 = 5955"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_7cb2c46f3d",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is 2 times 136?",
+      "correct_answer": "272",
+      "distractors": [
+        "138",
+        "274",
+        "276"
+      ],
+      "explanation": [
+        "2 × 136 = 272"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_7cc77eb619",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Calculate 2*637.",
+      "correct_answer": "1274",
+      "distractors": [
+        "639",
+        "1275",
+        "1279"
+      ],
+      "explanation": [
+        "2 × 637 = 1274"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_7d5bb8e414",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Calculate 236*5.",
+      "correct_answer": "1180",
+      "distractors": [
+        "1175",
+        "1178",
+        "241"
+      ],
+      "explanation": [
+        "236 × 5 = 1180"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_7dfcd1927b",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Multiply 9 and 114.",
+      "correct_answer": "1026",
+      "distractors": [
+        "1024",
+        "1029",
+        "123"
+      ],
+      "explanation": [
+        "9 × 114 = 1026"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_7e21fe6bcb",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Product of 5 and 101.",
+      "correct_answer": "505",
+      "distractors": [
+        "504",
+        "507",
+        "106"
+      ],
+      "explanation": [
+        "5 × 101 = 505"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_7f72422810",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is the product of 2 and 8957?",
+      "correct_answer": "17914",
+      "distractors": [
+        "17915",
+        "8959",
+        "17912"
+      ],
+      "explanation": [
+        "2 × 8957 = 17914"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_7ff2cf2c2b",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is 2457 times 5?",
+      "correct_answer": "12285",
+      "distractors": [
+        "2462",
+        "12284",
+        "12282"
+      ],
+      "explanation": [
+        "2457 × 5 = 12285"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_803aa999be",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "1*15",
+      "correct_answer": "15",
+      "distractors": [
+        "16",
+        "17",
+        "19"
+      ],
+      "explanation": [
+        "1 × 15 = 15"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_8083f01eb2",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "4 * 5781",
+      "correct_answer": "23124",
+      "distractors": [
+        "23123",
+        "5785",
+        "23125"
+      ],
+      "explanation": [
+        "4 × 5781 = 23124"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_831ed93be1",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is the product of 379 and 4?",
+      "correct_answer": "1516",
+      "distractors": [
+        "1518",
+        "1517",
+        "383"
+      ],
+      "explanation": [
+        "379 × 4 = 1516"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_835bf0077f",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is 4 times 169?",
+      "correct_answer": "676",
+      "distractors": [
+        "173",
+        "674",
+        "673"
+      ],
+      "explanation": [
+        "4 × 169 = 676"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_837dcc428e",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Calculate 2*186.",
+      "correct_answer": "372",
+      "distractors": [
+        "188",
+        "377",
+        "373"
+      ],
+      "explanation": [
+        "2 × 186 = 372"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_8493579ead",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Multiply 2 and 929.",
+      "correct_answer": "1858",
+      "distractors": [
+        "1857",
+        "1860",
+        "931"
+      ],
+      "explanation": [
+        "2 × 929 = 1858"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_8a0fdbebc2",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Calculate 3*13.",
+      "correct_answer": "39",
+      "distractors": [
+        "43",
+        "16",
+        "38"
+      ],
+      "explanation": [
+        "3 × 13 = 39"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_8b023e1aba",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "3760 * 5",
+      "correct_answer": "18800",
+      "distractors": [
+        "18798",
+        "3765",
+        "18799"
+      ],
+      "explanation": [
+        "3760 × 5 = 18800"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_8ddd78cd5c",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "31*8",
+      "correct_answer": "248",
+      "distractors": [
+        "247",
+        "39",
+        "245"
+      ],
+      "explanation": [
+        "31 × 8 = 248"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_93adfbf5a9",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Calculate 3*41.",
+      "correct_answer": "123",
+      "distractors": [
+        "44",
+        "122",
+        "124"
+      ],
+      "explanation": [
+        "3 × 41 = 123"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_940f6a4dbb",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "62 * 4",
+      "correct_answer": "248",
+      "distractors": [
+        "66",
+        "247",
+        "243"
+      ],
+      "explanation": [
+        "62 × 4 = 248"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_94ca1efb52",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Multiply 320 and 5.",
+      "correct_answer": "1600",
+      "distractors": [
+        "325",
+        "1604",
+        "1601"
+      ],
+      "explanation": [
+        "320 × 5 = 1600"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_965a5f8fcc",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "4*83",
+      "correct_answer": "332",
+      "distractors": [
+        "331",
+        "87",
+        "333"
+      ],
+      "explanation": [
+        "4 × 83 = 332"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_97151564cd",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Work out 3114 * 5.",
+      "correct_answer": "15570",
+      "distractors": [
+        "15566",
+        "15571",
+        "3119"
+      ],
+      "explanation": [
+        "3114 × 5 = 15570"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_99e03f2562",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "1 * 103",
+      "correct_answer": "103",
+      "distractors": [
+        "101",
+        "106",
+        "104"
+      ],
+      "explanation": [
+        "1 × 103 = 103"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_9c5796e8e2",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Multiply 5 and 282.",
+      "correct_answer": "1410",
+      "distractors": [
+        "1409",
+        "287",
+        "1406"
+      ],
+      "explanation": [
+        "5 × 282 = 1410"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_9d620009b9",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is the product of 1448 and 2?",
+      "correct_answer": "2896",
+      "distractors": [
+        "2891",
+        "2894",
+        "1450"
+      ],
+      "explanation": [
+        "1448 × 2 = 2896"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_9e0c256647",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "403 * 8",
+      "correct_answer": "3224",
+      "distractors": [
+        "3225",
+        "411",
+        "3223"
+      ],
+      "explanation": [
+        "403 × 8 = 3224"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_a28f341d36",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Multiply 2 and 851.",
+      "correct_answer": "1702",
+      "distractors": [
+        "1700",
+        "1706",
+        "853"
+      ],
+      "explanation": [
+        "2 × 851 = 1702"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_a3af2f79a3",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Work out 9920 * 5.",
+      "correct_answer": "49600",
+      "distractors": [
+        "9925",
+        "49601",
+        "49603"
+      ],
+      "explanation": [
+        "9920 × 5 = 49600"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_a3b2c3dc0e",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Multiply 165 and 3.",
+      "correct_answer": "495",
+      "distractors": [
+        "492",
+        "499",
+        "168"
+      ],
+      "explanation": [
+        "165 × 3 = 495"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_a4db6a1bca",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "3 times 621",
+      "correct_answer": "1863",
+      "distractors": [
+        "1862",
+        "624",
+        "1859"
+      ],
+      "explanation": [
+        "3 × 621 = 1863"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_a552142380",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Product of 47 and 5.",
+      "correct_answer": "235",
+      "distractors": [
+        "240",
+        "231",
+        "52"
+      ],
+      "explanation": [
+        "47 × 5 = 235"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_a5af2a1bd9",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "378 times 6",
+      "correct_answer": "2268",
+      "distractors": [
+        "384",
+        "2273",
+        "2270"
+      ],
+      "explanation": [
+        "378 × 6 = 2268"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_a6a9953396",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Multiply 5 and 398.",
+      "correct_answer": "1990",
+      "distractors": [
+        "1992",
+        "403",
+        "1988"
+      ],
+      "explanation": [
+        "5 × 398 = 1990"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_a6e1abb6f0",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Calculate 144*3.",
+      "correct_answer": "432",
+      "distractors": [
+        "435",
+        "427",
+        "147"
+      ],
+      "explanation": [
+        "144 × 3 = 432"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_a70850c305",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Product of 62 and 4.",
+      "correct_answer": "248",
+      "distractors": [
+        "66",
+        "246",
+        "247"
+      ],
+      "explanation": [
+        "62 × 4 = 248"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_a9518b88f1",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is 3 times 371?",
+      "correct_answer": "1113",
+      "distractors": [
+        "1112",
+        "374",
+        "1117"
+      ],
+      "explanation": [
+        "3 × 371 = 1113"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_a9c69399aa",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "8*2724",
+      "correct_answer": "21792",
+      "distractors": [
+        "21787",
+        "2732",
+        "21789"
+      ],
+      "explanation": [
+        "8 × 2724 = 21792"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_abfb583ee2",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "3 times 429",
+      "correct_answer": "1287",
+      "distractors": [
+        "1289",
+        "1288",
+        "432"
+      ],
+      "explanation": [
+        "3 × 429 = 1287"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_ac3621ee1d",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Calculate 171*2.",
+      "correct_answer": "342",
+      "distractors": [
+        "173",
+        "339",
+        "338"
+      ],
+      "explanation": [
+        "171 × 2 = 342"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_acbb33b47b",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is 2885 times 1?",
+      "correct_answer": "2885",
+      "distractors": [
+        "2882",
+        "2890",
+        "2886"
+      ],
+      "explanation": [
+        "2885 × 1 = 2885"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_acdbab4ba5",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is the product of 1260 and 4?",
+      "correct_answer": "5040",
+      "distractors": [
+        "1264",
+        "5038",
+        "5039"
+      ],
+      "explanation": [
+        "1260 × 4 = 5040"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_ad8383d685",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Work out 2976 * 5.",
+      "correct_answer": "14880",
+      "distractors": [
+        "14876",
+        "14884",
+        "2981"
+      ],
+      "explanation": [
+        "2976 × 5 = 14880"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_ae7a5adc86",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is 325 times 2?",
+      "correct_answer": "650",
+      "distractors": [
+        "651",
+        "327",
+        "645"
+      ],
+      "explanation": [
+        "325 × 2 = 650"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_aeba620692",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is 4 times 479?",
+      "correct_answer": "1916",
+      "distractors": [
+        "483",
+        "1911",
+        "1917"
+      ],
+      "explanation": [
+        "4 × 479 = 1916"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_af6dcf7837",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "1220 * 3",
+      "correct_answer": "3660",
+      "distractors": [
+        "1223",
+        "3657",
+        "3665"
+      ],
+      "explanation": [
+        "1220 × 3 = 3660"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_b076ea8f7e",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Calculate 5*177.",
+      "correct_answer": "885",
+      "distractors": [
+        "887",
+        "182",
+        "890"
+      ],
+      "explanation": [
+        "5 × 177 = 885"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_b314540b89",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Product of 4 and 389.",
+      "correct_answer": "1556",
+      "distractors": [
+        "393",
+        "1553",
+        "1554"
+      ],
+      "explanation": [
+        "4 × 389 = 1556"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_b56c8d409a",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is 3 times 45?",
+      "correct_answer": "135",
+      "distractors": [
+        "136",
+        "48",
+        "134"
+      ],
+      "explanation": [
+        "3 × 45 = 135"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_b70fdcf5fc",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "1 times 870",
+      "correct_answer": "870",
+      "distractors": [
+        "874",
+        "867",
+        "871"
+      ],
+      "explanation": [
+        "1 × 870 = 870"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_b7db062cb2",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is 3 times 408?",
+      "correct_answer": "1224",
+      "distractors": [
+        "411",
+        "1221",
+        "1226"
+      ],
+      "explanation": [
+        "3 × 408 = 1224"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_bdacd77e26",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is the product of 3 and 64?",
+      "correct_answer": "192",
+      "distractors": [
+        "189",
+        "197",
+        "67"
+      ],
+      "explanation": [
+        "3 × 64 = 192"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_bde3e804ea",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "156 * 3",
+      "correct_answer": "468",
+      "distractors": [
+        "469",
+        "466",
+        "159"
+      ],
+      "explanation": [
+        "156 × 3 = 468"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_bf50284025",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "3 * 828",
+      "correct_answer": "2484",
+      "distractors": [
+        "2482",
+        "831",
+        "2487"
+      ],
+      "explanation": [
+        "3 × 828 = 2484"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_bfc5f5c52f",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "5*8403",
+      "correct_answer": "42015",
+      "distractors": [
+        "42011",
+        "42010",
+        "8408"
+      ],
+      "explanation": [
+        "5 × 8403 = 42015"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_bfcddc1e61",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is the product of 505 and 4?",
+      "correct_answer": "2020",
+      "distractors": [
+        "2018",
+        "2015",
+        "509"
+      ],
+      "explanation": [
+        "505 × 4 = 2020"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_c1b39ab654",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Calculate 9*19.",
+      "correct_answer": "171",
+      "distractors": [
+        "28",
+        "170",
+        "175"
+      ],
+      "explanation": [
+        "9 × 19 = 171"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_c32480b74f",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is 3 times 4515?",
+      "correct_answer": "13545",
+      "distractors": [
+        "4518",
+        "13540",
+        "13550"
+      ],
+      "explanation": [
+        "3 × 4515 = 13545"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_c3742fba35",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "3*285",
+      "correct_answer": "855",
+      "distractors": [
+        "858",
+        "859",
+        "288"
+      ],
+      "explanation": [
+        "3 × 285 = 855"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_c8007262b9",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Multiply 38 and 6.",
+      "correct_answer": "228",
+      "distractors": [
+        "227",
+        "230",
+        "44"
+      ],
+      "explanation": [
+        "38 × 6 = 228"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_c8d4fcae3a",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Calculate 3*1323.",
+      "correct_answer": "3969",
+      "distractors": [
+        "3974",
+        "3973",
+        "1326"
+      ],
+      "explanation": [
+        "3 × 1323 = 3969"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_c8f765ed8d",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Multiply 1 and 27.",
+      "correct_answer": "27",
+      "distractors": [
+        "26",
+        "28",
+        "29"
+      ],
+      "explanation": [
+        "1 × 27 = 27"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_cbda67f17c",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "4 * 14",
+      "correct_answer": "56",
+      "distractors": [
+        "61",
+        "55",
+        "18"
+      ],
+      "explanation": [
+        "4 × 14 = 56"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_cc80cae9a9",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is 3 times 18?",
+      "correct_answer": "54",
+      "distractors": [
+        "50",
+        "49",
+        "21"
+      ],
+      "explanation": [
+        "3 × 18 = 54"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_cd7c5c8880",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "165 * 3",
+      "correct_answer": "495",
+      "distractors": [
+        "497",
+        "494",
+        "168"
+      ],
+      "explanation": [
+        "165 × 3 = 495"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_cd95687c4c",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Multiply 4 and 779.",
+      "correct_answer": "3116",
+      "distractors": [
+        "3120",
+        "3119",
+        "783"
+      ],
+      "explanation": [
+        "4 × 779 = 3116"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_cf21d8bbaa",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Calculate 5*86.",
+      "correct_answer": "430",
+      "distractors": [
+        "426",
+        "91",
+        "432"
+      ],
+      "explanation": [
+        "5 × 86 = 430"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_d03185ca4a",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Multiply 435 and 9.",
+      "correct_answer": "3915",
+      "distractors": [
+        "3917",
+        "444",
+        "3912"
+      ],
+      "explanation": [
+        "435 × 9 = 3915"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_d1135591f1",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Product of 187 and 4.",
+      "correct_answer": "748",
+      "distractors": [
+        "750",
+        "751",
+        "191"
+      ],
+      "explanation": [
+        "187 × 4 = 748"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_d220ef504f",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "5472*2",
+      "correct_answer": "10944",
+      "distractors": [
+        "5474",
+        "10940",
+        "10946"
+      ],
+      "explanation": [
+        "5472 × 2 = 10944"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_d32a89d9f3",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Calculate 1*981.",
+      "correct_answer": "981",
+      "distractors": [
+        "982",
+        "980",
+        "977"
+      ],
+      "explanation": [
+        "1 × 981 = 981"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_d4f244472f",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is 4 times 2605?",
+      "correct_answer": "10420",
+      "distractors": [
+        "10424",
+        "10417",
+        "2609"
+      ],
+      "explanation": [
+        "4 × 2605 = 10420"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_d51e7062da",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Calculate 9*9216.",
+      "correct_answer": "82944",
+      "distractors": [
+        "82942",
+        "9225",
+        "82946"
+      ],
+      "explanation": [
+        "9 × 9216 = 82944"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_d62003eb21",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "8*107",
+      "correct_answer": "856",
+      "distractors": [
+        "115",
+        "854",
+        "859"
+      ],
+      "explanation": [
+        "8 × 107 = 856"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_d77d66b9c4",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Product of 4 and 254.",
+      "correct_answer": "1016",
+      "distractors": [
+        "1021",
+        "1015",
+        "258"
+      ],
+      "explanation": [
+        "4 × 254 = 1016"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_d78280c94c",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Product of 834 and 4.",
+      "correct_answer": "3336",
+      "distractors": [
+        "838",
+        "3332",
+        "3339"
+      ],
+      "explanation": [
+        "834 × 4 = 3336"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_d80355ebeb",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "3*807",
+      "correct_answer": "2421",
+      "distractors": [
+        "810",
+        "2418",
+        "2423"
+      ],
+      "explanation": [
+        "3 × 807 = 2421"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_d95111add8",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Calculate 1290*1.",
+      "correct_answer": "1290",
+      "distractors": [
+        "1291",
+        "1286",
+        "1285"
+      ],
+      "explanation": [
+        "1290 × 1 = 1290"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_d9a44f0d99",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "7*1995",
+      "correct_answer": "13965",
+      "distractors": [
+        "13963",
+        "13962",
+        "2002"
+      ],
+      "explanation": [
+        "7 × 1995 = 13965"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_daedb3d15d",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "5 times 52",
+      "correct_answer": "260",
+      "distractors": [
+        "258",
+        "261",
+        "57"
+      ],
+      "explanation": [
+        "5 × 52 = 260"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_dbb4a57d28",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Work out 601 * 7.",
+      "correct_answer": "4207",
+      "distractors": [
+        "4211",
+        "608",
+        "4212"
+      ],
+      "explanation": [
+        "601 × 7 = 4207"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_dc833124d6",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is 48 times 7?",
+      "correct_answer": "336",
+      "distractors": [
+        "55",
+        "338",
+        "340"
+      ],
+      "explanation": [
+        "48 × 7 = 336"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_de052adf2e",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "3 times 4960",
+      "correct_answer": "14880",
+      "distractors": [
+        "14876",
+        "14884",
+        "4963"
+      ],
+      "explanation": [
+        "3 × 4960 = 14880"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_de18db3619",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "2*393",
+      "correct_answer": "786",
+      "distractors": [
+        "787",
+        "788",
+        "395"
+      ],
+      "explanation": [
+        "2 × 393 = 786"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_de3191f5da",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Work out 7 * 22.",
+      "correct_answer": "154",
+      "distractors": [
+        "29",
+        "159",
+        "153"
+      ],
+      "explanation": [
+        "7 × 22 = 154"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_e02998412d",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "359 times 3",
+      "correct_answer": "1077",
+      "distractors": [
+        "362",
+        "1074",
+        "1081"
+      ],
+      "explanation": [
+        "359 × 3 = 1077"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_e0555014bd",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "4 * 1790",
+      "correct_answer": "7160",
+      "distractors": [
+        "7161",
+        "7165",
+        "1794"
+      ],
+      "explanation": [
+        "4 × 1790 = 7160"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_e421c9210f",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is the product of 245 and 3?",
+      "correct_answer": "735",
+      "distractors": [
+        "733",
+        "736",
+        "248"
+      ],
+      "explanation": [
+        "245 × 3 = 735"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_e43883ec43",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "25 times 8",
+      "correct_answer": "200",
+      "distractors": [
+        "33",
+        "196",
+        "199"
+      ],
+      "explanation": [
+        "25 × 8 = 200"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_e44e6efc8e",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Multiply 2764 and 1.",
+      "correct_answer": "2764",
+      "distractors": [
+        "2762",
+        "2765",
+        "2769"
+      ],
+      "explanation": [
+        "2764 × 1 = 2764"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_e5889ead9a",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Multiply 7 and 64.",
+      "correct_answer": "448",
+      "distractors": [
+        "449",
+        "71",
+        "446"
+      ],
+      "explanation": [
+        "7 × 64 = 448"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_e5c6f3ee40",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is the product of 1261 and 4?",
+      "correct_answer": "5044",
+      "distractors": [
+        "5040",
+        "1265",
+        "5049"
+      ],
+      "explanation": [
+        "1261 × 4 = 5044"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_e66ef71db8",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is 401 times 3?",
+      "correct_answer": "1203",
+      "distractors": [
+        "1202",
+        "404",
+        "1205"
+      ],
+      "explanation": [
+        "401 × 3 = 1203"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_e686f5789c",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Product of 4 and 323.",
+      "correct_answer": "1292",
+      "distractors": [
+        "1291",
+        "1296",
+        "327"
+      ],
+      "explanation": [
+        "4 × 323 = 1292"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_e80e0212df",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Calculate 13*3.",
+      "correct_answer": "39",
+      "distractors": [
+        "16",
+        "40",
+        "43"
+      ],
+      "explanation": [
+        "13 × 3 = 39"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_e9f8ef10c6",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Multiply 75 and 1.",
+      "correct_answer": "75",
+      "distractors": [
+        "70",
+        "76",
+        "78"
+      ],
+      "explanation": [
+        "75 × 1 = 75"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_eaa9e90f05",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Multiply 6 and 26.",
+      "correct_answer": "156",
+      "distractors": [
+        "157",
+        "32",
+        "151"
+      ],
+      "explanation": [
+        "6 × 26 = 156"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_ebb824518f",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Calculate 3*2659.",
+      "correct_answer": "7977",
+      "distractors": [
+        "7981",
+        "2662",
+        "7975"
+      ],
+      "explanation": [
+        "3 × 2659 = 7977"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_ecf9405cfa",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is 8575 times 2?",
+      "correct_answer": "17150",
+      "distractors": [
+        "8577",
+        "17148",
+        "17152"
+      ],
+      "explanation": [
+        "8575 × 2 = 17150"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_ee0b015277",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "5 times 361",
+      "correct_answer": "1805",
+      "distractors": [
+        "1801",
+        "366",
+        "1802"
+      ],
+      "explanation": [
+        "5 × 361 = 1805"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_f49fe1053e",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "What is the product of 2 and 67?",
+      "correct_answer": "134",
+      "distractors": [
+        "69",
+        "131",
+        "136"
+      ],
+      "explanation": [
+        "2 × 67 = 134"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_f5a5f8ee95",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Work out 1775 * 4.",
+      "correct_answer": "7100",
+      "distractors": [
+        "7101",
+        "1779",
+        "7098"
+      ],
+      "explanation": [
+        "1775 × 4 = 7100"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_f685f67995",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "4 * 8864",
+      "correct_answer": "35456",
+      "distractors": [
+        "35451",
+        "8868",
+        "35459"
+      ],
+      "explanation": [
+        "4 × 8864 = 35456"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_f6a1a2c5e9",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "14 * 2",
+      "correct_answer": "28",
+      "distractors": [
+        "30",
+        "16",
+        "27"
+      ],
+      "explanation": [
+        "14 × 2 = 28"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_f72e7e215b",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Work out 142 * 1.",
+      "correct_answer": "142",
+      "distractors": [
+        "145",
+        "143",
+        "147"
+      ],
+      "explanation": [
+        "142 × 1 = 142"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_f92c1915b9",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "13 times 6",
+      "correct_answer": "78",
+      "distractors": [
+        "19",
+        "77",
+        "74"
+      ],
+      "explanation": [
+        "13 × 6 = 78"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_f9c1279ee9",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Product of 4 and 566.",
+      "correct_answer": "2264",
+      "distractors": [
+        "2268",
+        "2261",
+        "570"
+      ],
+      "explanation": [
+        "4 × 566 = 2264"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_fb06cae055",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Work out 9 * 27.",
+      "correct_answer": "243",
+      "distractors": [
+        "239",
+        "36",
+        "247"
+      ],
+      "explanation": [
+        "9 × 27 = 243"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_fe6abbdbb8",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "3 times 74",
+      "correct_answer": "222",
+      "distractors": [
+        "77",
+        "219",
+        "226"
+      ],
+      "explanation": [
+        "3 × 74 = 222"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_fecf181f88",
+      "concept_id": "mult_4digit_by_1digit",
+      "prompt": "Calculate 1*12.",
+      "correct_answer": "12",
+      "distractors": [
+        "8",
+        "7",
+        "13"
+      ],
+      "explanation": [
+        "1 × 12 = 12"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    }
+  ]
+}

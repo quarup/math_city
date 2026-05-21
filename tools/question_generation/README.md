@@ -25,7 +25,15 @@ package importable.
 | Script | Source dataset | Module(s) | License |
 |---|---|---|---|
 | `ingest_deepmind_arithmetic.py` | DeepMind [`mathematics_dataset`](https://github.com/google-deepmind/mathematics_dataset) | `arithmetic.add_or_sub` | Apache 2.0 |
+| `ingest_deepmind_arithmetic_mul.py` | DeepMind | `arithmetic.mul` (whole-number subset) | Apache 2.0 |
+| `ingest_deepmind_numbers.py` | DeepMind | `numbers.place_value` + `numbers.round_number` | Apache 2.0 |
+| `ingest_deepmind_measurement.py` | DeepMind | `measurement.time` (after/before variants) | Apache 2.0 |
 | `ingest_gsm8k.py` | [GSM8K](https://github.com/openai/grade-school-math) | `main` (4 sub-concept buckets — see audit) | MIT |
+
+Shared helpers live in [deepmind_common.py](deepmind_common.py): item-ID
+hashing, integer-distractor generation, and the idempotent per-source JSON
+merge writer (re-runs replace only this ingester's rows; other ingesters'
+rows in the same file survive).
 
 More modules and datasets will be added incrementally. See plan.md §
 "Dataset ingestion sub-track" for the priority list.

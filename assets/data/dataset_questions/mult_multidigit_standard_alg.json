@@ -1,0 +1,3404 @@
+{
+  "items": [
+    {
+      "id": "deepmind_mathematics_dataset_mul_0629a27e7c",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Calculate 263*40.",
+      "correct_answer": "10520",
+      "distractors": [
+        "303",
+        "10516",
+        "10517"
+      ],
+      "explanation": [
+        "263 × 40 = 10520"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_064f5b59d9",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "2347 times 1198",
+      "correct_answer": "2811706",
+      "distractors": [
+        "2811703",
+        "2811707",
+        "3545"
+      ],
+      "explanation": [
+        "2347 × 1198 = 2811706"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_072a5f86da",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Work out 971 * 10.",
+      "correct_answer": "9710",
+      "distractors": [
+        "9712",
+        "9714",
+        "981"
+      ],
+      "explanation": [
+        "971 × 10 = 9710"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_08d1f6d38d",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "What is the product of 17 and 253?",
+      "correct_answer": "4301",
+      "distractors": [
+        "4298",
+        "4305",
+        "270"
+      ],
+      "explanation": [
+        "17 × 253 = 4301"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_099f27b7a3",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "3929 * 193",
+      "correct_answer": "758297",
+      "distractors": [
+        "758294",
+        "758292",
+        "4122"
+      ],
+      "explanation": [
+        "3929 × 193 = 758297"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_09e9dd5d02",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "What is the product of 9052 and 22?",
+      "correct_answer": "199144",
+      "distractors": [
+        "199139",
+        "199141",
+        "9074"
+      ],
+      "explanation": [
+        "9052 × 22 = 199144"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_0aa37be903",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Calculate 873*18.",
+      "correct_answer": "15714",
+      "distractors": [
+        "891",
+        "15715",
+        "15709"
+      ],
+      "explanation": [
+        "873 × 18 = 15714"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_0b0f30ab0b",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "What is the product of 39 and 101?",
+      "correct_answer": "3939",
+      "distractors": [
+        "3936",
+        "3944",
+        "140"
+      ],
+      "explanation": [
+        "39 × 101 = 3939"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_0b485a5cc3",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Multiply 98 and 6305.",
+      "correct_answer": "617890",
+      "distractors": [
+        "6403",
+        "617892",
+        "617894"
+      ],
+      "explanation": [
+        "98 × 6305 = 617890"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_0c42635fc6",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Calculate 283*262.",
+      "correct_answer": "74146",
+      "distractors": [
+        "74143",
+        "74145",
+        "545"
+      ],
+      "explanation": [
+        "283 × 262 = 74146"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_0c499426a0",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Calculate 41*4994.",
+      "correct_answer": "204754",
+      "distractors": [
+        "204751",
+        "204757",
+        "5035"
+      ],
+      "explanation": [
+        "41 × 4994 = 204754"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_0e14302e41",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Calculate 296*235.",
+      "correct_answer": "69560",
+      "distractors": [
+        "69562",
+        "69557",
+        "531"
+      ],
+      "explanation": [
+        "296 × 235 = 69560"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_0f1b4fb0b9",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "35 * 4416",
+      "correct_answer": "154560",
+      "distractors": [
+        "154561",
+        "4451",
+        "154564"
+      ],
+      "explanation": [
+        "35 × 4416 = 154560"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_11e1fe2b57",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Calculate 2584*179.",
+      "correct_answer": "462536",
+      "distractors": [
+        "462535",
+        "2763",
+        "462541"
+      ],
+      "explanation": [
+        "2584 × 179 = 462536"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_1268537ed5",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "What is 32 times 422?",
+      "correct_answer": "13504",
+      "distractors": [
+        "13509",
+        "454",
+        "13506"
+      ],
+      "explanation": [
+        "32 × 422 = 13504"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_136ea661e8",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "What is the product of 45 and 2958?",
+      "correct_answer": "133110",
+      "distractors": [
+        "3003",
+        "133106",
+        "133114"
+      ],
+      "explanation": [
+        "45 × 2958 = 133110"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_13a997d84e",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "192 times 6576",
+      "correct_answer": "1262592",
+      "distractors": [
+        "6768",
+        "1262591",
+        "1262596"
+      ],
+      "explanation": [
+        "192 × 6576 = 1262592"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_14f1241c45",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Calculate 760*65.",
+      "correct_answer": "49400",
+      "distractors": [
+        "49397",
+        "825",
+        "49404"
+      ],
+      "explanation": [
+        "760 × 65 = 49400"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_157f23f492",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Work out 4932 * 16.",
+      "correct_answer": "78912",
+      "distractors": [
+        "78909",
+        "4948",
+        "78908"
+      ],
+      "explanation": [
+        "4932 × 16 = 78912"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_1597b02076",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "7767 times 323",
+      "correct_answer": "2508741",
+      "distractors": [
+        "2508738",
+        "2508739",
+        "8090"
+      ],
+      "explanation": [
+        "7767 × 323 = 2508741"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_159ea487dd",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Product of 428 and 243.",
+      "correct_answer": "104004",
+      "distractors": [
+        "104006",
+        "104007",
+        "671"
+      ],
+      "explanation": [
+        "428 × 243 = 104004"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_15dfa05519",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "What is the product of 5575 and 55?",
+      "correct_answer": "306625",
+      "distractors": [
+        "5630",
+        "306630",
+        "306628"
+      ],
+      "explanation": [
+        "5575 × 55 = 306625"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_15fc6e89a5",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Work out 1551 * 7288.",
+      "correct_answer": "11303688",
+      "distractors": [
+        "11303691",
+        "11303686",
+        "8839"
+      ],
+      "explanation": [
+        "1551 × 7288 = 11303688"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_1678ee396f",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Product of 727 and 12.",
+      "correct_answer": "8724",
+      "distractors": [
+        "739",
+        "8723",
+        "8720"
+      ],
+      "explanation": [
+        "727 × 12 = 8724"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_1856322fe6",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Calculate 10*260.",
+      "correct_answer": "2600",
+      "distractors": [
+        "2602",
+        "2604",
+        "270"
+      ],
+      "explanation": [
+        "10 × 260 = 2600"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_18bac3fb44",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "What is 74 times 100?",
+      "correct_answer": "7400",
+      "distractors": [
+        "7397",
+        "174",
+        "7401"
+      ],
+      "explanation": [
+        "74 × 100 = 7400"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_1ce235c0e5",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "2960*17",
+      "correct_answer": "50320",
+      "distractors": [
+        "50318",
+        "50324",
+        "2977"
+      ],
+      "explanation": [
+        "2960 × 17 = 50320"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_1d718ac3a4",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "48*176",
+      "correct_answer": "8448",
+      "distractors": [
+        "8447",
+        "224",
+        "8445"
+      ],
+      "explanation": [
+        "48 × 176 = 8448"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_1d875a1b74",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Calculate 262*452.",
+      "correct_answer": "118424",
+      "distractors": [
+        "118425",
+        "714",
+        "118423"
+      ],
+      "explanation": [
+        "262 × 452 = 118424"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_20e1a05b71",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "4741 * 16",
+      "correct_answer": "75856",
+      "distractors": [
+        "75851",
+        "4757",
+        "75852"
+      ],
+      "explanation": [
+        "4741 × 16 = 75856"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_2261a09614",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Multiply 20 and 316.",
+      "correct_answer": "6320",
+      "distractors": [
+        "336",
+        "6316",
+        "6318"
+      ],
+      "explanation": [
+        "20 × 316 = 6320"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_2283992fdd",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Multiply 1407 and 11.",
+      "correct_answer": "15477",
+      "distractors": [
+        "15474",
+        "15480",
+        "1418"
+      ],
+      "explanation": [
+        "1407 × 11 = 15477"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_2355a90002",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "What is the product of 29 and 542?",
+      "correct_answer": "15718",
+      "distractors": [
+        "571",
+        "15722",
+        "15715"
+      ],
+      "explanation": [
+        "29 × 542 = 15718"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_25bd749c72",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Product of 79 and 9633.",
+      "correct_answer": "761007",
+      "distractors": [
+        "761009",
+        "9712",
+        "761012"
+      ],
+      "explanation": [
+        "79 × 9633 = 761007"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_2727fd856c",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "What is 459 times 4836?",
+      "correct_answer": "2219724",
+      "distractors": [
+        "2219728",
+        "5295",
+        "2219722"
+      ],
+      "explanation": [
+        "459 × 4836 = 2219724"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_27d138c3ce",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "What is the product of 34 and 9819?",
+      "correct_answer": "333846",
+      "distractors": [
+        "333842",
+        "9853",
+        "333851"
+      ],
+      "explanation": [
+        "34 × 9819 = 333846"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_2a7c05ddc8",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "What is 252 times 27?",
+      "correct_answer": "6804",
+      "distractors": [
+        "6808",
+        "279",
+        "6809"
+      ],
+      "explanation": [
+        "252 × 27 = 6804"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_2c96ea12b4",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Calculate 836*72.",
+      "correct_answer": "60192",
+      "distractors": [
+        "60197",
+        "908",
+        "60194"
+      ],
+      "explanation": [
+        "836 × 72 = 60192"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_2d75e0f410",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "12*9463",
+      "correct_answer": "113556",
+      "distractors": [
+        "113554",
+        "113560",
+        "9475"
+      ],
+      "explanation": [
+        "12 × 9463 = 113556"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_2e57820e8c",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "What is the product of 489 and 53?",
+      "correct_answer": "25917",
+      "distractors": [
+        "25921",
+        "25918",
+        "542"
+      ],
+      "explanation": [
+        "489 × 53 = 25917"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_2f475653c5",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Work out 21 * 893.",
+      "correct_answer": "18753",
+      "distractors": [
+        "18748",
+        "914",
+        "18754"
+      ],
+      "explanation": [
+        "21 × 893 = 18753"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_303f193a6e",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Multiply 388 and 2438.",
+      "correct_answer": "945944",
+      "distractors": [
+        "945939",
+        "945941",
+        "2826"
+      ],
+      "explanation": [
+        "388 × 2438 = 945944"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_305dae50fd",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "307 times 7981",
+      "correct_answer": "2450167",
+      "distractors": [
+        "2450162",
+        "2450172",
+        "8288"
+      ],
+      "explanation": [
+        "307 × 7981 = 2450167"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_31ccb39164",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "400 times 34",
+      "correct_answer": "13600",
+      "distractors": [
+        "13602",
+        "434",
+        "13603"
+      ],
+      "explanation": [
+        "400 × 34 = 13600"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_3264e8c18d",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Multiply 5728 and 25.",
+      "correct_answer": "143200",
+      "distractors": [
+        "143195",
+        "143203",
+        "5753"
+      ],
+      "explanation": [
+        "5728 × 25 = 143200"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_3290472396",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Multiply 12 and 6461.",
+      "correct_answer": "77532",
+      "distractors": [
+        "6473",
+        "77535",
+        "77537"
+      ],
+      "explanation": [
+        "12 × 6461 = 77532"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_3298080bd4",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Work out 808 * 59.",
+      "correct_answer": "47672",
+      "distractors": [
+        "867",
+        "47676",
+        "47671"
+      ],
+      "explanation": [
+        "808 × 59 = 47672"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_32f0548d73",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "What is 896 times 324?",
+      "correct_answer": "290304",
+      "distractors": [
+        "290307",
+        "1220",
+        "290305"
+      ],
+      "explanation": [
+        "896 × 324 = 290304"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_34133e8273",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "6553*14",
+      "correct_answer": "91742",
+      "distractors": [
+        "6567",
+        "91746",
+        "91744"
+      ],
+      "explanation": [
+        "6553 × 14 = 91742"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_3677cf5abd",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "612 times 1969",
+      "correct_answer": "1205028",
+      "distractors": [
+        "1205029",
+        "2581",
+        "1205024"
+      ],
+      "explanation": [
+        "612 × 1969 = 1205028"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_36801d53f6",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "247 * 1971",
+      "correct_answer": "486837",
+      "distractors": [
+        "486842",
+        "2218",
+        "486841"
+      ],
+      "explanation": [
+        "247 × 1971 = 486837"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_3a1c394f5f",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "1819 times 265",
+      "correct_answer": "482035",
+      "distractors": [
+        "482037",
+        "482040",
+        "2084"
+      ],
+      "explanation": [
+        "1819 × 265 = 482035"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_3abd20a572",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "What is the product of 151 and 77?",
+      "correct_answer": "11627",
+      "distractors": [
+        "11626",
+        "228",
+        "11622"
+      ],
+      "explanation": [
+        "151 × 77 = 11627"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_3b9e90c060",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Product of 185 and 166.",
+      "correct_answer": "30710",
+      "distractors": [
+        "30709",
+        "30707",
+        "351"
+      ],
+      "explanation": [
+        "185 × 166 = 30710"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_3d063b9a9f",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Product of 5393 and 1263.",
+      "correct_answer": "6811359",
+      "distractors": [
+        "6656",
+        "6811358",
+        "6811356"
+      ],
+      "explanation": [
+        "5393 × 1263 = 6811359"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_3f61a40787",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "6015 times 48",
+      "correct_answer": "288720",
+      "distractors": [
+        "288723",
+        "288718",
+        "6063"
+      ],
+      "explanation": [
+        "6015 × 48 = 288720"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_42f645559f",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "305*34",
+      "correct_answer": "10370",
+      "distractors": [
+        "339",
+        "10374",
+        "10366"
+      ],
+      "explanation": [
+        "305 × 34 = 10370"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_445f0a2ae3",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Multiply 778 and 18.",
+      "correct_answer": "14004",
+      "distractors": [
+        "14000",
+        "14008",
+        "796"
+      ],
+      "explanation": [
+        "778 × 18 = 14004"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_44642c268c",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Calculate 8072*67.",
+      "correct_answer": "540824",
+      "distractors": [
+        "540819",
+        "8139",
+        "540821"
+      ],
+      "explanation": [
+        "8072 × 67 = 540824"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_45e0792a71",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Calculate 1224*235.",
+      "correct_answer": "287640",
+      "distractors": [
+        "287638",
+        "1459",
+        "287641"
+      ],
+      "explanation": [
+        "1224 × 235 = 287640"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_45e4b986fa",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "766*2768",
+      "correct_answer": "2120288",
+      "distractors": [
+        "3534",
+        "2120289",
+        "2120283"
+      ],
+      "explanation": [
+        "766 × 2768 = 2120288"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_45fd6d3ef4",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Work out 757 * 8867.",
+      "correct_answer": "6712319",
+      "distractors": [
+        "9624",
+        "6712318",
+        "6712322"
+      ],
+      "explanation": [
+        "757 × 8867 = 6712319"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_46bc5d1112",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "153*1834",
+      "correct_answer": "280602",
+      "distractors": [
+        "1987",
+        "280603",
+        "280601"
+      ],
+      "explanation": [
+        "153 × 1834 = 280602"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_4808127a5e",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Work out 3147 * 117.",
+      "correct_answer": "368199",
+      "distractors": [
+        "3264",
+        "368194",
+        "368204"
+      ],
+      "explanation": [
+        "3147 × 117 = 368199"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_4b3f16c0e7",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "4531 * 13",
+      "correct_answer": "58903",
+      "distractors": [
+        "4544",
+        "58900",
+        "58904"
+      ],
+      "explanation": [
+        "4531 × 13 = 58903"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_4bc702c305",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "551 * 26",
+      "correct_answer": "14326",
+      "distractors": [
+        "14330",
+        "14322",
+        "577"
+      ],
+      "explanation": [
+        "551 × 26 = 14326"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_4c27be36df",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "3147 * 25",
+      "correct_answer": "78675",
+      "distractors": [
+        "78678",
+        "78677",
+        "3172"
+      ],
+      "explanation": [
+        "3147 × 25 = 78675"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_5005152028",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Calculate 5261*412.",
+      "correct_answer": "2167532",
+      "distractors": [
+        "2167531",
+        "5673",
+        "2167530"
+      ],
+      "explanation": [
+        "5261 × 412 = 2167532"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_5266a228a9",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Multiply 200 and 2863.",
+      "correct_answer": "572600",
+      "distractors": [
+        "572603",
+        "3063",
+        "572596"
+      ],
+      "explanation": [
+        "200 × 2863 = 572600"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_5685e81afb",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "What is the product of 112 and 666?",
+      "correct_answer": "74592",
+      "distractors": [
+        "74594",
+        "778",
+        "74591"
+      ],
+      "explanation": [
+        "112 × 666 = 74592"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_5789775016",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "3644 * 27",
+      "correct_answer": "98388",
+      "distractors": [
+        "98389",
+        "3671",
+        "98387"
+      ],
+      "explanation": [
+        "3644 × 27 = 98388"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_57b9a09940",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Product of 20 and 1181.",
+      "correct_answer": "23620",
+      "distractors": [
+        "23616",
+        "23625",
+        "1201"
+      ],
+      "explanation": [
+        "20 × 1181 = 23620"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_57d65e37ac",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "4184 * 1150",
+      "correct_answer": "4811600",
+      "distractors": [
+        "4811598",
+        "5334",
+        "4811603"
+      ],
+      "explanation": [
+        "4184 × 1150 = 4811600"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_5ac9f57acf",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "653*86",
+      "correct_answer": "56158",
+      "distractors": [
+        "56157",
+        "56162",
+        "739"
+      ],
+      "explanation": [
+        "653 × 86 = 56158"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_5ae1035b74",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Calculate 488*9476.",
+      "correct_answer": "4624288",
+      "distractors": [
+        "4624285",
+        "4624289",
+        "9964"
+      ],
+      "explanation": [
+        "488 × 9476 = 4624288"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_5cbb6bea0d",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "700*2099",
+      "correct_answer": "1469300",
+      "distractors": [
+        "2799",
+        "1469297",
+        "1469303"
+      ],
+      "explanation": [
+        "700 × 2099 = 1469300"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_5d7a8d104c",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Work out 5372 * 1196.",
+      "correct_answer": "6424912",
+      "distractors": [
+        "6424908",
+        "6568",
+        "6424914"
+      ],
+      "explanation": [
+        "5372 × 1196 = 6424912"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_5de006cdab",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Work out 104 * 231.",
+      "correct_answer": "24024",
+      "distractors": [
+        "335",
+        "24025",
+        "24021"
+      ],
+      "explanation": [
+        "104 × 231 = 24024"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_5ebf32e0cb",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Work out 317 * 560.",
+      "correct_answer": "177520",
+      "distractors": [
+        "177522",
+        "877",
+        "177525"
+      ],
+      "explanation": [
+        "317 × 560 = 177520"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_6141b9e89c",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "101 * 14",
+      "correct_answer": "1414",
+      "distractors": [
+        "1418",
+        "1410",
+        "115"
+      ],
+      "explanation": [
+        "101 × 14 = 1414"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_61f204c408",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Calculate 7780*38.",
+      "correct_answer": "295640",
+      "distractors": [
+        "295645",
+        "295641",
+        "7818"
+      ],
+      "explanation": [
+        "7780 × 38 = 295640"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_62edff4030",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Work out 150 * 17.",
+      "correct_answer": "2550",
+      "distractors": [
+        "167",
+        "2548",
+        "2545"
+      ],
+      "explanation": [
+        "150 × 17 = 2550"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_64e1b34e88",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Multiply 102 and 88.",
+      "correct_answer": "8976",
+      "distractors": [
+        "190",
+        "8971",
+        "8980"
+      ],
+      "explanation": [
+        "102 × 88 = 8976"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_67acc5d2fc",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Multiply 160 and 67.",
+      "correct_answer": "10720",
+      "distractors": [
+        "10716",
+        "227",
+        "10723"
+      ],
+      "explanation": [
+        "160 × 67 = 10720"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_67d21d8c5c",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "What is 137 times 8588?",
+      "correct_answer": "1176556",
+      "distractors": [
+        "8725",
+        "1176553",
+        "1176559"
+      ],
+      "explanation": [
+        "137 × 8588 = 1176556"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_682b864a6d",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "What is 811 times 22?",
+      "correct_answer": "17842",
+      "distractors": [
+        "17847",
+        "17839",
+        "833"
+      ],
+      "explanation": [
+        "811 × 22 = 17842"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_687c59f397",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "331 times 381",
+      "correct_answer": "126111",
+      "distractors": [
+        "126106",
+        "126109",
+        "712"
+      ],
+      "explanation": [
+        "331 × 381 = 126111"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_6b8a31731d",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "25 * 1385",
+      "correct_answer": "34625",
+      "distractors": [
+        "34624",
+        "34623",
+        "1410"
+      ],
+      "explanation": [
+        "25 × 1385 = 34625"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_6d98bd23ad",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "25 times 1262",
+      "correct_answer": "31550",
+      "distractors": [
+        "31553",
+        "1287",
+        "31554"
+      ],
+      "explanation": [
+        "25 × 1262 = 31550"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_6ef4db1ba5",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "312*6448",
+      "correct_answer": "2011776",
+      "distractors": [
+        "6760",
+        "2011774",
+        "2011779"
+      ],
+      "explanation": [
+        "312 × 6448 = 2011776"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_6fbd59ed6b",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Calculate 4710*6640.",
+      "correct_answer": "31274400",
+      "distractors": [
+        "31274398",
+        "11350",
+        "31274402"
+      ],
+      "explanation": [
+        "4710 × 6640 = 31274400"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_712d4b32db",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "328 times 42",
+      "correct_answer": "13776",
+      "distractors": [
+        "13778",
+        "370",
+        "13773"
+      ],
+      "explanation": [
+        "328 × 42 = 13776"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_71d51f8b4c",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "What is 44 times 4351?",
+      "correct_answer": "191444",
+      "distractors": [
+        "191440",
+        "191448",
+        "4395"
+      ],
+      "explanation": [
+        "44 × 4351 = 191444"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_7285ccefff",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "54 times 8159",
+      "correct_answer": "440586",
+      "distractors": [
+        "8213",
+        "440581",
+        "440582"
+      ],
+      "explanation": [
+        "54 × 8159 = 440586"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_73d951fdcc",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "277 * 6366",
+      "correct_answer": "1763382",
+      "distractors": [
+        "1763378",
+        "6643",
+        "1763386"
+      ],
+      "explanation": [
+        "277 × 6366 = 1763382"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_74fedf4f58",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "618 * 11",
+      "correct_answer": "6798",
+      "distractors": [
+        "629",
+        "6799",
+        "6794"
+      ],
+      "explanation": [
+        "618 × 11 = 6798"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_75f2c7bfbd",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Multiply 2375 and 11.",
+      "correct_answer": "26125",
+      "distractors": [
+        "26124",
+        "2386",
+        "26121"
+      ],
+      "explanation": [
+        "2375 × 11 = 26125"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_78f8c58a3a",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "5129 * 16",
+      "correct_answer": "82064",
+      "distractors": [
+        "5145",
+        "82065",
+        "82060"
+      ],
+      "explanation": [
+        "5129 × 16 = 82064"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_79a7b7babc",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "What is 187 times 3604?",
+      "correct_answer": "673948",
+      "distractors": [
+        "673949",
+        "3791",
+        "673953"
+      ],
+      "explanation": [
+        "187 × 3604 = 673948"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_7b937abf78",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Product of 33 and 2244.",
+      "correct_answer": "74052",
+      "distractors": [
+        "74048",
+        "74051",
+        "2277"
+      ],
+      "explanation": [
+        "33 × 2244 = 74052"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_7cf913fec4",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Product of 82 and 838.",
+      "correct_answer": "68716",
+      "distractors": [
+        "68715",
+        "68719",
+        "920"
+      ],
+      "explanation": [
+        "82 × 838 = 68716"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_7e2260a701",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Multiply 1153 and 1032.",
+      "correct_answer": "1189896",
+      "distractors": [
+        "1189893",
+        "2185",
+        "1189894"
+      ],
+      "explanation": [
+        "1153 × 1032 = 1189896"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_8171e38182",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Multiply 3968 and 294.",
+      "correct_answer": "1166592",
+      "distractors": [
+        "4262",
+        "1166587",
+        "1166593"
+      ],
+      "explanation": [
+        "3968 × 294 = 1166592"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_81d5c5ef7e",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "985 times 125",
+      "correct_answer": "123125",
+      "distractors": [
+        "123129",
+        "123120",
+        "1110"
+      ],
+      "explanation": [
+        "985 × 125 = 123125"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_81e9dfaa8e",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Multiply 27 and 2182.",
+      "correct_answer": "58914",
+      "distractors": [
+        "2209",
+        "58916",
+        "58919"
+      ],
+      "explanation": [
+        "27 × 2182 = 58914"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_83289be5a9",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "What is the product of 26 and 2618?",
+      "correct_answer": "68068",
+      "distractors": [
+        "68073",
+        "2644",
+        "68067"
+      ],
+      "explanation": [
+        "26 × 2618 = 68068"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_8503eaffca",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Work out 63 * 2956.",
+      "correct_answer": "186228",
+      "distractors": [
+        "3019",
+        "186231",
+        "186233"
+      ],
+      "explanation": [
+        "63 × 2956 = 186228"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_86e957d7ba",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Product of 1725 and 145.",
+      "correct_answer": "250125",
+      "distractors": [
+        "250124",
+        "1870",
+        "250129"
+      ],
+      "explanation": [
+        "1725 × 145 = 250125"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_87d591dd51",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Calculate 835*105.",
+      "correct_answer": "87675",
+      "distractors": [
+        "87677",
+        "940",
+        "87676"
+      ],
+      "explanation": [
+        "835 × 105 = 87675"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_8b257a9a79",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Work out 16 * 171.",
+      "correct_answer": "2736",
+      "distractors": [
+        "187",
+        "2731",
+        "2733"
+      ],
+      "explanation": [
+        "16 × 171 = 2736"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_8bb138838d",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "What is the product of 616 and 20?",
+      "correct_answer": "12320",
+      "distractors": [
+        "636",
+        "12316",
+        "12322"
+      ],
+      "explanation": [
+        "616 × 20 = 12320"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_8f78b2eee3",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "What is the product of 165 and 4918?",
+      "correct_answer": "811470",
+      "distractors": [
+        "811468",
+        "811471",
+        "5083"
+      ],
+      "explanation": [
+        "165 × 4918 = 811470"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_9005e2e4c1",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Product of 1825 and 12.",
+      "correct_answer": "21900",
+      "distractors": [
+        "21903",
+        "21901",
+        "1837"
+      ],
+      "explanation": [
+        "1825 × 12 = 21900"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_9052227185",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "820*153",
+      "correct_answer": "125460",
+      "distractors": [
+        "125464",
+        "973",
+        "125457"
+      ],
+      "explanation": [
+        "820 × 153 = 125460"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_934192a3ba",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "What is 225 times 3350?",
+      "correct_answer": "753750",
+      "distractors": [
+        "753746",
+        "753749",
+        "3575"
+      ],
+      "explanation": [
+        "225 × 3350 = 753750"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_974c530376",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "8630 * 22",
+      "correct_answer": "189860",
+      "distractors": [
+        "189859",
+        "8652",
+        "189858"
+      ],
+      "explanation": [
+        "8630 × 22 = 189860"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_9973349df8",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Product of 360 and 232.",
+      "correct_answer": "83520",
+      "distractors": [
+        "83524",
+        "83523",
+        "592"
+      ],
+      "explanation": [
+        "360 × 232 = 83520"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_9a03c63502",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Calculate 9533*77.",
+      "correct_answer": "734041",
+      "distractors": [
+        "9610",
+        "734040",
+        "734037"
+      ],
+      "explanation": [
+        "9533 × 77 = 734041"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_9abe781256",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "What is 10 times 132?",
+      "correct_answer": "1320",
+      "distractors": [
+        "142",
+        "1319",
+        "1315"
+      ],
+      "explanation": [
+        "10 × 132 = 1320"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_9af3c524d4",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Work out 290 * 467.",
+      "correct_answer": "135430",
+      "distractors": [
+        "135426",
+        "135431",
+        "757"
+      ],
+      "explanation": [
+        "290 × 467 = 135430"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_9dbc9ad9c6",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Multiply 328 and 15.",
+      "correct_answer": "4920",
+      "distractors": [
+        "4925",
+        "343",
+        "4919"
+      ],
+      "explanation": [
+        "328 × 15 = 4920"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_9de8f8032d",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Work out 10 * 3015.",
+      "correct_answer": "30150",
+      "distractors": [
+        "30149",
+        "30152",
+        "3025"
+      ],
+      "explanation": [
+        "10 × 3015 = 30150"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_9e3d34f334",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "What is 16 times 175?",
+      "correct_answer": "2800",
+      "distractors": [
+        "2805",
+        "191",
+        "2798"
+      ],
+      "explanation": [
+        "16 × 175 = 2800"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_a1b0e9dce2",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Calculate 2884*114.",
+      "correct_answer": "328776",
+      "distractors": [
+        "2998",
+        "328772",
+        "328773"
+      ],
+      "explanation": [
+        "2884 × 114 = 328776"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_a1e2f5b2ae",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "What is the product of 2316 and 2530?",
+      "correct_answer": "5859480",
+      "distractors": [
+        "5859481",
+        "5859479",
+        "4846"
+      ],
+      "explanation": [
+        "2316 × 2530 = 5859480"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_a332fd65e2",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Multiply 2241 and 233.",
+      "correct_answer": "522153",
+      "distractors": [
+        "522156",
+        "522149",
+        "2474"
+      ],
+      "explanation": [
+        "2241 × 233 = 522153"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_a409b8f2cc",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "What is 88 times 1127?",
+      "correct_answer": "99176",
+      "distractors": [
+        "99180",
+        "1215",
+        "99174"
+      ],
+      "explanation": [
+        "88 × 1127 = 99176"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_a687911976",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Multiply 165 and 2202.",
+      "correct_answer": "363330",
+      "distractors": [
+        "363327",
+        "363325",
+        "2367"
+      ],
+      "explanation": [
+        "165 × 2202 = 363330"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_a7d993c8ef",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "257 * 3510",
+      "correct_answer": "902070",
+      "distractors": [
+        "902071",
+        "902067",
+        "3767"
+      ],
+      "explanation": [
+        "257 × 3510 = 902070"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_ab1583236f",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "1132 times 10",
+      "correct_answer": "11320",
+      "distractors": [
+        "11321",
+        "1142",
+        "11323"
+      ],
+      "explanation": [
+        "1132 × 10 = 11320"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_abc54bad3f",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "What is the product of 524 and 1107?",
+      "correct_answer": "580068",
+      "distractors": [
+        "1631",
+        "580063",
+        "580065"
+      ],
+      "explanation": [
+        "524 × 1107 = 580068"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_ad7e326695",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Product of 82 and 1381.",
+      "correct_answer": "113242",
+      "distractors": [
+        "113241",
+        "1463",
+        "113245"
+      ],
+      "explanation": [
+        "82 × 1381 = 113242"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_b21d15799f",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Calculate 96*698.",
+      "correct_answer": "67008",
+      "distractors": [
+        "67010",
+        "67012",
+        "794"
+      ],
+      "explanation": [
+        "96 × 698 = 67008"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_b4de7f6f36",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Work out 118 * 1918.",
+      "correct_answer": "226324",
+      "distractors": [
+        "226321",
+        "2036",
+        "226323"
+      ],
+      "explanation": [
+        "118 × 1918 = 226324"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_b69eced556",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "2078 * 1151",
+      "correct_answer": "2391778",
+      "distractors": [
+        "3229",
+        "2391779",
+        "2391782"
+      ],
+      "explanation": [
+        "2078 × 1151 = 2391778"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_b6c3a891ea",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "20 times 5950",
+      "correct_answer": "119000",
+      "distractors": [
+        "118997",
+        "5970",
+        "118998"
+      ],
+      "explanation": [
+        "20 × 5950 = 119000"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_b81bfccc9a",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "148 times 112",
+      "correct_answer": "16576",
+      "distractors": [
+        "16581",
+        "16577",
+        "260"
+      ],
+      "explanation": [
+        "148 × 112 = 16576"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_b8a6df67cd",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Calculate 31*219.",
+      "correct_answer": "6789",
+      "distractors": [
+        "6790",
+        "250",
+        "6792"
+      ],
+      "explanation": [
+        "31 × 219 = 6789"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_bd30eb71ae",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Work out 1512 * 41.",
+      "correct_answer": "61992",
+      "distractors": [
+        "1553",
+        "61991",
+        "61993"
+      ],
+      "explanation": [
+        "1512 × 41 = 61992"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_bfc4418c72",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Work out 8785 * 429.",
+      "correct_answer": "3768765",
+      "distractors": [
+        "3768767",
+        "3768766",
+        "9214"
+      ],
+      "explanation": [
+        "8785 × 429 = 3768765"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_c16aefb15a",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "6074 times 563",
+      "correct_answer": "3419662",
+      "distractors": [
+        "6637",
+        "3419664",
+        "3419665"
+      ],
+      "explanation": [
+        "6074 × 563 = 3419662"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_c2344e182a",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "What is the product of 80 and 358?",
+      "correct_answer": "28640",
+      "distractors": [
+        "28639",
+        "438",
+        "28636"
+      ],
+      "explanation": [
+        "80 × 358 = 28640"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_c2ac2d70d7",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "What is 1072 times 297?",
+      "correct_answer": "318384",
+      "distractors": [
+        "318385",
+        "1369",
+        "318387"
+      ],
+      "explanation": [
+        "1072 × 297 = 318384"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_c5bd62b17f",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Multiply 110 and 41.",
+      "correct_answer": "4510",
+      "distractors": [
+        "4513",
+        "4512",
+        "151"
+      ],
+      "explanation": [
+        "110 × 41 = 4510"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_c673b3cf0f",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "What is the product of 110 and 875?",
+      "correct_answer": "96250",
+      "distractors": [
+        "985",
+        "96249",
+        "96246"
+      ],
+      "explanation": [
+        "110 × 875 = 96250"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_c78f1e7c2c",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Calculate 275*38.",
+      "correct_answer": "10450",
+      "distractors": [
+        "313",
+        "10448",
+        "10451"
+      ],
+      "explanation": [
+        "275 × 38 = 10450"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_c9ac312191",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "694 times 57",
+      "correct_answer": "39558",
+      "distractors": [
+        "39554",
+        "39563",
+        "751"
+      ],
+      "explanation": [
+        "694 × 57 = 39558"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_c9e356c8d8",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Product of 2112 and 9128.",
+      "correct_answer": "19278336",
+      "distractors": [
+        "19278341",
+        "19278337",
+        "11240"
+      ],
+      "explanation": [
+        "2112 × 9128 = 19278336"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_ca1815dff4",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Product of 208 and 5625.",
+      "correct_answer": "1170000",
+      "distractors": [
+        "1170005",
+        "1169996",
+        "5833"
+      ],
+      "explanation": [
+        "208 × 5625 = 1170000"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_ce9cb7bd14",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "273 times 586",
+      "correct_answer": "159978",
+      "distractors": [
+        "159974",
+        "159983",
+        "859"
+      ],
+      "explanation": [
+        "273 × 586 = 159978"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_d0ad33916a",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "820*6170",
+      "correct_answer": "5059400",
+      "distractors": [
+        "5059405",
+        "5059396",
+        "6990"
+      ],
+      "explanation": [
+        "820 × 6170 = 5059400"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_d0c0ff1a35",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "229*58",
+      "correct_answer": "13282",
+      "distractors": [
+        "13279",
+        "13285",
+        "287"
+      ],
+      "explanation": [
+        "229 × 58 = 13282"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_d2c1552d85",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Work out 1324 * 1144.",
+      "correct_answer": "1514656",
+      "distractors": [
+        "2468",
+        "1514659",
+        "1514657"
+      ],
+      "explanation": [
+        "1324 × 1144 = 1514656"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_d2d5ec9a47",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "11 times 154",
+      "correct_answer": "1694",
+      "distractors": [
+        "165",
+        "1692",
+        "1695"
+      ],
+      "explanation": [
+        "11 × 154 = 1694"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_d321ba5bb6",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "What is the product of 58 and 9116?",
+      "correct_answer": "528728",
+      "distractors": [
+        "528726",
+        "9174",
+        "528727"
+      ],
+      "explanation": [
+        "58 × 9116 = 528728"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_d42c371393",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Multiply 8682 and 24.",
+      "correct_answer": "208368",
+      "distractors": [
+        "208365",
+        "8706",
+        "208364"
+      ],
+      "explanation": [
+        "8682 × 24 = 208368"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_d4da251f33",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Calculate 22*4809.",
+      "correct_answer": "105798",
+      "distractors": [
+        "105799",
+        "4831",
+        "105801"
+      ],
+      "explanation": [
+        "22 × 4809 = 105798"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_d596ebc526",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Multiply 863 and 11.",
+      "correct_answer": "9493",
+      "distractors": [
+        "9490",
+        "9495",
+        "874"
+      ],
+      "explanation": [
+        "863 × 11 = 9493"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_d73ee8e9ea",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "1829*154",
+      "correct_answer": "281666",
+      "distractors": [
+        "281664",
+        "281669",
+        "1983"
+      ],
+      "explanation": [
+        "1829 × 154 = 281666"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_d75c46f583",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "373 times 342",
+      "correct_answer": "127566",
+      "distractors": [
+        "127564",
+        "127567",
+        "715"
+      ],
+      "explanation": [
+        "373 × 342 = 127566"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_d97dcb13f4",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "What is the product of 6812 and 2207?",
+      "correct_answer": "15034084",
+      "distractors": [
+        "9019",
+        "15034083",
+        "15034080"
+      ],
+      "explanation": [
+        "6812 × 2207 = 15034084"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_db1aabce02",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Calculate 1854*161.",
+      "correct_answer": "298494",
+      "distractors": [
+        "298493",
+        "2015",
+        "298497"
+      ],
+      "explanation": [
+        "1854 × 161 = 298494"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_e177f87c3c",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "5711 times 17",
+      "correct_answer": "97087",
+      "distractors": [
+        "5728",
+        "97082",
+        "97092"
+      ],
+      "explanation": [
+        "5711 × 17 = 97087"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_e189635f9e",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Work out 329 * 5543.",
+      "correct_answer": "1823647",
+      "distractors": [
+        "5872",
+        "1823643",
+        "1823642"
+      ],
+      "explanation": [
+        "329 × 5543 = 1823647"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_e495c58349",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "34 * 1977",
+      "correct_answer": "67218",
+      "distractors": [
+        "67214",
+        "67220",
+        "2011"
+      ],
+      "explanation": [
+        "34 × 1977 = 67218"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_e6186a50a5",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "2308 times 145",
+      "correct_answer": "334660",
+      "distractors": [
+        "334661",
+        "334663",
+        "2453"
+      ],
+      "explanation": [
+        "2308 × 145 = 334660"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_e6681cbfe8",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Work out 70 * 1232.",
+      "correct_answer": "86240",
+      "distractors": [
+        "1302",
+        "86244",
+        "86245"
+      ],
+      "explanation": [
+        "70 × 1232 = 86240"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_e6f0a6586b",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "What is 2232 times 9320?",
+      "correct_answer": "20802240",
+      "distractors": [
+        "20802239",
+        "11552",
+        "20802236"
+      ],
+      "explanation": [
+        "2232 × 9320 = 20802240"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_e77b1b5db6",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "What is the product of 150 and 4324?",
+      "correct_answer": "648600",
+      "distractors": [
+        "648599",
+        "648595",
+        "4474"
+      ],
+      "explanation": [
+        "150 × 4324 = 648600"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_e9ff6efdb6",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "9512 times 4704",
+      "correct_answer": "44744448",
+      "distractors": [
+        "14216",
+        "44744453",
+        "44744450"
+      ],
+      "explanation": [
+        "9512 × 4704 = 44744448"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_ea7560b8ad",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Product of 1061 and 18.",
+      "correct_answer": "19098",
+      "distractors": [
+        "19097",
+        "19099",
+        "1079"
+      ],
+      "explanation": [
+        "1061 × 18 = 19098"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_eaa66f1404",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "17*1587",
+      "correct_answer": "26979",
+      "distractors": [
+        "26978",
+        "26980",
+        "1604"
+      ],
+      "explanation": [
+        "17 × 1587 = 26979"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_eadab88d5b",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "What is 8113 times 822?",
+      "correct_answer": "6668886",
+      "distractors": [
+        "6668883",
+        "8935",
+        "6668885"
+      ],
+      "explanation": [
+        "8113 × 822 = 6668886"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_eb8e71abc1",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Work out 21 * 1905.",
+      "correct_answer": "40005",
+      "distractors": [
+        "40009",
+        "1926",
+        "40010"
+      ],
+      "explanation": [
+        "21 × 1905 = 40005"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_ebb4903f05",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "What is the product of 15 and 423?",
+      "correct_answer": "6345",
+      "distractors": [
+        "6340",
+        "438",
+        "6343"
+      ],
+      "explanation": [
+        "15 × 423 = 6345"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_ec912f520a",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Product of 386 and 3330.",
+      "correct_answer": "1285380",
+      "distractors": [
+        "3716",
+        "1285378",
+        "1285377"
+      ],
+      "explanation": [
+        "386 × 3330 = 1285380"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_eca66793cf",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "19*257",
+      "correct_answer": "4883",
+      "distractors": [
+        "276",
+        "4886",
+        "4880"
+      ],
+      "explanation": [
+        "19 × 257 = 4883"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_ecae866c06",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "7776*16",
+      "correct_answer": "124416",
+      "distractors": [
+        "7792",
+        "124418",
+        "124417"
+      ],
+      "explanation": [
+        "7776 × 16 = 124416"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_ed25300818",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "8842*6134",
+      "correct_answer": "54236828",
+      "distractors": [
+        "14976",
+        "54236827",
+        "54236831"
+      ],
+      "explanation": [
+        "8842 × 6134 = 54236828"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_ed539a7f6a",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Work out 144 * 2518.",
+      "correct_answer": "362592",
+      "distractors": [
+        "2662",
+        "362593",
+        "362587"
+      ],
+      "explanation": [
+        "144 × 2518 = 362592"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_eda3db99f9",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Calculate 7102*153.",
+      "correct_answer": "1086606",
+      "distractors": [
+        "1086604",
+        "1086605",
+        "7255"
+      ],
+      "explanation": [
+        "7102 × 153 = 1086606"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_edaf015432",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "765 * 244",
+      "correct_answer": "186660",
+      "distractors": [
+        "186665",
+        "1009",
+        "186662"
+      ],
+      "explanation": [
+        "765 × 244 = 186660"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_ee13e976da",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "4713 times 62",
+      "correct_answer": "292206",
+      "distractors": [
+        "292205",
+        "292208",
+        "4775"
+      ],
+      "explanation": [
+        "4713 × 62 = 292206"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_ef4fb0dbe4",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "What is the product of 122 and 4223?",
+      "correct_answer": "515206",
+      "distractors": [
+        "515207",
+        "515202",
+        "4345"
+      ],
+      "explanation": [
+        "122 × 4223 = 515206"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_f0920c1aae",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Product of 56 and 1048.",
+      "correct_answer": "58688",
+      "distractors": [
+        "1104",
+        "58689",
+        "58683"
+      ],
+      "explanation": [
+        "56 × 1048 = 58688"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_f1713a3d4c",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Product of 2051 and 17.",
+      "correct_answer": "34867",
+      "distractors": [
+        "34871",
+        "34862",
+        "2068"
+      ],
+      "explanation": [
+        "2051 × 17 = 34867"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_f1c98dd538",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Calculate 990*433.",
+      "correct_answer": "428670",
+      "distractors": [
+        "1423",
+        "428675",
+        "428669"
+      ],
+      "explanation": [
+        "990 × 433 = 428670"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_f2568f4dca",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Product of 11 and 187.",
+      "correct_answer": "2057",
+      "distractors": [
+        "2060",
+        "198",
+        "2053"
+      ],
+      "explanation": [
+        "11 × 187 = 2057"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_f294b52478",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Work out 476 * 167.",
+      "correct_answer": "79492",
+      "distractors": [
+        "79490",
+        "79489",
+        "643"
+      ],
+      "explanation": [
+        "476 × 167 = 79492"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_f30c818949",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "10 times 376",
+      "correct_answer": "3760",
+      "distractors": [
+        "3758",
+        "3757",
+        "386"
+      ],
+      "explanation": [
+        "10 × 376 = 3760"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_f3beb6d294",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "90 times 443",
+      "correct_answer": "39870",
+      "distractors": [
+        "533",
+        "39865",
+        "39874"
+      ],
+      "explanation": [
+        "90 × 443 = 39870"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_f43a59c4df",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "39 * 767",
+      "correct_answer": "29913",
+      "distractors": [
+        "29916",
+        "29915",
+        "806"
+      ],
+      "explanation": [
+        "39 × 767 = 29913"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_f47f62fcd9",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "13 * 1710",
+      "correct_answer": "22230",
+      "distractors": [
+        "1723",
+        "22235",
+        "22226"
+      ],
+      "explanation": [
+        "13 × 1710 = 22230"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_f69d3339ee",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "What is 29 times 225?",
+      "correct_answer": "6525",
+      "distractors": [
+        "6524",
+        "254",
+        "6530"
+      ],
+      "explanation": [
+        "29 × 225 = 6525"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_f777086a01",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "3923*454",
+      "correct_answer": "1781042",
+      "distractors": [
+        "1781045",
+        "4377",
+        "1781047"
+      ],
+      "explanation": [
+        "3923 × 454 = 1781042"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_f861e341f0",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Work out 3194 * 72.",
+      "correct_answer": "229968",
+      "distractors": [
+        "229964",
+        "229971",
+        "3266"
+      ],
+      "explanation": [
+        "3194 × 72 = 229968"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_f8f9e91904",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Product of 6155 and 57.",
+      "correct_answer": "350835",
+      "distractors": [
+        "350839",
+        "350836",
+        "6212"
+      ],
+      "explanation": [
+        "6155 × 57 = 350835"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_faf43edbfd",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Multiply 297 and 10.",
+      "correct_answer": "2970",
+      "distractors": [
+        "307",
+        "2969",
+        "2966"
+      ],
+      "explanation": [
+        "297 × 10 = 2970"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_fc65524841",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "Product of 795 and 79.",
+      "correct_answer": "62805",
+      "distractors": [
+        "874",
+        "62800",
+        "62807"
+      ],
+      "explanation": [
+        "795 × 79 = 62805"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_mul_ffd6465352",
+      "concept_id": "mult_multidigit_standard_alg",
+      "prompt": "What is the product of 35 and 2885?",
+      "correct_answer": "100975",
+      "distractors": [
+        "100979",
+        "100978",
+        "2920"
+      ],
+      "explanation": [
+        "35 × 2885 = 100975"
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "arithmetic.mul",
+      "license": "Apache-2.0"
+    }
+  ]
+}

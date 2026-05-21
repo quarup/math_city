@@ -1,0 +1,3404 @@
+{
+  "items": [
+    {
+      "id": "deepmind_mathematics_dataset_round_0034c6394d",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.04426 rounded to 1 decimal place?",
+      "correct_answer": "0.0",
+      "distractors": [
+        "0.1",
+        "0.4",
+        "0.3"
+      ],
+      "explanation": [
+        "Round 0.04426 to 1 decimal place gives 0.0."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_0085ba4ae7",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.055362 to two decimal places.",
+      "correct_answer": "0.06",
+      "distractors": [
+        "0.09",
+        "0.04",
+        "0.07"
+      ],
+      "explanation": [
+        "Round 0.055362 to 2 decimal places gives 0.06."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_00acb8580e",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.0876 rounded to two dps?",
+      "correct_answer": "0.09",
+      "distractors": [
+        "0.13",
+        "0.11",
+        "0.05"
+      ],
+      "explanation": [
+        "Round 0.0876 to 2 decimal places gives 0.09."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_02b2fce1ec",
+      "concept_id": "round_decimals",
+      "prompt": "Round 8.64 to 1 dp.",
+      "correct_answer": "8.6",
+      "distractors": [
+        "8.7",
+        "8.9",
+        "9.0"
+      ],
+      "explanation": [
+        "Round 8.64 to 1 decimal place gives 8.6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_02c5c7c7c6",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.02327087936 rounded to 2 dps?",
+      "correct_answer": "0.02",
+      "distractors": [
+        "0.03",
+        "-0.02",
+        "-0.01"
+      ],
+      "explanation": [
+        "Round 0.0232709 to 2 decimal places gives 0.02."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_041a266da0",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.160654 to 2 decimal places.",
+      "correct_answer": "0.16",
+      "distractors": [
+        "0.19",
+        "0.13",
+        "0.18"
+      ],
+      "explanation": [
+        "Round 0.160654 to 2 decimal places gives 0.16."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_045ca35c76",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.0162495861 rounded to 2 dps?",
+      "correct_answer": "0.02",
+      "distractors": [
+        "0.00",
+        "0.04",
+        "-0.02"
+      ],
+      "explanation": [
+        "Round 0.0162496 to 2 decimal places gives 0.02."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_0617e127b8",
+      "concept_id": "round_decimals",
+      "prompt": "What is 1.64661 rounded to two decimal places?",
+      "correct_answer": "1.65",
+      "distractors": [
+        "1.66",
+        "1.68",
+        "1.69"
+      ],
+      "explanation": [
+        "Round 1.64661 to 2 decimal places gives 1.65."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_06512b4dad",
+      "concept_id": "round_decimals",
+      "prompt": "Round 895.70457 to one decimal place.",
+      "correct_answer": "895.7",
+      "distractors": [
+        "895.5",
+        "895.9",
+        "895.3"
+      ],
+      "explanation": [
+        "Round 895.705 to 1 decimal place gives 895.7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_067373a2a4",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.01078 rounded to three decimal places?",
+      "correct_answer": "0.011",
+      "distractors": [
+        "0.010",
+        "0.009",
+        "0.014"
+      ],
+      "explanation": [
+        "Round 0.01078 to 3 decimal places gives 0.011."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_096c309359",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.685921001 to 2 decimal places.",
+      "correct_answer": "0.69",
+      "distractors": [
+        "0.71",
+        "0.65",
+        "0.72"
+      ],
+      "explanation": [
+        "Round 0.685921 to 2 decimal places gives 0.69."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_0a87979bd3",
+      "concept_id": "round_decimals",
+      "prompt": "What is 4.212112502 rounded to 1 dp?",
+      "correct_answer": "4.2",
+      "distractors": [
+        "4.0",
+        "4.5",
+        "4.6"
+      ],
+      "explanation": [
+        "Round 4.21211 to 1 decimal place gives 4.2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_0ba03f0922",
+      "concept_id": "round_decimals",
+      "prompt": "Round 7.09866972 to 2 decimal places.",
+      "correct_answer": "7.10",
+      "distractors": [
+        "7.07",
+        "7.13",
+        "7.09"
+      ],
+      "explanation": [
+        "Round 7.09867 to 2 decimal places gives 7.10."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_0c346cc1b5",
+      "concept_id": "round_decimals",
+      "prompt": "Round 5.413695 to 3 dps.",
+      "correct_answer": "5.414",
+      "distractors": [
+        "5.412",
+        "5.417",
+        "5.411"
+      ],
+      "explanation": [
+        "Round 5.41369 to 3 decimal places gives 5.414."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_0ddf254beb",
+      "concept_id": "round_decimals",
+      "prompt": "Round 6.01829 to two dps.",
+      "correct_answer": "6.02",
+      "distractors": [
+        "6.06",
+        "6.03",
+        "6.00"
+      ],
+      "explanation": [
+        "Round 6.01829 to 2 decimal places gives 6.02."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_12148cef60",
+      "concept_id": "round_decimals",
+      "prompt": "What is 8.9654 rounded to one decimal place?",
+      "correct_answer": "9.0",
+      "distractors": [
+        "8.7",
+        "9.2",
+        "9.4"
+      ],
+      "explanation": [
+        "Round 8.9654 to 1 decimal place gives 9.0."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_12c0b71771",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.424116175 to two dps.",
+      "correct_answer": "0.42",
+      "distractors": [
+        "0.41",
+        "0.39",
+        "0.46"
+      ],
+      "explanation": [
+        "Round 0.424116 to 2 decimal places gives 0.42."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_1304dfb4ed",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.0903 to 1 dp.",
+      "correct_answer": "0.1",
+      "distractors": [
+        "-0.1",
+        "-0.2",
+        "0.2"
+      ],
+      "explanation": [
+        "Round 0.0903 to 1 decimal place gives 0.1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_16355b16cb",
+      "concept_id": "round_decimals",
+      "prompt": "What is 1.177601 rounded to two dps?",
+      "correct_answer": "1.18",
+      "distractors": [
+        "1.19",
+        "1.21",
+        "1.22"
+      ],
+      "explanation": [
+        "Round 1.1776 to 2 decimal places gives 1.18."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_166563287e",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.03226 rounded to three dps?",
+      "correct_answer": "0.032",
+      "distractors": [
+        "0.036",
+        "0.031",
+        "0.033"
+      ],
+      "explanation": [
+        "Round 0.03226 to 3 decimal places gives 0.032."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_193909f6ff",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.0954 to 2 decimal places.",
+      "correct_answer": "0.10",
+      "distractors": [
+        "0.08",
+        "0.13",
+        "0.09"
+      ],
+      "explanation": [
+        "Round 0.0954 to 2 decimal places gives 0.10."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_1b71f31ed5",
+      "concept_id": "round_decimals",
+      "prompt": "What is 185.2752768 rounded to one dp?",
+      "correct_answer": "185.3",
+      "distractors": [
+        "185.4",
+        "184.9",
+        "185.2"
+      ],
+      "explanation": [
+        "Round 185.275 to 1 decimal place gives 185.3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_1beb8b1d0f",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.0165 rounded to 2 dps?",
+      "correct_answer": "0.02",
+      "distractors": [
+        "0.05",
+        "0.01",
+        "0.00"
+      ],
+      "explanation": [
+        "Round 0.0165 to 2 decimal places gives 0.02."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_1ff50c602e",
+      "concept_id": "round_decimals",
+      "prompt": "What is 6.32053967 rounded to 3 decimal places?",
+      "correct_answer": "6.321",
+      "distractors": [
+        "6.319",
+        "6.318",
+        "6.324"
+      ],
+      "explanation": [
+        "Round 6.32054 to 3 decimal places gives 6.321."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_24306d951a",
+      "concept_id": "round_decimals",
+      "prompt": "Round 7.6091828 to two dps.",
+      "correct_answer": "7.61",
+      "distractors": [
+        "7.60",
+        "7.64",
+        "7.62"
+      ],
+      "explanation": [
+        "Round 7.60918 to 2 decimal places gives 7.61."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_2442194cb5",
+      "concept_id": "round_decimals",
+      "prompt": "What is 2.46501 rounded to 2 dps?",
+      "correct_answer": "2.47",
+      "distractors": [
+        "2.49",
+        "2.51",
+        "2.45"
+      ],
+      "explanation": [
+        "Round 2.46501 to 2 decimal places gives 2.47."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_24f9b4fee6",
+      "concept_id": "round_decimals",
+      "prompt": "What is 1.36876695 rounded to 1 dp?",
+      "correct_answer": "1.4",
+      "distractors": [
+        "1.7",
+        "1.0",
+        "1.6"
+      ],
+      "explanation": [
+        "Round 1.36877 to 1 decimal place gives 1.4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_250bbf91d0",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.597202326 rounded to 3 dps?",
+      "correct_answer": "0.597",
+      "distractors": [
+        "0.599",
+        "0.596",
+        "0.598"
+      ],
+      "explanation": [
+        "Round 0.597202 to 3 decimal places gives 0.597."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_255dbfb3be",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.744018561 to 1 dp.",
+      "correct_answer": "0.7",
+      "distractors": [
+        "1.1",
+        "1.0",
+        "0.6"
+      ],
+      "explanation": [
+        "Round 0.744019 to 1 decimal place gives 0.7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_256b4c8b31",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.02401 rounded to two decimal places?",
+      "correct_answer": "0.02",
+      "distractors": [
+        "-0.02",
+        "0.03",
+        "0.05"
+      ],
+      "explanation": [
+        "Round 0.02401 to 2 decimal places gives 0.02."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_2a2b23541e",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.003201 to 3 decimal places.",
+      "correct_answer": "0.003",
+      "distractors": [
+        "0.007",
+        "0.004",
+        "0.002"
+      ],
+      "explanation": [
+        "Round 0.003201 to 3 decimal places gives 0.003."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_2c5e727523",
+      "concept_id": "round_decimals",
+      "prompt": "What is 235.520367 rounded to 2 decimal places?",
+      "correct_answer": "235.52",
+      "distractors": [
+        "235.49",
+        "235.55",
+        "235.56"
+      ],
+      "explanation": [
+        "Round 235.52 to 2 decimal places gives 235.52."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_2cdac05e5d",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.7661 to 1 dp.",
+      "correct_answer": "0.8",
+      "distractors": [
+        "0.4",
+        "0.7",
+        "1.2"
+      ],
+      "explanation": [
+        "Round 0.7661 to 1 decimal place gives 0.8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_3015e3981a",
+      "concept_id": "round_decimals",
+      "prompt": "What is 10.8644 rounded to 1 dp?",
+      "correct_answer": "10.9",
+      "distractors": [
+        "11.2",
+        "10.7",
+        "10.5"
+      ],
+      "explanation": [
+        "Round 10.8644 to 1 decimal place gives 10.9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_306a6bbafd",
+      "concept_id": "round_decimals",
+      "prompt": "Round 2.6125 to 2 decimal places.",
+      "correct_answer": "2.61",
+      "distractors": [
+        "2.59",
+        "2.63",
+        "2.64"
+      ],
+      "explanation": [
+        "Round 2.6125 to 2 decimal places gives 2.61."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_31f17db006",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.0742357 to 2 dps.",
+      "correct_answer": "0.07",
+      "distractors": [
+        "0.10",
+        "0.08",
+        "0.04"
+      ],
+      "explanation": [
+        "Round 0.0742357 to 2 decimal places gives 0.07."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_33516c73ab",
+      "concept_id": "round_decimals",
+      "prompt": "What is 399.92754 rounded to one decimal place?",
+      "correct_answer": "399.9",
+      "distractors": [
+        "400.2",
+        "400.1",
+        "399.8"
+      ],
+      "explanation": [
+        "Round 399.928 to 1 decimal place gives 399.9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_335e0c614b",
+      "concept_id": "round_decimals",
+      "prompt": "Round 97.0438408 to 1 decimal place.",
+      "correct_answer": "97.0",
+      "distractors": [
+        "97.3",
+        "97.2",
+        "97.4"
+      ],
+      "explanation": [
+        "Round 97.0438 to 1 decimal place gives 97.0."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_352bc93a1a",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.03527 rounded to two dps?",
+      "correct_answer": "0.04",
+      "distractors": [
+        "0.01",
+        "0.06",
+        "0.00"
+      ],
+      "explanation": [
+        "Round 0.03527 to 2 decimal places gives 0.04."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_38bb0bf8a7",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.017837136 to three dps.",
+      "correct_answer": "0.018",
+      "distractors": [
+        "0.015",
+        "0.019",
+        "0.020"
+      ],
+      "explanation": [
+        "Round 0.0178371 to 3 decimal places gives 0.018."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_398d362fd6",
+      "concept_id": "round_decimals",
+      "prompt": "Round 2550.69312 to one decimal place.",
+      "correct_answer": "2550.7",
+      "distractors": [
+        "2550.5",
+        "2551.0",
+        "2550.6"
+      ],
+      "explanation": [
+        "Round 2550.69 to 1 decimal place gives 2550.7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_3a22390642",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.24019 to 3 dps.",
+      "correct_answer": "0.240",
+      "distractors": [
+        "0.241",
+        "0.242",
+        "0.243"
+      ],
+      "explanation": [
+        "Round 0.24019 to 3 decimal places gives 0.240."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_3afbee9831",
+      "concept_id": "round_decimals",
+      "prompt": "Round 2.50629406 to two decimal places.",
+      "correct_answer": "2.51",
+      "distractors": [
+        "2.55",
+        "2.53",
+        "2.54"
+      ],
+      "explanation": [
+        "Round 2.50629 to 2 decimal places gives 2.51."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_3f194e5a76",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.01078122 to three dps.",
+      "correct_answer": "0.011",
+      "distractors": [
+        "0.010",
+        "0.015",
+        "0.009"
+      ],
+      "explanation": [
+        "Round 0.0107812 to 3 decimal places gives 0.011."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_40c8c2cb97",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.22405 to two decimal places.",
+      "correct_answer": "0.22",
+      "distractors": [
+        "0.23",
+        "0.24",
+        "0.26"
+      ],
+      "explanation": [
+        "Round 0.22405 to 2 decimal places gives 0.22."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_41853ef26c",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.627448 rounded to 2 dps?",
+      "correct_answer": "0.63",
+      "distractors": [
+        "0.66",
+        "0.61",
+        "0.64"
+      ],
+      "explanation": [
+        "Round 0.627448 to 2 decimal places gives 0.63."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_42a10d41da",
+      "concept_id": "round_decimals",
+      "prompt": "What is 8.40279898 rounded to 2 decimal places?",
+      "correct_answer": "8.40",
+      "distractors": [
+        "8.41",
+        "8.38",
+        "8.43"
+      ],
+      "explanation": [
+        "Round 8.4028 to 2 decimal places gives 8.40."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_47f652f4d7",
+      "concept_id": "round_decimals",
+      "prompt": "What is 1.72 rounded to 1 decimal place?",
+      "correct_answer": "1.7",
+      "distractors": [
+        "1.5",
+        "1.8",
+        "2.0"
+      ],
+      "explanation": [
+        "Round 1.72 to 1 decimal place gives 1.7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_483450cbf8",
+      "concept_id": "round_decimals",
+      "prompt": "Round 13.60802614 to 1 decimal place.",
+      "correct_answer": "13.6",
+      "distractors": [
+        "13.3",
+        "13.8",
+        "13.4"
+      ],
+      "explanation": [
+        "Round 13.608 to 1 decimal place gives 13.6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_4b2822d23e",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.06526 rounded to two decimal places?",
+      "correct_answer": "0.07",
+      "distractors": [
+        "0.03",
+        "0.10",
+        "0.08"
+      ],
+      "explanation": [
+        "Round 0.06526 to 2 decimal places gives 0.07."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_4bee88054f",
+      "concept_id": "round_decimals",
+      "prompt": "What is 1138.456603 rounded to one decimal place?",
+      "correct_answer": "1138.5",
+      "distractors": [
+        "1138.2",
+        "1138.7",
+        "1138.3"
+      ],
+      "explanation": [
+        "Round 1138.46 to 1 decimal place gives 1138.5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_4c5245f418",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.1993 to two dps.",
+      "correct_answer": "0.20",
+      "distractors": [
+        "0.19",
+        "0.23",
+        "0.17"
+      ],
+      "explanation": [
+        "Round 0.1993 to 2 decimal places gives 0.20."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_4c859c789b",
+      "concept_id": "round_decimals",
+      "prompt": "Round 4.067 to 1 dp.",
+      "correct_answer": "4.1",
+      "distractors": [
+        "4.3",
+        "3.7",
+        "4.2"
+      ],
+      "explanation": [
+        "Round 4.067 to 1 decimal place gives 4.1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_4d71cb8f98",
+      "concept_id": "round_decimals",
+      "prompt": "What is 8.0081664 rounded to 3 decimal places?",
+      "correct_answer": "8.008",
+      "distractors": [
+        "8.011",
+        "8.007",
+        "8.006"
+      ],
+      "explanation": [
+        "Round 8.00817 to 3 decimal places gives 8.008."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_4dcb74f519",
+      "concept_id": "round_decimals",
+      "prompt": "What is 2.1815515 rounded to 3 decimal places?",
+      "correct_answer": "2.182",
+      "distractors": [
+        "2.185",
+        "2.186",
+        "2.178"
+      ],
+      "explanation": [
+        "Round 2.18155 to 3 decimal places gives 2.182."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_4e61c1a6ec",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.13400161 rounded to 3 decimal places?",
+      "correct_answer": "0.134",
+      "distractors": [
+        "0.131",
+        "0.138",
+        "0.132"
+      ],
+      "explanation": [
+        "Round 0.134002 to 3 decimal places gives 0.134."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_509f9027d4",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.14866334205 to 2 dps.",
+      "correct_answer": "0.15",
+      "distractors": [
+        "0.14",
+        "0.18",
+        "0.19"
+      ],
+      "explanation": [
+        "Round 0.148663 to 2 decimal places gives 0.15."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_5248439906",
+      "concept_id": "round_decimals",
+      "prompt": "Round 22.45981 to two dps.",
+      "correct_answer": "22.46",
+      "distractors": [
+        "22.48",
+        "22.50",
+        "22.49"
+      ],
+      "explanation": [
+        "Round 22.4598 to 2 decimal places gives 22.46."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_525d94198e",
+      "concept_id": "round_decimals",
+      "prompt": "What is 14.909 rounded to one decimal place?",
+      "correct_answer": "14.9",
+      "distractors": [
+        "14.8",
+        "15.2",
+        "14.6"
+      ],
+      "explanation": [
+        "Round 14.909 to 1 decimal place gives 14.9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_53528dfc9c",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.632010566 rounded to 2 decimal places?",
+      "correct_answer": "0.63",
+      "distractors": [
+        "0.59",
+        "0.60",
+        "0.65"
+      ],
+      "explanation": [
+        "Round 0.632011 to 2 decimal places gives 0.63."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_53b9d36044",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.1136 to 2 decimal places.",
+      "correct_answer": "0.11",
+      "distractors": [
+        "0.12",
+        "0.13",
+        "0.08"
+      ],
+      "explanation": [
+        "Round 0.1136 to 2 decimal places gives 0.11."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_54256684f1",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.461623505 to three decimal places.",
+      "correct_answer": "0.462",
+      "distractors": [
+        "0.463",
+        "0.459",
+        "0.461"
+      ],
+      "explanation": [
+        "Round 0.461624 to 3 decimal places gives 0.462."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_5428dab365",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.1045 rounded to one decimal place?",
+      "correct_answer": "0.1",
+      "distractors": [
+        "0.2",
+        "0.4",
+        "-0.1"
+      ],
+      "explanation": [
+        "Round 0.1045 to 1 decimal place gives 0.1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_5439f2d8f8",
+      "concept_id": "round_decimals",
+      "prompt": "What is 88.9388702 rounded to three dps?",
+      "correct_answer": "88.939",
+      "distractors": [
+        "88.935",
+        "88.943",
+        "88.940"
+      ],
+      "explanation": [
+        "Round 88.9389 to 3 decimal places gives 88.939."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_54b8ad163d",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.0615672927 rounded to 3 dps?",
+      "correct_answer": "0.062",
+      "distractors": [
+        "0.061",
+        "0.063",
+        "0.065"
+      ],
+      "explanation": [
+        "Round 0.0615673 to 3 decimal places gives 0.062."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_56b0a46a3d",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.144043 to 1 dp.",
+      "correct_answer": "0.1",
+      "distractors": [
+        "-0.2",
+        "-0.1",
+        "0.3"
+      ],
+      "explanation": [
+        "Round 0.144043 to 1 decimal place gives 0.1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_577c1be819",
+      "concept_id": "round_decimals",
+      "prompt": "What is 2.44303756 rounded to three dps?",
+      "correct_answer": "2.443",
+      "distractors": [
+        "2.441",
+        "2.446",
+        "2.447"
+      ],
+      "explanation": [
+        "Round 2.44304 to 3 decimal places gives 2.443."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_5870f00c21",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.90203377 rounded to 3 decimal places?",
+      "correct_answer": "0.902",
+      "distractors": [
+        "0.904",
+        "0.899",
+        "0.906"
+      ],
+      "explanation": [
+        "Round 0.902034 to 3 decimal places gives 0.902."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_58abc8fc95",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.030842 rounded to two dps?",
+      "correct_answer": "0.03",
+      "distractors": [
+        "0.01",
+        "0.05",
+        "0.00"
+      ],
+      "explanation": [
+        "Round 0.030842 to 2 decimal places gives 0.03."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_5df2a2806c",
+      "concept_id": "round_decimals",
+      "prompt": "Round 181.452103 to one dp.",
+      "correct_answer": "181.5",
+      "distractors": [
+        "181.8",
+        "181.6",
+        "181.4"
+      ],
+      "explanation": [
+        "Round 181.452 to 1 decimal place gives 181.5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_5f14ee8595",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.095649 rounded to 3 dps?",
+      "correct_answer": "0.096",
+      "distractors": [
+        "0.100",
+        "0.099",
+        "0.092"
+      ],
+      "explanation": [
+        "Round 0.095649 to 3 decimal places gives 0.096."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_6140c5dc75",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.0896114 to two decimal places.",
+      "correct_answer": "0.09",
+      "distractors": [
+        "0.06",
+        "0.11",
+        "0.12"
+      ],
+      "explanation": [
+        "Round 0.0896114 to 2 decimal places gives 0.09."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_616f5334bd",
+      "concept_id": "round_decimals",
+      "prompt": "What is 1.213374 rounded to two dps?",
+      "correct_answer": "1.21",
+      "distractors": [
+        "1.23",
+        "1.22",
+        "1.25"
+      ],
+      "explanation": [
+        "Round 1.21337 to 2 decimal places gives 1.21."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_6176fd220a",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.2694886765 to two dps.",
+      "correct_answer": "0.27",
+      "distractors": [
+        "0.29",
+        "0.30",
+        "0.28"
+      ],
+      "explanation": [
+        "Round 0.269489 to 2 decimal places gives 0.27."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_638801831f",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.086695 rounded to 2 dps?",
+      "correct_answer": "0.09",
+      "distractors": [
+        "0.07",
+        "0.06",
+        "0.10"
+      ],
+      "explanation": [
+        "Round 0.086695 to 2 decimal places gives 0.09."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_6495d37d23",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.0468355 to two dps.",
+      "correct_answer": "0.05",
+      "distractors": [
+        "0.08",
+        "0.09",
+        "0.03"
+      ],
+      "explanation": [
+        "Round 0.0468355 to 2 decimal places gives 0.05."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_657f7234b8",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.3773446515 to two dps.",
+      "correct_answer": "0.38",
+      "distractors": [
+        "0.37",
+        "0.40",
+        "0.41"
+      ],
+      "explanation": [
+        "Round 0.377345 to 2 decimal places gives 0.38."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_65a4880094",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.88900619 rounded to one dp?",
+      "correct_answer": "0.9",
+      "distractors": [
+        "1.2",
+        "1.0",
+        "0.7"
+      ],
+      "explanation": [
+        "Round 0.889006 to 1 decimal place gives 0.9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_666ec41bcf",
+      "concept_id": "round_decimals",
+      "prompt": "Round 2.0286651 to two decimal places.",
+      "correct_answer": "2.03",
+      "distractors": [
+        "2.05",
+        "2.06",
+        "2.07"
+      ],
+      "explanation": [
+        "Round 2.02867 to 2 decimal places gives 2.03."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_690f36f2ce",
+      "concept_id": "round_decimals",
+      "prompt": "Round 1.653343 to 3 decimal places.",
+      "correct_answer": "1.653",
+      "distractors": [
+        "1.654",
+        "1.657",
+        "1.652"
+      ],
+      "explanation": [
+        "Round 1.65334 to 3 decimal places gives 1.653."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_69126390ad",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.18477 rounded to 2 decimal places?",
+      "correct_answer": "0.18",
+      "distractors": [
+        "0.20",
+        "0.15",
+        "0.16"
+      ],
+      "explanation": [
+        "Round 0.18477 to 2 decimal places gives 0.18."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_697b9345d6",
+      "concept_id": "round_decimals",
+      "prompt": "What is 1.96661 rounded to 2 decimal places?",
+      "correct_answer": "1.97",
+      "distractors": [
+        "1.93",
+        "1.94",
+        "1.96"
+      ],
+      "explanation": [
+        "Round 1.96661 to 2 decimal places gives 1.97."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_6a07c1a189",
+      "concept_id": "round_decimals",
+      "prompt": "Round 211.704789 to 2 decimal places.",
+      "correct_answer": "211.70",
+      "distractors": [
+        "211.74",
+        "211.69",
+        "211.66"
+      ],
+      "explanation": [
+        "Round 211.705 to 2 decimal places gives 211.70."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_6a4ceebda8",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.2171 to two decimal places.",
+      "correct_answer": "0.22",
+      "distractors": [
+        "0.21",
+        "0.20",
+        "0.26"
+      ],
+      "explanation": [
+        "Round 0.2171 to 2 decimal places gives 0.22."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_6b8a268c0b",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.11501 to three decimal places.",
+      "correct_answer": "0.115",
+      "distractors": [
+        "0.116",
+        "0.112",
+        "0.114"
+      ],
+      "explanation": [
+        "Round 0.11501 to 3 decimal places gives 0.115."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_6c93157f60",
+      "concept_id": "round_decimals",
+      "prompt": "What is 2.43945037 rounded to two dps?",
+      "correct_answer": "2.44",
+      "distractors": [
+        "2.42",
+        "2.45",
+        "2.46"
+      ],
+      "explanation": [
+        "Round 2.43945 to 2 decimal places gives 2.44."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_6d3ff95763",
+      "concept_id": "round_decimals",
+      "prompt": "What is 5.67569 rounded to 2 decimal places?",
+      "correct_answer": "5.68",
+      "distractors": [
+        "5.67",
+        "5.64",
+        "5.69"
+      ],
+      "explanation": [
+        "Round 5.67569 to 2 decimal places gives 5.68."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_6eb9c008e5",
+      "concept_id": "round_decimals",
+      "prompt": "Round 8.612 to 1 decimal place.",
+      "correct_answer": "8.6",
+      "distractors": [
+        "8.5",
+        "8.9",
+        "8.2"
+      ],
+      "explanation": [
+        "Round 8.612 to 1 decimal place gives 8.6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_6f05fb07a0",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.062665 rounded to two dps?",
+      "correct_answer": "0.06",
+      "distractors": [
+        "0.10",
+        "0.07",
+        "0.08"
+      ],
+      "explanation": [
+        "Round 0.062665 to 2 decimal places gives 0.06."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_6fb195fb0a",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.126305639 rounded to 3 decimal places?",
+      "correct_answer": "0.126",
+      "distractors": [
+        "0.130",
+        "0.122",
+        "0.125"
+      ],
+      "explanation": [
+        "Round 0.126306 to 3 decimal places gives 0.126."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_70703b4005",
+      "concept_id": "round_decimals",
+      "prompt": "Round 1056.17399 to 1 dp.",
+      "correct_answer": "1056.2",
+      "distractors": [
+        "1056.3",
+        "1056.1",
+        "1056.6"
+      ],
+      "explanation": [
+        "Round 1056.17 to 1 decimal place gives 1056.2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_710ca47b32",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.0112751446 rounded to three decimal places?",
+      "correct_answer": "0.011",
+      "distractors": [
+        "0.007",
+        "0.015",
+        "0.010"
+      ],
+      "explanation": [
+        "Round 0.0112751 to 3 decimal places gives 0.011."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_71346ded92",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.06131 to 1 decimal place.",
+      "correct_answer": "0.1",
+      "distractors": [
+        "0.4",
+        "-0.1",
+        "-0.2"
+      ],
+      "explanation": [
+        "Round 0.06131 to 1 decimal place gives 0.1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_7271bd0a1e",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.12095033 rounded to 2 dps?",
+      "correct_answer": "0.12",
+      "distractors": [
+        "0.08",
+        "0.14",
+        "0.13"
+      ],
+      "explanation": [
+        "Round 0.12095 to 2 decimal places gives 0.12."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_75c13ba09e",
+      "concept_id": "round_decimals",
+      "prompt": "What is 241.976961 rounded to one dp?",
+      "correct_answer": "242.0",
+      "distractors": [
+        "242.3",
+        "242.2",
+        "241.9"
+      ],
+      "explanation": [
+        "Round 241.977 to 1 decimal place gives 242.0."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_766ff815ee",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.31091 rounded to one dp?",
+      "correct_answer": "0.3",
+      "distractors": [
+        "0.7",
+        "0.2",
+        "0.6"
+      ],
+      "explanation": [
+        "Round 0.31091 to 1 decimal place gives 0.3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_77e5b70699",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.170807854 to two dps.",
+      "correct_answer": "0.17",
+      "distractors": [
+        "0.20",
+        "0.13",
+        "0.18"
+      ],
+      "explanation": [
+        "Round 0.170808 to 2 decimal places gives 0.17."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_77e83cd3b8",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.16524832 to three dps.",
+      "correct_answer": "0.165",
+      "distractors": [
+        "0.167",
+        "0.168",
+        "0.169"
+      ],
+      "explanation": [
+        "Round 0.165248 to 3 decimal places gives 0.165."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_78e9707dc6",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.9703 to one dp.",
+      "correct_answer": "1.0",
+      "distractors": [
+        "0.6",
+        "0.8",
+        "1.3"
+      ],
+      "explanation": [
+        "Round 0.9703 to 1 decimal place gives 1.0."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_79aeeb8ded",
+      "concept_id": "round_decimals",
+      "prompt": "Round 3.5415309 to three decimal places.",
+      "correct_answer": "3.542",
+      "distractors": [
+        "3.544",
+        "3.541",
+        "3.540"
+      ],
+      "explanation": [
+        "Round 3.54153 to 3 decimal places gives 3.542."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_7a53b6cee5",
+      "concept_id": "round_decimals",
+      "prompt": "What is 12.22459559 rounded to one decimal place?",
+      "correct_answer": "12.2",
+      "distractors": [
+        "12.1",
+        "12.3",
+        "11.8"
+      ],
+      "explanation": [
+        "Round 12.2246 to 1 decimal place gives 12.2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_7b4a2ad62f",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.032638074 to 3 decimal places.",
+      "correct_answer": "0.033",
+      "distractors": [
+        "0.035",
+        "0.034",
+        "0.037"
+      ],
+      "explanation": [
+        "Round 0.0326381 to 3 decimal places gives 0.033."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_7d2baa3153",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.0036700291 rounded to 2 decimal places?",
+      "correct_answer": "0.00",
+      "distractors": [
+        "-0.01",
+        "-0.03",
+        "-0.02"
+      ],
+      "explanation": [
+        "Round 0.00367003 to 2 decimal places gives 0.00."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_7d5acfa1b6",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.14289 rounded to 2 dps?",
+      "correct_answer": "0.14",
+      "distractors": [
+        "0.18",
+        "0.13",
+        "0.16"
+      ],
+      "explanation": [
+        "Round 0.14289 to 2 decimal places gives 0.14."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_7ede94ac46",
+      "concept_id": "round_decimals",
+      "prompt": "What is 4.5790489 rounded to 1 decimal place?",
+      "correct_answer": "4.6",
+      "distractors": [
+        "4.2",
+        "4.3",
+        "4.4"
+      ],
+      "explanation": [
+        "Round 4.57905 to 1 decimal place gives 4.6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_7f83c01b8a",
+      "concept_id": "round_decimals",
+      "prompt": "Round 2.512318706 to three dps.",
+      "correct_answer": "2.512",
+      "distractors": [
+        "2.513",
+        "2.508",
+        "2.516"
+      ],
+      "explanation": [
+        "Round 2.51232 to 3 decimal places gives 2.512."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_80eb66562e",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.7601 rounded to 2 decimal places?",
+      "correct_answer": "0.76",
+      "distractors": [
+        "0.74",
+        "0.78",
+        "0.72"
+      ],
+      "explanation": [
+        "Round 0.7601 to 2 decimal places gives 0.76."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_8111c65e1f",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.062593 to 3 decimal places.",
+      "correct_answer": "0.063",
+      "distractors": [
+        "0.059",
+        "0.067",
+        "0.061"
+      ],
+      "explanation": [
+        "Round 0.062593 to 3 decimal places gives 0.063."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_81243ba0b6",
+      "concept_id": "round_decimals",
+      "prompt": "Round 4.105 to one decimal place.",
+      "correct_answer": "4.1",
+      "distractors": [
+        "4.4",
+        "3.9",
+        "4.0"
+      ],
+      "explanation": [
+        "Round 4.105 to 1 decimal place gives 4.1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_815f79fe45",
+      "concept_id": "round_decimals",
+      "prompt": "Round 6.658288772 to two decimal places.",
+      "correct_answer": "6.66",
+      "distractors": [
+        "6.64",
+        "6.70",
+        "6.67"
+      ],
+      "explanation": [
+        "Round 6.65829 to 2 decimal places gives 6.66."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_830eac14b3",
+      "concept_id": "round_decimals",
+      "prompt": "Round 1.6588 to one decimal place.",
+      "correct_answer": "1.7",
+      "distractors": [
+        "1.9",
+        "1.5",
+        "1.8"
+      ],
+      "explanation": [
+        "Round 1.6588 to 1 decimal place gives 1.7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_83ff5f98a1",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.1069 to 3 dps.",
+      "correct_answer": "0.107",
+      "distractors": [
+        "0.104",
+        "0.110",
+        "0.105"
+      ],
+      "explanation": [
+        "Round 0.1069 to 3 decimal places gives 0.107."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_84eb24cdd4",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.0623234 rounded to three dps?",
+      "correct_answer": "0.062",
+      "distractors": [
+        "0.060",
+        "0.058",
+        "0.065"
+      ],
+      "explanation": [
+        "Round 0.0623234 to 3 decimal places gives 0.062."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_85191b3e39",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.487036525 rounded to three dps?",
+      "correct_answer": "0.487",
+      "distractors": [
+        "0.485",
+        "0.489",
+        "0.491"
+      ],
+      "explanation": [
+        "Round 0.487037 to 3 decimal places gives 0.487."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_85569ca219",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.2457 to one dp.",
+      "correct_answer": "0.2",
+      "distractors": [
+        "0.3",
+        "0.6",
+        "0.1"
+      ],
+      "explanation": [
+        "Round 0.2457 to 1 decimal place gives 0.2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_891a2f5b4a",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.0085171631 rounded to 3 dps?",
+      "correct_answer": "0.009",
+      "distractors": [
+        "0.013",
+        "0.010",
+        "0.012"
+      ],
+      "explanation": [
+        "Round 0.00851716 to 3 decimal places gives 0.009."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_8984cf2a75",
+      "concept_id": "round_decimals",
+      "prompt": "What is 39.46418 rounded to 1 dp?",
+      "correct_answer": "39.5",
+      "distractors": [
+        "39.1",
+        "39.2",
+        "39.4"
+      ],
+      "explanation": [
+        "Round 39.4642 to 1 decimal place gives 39.5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_89d7a1d505",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.472602784 to two dps.",
+      "correct_answer": "0.47",
+      "distractors": [
+        "0.51",
+        "0.46",
+        "0.50"
+      ],
+      "explanation": [
+        "Round 0.472603 to 2 decimal places gives 0.47."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_8a46300e59",
+      "concept_id": "round_decimals",
+      "prompt": "What is 3.7884984 rounded to three dps?",
+      "correct_answer": "3.788",
+      "distractors": [
+        "3.789",
+        "3.790",
+        "3.791"
+      ],
+      "explanation": [
+        "Round 3.7885 to 3 decimal places gives 3.788."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_8c86ef85ff",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.00928577 to three decimal places.",
+      "correct_answer": "0.009",
+      "distractors": [
+        "0.007",
+        "0.006",
+        "0.011"
+      ],
+      "explanation": [
+        "Round 0.00928577 to 3 decimal places gives 0.009."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_8dbca3f7f3",
+      "concept_id": "round_decimals",
+      "prompt": "Round 282.7586 to 1 decimal place.",
+      "correct_answer": "282.8",
+      "distractors": [
+        "283.0",
+        "283.1",
+        "282.4"
+      ],
+      "explanation": [
+        "Round 282.759 to 1 decimal place gives 282.8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_8ed10f0617",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.66239 rounded to 3 dps?",
+      "correct_answer": "0.662",
+      "distractors": [
+        "0.659",
+        "0.666",
+        "0.663"
+      ],
+      "explanation": [
+        "Round 0.66239 to 3 decimal places gives 0.662."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_90b30255f9",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.0218659066 to three decimal places.",
+      "correct_answer": "0.022",
+      "distractors": [
+        "0.018",
+        "0.021",
+        "0.024"
+      ],
+      "explanation": [
+        "Round 0.0218659 to 3 decimal places gives 0.022."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_936737aca5",
+      "concept_id": "round_decimals",
+      "prompt": "Round 260.0271 to 1 decimal place.",
+      "correct_answer": "260.0",
+      "distractors": [
+        "260.3",
+        "259.7",
+        "260.2"
+      ],
+      "explanation": [
+        "Round 260.027 to 1 decimal place gives 260.0."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_93ab6eee79",
+      "concept_id": "round_decimals",
+      "prompt": "What is 2.715 rounded to 1 decimal place?",
+      "correct_answer": "2.7",
+      "distractors": [
+        "2.5",
+        "2.9",
+        "2.3"
+      ],
+      "explanation": [
+        "Round 2.715 to 1 decimal place gives 2.7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_94038516ba",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.0050449413 rounded to 2 dps?",
+      "correct_answer": "0.01",
+      "distractors": [
+        "-0.01",
+        "0.00",
+        "0.03"
+      ],
+      "explanation": [
+        "Round 0.00504494 to 2 decimal places gives 0.01."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_94e5436771",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.842927 to two decimal places.",
+      "correct_answer": "0.84",
+      "distractors": [
+        "0.82",
+        "0.80",
+        "0.88"
+      ],
+      "explanation": [
+        "Round 0.842927 to 2 decimal places gives 0.84."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_97a0d17fd2",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.0069884 to three decimal places.",
+      "correct_answer": "0.007",
+      "distractors": [
+        "0.003",
+        "0.008",
+        "0.005"
+      ],
+      "explanation": [
+        "Round 0.0069884 to 3 decimal places gives 0.007."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_97d5c0f9b4",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.0267 rounded to 3 decimal places?",
+      "correct_answer": "0.027",
+      "distractors": [
+        "0.030",
+        "0.028",
+        "0.031"
+      ],
+      "explanation": [
+        "Round 0.0267 to 3 decimal places gives 0.027."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_98fb4bbb5f",
+      "concept_id": "round_decimals",
+      "prompt": "Round 2.748032 to two dps.",
+      "correct_answer": "2.75",
+      "distractors": [
+        "2.71",
+        "2.74",
+        "2.78"
+      ],
+      "explanation": [
+        "Round 2.74803 to 2 decimal places gives 2.75."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_9946fab41e",
+      "concept_id": "round_decimals",
+      "prompt": "What is 9.428024 rounded to 1 dp?",
+      "correct_answer": "9.4",
+      "distractors": [
+        "9.1",
+        "9.6",
+        "9.2"
+      ],
+      "explanation": [
+        "Round 9.42802 to 1 decimal place gives 9.4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_9e26b426b7",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.18548965 to 2 dps.",
+      "correct_answer": "0.19",
+      "distractors": [
+        "0.22",
+        "0.16",
+        "0.21"
+      ],
+      "explanation": [
+        "Round 0.18549 to 2 decimal places gives 0.19."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_9ee5e1f498",
+      "concept_id": "round_decimals",
+      "prompt": "Round 4.871 to one decimal place.",
+      "correct_answer": "4.9",
+      "distractors": [
+        "4.6",
+        "4.7",
+        "5.1"
+      ],
+      "explanation": [
+        "Round 4.871 to 1 decimal place gives 4.9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_a3637bf878",
+      "concept_id": "round_decimals",
+      "prompt": "Round 1.6372 to one dp.",
+      "correct_answer": "1.6",
+      "distractors": [
+        "1.7",
+        "1.5",
+        "1.9"
+      ],
+      "explanation": [
+        "Round 1.6372 to 1 decimal place gives 1.6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_a547145f92",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.162138213 rounded to 2 dps?",
+      "correct_answer": "0.16",
+      "distractors": [
+        "0.18",
+        "0.17",
+        "0.20"
+      ],
+      "explanation": [
+        "Round 0.162138 to 2 decimal places gives 0.16."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_a690ede755",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.139 rounded to one dp?",
+      "correct_answer": "0.1",
+      "distractors": [
+        "0.0",
+        "0.4",
+        "-0.1"
+      ],
+      "explanation": [
+        "Round 0.139 to 1 decimal place gives 0.1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_a7ef0ffc29",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.581 rounded to 2 decimal places?",
+      "correct_answer": "0.58",
+      "distractors": [
+        "0.56",
+        "0.61",
+        "0.57"
+      ],
+      "explanation": [
+        "Round 0.581 to 2 decimal places gives 0.58."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_a8700ca69d",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.2836 rounded to 2 dps?",
+      "correct_answer": "0.28",
+      "distractors": [
+        "0.27",
+        "0.25",
+        "0.29"
+      ],
+      "explanation": [
+        "Round 0.2836 to 2 decimal places gives 0.28."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_a90741df89",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.01508458 to three decimal places.",
+      "correct_answer": "0.015",
+      "distractors": [
+        "0.017",
+        "0.013",
+        "0.011"
+      ],
+      "explanation": [
+        "Round 0.0150846 to 3 decimal places gives 0.015."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_aa77173249",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.03962 rounded to three decimal places?",
+      "correct_answer": "0.040",
+      "distractors": [
+        "0.041",
+        "0.043",
+        "0.036"
+      ],
+      "explanation": [
+        "Round 0.03962 to 3 decimal places gives 0.040."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_ab65407819",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.3583359 to two decimal places.",
+      "correct_answer": "0.36",
+      "distractors": [
+        "0.37",
+        "0.38",
+        "0.32"
+      ],
+      "explanation": [
+        "Round 0.358336 to 2 decimal places gives 0.36."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_ace20f6bad",
+      "concept_id": "round_decimals",
+      "prompt": "What is 9.9285394 rounded to 1 decimal place?",
+      "correct_answer": "9.9",
+      "distractors": [
+        "10.3",
+        "9.8",
+        "10.1"
+      ],
+      "explanation": [
+        "Round 9.92854 to 1 decimal place gives 9.9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_ae28f57149",
+      "concept_id": "round_decimals",
+      "prompt": "What is 65.11374672 rounded to 2 dps?",
+      "correct_answer": "65.11",
+      "distractors": [
+        "65.10",
+        "65.15",
+        "65.07"
+      ],
+      "explanation": [
+        "Round 65.1137 to 2 decimal places gives 65.11."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_ae7a066835",
+      "concept_id": "round_decimals",
+      "prompt": "What is 26.25029729 rounded to one decimal place?",
+      "correct_answer": "26.3",
+      "distractors": [
+        "26.2",
+        "26.1",
+        "26.7"
+      ],
+      "explanation": [
+        "Round 26.2503 to 1 decimal place gives 26.3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_b2bb5543d0",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.0061538 to 3 dps.",
+      "correct_answer": "0.006",
+      "distractors": [
+        "0.009",
+        "0.003",
+        "0.010"
+      ],
+      "explanation": [
+        "Round 0.0061538 to 3 decimal places gives 0.006."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_b35fb4df87",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.005063 to three dps.",
+      "correct_answer": "0.005",
+      "distractors": [
+        "0.007",
+        "0.006",
+        "0.008"
+      ],
+      "explanation": [
+        "Round 0.005063 to 3 decimal places gives 0.005."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_b5d259297e",
+      "concept_id": "round_decimals",
+      "prompt": "Round 20.068 to 1 dp.",
+      "correct_answer": "20.1",
+      "distractors": [
+        "19.9",
+        "19.8",
+        "20.2"
+      ],
+      "explanation": [
+        "Round 20.068 to 1 decimal place gives 20.1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_b60defa369",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.003722 to 3 decimal places.",
+      "correct_answer": "0.004",
+      "distractors": [
+        "0.003",
+        "0.008",
+        "0.007"
+      ],
+      "explanation": [
+        "Round 0.003722 to 3 decimal places gives 0.004."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_b6cfcc564c",
+      "concept_id": "round_decimals",
+      "prompt": "Round 32.55 to one decimal place.",
+      "correct_answer": "32.6",
+      "distractors": [
+        "32.9",
+        "32.2",
+        "32.3"
+      ],
+      "explanation": [
+        "Round 32.55 to 1 decimal place gives 32.6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_b8ccb9ec39",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.002434 to three decimal places.",
+      "correct_answer": "0.002",
+      "distractors": [
+        "-0.002",
+        "0.004",
+        "0.003"
+      ],
+      "explanation": [
+        "Round 0.002434 to 3 decimal places gives 0.002."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_bac77706df",
+      "concept_id": "round_decimals",
+      "prompt": "What is 13.95174 rounded to one decimal place?",
+      "correct_answer": "14.0",
+      "distractors": [
+        "13.8",
+        "13.9",
+        "14.4"
+      ],
+      "explanation": [
+        "Round 13.9517 to 1 decimal place gives 14.0."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_bf77b4cb9b",
+      "concept_id": "round_decimals",
+      "prompt": "What is 224.1412544 rounded to 1 dp?",
+      "correct_answer": "224.1",
+      "distractors": [
+        "224.5",
+        "223.7",
+        "224.0"
+      ],
+      "explanation": [
+        "Round 224.141 to 1 decimal place gives 224.1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_bf8e3fdd6c",
+      "concept_id": "round_decimals",
+      "prompt": "Round 407.8131 to one dp.",
+      "correct_answer": "407.8",
+      "distractors": [
+        "407.6",
+        "408.1",
+        "408.2"
+      ],
+      "explanation": [
+        "Round 407.813 to 1 decimal place gives 407.8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_c0493d28fc",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.5294633802 rounded to 3 decimal places?",
+      "correct_answer": "0.529",
+      "distractors": [
+        "0.533",
+        "0.531",
+        "0.526"
+      ],
+      "explanation": [
+        "Round 0.529463 to 3 decimal places gives 0.529."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_c0928b3f2c",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.0057463969 rounded to three dps?",
+      "correct_answer": "0.006",
+      "distractors": [
+        "0.010",
+        "0.002",
+        "0.008"
+      ],
+      "explanation": [
+        "Round 0.0057464 to 3 decimal places gives 0.006."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_c568cd7d72",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.06607273 rounded to 2 decimal places?",
+      "correct_answer": "0.07",
+      "distractors": [
+        "0.05",
+        "0.06",
+        "0.09"
+      ],
+      "explanation": [
+        "Round 0.0660727 to 2 decimal places gives 0.07."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_c5dbfdb1e0",
+      "concept_id": "round_decimals",
+      "prompt": "Round 6.2581 to 1 decimal place.",
+      "correct_answer": "6.3",
+      "distractors": [
+        "6.6",
+        "6.7",
+        "6.5"
+      ],
+      "explanation": [
+        "Round 6.2581 to 1 decimal place gives 6.3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_c8eb5f575d",
+      "concept_id": "round_decimals",
+      "prompt": "What is 8860.29956 rounded to one dp?",
+      "correct_answer": "8860.3",
+      "distractors": [
+        "8859.9",
+        "8860.0",
+        "8860.7"
+      ],
+      "explanation": [
+        "Round 8860.3 to 1 decimal place gives 8860.3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_caf73a1e94",
+      "concept_id": "round_decimals",
+      "prompt": "Round 4.17932 to 2 dps.",
+      "correct_answer": "4.18",
+      "distractors": [
+        "4.22",
+        "4.19",
+        "4.15"
+      ],
+      "explanation": [
+        "Round 4.17932 to 2 decimal places gives 4.18."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_cb3af39c68",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.45056 rounded to 2 decimal places?",
+      "correct_answer": "0.45",
+      "distractors": [
+        "0.42",
+        "0.41",
+        "0.47"
+      ],
+      "explanation": [
+        "Round 0.45056 to 2 decimal places gives 0.45."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_cb5e37398f",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.0417228791 rounded to 3 dps?",
+      "correct_answer": "0.042",
+      "distractors": [
+        "0.041",
+        "0.039",
+        "0.040"
+      ],
+      "explanation": [
+        "Round 0.0417229 to 3 decimal places gives 0.042."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_cdec5fd869",
+      "concept_id": "round_decimals",
+      "prompt": "Round 161.1864063 to 1 dp.",
+      "correct_answer": "161.2",
+      "distractors": [
+        "161.4",
+        "160.8",
+        "161.1"
+      ],
+      "explanation": [
+        "Round 161.186 to 1 decimal place gives 161.2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_ced6043dff",
+      "concept_id": "round_decimals",
+      "prompt": "Round 14.687 to one decimal place.",
+      "correct_answer": "14.7",
+      "distractors": [
+        "15.0",
+        "14.4",
+        "14.8"
+      ],
+      "explanation": [
+        "Round 14.687 to 1 decimal place gives 14.7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_cf55dbac3a",
+      "concept_id": "round_decimals",
+      "prompt": "Round 1.09 to two decimal places.",
+      "correct_answer": "1.09",
+      "distractors": [
+        "1.11",
+        "1.13",
+        "1.06"
+      ],
+      "explanation": [
+        "Round 1.09 to 2 decimal places gives 1.09."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_cfccac48e0",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.366053 to three decimal places.",
+      "correct_answer": "0.366",
+      "distractors": [
+        "0.363",
+        "0.365",
+        "0.370"
+      ],
+      "explanation": [
+        "Round 0.366053 to 3 decimal places gives 0.366."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_d106018b3b",
+      "concept_id": "round_decimals",
+      "prompt": "What is 519.75349 rounded to one dp?",
+      "correct_answer": "519.8",
+      "distractors": [
+        "519.9",
+        "519.4",
+        "520.2"
+      ],
+      "explanation": [
+        "Round 519.753 to 1 decimal place gives 519.8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_d3eaea9b71",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.310411 to two dps.",
+      "correct_answer": "0.31",
+      "distractors": [
+        "0.29",
+        "0.33",
+        "0.35"
+      ],
+      "explanation": [
+        "Round 0.310411 to 2 decimal places gives 0.31."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_d6061c2038",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.0542 rounded to 2 dps?",
+      "correct_answer": "0.05",
+      "distractors": [
+        "0.08",
+        "0.04",
+        "0.01"
+      ],
+      "explanation": [
+        "Round 0.0542 to 2 decimal places gives 0.05."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_da191f7567",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.0203 rounded to three dps?",
+      "correct_answer": "0.020",
+      "distractors": [
+        "0.023",
+        "0.022",
+        "0.019"
+      ],
+      "explanation": [
+        "Round 0.0203 to 3 decimal places gives 0.020."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_da9074b3a7",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.19225 to three dps.",
+      "correct_answer": "0.192",
+      "distractors": [
+        "0.189",
+        "0.191",
+        "0.195"
+      ],
+      "explanation": [
+        "Round 0.19225 to 3 decimal places gives 0.192."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_dcaea88903",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.82758 rounded to one decimal place?",
+      "correct_answer": "0.8",
+      "distractors": [
+        "1.0",
+        "0.9",
+        "0.5"
+      ],
+      "explanation": [
+        "Round 0.82758 to 1 decimal place gives 0.8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_dd8570ef0b",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.5036 to two decimal places.",
+      "correct_answer": "0.50",
+      "distractors": [
+        "0.47",
+        "0.49",
+        "0.48"
+      ],
+      "explanation": [
+        "Round 0.5036 to 2 decimal places gives 0.50."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_dffafd10e3",
+      "concept_id": "round_decimals",
+      "prompt": "What is 2.364747 rounded to 1 decimal place?",
+      "correct_answer": "2.4",
+      "distractors": [
+        "2.7",
+        "2.5",
+        "2.6"
+      ],
+      "explanation": [
+        "Round 2.36475 to 1 decimal place gives 2.4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_e0577be53b",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.334841 rounded to 1 dp?",
+      "correct_answer": "0.3",
+      "distractors": [
+        "0.2",
+        "0.7",
+        "-0.1"
+      ],
+      "explanation": [
+        "Round 0.334841 to 1 decimal place gives 0.3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_e18b619661",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.02041296 rounded to 2 dps?",
+      "correct_answer": "0.02",
+      "distractors": [
+        "0.01",
+        "0.03",
+        "0.06"
+      ],
+      "explanation": [
+        "Round 0.020413 to 2 decimal places gives 0.02."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_e1e9cb10f0",
+      "concept_id": "round_decimals",
+      "prompt": "Round 5.30037 to one dp.",
+      "correct_answer": "5.3",
+      "distractors": [
+        "5.0",
+        "5.1",
+        "5.2"
+      ],
+      "explanation": [
+        "Round 5.30037 to 1 decimal place gives 5.3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_e5c7ca2bf2",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.06385 to 2 decimal places.",
+      "correct_answer": "0.06",
+      "distractors": [
+        "0.09",
+        "0.10",
+        "0.02"
+      ],
+      "explanation": [
+        "Round 0.06385 to 2 decimal places gives 0.06."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_e701e23080",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.017525 to 3 decimal places.",
+      "correct_answer": "0.018",
+      "distractors": [
+        "0.014",
+        "0.016",
+        "0.021"
+      ],
+      "explanation": [
+        "Round 0.017525 to 3 decimal places gives 0.018."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_e90e686b7c",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.1650984 to 2 dps.",
+      "correct_answer": "0.17",
+      "distractors": [
+        "0.18",
+        "0.15",
+        "0.13"
+      ],
+      "explanation": [
+        "Round 0.165098 to 2 decimal places gives 0.17."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_e98cd7edce",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.16207329 rounded to three dps?",
+      "correct_answer": "0.162",
+      "distractors": [
+        "0.161",
+        "0.160",
+        "0.164"
+      ],
+      "explanation": [
+        "Round 0.162073 to 3 decimal places gives 0.162."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_ea03d731af",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.140513 to 2 decimal places.",
+      "correct_answer": "0.14",
+      "distractors": [
+        "0.11",
+        "0.10",
+        "0.13"
+      ],
+      "explanation": [
+        "Round 0.140513 to 2 decimal places gives 0.14."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_eaf46a8953",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.05392 rounded to 3 decimal places?",
+      "correct_answer": "0.054",
+      "distractors": [
+        "0.051",
+        "0.057",
+        "0.056"
+      ],
+      "explanation": [
+        "Round 0.05392 to 3 decimal places gives 0.054."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_ecfa525aa6",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.42333 to one decimal place.",
+      "correct_answer": "0.4",
+      "distractors": [
+        "0.0",
+        "0.1",
+        "0.2"
+      ],
+      "explanation": [
+        "Round 0.42333 to 1 decimal place gives 0.4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_ed25dc8cf5",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.25485 rounded to two decimal places?",
+      "correct_answer": "0.25",
+      "distractors": [
+        "0.21",
+        "0.29",
+        "0.23"
+      ],
+      "explanation": [
+        "Round 0.25485 to 2 decimal places gives 0.25."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_ee7ac2d15e",
+      "concept_id": "round_decimals",
+      "prompt": "What is 44.543789 rounded to one decimal place?",
+      "correct_answer": "44.5",
+      "distractors": [
+        "44.3",
+        "44.2",
+        "44.9"
+      ],
+      "explanation": [
+        "Round 44.5438 to 1 decimal place gives 44.5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_ee9bc0e3c5",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.1316 to three dps.",
+      "correct_answer": "0.132",
+      "distractors": [
+        "0.130",
+        "0.135",
+        "0.134"
+      ],
+      "explanation": [
+        "Round 0.1316 to 3 decimal places gives 0.132."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_ef37ca42be",
+      "concept_id": "round_decimals",
+      "prompt": "Round 23.92815115 to 2 decimal places.",
+      "correct_answer": "23.93",
+      "distractors": [
+        "23.96",
+        "23.89",
+        "23.95"
+      ],
+      "explanation": [
+        "Round 23.9282 to 2 decimal places gives 23.93."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_ef8ea2fb3a",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.1044545 to two dps.",
+      "correct_answer": "0.10",
+      "distractors": [
+        "0.08",
+        "0.09",
+        "0.14"
+      ],
+      "explanation": [
+        "Round 0.104455 to 2 decimal places gives 0.10."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_f42d2dd4b2",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.05905476644 to three decimal places.",
+      "correct_answer": "0.059",
+      "distractors": [
+        "0.058",
+        "0.060",
+        "0.062"
+      ],
+      "explanation": [
+        "Round 0.0590548 to 3 decimal places gives 0.059."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_f4d6b4f24e",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.00512 rounded to three dps?",
+      "correct_answer": "0.005",
+      "distractors": [
+        "0.007",
+        "0.001",
+        "0.006"
+      ],
+      "explanation": [
+        "Round 0.00512 to 3 decimal places gives 0.005."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_f54f8799b3",
+      "concept_id": "round_decimals",
+      "prompt": "Round 1.52130745 to 2 dps.",
+      "correct_answer": "1.52",
+      "distractors": [
+        "1.53",
+        "1.48",
+        "1.55"
+      ],
+      "explanation": [
+        "Round 1.52131 to 2 decimal places gives 1.52."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_f55e712cf4",
+      "concept_id": "round_decimals",
+      "prompt": "What is 12.53546 rounded to one decimal place?",
+      "correct_answer": "12.5",
+      "distractors": [
+        "12.7",
+        "12.4",
+        "12.2"
+      ],
+      "explanation": [
+        "Round 12.5355 to 1 decimal place gives 12.5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_f5e98c9adb",
+      "concept_id": "round_decimals",
+      "prompt": "Round 0.655853 to 3 decimal places.",
+      "correct_answer": "0.656",
+      "distractors": [
+        "0.660",
+        "0.657",
+        "0.654"
+      ],
+      "explanation": [
+        "Round 0.655853 to 3 decimal places gives 0.656."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_f60ef1b527",
+      "concept_id": "round_decimals",
+      "prompt": "What is 21.29593943 rounded to two decimal places?",
+      "correct_answer": "21.30",
+      "distractors": [
+        "21.33",
+        "21.28",
+        "21.26"
+      ],
+      "explanation": [
+        "Round 21.2959 to 2 decimal places gives 21.30."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_f702f00dcb",
+      "concept_id": "round_decimals",
+      "prompt": "Round 3.702 to one dp.",
+      "correct_answer": "3.7",
+      "distractors": [
+        "3.6",
+        "3.4",
+        "3.9"
+      ],
+      "explanation": [
+        "Round 3.702 to 1 decimal place gives 3.7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_f957dbe37c",
+      "concept_id": "round_decimals",
+      "prompt": "What is 261.3118457 rounded to one dp?",
+      "correct_answer": "261.3",
+      "distractors": [
+        "261.2",
+        "261.4",
+        "261.5"
+      ],
+      "explanation": [
+        "Round 261.312 to 1 decimal place gives 261.3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_fbc356ede6",
+      "concept_id": "round_decimals",
+      "prompt": "What is 3.851 rounded to one dp?",
+      "correct_answer": "3.9",
+      "distractors": [
+        "4.0",
+        "4.1",
+        "4.3"
+      ],
+      "explanation": [
+        "Round 3.851 to 1 decimal place gives 3.9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_fda8b1e1f4",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.080319 rounded to 3 dps?",
+      "correct_answer": "0.080",
+      "distractors": [
+        "0.076",
+        "0.078",
+        "0.084"
+      ],
+      "explanation": [
+        "Round 0.080319 to 3 decimal places gives 0.080."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_fea3f0eb81",
+      "concept_id": "round_decimals",
+      "prompt": "What is 0.1138 rounded to 3 dps?",
+      "correct_answer": "0.114",
+      "distractors": [
+        "0.113",
+        "0.117",
+        "0.116"
+      ],
+      "explanation": [
+        "Round 0.1138 to 3 decimal places gives 0.114."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_round_ffa3cecfbf",
+      "concept_id": "round_decimals",
+      "prompt": "Round 175.81828 to one decimal place.",
+      "correct_answer": "175.8",
+      "distractors": [
+        "176.0",
+        "176.2",
+        "175.9"
+      ],
+      "explanation": [
+        "Round 175.818 to 1 decimal place gives 175.8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.round_number",
+      "license": "Apache-2.0"
+    }
+  ]
+}

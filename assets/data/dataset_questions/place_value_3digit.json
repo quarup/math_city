@@ -1,0 +1,3404 @@
+{
+  "items": [
+    {
+      "id": "deepmind_mathematics_dataset_pv_02519adfea",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 100?",
+      "correct_answer": "0",
+      "distractors": [
+        "3",
+        "4",
+        "1"
+      ],
+      "explanation": [
+        "In 100, the tens digit is 0."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_02e65572fa",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 912?",
+      "correct_answer": "2",
+      "distractors": [
+        "6",
+        "9",
+        "0"
+      ],
+      "explanation": [
+        "In 912, the units digit is 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_030a411b68",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 269?",
+      "correct_answer": "2",
+      "distractors": [
+        "0",
+        "4",
+        "6"
+      ],
+      "explanation": [
+        "In 269, the hundreds digit is 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_044ed809d7",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 835?",
+      "correct_answer": "5",
+      "distractors": [
+        "6",
+        "8",
+        "4"
+      ],
+      "explanation": [
+        "In 835, the units digit is 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_06287e7dd4",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 817?",
+      "correct_answer": "8",
+      "distractors": [
+        "5",
+        "1",
+        "10"
+      ],
+      "explanation": [
+        "In 817, the hundreds digit is 8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_0698869156",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 884?",
+      "correct_answer": "8",
+      "distractors": [
+        "11",
+        "5",
+        "4"
+      ],
+      "explanation": [
+        "In 884, the hundreds digit is 8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_0a4188e968",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 251?",
+      "correct_answer": "2",
+      "distractors": [
+        "4",
+        "3",
+        "5"
+      ],
+      "explanation": [
+        "In 251, the hundreds digit is 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_0aa448d1b5",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 433?",
+      "correct_answer": "3",
+      "distractors": [
+        "6",
+        "2",
+        "4"
+      ],
+      "explanation": [
+        "In 433, the tens digit is 3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_0aa70f60a3",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 735?",
+      "correct_answer": "3",
+      "distractors": [
+        "6",
+        "2",
+        "7"
+      ],
+      "explanation": [
+        "In 735, the tens digit is 3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_0b090bb87b",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 809?",
+      "correct_answer": "0",
+      "distractors": [
+        "8",
+        "5",
+        "2"
+      ],
+      "explanation": [
+        "In 809, the tens digit is 0."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_0cfe9c3c5f",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 754?",
+      "correct_answer": "7",
+      "distractors": [
+        "8",
+        "5",
+        "3"
+      ],
+      "explanation": [
+        "In 754, the hundreds digit is 7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_0de97a5b5b",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 827?",
+      "correct_answer": "7",
+      "distractors": [
+        "3",
+        "8",
+        "6"
+      ],
+      "explanation": [
+        "In 827, the units digit is 7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_0e683a57c6",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 190?",
+      "correct_answer": "9",
+      "distractors": [
+        "10",
+        "6",
+        "1"
+      ],
+      "explanation": [
+        "In 190, the tens digit is 9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_0ffcf3517f",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 390?",
+      "correct_answer": "0",
+      "distractors": [
+        "1",
+        "3",
+        "4"
+      ],
+      "explanation": [
+        "In 390, the units digit is 0."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_110513a800",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 298?",
+      "correct_answer": "2",
+      "distractors": [
+        "6",
+        "9",
+        "4"
+      ],
+      "explanation": [
+        "In 298, the hundreds digit is 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_128583309e",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 776?",
+      "correct_answer": "7",
+      "distractors": [
+        "6",
+        "11",
+        "12"
+      ],
+      "explanation": [
+        "In 776, the tens digit is 7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_12be2817b8",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 540?",
+      "correct_answer": "4",
+      "distractors": [
+        "6",
+        "9",
+        "5"
+      ],
+      "explanation": [
+        "In 540, the tens digit is 4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_1630351c22",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 907?",
+      "correct_answer": "9",
+      "distractors": [
+        "0",
+        "4",
+        "12"
+      ],
+      "explanation": [
+        "In 907, the hundreds digit is 9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_16878668ba",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 883?",
+      "correct_answer": "8",
+      "distractors": [
+        "3",
+        "12",
+        "10"
+      ],
+      "explanation": [
+        "In 883, the tens digit is 8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_18dea8e724",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 179?",
+      "correct_answer": "7",
+      "distractors": [
+        "2",
+        "3",
+        "1"
+      ],
+      "explanation": [
+        "In 179, the tens digit is 7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_19e83799e8",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 949?",
+      "correct_answer": "4",
+      "distractors": [
+        "0",
+        "9",
+        "3"
+      ],
+      "explanation": [
+        "In 949, the tens digit is 4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_1b2d5a028a",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 507?",
+      "correct_answer": "5",
+      "distractors": [
+        "6",
+        "0",
+        "2"
+      ],
+      "explanation": [
+        "In 507, the hundreds digit is 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_1d8c04a354",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 324?",
+      "correct_answer": "4",
+      "distractors": [
+        "2",
+        "3",
+        "8"
+      ],
+      "explanation": [
+        "In 324, the units digit is 4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_1e82f4127a",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 205?",
+      "correct_answer": "5",
+      "distractors": [
+        "2",
+        "0",
+        "9"
+      ],
+      "explanation": [
+        "In 205, the units digit is 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_1fba552055",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 116?",
+      "correct_answer": "1",
+      "distractors": [
+        "4",
+        "5",
+        "6"
+      ],
+      "explanation": [
+        "In 116, the hundreds digit is 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_23776f49a8",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 285?",
+      "correct_answer": "8",
+      "distractors": [
+        "11",
+        "4",
+        "2"
+      ],
+      "explanation": [
+        "In 285, the tens digit is 8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_23fb988bf1",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 526?",
+      "correct_answer": "5",
+      "distractors": [
+        "4",
+        "2",
+        "9"
+      ],
+      "explanation": [
+        "In 526, the hundreds digit is 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_24648e853d",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 707?",
+      "correct_answer": "7",
+      "distractors": [
+        "6",
+        "0",
+        "8"
+      ],
+      "explanation": [
+        "In 707, the units digit is 7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_2815ae496d",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 603?",
+      "correct_answer": "6",
+      "distractors": [
+        "1",
+        "0",
+        "2"
+      ],
+      "explanation": [
+        "In 603, the hundreds digit is 6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_2841b444f1",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 696?",
+      "correct_answer": "6",
+      "distractors": [
+        "11",
+        "1",
+        "9"
+      ],
+      "explanation": [
+        "In 696, the units digit is 6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_2d57078a78",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 228?",
+      "correct_answer": "2",
+      "distractors": [
+        "4",
+        "1",
+        "8"
+      ],
+      "explanation": [
+        "In 228, the tens digit is 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_30a097c958",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 379?",
+      "correct_answer": "3",
+      "distractors": [
+        "2",
+        "7",
+        "6"
+      ],
+      "explanation": [
+        "In 379, the hundreds digit is 3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_31b5c11909",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 781?",
+      "correct_answer": "1",
+      "distractors": [
+        "4",
+        "3",
+        "7"
+      ],
+      "explanation": [
+        "In 781, the units digit is 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_3324995ead",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 935?",
+      "correct_answer": "3",
+      "distractors": [
+        "9",
+        "2",
+        "7"
+      ],
+      "explanation": [
+        "In 935, the tens digit is 3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_336736d997",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 968?",
+      "correct_answer": "8",
+      "distractors": [
+        "5",
+        "9",
+        "11"
+      ],
+      "explanation": [
+        "In 968, the units digit is 8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_338f264c32",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 544?",
+      "correct_answer": "5",
+      "distractors": [
+        "8",
+        "4",
+        "7"
+      ],
+      "explanation": [
+        "In 544, the hundreds digit is 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_339fe1f548",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 220?",
+      "correct_answer": "2",
+      "distractors": [
+        "4",
+        "0",
+        "5"
+      ],
+      "explanation": [
+        "In 220, the hundreds digit is 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_3506970ccd",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 758?",
+      "correct_answer": "5",
+      "distractors": [
+        "6",
+        "7",
+        "9"
+      ],
+      "explanation": [
+        "In 758, the tens digit is 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_3571e81c5a",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 884?",
+      "correct_answer": "8",
+      "distractors": [
+        "5",
+        "11",
+        "4"
+      ],
+      "explanation": [
+        "In 884, the tens digit is 8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_35d0870287",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 533?",
+      "correct_answer": "3",
+      "distractors": [
+        "5",
+        "4",
+        "7"
+      ],
+      "explanation": [
+        "In 533, the units digit is 3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_36007a0c86",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 532?",
+      "correct_answer": "2",
+      "distractors": [
+        "3",
+        "0",
+        "5"
+      ],
+      "explanation": [
+        "In 532, the units digit is 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_3646d52b99",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 247?",
+      "correct_answer": "2",
+      "distractors": [
+        "1",
+        "5",
+        "4"
+      ],
+      "explanation": [
+        "In 247, the hundreds digit is 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_38c8d20df9",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 988?",
+      "correct_answer": "8",
+      "distractors": [
+        "4",
+        "9",
+        "13"
+      ],
+      "explanation": [
+        "In 988, the tens digit is 8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_396875d142",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 983?",
+      "correct_answer": "8",
+      "distractors": [
+        "12",
+        "3",
+        "9"
+      ],
+      "explanation": [
+        "In 983, the tens digit is 8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_397c784d50",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 661?",
+      "correct_answer": "6",
+      "distractors": [
+        "1",
+        "11",
+        "9"
+      ],
+      "explanation": [
+        "In 661, the hundreds digit is 6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_3af8a28871",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 853?",
+      "correct_answer": "3",
+      "distractors": [
+        "2",
+        "1",
+        "8"
+      ],
+      "explanation": [
+        "In 853, the units digit is 3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_3b2fa9779c",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 997?",
+      "correct_answer": "9",
+      "distractors": [
+        "8",
+        "14",
+        "7"
+      ],
+      "explanation": [
+        "In 997, the hundreds digit is 9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_3c4d1c4322",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 892?",
+      "correct_answer": "8",
+      "distractors": [
+        "9",
+        "5",
+        "3"
+      ],
+      "explanation": [
+        "In 892, the hundreds digit is 8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_3c76b97a11",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 922?",
+      "correct_answer": "9",
+      "distractors": [
+        "5",
+        "14",
+        "2"
+      ],
+      "explanation": [
+        "In 922, the hundreds digit is 9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_3f32e78b9c",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 948?",
+      "correct_answer": "9",
+      "distractors": [
+        "4",
+        "7",
+        "13"
+      ],
+      "explanation": [
+        "In 948, the hundreds digit is 9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_41612b8c6d",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 568?",
+      "correct_answer": "5",
+      "distractors": [
+        "2",
+        "6",
+        "1"
+      ],
+      "explanation": [
+        "In 568, the hundreds digit is 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_422cebe163",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 466?",
+      "correct_answer": "6",
+      "distractors": [
+        "4",
+        "5",
+        "11"
+      ],
+      "explanation": [
+        "In 466, the tens digit is 6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_42a5bfb9f3",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 454?",
+      "correct_answer": "4",
+      "distractors": [
+        "1",
+        "3",
+        "5"
+      ],
+      "explanation": [
+        "In 454, the hundreds digit is 4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_42fb40a6f5",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 272?",
+      "correct_answer": "2",
+      "distractors": [
+        "7",
+        "0",
+        "3"
+      ],
+      "explanation": [
+        "In 272, the hundreds digit is 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_42fd3e929e",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 199?",
+      "correct_answer": "9",
+      "distractors": [
+        "11",
+        "4",
+        "1"
+      ],
+      "explanation": [
+        "In 199, the units digit is 9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_44e58c68c0",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 856?",
+      "correct_answer": "8",
+      "distractors": [
+        "5",
+        "10",
+        "13"
+      ],
+      "explanation": [
+        "In 856, the hundreds digit is 8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_45d0bbc0cf",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 730?",
+      "correct_answer": "7",
+      "distractors": [
+        "6",
+        "11",
+        "3"
+      ],
+      "explanation": [
+        "In 730, the hundreds digit is 7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_45ff1b0253",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 205?",
+      "correct_answer": "0",
+      "distractors": [
+        "2",
+        "3",
+        "1"
+      ],
+      "explanation": [
+        "In 205, the tens digit is 0."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_4685c13995",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 303?",
+      "correct_answer": "3",
+      "distractors": [
+        "4",
+        "0",
+        "1"
+      ],
+      "explanation": [
+        "In 303, the units digit is 3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_46fcf812ab",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 665?",
+      "correct_answer": "5",
+      "distractors": [
+        "6",
+        "3",
+        "0"
+      ],
+      "explanation": [
+        "In 665, the units digit is 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_4814acbe87",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 719?",
+      "correct_answer": "1",
+      "distractors": [
+        "0",
+        "7",
+        "4"
+      ],
+      "explanation": [
+        "In 719, the tens digit is 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_493482ea0d",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 619?",
+      "correct_answer": "1",
+      "distractors": [
+        "6",
+        "2",
+        "0"
+      ],
+      "explanation": [
+        "In 619, the tens digit is 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_4e72dd3992",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 934?",
+      "correct_answer": "4",
+      "distractors": [
+        "3",
+        "2",
+        "9"
+      ],
+      "explanation": [
+        "In 934, the units digit is 4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_5047aefadb",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 862?",
+      "correct_answer": "6",
+      "distractors": [
+        "3",
+        "8",
+        "5"
+      ],
+      "explanation": [
+        "In 862, the tens digit is 6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_50c32b2509",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 619?",
+      "correct_answer": "9",
+      "distractors": [
+        "12",
+        "6",
+        "8"
+      ],
+      "explanation": [
+        "In 619, the units digit is 9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_52417d358e",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 475?",
+      "correct_answer": "4",
+      "distractors": [
+        "7",
+        "8",
+        "5"
+      ],
+      "explanation": [
+        "In 475, the hundreds digit is 4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_5295a4f905",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 621?",
+      "correct_answer": "1",
+      "distractors": [
+        "0",
+        "3",
+        "6"
+      ],
+      "explanation": [
+        "In 621, the units digit is 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_53a9d11f31",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 649?",
+      "correct_answer": "6",
+      "distractors": [
+        "1",
+        "5",
+        "4"
+      ],
+      "explanation": [
+        "In 649, the hundreds digit is 6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_57d96757b9",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 273?",
+      "correct_answer": "3",
+      "distractors": [
+        "2",
+        "1",
+        "0"
+      ],
+      "explanation": [
+        "In 273, the units digit is 3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_5882c7d3e5",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 577?",
+      "correct_answer": "5",
+      "distractors": [
+        "7",
+        "10",
+        "9"
+      ],
+      "explanation": [
+        "In 577, the hundreds digit is 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_5e66928271",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 579?",
+      "correct_answer": "9",
+      "distractors": [
+        "10",
+        "5",
+        "14"
+      ],
+      "explanation": [
+        "In 579, the units digit is 9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_5fe3c80c8c",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 155?",
+      "correct_answer": "5",
+      "distractors": [
+        "1",
+        "3",
+        "4"
+      ],
+      "explanation": [
+        "In 155, the tens digit is 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_60cd963689",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 704?",
+      "correct_answer": "4",
+      "distractors": [
+        "7",
+        "5",
+        "8"
+      ],
+      "explanation": [
+        "In 704, the units digit is 4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_60d459072b",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 835?",
+      "correct_answer": "3",
+      "distractors": [
+        "8",
+        "6",
+        "1"
+      ],
+      "explanation": [
+        "In 835, the tens digit is 3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_6203cdbf91",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 286?",
+      "correct_answer": "8",
+      "distractors": [
+        "7",
+        "2",
+        "6"
+      ],
+      "explanation": [
+        "In 286, the tens digit is 8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_62433d26b2",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 784?",
+      "correct_answer": "8",
+      "distractors": [
+        "12",
+        "7",
+        "10"
+      ],
+      "explanation": [
+        "In 784, the tens digit is 8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_646460698e",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 729?",
+      "correct_answer": "2",
+      "distractors": [
+        "5",
+        "1",
+        "7"
+      ],
+      "explanation": [
+        "In 729, the tens digit is 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_6588b624c6",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 285?",
+      "correct_answer": "2",
+      "distractors": [
+        "8",
+        "7",
+        "1"
+      ],
+      "explanation": [
+        "In 285, the hundreds digit is 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_6767a1dc49",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 974?",
+      "correct_answer": "4",
+      "distractors": [
+        "9",
+        "7",
+        "5"
+      ],
+      "explanation": [
+        "In 974, the units digit is 4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_6a1de56b6c",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 822?",
+      "correct_answer": "2",
+      "distractors": [
+        "8",
+        "7",
+        "4"
+      ],
+      "explanation": [
+        "In 822, the units digit is 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_6acada9a4f",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 888?",
+      "correct_answer": "8",
+      "distractors": [
+        "7",
+        "5",
+        "13"
+      ],
+      "explanation": [
+        "In 888, the tens digit is 8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_6b27f611c0",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 297?",
+      "correct_answer": "7",
+      "distractors": [
+        "2",
+        "6",
+        "12"
+      ],
+      "explanation": [
+        "In 297, the units digit is 7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_6bda487d5d",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 947?",
+      "correct_answer": "4",
+      "distractors": [
+        "9",
+        "6",
+        "3"
+      ],
+      "explanation": [
+        "In 947, the tens digit is 4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_6c17e76bab",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 328?",
+      "correct_answer": "2",
+      "distractors": [
+        "3",
+        "1",
+        "0"
+      ],
+      "explanation": [
+        "In 328, the tens digit is 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_6fe5126513",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 235?",
+      "correct_answer": "3",
+      "distractors": [
+        "2",
+        "4",
+        "7"
+      ],
+      "explanation": [
+        "In 235, the tens digit is 3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_72e98e2a40",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 740?",
+      "correct_answer": "4",
+      "distractors": [
+        "9",
+        "6",
+        "7"
+      ],
+      "explanation": [
+        "In 740, the tens digit is 4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_7564c2c466",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 309?",
+      "correct_answer": "9",
+      "distractors": [
+        "12",
+        "3",
+        "10"
+      ],
+      "explanation": [
+        "In 309, the units digit is 9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_75acfac12c",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 428?",
+      "correct_answer": "4",
+      "distractors": [
+        "9",
+        "2",
+        "0"
+      ],
+      "explanation": [
+        "In 428, the hundreds digit is 4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_762cfb1208",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 207?",
+      "correct_answer": "2",
+      "distractors": [
+        "0",
+        "4",
+        "5"
+      ],
+      "explanation": [
+        "In 207, the hundreds digit is 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_7704b74624",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 618?",
+      "correct_answer": "1",
+      "distractors": [
+        "6",
+        "4",
+        "5"
+      ],
+      "explanation": [
+        "In 618, the tens digit is 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_77124df696",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 578?",
+      "correct_answer": "5",
+      "distractors": [
+        "7",
+        "9",
+        "2"
+      ],
+      "explanation": [
+        "In 578, the hundreds digit is 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_79774c5c9e",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 229?",
+      "correct_answer": "2",
+      "distractors": [
+        "9",
+        "5",
+        "0"
+      ],
+      "explanation": [
+        "In 229, the hundreds digit is 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_7a5482efd8",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 915?",
+      "correct_answer": "1",
+      "distractors": [
+        "4",
+        "3",
+        "9"
+      ],
+      "explanation": [
+        "In 915, the tens digit is 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_7c84c6f9c2",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 307?",
+      "correct_answer": "7",
+      "distractors": [
+        "11",
+        "3",
+        "12"
+      ],
+      "explanation": [
+        "In 307, the units digit is 7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_7fa6120547",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 100?",
+      "correct_answer": "0",
+      "distractors": [
+        "4",
+        "1",
+        "5"
+      ],
+      "explanation": [
+        "In 100, the units digit is 0."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_81756839f5",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 100?",
+      "correct_answer": "1",
+      "distractors": [
+        "0",
+        "2",
+        "4"
+      ],
+      "explanation": [
+        "In 100, the hundreds digit is 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_84abbf2d4a",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 620?",
+      "correct_answer": "2",
+      "distractors": [
+        "0",
+        "3",
+        "6"
+      ],
+      "explanation": [
+        "In 620, the tens digit is 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_851de82f14",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 797?",
+      "correct_answer": "9",
+      "distractors": [
+        "7",
+        "8",
+        "4"
+      ],
+      "explanation": [
+        "In 797, the tens digit is 9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_85d667b623",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 449?",
+      "correct_answer": "9",
+      "distractors": [
+        "4",
+        "8",
+        "14"
+      ],
+      "explanation": [
+        "In 449, the units digit is 9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_85d7a5a2f6",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 837?",
+      "correct_answer": "7",
+      "distractors": [
+        "3",
+        "8",
+        "11"
+      ],
+      "explanation": [
+        "In 837, the units digit is 7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_86e4d85ca8",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 420?",
+      "correct_answer": "2",
+      "distractors": [
+        "5",
+        "3",
+        "4"
+      ],
+      "explanation": [
+        "In 420, the tens digit is 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_871042bb1b",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 977?",
+      "correct_answer": "9",
+      "distractors": [
+        "5",
+        "12",
+        "7"
+      ],
+      "explanation": [
+        "In 977, the hundreds digit is 9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_88f6391ea3",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 798?",
+      "correct_answer": "9",
+      "distractors": [
+        "14",
+        "11",
+        "7"
+      ],
+      "explanation": [
+        "In 798, the tens digit is 9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_8961c3dea3",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 744?",
+      "correct_answer": "7",
+      "distractors": [
+        "5",
+        "4",
+        "8"
+      ],
+      "explanation": [
+        "In 744, the hundreds digit is 7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_8daf0cefa1",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 811?",
+      "correct_answer": "1",
+      "distractors": [
+        "2",
+        "4",
+        "8"
+      ],
+      "explanation": [
+        "In 811, the units digit is 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_8f199ccddb",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 836?",
+      "correct_answer": "8",
+      "distractors": [
+        "3",
+        "6",
+        "12"
+      ],
+      "explanation": [
+        "In 836, the hundreds digit is 8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_9099fb2827",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 871?",
+      "correct_answer": "7",
+      "distractors": [
+        "6",
+        "8",
+        "3"
+      ],
+      "explanation": [
+        "In 871, the tens digit is 7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_911cc8c911",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 854?",
+      "correct_answer": "8",
+      "distractors": [
+        "5",
+        "10",
+        "9"
+      ],
+      "explanation": [
+        "In 854, the hundreds digit is 8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_9165e1d65c",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 111?",
+      "correct_answer": "1",
+      "distractors": [
+        "5",
+        "0",
+        "4"
+      ],
+      "explanation": [
+        "In 111, the units digit is 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_916c275172",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 916?",
+      "correct_answer": "6",
+      "distractors": [
+        "9",
+        "1",
+        "7"
+      ],
+      "explanation": [
+        "In 916, the units digit is 6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_927be15384",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 103?",
+      "correct_answer": "3",
+      "distractors": [
+        "5",
+        "1",
+        "4"
+      ],
+      "explanation": [
+        "In 103, the units digit is 3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_928adca037",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 812?",
+      "correct_answer": "1",
+      "distractors": [
+        "5",
+        "8",
+        "6"
+      ],
+      "explanation": [
+        "In 812, the tens digit is 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_928cf9b029",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 821?",
+      "correct_answer": "2",
+      "distractors": [
+        "6",
+        "8",
+        "1"
+      ],
+      "explanation": [
+        "In 821, the tens digit is 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_93425ed012",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 299?",
+      "correct_answer": "2",
+      "distractors": [
+        "7",
+        "9",
+        "1"
+      ],
+      "explanation": [
+        "In 299, the hundreds digit is 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_941a7cbbcd",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 392?",
+      "correct_answer": "9",
+      "distractors": [
+        "3",
+        "4",
+        "6"
+      ],
+      "explanation": [
+        "In 392, the tens digit is 9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_950780935e",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 764?",
+      "correct_answer": "7",
+      "distractors": [
+        "6",
+        "12",
+        "5"
+      ],
+      "explanation": [
+        "In 764, the hundreds digit is 7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_9617429cec",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 353?",
+      "correct_answer": "3",
+      "distractors": [
+        "4",
+        "7",
+        "5"
+      ],
+      "explanation": [
+        "In 353, the hundreds digit is 3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_96a442cbd6",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 441?",
+      "correct_answer": "4",
+      "distractors": [
+        "8",
+        "9",
+        "1"
+      ],
+      "explanation": [
+        "In 441, the tens digit is 4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_98d2db2279",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 119?",
+      "correct_answer": "1",
+      "distractors": [
+        "6",
+        "9",
+        "5"
+      ],
+      "explanation": [
+        "In 119, the hundreds digit is 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_9e2895e850",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 221?",
+      "correct_answer": "2",
+      "distractors": [
+        "1",
+        "3",
+        "5"
+      ],
+      "explanation": [
+        "In 221, the tens digit is 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_9fb66b9076",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 241?",
+      "correct_answer": "1",
+      "distractors": [
+        "5",
+        "2",
+        "3"
+      ],
+      "explanation": [
+        "In 241, the units digit is 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_9ff29474cf",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 847?",
+      "correct_answer": "7",
+      "distractors": [
+        "8",
+        "12",
+        "2"
+      ],
+      "explanation": [
+        "In 847, the units digit is 7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_a03a4676ec",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 131?",
+      "correct_answer": "1",
+      "distractors": [
+        "3",
+        "0",
+        "5"
+      ],
+      "explanation": [
+        "In 131, the units digit is 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_a3b566e1dd",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 889?",
+      "correct_answer": "8",
+      "distractors": [
+        "4",
+        "13",
+        "9"
+      ],
+      "explanation": [
+        "In 889, the hundreds digit is 8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_a479db1293",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 826?",
+      "correct_answer": "6",
+      "distractors": [
+        "4",
+        "5",
+        "8"
+      ],
+      "explanation": [
+        "In 826, the units digit is 6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_a4e12cbf33",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 596?",
+      "correct_answer": "5",
+      "distractors": [
+        "3",
+        "10",
+        "9"
+      ],
+      "explanation": [
+        "In 596, the hundreds digit is 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_a6bd6fbb27",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 371?",
+      "correct_answer": "3",
+      "distractors": [
+        "7",
+        "6",
+        "0"
+      ],
+      "explanation": [
+        "In 371, the hundreds digit is 3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_a6bde65283",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 614?",
+      "correct_answer": "1",
+      "distractors": [
+        "0",
+        "5",
+        "6"
+      ],
+      "explanation": [
+        "In 614, the tens digit is 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_a7495621af",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 606?",
+      "correct_answer": "6",
+      "distractors": [
+        "5",
+        "1",
+        "0"
+      ],
+      "explanation": [
+        "In 606, the hundreds digit is 6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_a93d47ccc1",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 669?",
+      "correct_answer": "6",
+      "distractors": [
+        "9",
+        "8",
+        "7"
+      ],
+      "explanation": [
+        "In 669, the tens digit is 6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_a9f66a45ee",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 642?",
+      "correct_answer": "4",
+      "distractors": [
+        "6",
+        "1",
+        "5"
+      ],
+      "explanation": [
+        "In 642, the tens digit is 4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_ab7610044d",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 358?",
+      "correct_answer": "8",
+      "distractors": [
+        "9",
+        "3",
+        "11"
+      ],
+      "explanation": [
+        "In 358, the units digit is 8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_ab8857ee52",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 211?",
+      "correct_answer": "1",
+      "distractors": [
+        "3",
+        "6",
+        "2"
+      ],
+      "explanation": [
+        "In 211, the units digit is 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_abc8b832ef",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 720?",
+      "correct_answer": "7",
+      "distractors": [
+        "12",
+        "9",
+        "2"
+      ],
+      "explanation": [
+        "In 720, the hundreds digit is 7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_accdbaf01c",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 939?",
+      "correct_answer": "9",
+      "distractors": [
+        "13",
+        "3",
+        "10"
+      ],
+      "explanation": [
+        "In 939, the hundreds digit is 9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_adc524cfa4",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 950?",
+      "correct_answer": "5",
+      "distractors": [
+        "8",
+        "3",
+        "9"
+      ],
+      "explanation": [
+        "In 950, the tens digit is 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_b0492b6af2",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 513?",
+      "correct_answer": "1",
+      "distractors": [
+        "0",
+        "5",
+        "4"
+      ],
+      "explanation": [
+        "In 513, the tens digit is 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_b09ce7f586",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 223?",
+      "correct_answer": "3",
+      "distractors": [
+        "0",
+        "7",
+        "2"
+      ],
+      "explanation": [
+        "In 223, the units digit is 3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_b2cfe6879e",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 741?",
+      "correct_answer": "7",
+      "distractors": [
+        "3",
+        "12",
+        "4"
+      ],
+      "explanation": [
+        "In 741, the hundreds digit is 7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_b383282761",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 350?",
+      "correct_answer": "0",
+      "distractors": [
+        "5",
+        "1",
+        "3"
+      ],
+      "explanation": [
+        "In 350, the units digit is 0."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_b3ba4a3863",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 336?",
+      "correct_answer": "3",
+      "distractors": [
+        "2",
+        "5",
+        "6"
+      ],
+      "explanation": [
+        "In 336, the hundreds digit is 3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_b3d7ddf8fe",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 165?",
+      "correct_answer": "5",
+      "distractors": [
+        "6",
+        "9",
+        "1"
+      ],
+      "explanation": [
+        "In 165, the units digit is 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_b676dcbc0d",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 482?",
+      "correct_answer": "2",
+      "distractors": [
+        "4",
+        "7",
+        "3"
+      ],
+      "explanation": [
+        "In 482, the units digit is 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_bd36e225cc",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 503?",
+      "correct_answer": "3",
+      "distractors": [
+        "1",
+        "4",
+        "5"
+      ],
+      "explanation": [
+        "In 503, the units digit is 3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_bd4fb6fc57",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 842?",
+      "correct_answer": "2",
+      "distractors": [
+        "6",
+        "1",
+        "8"
+      ],
+      "explanation": [
+        "In 842, the units digit is 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_beef2c7356",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 388?",
+      "correct_answer": "8",
+      "distractors": [
+        "9",
+        "10",
+        "3"
+      ],
+      "explanation": [
+        "In 388, the tens digit is 8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_bfb87ff510",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 452?",
+      "correct_answer": "4",
+      "distractors": [
+        "5",
+        "3",
+        "6"
+      ],
+      "explanation": [
+        "In 452, the hundreds digit is 4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_bfbf2b8dfa",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 751?",
+      "correct_answer": "5",
+      "distractors": [
+        "6",
+        "7",
+        "10"
+      ],
+      "explanation": [
+        "In 751, the tens digit is 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_bfc9e4eb1b",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 718?",
+      "correct_answer": "8",
+      "distractors": [
+        "7",
+        "11",
+        "9"
+      ],
+      "explanation": [
+        "In 718, the units digit is 8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_c224896a88",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 712?",
+      "correct_answer": "7",
+      "distractors": [
+        "1",
+        "6",
+        "11"
+      ],
+      "explanation": [
+        "In 712, the hundreds digit is 7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_c467c53433",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 517?",
+      "correct_answer": "5",
+      "distractors": [
+        "1",
+        "9",
+        "10"
+      ],
+      "explanation": [
+        "In 517, the hundreds digit is 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_c53251e279",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 138?",
+      "correct_answer": "1",
+      "distractors": [
+        "4",
+        "3",
+        "2"
+      ],
+      "explanation": [
+        "In 138, the hundreds digit is 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_c53a569ac3",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 802?",
+      "correct_answer": "2",
+      "distractors": [
+        "8",
+        "1",
+        "0"
+      ],
+      "explanation": [
+        "In 802, the units digit is 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_c5cc185a81",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 679?",
+      "correct_answer": "6",
+      "distractors": [
+        "7",
+        "5",
+        "3"
+      ],
+      "explanation": [
+        "In 679, the hundreds digit is 6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_c6aef70098",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 574?",
+      "correct_answer": "7",
+      "distractors": [
+        "11",
+        "5",
+        "6"
+      ],
+      "explanation": [
+        "In 574, the tens digit is 7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_c8c162a3da",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 295?",
+      "correct_answer": "5",
+      "distractors": [
+        "9",
+        "2",
+        "4"
+      ],
+      "explanation": [
+        "In 295, the units digit is 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_cacc0e19e1",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 555?",
+      "correct_answer": "5",
+      "distractors": [
+        "6",
+        "4",
+        "9"
+      ],
+      "explanation": [
+        "In 555, the tens digit is 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_cf0512e756",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 265?",
+      "correct_answer": "6",
+      "distractors": [
+        "10",
+        "2",
+        "3"
+      ],
+      "explanation": [
+        "In 265, the tens digit is 6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_d0b61108e9",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 261?",
+      "correct_answer": "6",
+      "distractors": [
+        "5",
+        "9",
+        "2"
+      ],
+      "explanation": [
+        "In 261, the tens digit is 6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_d1d4287541",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 224?",
+      "correct_answer": "2",
+      "distractors": [
+        "4",
+        "6",
+        "0"
+      ],
+      "explanation": [
+        "In 224, the hundreds digit is 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_d1e8ac98aa",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 259?",
+      "correct_answer": "5",
+      "distractors": [
+        "8",
+        "7",
+        "2"
+      ],
+      "explanation": [
+        "In 259, the tens digit is 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_d2fa948167",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 249?",
+      "correct_answer": "4",
+      "distractors": [
+        "2",
+        "9",
+        "5"
+      ],
+      "explanation": [
+        "In 249, the tens digit is 4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_d448cf6298",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 768?",
+      "correct_answer": "7",
+      "distractors": [
+        "6",
+        "4",
+        "8"
+      ],
+      "explanation": [
+        "In 768, the hundreds digit is 7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_d537f409d5",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 984?",
+      "correct_answer": "8",
+      "distractors": [
+        "11",
+        "9",
+        "6"
+      ],
+      "explanation": [
+        "In 984, the tens digit is 8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_d6a2fe06b1",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 889?",
+      "correct_answer": "9",
+      "distractors": [
+        "4",
+        "8",
+        "6"
+      ],
+      "explanation": [
+        "In 889, the units digit is 9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_d973aed6d2",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 411?",
+      "correct_answer": "1",
+      "distractors": [
+        "0",
+        "4",
+        "3"
+      ],
+      "explanation": [
+        "In 411, the units digit is 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_d998babc6f",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 692?",
+      "correct_answer": "6",
+      "distractors": [
+        "8",
+        "9",
+        "1"
+      ],
+      "explanation": [
+        "In 692, the hundreds digit is 6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_dbf40a3536",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 936?",
+      "correct_answer": "3",
+      "distractors": [
+        "4",
+        "6",
+        "9"
+      ],
+      "explanation": [
+        "In 936, the tens digit is 3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_dd19229173",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 320?",
+      "correct_answer": "2",
+      "distractors": [
+        "3",
+        "0",
+        "1"
+      ],
+      "explanation": [
+        "In 320, the tens digit is 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_dd52b8839b",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 338?",
+      "correct_answer": "3",
+      "distractors": [
+        "7",
+        "8",
+        "2"
+      ],
+      "explanation": [
+        "In 338, the tens digit is 3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_e158397e11",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 456?",
+      "correct_answer": "4",
+      "distractors": [
+        "9",
+        "8",
+        "5"
+      ],
+      "explanation": [
+        "In 456, the hundreds digit is 4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_e465fc3f2c",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 486?",
+      "correct_answer": "4",
+      "distractors": [
+        "3",
+        "8",
+        "9"
+      ],
+      "explanation": [
+        "In 486, the hundreds digit is 4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_e8d8ca44d5",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 593?",
+      "correct_answer": "5",
+      "distractors": [
+        "7",
+        "9",
+        "10"
+      ],
+      "explanation": [
+        "In 593, the hundreds digit is 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_ea47b2d63d",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 477?",
+      "correct_answer": "7",
+      "distractors": [
+        "6",
+        "9",
+        "4"
+      ],
+      "explanation": [
+        "In 477, the tens digit is 7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_ea600aecdd",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 278?",
+      "correct_answer": "2",
+      "distractors": [
+        "3",
+        "7",
+        "4"
+      ],
+      "explanation": [
+        "In 278, the hundreds digit is 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_eaa25d18c7",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 742?",
+      "correct_answer": "2",
+      "distractors": [
+        "5",
+        "7",
+        "4"
+      ],
+      "explanation": [
+        "In 742, the units digit is 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_eaa77b54d2",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 390?",
+      "correct_answer": "3",
+      "distractors": [
+        "8",
+        "6",
+        "9"
+      ],
+      "explanation": [
+        "In 390, the hundreds digit is 3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_eb03b5f5d6",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 681?",
+      "correct_answer": "6",
+      "distractors": [
+        "4",
+        "7",
+        "8"
+      ],
+      "explanation": [
+        "In 681, the hundreds digit is 6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_eb761f98a0",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 463?",
+      "correct_answer": "3",
+      "distractors": [
+        "7",
+        "6",
+        "4"
+      ],
+      "explanation": [
+        "In 463, the units digit is 3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_eb767b2661",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 513?",
+      "correct_answer": "3",
+      "distractors": [
+        "7",
+        "6",
+        "5"
+      ],
+      "explanation": [
+        "In 513, the units digit is 3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_ed708be090",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 397?",
+      "correct_answer": "7",
+      "distractors": [
+        "11",
+        "3",
+        "5"
+      ],
+      "explanation": [
+        "In 397, the units digit is 7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_efa4ba09c0",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 617?",
+      "correct_answer": "1",
+      "distractors": [
+        "6",
+        "4",
+        "0"
+      ],
+      "explanation": [
+        "In 617, the tens digit is 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_f0b5362df1",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 954?",
+      "correct_answer": "9",
+      "distractors": [
+        "10",
+        "5",
+        "12"
+      ],
+      "explanation": [
+        "In 954, the hundreds digit is 9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_f1e63c4621",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 175?",
+      "correct_answer": "7",
+      "distractors": [
+        "4",
+        "9",
+        "1"
+      ],
+      "explanation": [
+        "In 175, the tens digit is 7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_f2153fe31d",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 303?",
+      "correct_answer": "0",
+      "distractors": [
+        "3",
+        "4",
+        "2"
+      ],
+      "explanation": [
+        "In 303, the tens digit is 0."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_f2263e30ee",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 765?",
+      "correct_answer": "7",
+      "distractors": [
+        "4",
+        "6",
+        "2"
+      ],
+      "explanation": [
+        "In 765, the hundreds digit is 7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_f22aa8aa53",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 393?",
+      "correct_answer": "9",
+      "distractors": [
+        "14",
+        "10",
+        "3"
+      ],
+      "explanation": [
+        "In 393, the tens digit is 9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_f53e9822a8",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 506?",
+      "correct_answer": "5",
+      "distractors": [
+        "10",
+        "1",
+        "0"
+      ],
+      "explanation": [
+        "In 506, the hundreds digit is 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_f5609ad20a",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 443?",
+      "correct_answer": "4",
+      "distractors": [
+        "3",
+        "1",
+        "6"
+      ],
+      "explanation": [
+        "In 443, the hundreds digit is 4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_f5b5572ca2",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 921?",
+      "correct_answer": "9",
+      "distractors": [
+        "10",
+        "2",
+        "14"
+      ],
+      "explanation": [
+        "In 921, the hundreds digit is 9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_f6111ed512",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 853?",
+      "correct_answer": "8",
+      "distractors": [
+        "7",
+        "5",
+        "9"
+      ],
+      "explanation": [
+        "In 853, the hundreds digit is 8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_f6fc2bc806",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 819?",
+      "correct_answer": "9",
+      "distractors": [
+        "8",
+        "10",
+        "4"
+      ],
+      "explanation": [
+        "In 819, the units digit is 9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_f7c98a3562",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the hundreds digit of 790?",
+      "correct_answer": "7",
+      "distractors": [
+        "8",
+        "9",
+        "10"
+      ],
+      "explanation": [
+        "In 790, the hundreds digit is 7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_f828c1471a",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 356?",
+      "correct_answer": "5",
+      "distractors": [
+        "0",
+        "7",
+        "3"
+      ],
+      "explanation": [
+        "In 356, the tens digit is 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_f99597bb83",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 699?",
+      "correct_answer": "9",
+      "distractors": [
+        "12",
+        "6",
+        "7"
+      ],
+      "explanation": [
+        "In 699, the tens digit is 9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_fc536f4c13",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 604?",
+      "correct_answer": "4",
+      "distractors": [
+        "9",
+        "3",
+        "6"
+      ],
+      "explanation": [
+        "In 604, the units digit is 4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_fd90ac434b",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 800?",
+      "correct_answer": "0",
+      "distractors": [
+        "8",
+        "2",
+        "5"
+      ],
+      "explanation": [
+        "In 800, the units digit is 0."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_fe7441e6ab",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the tens digit of 603?",
+      "correct_answer": "0",
+      "distractors": [
+        "1",
+        "6",
+        "3"
+      ],
+      "explanation": [
+        "In 603, the tens digit is 0."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_fff6c570a5",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 285?",
+      "correct_answer": "5",
+      "distractors": [
+        "0",
+        "6",
+        "2"
+      ],
+      "explanation": [
+        "In 285, the units digit is 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_fffff6abba",
+      "concept_id": "place_value_3digit",
+      "prompt": "What is the units digit of 206?",
+      "correct_answer": "6",
+      "distractors": [
+        "2",
+        "11",
+        "5"
+      ],
+      "explanation": [
+        "In 206, the units digit is 6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    }
+  ]
+}

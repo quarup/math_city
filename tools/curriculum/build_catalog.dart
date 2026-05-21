@@ -842,6 +842,8 @@ String _sourceFor(String source, String forId) {
       return 'ConceptSource.dataset';
     case 'algorithmic+dataset':
       return 'ConceptSource.algorithmicPlusDataset';
+    case 'algorithmic_with_diagram+dataset':
+      return 'ConceptSource.algorithmicWithDiagramPlusDataset';
     case 'deferred':
       return 'ConceptSource.deferred';
   }

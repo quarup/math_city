@@ -349,6 +349,8 @@ String _sourceToString(dom.ConceptSource s) => switch (s) {
   dom.ConceptSource.algorithmicWithDiagram => 'algorithmic_with_diagram',
   dom.ConceptSource.dataset => 'dataset',
   dom.ConceptSource.algorithmicPlusDataset => 'algorithmic+dataset',
+  dom.ConceptSource.algorithmicWithDiagramPlusDataset =>
+    'algorithmic_with_diagram+dataset',
   dom.ConceptSource.deferred => 'deferred',
 };
 

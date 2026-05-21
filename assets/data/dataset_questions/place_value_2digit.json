@@ -1,0 +1,786 @@
+{
+  "items": [
+    {
+      "id": "deepmind_mathematics_dataset_pv_19b8ba5919",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the tens digit of 61?",
+      "correct_answer": "6",
+      "distractors": [
+        "7",
+        "1",
+        "8"
+      ],
+      "explanation": [
+        "In 61, the tens digit is 6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_1a7642748b",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the tens digit of 99?",
+      "correct_answer": "9",
+      "distractors": [
+        "11",
+        "12",
+        "8"
+      ],
+      "explanation": [
+        "In 99, the tens digit is 9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_1d309d89f8",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the units digit of 59?",
+      "correct_answer": "9",
+      "distractors": [
+        "13",
+        "5",
+        "10"
+      ],
+      "explanation": [
+        "In 59, the units digit is 9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_21a1a9d9bd",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the units digit of 12?",
+      "correct_answer": "2",
+      "distractors": [
+        "1",
+        "0",
+        "7"
+      ],
+      "explanation": [
+        "In 12, the units digit is 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_2cfc25ddbc",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the units digit of 68?",
+      "correct_answer": "8",
+      "distractors": [
+        "4",
+        "12",
+        "6"
+      ],
+      "explanation": [
+        "In 68, the units digit is 8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_2e604feca0",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the units digit of 78?",
+      "correct_answer": "8",
+      "distractors": [
+        "7",
+        "4",
+        "10"
+      ],
+      "explanation": [
+        "In 78, the units digit is 8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_3102a6f29f",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the tens digit of 16?",
+      "correct_answer": "1",
+      "distractors": [
+        "6",
+        "4",
+        "2"
+      ],
+      "explanation": [
+        "In 16, the tens digit is 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_36c478f1c6",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the units digit of 84?",
+      "correct_answer": "4",
+      "distractors": [
+        "7",
+        "6",
+        "8"
+      ],
+      "explanation": [
+        "In 84, the units digit is 4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_3d44c5f08f",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the units digit of 90?",
+      "correct_answer": "0",
+      "distractors": [
+        "9",
+        "1",
+        "4"
+      ],
+      "explanation": [
+        "In 90, the units digit is 0."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_414e0e5963",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the units digit of 18?",
+      "correct_answer": "8",
+      "distractors": [
+        "6",
+        "3",
+        "1"
+      ],
+      "explanation": [
+        "In 18, the units digit is 8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_444a891e82",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the units digit of 44?",
+      "correct_answer": "4",
+      "distractors": [
+        "9",
+        "5",
+        "8"
+      ],
+      "explanation": [
+        "In 44, the units digit is 4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_46896e79c8",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the tens digit of 26?",
+      "correct_answer": "2",
+      "distractors": [
+        "4",
+        "1",
+        "6"
+      ],
+      "explanation": [
+        "In 26, the tens digit is 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_473795e16f",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the units digit of 15?",
+      "correct_answer": "5",
+      "distractors": [
+        "6",
+        "10",
+        "1"
+      ],
+      "explanation": [
+        "In 15, the units digit is 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_4c28dc1a58",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the tens digit of 59?",
+      "correct_answer": "5",
+      "distractors": [
+        "4",
+        "9",
+        "6"
+      ],
+      "explanation": [
+        "In 59, the tens digit is 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_59c94cf5dc",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the tens digit of 84?",
+      "correct_answer": "8",
+      "distractors": [
+        "11",
+        "6",
+        "4"
+      ],
+      "explanation": [
+        "In 84, the tens digit is 8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_59f41284b3",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the tens digit of 19?",
+      "correct_answer": "1",
+      "distractors": [
+        "2",
+        "9",
+        "4"
+      ],
+      "explanation": [
+        "In 19, the tens digit is 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_6290ee4a3f",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the units digit of 89?",
+      "correct_answer": "9",
+      "distractors": [
+        "13",
+        "7",
+        "8"
+      ],
+      "explanation": [
+        "In 89, the units digit is 9."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_74908c8db5",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the tens digit of 35?",
+      "correct_answer": "3",
+      "distractors": [
+        "5",
+        "0",
+        "4"
+      ],
+      "explanation": [
+        "In 35, the tens digit is 3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_78541f2221",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the tens digit of 51?",
+      "correct_answer": "5",
+      "distractors": [
+        "1",
+        "3",
+        "8"
+      ],
+      "explanation": [
+        "In 51, the tens digit is 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_7d5264523b",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the tens digit of 71?",
+      "correct_answer": "7",
+      "distractors": [
+        "1",
+        "2",
+        "11"
+      ],
+      "explanation": [
+        "In 71, the tens digit is 7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_81ce136b45",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the units digit of 36?",
+      "correct_answer": "6",
+      "distractors": [
+        "3",
+        "7",
+        "4"
+      ],
+      "explanation": [
+        "In 36, the units digit is 6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_8a6223f5f5",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the tens digit of 15?",
+      "correct_answer": "1",
+      "distractors": [
+        "0",
+        "2",
+        "5"
+      ],
+      "explanation": [
+        "In 15, the tens digit is 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_98bf422db2",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the tens digit of 25?",
+      "correct_answer": "2",
+      "distractors": [
+        "3",
+        "4",
+        "5"
+      ],
+      "explanation": [
+        "In 25, the tens digit is 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_9cfe431b38",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the units digit of 95?",
+      "correct_answer": "5",
+      "distractors": [
+        "2",
+        "10",
+        "9"
+      ],
+      "explanation": [
+        "In 95, the units digit is 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_a078e39c8e",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the tens digit of 10?",
+      "correct_answer": "1",
+      "distractors": [
+        "2",
+        "0",
+        "4"
+      ],
+      "explanation": [
+        "In 10, the tens digit is 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_a8e0451868",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the units digit of 55?",
+      "correct_answer": "5",
+      "distractors": [
+        "6",
+        "4",
+        "1"
+      ],
+      "explanation": [
+        "In 55, the units digit is 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_ab51f20094",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the units digit of 34?",
+      "correct_answer": "4",
+      "distractors": [
+        "3",
+        "9",
+        "8"
+      ],
+      "explanation": [
+        "In 34, the units digit is 4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_b16de24982",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the tens digit of 67?",
+      "correct_answer": "6",
+      "distractors": [
+        "1",
+        "10",
+        "7"
+      ],
+      "explanation": [
+        "In 67, the tens digit is 6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_b9c7d3ccdb",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the tens digit of 52?",
+      "correct_answer": "5",
+      "distractors": [
+        "9",
+        "6",
+        "2"
+      ],
+      "explanation": [
+        "In 52, the tens digit is 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_c4ba4f26b6",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the tens digit of 39?",
+      "correct_answer": "3",
+      "distractors": [
+        "9",
+        "2",
+        "0"
+      ],
+      "explanation": [
+        "In 39, the tens digit is 3."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_c594e89f8d",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the tens digit of 70?",
+      "correct_answer": "7",
+      "distractors": [
+        "3",
+        "0",
+        "4"
+      ],
+      "explanation": [
+        "In 70, the tens digit is 7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_c630ce64fc",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the units digit of 46?",
+      "correct_answer": "6",
+      "distractors": [
+        "4",
+        "3",
+        "2"
+      ],
+      "explanation": [
+        "In 46, the units digit is 6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_cd5a28c4d0",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the units digit of 57?",
+      "correct_answer": "7",
+      "distractors": [
+        "10",
+        "5",
+        "4"
+      ],
+      "explanation": [
+        "In 57, the units digit is 7."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_cf000efe65",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the units digit of 41?",
+      "correct_answer": "1",
+      "distractors": [
+        "0",
+        "6",
+        "4"
+      ],
+      "explanation": [
+        "In 41, the units digit is 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_cfb91b6918",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the units digit of 96?",
+      "correct_answer": "6",
+      "distractors": [
+        "9",
+        "2",
+        "3"
+      ],
+      "explanation": [
+        "In 96, the units digit is 6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_d3c58b7a91",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the units digit of 88?",
+      "correct_answer": "8",
+      "distractors": [
+        "12",
+        "5",
+        "11"
+      ],
+      "explanation": [
+        "In 88, the units digit is 8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_d4024416eb",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the tens digit of 40?",
+      "correct_answer": "4",
+      "distractors": [
+        "1",
+        "0",
+        "9"
+      ],
+      "explanation": [
+        "In 40, the tens digit is 4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_d459c431b8",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the units digit of 35?",
+      "correct_answer": "5",
+      "distractors": [
+        "9",
+        "1",
+        "3"
+      ],
+      "explanation": [
+        "In 35, the units digit is 5."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_db373484bb",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the units digit of 64?",
+      "correct_answer": "4",
+      "distractors": [
+        "6",
+        "9",
+        "3"
+      ],
+      "explanation": [
+        "In 64, the units digit is 4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_dc1fb8f464",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the tens digit of 81?",
+      "correct_answer": "8",
+      "distractors": [
+        "5",
+        "6",
+        "1"
+      ],
+      "explanation": [
+        "In 81, the tens digit is 8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_e475813b00",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the tens digit of 13?",
+      "correct_answer": "1",
+      "distractors": [
+        "6",
+        "5",
+        "3"
+      ],
+      "explanation": [
+        "In 13, the tens digit is 1."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_e66aea5653",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the tens digit of 48?",
+      "correct_answer": "4",
+      "distractors": [
+        "8",
+        "9",
+        "1"
+      ],
+      "explanation": [
+        "In 48, the tens digit is 4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_e873d55e5b",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the units digit of 92?",
+      "correct_answer": "2",
+      "distractors": [
+        "1",
+        "9",
+        "5"
+      ],
+      "explanation": [
+        "In 92, the units digit is 2."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_f225f73546",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the tens digit of 66?",
+      "correct_answer": "6",
+      "distractors": [
+        "3",
+        "4",
+        "10"
+      ],
+      "explanation": [
+        "In 66, the tens digit is 6."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_f4bd811963",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the tens digit of 43?",
+      "correct_answer": "4",
+      "distractors": [
+        "6",
+        "3",
+        "5"
+      ],
+      "explanation": [
+        "In 43, the tens digit is 4."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "deepmind_mathematics_dataset_pv_fd32fc97f4",
+      "concept_id": "place_value_2digit",
+      "prompt": "What is the units digit of 98?",
+      "correct_answer": "8",
+      "distractors": [
+        "9",
+        "6",
+        "3"
+      ],
+      "explanation": [
+        "In 98, the units digit is 8."
+      ],
+      "source": "deepmind_mathematics_dataset",
+      "source_module": "numbers.place_value",
+      "license": "Apache-2.0"
+    }
+  ]
+}
