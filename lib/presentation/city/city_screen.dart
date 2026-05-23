@@ -59,7 +59,7 @@ class _CityScreenState extends ConsumerState<CityScreen> {
     }
     final bricks = ref.read(activePlayerProvider).asData?.value.brickBalance;
     if (bricks == null || selected.brickCost > bricks) {
-      _toast('Not enough 🧱 for ${selected.name}');
+      _toast('Not enough bricks for ${selected.name}');
       return;
     }
     unawaited(ref.read(cityActionsProvider).placeBuilding(selected, col, row));
@@ -104,7 +104,6 @@ class _CityScreenState extends ConsumerState<CityScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final playerAsync = ref.watch(activePlayerProvider);
     final cityAsync = ref.watch(activeCityProvider);
     final placementsAsync = ref.watch(placementsProvider);
@@ -142,12 +141,10 @@ class _CityScreenState extends ConsumerState<CityScreen> {
         actions: [
           if (player != null)
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Center(
-                child: Text(
-                  '🧱 ${player.brickBalance}   🔬 ${player.researchBalance}',
-                  style: theme.textTheme.titleSmall,
-                ),
+              padding: const EdgeInsets.only(right: 12),
+              child: _CurrencyBar(
+                bricks: player.brickBalance,
+                research: player.researchBalance,
               ),
             ),
         ],
@@ -172,6 +169,43 @@ class _CityScreenState extends ConsumerState<CityScreen> {
         onPressed: _openSpin,
         icon: const Icon(Icons.casino_rounded),
         label: const Text('Play math'),
+      ),
+    );
+  }
+}
+
+/// 🧱 / 🔬 balances on a shaded rounded card so both glyphs keep contrast
+/// against the city's bright terrain background showing behind the AppBar.
+class _CurrencyBar extends StatelessWidget {
+  const _CurrencyBar({required this.bricks, required this.research});
+
+  final int bricks;
+  final int research;
+
+  @override
+  Widget build(BuildContext context) {
+    const textStyle = TextStyle(
+      color: Colors.white,
+      fontWeight: FontWeight.bold,
+      fontSize: 15,
+    );
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.black.withValues(alpha: 0.32),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text('🧱', style: TextStyle(fontSize: 15)),
+          const SizedBox(width: 5),
+          Text('$bricks', style: textStyle),
+          const SizedBox(width: 12),
+          const Text('🔬', style: TextStyle(fontSize: 15)),
+          const SizedBox(width: 5),
+          Text('$research', style: textStyle),
+        ],
       ),
     );
   }

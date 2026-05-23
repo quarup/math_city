@@ -10,7 +10,6 @@ import 'package:math_city/game/spin_wheel/spin_wheel_component.dart';
 import 'package:math_city/game/spin_wheel/spin_wheel_game.dart';
 import 'package:math_city/presentation/player/adventurer_avatar_widget.dart';
 import 'package:math_city/presentation/question/question_screen.dart';
-import 'package:math_city/presentation/theme/app_palette.dart';
 import 'package:math_city/state/game_session_provider.dart';
 import 'package:math_city/state/introduced_concepts_provider.dart';
 import 'package:math_city/state/player_provider.dart';
@@ -124,11 +123,10 @@ class _SpinScreenState extends ConsumerState<SpinScreen>
 
   @override
   Widget build(BuildContext context) {
-    final stars = ref.watch(totalBricksProvider);
+    final bricks = ref.watch(totalBricksProvider);
     final wheelAsync = ref.watch(wheelConceptsProvider);
     final playerAsync = ref.watch(activePlayerProvider);
     final theme = Theme.of(context);
-    final palette = theme.extension<AppPalette>()!;
 
     final playerName = playerAsync.asData?.value.name ?? '';
     final avatarConfig =
@@ -166,14 +164,10 @@ class _SpinScreenState extends ConsumerState<SpinScreen>
               scale: _pulseScale,
               child: Row(
                 children: [
-                  Icon(
-                    Icons.star_rounded,
-                    color: palette.coinGold,
-                    size: 24,
-                  ),
+                  const Text('🧱', style: TextStyle(fontSize: 20)),
                   const SizedBox(width: 4),
                   Text(
-                    '$stars',
+                    '$bricks',
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
