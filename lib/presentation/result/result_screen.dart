@@ -170,7 +170,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                   opacity: _starVisible ? 1.0 : 0.0,
                   child: _BrickAward(
                     key: _starKey,
-                    stars: widget.bricksEarned,
+                    bricks: widget.bricksEarned,
                     theme: theme,
                   ),
                 ),
@@ -213,9 +213,9 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
 }
 
 class _BrickAward extends StatelessWidget {
-  const _BrickAward({required this.stars, required this.theme, super.key});
+  const _BrickAward({required this.bricks, required this.theme, super.key});
 
-  final int stars;
+  final int bricks;
   final ThemeData theme;
 
   @override
@@ -224,10 +224,10 @@ class _BrickAward extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(Icons.star_rounded, color: palette.coinGold, size: 40),
+        const Text('🧱', style: TextStyle(fontSize: 32)),
         const SizedBox(width: 8),
         Text(
-          '+$stars',
+          '+$bricks',
           style: theme.textTheme.headlineMedium?.copyWith(
             fontWeight: FontWeight.bold,
             color: palette.coinGoldDeep,
@@ -452,11 +452,7 @@ class _FlyingStarOverlayState extends State<_FlyingStarOverlay>
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
-                      Icons.star_rounded,
-                      color: palette.coinGold,
-                      size: 36,
-                    ),
+                    const Text('🧱', style: TextStyle(fontSize: 30)),
                     const SizedBox(width: 4),
                     Text(
                       '+${widget.bricksEarned}',
