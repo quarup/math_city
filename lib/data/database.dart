@@ -447,6 +447,62 @@ class AppDatabase extends _$AppDatabase {
     ),
   );
 
+  // ---- City helpers (Phase 7) ----
+
+  /// The player's `City` row for [cityMapId] (the beginner map by default).
+  /// Auto-created at player creation, so this always resolves for a real
+  /// player.
+  Future<City> cityForPlayer(
+    int playerId, {
+    String cityMapId = beginnerCityMapId,
+  }) =>
+      (select(cities)..where(
+            (t) => t.playerId.equals(playerId) & t.cityMapId.equals(cityMapId),
+          ))
+          .getSingle();
+
+  /// Every building placed in [cityId].
+  Future<List<BuildingPlacement>> placementsForCity(int cityId) =>
+      (select(buildingPlacements)..where((t) => t.cityId.equals(cityId))).get();
+
+  /// IDs of the building types the player has unlocked (spent 🔬 on, or
+  /// pre-researched). Presence => the type appears in the build menu.
+  Future<Set<String>> researchedBuildingTypeIds(int playerId) async {
+    final rows = await (select(
+      buildingTypesResearched,
+    )..where((t) => t.playerId.equals(playerId))).get();
+    return rows.map((r) => r.buildingTypeId).toSet();
+  }
+
+  /// Places one building: inserts the placement row and spends [brickCost]
+  /// from the player's balance (lifetime stays monotone via
+  /// [incrementPlayerBricks]). The caller must have already verified tile
+  /// vacancy and affordability.
+  ///
+  /// `placedAtRound` is stored as the city's current placement count — a
+  /// monotonic stand-in until per-session round tracking lands in a later
+  /// chunk (it only feeds the "building age" beat trigger, which is Chunk 6).
+  Future<void> placeBuilding({
+    required int cityId,
+    required int playerId,
+    required String buildingTypeId,
+    required int gridX,
+    required int gridY,
+    required int brickCost,
+  }) async {
+    final existing = await placementsForCity(cityId);
+    await into(buildingPlacements).insert(
+      BuildingPlacementsCompanion.insert(
+        cityId: cityId,
+        buildingTypeId: buildingTypeId,
+        gridX: gridX,
+        gridY: gridY,
+        placedAtRound: existing.length,
+      ),
+    );
+    if (brickCost > 0) await incrementPlayerBricks(playerId, -brickCost);
+  }
+
   // ---- Proficiency helpers ----
 
   /// Returns a map of conceptId → proficiency for [playerId].
