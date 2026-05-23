@@ -57,9 +57,9 @@ List<WheelSegment> _buildSegments(List<Concept> concepts) => concepts
 // ---------------------------------------------------------------------------
 
 class SpinScreen extends ConsumerStatefulWidget {
-  const SpinScreen({this.pulseStars = false, super.key});
+  const SpinScreen({this.pulseBricks = false, super.key});
 
-  final bool pulseStars;
+  final bool pulseBricks;
 
   @override
   ConsumerState<SpinScreen> createState() => _SpinScreenState();
@@ -83,7 +83,7 @@ class _SpinScreenState extends ConsumerState<SpinScreen>
       TweenSequenceItem(tween: Tween(begin: 1.6, end: 1), weight: 65),
     ]).animate(CurvedAnimation(parent: _pulseCtrl, curve: Curves.easeOut));
 
-    if (widget.pulseStars) {
+    if (widget.pulseBricks) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
         unawaited(
@@ -124,7 +124,7 @@ class _SpinScreenState extends ConsumerState<SpinScreen>
 
   @override
   Widget build(BuildContext context) {
-    final stars = ref.watch(totalStarsProvider);
+    final stars = ref.watch(totalBricksProvider);
     final wheelAsync = ref.watch(wheelConceptsProvider);
     final playerAsync = ref.watch(activePlayerProvider);
     final theme = Theme.of(context);

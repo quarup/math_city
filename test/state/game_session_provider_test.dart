@@ -13,7 +13,7 @@ AppDatabase _testDb() {
 }
 
 void main() {
-  group('TotalStarsNotifier', () {
+  group('TotalBricksNotifier', () {
     late ProviderContainer container;
 
     setUp(
@@ -24,19 +24,19 @@ void main() {
     tearDown(() => container.dispose());
 
     test('starts at zero', () {
-      expect(container.read(totalStarsProvider), 0);
+      expect(container.read(totalBricksProvider), 0);
     });
 
     test('add increments the total', () {
-      container.read(totalStarsProvider.notifier).add(3);
-      expect(container.read(totalStarsProvider), 3);
+      container.read(totalBricksProvider.notifier).add(3);
+      expect(container.read(totalBricksProvider), 3);
     });
 
     test('multiple adds accumulate', () {
-      container.read(totalStarsProvider.notifier).add(3);
-      container.read(totalStarsProvider.notifier).add(5);
-      container.read(totalStarsProvider.notifier).add(1);
-      expect(container.read(totalStarsProvider), 9);
+      container.read(totalBricksProvider.notifier).add(3);
+      container.read(totalBricksProvider.notifier).add(5);
+      container.read(totalBricksProvider.notifier).add(1);
+      expect(container.read(totalBricksProvider), 9);
     });
   });
 }

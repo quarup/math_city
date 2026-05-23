@@ -4,33 +4,33 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_city/state/player_provider.dart';
 
 // ---------------------------------------------------------------------------
-// Total stars for the active player.
+// Total 🧱 bricks for the active player.
 //
 // build() watches activePlayerProvider so the count resets whenever a
 // different player is selected.  add() increments in-memory state and
 // persists asynchronously using the active player's ID.
 // ---------------------------------------------------------------------------
 
-class TotalStarsNotifier extends Notifier<int> {
+class TotalBricksNotifier extends Notifier<int> {
   @override
   int build() {
     final playerAsync = ref.watch(activePlayerProvider);
-    return playerAsync.asData?.value.currentStars ?? 0;
+    return playerAsync.asData?.value.brickBalance ?? 0;
   }
 
-  void add(int stars) {
-    state += stars;
+  void add(int bricks) {
+    state += bricks;
     final playerId = ref.read(activePlayerIdProvider);
     if (playerId != null) {
       final db = ref.read(appDatabaseProvider);
       final player = ref.read(activePlayerProvider).asData?.value;
-      final lifetime = (player?.lifetimeStarsEarned ?? 0) + stars;
+      final lifetime = (player?.lifetimeBricksEarned ?? 0) + bricks;
       unawaited(
         db
-            .updatePlayerStars(
+            .updatePlayerBricks(
               playerId,
-              currentStars: state,
-              lifetimeStarsEarned: lifetime,
+              brickBalance: state,
+              lifetimeBricksEarned: lifetime,
             )
             .then((_) {
               // Invalidate so HomeScreen player chips show the new total.
@@ -41,5 +41,5 @@ class TotalStarsNotifier extends Notifier<int> {
   }
 }
 
-final NotifierProvider<TotalStarsNotifier, int> totalStarsProvider =
-    NotifierProvider<TotalStarsNotifier, int>(TotalStarsNotifier.new);
+final NotifierProvider<TotalBricksNotifier, int> totalBricksProvider =
+    NotifierProvider<TotalBricksNotifier, int>(TotalBricksNotifier.new);

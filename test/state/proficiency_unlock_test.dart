@@ -219,20 +219,20 @@ void main() {
       },
     );
 
-    test('does not touch player stars or avatar', () async {
+    test('does not touch player bricks or avatar', () async {
       final db = AppDatabase(NativeDatabase.memory());
       final pid = await _seedPlayer(db);
-      await db.updatePlayerStars(
+      await db.updatePlayerBricks(
         pid,
-        currentStars: 42,
-        lifetimeStarsEarned: 99,
+        brickBalance: 42,
+        lifetimeBricksEarned: 99,
       );
 
       await db.resetSkillsForPlayer(pid);
 
       final p = await db.getPlayerById(pid);
-      expect(p.currentStars, 42);
-      expect(p.lifetimeStarsEarned, 99);
+      expect(p.brickBalance, 42);
+      expect(p.lifetimeBricksEarned, 99);
     });
   });
 }

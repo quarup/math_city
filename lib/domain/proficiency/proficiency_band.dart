@@ -17,7 +17,7 @@ ProficiencyBand bandForProficiency(double p) {
 
 /// Stars awarded for a correct answer in [band].
 /// Wrong answers always earn 0.
-int starsForBand(ProficiencyBand band) => switch (band) {
+int bricksForBand(ProficiencyBand band) => switch (band) {
   ProficiencyBand.challenging => 5,
   ProficiencyBand.comfortable => 3,
   _ => 0,

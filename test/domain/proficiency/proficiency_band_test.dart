@@ -38,21 +38,21 @@ void main() {
     });
   });
 
-  group('starsForBand', () {
+  group('bricksForBand', () {
     test('challenging → 5 stars', () {
-      expect(starsForBand(ProficiencyBand.challenging), 5);
+      expect(bricksForBand(ProficiencyBand.challenging), 5);
     });
 
     test('comfortable → 3 stars', () {
-      expect(starsForBand(ProficiencyBand.comfortable), 3);
+      expect(bricksForBand(ProficiencyBand.comfortable), 3);
     });
 
     test('notYet → 0 stars', () {
-      expect(starsForBand(ProficiencyBand.notYet), 0);
+      expect(bricksForBand(ProficiencyBand.notYet), 0);
     });
 
     test('mastered → 0 stars', () {
-      expect(starsForBand(ProficiencyBand.mastered), 0);
+      expect(bricksForBand(ProficiencyBand.mastered), 0);
     });
   });
 

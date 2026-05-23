@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:math_city/domain/city/research_awards.dart';
 import 'package:math_city/domain/concepts/concept.dart';
 import 'package:math_city/domain/concepts/concept_registry.dart';
 import 'package:math_city/domain/concepts/dag_engine.dart';
@@ -51,6 +52,25 @@ class ProficiencyNotifier extends AsyncNotifier<Map<String, double>> {
       updated,
       correct: correct,
     );
+
+    // 🔬 research-currency awards: +1 per first-time band crossing on this
+    // concept. `newlyCrossedBands` only returns crossings the player hasn't
+    // yet been awarded for (per `ConceptBandMilestones`), so re-crossings
+    // after a dip don't double-award.
+    final awarded = await db.awardedBandIndicesFor(player.id, conceptId);
+    final crossed = newlyCrossedBands(
+      oldP: current,
+      newP: updated,
+      alreadyAwardedBandIndices: awarded,
+    );
+    for (final bandIndex in crossed) {
+      await db.recordBandMilestone(player.id, conceptId, bandIndex);
+      await db.incrementPlayerResearch(player.id, 1);
+    }
+    if (crossed.isNotEmpty) {
+      // Refresh the player chip in HomeScreen / spin screen.
+      ref.invalidate(allPlayersProvider);
+    }
 
     UnlockEvent? unlock;
     final crossedMastery = current < 0.85 && updated >= 0.85;

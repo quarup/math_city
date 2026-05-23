@@ -17,7 +17,7 @@ class ResultScreen extends ConsumerStatefulWidget {
     required this.question,
     required this.selectedAnswer,
     required this.outcome,
-    required this.starsEarned,
+    required this.bricksEarned,
     this.unlockEvent,
     this.debugMode = false,
     super.key,
@@ -31,7 +31,7 @@ class ResultScreen extends ConsumerStatefulWidget {
   /// `equivalentNonCanonical` both render the success state; the latter
   /// also surfaces a friendly nudge with the canonical form.
   final AnswerOutcome outcome;
-  final int starsEarned;
+  final int bricksEarned;
 
   /// Drip-feed unlock to celebrate. Caller is responsible for ensuring
   /// this is null on wrong answers — the result screen does not double-
@@ -40,7 +40,7 @@ class ResultScreen extends ConsumerStatefulWidget {
 
   /// When true, "Next round" pops back to the debug picker instead of
   /// pushing the spin wheel. Caller is also responsible for passing
-  /// `starsEarned: 0` so no stars are written to the player profile.
+  /// `bricksEarned: 0` so no stars are written to the player profile.
   final bool debugMode;
 
   @override
@@ -54,10 +54,10 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
   @override
   void initState() {
     super.initState();
-    if (widget.starsEarned > 0) {
+    if (widget.bricksEarned > 0) {
       // Defer so we're not mutating provider state during a build.
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        ref.read(totalStarsProvider.notifier).add(widget.starsEarned);
+        ref.read(totalBricksProvider.notifier).add(widget.bricksEarned);
       });
     }
   }
@@ -68,7 +68,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
       return;
     }
 
-    if (widget.starsEarned <= 0) {
+    if (widget.bricksEarned <= 0) {
       _pushSpin();
       return;
     }
@@ -95,7 +95,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
       builder: (overlayCtx) => _FlyingStarOverlay(
         from: starCenter,
         to: target,
-        starsEarned: widget.starsEarned,
+        bricksEarned: widget.bricksEarned,
       ),
     );
     overlayState.insert(entry);
@@ -116,7 +116,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
     unawaited(
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute<void>(
-          builder: (_) => SpinScreen(pulseStars: pulse),
+          builder: (_) => SpinScreen(pulseBricks: pulse),
         ),
         (route) => route.isFirst,
       ),
@@ -160,13 +160,13 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                 ),
                 textAlign: TextAlign.center,
               ),
-              if (isCorrect && widget.starsEarned > 0) ...[
+              if (isCorrect && widget.bricksEarned > 0) ...[
                 const SizedBox(height: 16),
                 Opacity(
                   opacity: _starVisible ? 1.0 : 0.0,
-                  child: _StarAward(
+                  child: _BrickAward(
                     key: _starKey,
-                    stars: widget.starsEarned,
+                    stars: widget.bricksEarned,
                     theme: theme,
                   ),
                 ),
@@ -208,8 +208,8 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
   }
 }
 
-class _StarAward extends StatelessWidget {
-  const _StarAward({required this.stars, required this.theme, super.key});
+class _BrickAward extends StatelessWidget {
+  const _BrickAward({required this.stars, required this.theme, super.key});
 
   final int stars;
   final ThemeData theme;
@@ -389,12 +389,12 @@ class _FlyingStarOverlay extends StatefulWidget {
   const _FlyingStarOverlay({
     required this.from,
     required this.to,
-    required this.starsEarned,
+    required this.bricksEarned,
   });
 
   final Offset from;
   final Offset to;
-  final int starsEarned;
+  final int bricksEarned;
 
   @override
   State<_FlyingStarOverlay> createState() => _FlyingStarOverlayState();
@@ -455,7 +455,7 @@ class _FlyingStarOverlayState extends State<_FlyingStarOverlay>
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      '+${widget.starsEarned}',
+                      '+${widget.bricksEarned}',
                       style: TextStyle(
                         color: palette.coinGold,
                         fontSize: 24,

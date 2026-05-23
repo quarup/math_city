@@ -5,6 +5,8 @@ import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:flutter/services.dart' show AssetManifest, rootBundle;
 import 'package:math_city/domain/avatar/adventurer_config.dart';
+import 'package:math_city/domain/city/building_registry.dart';
+import 'package:math_city/domain/city/city_map_registry.dart';
 import 'package:math_city/domain/concepts/concept.dart' as dom;
 import 'package:math_city/domain/concepts/concept_registry.dart' as dom;
 import 'package:math_city/domain/questions/dataset_question.dart';
@@ -21,9 +23,23 @@ class Players extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get name => text().withLength(min: 1, max: 50)();
   IntColumn get gradeLevel => integer()();
-  IntColumn get currentStars => integer().withDefault(const Constant(0))();
-  IntColumn get lifetimeStarsEarned =>
+
+  /// 🧱 spending balance — decremented on placements, map unlocks, events.
+  IntColumn get brickBalance => integer().withDefault(const Constant(0))();
+
+  /// 🧱 lifetime earned — never decreases; available as a gate input on
+  /// `BuildingType.unlockRule.minLifetimeBricks`.
+  IntColumn get lifetimeBricksEarned =>
       integer().withDefault(const Constant(0))();
+
+  /// 🔬 spending balance — decremented when the player spends research to
+  /// move a building type from "available" into `BuildingTypesResearched`.
+  IntColumn get researchBalance => integer().withDefault(const Constant(0))();
+
+  /// 🔬 lifetime earned — never decreases; bookkeeping.
+  IntColumn get lifetimeResearchEarned =>
+      integer().withDefault(const Constant(0))();
+
   DateTimeColumn get createdAt => dateTime()();
   // Stored as JSON string; null = default avatar.
   TextColumn get avatarConfig => text().nullable()();
@@ -113,6 +129,76 @@ class DatasetQuestions extends Table {
 }
 
 // ---------------------------------------------------------------------------
+// City-builder tables (Phase 7)
+// ---------------------------------------------------------------------------
+
+/// Per-player city instance. A player may own multiple cities (one per
+/// `CityMap` they've unlocked); the beginner map's row is auto-created at
+/// player creation. Static map metadata lives in
+/// `lib/domain/city/city_map_registry.dart`, not here.
+class Cities extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get playerId => integer().references(Players, #id)();
+  TextColumn get cityMapId => text()();
+  IntColumn get gridWidth => integer()();
+  IntColumn get gridHeight => integer()();
+  IntColumn get population => integer().withDefault(const Constant(0))();
+  DateTimeColumn get createdAt => dateTime()();
+}
+
+/// One row per placed building. `placedAt` is the round-counter at the moment
+/// of placement (not a wall-clock date) so the "building age" beat trigger
+/// can use it without timezone surprises.
+class BuildingPlacements extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get cityId => integer().references(Cities, #id)();
+  TextColumn get buildingTypeId => text()();
+  IntColumn get currentTier => integer().withDefault(const Constant(0))();
+  IntColumn get gridX => integer()();
+  IntColumn get gridY => integer()();
+  IntColumn get placedAtRound => integer()();
+}
+
+/// Building types the player has spent 🔬 to unlock. Presence => the type
+/// appears in the build menu (subject to 🧱 cost per placement).
+class BuildingTypesResearched extends Table {
+  IntColumn get playerId => integer().references(Players, #id)();
+  TextColumn get buildingTypeId => text()();
+  DateTimeColumn get researchedAt => dateTime()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {playerId, buildingTypeId};
+}
+
+/// Award log for the 🔬 research-currency earning rule (see
+/// `lib/domain/city/research_awards.dart`). Presence of a row means +1 🔬
+/// has already been awarded for that (player, concept, band-index) triple
+/// — so re-crossings after a dip don't double-award.
+class ConceptBandMilestones extends Table {
+  IntColumn get playerId => integer().references(Players, #id)();
+  TextColumn get conceptId => text()();
+  IntColumn get bandIndex => integer()();
+  DateTimeColumn get awardedAt => dateTime()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {playerId, conceptId, bandIndex};
+}
+
+/// Per-player story-beat state. State enum stored as text. Bubble state
+/// survives across sessions per prd.md.
+class StoryBeatStates extends Table {
+  IntColumn get playerId => integer().references(Players, #id)();
+  TextColumn get beatId => text()();
+  TextColumn get state => text()(); // 'onScreen' | 'dismissed' | 'acked'
+  IntColumn get lastFiredAtRound => integer().nullable()();
+  IntColumn get fireCount => integer().withDefault(const Constant(0))();
+  IntColumn get lifetimeBricksAtLastFire => integer().nullable()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {playerId, beatId};
+}
+
+// ---------------------------------------------------------------------------
 // Database class
 // ---------------------------------------------------------------------------
 
@@ -123,13 +209,18 @@ class DatasetQuestions extends Table {
     IntroducedConcepts,
     Concepts,
     DatasetQuestions,
+    Cities,
+    BuildingPlacements,
+    BuildingTypesResearched,
+    ConceptBandMilestones,
+    StoryBeatStates,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 7;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -146,8 +237,17 @@ class AppDatabase extends _$AppDatabase {
       // v6: added answerFormat column to dataset_questions so commaList
       //   (sort) and other non-integer dataset items can surface their
       //   format to checkAnswer + the keypad/MC gate.
+      // v7: Phase 7 city-builder spine — currency split on Players
+      //   (brick / research balances + lifetime counters), plus the new
+      //   city-builder tables. Static catalogs (BuildingType, StoryBeat,
+      //   CityMap) live in code under lib/domain/city/ — not Drift rows.
       // Wipe is acceptable while we have no real users; proper additive
       // migrations land in Phase 11. See plan.md.
+      await customStatement('DROP TABLE IF EXISTS story_beat_states');
+      await customStatement('DROP TABLE IF EXISTS concept_band_milestones');
+      await customStatement('DROP TABLE IF EXISTS building_types_researched');
+      await customStatement('DROP TABLE IF EXISTS building_placements');
+      await customStatement('DROP TABLE IF EXISTS cities');
       await customStatement('DROP TABLE IF EXISTS dataset_questions');
       await customStatement('DROP TABLE IF EXISTS introduced_concepts');
       await customStatement('DROP TABLE IF EXISTS concepts');
@@ -227,6 +327,32 @@ class AppDatabase extends _$AppDatabase {
         createdAt: DateTime.now(),
       ),
     );
+
+    // Seed Phase 7 city-builder state for the new player:
+    // (a) one City row tied to the beginner map (more maps unlock later
+    //     and each gets its own City row), and
+    // (b) pre-researched entries for every building type that's free to
+    //     research and ungated (the mayor's office in v1).
+    await into(cities).insert(
+      CitiesCompanion.insert(
+        playerId: id,
+        cityMapId: beginnerCityMap.id,
+        gridWidth: beginnerCityMap.baseGridWidth,
+        gridHeight: beginnerCityMap.baseGridHeight,
+        createdAt: DateTime.now(),
+      ),
+    );
+    final now = DateTime.now();
+    for (final b in preResearchedBuildings) {
+      await into(buildingTypesResearched).insert(
+        BuildingTypesResearchedCompanion.insert(
+          playerId: id,
+          buildingTypeId: b.id,
+          researchedAt: now,
+        ),
+      );
+    }
+
     return getPlayerById(id);
   }
 
@@ -245,14 +371,79 @@ class AppDatabase extends _$AppDatabase {
     ),
   );
 
-  Future<void> updatePlayerStars(
+  /// Sets a player's brick balances directly. Used by the spending UI; for
+  /// per-correct-answer increments use [incrementPlayerBricks].
+  Future<void> updatePlayerBricks(
     int playerId, {
-    required int currentStars,
-    required int lifetimeStarsEarned,
+    required int brickBalance,
+    required int lifetimeBricksEarned,
   }) => (update(players)..where((t) => t.id.equals(playerId))).write(
     PlayersCompanion(
-      currentStars: Value(currentStars),
-      lifetimeStarsEarned: Value(lifetimeStarsEarned),
+      brickBalance: Value(brickBalance),
+      lifetimeBricksEarned: Value(lifetimeBricksEarned),
+    ),
+  );
+
+  /// Adds `by` 🧱 to the player's spending and lifetime brick balances.
+  /// Use this on every correct answer. Negative values (refunds) are
+  /// allowed on `brickBalance` only; lifetime stays monotone.
+  Future<void> incrementPlayerBricks(int playerId, int by) async {
+    final p = await getPlayerById(playerId);
+    await (update(players)..where((t) => t.id.equals(playerId))).write(
+      PlayersCompanion(
+        brickBalance: Value(p.brickBalance + by),
+        lifetimeBricksEarned: Value(
+          p.lifetimeBricksEarned + (by > 0 ? by : 0),
+        ),
+      ),
+    );
+  }
+
+  /// Adds `by` 🔬 to the player's spending and lifetime research balances.
+  /// Negative values are allowed on `researchBalance` only (e.g. spending);
+  /// lifetime stays monotone.
+  Future<void> incrementPlayerResearch(int playerId, int by) async {
+    final p = await getPlayerById(playerId);
+    await (update(players)..where((t) => t.id.equals(playerId))).write(
+      PlayersCompanion(
+        researchBalance: Value(p.researchBalance + by),
+        lifetimeResearchEarned: Value(
+          p.lifetimeResearchEarned + (by > 0 ? by : 0),
+        ),
+      ),
+    );
+  }
+
+  // ---- Concept band milestones (research-award log) ----
+
+  /// Returns the set of band indices already awarded for this
+  /// (player, concept) pair. Used by the research-award rule to filter out
+  /// re-crossings after a dip.
+  Future<Set<int>> awardedBandIndicesFor(
+    int playerId,
+    String conceptId,
+  ) async {
+    final rows =
+        await (select(conceptBandMilestones)..where(
+              (t) =>
+                  t.playerId.equals(playerId) & t.conceptId.equals(conceptId),
+            ))
+            .get();
+    return rows.map((r) => r.bandIndex).toSet();
+  }
+
+  /// Records a band milestone. Idempotent: re-recording the same triple is
+  /// a no-op (composite primary key prevents duplicates).
+  Future<void> recordBandMilestone(
+    int playerId,
+    String conceptId,
+    int bandIndex,
+  ) => into(conceptBandMilestones).insertOnConflictUpdate(
+    ConceptBandMilestonesCompanion.insert(
+      playerId: playerId,
+      conceptId: conceptId,
+      bandIndex: bandIndex,
+      awardedAt: DateTime.now(),
     ),
   );
 
@@ -320,8 +511,8 @@ class AppDatabase extends _$AppDatabase {
   /// [introducedConceptIdsForPlayer] will be empty, which causes the
   /// drip-feed to seed a new starter pack at the player's *current* grade.
   ///
-  /// Stars (current and lifetime) are intentionally NOT touched — those
-  /// represent earned currency, not curriculum state.
+  /// 🧱 and 🔬 balances (current and lifetime) are intentionally NOT touched
+  /// — those represent earned currency, not curriculum state.
   ///
   /// Called when a player's grade is changed so the wheel recalibrates
   /// to the new grade rather than continuing to surface stale lower-grade

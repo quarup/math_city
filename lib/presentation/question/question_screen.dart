@@ -77,7 +77,7 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen> {
     if (!mounted) return;
 
     final stars = (isCorrect && !widget.debugMode)
-        ? starsForBand(widget.band)
+        ? bricksForBand(widget.band)
         : 0;
 
     unawaited(
@@ -87,7 +87,7 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen> {
             question: question,
             selectedAnswer: answer,
             outcome: outcome,
-            starsEarned: stars,
+            bricksEarned: stars,
             unlockEvent: isCorrect ? unlock : null,
             debugMode: widget.debugMode,
           ),

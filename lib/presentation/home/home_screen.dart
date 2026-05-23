@@ -231,7 +231,6 @@ class _PlayerChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final palette = theme.extension<AppPalette>()!;
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
@@ -271,14 +270,17 @@ class _PlayerChip extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(
-                        Icons.star_rounded,
-                        color: palette.coinGold,
-                        size: 13,
-                      ),
+                      const Text('🧱', style: TextStyle(fontSize: 11)),
                       const SizedBox(width: 2),
                       Text(
-                        '${player.currentStars}',
+                        '${player.brickBalance}',
+                        style: theme.textTheme.labelSmall,
+                      ),
+                      const SizedBox(width: 4),
+                      const Text('🔬', style: TextStyle(fontSize: 11)),
+                      const SizedBox(width: 2),
+                      Text(
+                        '${player.researchBalance}',
                         style: theme.textTheme.labelSmall,
                       ),
                     ],
