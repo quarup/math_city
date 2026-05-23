@@ -23,7 +23,7 @@ These focus on learning outcomes, not time-on-app:
 - **Concept progression:** % of players who advance at least one concept from "challenging" to "comfortable" within their first 5 sessions
 - **Accuracy improvement:** wrong-answer rate per concept decreases over successive attempts (player is actually learning, not just guessing)
 - **Breadth of practice:** average number of distinct concept categories practiced per week (kids are exploring, not grinding one concept)
-- **Challenge engagement:** % of correct answers that are 5-star (challenging-band) questions — higher = player is being appropriately stretched
+- **Challenge engagement:** % of correct answers that are challenging-band (5 🧱) questions — higher = player is being appropriately stretched
 - **Retention through learning:** D14 retention among players who advanced at least one concept level (learning = reason to return)
 
 ---
@@ -51,9 +51,10 @@ Each **round** follows this sequence:
 2. **Spin the wheel** — A colorful wheel displays 4–8 math concepts (selected from a larger pool, weighted toward concepts the player needs to practice). Player taps to spin.
 3. **Answer a question** — A question in the landed concept category appears at the player's current level for that concept.
 4. **Result:**
-   - **Correct answer at regular difficulty:** +3 stars, celebratory animation/sound.
-   - **Correct answer at challenge difficulty** (near the edge of their ability): +5 stars, bigger celebration.
-   - **Wrong answer:** 0 stars. A friendly step-by-step explanation guides the player to the correct answer. No penalty — the game stays encouraging.
+   - **Correct answer at regular difficulty:** +3 🧱 bricks, celebratory animation/sound.
+   - **Correct answer at challenge difficulty** (near the edge of their ability): +5 🧱 bricks, bigger celebration.
+   - **Wrong answer:** 0 🧱. A friendly step-by-step explanation guides the player to the correct answer. No penalty — the game stays encouraging.
+   - **Band-crossing bonus:** if this correct answer pushes the concept's proficiency across a band-boundary threshold for the first time (e.g. from challenging into comfortable), the player also earns +1 🔬 research with a distinct celebratory animation. Awarded at most once per concept per threshold.
 5. Return to step 1.
 
 ### Answer Input
@@ -70,7 +71,7 @@ This means the same player might type answers for concepts they've mastered and 
 No hard timer in v1. After ~20 seconds of inactivity, the character plays a gentle "thinking" animation as a nudge — but the player can take as long as they need. A timed-mode toggle is out of scope for v1 (see *Out of Scope*).
 
 ### Multiplayer Turn Structure
-When multiple players share a device, they **alternate rounds** in a single session (Player A spins → Player B spins → ...). Each player's stars and concept data update independently. A per-session leaderboard shows how many stars each player earned this session.
+When multiple players share a device, they **alternate rounds** in a single session (Player A spins → Player B spins → ...). Each player's 🧱 / 🔬 balances and concept data update independently. A per-session leaderboard shows how many 🧱 each player earned this session.
 
 ---
 
@@ -101,11 +102,11 @@ Based on proficiency, each sub-concept is classified into one of four bands:
 | Band | Condition | Action |
 |---|---|---|
 | **Mastered** | Player has demonstrated reliable correctness | Excluded from wheel; DAG children become eligible to surface |
-| **Comfortable** | At fluency, but not yet mastered | Included; correct = 3 stars; typed numeric input |
-| **Challenging** | Newly introduced or partially understood | Included with lower probability; correct = 5 stars; multiple choice |
+| **Comfortable** | At fluency, but not yet mastered | Included; correct = 3 🧱; typed numeric input |
+| **Challenging** | Newly introduced or partially understood | Included with lower probability; correct = 5 🧱; multiple choice |
 | **Not yet** | Prerequisites not yet mastered, OR concept is far from the player's current frontier | Excluded from wheel |
 
-The wheel at any given round contains a **mix of comfortable + challenging** concepts across whichever branches the player is currently advancing on, so the player always has a chance to earn 5-star questions but isn't overwhelmed.
+The wheel at any given round contains a **mix of comfortable + challenging** concepts across whichever branches the player is currently advancing on, so the player always has a chance to earn 5-🧱 (challenging-band) questions but isn't overwhelmed.
 
 ### Question Generation
 
@@ -124,9 +125,14 @@ Each question carries a step-by-step explanation shown on wrong answers — algo
 
 ## Cosmetics System
 
-Players earn an in-game currency by answering math questions correctly. The currency is spent on **the city builder only** — no gameplay advantage is purchasable, and the app is entirely free; currency cannot be purchased with real money.
+Players earn in-game currency by answering math questions correctly. All currency is spent on **the city builder only** — no gameplay advantage is purchasable, and the app is entirely free; currency cannot be purchased with real money.
 
-> **Open decision (Phase 7):** the currency is currently called "stars" but a city-themed name would fit the product better. Two candidates on the table — (a) a simple rename, e.g. *bricks*, or (b) a multi-resource scheme where different concept families yield different building materials (e.g. *bricks* from arithmetic, *paint* from geometry, *gears* from algebra) and buildings cost a recipe of several. (b) adds depth and a natural reason to spread practice across the curriculum, at the cost of UI complexity and player-facing inventory management. Decided in Phase 7 before mechanics ship. See [plan.md](plan.md) Open Questions.
+**Two currencies (locked Phase 7, 2026-05-23):**
+
+- 🧱 **Bricks** — the spending currency. Earned per correct answer. Spent to *place* buildings (and later: expand land, run city events).
+- 🔬 **Research** — the unlocking currency. Earned when a math concept's proficiency crosses a band-boundary threshold for the first time (e.g. when a sub-concept moves from the "challenging" band into the "comfortable" band). Spent to *unlock new building types* — once researched, a building type appears permanently in the player's build menu, subject only to its brick cost on each placement. The player chooses which available building to research next, so research credit functions as a literal credit balance the player tallies up over time.
+
+The two-currency design splits "I worked hard at math today" (bricks for any correct answer) from "I genuinely learned a new piece of math" (research for crossing a proficiency band). Both feed the city builder, but the research currency ties new content unlocks to real learning progress rather than raw practice volume. The number of band-crossing thresholds is configurable in code (v1 ships 2 thresholds per concept), so the research-earning rate can be tuned post-launch without a schema migration. See [plan.md](plan.md) *Domain Specs / Research-currency earning*.
 
 The avatar is *not* part of the economy: players customize it freely (see *Player Creation & Profile*) and can re-edit anytime. The Phase 4 spike showed that no off-the-shelf Flutter avatar library combines full-body rendering with rich purchasable accessory slots, so the design was simplified to a single long-arc spending sink: the city builder. See [plan.md](plan.md) Locked Decisions for the full reasoning.
 
@@ -134,7 +140,7 @@ The avatar is *not* part of the economy: players customize it freely (see *Playe
 
 Each player has their own persistent city, accessed from a dedicated **"My City"** screen. The city is built on an isometric tile grid and is **purely cosmetic** — it does not affect math gameplay. Its purpose is to give players a long-running creative project that visualizes how far they've come, paced by a story of citizens reacting to what they build.
 
-The design ambition is **"feels infinite"**: hundreds of building types over the long arc of the catalog, each with a place in a content-rich progression — not a flat list of 10–15 buildings gated by a single star threshold. Buildings are organized into four roles, **all of which contribute to city growth**:
+The design ambition is **"feels infinite"**: hundreds of building types over the long arc of the catalog, each with a place in a content-rich progression — not a flat list of 10–15 buildings gated by a single 🧱 threshold. Buildings are organized into four roles, **all of which contribute to city growth**:
 
 | Category | Examples | Role |
 |---|---|---|
@@ -143,14 +149,16 @@ The design ambition is **"feels infinite"**: hundreds of building types over the
 | **Commercial** | grocery, clothing store, bike shop, restaurants, coffee shop, car dealership | Variety multiplies growth — a city with only one commercial type stalls or shrinks; introducing each new commercial subtype unlocks a small growth boost |
 | **Entertainment** | playground, park, cinema, amusement park | Same variety effect as commercial. Cities top-heavy in entertainment without supporting services or housing draw complaints rather than residents |
 
-**Unlock model — a branching DAG, gated multiply.** Each building type unlocks when a combination of conditions is met (any combination of the following):
+**Unlock model — a branching DAG plus a research spend.** A building type becomes *available to research* when a combination of conditions is met (any combination of the following):
 
-- *Currency threshold* — enough lifetime currency earned to date.
+- *Lifetime bricks threshold* — enough lifetime 🧱 earned to date.
 - *Prerequisite buildings placed* — e.g. a hospital requires at least one clinic and apartment-tier-2 already on the map (multi-parent prereqs use AND semantics, kept narratively coherent — we don't add prereqs that would feel random).
 - *Population minimum* — e.g. the cinema only becomes available once the city passes 50 residents.
 - *Story beat completed* — a citizen request has surfaced (the player doesn't need to explicitly accept it, but the beat must have appeared at least once).
 
-Because the DAG is branching, different players will follow different paths — one player might invest heavily in commercial variety before unlocking advanced healthcare, another might push housing density first. The UI is **discovery-based, not a visible tech tree** — locked buildings don't appear in a roadmap; the next thing to build is surfaced via citizen requests (see below), and unlocked buildings simply appear in the build menu when their gates are met. This keeps new players from feeling overwhelmed and preserves the surprise of each unlock.
+Once available, the player **spends 🔬 research credit** to actually unlock the building — at which point it's permanently in the build menu and can be placed any number of times for its 🧱 brick cost. Research is finite and earned by genuine learning progress (band-crossings on the math curriculum), so the player has to choose which available building to research next — that choice IS the player's progression decision.
+
+Because the DAG is branching, different players will follow different paths — one player might invest heavily in commercial variety before unlocking advanced healthcare, another might push housing density first. The UI is **discovery-based, not a visible tech tree** — buildings not yet available-to-research don't appear in the research panel at all; the next thing to research is hinted at via citizen requests (see below), and available buildings appear in the research panel when their gates are met. This keeps new players from feeling overwhelmed and preserves the surprise of each unlock.
 
 **Citizen requests — floating emoji bubbles.** The city screen surfaces what citizens want and what they're celebrating, via cute emoji / sticker bubbles that float above the buildings:
 
@@ -167,25 +175,25 @@ Because the DAG is branching, different players will follow different paths — 
 - *Population minimum* — keeps low-end-of-DAG beats from firing in the first few minutes.
 - *Building age* — some beats only fire N rounds after a specific building was placed ("the bakery's been open a month — citizens love it").
 - *Beat history* — a beat can require another beat to have already fired, letting narrative threads chain without forcing the chain into the building DAG.
-- *Currency-progress spacing* — beats are paced by progress (number of correct answers / currency earned since the last beat) so they don't fire all at once.
+- *Brick-progress spacing* — beats are paced by progress (🧱 bricks earned since the last beat) so they don't fire all at once.
 
 **Other mechanics:**
 
-- **Land:** Players start with a small fixed beginner map. They can spend currency to expand the land symmetrically outward, and to unlock additional themed maps later (e.g. countryside, big city, futuristic). Each map has its own independent placement state.
+- **Land:** Players start with a small fixed beginner map. They can spend 🧱 bricks to expand the land symmetrically outward, and to unlock additional themed maps later (e.g. countryside, big city, futuristic). Each map has its own independent placement state.
 - **Roads:** Auto-generated to connect placed buildings — the player never manually draws roads. Avoids fiddly precision placement on a phone.
-- **Moving buildings:** Free. Players can rearrange their city without spending more currency.
+- **Moving buildings:** Free. Players can rearrange their city without spending more 🧱.
 - **Selling buildings:** Not supported in v1. Simplifies the economy and avoids "I bought the wrong thing, refund me" friction.
 - **Upgrade tiers:** Some buildings have visual upgrade tiers (e.g. wooden → brick → ornate). Tiers change the *style*, not the footprint, to keep cities visually balanced as they grow.
 - **Population:** A visible counter shows the current population. Growth follows from a *mix* of buildings: monotone cities (all cinemas, or all apartments and nothing else) stall or even shrink, with citizens complaining that the city is unbalanced.
 - **Growth model:** A combination of aggregate service ratios (1 clinic per N residents, 1 power plant per N, etc.) and category-balance multipliers (variety of commercial + entertainment + services boosts growth; lopsided mixes stall it). Concrete formulas are tuned across Phase 7–9 by play-testing.
-- **Events:** Players can spend currency on temporary events (festivals, parades) that attract additional residents.
+- **Events:** Players can spend 🧱 bricks on temporary events (festivals, parades) that attract additional residents.
 
 **Out of v1, nice to have later:**
 - Animated city: cars driving on roads, building lights turning on at night, pedestrians on sidewalks, day/night cycle.
 - Sharing screenshots of cities with friends.
 - A player-facing "city journal" archiving past citizen requests and the player's response.
 
-(Detailed currency prices, DAG unlock conditions, beat scripts, and growth formulas are tuned across Phases 7–9 — see [plan.md](plan.md). Phase 7 ships a small proof of the system with ~10 buildings and ~5 beats; Phase 8 designs the full DAG + hundreds of beats in a future `city_builder.md`; Phase 9 implements the full content and generates the building art.)
+(Detailed 🧱 / 🔬 prices, DAG unlock conditions, beat scripts, and growth formulas are tuned across Phases 7–9 — see [plan.md](plan.md). Phase 7 ships a small proof of the system with ~10 buildings and ~5 beats; Phase 8 designs the full DAG + hundreds of beats in a future `city_builder.md`; Phase 9 implements the full content and generates the building art.)
 
 ---
 
@@ -193,7 +201,7 @@ Because the DAG is branching, different players will follow different paths — 
 
 - Bright, playful color palette appropriate for kids
 - Animated character that reacts to correct/wrong answers (jumps, cheers, looks sad)
-- Sound effects for: wheel spin, correct answer, wrong answer, star collection, building placed
+- Sound effects for: wheel spin, correct answer, wrong answer, 🧱 collection, 🔬 award, building placed
 - Background music (loopable, upbeat, with a mute toggle)
 - All UI copy uses simple language appropriate for the youngest end of the target age range
 
@@ -201,8 +209,8 @@ Because the DAG is branching, different players will follow different paths — 
 
 ## Engagement Mechanics
 
-- **Daily streak:** Playing at least one round per day maintains a streak. Streak milestones award bonus stars.
-- **Daily challenge:** One special concept challenge per day with a bonus star reward.
+- **Daily streak:** Playing at least one round per day maintains a streak. Streak milestones award bonus 🧱.
+- **Daily challenge:** One special concept challenge per day with a bonus 🧱 reward.
 - Push notifications for streak reminders (v2, requires parental consent flow on iOS/Android).
 
 ---
@@ -233,7 +241,7 @@ First-time experience:
 
 ## Saving User Data
 
-All player data (profiles, avatar config, proficiency levels, star counts, city state) is:
+All player data (profiles, avatar config, proficiency levels, 🧱 / 🔬 balances, city state) is:
 
 - **Stored locally** on the device with no account required for basic use.
 - **Optionally backed up and restored** via the platform's own game services — Game Center (iOS, tied to the user's iCloud) and Google Play Games (Android). The user signs in with their existing Apple or Google account; the app does not run a backend or store any data on our infrastructure.
@@ -256,8 +264,8 @@ All third-party content, assets, and libraries must be compatible with free non-
 
 ## Edge Cases
 
-- **Player masters all v1 content.** If every available concept drops into the "mastered" band, the wheel falls back to a celebration message ("You've mastered everything! New concepts coming soon.") and offers a free-play mode that randomly samples from mastered concepts (no stars awarded — keeps it from being a grind for trivial points).
-- **Mid-question abandonment.** If the player closes the app or switches profiles before answering, the question is discarded with no proficiency change and no stars. It does not count as wrong.
+- **Player masters all v1 content.** If every available concept drops into the "mastered" band, the wheel falls back to a celebration message ("You've mastered everything! New concepts coming soon.") and offers a free-play mode that randomly samples from mastered concepts (no 🧱 / 🔬 awarded — keeps it from being a grind for trivial points).
+- **Mid-question abandonment.** If the player closes the app or switches profiles before answering, the question is discarded with no proficiency change and no 🧱 / 🔬 award. It does not count as wrong.
 - **Profile deletion.** Players can delete their own profile from the profile picker (with a confirmation prompt). All local data for that profile is removed; cloud-save data for that profile is also removed on next sync if signed in.
 - **Two players want to play simultaneously.** Not supported — gameplay is turn-based on a single device. The "alternate rounds" structure is the v1 multiplayer model.
 - **Grade-level advancement.** A player's stored grade level is the *starting point* for the adaptive system, not a moving target. The system adapts based on actual proficiency, so a player who advances grades in real life will naturally see harder concepts enter their wheel without any manual update. A "change grade" option is available in settings if a parent wants to recalibrate.
