@@ -145,17 +145,19 @@ class _SpinScreenState extends ConsumerState<SpinScreen>
 
     return Scaffold(
       appBar: AppBar(
-        // Tapping the player chip pops back to HomeScreen to switch players.
-        title: GestureDetector(
-          onTap: () => Navigator.of(context).pop(),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              AdventurerAvatarWidget(config: avatarConfig, size: 32),
-              const SizedBox(width: 8),
-              Text(playerName, style: theme.textTheme.titleMedium),
-            ],
-          ),
+        // Back arrow returns to the player's "My City" hub.
+        leading: IconButton(
+          icon: const Icon(Icons.location_city_rounded),
+          tooltip: 'My City',
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            AdventurerAvatarWidget(config: avatarConfig, size: 32),
+            const SizedBox(width: 8),
+            Text(playerName, style: theme.textTheme.titleMedium),
+          ],
         ),
         actions: [
           Padding(

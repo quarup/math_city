@@ -4,10 +4,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_city/data/database.dart';
+import 'package:math_city/presentation/city/city_screen.dart';
 import 'package:math_city/presentation/debug/concept_debug_screen.dart';
 import 'package:math_city/presentation/player/adventurer_avatar_widget.dart';
 import 'package:math_city/presentation/player/player_creation_screen.dart';
-import 'package:math_city/presentation/spin/spin_screen.dart';
 import 'package:math_city/presentation/theme/app_palette.dart';
 import 'package:math_city/state/player_provider.dart';
 
@@ -158,7 +158,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                 _PlayerChip(
                   player: p,
                   isSelected: p.id == activeId,
-                  onTap: () => _selectAndPlay(p),
+                  onTap: () => _selectAndOpenCity(p),
                   onEdit: () => _openEdit(context, p),
                 ),
               _AddChip(onTap: () => _openCreation(context)),
@@ -169,12 +169,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     );
   }
 
-  void _selectAndPlay(Player player) {
+  void _selectAndOpenCity(Player player) {
     ref.read(activePlayerIdProvider.notifier).selected = player.id;
     unawaited(
       Navigator.of(context).push(
         MaterialPageRoute<void>(
-          builder: (_) => const SpinScreen(),
+          settings: const RouteSettings(name: CityScreen.routeName),
+          builder: (_) => const CityScreen(),
         ),
       ),
     );

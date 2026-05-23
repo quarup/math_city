@@ -7,6 +7,7 @@ import 'package:math_city/domain/concepts/dag_engine.dart';
 import 'package:math_city/domain/questions/answer_check.dart';
 import 'package:math_city/domain/questions/diagram_spec.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
+import 'package:math_city/presentation/city/city_screen.dart';
 import 'package:math_city/presentation/diagrams/diagram_renderer.dart';
 import 'package:math_city/presentation/spin/spin_screen.dart';
 import 'package:math_city/presentation/theme/app_palette.dart';
@@ -113,12 +114,15 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
   }
 
   void _pushSpin({bool pulse = false}) {
+    // Collapse the spin→question→result loop back onto the player's "My City"
+    // hub (or the home screen as a backstop) so a fresh spin sits directly
+    // above the city and back-navigation returns there.
     unawaited(
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute<void>(
           builder: (_) => SpinScreen(pulseBricks: pulse),
         ),
-        (route) => route.isFirst,
+        (route) => route.settings.name == CityScreen.routeName || route.isFirst,
       ),
     );
   }
