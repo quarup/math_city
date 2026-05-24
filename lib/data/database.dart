@@ -465,6 +465,13 @@ class AppDatabase extends _$AppDatabase {
   Future<List<BuildingPlacement>> placementsForCity(int cityId) =>
       (select(buildingPlacements)..where((t) => t.cityId.equals(cityId))).get();
 
+  /// Persists the live resident count for [cityId]. The value is computed by
+  /// the pure population model (`lib/domain/city/population_model.dart`); this
+  /// just writes it.
+  Future<void> setCityPopulation(int cityId, int population) =>
+      (update(cities)..where((t) => t.id.equals(cityId)))
+          .write(CitiesCompanion(population: Value(population)));
+
   /// IDs of the building types the player has unlocked (spent 🔬 on, or
   /// pre-researched). Presence => the type appears in the build menu.
   Future<Set<String>> researchedBuildingTypeIds(int playerId) async {
