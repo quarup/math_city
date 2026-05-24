@@ -170,5 +170,26 @@ void main() {
       await container.read(cityActionsProvider).fireBeats();
       expect(await db.firedBeatIds(pid), isEmpty);
     });
+
+    test('dismissBeat takes the bubble off screen', () async {
+      final (db, pid, container) = await _setup();
+      addTearDown(container.dispose);
+      final city = await db.cityForPlayer(pid);
+      await _place(db, city.id, pid, 'mayors_office', 0);
+
+      final actions = container.read(cityActionsProvider);
+      await actions.fireBeats();
+      await container.refresh(onScreenBeatsProvider.future);
+      expect(_onScreenIds(container), contains('demand_first_home'));
+
+      await actions.dismissBeat('demand_first_home');
+      await container.refresh(onScreenBeatsProvider.future);
+      expect(_onScreenIds(container), isNot(contains('demand_first_home')));
+
+      final states = await db.storyBeatStatesForPlayer(pid);
+      expect(states['demand_first_home']!.state, 'acked');
+      // Still recorded as ever-fired.
+      expect(await db.firedBeatIds(pid), contains('demand_first_home'));
+    });
   });
 }

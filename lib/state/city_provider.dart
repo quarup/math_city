@@ -239,6 +239,19 @@ class CityActions {
     _ref.invalidate(placementsProvider);
   }
 
+  /// Acknowledges (dismisses) an on-screen citizen bubble. Transitions the
+  /// beat out of `onScreen` so it stops showing; it can re-fire later once its
+  /// trigger passes again (subject to its brick-spacing cooldown). No-op when
+  /// there's no active player.
+  Future<void> dismissBeat(String beatId) async {
+    final playerId = _ref.read(activePlayerIdProvider);
+    if (playerId == null) return;
+    await _ref
+        .read(appDatabaseProvider)
+        .setBeatState(playerId, beatId, 'acked');
+    _ref.invalidate(onScreenBeatsProvider);
+  }
+
   // ---- Debug-only helpers (kDebugMode; driven by the city debug sheet) ----
   // These let a developer exercise the city mechanics without grinding math
   // questions for currency. Tree-shaken out of release with the UI that calls
