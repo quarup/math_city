@@ -180,7 +180,8 @@ Because the DAG is branching, different players will follow different paths — 
 **Other mechanics:**
 
 - **Land:** Players start with a small fixed beginner map. They can spend 🧱 bricks to expand the land symmetrically outward, and to unlock additional themed maps later (e.g. countryside, big city, futuristic). Each map has its own independent placement state.
-- **Roads:** Auto-generated to connect placed buildings — the player never manually draws roads. Avoids fiddly precision placement on a phone.
+- **Placement:** Buildings snap to any free tile and may be placed directly touching other buildings — players arrange their city however they like. The one rule: **no building can be boxed in.** Every building must keep at least one of its perimeter sides open to a free tile, so the auto-road network can always reach it. A placement *or* move that would landlock a building is rejected with a gentle nudge — and the check runs both ways: it blocks both the building being placed (if it would have no open side) and any existing neighbor whose last open side the new placement would seal off.
+- **Roads:** Auto-generated to connect placed buildings — the player never manually draws roads. Avoids fiddly precision placement on a phone. Because every building is guaranteed an open perimeter side (see *Placement*), the road network can always reach every building.
 - **Moving buildings:** Free. Players can rearrange their city without spending more 🧱.
 - **Selling buildings:** Not supported in v1. Simplifies the economy and avoids "I bought the wrong thing, refund me" friction.
 - **Upgrade tiers:** Some buildings have visual upgrade tiers (e.g. wooden → brick → ornate). Tiers change the *style*, not the footprint, to keep cities visually balanced as they grow.
