@@ -50,7 +50,17 @@ class _CityScreenState extends ConsumerState<CityScreen> {
   IsoCityGame? _game;
   BuildingType? _selected;
 
+  /// Move mode: pick up a placed building and drop it on a free tile (no 🧱).
+  bool _moveMode = false;
+
+  /// The placement currently picked up in move mode, or null if none.
+  int? _pickedUpId;
+
   void _onTileTapped(int col, int row) {
+    if (_moveMode) {
+      _handleMoveTap(col, row);
+      return;
+    }
     final selected = _selected;
     if (selected == null) {
       _toast('Pick a building below first');
@@ -104,6 +114,60 @@ class _CityScreenState extends ConsumerState<CityScreen> {
     if (bricks - selected.brickCost < selected.brickCost) {
       setState(() => _selected = null);
     }
+  }
+
+  /// Move-mode tap handling: first tap on a building picks it up, then a tap on
+  /// a free tile drops it there (validated by the road-access invariant, free
+  /// of 🧱). Tapping another building switches the pick-up; tapping the held
+  /// building again puts it back down.
+  void _handleMoveTap(int col, int row) {
+    final placements = ref.read(placementsProvider).asData?.value ?? const [];
+    final city = ref.read(activeCityProvider).asData?.value;
+    if (city == null) return;
+    final occupant = placements
+        .where((p) => p.gridX == col && p.gridY == row)
+        .firstOrNull;
+
+    final pickedId = _pickedUpId;
+    if (pickedId == null) {
+      if (occupant == null) {
+        _toast('Tap a building to move it');
+      } else {
+        setState(() => _pickedUpId = occupant.id);
+      }
+      return;
+    }
+
+    // Tapped a building while holding one: switch to it, or put down if same.
+    if (occupant != null) {
+      final next = occupant.id == pickedId ? null : occupant.id;
+      setState(() => _pickedUpId = next);
+      return;
+    }
+
+    // Tapped a free tile: try to drop the held building here.
+    final picked = placements.where((p) => p.id == pickedId).firstOrNull;
+    final type = picked == null
+        ? null
+        : findBuildingTypeById(picked.buildingTypeId);
+    if (picked == null || type == null) {
+      setState(() => _pickedUpId = null);
+      return;
+    }
+    final check = _checkPlacement(
+      type,
+      col,
+      row,
+      placements,
+      city,
+      excludePlacementId: picked.id,
+    );
+    if (!check.isLegal) {
+      _toast(_rejectionMessage(check.rejection!, type));
+      return;
+    }
+    unawaited(ref.read(cityActionsProvider).moveBuilding(picked.id, col, row));
+    setState(() => _pickedUpId = null);
   }
 
   /// Maps placements to grid footprints via the building registry. Pass
@@ -280,6 +344,10 @@ class _CityScreenState extends ConsumerState<CityScreen> {
     if (_game != null && placements != null) {
       _game!.setBuildings(_viewsFor(placements));
       if (city != null) _game!.setRoads(_roadTilesFor(placements, city));
+      final picked = _pickedUpId == null
+          ? null
+          : placements.where((p) => p.id == _pickedUpId).firstOrNull;
+      _game!.setHighlight(picked == null ? null : (picked.gridX, picked.gridY));
     }
 
     // Auto-select the only researched building so the starter player doesn't
@@ -341,18 +409,26 @@ class _CityScreenState extends ConsumerState<CityScreen> {
                 const Positioned.fill(child: _CitizenBubbleOverlay()),
               ],
             ),
-      bottomNavigationBar: catalogAsync.when(
-        loading: () => const SizedBox.shrink(),
-        error: (_, _) => const SizedBox.shrink(),
-        data: (catalog) => _BuildCatalogBar(
-          catalog: catalog,
-          selected: _selected,
-          brickBalance: player?.brickBalance ?? 0,
-          researchBalance: player?.researchBalance ?? 0,
-          onSelect: (b) => setState(() => _selected = b),
-          onResearch: _confirmResearch,
-        ),
-      ),
+      bottomNavigationBar: _moveMode
+          ? _MoveModeBar(
+              picking: _pickedUpId != null,
+              onDone: () => setState(() {
+                _moveMode = false;
+                _pickedUpId = null;
+              }),
+            )
+          : catalogAsync.when(
+              loading: () => const SizedBox.shrink(),
+              error: (_, _) => const SizedBox.shrink(),
+              data: (catalog) => _BuildCatalogBar(
+                catalog: catalog,
+                selected: _selected,
+                brickBalance: player?.brickBalance ?? 0,
+                researchBalance: player?.researchBalance ?? 0,
+                onSelect: (b) => setState(() => _selected = b),
+                onResearch: _confirmResearch,
+              ),
+            ),
       floatingActionButton: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -364,6 +440,19 @@ class _CityScreenState extends ConsumerState<CityScreen> {
               backgroundColor: Colors.deepPurple,
               foregroundColor: Colors.white,
               child: const Icon(Icons.bug_report_rounded),
+            ),
+            const SizedBox(height: 12),
+          ],
+          // Move-mode toggle — only useful once something's been placed.
+          if ((placements?.isNotEmpty ?? false) && !_moveMode) ...[
+            FloatingActionButton.small(
+              heroTag: 'cityMoveFab',
+              onPressed: () => setState(() {
+                _moveMode = true;
+                _pickedUpId = null;
+                _selected = null;
+              }),
+              child: const Icon(Icons.open_with_rounded),
             ),
             const SizedBox(height: 12),
           ],
@@ -609,6 +698,46 @@ class _PopulationChip extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Bottom strip shown while move mode is active: an instruction that changes
+/// once a building is picked up, plus a Done button to exit.
+class _MoveModeBar extends StatelessWidget {
+  const _MoveModeBar({required this.picking, required this.onDone});
+
+  final bool picking;
+  final VoidCallback onDone;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Material(
+      elevation: 8,
+      color: theme.colorScheme.surfaceContainer,
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Row(
+            children: [
+              const Icon(Icons.open_with_rounded),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  picking
+                      ? 'Tap an empty tile to drop it here'
+                      : 'Move mode — tap a building to pick it up',
+                  style: theme.textTheme.bodyMedium,
+                ),
+              ),
+              const SizedBox(width: 8),
+              FilledButton(onPressed: onDone, child: const Text('Done')),
+            ],
+          ),
+        ),
       ),
     );
   }

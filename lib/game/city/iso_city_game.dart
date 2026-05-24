@@ -44,11 +44,17 @@ class IsoCityGame extends FlameGame with DragCallbacks {
   /// Same buffering rationale as [_pendingBuildings].
   Set<(int, int)>? _pendingRoads;
 
+  /// Move-mode highlight pushed before [onLoad] ran. The flag distinguishes
+  /// "clear the highlight" (null) from "never set", same buffering rationale.
+  (int, int)? _pendingHighlight;
+  bool _hasPendingHighlight = false;
+
   @override
   Future<void> onLoad() async {
     board = CityBoardComponent(grid: grid, onTileTapped: onTileTapped);
     if (_pendingBuildings != null) board.buildings = _pendingBuildings!;
     if (_pendingRoads != null) board.roads = _pendingRoads!;
+    if (_hasPendingHighlight) board.highlightTile = _pendingHighlight;
     await world.add(board);
     camera.viewfinder.position = _boardCenter;
   }
@@ -95,6 +101,17 @@ class IsoCityGame extends FlameGame with DragCallbacks {
       board.roads = roads;
     } else {
       _pendingRoads = roads;
+    }
+  }
+
+  /// Sets (or clears, with null) the move-mode highlight tile. Buffered if
+  /// called before [onLoad] finishes — see [_pendingHighlight].
+  void setHighlight((int, int)? tile) {
+    if (isLoaded) {
+      board.highlightTile = tile;
+    } else {
+      _pendingHighlight = tile;
+      _hasPendingHighlight = true;
     }
   }
 
