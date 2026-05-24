@@ -107,6 +107,41 @@ class _CityScreenState extends ConsumerState<CityScreen> {
     );
   }
 
+  /// Tap on a locked (available-to-research) catalog card: confirm, then spend
+  /// 🔬 to unlock the type. On success the newly-researched building is
+  /// auto-selected so the player can place it right away.
+  Future<void> _confirmResearch(BuildingType b) async {
+    final research =
+        ref.read(activePlayerProvider).asData?.value.researchBalance;
+    if (research == null || b.researchCost > research) {
+      _toast('Not enough research for ${b.name}');
+      return;
+    }
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text('Research ${b.name}?'),
+        content: Text(
+          'Spend 🔬 ${b.researchCost} to add ${b.name} to your build menu.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: const Text('Research'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed ?? false) {
+      await ref.read(cityActionsProvider).researchBuilding(b);
+      if (mounted) setState(() => _selected = b);
+    }
+  }
+
   List<PlacedBuildingView> _viewsFor(List<BuildingPlacement> placements) {
     final out = <PlacedBuildingView>[];
     for (final p in placements) {
@@ -129,7 +164,7 @@ class _CityScreenState extends ConsumerState<CityScreen> {
     final playerAsync = ref.watch(activePlayerProvider);
     final cityAsync = ref.watch(activeCityProvider);
     final placementsAsync = ref.watch(placementsProvider);
-    final catalogAsync = ref.watch(researchedBuildingsProvider);
+    final catalogAsync = ref.watch(cityCatalogProvider);
 
     final player = playerAsync.asData?.value;
 
@@ -149,10 +184,12 @@ class _CityScreenState extends ConsumerState<CityScreen> {
 
     // Auto-select the only researched building so the starter player doesn't
     // have to click the mayor's office before placing it. Once the catalog
-    // grows, the player makes an explicit pick.
+    // grows (more researched buildings, or locked ones to research), the
+    // player makes an explicit pick.
     final catalog = catalogAsync.asData?.value;
-    if (_selected == null && catalog != null && catalog.length == 1) {
-      _selected = catalog.first;
+    if (_selected == null && catalog != null) {
+      final placeable = catalog.where((e) => e.researched).toList();
+      if (placeable.length == 1) _selected = placeable.first.building;
     }
 
     return Scaffold(
@@ -195,7 +232,9 @@ class _CityScreenState extends ConsumerState<CityScreen> {
           catalog: catalog,
           selected: _selected,
           brickBalance: player?.brickBalance ?? 0,
+          researchBalance: player?.researchBalance ?? 0,
           onSelect: (b) => setState(() => _selected = b),
+          onResearch: _confirmResearch,
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -244,20 +283,25 @@ class _CurrencyBar extends StatelessWidget {
   }
 }
 
-/// Horizontal catalog of researched buildings. Tap to select for placement;
-/// unaffordable types are greyed and unselectable.
+/// Horizontal catalog of buildings. Researched buildings are tap-to-select for
+/// placement (🧱 cost); buildings still available to research show a 🔬 cost +
+/// a lock badge and tap-to-research. Unaffordable cards are greyed.
 class _BuildCatalogBar extends StatelessWidget {
   const _BuildCatalogBar({
     required this.catalog,
     required this.selected,
     required this.brickBalance,
+    required this.researchBalance,
     required this.onSelect,
+    required this.onResearch,
   });
 
-  final List<BuildingType> catalog;
+  final List<CatalogEntry> catalog;
   final BuildingType? selected;
   final int brickBalance;
+  final int researchBalance;
   final void Function(BuildingType) onSelect;
+  final void Function(BuildingType) onResearch;
 
   @override
   Widget build(BuildContext context) {
@@ -285,13 +329,22 @@ class _BuildCatalogBar extends StatelessWidget {
                   itemCount: catalog.length,
                   separatorBuilder: (_, _) => const SizedBox(width: 8),
                   itemBuilder: (context, i) {
-                    final b = catalog[i];
+                    final entry = catalog[i];
+                    final b = entry.building;
+                    final affordable = entry.researched
+                        ? b.brickCost <= brickBalance
+                        : b.researchCost <= researchBalance;
                     return _CatalogCard(
-                      building: b,
-                      isSelected: b.id == selected?.id,
-                      affordable: b.brickCost <= brickBalance,
+                      entry: entry,
+                      isSelected: entry.researched && b.id == selected?.id,
+                      affordable: affordable,
                       color: _colorFor(b),
-                      onTap: () => onSelect(b),
+                      // Researched + unaffordable can't be selected; locked
+                      // cards are always tappable so the research flow can
+                      // explain when the player can't afford the 🔬.
+                      onTap: entry.researched
+                          ? (affordable ? () => onSelect(b) : null)
+                          : () => onResearch(b),
                     );
                   },
                 ),
@@ -303,64 +356,93 @@ class _BuildCatalogBar extends StatelessWidget {
 
 class _CatalogCard extends StatelessWidget {
   const _CatalogCard({
-    required this.building,
+    required this.entry,
     required this.isSelected,
     required this.affordable,
     required this.color,
     required this.onTap,
   });
 
-  final BuildingType building;
+  final CatalogEntry entry;
   final bool isSelected;
   final bool affordable;
   final Color color;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final b = entry.building;
+    final locked = !entry.researched;
+    final costLabel = locked
+        ? '🔬 ${b.researchCost}'
+        : (b.brickCost == 0 ? 'Free' : '🧱 ${b.brickCost}');
+
+    final card = AnimatedContainer(
+      duration: const Duration(milliseconds: 150),
+      width: 88,
+      padding: const EdgeInsets.all(6),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.25),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isSelected ? theme.colorScheme.primary : Colors.transparent,
+          width: 2,
+        ),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(b.emoji, style: const TextStyle(fontSize: 24)),
+          const SizedBox(height: 2),
+          Flexible(
+            child: Text(
+              b.name,
+              style: theme.textTheme.labelSmall,
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            costLabel,
+            style: theme.textTheme.labelSmall?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+
     return Opacity(
       opacity: affordable ? 1 : 0.4,
       child: GestureDetector(
-        onTap: affordable ? onTap : null,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
-          width: 88,
-          padding: const EdgeInsets.all(6),
-          decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.25),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: isSelected
-                  ? theme.colorScheme.primary
-                  : Colors.transparent,
-              width: 2,
-            ),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(building.emoji, style: const TextStyle(fontSize: 24)),
-              const SizedBox(height: 2),
-              Flexible(
-                child: Text(
-                  building.name,
-                  style: theme.textTheme.labelSmall,
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                building.brickCost == 0 ? 'Free' : '🧱 ${building.brickCost}',
-                style: theme.textTheme.labelSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-        ),
+        onTap: onTap,
+        child: locked
+            ? Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  card,
+                  Positioned(
+                    top: 4,
+                    right: 4,
+                    child: Container(
+                      padding: const EdgeInsets.all(2),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.surface,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.lock,
+                        size: 14,
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            : card,
       ),
     );
   }

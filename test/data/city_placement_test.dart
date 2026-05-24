@@ -137,4 +137,44 @@ void main() {
       expect(rows.map((r) => r.placedAtRound).toList(), containsAll([0, 1, 2]));
     });
   });
+
+  group('researchBuilding', () {
+    test('records the type and spends research, lifetime monotone', () async {
+      final (db, player, _) = await freshCity();
+      await db.incrementPlayerResearch(player.id, 3);
+
+      await db.researchBuilding(
+        playerId: player.id,
+        buildingTypeId: 'clinic',
+        researchCost: 1,
+      );
+
+      expect(await db.researchedBuildingTypeIds(player.id), {
+        'mayors_office',
+        'clinic',
+      });
+      final after = await db.getPlayerById(player.id);
+      expect(after.researchBalance, 2); // 3 - 1
+      expect(after.lifetimeResearchEarned, 3); // unchanged by spend
+    });
+
+    test('is idempotent — re-researching does not double-charge', () async {
+      final (db, player, _) = await freshCity();
+      await db.incrementPlayerResearch(player.id, 3);
+
+      await db.researchBuilding(
+        playerId: player.id,
+        buildingTypeId: 'clinic',
+        researchCost: 1,
+      );
+      await db.researchBuilding(
+        playerId: player.id,
+        buildingTypeId: 'clinic',
+        researchCost: 1,
+      );
+
+      final after = await db.getPlayerById(player.id);
+      expect(after.researchBalance, 2); // charged once, not twice
+    });
+  });
 }

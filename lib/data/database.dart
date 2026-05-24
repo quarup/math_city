@@ -474,6 +474,29 @@ class AppDatabase extends _$AppDatabase {
     return rows.map((r) => r.buildingTypeId).toSet();
   }
 
+  /// Unlocks [buildingTypeId]: records a `BuildingTypesResearched` row and
+  /// spends [researchCost] 🔬 from the player. Idempotent — if the type is
+  /// already researched this is a no-op (so the spend never double-charges).
+  /// The caller must have verified the player can afford the cost.
+  Future<void> researchBuilding({
+    required int playerId,
+    required String buildingTypeId,
+    required int researchCost,
+  }) async {
+    final already = await researchedBuildingTypeIds(playerId);
+    if (already.contains(buildingTypeId)) return;
+    await into(buildingTypesResearched).insert(
+      BuildingTypesResearchedCompanion.insert(
+        playerId: playerId,
+        buildingTypeId: buildingTypeId,
+        researchedAt: DateTime.now(),
+      ),
+    );
+    if (researchCost > 0) {
+      await incrementPlayerResearch(playerId, -researchCost);
+    }
+  }
+
   /// Places one building: inserts the placement row and spends [brickCost]
   /// from the player's balance (lifetime stays monotone via
   /// [incrementPlayerBricks]). The caller must have already verified tile
