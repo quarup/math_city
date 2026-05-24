@@ -26,9 +26,17 @@ class IsoCityGame extends FlameGame with ScaleCallbacks {
   bool _fitted = false;
   double _zoomAtScaleStart = 1;
 
+  /// Most-recent placements pushed before [onLoad] ran. Applied to the board
+  /// once it exists. Without this, the first `setBuildings` after a fresh
+  /// city-screen mount is silently dropped (the board is `late` and not yet
+  /// constructed), and the city looks empty until something triggers a
+  /// rebuild that re-pushes the same data.
+  List<PlacedBuildingView>? _pendingBuildings;
+
   @override
   Future<void> onLoad() async {
     board = CityBoardComponent(grid: grid, onTileTapped: onTileTapped);
+    if (_pendingBuildings != null) board.buildings = _pendingBuildings!;
     await world.add(board);
     camera.viewfinder.position = _boardCenter;
   }
@@ -53,9 +61,14 @@ class IsoCityGame extends FlameGame with ScaleCallbacks {
       ..position = _boardCenter;
   }
 
-  /// Pushes the latest placement set into the rendered board.
+  /// Pushes the latest placement set into the rendered board. Buffered if
+  /// called before [onLoad] finishes — see [_pendingBuildings].
   void setBuildings(List<PlacedBuildingView> buildings) {
-    if (isLoaded) board.buildings = buildings;
+    if (isLoaded) {
+      board.buildings = buildings;
+    } else {
+      _pendingBuildings = buildings;
+    }
   }
 
   @override

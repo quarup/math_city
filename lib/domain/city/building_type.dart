@@ -17,6 +17,7 @@ class BuildingType {
     this.varietyContribution = false,
     this.footprint = const (1, 1),
     this.assetRef,
+    this.unique = false,
   });
 
   final String id;
@@ -50,4 +51,9 @@ class BuildingType {
   /// `CustomPainter` placeholder; Phase 9 swaps the resolver to PNG-loading
   /// without any domain-layer change.
   final String? assetRef;
+
+  /// At most one instance per city. A second "place" of a unique type moves
+  /// the existing one instead of inserting a new placement row. The mayor's
+  /// office uses this so a city always has exactly one civic core.
+  final bool unique;
 }

@@ -52,8 +52,30 @@ class _CityScreenState extends ConsumerState<CityScreen> {
       return;
     }
     final placements = ref.read(placementsProvider).asData?.value ?? const [];
-    final occupied = placements.any((p) => p.gridX == col && p.gridY == row);
-    if (occupied) {
+    final occupant = placements
+        .where((p) => p.gridX == col && p.gridY == row)
+        .firstOrNull;
+
+    // Unique types (mayor's office): a second "place" relocates the
+    // existing instance instead of inserting a duplicate.
+    if (selected.unique) {
+      final existing = placements
+          .where((p) => p.buildingTypeId == selected.id)
+          .firstOrNull;
+      if (existing != null) {
+        if (existing.gridX == col && existing.gridY == row) return;
+        if (occupant != null) {
+          _toast('That spot is taken');
+          return;
+        }
+        unawaited(
+          ref.read(cityActionsProvider).moveBuilding(existing.id, col, row),
+        );
+        return;
+      }
+    }
+
+    if (occupant != null) {
       _toast('That spot is taken');
       return;
     }
@@ -123,6 +145,14 @@ class _CityScreenState extends ConsumerState<CityScreen> {
     final placements = placementsAsync.asData?.value;
     if (_game != null && placements != null) {
       _game!.setBuildings(_viewsFor(placements));
+    }
+
+    // Auto-select the only researched building so the starter player doesn't
+    // have to click the mayor's office before placing it. Once the catalog
+    // grows, the player makes an explicit pick.
+    final catalog = catalogAsync.asData?.value;
+    if (_selected == null && catalog != null && catalog.length == 1) {
+      _selected = catalog.first;
     }
 
     return Scaffold(

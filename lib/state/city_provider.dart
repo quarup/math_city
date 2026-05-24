@@ -62,4 +62,17 @@ class CityActions {
       ..invalidate(activePlayerProvider)
       ..invalidate(allPlayersProvider);
   }
+
+  /// Moves an existing placement to `(col, row)`. Used for `unique`
+  /// building types so a second "place" relocates the first instance
+  /// instead of stacking a duplicate.
+  Future<void> moveBuilding(int placementId, int col, int row) async {
+    final db = _ref.read(appDatabaseProvider);
+    await db.moveBuildingPlacement(
+      placementId: placementId,
+      gridX: col,
+      gridY: row,
+    );
+    _ref.invalidate(placementsProvider);
+  }
 }

@@ -20,6 +20,7 @@ const buildingRegistry = <BuildingType>[
     brickCost: 0,
     researchCost: 0,
     unlockRule: UnlockRule.open,
+    unique: true,
   ),
   BuildingType(
     id: 'single_home',

@@ -503,6 +503,25 @@ class AppDatabase extends _$AppDatabase {
     if (brickCost > 0) await incrementPlayerBricks(playerId, -brickCost);
   }
 
+  /// Moves an existing placement to `(gridX, gridY)`. Used for unique
+  /// buildings (mayor's office) where placing a second one moves the first
+  /// instead. `placedAtRound` is preserved so beat triggers keyed on building
+  /// age stay accurate.
+  Future<void> moveBuildingPlacement({
+    required int placementId,
+    required int gridX,
+    required int gridY,
+  }) async {
+    await (update(
+      buildingPlacements,
+    )..where((t) => t.id.equals(placementId))).write(
+      BuildingPlacementsCompanion(
+        gridX: Value(gridX),
+        gridY: Value(gridY),
+      ),
+    );
+  }
+
   // ---- Proficiency helpers ----
 
   /// Returns a map of conceptId → proficiency for [playerId].
