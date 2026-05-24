@@ -9,10 +9,13 @@ import 'package:math_city/game/city/iso_grid.dart';
 /// board can be panned and pinch-zoomed. Tap-to-place is handled by the board
 /// itself (it receives world-space taps through the camera).
 ///
-/// Pan + zoom share one scale gesture: a single-finger drag pans (scale ≈ 1,
-/// non-zero focal-point delta); two fingers zoom. Quick taps fall through to
-/// the board's [TapCallbacks].
-class IsoCityGame extends FlameGame with ScaleCallbacks {
+/// Single-finger drag pans via [DragCallbacks]. Pinch-zoom is driven from
+/// outside via [setZoom] / [pinchActive] — wired up by a Flutter `Listener`
+/// in `city_screen.dart` that tracks raw pointer events for two-finger
+/// gestures. We used to use `ScaleCallbacks` for both, but it never produced
+/// update callbacks for single-pointer drags here (Flutter arena fight with
+/// the child board's `TapCallbacks`).
+class IsoCityGame extends FlameGame with DragCallbacks {
   IsoCityGame({required this.grid, required this.onTileTapped});
 
   final IsoGrid grid;
@@ -20,11 +23,15 @@ class IsoCityGame extends FlameGame with ScaleCallbacks {
 
   late final CityBoardComponent board;
 
-  static const double _minZoom = 0.4;
-  static const double _maxZoom = 3;
+  static const double minZoom = 0.4;
+  static const double maxZoom = 3;
 
   bool _fitted = false;
-  double _zoomAtScaleStart = 1;
+
+  /// While true, single-pointer drag pan is suppressed. The Listener flips
+  /// this on as soon as a second pointer goes down so the two parallel
+  /// per-finger pans don't jitter the camera during a pinch.
+  bool pinchActive = false;
 
   /// Most-recent placements pushed before [onLoad] ran. Applied to the board
   /// once it exists. Without this, the first `setBuildings` after a fresh
@@ -57,8 +64,13 @@ class IsoCityGame extends FlameGame with ScaleCallbacks {
     final zx = viewport.x / (grid.boardWidth + grid.tileWidth);
     final zy = viewport.y / (grid.boardHeight + grid.tileWidth);
     camera.viewfinder
-      ..zoom = math.min(zx, zy).clamp(_minZoom, _maxZoom)
+      ..zoom = math.min(zx, zy).clamp(minZoom, maxZoom)
       ..position = _boardCenter;
+  }
+
+  /// Absolute zoom setter, clamped. Called from the pinch-zoom Listener.
+  void setZoom(double zoom) {
+    camera.viewfinder.zoom = zoom.clamp(minZoom, maxZoom);
   }
 
   /// Pushes the latest placement set into the rendered board. Buffered if
@@ -72,24 +84,13 @@ class IsoCityGame extends FlameGame with ScaleCallbacks {
   }
 
   @override
-  void onScaleStart(ScaleStartEvent event) {
-    super.onScaleStart(event);
-    _zoomAtScaleStart = camera.viewfinder.zoom;
-  }
-
-  @override
-  void onScaleUpdate(ScaleUpdateEvent event) {
-    if (event.pointerCount >= 2) {
-      camera.viewfinder.zoom = (_zoomAtScaleStart * event.scale).clamp(
-        _minZoom,
-        _maxZoom,
-      );
-    }
-    // focalPointDelta is in screen pixels; divide by zoom to get world units.
+  void onDragUpdate(DragUpdateEvent event) {
+    if (pinchActive) return;
+    // localDelta is in screen pixels; divide by zoom to get world units.
     // Pan the camera opposite the finger so content follows the drag.
     final zoom = camera.viewfinder.zoom;
     camera.viewfinder.position =
-        camera.viewfinder.position - event.focalPointDelta / zoom;
+        camera.viewfinder.position - event.localDelta / zoom;
     _clampCamera();
   }
 

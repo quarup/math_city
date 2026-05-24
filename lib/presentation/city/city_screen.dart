@@ -183,7 +183,10 @@ class _CityScreenState extends ConsumerState<CityScreen> {
           ? const Center(child: CircularProgressIndicator())
           : ColoredBox(
               color: const Color(0xFF9CCC65),
-              child: GameWidget(game: _game!),
+              child: _PinchZoomWrapper(
+                game: _game!,
+                child: GameWidget(game: _game!),
+              ),
             ),
       bottomNavigationBar: catalogAsync.when(
         loading: () => const SizedBox.shrink(),
@@ -359,6 +362,78 @@ class _CatalogCard extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Tracks raw pointer events to detect two-finger pinch and drive
+/// [IsoCityGame.setZoom]. Sits below Flutter's gesture arena via
+/// [Listener], so Flame's `DragCallbacks` still receives single-finger
+/// drags untouched. While 2+ pointers are down, [IsoCityGame.pinchActive]
+/// suppresses the per-finger pan so the camera doesn't jitter.
+class _PinchZoomWrapper extends StatefulWidget {
+  const _PinchZoomWrapper({required this.game, required this.child});
+
+  final IsoCityGame game;
+  final Widget child;
+
+  @override
+  State<_PinchZoomWrapper> createState() => _PinchZoomWrapperState();
+}
+
+class _PinchZoomWrapperState extends State<_PinchZoomWrapper> {
+  final _pointers = <int, Offset>{};
+  double? _initialDistance;
+  double? _initialZoom;
+
+  void _onDown(PointerDownEvent e) {
+    _pointers[e.pointer] = e.position;
+    if (_pointers.length >= 2) {
+      _initialDistance = _twoPointerDistance();
+      _initialZoom = widget.game.camera.viewfinder.zoom;
+      widget.game.pinchActive = true;
+    }
+  }
+
+  void _onMove(PointerMoveEvent e) {
+    if (!_pointers.containsKey(e.pointer)) return;
+    _pointers[e.pointer] = e.position;
+    if (_pointers.length >= 2 &&
+        _initialDistance != null &&
+        _initialDistance! > 0) {
+      final scale = _twoPointerDistance() / _initialDistance!;
+      widget.game.setZoom(_initialZoom! * scale);
+    }
+  }
+
+  void _onUp(PointerEvent e) {
+    _pointers.remove(e.pointer);
+    if (_pointers.length < 2) {
+      _initialDistance = null;
+      _initialZoom = null;
+      widget.game.pinchActive = false;
+    }
+  }
+
+  /// Distance between the first two tracked pointers (iteration order is
+  /// insertion order on `Map`, which is good enough — we only need a stable
+  /// reference pair for the duration of one pinch).
+  double _twoPointerDistance() {
+    final it = _pointers.values.iterator..moveNext();
+    final a = it.current;
+    it.moveNext();
+    final b = it.current;
+    return (a - b).distance;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Listener(
+      onPointerDown: _onDown,
+      onPointerMove: _onMove,
+      onPointerUp: _onUp,
+      onPointerCancel: _onUp,
+      child: widget.child,
     );
   }
 }
