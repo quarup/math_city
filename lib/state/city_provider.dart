@@ -3,6 +3,7 @@ import 'package:math_city/data/database.dart';
 import 'package:math_city/domain/city/building_registry.dart';
 import 'package:math_city/domain/city/building_type.dart';
 import 'package:math_city/domain/city/dag_engine.dart';
+import 'package:math_city/domain/city/population_model.dart';
 import 'package:math_city/domain/city/unlock_rule.dart';
 import 'package:math_city/state/player_provider.dart';
 
@@ -46,9 +47,8 @@ final cityCatalogProvider = FutureProvider<List<CatalogEntry>>((ref) async {
   final placements = await ref.watch(placementsProvider.future);
   final researchedIds = await db.researchedBuildingTypeIds(playerId);
 
-  // Population growth (Chunk 5) and beat firing (Chunk 6) aren't modelled yet,
-  // so those gate inputs are stubbed; v1 unlock rules only gate on placed
-  // buildings.
+  // Population is now live (stepped by `CityActions.tickPopulation`). Beat
+  // firing (Chunk 6) isn't modelled yet, so `firedBeatIds` stays stubbed.
   final ctx = UnlockContext(
     lifetimeBricksEarned: player.lifetimeBricksEarned,
     population: city.population,
@@ -98,6 +98,34 @@ class CityActions {
       ..invalidate(placementsProvider)
       ..invalidate(activePlayerProvider)
       ..invalidate(allPlayersProvider);
+    // A new building changes the city's capacity — step the population toward
+    // it so placing something gives immediate (if small) feedback.
+    await tickPopulation();
+  }
+
+  /// Advances the active city's population one tick toward the capacity its
+  /// current buildings support (see `population_model.dart`). Called on each
+  /// placement and on each answered question, so the city grows as the player
+  /// builds and plays math. No-op when there's no active player or the
+  /// population is already at capacity. Reads straight from the DB (not the
+  /// providers) so it always sees the latest persisted state.
+  Future<void> tickPopulation() async {
+    final playerId = _ref.read(activePlayerIdProvider);
+    if (playerId == null) return;
+    final db = _ref.read(appDatabaseProvider);
+    final city = await db.cityForPlayer(playerId);
+    final placements = await db.placementsForCity(city.id);
+    final placed = <BuildingType>[];
+    for (final p in placements) {
+      final b = findBuildingTypeById(p.buildingTypeId);
+      if (b != null) placed.add(b);
+    }
+    final next = stepPopulation(city.population, populationCapacity(placed));
+    if (next != city.population) {
+      await db.setCityPopulation(city.id, next);
+      // The catalog gates some unlocks on population, so it rebuilds off this.
+      _ref.invalidate(activeCityProvider);
+    }
   }
 
   /// Spends [type]'s `researchCost` 🔬 and adds it to the player's catalog.

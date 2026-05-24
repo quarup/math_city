@@ -7,6 +7,7 @@ import 'package:math_city/domain/concepts/concept.dart';
 import 'package:math_city/domain/concepts/concept_registry.dart';
 import 'package:math_city/domain/concepts/dag_engine.dart';
 import 'package:math_city/domain/proficiency/proficiency_band.dart';
+import 'package:math_city/state/city_provider.dart';
 import 'package:math_city/state/introduced_concepts_provider.dart';
 import 'package:math_city/state/player_provider.dart';
 
@@ -91,6 +92,11 @@ class ProficiencyNotifier extends AsyncNotifier<Map<String, double>> {
         );
       }
     }
+
+    // Playing math grows your city: nudge the population one tick toward the
+    // capacity its buildings support. No-op until the player has placed
+    // something worth housing residents in.
+    await ref.read(cityActionsProvider).tickPopulation();
 
     ref.invalidateSelf();
     return unlock;
