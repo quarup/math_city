@@ -94,9 +94,12 @@ class ProficiencyNotifier extends AsyncNotifier<Map<String, double>> {
     }
 
     // Playing math grows your city: nudge the population one tick toward the
-    // capacity its buildings support. No-op until the player has placed
-    // something worth housing residents in.
-    await ref.read(cityActionsProvider).tickPopulation();
+    // capacity its buildings support, then re-evaluate story beats (population
+    // and brick-spacing gates can newly pass). No-op until the player has
+    // placed something.
+    final cityActions = ref.read(cityActionsProvider);
+    await cityActions.tickPopulation();
+    await cityActions.fireBeats();
 
     ref.invalidateSelf();
     return unlock;
