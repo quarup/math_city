@@ -10,6 +10,7 @@ import 'package:math_city/domain/city/beat_registry.dart';
 import 'package:math_city/domain/city/building_registry.dart';
 import 'package:math_city/domain/city/building_type.dart';
 import 'package:math_city/domain/city/category.dart';
+import 'package:math_city/domain/city/placement_rules.dart';
 import 'package:math_city/game/city/city_board_component.dart';
 import 'package:math_city/game/city/iso_city_game.dart';
 import 'package:math_city/game/city/iso_grid.dart';
@@ -54,9 +55,8 @@ class _CityScreenState extends ConsumerState<CityScreen> {
       return;
     }
     final placements = ref.read(placementsProvider).asData?.value ?? const [];
-    final occupant = placements
-        .where((p) => p.gridX == col && p.gridY == row)
-        .firstOrNull;
+    final city = ref.read(activeCityProvider).asData?.value;
+    if (city == null) return;
 
     // Unique types (mayor's office): a second "place" relocates the
     // existing instance instead of inserting a duplicate.
@@ -66,8 +66,18 @@ class _CityScreenState extends ConsumerState<CityScreen> {
           .firstOrNull;
       if (existing != null) {
         if (existing.gridX == col && existing.gridY == row) return;
-        if (occupant != null) {
-          _toast('That spot is taken');
+        // The moved building vacates its old tiles, so exclude it from the
+        // road-access check.
+        final check = _checkPlacement(
+          selected,
+          col,
+          row,
+          placements,
+          city,
+          excludePlacementId: existing.id,
+        );
+        if (!check.isLegal) {
+          _toast(_rejectionMessage(check.rejection!, selected));
           return;
         }
         unawaited(
@@ -77,8 +87,9 @@ class _CityScreenState extends ConsumerState<CityScreen> {
       }
     }
 
-    if (occupant != null) {
-      _toast('That spot is taken');
+    final check = _checkPlacement(selected, col, row, placements, city);
+    if (!check.isLegal) {
+      _toast(_rejectionMessage(check.rejection!, selected));
       return;
     }
     final bricks = ref.read(activePlayerProvider).asData?.value.brickBalance;
@@ -90,6 +101,58 @@ class _CityScreenState extends ConsumerState<CityScreen> {
     // Deselect if the player can no longer afford another one.
     if (bricks - selected.brickCost < selected.brickCost) {
       setState(() => _selected = null);
+    }
+  }
+
+  /// Runs the pure-Dart road-access invariant for placing/moving [type] to
+  /// `(col, row)`. Maps the current placements to footprints via the registry;
+  /// pass [excludePlacementId] when moving so the moved building's old tiles
+  /// don't count as occupied.
+  PlacementCheck _checkPlacement(
+    BuildingType type,
+    int col,
+    int row,
+    List<BuildingPlacement> placements,
+    City city, {
+    int? excludePlacementId,
+  }) {
+    final existing = <GridFootprint>[];
+    for (final p in placements) {
+      if (p.id == excludePlacementId) continue;
+      final t = findBuildingTypeById(p.buildingTypeId);
+      if (t == null) continue;
+      existing.add(
+        GridFootprint(
+          col: p.gridX,
+          row: p.gridY,
+          width: t.footprint.$1,
+          height: t.footprint.$2,
+        ),
+      );
+    }
+    return checkPlacement(
+      gridWidth: city.gridWidth,
+      gridHeight: city.gridHeight,
+      existing: existing,
+      candidate: GridFootprint(
+        col: col,
+        row: row,
+        width: type.footprint.$1,
+        height: type.footprint.$2,
+      ),
+    );
+  }
+
+  String _rejectionMessage(PlacementRejection reason, BuildingType type) {
+    switch (reason) {
+      case PlacementRejection.outOfBounds:
+        return 'That doesn’t fit on the map';
+      case PlacementRejection.overlap:
+        return 'That spot is taken';
+      case PlacementRejection.wouldBoxInSelf:
+        return '${type.name} needs an open side for a road';
+      case PlacementRejection.wouldBoxInNeighbor:
+        return 'That would block a building from the road';
     }
   }
 
