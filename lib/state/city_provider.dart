@@ -1,9 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_city/data/database.dart';
+import 'package:math_city/domain/city/beat_engine.dart';
+import 'package:math_city/domain/city/beat_registry.dart';
 import 'package:math_city/domain/city/building_registry.dart';
 import 'package:math_city/domain/city/building_type.dart';
 import 'package:math_city/domain/city/dag_engine.dart';
 import 'package:math_city/domain/city/population_model.dart';
+import 'package:math_city/domain/city/story_beat.dart';
+import 'package:math_city/domain/city/trigger_rule.dart';
 import 'package:math_city/domain/city/unlock_rule.dart';
 import 'package:math_city/state/player_provider.dart';
 
@@ -46,14 +50,16 @@ final cityCatalogProvider = FutureProvider<List<CatalogEntry>>((ref) async {
   final city = await ref.watch(activeCityProvider.future);
   final placements = await ref.watch(placementsProvider.future);
   final researchedIds = await db.researchedBuildingTypeIds(playerId);
+  final firedBeats = await db.firedBeatIds(playerId);
 
-  // Population is now live (stepped by `CityActions.tickPopulation`). Beat
-  // firing (Chunk 6) isn't modelled yet, so `firedBeatIds` stays stubbed.
+  // Population (stepped by `tickPopulation`) and fired beats (recorded by
+  // `fireBeats`) are both live now — v1's buildings only gate on placed
+  // buildings, but richer Phase 8/9 unlock rules can use either.
   final ctx = UnlockContext(
     lifetimeBricksEarned: player.lifetimeBricksEarned,
     population: city.population,
     placedBuildingTypeIds: placements.map((p) => p.buildingTypeId).toSet(),
-    firedBeatIds: const <String>{},
+    firedBeatIds: firedBeats,
   );
   const engine = BuildingDagEngine();
   final availableIds = engine.availableToResearch(ctx).map((b) => b.id).toSet();
@@ -67,6 +73,24 @@ final cityCatalogProvider = FutureProvider<List<CatalogEntry>>((ref) async {
     }
   }
   return entries;
+});
+
+/// Story beats currently showing as bubbles in the active city, newest fires
+/// included. The UI caps how many it draws (~5) and handles tap-to-expand;
+/// this just reports which beats are in the `onScreen` state.
+final onScreenBeatsProvider = FutureProvider<List<StoryBeat>>((ref) async {
+  final playerId = ref.watch(activePlayerIdProvider);
+  if (playerId == null) return const <StoryBeat>[];
+  final db = ref.read(appDatabaseProvider);
+  final states = await db.storyBeatStatesForPlayer(playerId);
+  final beats = <StoryBeat>[];
+  for (final entry in states.entries) {
+    if (entry.value.state == 'onScreen') {
+      final beat = findBeatById(entry.key);
+      if (beat != null) beats.add(beat);
+    }
+  }
+  return beats;
 });
 
 /// Side-effecting city operations. Kept off the widget so the placement
@@ -99,8 +123,62 @@ class CityActions {
       ..invalidate(activePlayerProvider)
       ..invalidate(allPlayersProvider);
     // A new building changes the city's capacity — step the population toward
-    // it so placing something gives immediate (if small) feedback.
+    // it so placing something gives immediate (if small) feedback — then
+    // re-evaluate beats (e.g. a placement clears a demand / triggers praise).
     await tickPopulation();
+    await fireBeats();
+  }
+
+  /// Re-evaluates every story beat against the current city + player state and
+  /// fires (puts on screen) any that are newly eligible — i.e. eligible and
+  /// not already showing. Called on each placement and each answered question.
+  /// No-op when there's no active player or nothing newly fires.
+  ///
+  /// Building-age triggers (`minBuildingAgeForId`) are not yet evaluated — that
+  /// needs the per-session round counter, which hasn't landed; they're passed
+  /// an empty age map, so the one age-gated beat stays dormant until then.
+  Future<void> fireBeats() async {
+    final playerId = _ref.read(activePlayerIdProvider);
+    if (playerId == null) return;
+    final db = _ref.read(appDatabaseProvider);
+    final player = await db.getPlayerById(playerId);
+    final city = await db.cityForPlayer(playerId);
+    final placements = await db.placementsForCity(city.id);
+    final states = await db.storyBeatStatesForPlayer(playerId);
+
+    final placedIds = placements.map((p) => p.buildingTypeId).toSet();
+    final firedIds = <String>{
+      for (final e in states.entries)
+        if (e.value.fireCount > 0) e.key,
+    };
+
+    TriggerContext contextFor(StoryBeat beat) {
+      final st = states[beat.id];
+      final lastBricks = st?.lifetimeBricksAtLastFire;
+      return TriggerContext(
+        placedBuildingTypeIds: placedIds,
+        population: city.population,
+        maxBuildingAgeByTypeId: const <String, int>{},
+        firedBeatIds: firedIds,
+        bricksEarnedSinceBeatLastFired: lastBricks == null
+            ? null
+            : player.lifetimeBricksEarned - lastBricks,
+      );
+    }
+
+    const engine = BeatEngine();
+    var changed = false;
+    for (final beat in engine.eligibleBeats(contextFor: contextFor)) {
+      // Already showing? Leave it (don't re-fire or bump the count).
+      if (states[beat.id]?.state == 'onScreen') continue;
+      await db.recordBeatFired(playerId, beat.id, player.lifetimeBricksEarned);
+      changed = true;
+    }
+    if (changed) {
+      _ref
+        ..invalidate(onScreenBeatsProvider)
+        ..invalidate(cityCatalogProvider);
+    }
   }
 
   /// Advances the active city's population one tick toward the capacity its

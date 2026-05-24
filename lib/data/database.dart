@@ -469,8 +469,9 @@ class AppDatabase extends _$AppDatabase {
   /// the pure population model (`lib/domain/city/population_model.dart`); this
   /// just writes it.
   Future<void> setCityPopulation(int cityId, int population) =>
-      (update(cities)..where((t) => t.id.equals(cityId)))
-          .write(CitiesCompanion(population: Value(population)));
+      (update(cities)..where((t) => t.id.equals(cityId))).write(
+        CitiesCompanion(population: Value(population)),
+      );
 
   /// IDs of the building types the player has unlocked (spent 🔬 on, or
   /// pre-researched). Presence => the type appears in the build menu.
@@ -503,6 +504,65 @@ class AppDatabase extends _$AppDatabase {
       await incrementPlayerResearch(playerId, -researchCost);
     }
   }
+
+  // ---- Story-beat state helpers ----
+
+  /// Per-beat state for [playerId], keyed by beatId. A beat with no row has
+  /// never fired.
+  Future<Map<String, StoryBeatState>> storyBeatStatesForPlayer(
+    int playerId,
+  ) async {
+    final rows = await (select(
+      storyBeatStates,
+    )..where((t) => t.playerId.equals(playerId))).get();
+    return {for (final r in rows) r.beatId: r};
+  }
+
+  /// IDs of beats that have fired at least once for [playerId]. Feeds the
+  /// `requiredBeatsFired` gate on both story beats and building unlock rules.
+  Future<Set<String>> firedBeatIds(int playerId) async {
+    final rows =
+        await (select(storyBeatStates)..where(
+              (t) =>
+                  t.playerId.equals(playerId) &
+                  t.fireCount.isBiggerThanValue(0),
+            ))
+            .get();
+    return rows.map((r) => r.beatId).toSet();
+  }
+
+  /// Fires [beatId] for [playerId]: puts it on screen, bumps its fire count,
+  /// and stamps the player's lifetime bricks at this fire so brick-based
+  /// spacing (`minBricksEarnedSinceLastBeat`) can be evaluated on the next
+  /// eligibility pass.
+  Future<void> recordBeatFired(
+    int playerId,
+    String beatId,
+    int lifetimeBricksAtFire,
+  ) async {
+    final existing =
+        await (select(storyBeatStates)..where(
+              (t) => t.playerId.equals(playerId) & t.beatId.equals(beatId),
+            ))
+            .getSingleOrNull();
+    await into(storyBeatStates).insertOnConflictUpdate(
+      StoryBeatStatesCompanion.insert(
+        playerId: playerId,
+        beatId: beatId,
+        state: 'onScreen',
+        fireCount: Value((existing?.fireCount ?? 0) + 1),
+        lifetimeBricksAtLastFire: Value(lifetimeBricksAtFire),
+      ),
+    );
+  }
+
+  /// Transitions an existing beat's bubble state ('onScreen' → 'dismissed' /
+  /// 'acked'). No-op if the beat has never fired.
+  Future<void> setBeatState(int playerId, String beatId, String state) =>
+      (update(storyBeatStates)..where(
+            (t) => t.playerId.equals(playerId) & t.beatId.equals(beatId),
+          ))
+          .write(StoryBeatStatesCompanion(state: Value(state)));
 
   /// Places one building: inserts the placement row and spends [brickCost]
   /// from the player's balance (lifetime stays monotone via
