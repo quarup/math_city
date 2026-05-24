@@ -40,6 +40,12 @@ class Players extends Table {
   IntColumn get lifetimeResearchEarned =>
       integer().withDefault(const Constant(0))();
 
+  /// The game's "round" clock: a monotonic count of questions this player has
+  /// answered. Persists across sessions and never decreases. Drives building
+  /// age (a placement stamps the current value into `placedAtRound`, and age =
+  /// current value − that stamp) and round-based bubble rotation.
+  IntColumn get roundsPlayed => integer().withDefault(const Constant(0))();
+
   DateTimeColumn get createdAt => dateTime()();
   // Stored as JSON string; null = default avatar.
   TextColumn get avatarConfig => text().nullable()();
@@ -146,9 +152,9 @@ class Cities extends Table {
   DateTimeColumn get createdAt => dateTime()();
 }
 
-/// One row per placed building. `placedAt` is the round-counter at the moment
-/// of placement (not a wall-clock date) so the "building age" beat trigger
-/// can use it without timezone surprises.
+/// One row per placed building. `placedAtRound` is the player's round clock
+/// ([Players.roundsPlayed]) at the moment of placement (not a wall-clock date)
+/// so the "building age" beat trigger can use it without timezone surprises.
 class BuildingPlacements extends Table {
   IntColumn get id => integer().autoIncrement()();
   IntColumn get cityId => integer().references(Cities, #id)();
@@ -220,7 +226,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 7;
+  int get schemaVersion => 8;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -241,6 +247,8 @@ class AppDatabase extends _$AppDatabase {
       //   (brick / research balances + lifetime counters), plus the new
       //   city-builder tables. Static catalogs (BuildingType, StoryBeat,
       //   CityMap) live in code under lib/domain/city/ — not Drift rows.
+      // v8: added Players.roundsPlayed — the persistent round clock that
+      //   drives building-age beat triggers + round-based bubble rotation.
       // Wipe is acceptable while we have no real users; proper additive
       // migrations land in Phase 11. See plan.md.
       await customStatement('DROP TABLE IF EXISTS story_beat_states');
@@ -414,6 +422,18 @@ class AppDatabase extends _$AppDatabase {
     );
   }
 
+  /// Advances the player's round clock by one (one answered question = one
+  /// round) and returns the new value. Call once per answered question; a
+  /// fresh placement stamps the returned value into `placedAtRound`.
+  Future<int> incrementRoundsPlayed(int playerId) async {
+    final p = await getPlayerById(playerId);
+    final next = p.roundsPlayed + 1;
+    await (update(players)..where((t) => t.id.equals(playerId))).write(
+      PlayersCompanion(roundsPlayed: Value(next)),
+    );
+    return next;
+  }
+
   // ---- Concept band milestones (research-award log) ----
 
   /// Returns the set of band indices already awarded for this
@@ -572,14 +592,16 @@ class AppDatabase extends _$AppDatabase {
   }
 
   /// Fires [beatId] for [playerId]: puts it on screen, bumps its fire count,
-  /// and stamps the player's lifetime bricks at this fire so brick-based
-  /// spacing (`minBricksEarnedSinceLastBeat`) can be evaluated on the next
-  /// eligibility pass.
+  /// stamps the player's lifetime bricks at this fire so brick-based spacing
+  /// (`minBricksEarnedSinceLastBeat`) can be evaluated on the next eligibility
+  /// pass, and records the round it fired at ([atRound]) so the overlay can
+  /// rotate the bubble off screen after a few rounds.
   Future<void> recordBeatFired(
     int playerId,
     String beatId,
-    int lifetimeBricksAtFire,
-  ) async {
+    int lifetimeBricksAtFire, [
+    int atRound = 0,
+  ]) async {
     final existing =
         await (select(storyBeatStates)..where(
               (t) => t.playerId.equals(playerId) & t.beatId.equals(beatId),
@@ -592,6 +614,7 @@ class AppDatabase extends _$AppDatabase {
         state: 'onScreen',
         fireCount: Value((existing?.fireCount ?? 0) + 1),
         lifetimeBricksAtLastFire: Value(lifetimeBricksAtFire),
+        lastFiredAtRound: Value(atRound),
       ),
     );
   }
@@ -609,9 +632,9 @@ class AppDatabase extends _$AppDatabase {
   /// [incrementPlayerBricks]). The caller must have already verified tile
   /// vacancy and affordability.
   ///
-  /// `placedAtRound` is stored as the city's current placement count — a
-  /// monotonic stand-in until per-session round tracking lands in a later
-  /// chunk (it only feeds the "building age" beat trigger, which is Chunk 6).
+  /// `placedAtRound` is stamped with the player's current round clock
+  /// ([Players.roundsPlayed]) so the "building age" beat trigger measures age
+  /// in answered questions since placement (age = current clock − this stamp).
   Future<void> placeBuilding({
     required int cityId,
     required int playerId,
@@ -620,14 +643,14 @@ class AppDatabase extends _$AppDatabase {
     required int gridY,
     required int brickCost,
   }) async {
-    final existing = await placementsForCity(cityId);
+    final player = await getPlayerById(playerId);
     await into(buildingPlacements).insert(
       BuildingPlacementsCompanion.insert(
         cityId: cityId,
         buildingTypeId: buildingTypeId,
         gridX: gridX,
         gridY: gridY,
-        placedAtRound: existing.length,
+        placedAtRound: player.roundsPlayed,
       ),
     );
     if (brickCost > 0) await incrementPlayerBricks(playerId, -brickCost);

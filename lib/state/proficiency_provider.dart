@@ -39,6 +39,11 @@ class ProficiencyNotifier extends AsyncNotifier<Map<String, double>> {
     final player = await ref.read(activePlayerProvider.future);
     final db = ref.read(appDatabaseProvider);
 
+    // One answered question = one round. Advance the clock first so the
+    // population tick + beat evaluation below see the new value (building age
+    // and bubble rotation both key off it).
+    await db.incrementRoundsPlayed(player.id);
+
     final concept = findConceptById(conceptId)!;
     final engine = ref.read(dagEngineProvider);
     final effectiveGrade = engine.effectiveGradeFor(player.gradeLevel);

@@ -121,9 +121,12 @@ void main() {
       expect(rows.first.placedAtRound, original.placedAtRound); // preserved
     });
 
-    test('placedAtRound increments with the placement count', () async {
+    test('placedAtRound stamps the players current round clock', () async {
       final (db, player, city) = await freshCity();
+      // The clock advances per answered question, not per placement, so
+      // simulate three placements at three different rounds.
       for (var i = 0; i < 3; i++) {
+        await db.incrementRoundsPlayed(player.id); // clock now 1, 2, 3
         await db.placeBuilding(
           cityId: city.id,
           playerId: player.id,
@@ -134,7 +137,10 @@ void main() {
         );
       }
       final rows = await db.placementsForCity(city.id);
-      expect(rows.map((r) => r.placedAtRound).toList(), containsAll([0, 1, 2]));
+      expect(
+        rows.map((r) => r.placedAtRound).toList()..sort(),
+        [1, 2, 3],
+      );
     });
   });
 

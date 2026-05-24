@@ -76,20 +76,34 @@ final cityCatalogProvider = FutureProvider<List<CatalogEntry>>((ref) async {
   return entries;
 });
 
+/// Number of rounds (answered questions) an un-acknowledged bubble stays on
+/// screen before it rotates off. Keeps stale bubbles from piling up; the beat
+/// row stays `onScreen` (so it won't re-fire) but drops out of this list once
+/// it's older than the window. Phase-7 placeholder — tuned in Phase 8/9.
+const kBubbleRotationRounds = 8;
+
 /// Story beats currently showing as bubbles in the active city, newest fires
-/// included. The UI caps how many it draws (~5) and handles tap-to-expand;
-/// this just reports which beats are in the `onScreen` state.
+/// included. The UI caps how many it draws (~5) and handles tap-to-expand.
+/// A beat shows while it's in the `onScreen` state and was fired within the
+/// last [kBubbleRotationRounds] rounds; older un-acknowledged bubbles rotate
+/// off without re-firing.
 final onScreenBeatsProvider = FutureProvider<List<StoryBeat>>((ref) async {
   final playerId = ref.watch(activePlayerIdProvider);
   if (playerId == null) return const <StoryBeat>[];
   final db = ref.read(appDatabaseProvider);
+  final player = await db.getPlayerById(playerId);
   final states = await db.storyBeatStatesForPlayer(playerId);
   final beats = <StoryBeat>[];
   for (final entry in states.entries) {
-    if (entry.value.state == 'onScreen') {
-      final beat = findBeatById(entry.key);
-      if (beat != null) beats.add(beat);
+    final st = entry.value;
+    if (st.state != 'onScreen') continue;
+    final firedAt = st.lastFiredAtRound;
+    if (firedAt != null &&
+        player.roundsPlayed - firedAt >= kBubbleRotationRounds) {
+      continue; // rotated off after sitting un-acknowledged too long
     }
+    final beat = findBeatById(entry.key);
+    if (beat != null) beats.add(beat);
   }
   return beats;
 });
@@ -135,9 +149,9 @@ class CityActions {
   /// not already showing. Called on each placement and each answered question.
   /// No-op when there's no active player or nothing newly fires.
   ///
-  /// Building-age triggers (`minBuildingAgeForId`) are not yet evaluated — that
-  /// needs the per-session round counter, which hasn't landed; they're passed
-  /// an empty age map, so the one age-gated beat stays dormant until then.
+  /// Building-age triggers (`minBuildingAgeForId`) are evaluated against the
+  /// player's round clock: each placed type's age is the round clock minus the
+  /// earliest `placedAtRound` among its placements (its *oldest* instance).
   Future<void> fireBeats() async {
     final playerId = _ref.read(activePlayerIdProvider);
     if (playerId == null) return;
@@ -153,13 +167,21 @@ class CityActions {
         if (e.value.fireCount > 0) e.key,
     };
 
+    // Age of each type's oldest placement, in rounds (answered questions).
+    final ageByType = <String, int>{};
+    for (final p in placements) {
+      final age = player.roundsPlayed - p.placedAtRound;
+      final prev = ageByType[p.buildingTypeId];
+      if (prev == null || age > prev) ageByType[p.buildingTypeId] = age;
+    }
+
     TriggerContext contextFor(StoryBeat beat) {
       final st = states[beat.id];
       final lastBricks = st?.lifetimeBricksAtLastFire;
       return TriggerContext(
         placedBuildingTypeIds: placedIds,
         population: city.population,
-        maxBuildingAgeByTypeId: const <String, int>{},
+        maxBuildingAgeByTypeId: ageByType,
         firedBeatIds: firedIds,
         bricksEarnedSinceBeatLastFired: lastBricks == null
             ? null
@@ -172,14 +194,18 @@ class CityActions {
     for (final beat in engine.eligibleBeats(contextFor: contextFor)) {
       // Already showing? Leave it (don't re-fire or bump the count).
       if (states[beat.id]?.state == 'onScreen') continue;
-      await db.recordBeatFired(playerId, beat.id, player.lifetimeBricksEarned);
+      await db.recordBeatFired(
+        playerId,
+        beat.id,
+        player.lifetimeBricksEarned,
+        player.roundsPlayed,
+      );
       changed = true;
     }
-    if (changed) {
-      _ref
-        ..invalidate(onScreenBeatsProvider)
-        ..invalidate(cityCatalogProvider);
-    }
+    if (changed) _ref.invalidate(cityCatalogProvider);
+    // The round clock may have advanced even when nothing newly fired, which
+    // can rotate a stale bubble off screen — always refresh the overlay.
+    _ref.invalidate(onScreenBeatsProvider);
   }
 
   /// Advances the active city's population one tick toward the capacity its
