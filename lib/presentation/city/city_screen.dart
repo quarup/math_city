@@ -11,6 +11,7 @@ import 'package:math_city/domain/city/building_registry.dart';
 import 'package:math_city/domain/city/building_type.dart';
 import 'package:math_city/domain/city/category.dart';
 import 'package:math_city/domain/city/placement_rules.dart';
+import 'package:math_city/domain/city/road_network.dart';
 import 'package:math_city/game/city/city_board_component.dart';
 import 'package:math_city/game/city/iso_city_game.dart';
 import 'package:math_city/game/city/iso_grid.dart';
@@ -104,24 +105,19 @@ class _CityScreenState extends ConsumerState<CityScreen> {
     }
   }
 
-  /// Runs the pure-Dart road-access invariant for placing/moving [type] to
-  /// `(col, row)`. Maps the current placements to footprints via the registry;
-  /// pass [excludePlacementId] when moving so the moved building's old tiles
-  /// don't count as occupied.
-  PlacementCheck _checkPlacement(
-    BuildingType type,
-    int col,
-    int row,
-    List<BuildingPlacement> placements,
-    City city, {
-    int? excludePlacementId,
+  /// Maps placements to grid footprints via the building registry. Pass
+  /// [exclude] to drop one placement (used when moving, so the mover's old
+  /// tiles don't count as occupied).
+  List<GridFootprint> _footprintsOf(
+    List<BuildingPlacement> placements, {
+    int? exclude,
   }) {
-    final existing = <GridFootprint>[];
+    final out = <GridFootprint>[];
     for (final p in placements) {
-      if (p.id == excludePlacementId) continue;
+      if (p.id == exclude) continue;
       final t = findBuildingTypeById(p.buildingTypeId);
       if (t == null) continue;
-      existing.add(
+      out.add(
         GridFootprint(
           col: p.gridX,
           row: p.gridY,
@@ -130,10 +126,24 @@ class _CityScreenState extends ConsumerState<CityScreen> {
         ),
       );
     }
+    return out;
+  }
+
+  /// Runs the pure-Dart road-access invariant for placing/moving [type] to
+  /// `(col, row)`. Pass [excludePlacementId] when moving so the moved
+  /// building's old tiles don't count as occupied.
+  PlacementCheck _checkPlacement(
+    BuildingType type,
+    int col,
+    int row,
+    List<BuildingPlacement> placements,
+    City city, {
+    int? excludePlacementId,
+  }) {
     return checkPlacement(
       gridWidth: city.gridWidth,
       gridHeight: city.gridHeight,
-      existing: existing,
+      existing: _footprintsOf(placements, exclude: excludePlacementId),
       candidate: GridFootprint(
         col: col,
         row: row,
@@ -142,6 +152,17 @@ class _CityScreenState extends ConsumerState<CityScreen> {
       ),
     );
   }
+
+  /// The auto-generated road tiles for the current placements (see
+  /// `road_network.dart`).
+  Set<(int, int)> _roadTilesFor(
+    List<BuildingPlacement> placements,
+    City city,
+  ) => generateRoads(
+    gridWidth: city.gridWidth,
+    gridHeight: city.gridHeight,
+    buildings: _footprintsOf(placements),
+  );
 
   String _rejectionMessage(PlacementRejection reason, BuildingType type) {
     switch (reason) {
@@ -257,6 +278,7 @@ class _CityScreenState extends ConsumerState<CityScreen> {
     final placements = placementsAsync.asData?.value;
     if (_game != null && placements != null) {
       _game!.setBuildings(_viewsFor(placements));
+      if (city != null) _game!.setRoads(_roadTilesFor(placements, city));
     }
 
     // Auto-select the only researched building so the starter player doesn't

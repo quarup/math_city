@@ -35,8 +35,14 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
   /// whenever placements change.
   List<PlacedBuildingView> buildings = const [];
 
+  /// Tiles painted as road (auto-generated; see `road_network.dart`). Drawn in
+  /// the terrain pass, so buildings always sit on top. Reassigned by the host
+  /// game whenever placements change.
+  Set<(int, int)> roads = const {};
+
   static const _grassFill = Color(0xFF7CB342);
   static const _grassFillAlt = Color(0xFF689F38);
+  static const _roadFill = Color(0xFF9E9E9E);
   final _tileStroke = Paint()
     ..color = const Color(0x33000000)
     ..style = PaintingStyle.stroke
@@ -70,11 +76,11 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
   void _drawTile(Canvas canvas, int col, int row) {
     final (cx, cy) = grid.centerOf(col, row);
     final path = _diamond(cx, cy, 0);
+    final fill = roads.contains((col, row))
+        ? _roadFill
+        : ((col + row).isEven ? _grassFill : _grassFillAlt);
     canvas
-      ..drawPath(
-        path,
-        Paint()..color = (col + row).isEven ? _grassFill : _grassFillAlt,
-      )
+      ..drawPath(path, Paint()..color = fill)
       ..drawPath(path, _tileStroke);
   }
 

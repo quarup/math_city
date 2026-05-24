@@ -40,10 +40,15 @@ class IsoCityGame extends FlameGame with DragCallbacks {
   /// rebuild that re-pushes the same data.
   List<PlacedBuildingView>? _pendingBuildings;
 
+  /// Road tiles pushed before [onLoad] ran — applied once the board exists.
+  /// Same buffering rationale as [_pendingBuildings].
+  Set<(int, int)>? _pendingRoads;
+
   @override
   Future<void> onLoad() async {
     board = CityBoardComponent(grid: grid, onTileTapped: onTileTapped);
     if (_pendingBuildings != null) board.buildings = _pendingBuildings!;
+    if (_pendingRoads != null) board.roads = _pendingRoads!;
     await world.add(board);
     camera.viewfinder.position = _boardCenter;
   }
@@ -80,6 +85,16 @@ class IsoCityGame extends FlameGame with DragCallbacks {
       board.buildings = buildings;
     } else {
       _pendingBuildings = buildings;
+    }
+  }
+
+  /// Pushes the latest auto-generated road tiles into the board. Buffered if
+  /// called before [onLoad] finishes — see [_pendingRoads].
+  void setRoads(Set<(int, int)> roads) {
+    if (isLoaded) {
+      board.roads = roads;
+    } else {
+      _pendingRoads = roads;
     }
   }
 
