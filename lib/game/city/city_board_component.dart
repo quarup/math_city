@@ -40,6 +40,10 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
   /// game whenever placements change.
   Set<(int, int)> roads = const {};
 
+  /// Tile of the building currently "picked up" in move mode, outlined so the
+  /// player can see what they're relocating. Null when nothing is picked up.
+  (int, int)? highlightTile;
+
   static const _grassFill = Color(0xFF7CB342);
   static const _grassFillAlt = Color(0xFF689F38);
   static const _roadFill = Color(0xFF9E9E9E);
@@ -47,6 +51,10 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     ..color = const Color(0x33000000)
     ..style = PaintingStyle.stroke
     ..strokeWidth = 1;
+  final _highlightStroke = Paint()
+    ..color = const Color(0xFFFFEB3B)
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 3;
 
   late final TextPaint _emojiPaint = TextPaint(
     style: TextStyle(fontSize: grid.tileWidth * 0.42),
@@ -70,6 +78,12 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
       ..sort((a, b) => (a.col + a.row).compareTo(b.col + b.row));
     for (final b in sorted) {
       _drawBuilding(canvas, b);
+    }
+    // Move-mode highlight: ring the top face of the picked-up building.
+    final hl = highlightTile;
+    if (hl != null) {
+      final (cx, cy) = grid.centerOf(hl.$1, hl.$2);
+      canvas.drawPath(_diamond(cx, cy, grid.tileWidth * 0.5), _highlightStroke);
     }
   }
 
