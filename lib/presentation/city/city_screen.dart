@@ -12,6 +12,7 @@ import 'package:math_city/domain/city/building_type.dart';
 import 'package:math_city/domain/city/category.dart';
 import 'package:math_city/domain/city/placement_rules.dart';
 import 'package:math_city/domain/city/road_network.dart';
+import 'package:math_city/domain/city/story_beat.dart';
 import 'package:math_city/game/city/city_board_component.dart';
 import 'package:math_city/game/city/iso_city_game.dart';
 import 'package:math_city/game/city/iso_grid.dart';
@@ -317,12 +318,28 @@ class _CityScreenState extends ConsumerState<CityScreen> {
       ),
       body: _game == null
           ? const Center(child: CircularProgressIndicator())
-          : ColoredBox(
-              color: const Color(0xFF9CCC65),
-              child: _PinchZoomWrapper(
-                game: _game!,
-                child: GameWidget(game: _game!),
-              ),
+          : Stack(
+              children: [
+                Positioned.fill(
+                  child: ColoredBox(
+                    color: const Color(0xFF9CCC65),
+                    child: _PinchZoomWrapper(
+                      game: _game!,
+                      child: GameWidget(game: _game!),
+                    ),
+                  ),
+                ),
+                // Population counter, top-left over the city.
+                Positioned(
+                  top: 8,
+                  left: 8,
+                  child: SafeArea(
+                    child: _PopulationChip(population: city?.population ?? 0),
+                  ),
+                ),
+                // Floating citizen bubbles (and their tap-to-expand cards).
+                const Positioned.fill(child: _CitizenBubbleOverlay()),
+              ],
             ),
       bottomNavigationBar: catalogAsync.when(
         loading: () => const SizedBox.shrink(),
@@ -558,6 +575,220 @@ class _CurrencyBar extends StatelessWidget {
           const SizedBox(width: 5),
           Text('$research', style: textStyle),
         ],
+      ),
+    );
+  }
+}
+
+/// Current population, shown as a shaded chip over the top-left of the city.
+/// The value is stepped by the growth model as the player builds and plays.
+class _PopulationChip extends StatelessWidget {
+  const _PopulationChip({required this.population});
+
+  final int population;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.black.withValues(alpha: 0.32),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text('👥', style: TextStyle(fontSize: 15)),
+          const SizedBox(width: 5),
+          Text(
+            '$population',
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 15,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Color accent for a beat by its kind — demands nudge (amber), praise
+/// celebrates (green), warnings alert (red).
+Color _beatColor(BeatKind kind) => switch (kind) {
+  BeatKind.demand => const Color(0xFFFFA726),
+  BeatKind.praise => const Color(0xFF66BB6A),
+  BeatKind.warning => const Color(0xFFEF5350),
+};
+
+/// Floating citizen-bubble layer drawn over the city. Shows up to 5 of the
+/// beats currently in the `onScreen` state (from [onScreenBeatsProvider]) as
+/// emoji stickers along the top; tapping one expands it into a card with the
+/// full sentence and a "Got it" button that dismisses it. Empty regions don't
+/// absorb touches, so the city stays pannable; while a card is open a scrim
+/// catches outside taps to collapse it.
+class _CitizenBubbleOverlay extends ConsumerStatefulWidget {
+  const _CitizenBubbleOverlay();
+
+  @override
+  ConsumerState<_CitizenBubbleOverlay> createState() =>
+      _CitizenBubbleOverlayState();
+}
+
+class _CitizenBubbleOverlayState extends ConsumerState<_CitizenBubbleOverlay> {
+  String? _expandedId;
+
+  @override
+  Widget build(BuildContext context) {
+    final beats =
+        ref.watch(onScreenBeatsProvider).asData?.value ?? const <StoryBeat>[];
+    final shown = beats.take(5).toList();
+    if (shown.isEmpty) {
+      _expandedId = null;
+      return const SizedBox.shrink();
+    }
+
+    final expanded = _expandedId == null
+        ? null
+        : shown.where((b) => b.id == _expandedId).firstOrNull;
+
+    return Stack(
+      children: [
+        // Sticker row, top-right so it clears the population chip.
+        Positioned(
+          top: 8,
+          right: 8,
+          left: 64,
+          child: SafeArea(
+            child: Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              alignment: WrapAlignment.end,
+              children: [
+                for (final b in shown)
+                  _BubbleSticker(
+                    beat: b,
+                    onTap: () => setState(() => _expandedId = b.id),
+                  ),
+              ],
+            ),
+          ),
+        ),
+        if (expanded != null) ...[
+          Positioned.fill(
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => setState(() => _expandedId = null),
+            ),
+          ),
+          Positioned(
+            top: 64,
+            left: 16,
+            right: 16,
+            child: SafeArea(
+              child: _ExpandedBeatCard(
+                beat: expanded,
+                onDismiss: () {
+                  unawaited(
+                    ref.read(cityActionsProvider).dismissBeat(expanded.id),
+                  );
+                  setState(() => _expandedId = null);
+                },
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+/// Collapsed bubble: a round emoji sticker ringed in its beat's accent color.
+class _BubbleSticker extends StatelessWidget {
+  const _BubbleSticker({required this.beat, required this.onTap});
+
+  final StoryBeat beat;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 46,
+        height: 46,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          shape: BoxShape.circle,
+          border: Border.all(color: _beatColor(beat.kind), width: 3),
+          boxShadow: const [
+            BoxShadow(
+              color: Color(0x33000000),
+              blurRadius: 4,
+              offset: Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Text(beat.emoji, style: const TextStyle(fontSize: 22)),
+      ),
+    );
+  }
+}
+
+/// Expanded bubble: the full sentence with a "Got it" dismiss button.
+class _ExpandedBeatCard extends StatelessWidget {
+  const _ExpandedBeatCard({required this.beat, required this.onDismiss});
+
+  final StoryBeat beat;
+  final VoidCallback onDismiss;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final accent = _beatColor(beat.kind);
+    return Material(
+      elevation: 6,
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surface,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: accent, width: 2),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text(beat.emoji, style: const TextStyle(fontSize: 28)),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    beat.shortLabel,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(beat.longText, style: theme.textTheme.bodyMedium),
+            const SizedBox(height: 12),
+            Align(
+              alignment: Alignment.centerRight,
+              child: FilledButton(
+                style: FilledButton.styleFrom(backgroundColor: accent),
+                onPressed: onDismiss,
+                child: const Text('Got it'),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
