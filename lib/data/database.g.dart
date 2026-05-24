@@ -91,6 +91,18 @@ class $PlayersTable extends Players with TableInfo<$PlayersTable, Player> {
     requiredDuringInsert: false,
     defaultValue: const Constant(0),
   );
+  static const VerificationMeta _roundsPlayedMeta = const VerificationMeta(
+    'roundsPlayed',
+  );
+  @override
+  late final GeneratedColumn<int> roundsPlayed = GeneratedColumn<int>(
+    'rounds_played',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -122,6 +134,7 @@ class $PlayersTable extends Players with TableInfo<$PlayersTable, Player> {
     lifetimeBricksEarned,
     researchBalance,
     lifetimeResearchEarned,
+    roundsPlayed,
     createdAt,
     avatarConfig,
   ];
@@ -192,6 +205,15 @@ class $PlayersTable extends Players with TableInfo<$PlayersTable, Player> {
         ),
       );
     }
+    if (data.containsKey('rounds_played')) {
+      context.handle(
+        _roundsPlayedMeta,
+        roundsPlayed.isAcceptableOrUnknown(
+          data['rounds_played']!,
+          _roundsPlayedMeta,
+        ),
+      );
+    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
@@ -246,6 +268,10 @@ class $PlayersTable extends Players with TableInfo<$PlayersTable, Player> {
         DriftSqlType.int,
         data['${effectivePrefix}lifetime_research_earned'],
       )!,
+      roundsPlayed: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}rounds_played'],
+      )!,
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -281,6 +307,12 @@ class Player extends DataClass implements Insertable<Player> {
 
   /// 🔬 lifetime earned — never decreases; bookkeeping.
   final int lifetimeResearchEarned;
+
+  /// The game's "round" clock: a monotonic count of questions this player has
+  /// answered. Persists across sessions and never decreases. Drives building
+  /// age (a placement stamps the current value into `placedAtRound`, and age =
+  /// current value − that stamp) and round-based bubble rotation.
+  final int roundsPlayed;
   final DateTime createdAt;
   final String? avatarConfig;
   const Player({
@@ -291,6 +323,7 @@ class Player extends DataClass implements Insertable<Player> {
     required this.lifetimeBricksEarned,
     required this.researchBalance,
     required this.lifetimeResearchEarned,
+    required this.roundsPlayed,
     required this.createdAt,
     this.avatarConfig,
   });
@@ -304,6 +337,7 @@ class Player extends DataClass implements Insertable<Player> {
     map['lifetime_bricks_earned'] = Variable<int>(lifetimeBricksEarned);
     map['research_balance'] = Variable<int>(researchBalance);
     map['lifetime_research_earned'] = Variable<int>(lifetimeResearchEarned);
+    map['rounds_played'] = Variable<int>(roundsPlayed);
     map['created_at'] = Variable<DateTime>(createdAt);
     if (!nullToAbsent || avatarConfig != null) {
       map['avatar_config'] = Variable<String>(avatarConfig);
@@ -320,6 +354,7 @@ class Player extends DataClass implements Insertable<Player> {
       lifetimeBricksEarned: Value(lifetimeBricksEarned),
       researchBalance: Value(researchBalance),
       lifetimeResearchEarned: Value(lifetimeResearchEarned),
+      roundsPlayed: Value(roundsPlayed),
       createdAt: Value(createdAt),
       avatarConfig: avatarConfig == null && nullToAbsent
           ? const Value.absent()
@@ -344,6 +379,7 @@ class Player extends DataClass implements Insertable<Player> {
       lifetimeResearchEarned: serializer.fromJson<int>(
         json['lifetimeResearchEarned'],
       ),
+      roundsPlayed: serializer.fromJson<int>(json['roundsPlayed']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       avatarConfig: serializer.fromJson<String?>(json['avatarConfig']),
     );
@@ -359,6 +395,7 @@ class Player extends DataClass implements Insertable<Player> {
       'lifetimeBricksEarned': serializer.toJson<int>(lifetimeBricksEarned),
       'researchBalance': serializer.toJson<int>(researchBalance),
       'lifetimeResearchEarned': serializer.toJson<int>(lifetimeResearchEarned),
+      'roundsPlayed': serializer.toJson<int>(roundsPlayed),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'avatarConfig': serializer.toJson<String?>(avatarConfig),
     };
@@ -372,6 +409,7 @@ class Player extends DataClass implements Insertable<Player> {
     int? lifetimeBricksEarned,
     int? researchBalance,
     int? lifetimeResearchEarned,
+    int? roundsPlayed,
     DateTime? createdAt,
     Value<String?> avatarConfig = const Value.absent(),
   }) => Player(
@@ -383,6 +421,7 @@ class Player extends DataClass implements Insertable<Player> {
     researchBalance: researchBalance ?? this.researchBalance,
     lifetimeResearchEarned:
         lifetimeResearchEarned ?? this.lifetimeResearchEarned,
+    roundsPlayed: roundsPlayed ?? this.roundsPlayed,
     createdAt: createdAt ?? this.createdAt,
     avatarConfig: avatarConfig.present ? avatarConfig.value : this.avatarConfig,
   );
@@ -405,6 +444,9 @@ class Player extends DataClass implements Insertable<Player> {
       lifetimeResearchEarned: data.lifetimeResearchEarned.present
           ? data.lifetimeResearchEarned.value
           : this.lifetimeResearchEarned,
+      roundsPlayed: data.roundsPlayed.present
+          ? data.roundsPlayed.value
+          : this.roundsPlayed,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       avatarConfig: data.avatarConfig.present
           ? data.avatarConfig.value
@@ -422,6 +464,7 @@ class Player extends DataClass implements Insertable<Player> {
           ..write('lifetimeBricksEarned: $lifetimeBricksEarned, ')
           ..write('researchBalance: $researchBalance, ')
           ..write('lifetimeResearchEarned: $lifetimeResearchEarned, ')
+          ..write('roundsPlayed: $roundsPlayed, ')
           ..write('createdAt: $createdAt, ')
           ..write('avatarConfig: $avatarConfig')
           ..write(')'))
@@ -437,6 +480,7 @@ class Player extends DataClass implements Insertable<Player> {
     lifetimeBricksEarned,
     researchBalance,
     lifetimeResearchEarned,
+    roundsPlayed,
     createdAt,
     avatarConfig,
   );
@@ -451,6 +495,7 @@ class Player extends DataClass implements Insertable<Player> {
           other.lifetimeBricksEarned == this.lifetimeBricksEarned &&
           other.researchBalance == this.researchBalance &&
           other.lifetimeResearchEarned == this.lifetimeResearchEarned &&
+          other.roundsPlayed == this.roundsPlayed &&
           other.createdAt == this.createdAt &&
           other.avatarConfig == this.avatarConfig);
 }
@@ -463,6 +508,7 @@ class PlayersCompanion extends UpdateCompanion<Player> {
   final Value<int> lifetimeBricksEarned;
   final Value<int> researchBalance;
   final Value<int> lifetimeResearchEarned;
+  final Value<int> roundsPlayed;
   final Value<DateTime> createdAt;
   final Value<String?> avatarConfig;
   const PlayersCompanion({
@@ -473,6 +519,7 @@ class PlayersCompanion extends UpdateCompanion<Player> {
     this.lifetimeBricksEarned = const Value.absent(),
     this.researchBalance = const Value.absent(),
     this.lifetimeResearchEarned = const Value.absent(),
+    this.roundsPlayed = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.avatarConfig = const Value.absent(),
   });
@@ -484,6 +531,7 @@ class PlayersCompanion extends UpdateCompanion<Player> {
     this.lifetimeBricksEarned = const Value.absent(),
     this.researchBalance = const Value.absent(),
     this.lifetimeResearchEarned = const Value.absent(),
+    this.roundsPlayed = const Value.absent(),
     required DateTime createdAt,
     this.avatarConfig = const Value.absent(),
   }) : name = Value(name),
@@ -497,6 +545,7 @@ class PlayersCompanion extends UpdateCompanion<Player> {
     Expression<int>? lifetimeBricksEarned,
     Expression<int>? researchBalance,
     Expression<int>? lifetimeResearchEarned,
+    Expression<int>? roundsPlayed,
     Expression<DateTime>? createdAt,
     Expression<String>? avatarConfig,
   }) {
@@ -510,6 +559,7 @@ class PlayersCompanion extends UpdateCompanion<Player> {
       if (researchBalance != null) 'research_balance': researchBalance,
       if (lifetimeResearchEarned != null)
         'lifetime_research_earned': lifetimeResearchEarned,
+      if (roundsPlayed != null) 'rounds_played': roundsPlayed,
       if (createdAt != null) 'created_at': createdAt,
       if (avatarConfig != null) 'avatar_config': avatarConfig,
     });
@@ -523,6 +573,7 @@ class PlayersCompanion extends UpdateCompanion<Player> {
     Value<int>? lifetimeBricksEarned,
     Value<int>? researchBalance,
     Value<int>? lifetimeResearchEarned,
+    Value<int>? roundsPlayed,
     Value<DateTime>? createdAt,
     Value<String?>? avatarConfig,
   }) {
@@ -535,6 +586,7 @@ class PlayersCompanion extends UpdateCompanion<Player> {
       researchBalance: researchBalance ?? this.researchBalance,
       lifetimeResearchEarned:
           lifetimeResearchEarned ?? this.lifetimeResearchEarned,
+      roundsPlayed: roundsPlayed ?? this.roundsPlayed,
       createdAt: createdAt ?? this.createdAt,
       avatarConfig: avatarConfig ?? this.avatarConfig,
     );
@@ -566,6 +618,9 @@ class PlayersCompanion extends UpdateCompanion<Player> {
         lifetimeResearchEarned.value,
       );
     }
+    if (roundsPlayed.present) {
+      map['rounds_played'] = Variable<int>(roundsPlayed.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -585,6 +640,7 @@ class PlayersCompanion extends UpdateCompanion<Player> {
           ..write('lifetimeBricksEarned: $lifetimeBricksEarned, ')
           ..write('researchBalance: $researchBalance, ')
           ..write('lifetimeResearchEarned: $lifetimeResearchEarned, ')
+          ..write('roundsPlayed: $roundsPlayed, ')
           ..write('createdAt: $createdAt, ')
           ..write('avatarConfig: $avatarConfig')
           ..write(')'))
@@ -4572,6 +4628,7 @@ typedef $$PlayersTableCreateCompanionBuilder =
       Value<int> lifetimeBricksEarned,
       Value<int> researchBalance,
       Value<int> lifetimeResearchEarned,
+      Value<int> roundsPlayed,
       required DateTime createdAt,
       Value<String?> avatarConfig,
     });
@@ -4584,6 +4641,7 @@ typedef $$PlayersTableUpdateCompanionBuilder =
       Value<int> lifetimeBricksEarned,
       Value<int> researchBalance,
       Value<int> lifetimeResearchEarned,
+      Value<int> roundsPlayed,
       Value<DateTime> createdAt,
       Value<String?> avatarConfig,
     });
@@ -4781,6 +4839,11 @@ class $$PlayersTableFilterComposer
 
   ColumnFilters<int> get lifetimeResearchEarned => $composableBuilder(
     column: $table.lifetimeResearchEarned,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get roundsPlayed => $composableBuilder(
+    column: $table.roundsPlayed,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -4991,6 +5054,11 @@ class $$PlayersTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get roundsPlayed => $composableBuilder(
+    column: $table.roundsPlayed,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -5039,6 +5107,11 @@ class $$PlayersTableAnnotationComposer
 
   GeneratedColumn<int> get lifetimeResearchEarned => $composableBuilder(
     column: $table.lifetimeResearchEarned,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get roundsPlayed => $composableBuilder(
+    column: $table.roundsPlayed,
     builder: (column) => column,
   );
 
@@ -5248,6 +5321,7 @@ class $$PlayersTableTableManager
                 Value<int> lifetimeBricksEarned = const Value.absent(),
                 Value<int> researchBalance = const Value.absent(),
                 Value<int> lifetimeResearchEarned = const Value.absent(),
+                Value<int> roundsPlayed = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<String?> avatarConfig = const Value.absent(),
               }) => PlayersCompanion(
@@ -5258,6 +5332,7 @@ class $$PlayersTableTableManager
                 lifetimeBricksEarned: lifetimeBricksEarned,
                 researchBalance: researchBalance,
                 lifetimeResearchEarned: lifetimeResearchEarned,
+                roundsPlayed: roundsPlayed,
                 createdAt: createdAt,
                 avatarConfig: avatarConfig,
               ),
@@ -5270,6 +5345,7 @@ class $$PlayersTableTableManager
                 Value<int> lifetimeBricksEarned = const Value.absent(),
                 Value<int> researchBalance = const Value.absent(),
                 Value<int> lifetimeResearchEarned = const Value.absent(),
+                Value<int> roundsPlayed = const Value.absent(),
                 required DateTime createdAt,
                 Value<String?> avatarConfig = const Value.absent(),
               }) => PlayersCompanion.insert(
@@ -5280,6 +5356,7 @@ class $$PlayersTableTableManager
                 lifetimeBricksEarned: lifetimeBricksEarned,
                 researchBalance: researchBalance,
                 lifetimeResearchEarned: lifetimeResearchEarned,
+                roundsPlayed: roundsPlayed,
                 createdAt: createdAt,
                 avatarConfig: avatarConfig,
               ),

@@ -171,6 +171,79 @@ void main() {
       expect(await db.firedBeatIds(pid), isEmpty);
     });
 
+    test('incrementRoundsPlayed advances and persists the clock', () async {
+      final db = AppDatabase(NativeDatabase.memory());
+      final p = await db.createPlayer(
+        name: 'x',
+        gradeLevel: 1,
+        avatarConfigJson: '{}',
+      );
+      expect((await db.getPlayerById(p.id)).roundsPlayed, 0);
+      expect(await db.incrementRoundsPlayed(p.id), 1);
+      expect(await db.incrementRoundsPlayed(p.id), 2);
+      expect((await db.getPlayerById(p.id)).roundsPlayed, 2);
+    });
+
+    test('an age-gated beat fires once its building is old enough', () async {
+      final (db, pid, container) = await _setup();
+      addTearDown(container.dispose);
+      final city = await db.cityForPlayer(pid);
+      final actions = container.read(cityActionsProvider);
+
+      // Mayor's office at round 0, then a home so praise_first_home fires
+      // (a prereq of the age-gated milestone).
+      await _place(db, city.id, pid, 'mayors_office', 0);
+      await _place(db, city.id, pid, 'single_home', 1);
+      await actions.fireBeats();
+      expect(await db.firedBeatIds(pid), contains('praise_first_home'));
+
+      // Mayor's office is only 5 rounds old — the milestone (needs ≥10) holds.
+      for (var i = 0; i < 5; i++) {
+        await db.incrementRoundsPlayed(pid);
+      }
+      await actions.fireBeats();
+      expect(
+        await db.firedBeatIds(pid),
+        isNot(contains('praise_established_town')),
+      );
+
+      // Push it to 10 rounds old: now it fires.
+      for (var i = 0; i < 5; i++) {
+        await db.incrementRoundsPlayed(pid);
+      }
+      await actions.fireBeats();
+      expect(await db.firedBeatIds(pid), contains('praise_established_town'));
+    });
+
+    test(
+      'an un-acknowledged bubble rotates off screen after the window',
+      () async {
+        final (db, pid, container) = await _setup();
+        addTearDown(container.dispose);
+        final city = await db.cityForPlayer(pid);
+        final actions = container.read(cityActionsProvider);
+
+        await _place(db, city.id, pid, 'mayors_office', 0);
+        await actions.fireBeats();
+        await container.refresh(onScreenBeatsProvider.future);
+        expect(_onScreenIds(container), contains('demand_first_home'));
+
+        // Let the rotation window elapse without acking the bubble.
+        for (var i = 0; i < kBubbleRotationRounds; i++) {
+          await db.incrementRoundsPlayed(pid);
+        }
+        await actions.fireBeats();
+        await container.refresh(onScreenBeatsProvider.future);
+
+        // Hidden from the overlay, but still recorded as fired (state unchanged,
+        // so it won't re-fire and clutter the screen again).
+        expect(_onScreenIds(container), isNot(contains('demand_first_home')));
+        expect(await db.firedBeatIds(pid), contains('demand_first_home'));
+        final states = await db.storyBeatStatesForPlayer(pid);
+        expect(states['demand_first_home']!.state, 'onScreen');
+      },
+    );
+
     test('dismissBeat takes the bubble off screen', () async {
       final (db, pid, container) = await _setup();
       addTearDown(container.dispose);
