@@ -1,10 +1,12 @@
 import 'dart:async';
 
 import 'package:flame/game.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_city/data/database.dart';
 import 'package:math_city/domain/avatar/adventurer_config.dart';
+import 'package:math_city/domain/city/beat_registry.dart';
 import 'package:math_city/domain/city/building_registry.dart';
 import 'package:math_city/domain/city/building_type.dart';
 import 'package:math_city/domain/city/category.dart';
@@ -103,6 +105,18 @@ class _CityScreenState extends ConsumerState<CityScreen> {
     unawaited(
       Navigator.of(context).push(
         MaterialPageRoute<void>(builder: (_) => const SpinScreen()),
+      ),
+    );
+  }
+
+  void _openDebugSheet() {
+    unawaited(
+      showModalBottomSheet<void>(
+        context: context,
+        isScrollControlled: true,
+        showDragHandle: true,
+        builder: (_) =>
+            _CityDebugSheet(onReset: () => setState(() => _selected = null)),
       ),
     );
   }
@@ -237,10 +251,191 @@ class _CityScreenState extends ConsumerState<CityScreen> {
           onResearch: _confirmResearch,
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _openSpin,
-        icon: const Icon(Icons.casino_rounded),
-        label: const Text('Play math'),
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          if (kDebugMode) ...[
+            FloatingActionButton.small(
+              heroTag: 'cityDebugFab',
+              onPressed: _openDebugSheet,
+              backgroundColor: Colors.deepPurple,
+              foregroundColor: Colors.white,
+              child: const Icon(Icons.bug_report_rounded),
+            ),
+            const SizedBox(height: 12),
+          ],
+          FloatingActionButton.extended(
+            heroTag: 'citySpinFab',
+            onPressed: _openSpin,
+            icon: const Icon(Icons.casino_rounded),
+            label: const Text('Play math'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// kDebugMode-only control panel, shown in a bottom sheet from the city
+/// screen's debug FAB. Lets a developer exercise the city mechanics
+/// (placement, research, growth, beats) without grinding math for currency:
+/// grant 🧱/🔬, set the population directly, research the whole catalog,
+/// force-fire any beat, and reset the city to a brand-new-player baseline.
+/// Operates on the *real* active player so persistence is exercised too.
+class _CityDebugSheet extends ConsumerStatefulWidget {
+  const _CityDebugSheet({required this.onReset});
+
+  /// Called after a successful reset so the parent screen can clear its
+  /// pending building selection (which may now be un-researched).
+  final VoidCallback onReset;
+
+  @override
+  ConsumerState<_CityDebugSheet> createState() => _CityDebugSheetState();
+}
+
+class _CityDebugSheetState extends ConsumerState<_CityDebugSheet> {
+  // Local slider position; null until the user drags it, so we fall back to
+  // the city's persisted population for the initial value.
+  double? _pop;
+
+  void _snack(String message) {
+    ScaffoldMessenger.of(context)
+      ..clearSnackBars()
+      ..showSnackBar(
+        SnackBar(content: Text(message), duration: const Duration(seconds: 1)),
+      );
+  }
+
+  Future<void> _confirmReset() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Reset city?'),
+        content: const Text(
+          'Wipes all placements, researched buildings, beats, and population, '
+          'and zeroes 🧱 / 🔬 (balances + lifetime). Cannot be undone.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: const Text('Reset'),
+          ),
+        ],
+      ),
+    );
+    if (!(confirmed ?? false)) return;
+    await ref.read(cityActionsProvider).debugResetCity();
+    widget.onReset();
+    if (mounted) {
+      setState(() => _pop = 0);
+      Navigator.of(context).pop();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    assert(kDebugMode, 'Debug sheet reached in a non-debug build');
+    final theme = Theme.of(context);
+    final actions = ref.read(cityActionsProvider);
+    final player = ref.watch(activePlayerProvider).asData?.value;
+    final city = ref.watch(activeCityProvider).asData?.value;
+    final pop = (_pop ?? (city?.population ?? 0).toDouble()).clamp(0.0, 500.0);
+
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Icon(Icons.bug_report_rounded),
+                const SizedBox(width: 8),
+                Text('City debug', style: theme.textTheme.titleMedium),
+                const Spacer(),
+                if (player != null)
+                  Text(
+                    '🧱 ${player.brickBalance}   🔬 ${player.researchBalance}',
+                    style: theme.textTheme.titleMedium,
+                  ),
+              ],
+            ),
+            const Divider(height: 24),
+            Text('Currency', style: theme.textTheme.labelLarge),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              children: [
+                FilledButton.tonal(
+                  onPressed: () => unawaited(actions.debugGrantBricks(500)),
+                  child: const Text('+500 🧱'),
+                ),
+                FilledButton.tonal(
+                  onPressed: () => unawaited(actions.debugGrantResearch(50)),
+                  child: const Text('+50 🔬'),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Population: ${pop.round()}',
+              style: theme.textTheme.labelLarge,
+            ),
+            Slider(
+              value: pop,
+              max: 500,
+              divisions: 100,
+              label: pop.round().toString(),
+              onChanged: (v) => setState(() => _pop = v),
+              onChangeEnd: (v) =>
+                  unawaited(actions.debugSetPopulation(v.round())),
+            ),
+            const SizedBox(height: 8),
+            Text('Buildings', style: theme.textTheme.labelLarge),
+            const SizedBox(height: 8),
+            FilledButton.tonal(
+              onPressed: () => unawaited(actions.debugResearchAll()),
+              child: const Text('Research all buildings'),
+            ),
+            const SizedBox(height: 16),
+            Text('Force-fire beat', style: theme.textTheme.labelLarge),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                for (final beat in beatRegistry)
+                  ActionChip(
+                    avatar: Text(beat.emoji),
+                    label: Text(beat.shortLabel),
+                    onPressed: () {
+                      unawaited(actions.debugFireBeat(beat.id));
+                      _snack('Fired “${beat.shortLabel}”');
+                    },
+                  ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.icon(
+                style: FilledButton.styleFrom(
+                  backgroundColor: theme.colorScheme.error,
+                  foregroundColor: theme.colorScheme.onError,
+                ),
+                onPressed: () => unawaited(_confirmReset()),
+                icon: const Icon(Icons.restart_alt_rounded),
+                label: const Text('Reset city (zero everything)'),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

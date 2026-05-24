@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_city/data/database.dart';
 import 'package:math_city/domain/city/beat_engine.dart';
@@ -236,5 +237,100 @@ class CityActions {
       gridY: row,
     );
     _ref.invalidate(placementsProvider);
+  }
+
+  // ---- Debug-only helpers (kDebugMode; driven by the city debug sheet) ----
+  // These let a developer exercise the city mechanics without grinding math
+  // questions for currency. Tree-shaken out of release with the UI that calls
+  // them; each also asserts it isn't reached in a non-debug build.
+
+  /// Grants [amount] 🧱. Lifetime bricks bump too (so brick-gated unlock
+  /// rules also advance, exactly as earning would).
+  Future<void> debugGrantBricks(int amount) async {
+    assert(kDebugMode, 'debug helper called in a non-debug build');
+    final playerId = _ref.read(activePlayerIdProvider);
+    if (playerId == null) return;
+    final db = _ref.read(appDatabaseProvider);
+    await db.incrementPlayerBricks(playerId, amount);
+    _ref
+      ..invalidate(activePlayerProvider)
+      ..invalidate(allPlayersProvider)
+      ..invalidate(cityCatalogProvider);
+  }
+
+  /// Grants [amount] 🔬 (lifetime research bumps too).
+  Future<void> debugGrantResearch(int amount) async {
+    assert(kDebugMode, 'debug helper called in a non-debug build');
+    final playerId = _ref.read(activePlayerIdProvider);
+    if (playerId == null) return;
+    await _ref
+        .read(appDatabaseProvider)
+        .incrementPlayerResearch(playerId, amount);
+    _ref
+      ..invalidate(activePlayerProvider)
+      ..invalidate(allPlayersProvider)
+      ..invalidate(cityCatalogProvider);
+  }
+
+  /// Sets the city's population directly (bypassing the growth model) so
+  /// population-gated beats and unlock rules can be exercised without
+  /// building up to the threshold. Re-evaluates beats afterward.
+  Future<void> debugSetPopulation(int value) async {
+    assert(kDebugMode, 'debug helper called in a non-debug build');
+    final playerId = _ref.read(activePlayerIdProvider);
+    if (playerId == null) return;
+    final db = _ref.read(appDatabaseProvider);
+    final city = await db.cityForPlayer(playerId);
+    await db.setCityPopulation(city.id, value);
+    _ref.invalidate(activeCityProvider);
+    await fireBeats();
+  }
+
+  /// Researches every building type in the registry for free, bypassing both
+  /// the 🔬 cost and the unlock DAG, so the whole catalog is placeable.
+  Future<void> debugResearchAll() async {
+    assert(kDebugMode, 'debug helper called in a non-debug build');
+    final playerId = _ref.read(activePlayerIdProvider);
+    if (playerId == null) return;
+    final db = _ref.read(appDatabaseProvider);
+    for (final b in buildingRegistry) {
+      await db.researchBuilding(
+        playerId: playerId,
+        buildingTypeId: b.id,
+        researchCost: 0,
+      );
+    }
+    _ref.invalidate(cityCatalogProvider);
+  }
+
+  /// Force-fires [beatId] (puts its bubble on screen) regardless of whether
+  /// its trigger currently passes.
+  Future<void> debugFireBeat(String beatId) async {
+    assert(kDebugMode, 'debug helper called in a non-debug build');
+    final playerId = _ref.read(activePlayerIdProvider);
+    if (playerId == null) return;
+    final db = _ref.read(appDatabaseProvider);
+    final player = await db.getPlayerById(playerId);
+    await db.recordBeatFired(playerId, beatId, player.lifetimeBricksEarned);
+    _ref
+      ..invalidate(onScreenBeatsProvider)
+      ..invalidate(cityCatalogProvider);
+  }
+
+  /// Wipes the city back to a brand-new-player baseline (placements,
+  /// research, beats, milestones, population, and both currencies) and
+  /// re-seeds the pre-researched set. See [AppDatabase.resetCityForPlayer].
+  Future<void> debugResetCity() async {
+    assert(kDebugMode, 'debug helper called in a non-debug build');
+    final playerId = _ref.read(activePlayerIdProvider);
+    if (playerId == null) return;
+    await _ref.read(appDatabaseProvider).resetCityForPlayer(playerId);
+    _ref
+      ..invalidate(placementsProvider)
+      ..invalidate(activeCityProvider)
+      ..invalidate(cityCatalogProvider)
+      ..invalidate(onScreenBeatsProvider)
+      ..invalidate(activePlayerProvider)
+      ..invalidate(allPlayersProvider);
   }
 }
