@@ -473,6 +473,46 @@ class AppDatabase extends _$AppDatabase {
         CitiesCompanion(population: Value(population)),
       );
 
+  /// Debug-only: wipes a player's city-builder state back to the
+  /// just-created baseline — clears placements, researched buildings (then
+  /// re-seeds the pre-researched set), beat states, and band-milestone
+  /// awards; sets population to 0; and zeroes both currency balances and
+  /// their lifetime counters. Driven by the kDebugMode-only city debug sheet.
+  Future<void> resetCityForPlayer(int playerId) => transaction(() async {
+    final city = await cityForPlayer(playerId);
+    await (delete(
+      buildingPlacements,
+    )..where((t) => t.cityId.equals(city.id))).go();
+    await (delete(
+      buildingTypesResearched,
+    )..where((t) => t.playerId.equals(playerId))).go();
+    await (delete(
+      storyBeatStates,
+    )..where((t) => t.playerId.equals(playerId))).go();
+    await (delete(
+      conceptBandMilestones,
+    )..where((t) => t.playerId.equals(playerId))).go();
+    await setCityPopulation(city.id, 0);
+    await (update(players)..where((t) => t.id.equals(playerId))).write(
+      const PlayersCompanion(
+        brickBalance: Value(0),
+        lifetimeBricksEarned: Value(0),
+        researchBalance: Value(0),
+        lifetimeResearchEarned: Value(0),
+      ),
+    );
+    final now = DateTime.now();
+    for (final b in preResearchedBuildings) {
+      await into(buildingTypesResearched).insert(
+        BuildingTypesResearchedCompanion.insert(
+          playerId: playerId,
+          buildingTypeId: b.id,
+          researchedAt: now,
+        ),
+      );
+    }
+  });
+
   /// IDs of the building types the player has unlocked (spent 🔬 on, or
   /// pre-researched). Presence => the type appears in the build menu.
   Future<Set<String>> researchedBuildingTypeIds(int playerId) async {
