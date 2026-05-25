@@ -274,8 +274,11 @@ class _CityScreenState extends ConsumerState<CityScreen> {
   /// 🔬 to unlock the type. On success the newly-researched building is
   /// auto-selected so the player can place it right away.
   Future<void> _confirmResearch(BuildingType b) async {
-    final research =
-        ref.read(activePlayerProvider).asData?.value.researchBalance;
+    final research = ref
+        .read(activePlayerProvider)
+        .asData
+        ?.value
+        .researchBalance;
     if (research == null || b.researchCost > research) {
       _toast('Not enough research for ${b.name}');
       return;
@@ -588,6 +591,33 @@ class _CityDebugSheetState extends ConsumerState<_CityDebugSheet> {
                   unawaited(actions.debugSetPopulation(v.round())),
             ),
             const SizedBox(height: 8),
+            Text(
+              'Round clock: ${player?.roundsPlayed ?? 0} '
+              '(building age = clock − placed-at; bubbles rotate off after '
+              '$kBubbleRotationRounds)',
+              style: theme.textTheme.labelLarge,
+            ),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              children: [
+                FilledButton.tonal(
+                  onPressed: () {
+                    unawaited(actions.debugAdvanceRounds(1));
+                    _snack('+1 round');
+                  },
+                  child: const Text('+1 round'),
+                ),
+                FilledButton.tonal(
+                  onPressed: () {
+                    unawaited(actions.debugAdvanceRounds(10));
+                    _snack('+10 rounds');
+                  },
+                  child: const Text('+10 rounds'),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
             Text('Buildings', style: theme.textTheme.labelLarge),
             const SizedBox(height: 8),
             FilledButton.tonal(

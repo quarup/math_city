@@ -215,6 +215,22 @@ void main() {
       expect(await db.firedBeatIds(pid), contains('praise_established_town'));
     });
 
+    test('debugAdvanceRounds advances the clock and re-fires beats', () async {
+      final (db, pid, container) = await _setup();
+      addTearDown(container.dispose);
+      final city = await db.cityForPlayer(pid);
+      final actions = container.read(cityActionsProvider);
+
+      await _place(db, city.id, pid, 'mayors_office', 0);
+      await _place(db, city.id, pid, 'single_home', 1);
+      await actions.fireBeats(); // fires praise_first_home (a milestone prereq)
+
+      // Jump the clock past the 10-round age gate without grinding math.
+      await actions.debugAdvanceRounds(10);
+      expect((await db.getPlayerById(pid)).roundsPlayed, 10);
+      expect(await db.firedBeatIds(pid), contains('praise_established_town'));
+    });
+
     test(
       'an un-acknowledged bubble rotates off screen after the window',
       () async {
