@@ -342,6 +342,23 @@ class CityActions {
     _ref.invalidate(cityCatalogProvider);
   }
 
+  /// Advances the round clock by [by] (normally one answered question adds 1)
+  /// without grinding math, then re-evaluates beats — so age-gated beats (e.g.
+  /// the aged-mayor milestone at 10 rounds) and bubble rotation (off after
+  /// [kBubbleRotationRounds]) can be exercised directly. Population is left to
+  /// its own slider so the two controls stay independent.
+  Future<void> debugAdvanceRounds(int by) async {
+    assert(kDebugMode, 'debug helper called in a non-debug build');
+    final playerId = _ref.read(activePlayerIdProvider);
+    if (playerId == null) return;
+    final db = _ref.read(appDatabaseProvider);
+    for (var i = 0; i < by; i++) {
+      await db.incrementRoundsPlayed(playerId);
+    }
+    _ref.invalidate(activePlayerProvider);
+    await fireBeats();
+  }
+
   /// Force-fires [beatId] (puts its bubble on screen) regardless of whether
   /// its trigger currently passes.
   Future<void> debugFireBeat(String beatId) async {
@@ -350,7 +367,12 @@ class CityActions {
     if (playerId == null) return;
     final db = _ref.read(appDatabaseProvider);
     final player = await db.getPlayerById(playerId);
-    await db.recordBeatFired(playerId, beatId, player.lifetimeBricksEarned);
+    await db.recordBeatFired(
+      playerId,
+      beatId,
+      player.lifetimeBricksEarned,
+      player.roundsPlayed,
+    );
     _ref
       ..invalidate(onScreenBeatsProvider)
       ..invalidate(cityCatalogProvider);
