@@ -40,6 +40,25 @@ Future<void> _place(
 Set<String> _onScreenIds(ProviderContainer c) =>
     c.read(onScreenBeatsProvider).asData!.value.map((b) => b.id).toSet();
 
+/// Beats now trickle out one per [kNewBeatSpacingRounds] rounds, so reaching a
+/// beat that isn't first in registry order takes several rounds of play. Steps
+/// the round clock + re-evaluates until [beatId] is on screen.
+Future<void> _drainUntil(
+  AppDatabase db,
+  int pid,
+  CityActions actions,
+  String beatId, {
+  int maxRounds = 200,
+}) async {
+  for (var i = 0; i < maxRounds; i++) {
+    await actions.fireBeats();
+    final states = await db.storyBeatStatesForPlayer(pid);
+    if (states[beatId]?.state == 'onScreen') return;
+    await db.incrementRoundsPlayed(pid);
+  }
+  fail('beat "$beatId" never fired within $maxRounds rounds');
+}
+
 void main() {
   setUp(() {
     driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
@@ -120,19 +139,45 @@ void main() {
       final (db, pid, container) = await _setup();
       addTearDown(container.dispose);
       final city = await db.cityForPlayer(pid);
+      final actions = container.read(cityActionsProvider);
       await _place(db, city.id, pid, 'mayors_office', 0);
-      await container.read(cityActionsProvider).fireBeats();
+      await actions.fireBeats();
       expect(await db.firedBeatIds(pid), contains('demand_first_home'));
 
-      // Now build a home: praise fires; the (already-fired) demand stops being
-      // eligible but keeps its recorded fire.
+      // Now build a home: the (already-fired) demand stops being eligible but
+      // keeps its recorded fire; the praise trickles out once the new-beat
+      // spacing window elapses.
       await _place(db, city.id, pid, 'single_home', 1);
-      await container.read(cityActionsProvider).fireBeats();
+      await _drainUntil(db, pid, actions, 'praise_first_home');
 
       await container.refresh(onScreenBeatsProvider.future);
-      final onScreen = _onScreenIds(container);
-      expect(onScreen, contains('praise_first_home'));
+      expect(_onScreenIds(container), contains('praise_first_home'));
       expect(await db.firedBeatIds(pid), contains('praise_first_home'));
+    });
+
+    test('newly-eligible beats trickle out a few rounds apart', () async {
+      final (db, pid, container) = await _setup();
+      addTearDown(container.dispose);
+      final city = await db.cityForPlayer(pid);
+      final actions = container.read(cityActionsProvider);
+
+      // A single home makes several beats eligible at once (praise + service
+      // demands). Only one should fire immediately — not the whole burst.
+      await _place(db, city.id, pid, 'single_home', 0);
+      await actions.fireBeats();
+      expect((await db.firedBeatIds(pid)).length, 1);
+
+      // No second beat appears until the spacing window elapses.
+      for (var i = 0; i < kNewBeatSpacingRounds - 1; i++) {
+        await db.incrementRoundsPlayed(pid);
+        await actions.fireBeats();
+      }
+      expect((await db.firedBeatIds(pid)).length, 1);
+
+      // One more round crosses the window: a second beat fires.
+      await db.incrementRoundsPlayed(pid);
+      await actions.fireBeats();
+      expect((await db.firedBeatIds(pid)).length, 2);
     });
 
     test(
@@ -144,20 +189,23 @@ void main() {
         await _place(db, city.id, pid, 'single_home', 0);
 
         final actions = container.read(cityActionsProvider);
-        await actions.fireBeats();
-        expect(await db.firedBeatIds(pid), contains('demand_more_parks'));
+        // Parks is far down the registry; let beats trickle until it fires.
+        await _drainUntil(db, pid, actions, 'demand_more_parks');
+        var states = await db.storyBeatStatesForPlayer(pid);
+        expect(states['demand_more_parks']!.fireCount, 1);
 
         // Dismiss it, then re-evaluate with no new bricks earned: spacing (150)
         // not met, so it must NOT re-fire.
         await db.setBeatState(pid, 'demand_more_parks', 'dismissed');
         await actions.fireBeats();
-        var states = await db.storyBeatStatesForPlayer(pid);
+        states = await db.storyBeatStatesForPlayer(pid);
         expect(states['demand_more_parks']!.state, 'dismissed');
         expect(states['demand_more_parks']!.fireCount, 1);
 
-        // Earn 200 bricks (past the 150 spacing) and re-evaluate: re-fires.
+        // Earn 200 bricks (past the 150 spacing) and re-evaluate: re-fires
+        // (other eligible beats are already on screen, so parks is next up).
         await db.incrementPlayerBricks(pid, 200);
-        await actions.fireBeats();
+        await _drainUntil(db, pid, actions, 'demand_more_parks');
         states = await db.storyBeatStatesForPlayer(pid);
         expect(states['demand_more_parks']!.state, 'onScreen');
         expect(states['demand_more_parks']!.fireCount, 2);
@@ -190,32 +238,29 @@ void main() {
       final city = await db.cityForPlayer(pid);
       final actions = container.read(cityActionsProvider);
 
-      // Mayor's office at round 0, then a home so praise_first_home fires
-      // (a prereq of the age-gated milestone).
+      // Mayor's office at round 0, then a home (praise_first_home is a prereq
+      // of the age-gated milestone).
       await _place(db, city.id, pid, 'mayors_office', 0);
       await _place(db, city.id, pid, 'single_home', 1);
-      await actions.fireBeats();
-      expect(await db.firedBeatIds(pid), contains('praise_first_home'));
 
-      // Mayor's office is only 5 rounds old — the milestone (needs ≥10) holds.
-      for (var i = 0; i < 5; i++) {
+      // Below the 10-round age gate the milestone can't fire, even as other
+      // beats trickle out round by round.
+      for (var r = 0; r < 9; r++) {
+        await actions.fireBeats();
         await db.incrementRoundsPlayed(pid);
       }
-      await actions.fireBeats();
+      expect(await db.firedBeatIds(pid), contains('praise_first_home'));
       expect(
         await db.firedBeatIds(pid),
         isNot(contains('praise_established_town')),
       );
 
-      // Push it to 10 rounds old: now it fires.
-      for (var i = 0; i < 5; i++) {
-        await db.incrementRoundsPlayed(pid);
-      }
-      await actions.fireBeats();
+      // Past 10 rounds old: it becomes eligible and trickles out.
+      await _drainUntil(db, pid, actions, 'praise_established_town');
       expect(await db.firedBeatIds(pid), contains('praise_established_town'));
     });
 
-    test('debugAdvanceRounds advances the clock and re-fires beats', () async {
+    test('debugAdvanceRounds advances the clock past an age gate', () async {
       final (db, pid, container) = await _setup();
       addTearDown(container.dispose);
       final city = await db.cityForPlayer(pid);
@@ -225,9 +270,11 @@ void main() {
       await _place(db, city.id, pid, 'single_home', 1);
       await actions.fireBeats(); // fires praise_first_home (a milestone prereq)
 
-      // Jump the clock past the 10-round age gate without grinding math.
+      // Jump the clock past the 10-round age gate without grinding math; the
+      // milestone is now eligible and trickles out with the rest.
       await actions.debugAdvanceRounds(10);
       expect((await db.getPlayerById(pid)).roundsPlayed, 10);
+      await _drainUntil(db, pid, actions, 'praise_established_town');
       expect(await db.firedBeatIds(pid), contains('praise_established_town'));
     });
 
@@ -251,8 +298,8 @@ void main() {
         await actions.fireBeats();
         await container.refresh(onScreenBeatsProvider.future);
 
-        // Hidden from the overlay, but still recorded as fired (state unchanged,
-        // so it won't re-fire and clutter the screen again).
+        // Hidden from the overlay, but still recorded as fired (state
+        // unchanged, so it won't re-fire and clutter the screen again).
         expect(_onScreenIds(container), isNot(contains('demand_first_home')));
         expect(await db.firedBeatIds(pid), contains('demand_first_home'));
         final states = await db.storyBeatStatesForPlayer(pid);
@@ -260,7 +307,7 @@ void main() {
       },
     );
 
-    test('dismissBeat takes the bubble off screen', () async {
+    test('reading a beat keeps it on screen, then retires it', () async {
       final (db, pid, container) = await _setup();
       addTearDown(container.dispose);
       final city = await db.cityForPlayer(pid);
@@ -271,13 +318,23 @@ void main() {
       await container.refresh(onScreenBeatsProvider.future);
       expect(_onScreenIds(container), contains('demand_first_home'));
 
-      await actions.dismissBeat('demand_first_home');
+      // Reading it does NOT take it off screen — it lingers, still 'onScreen'.
+      await actions.markBeatRead('demand_first_home');
+      await container.refresh(onScreenBeatsProvider.future);
+      expect(_onScreenIds(container), contains('demand_first_home'));
+      var states = await db.storyBeatStatesForPlayer(pid);
+      expect(states['demand_first_home']!.state, 'onScreen');
+
+      // After a few rounds of math play it retires off screen and becomes
+      // re-fireable ('acked'), still recorded as ever-fired.
+      for (var i = 0; i < kReadHideRounds; i++) {
+        await db.incrementRoundsPlayed(pid);
+      }
+      await actions.fireBeats();
       await container.refresh(onScreenBeatsProvider.future);
       expect(_onScreenIds(container), isNot(contains('demand_first_home')));
-
-      final states = await db.storyBeatStatesForPlayer(pid);
+      states = await db.storyBeatStatesForPlayer(pid);
       expect(states['demand_first_home']!.state, 'acked');
-      // Still recorded as ever-fired.
       expect(await db.firedBeatIds(pid), contains('demand_first_home'));
     });
   });
