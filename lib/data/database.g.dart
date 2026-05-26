@@ -4207,6 +4207,17 @@ class $StoryBeatStatesTable extends StoryBeatStates
         type: DriftSqlType.int,
         requiredDuringInsert: false,
       );
+  static const VerificationMeta _ackedAtRoundMeta = const VerificationMeta(
+    'ackedAtRound',
+  );
+  @override
+  late final GeneratedColumn<int> ackedAtRound = GeneratedColumn<int>(
+    'acked_at_round',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     playerId,
@@ -4215,6 +4226,7 @@ class $StoryBeatStatesTable extends StoryBeatStates
     lastFiredAtRound,
     fireCount,
     lifetimeBricksAtLastFire,
+    ackedAtRound,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -4276,6 +4288,15 @@ class $StoryBeatStatesTable extends StoryBeatStates
         ),
       );
     }
+    if (data.containsKey('acked_at_round')) {
+      context.handle(
+        _ackedAtRoundMeta,
+        ackedAtRound.isAcceptableOrUnknown(
+          data['acked_at_round']!,
+          _ackedAtRoundMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -4309,6 +4330,10 @@ class $StoryBeatStatesTable extends StoryBeatStates
         DriftSqlType.int,
         data['${effectivePrefix}lifetime_bricks_at_last_fire'],
       ),
+      ackedAtRound: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}acked_at_round'],
+      ),
     );
   }
 
@@ -4325,6 +4350,12 @@ class StoryBeatState extends DataClass implements Insertable<StoryBeatState> {
   final int? lastFiredAtRound;
   final int fireCount;
   final int? lifetimeBricksAtLastFire;
+
+  /// Round clock at which the player read this bubble (tapped through to its
+  /// full text), or null if still unread. A read bubble stays on screen for a
+  /// few more rounds of math play before retiring — see the city provider's
+  /// read-hide window. Reset to null whenever the beat (re-)fires.
+  final int? ackedAtRound;
   const StoryBeatState({
     required this.playerId,
     required this.beatId,
@@ -4332,6 +4363,7 @@ class StoryBeatState extends DataClass implements Insertable<StoryBeatState> {
     this.lastFiredAtRound,
     required this.fireCount,
     this.lifetimeBricksAtLastFire,
+    this.ackedAtRound,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -4348,6 +4380,9 @@ class StoryBeatState extends DataClass implements Insertable<StoryBeatState> {
         lifetimeBricksAtLastFire,
       );
     }
+    if (!nullToAbsent || ackedAtRound != null) {
+      map['acked_at_round'] = Variable<int>(ackedAtRound);
+    }
     return map;
   }
 
@@ -4363,6 +4398,9 @@ class StoryBeatState extends DataClass implements Insertable<StoryBeatState> {
       lifetimeBricksAtLastFire: lifetimeBricksAtLastFire == null && nullToAbsent
           ? const Value.absent()
           : Value(lifetimeBricksAtLastFire),
+      ackedAtRound: ackedAtRound == null && nullToAbsent
+          ? const Value.absent()
+          : Value(ackedAtRound),
     );
   }
 
@@ -4380,6 +4418,7 @@ class StoryBeatState extends DataClass implements Insertable<StoryBeatState> {
       lifetimeBricksAtLastFire: serializer.fromJson<int?>(
         json['lifetimeBricksAtLastFire'],
       ),
+      ackedAtRound: serializer.fromJson<int?>(json['ackedAtRound']),
     );
   }
   @override
@@ -4394,6 +4433,7 @@ class StoryBeatState extends DataClass implements Insertable<StoryBeatState> {
       'lifetimeBricksAtLastFire': serializer.toJson<int?>(
         lifetimeBricksAtLastFire,
       ),
+      'ackedAtRound': serializer.toJson<int?>(ackedAtRound),
     };
   }
 
@@ -4404,6 +4444,7 @@ class StoryBeatState extends DataClass implements Insertable<StoryBeatState> {
     Value<int?> lastFiredAtRound = const Value.absent(),
     int? fireCount,
     Value<int?> lifetimeBricksAtLastFire = const Value.absent(),
+    Value<int?> ackedAtRound = const Value.absent(),
   }) => StoryBeatState(
     playerId: playerId ?? this.playerId,
     beatId: beatId ?? this.beatId,
@@ -4415,6 +4456,7 @@ class StoryBeatState extends DataClass implements Insertable<StoryBeatState> {
     lifetimeBricksAtLastFire: lifetimeBricksAtLastFire.present
         ? lifetimeBricksAtLastFire.value
         : this.lifetimeBricksAtLastFire,
+    ackedAtRound: ackedAtRound.present ? ackedAtRound.value : this.ackedAtRound,
   );
   StoryBeatState copyWithCompanion(StoryBeatStatesCompanion data) {
     return StoryBeatState(
@@ -4428,6 +4470,9 @@ class StoryBeatState extends DataClass implements Insertable<StoryBeatState> {
       lifetimeBricksAtLastFire: data.lifetimeBricksAtLastFire.present
           ? data.lifetimeBricksAtLastFire.value
           : this.lifetimeBricksAtLastFire,
+      ackedAtRound: data.ackedAtRound.present
+          ? data.ackedAtRound.value
+          : this.ackedAtRound,
     );
   }
 
@@ -4439,7 +4484,8 @@ class StoryBeatState extends DataClass implements Insertable<StoryBeatState> {
           ..write('state: $state, ')
           ..write('lastFiredAtRound: $lastFiredAtRound, ')
           ..write('fireCount: $fireCount, ')
-          ..write('lifetimeBricksAtLastFire: $lifetimeBricksAtLastFire')
+          ..write('lifetimeBricksAtLastFire: $lifetimeBricksAtLastFire, ')
+          ..write('ackedAtRound: $ackedAtRound')
           ..write(')'))
         .toString();
   }
@@ -4452,6 +4498,7 @@ class StoryBeatState extends DataClass implements Insertable<StoryBeatState> {
     lastFiredAtRound,
     fireCount,
     lifetimeBricksAtLastFire,
+    ackedAtRound,
   );
   @override
   bool operator ==(Object other) =>
@@ -4462,7 +4509,8 @@ class StoryBeatState extends DataClass implements Insertable<StoryBeatState> {
           other.state == this.state &&
           other.lastFiredAtRound == this.lastFiredAtRound &&
           other.fireCount == this.fireCount &&
-          other.lifetimeBricksAtLastFire == this.lifetimeBricksAtLastFire);
+          other.lifetimeBricksAtLastFire == this.lifetimeBricksAtLastFire &&
+          other.ackedAtRound == this.ackedAtRound);
 }
 
 class StoryBeatStatesCompanion extends UpdateCompanion<StoryBeatState> {
@@ -4472,6 +4520,7 @@ class StoryBeatStatesCompanion extends UpdateCompanion<StoryBeatState> {
   final Value<int?> lastFiredAtRound;
   final Value<int> fireCount;
   final Value<int?> lifetimeBricksAtLastFire;
+  final Value<int?> ackedAtRound;
   final Value<int> rowid;
   const StoryBeatStatesCompanion({
     this.playerId = const Value.absent(),
@@ -4480,6 +4529,7 @@ class StoryBeatStatesCompanion extends UpdateCompanion<StoryBeatState> {
     this.lastFiredAtRound = const Value.absent(),
     this.fireCount = const Value.absent(),
     this.lifetimeBricksAtLastFire = const Value.absent(),
+    this.ackedAtRound = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   StoryBeatStatesCompanion.insert({
@@ -4489,6 +4539,7 @@ class StoryBeatStatesCompanion extends UpdateCompanion<StoryBeatState> {
     this.lastFiredAtRound = const Value.absent(),
     this.fireCount = const Value.absent(),
     this.lifetimeBricksAtLastFire = const Value.absent(),
+    this.ackedAtRound = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : playerId = Value(playerId),
        beatId = Value(beatId),
@@ -4500,6 +4551,7 @@ class StoryBeatStatesCompanion extends UpdateCompanion<StoryBeatState> {
     Expression<int>? lastFiredAtRound,
     Expression<int>? fireCount,
     Expression<int>? lifetimeBricksAtLastFire,
+    Expression<int>? ackedAtRound,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -4510,6 +4562,7 @@ class StoryBeatStatesCompanion extends UpdateCompanion<StoryBeatState> {
       if (fireCount != null) 'fire_count': fireCount,
       if (lifetimeBricksAtLastFire != null)
         'lifetime_bricks_at_last_fire': lifetimeBricksAtLastFire,
+      if (ackedAtRound != null) 'acked_at_round': ackedAtRound,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -4521,6 +4574,7 @@ class StoryBeatStatesCompanion extends UpdateCompanion<StoryBeatState> {
     Value<int?>? lastFiredAtRound,
     Value<int>? fireCount,
     Value<int?>? lifetimeBricksAtLastFire,
+    Value<int?>? ackedAtRound,
     Value<int>? rowid,
   }) {
     return StoryBeatStatesCompanion(
@@ -4531,6 +4585,7 @@ class StoryBeatStatesCompanion extends UpdateCompanion<StoryBeatState> {
       fireCount: fireCount ?? this.fireCount,
       lifetimeBricksAtLastFire:
           lifetimeBricksAtLastFire ?? this.lifetimeBricksAtLastFire,
+      ackedAtRound: ackedAtRound ?? this.ackedAtRound,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -4558,6 +4613,9 @@ class StoryBeatStatesCompanion extends UpdateCompanion<StoryBeatState> {
         lifetimeBricksAtLastFire.value,
       );
     }
+    if (ackedAtRound.present) {
+      map['acked_at_round'] = Variable<int>(ackedAtRound.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -4573,6 +4631,7 @@ class StoryBeatStatesCompanion extends UpdateCompanion<StoryBeatState> {
           ..write('lastFiredAtRound: $lastFiredAtRound, ')
           ..write('fireCount: $fireCount, ')
           ..write('lifetimeBricksAtLastFire: $lifetimeBricksAtLastFire, ')
+          ..write('ackedAtRound: $ackedAtRound, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -8276,6 +8335,7 @@ typedef $$StoryBeatStatesTableCreateCompanionBuilder =
       Value<int?> lastFiredAtRound,
       Value<int> fireCount,
       Value<int?> lifetimeBricksAtLastFire,
+      Value<int?> ackedAtRound,
       Value<int> rowid,
     });
 typedef $$StoryBeatStatesTableUpdateCompanionBuilder =
@@ -8286,6 +8346,7 @@ typedef $$StoryBeatStatesTableUpdateCompanionBuilder =
       Value<int?> lastFiredAtRound,
       Value<int> fireCount,
       Value<int?> lifetimeBricksAtLastFire,
+      Value<int?> ackedAtRound,
       Value<int> rowid,
     });
 
@@ -8352,6 +8413,11 @@ class $$StoryBeatStatesTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<int> get ackedAtRound => $composableBuilder(
+    column: $table.ackedAtRound,
+    builder: (column) => ColumnFilters(column),
+  );
+
   $$PlayersTableFilterComposer get playerId {
     final $$PlayersTableFilterComposer composer = $composerBuilder(
       composer: this,
@@ -8410,6 +8476,11 @@ class $$StoryBeatStatesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get ackedAtRound => $composableBuilder(
+    column: $table.ackedAtRound,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$PlayersTableOrderingComposer get playerId {
     final $$PlayersTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -8459,6 +8530,11 @@ class $$StoryBeatStatesTableAnnotationComposer
 
   GeneratedColumn<int> get lifetimeBricksAtLastFire => $composableBuilder(
     column: $table.lifetimeBricksAtLastFire,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get ackedAtRound => $composableBuilder(
+    column: $table.ackedAtRound,
     builder: (column) => column,
   );
 
@@ -8522,6 +8598,7 @@ class $$StoryBeatStatesTableTableManager
                 Value<int?> lastFiredAtRound = const Value.absent(),
                 Value<int> fireCount = const Value.absent(),
                 Value<int?> lifetimeBricksAtLastFire = const Value.absent(),
+                Value<int?> ackedAtRound = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => StoryBeatStatesCompanion(
                 playerId: playerId,
@@ -8530,6 +8607,7 @@ class $$StoryBeatStatesTableTableManager
                 lastFiredAtRound: lastFiredAtRound,
                 fireCount: fireCount,
                 lifetimeBricksAtLastFire: lifetimeBricksAtLastFire,
+                ackedAtRound: ackedAtRound,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -8540,6 +8618,7 @@ class $$StoryBeatStatesTableTableManager
                 Value<int?> lastFiredAtRound = const Value.absent(),
                 Value<int> fireCount = const Value.absent(),
                 Value<int?> lifetimeBricksAtLastFire = const Value.absent(),
+                Value<int?> ackedAtRound = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => StoryBeatStatesCompanion.insert(
                 playerId: playerId,
@@ -8548,6 +8627,7 @@ class $$StoryBeatStatesTableTableManager
                 lastFiredAtRound: lastFiredAtRound,
                 fireCount: fireCount,
                 lifetimeBricksAtLastFire: lifetimeBricksAtLastFire,
+                ackedAtRound: ackedAtRound,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

@@ -200,6 +200,12 @@ class StoryBeatStates extends Table {
   IntColumn get fireCount => integer().withDefault(const Constant(0))();
   IntColumn get lifetimeBricksAtLastFire => integer().nullable()();
 
+  /// Round clock at which the player read this bubble (tapped through to its
+  /// full text), or null if still unread. A read bubble stays on screen for a
+  /// few more rounds of math play before retiring — see the city provider's
+  /// read-hide window. Reset to null whenever the beat (re-)fires.
+  IntColumn get ackedAtRound => integer().nullable()();
+
   @override
   Set<Column<Object>> get primaryKey => {playerId, beatId};
 }
@@ -226,7 +232,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 8;
+  int get schemaVersion => 9;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -249,6 +255,9 @@ class AppDatabase extends _$AppDatabase {
       //   CityMap) live in code under lib/domain/city/ — not Drift rows.
       // v8: added Players.roundsPlayed — the persistent round clock that
       //   drives building-age beat triggers + round-based bubble rotation.
+      // v9: added StoryBeatStates.ackedAtRound — stamps when the player reads
+      //   a bubble so it lingers a few rounds before retiring instead of
+      //   vanishing on tap.
       // Wipe is acceptable while we have no real users; proper additive
       // migrations land in Phase 11. See plan.md.
       await customStatement('DROP TABLE IF EXISTS story_beat_states');
@@ -615,6 +624,8 @@ class AppDatabase extends _$AppDatabase {
         fireCount: Value((existing?.fireCount ?? 0) + 1),
         lifetimeBricksAtLastFire: Value(lifetimeBricksAtFire),
         lastFiredAtRound: Value(atRound),
+        // A fresh fire is unread, even if a prior fire had been read.
+        ackedAtRound: const Value(null),
       ),
     );
   }
@@ -626,6 +637,15 @@ class AppDatabase extends _$AppDatabase {
             (t) => t.playerId.equals(playerId) & t.beatId.equals(beatId),
           ))
           .write(StoryBeatStatesCompanion(state: Value(state)));
+
+  /// Stamps the round at which the player read [beatId]'s bubble, without
+  /// taking it off screen. The bubble lingers for the city provider's
+  /// read-hide window before it retires. No-op if the beat has never fired.
+  Future<void> markBeatRead(int playerId, String beatId, int atRound) =>
+      (update(storyBeatStates)..where(
+            (t) => t.playerId.equals(playerId) & t.beatId.equals(beatId),
+          ))
+          .write(StoryBeatStatesCompanion(ackedAtRound: Value(atRound)));
 
   /// Places one building: inserts the placement row and spends [brickCost]
   /// from the player's balance (lifetime stays monotone via
