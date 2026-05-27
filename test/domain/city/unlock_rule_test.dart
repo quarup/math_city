@@ -6,7 +6,7 @@ void main() {
     lifetimeBricksEarned: 0,
     population: 0,
     placedBuildingTypeIds: <String>{},
-    firedBeatIds: <String>{},
+    readBeatIds: <String>{},
   );
 
   group('UnlockRule.open', () {
@@ -29,7 +29,7 @@ void main() {
             lifetimeBricksEarned: 100,
             population: 0,
             placedBuildingTypeIds: <String>{},
-            firedBeatIds: <String>{},
+            readBeatIds: <String>{},
           ),
         ),
         isTrue,
@@ -53,7 +53,7 @@ void main() {
             lifetimeBricksEarned: 0,
             population: 0,
             placedBuildingTypeIds: <String>{'mayors_office'},
-            firedBeatIds: <String>{},
+            readBeatIds: <String>{},
           ),
         ),
         isFalse,
@@ -71,7 +71,7 @@ void main() {
               'single_home',
               'park',
             },
-            firedBeatIds: <String>{},
+            readBeatIds: <String>{},
           ),
         ),
         isTrue,
@@ -89,7 +89,7 @@ void main() {
             lifetimeBricksEarned: 0,
             population: 49,
             placedBuildingTypeIds: <String>{},
-            firedBeatIds: <String>{},
+            readBeatIds: <String>{},
           ),
         ),
         isFalse,
@@ -103,7 +103,7 @@ void main() {
             lifetimeBricksEarned: 0,
             population: 50,
             placedBuildingTypeIds: <String>{},
-            firedBeatIds: <String>{},
+            readBeatIds: <String>{},
           ),
         ),
         isTrue,
@@ -111,23 +111,23 @@ void main() {
     });
   });
 
-  group('requiredBeatsFired', () {
+  group('requiredBeatsRead', () {
     const rule = UnlockRule(
-      requiredBeatsFired: <String>{'demand_first_home'},
+      requiredBeatsRead: <String>{'demand_first_home'},
     );
 
-    test('blocks when beat has not fired', () {
+    test('blocks when beat has not been read', () {
       expect(rule.evaluate(emptyCtx), isFalse);
     });
 
-    test('passes when beat has fired', () {
+    test('passes when beat has been read', () {
       expect(
         rule.evaluate(
           const UnlockContext(
             lifetimeBricksEarned: 0,
             population: 0,
             placedBuildingTypeIds: <String>{},
-            firedBeatIds: <String>{'demand_first_home'},
+            readBeatIds: <String>{'demand_first_home'},
           ),
         ),
         isTrue,
@@ -150,7 +150,7 @@ void main() {
             lifetimeBricksEarned: 200,
             population: 10,
             placedBuildingTypeIds: <String>{'mayors_office'},
-            firedBeatIds: <String>{},
+            readBeatIds: <String>{},
           ),
         ),
         isFalse,
@@ -162,7 +162,7 @@ void main() {
             lifetimeBricksEarned: 200,
             population: 100,
             placedBuildingTypeIds: <String>{},
-            firedBeatIds: <String>{},
+            readBeatIds: <String>{},
           ),
         ),
         isFalse,
@@ -176,7 +176,7 @@ void main() {
             lifetimeBricksEarned: 200,
             population: 100,
             placedBuildingTypeIds: <String>{'mayors_office'},
-            firedBeatIds: <String>{},
+            readBeatIds: <String>{},
           ),
         ),
         isTrue,

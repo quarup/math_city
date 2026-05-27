@@ -31,6 +31,7 @@ const buildingRegistry = <BuildingType>[
     researchCost: 1,
     unlockRule: UnlockRule(
       requiredBuildingsPlaced: <String>{'mayors_office'},
+      requiredBeatsRead: <String>{'demand_first_home'},
     ),
     populationContribution: 4,
   ),
@@ -43,6 +44,7 @@ const buildingRegistry = <BuildingType>[
     researchCost: 1,
     unlockRule: UnlockRule(
       requiredBuildingsPlaced: <String>{'mayors_office'},
+      requiredBeatsRead: <String>{'demand_apartment'},
     ),
     populationContribution: 16,
   ),
@@ -55,6 +57,7 @@ const buildingRegistry = <BuildingType>[
     researchCost: 1,
     unlockRule: UnlockRule(
       requiredBuildingsPlaced: <String>{'mayors_office'},
+      requiredBeatsRead: <String>{'demand_school'},
     ),
     serviceProvision: <String, int>{'school': 60},
   ),
@@ -68,6 +71,7 @@ const buildingRegistry = <BuildingType>[
     researchCost: 1,
     unlockRule: UnlockRule(
       requiredBuildingsPlaced: <String>{'mayors_office'},
+      requiredBeatsRead: <String>{'demand_clinic'},
     ),
     serviceProvision: <String, int>{'clinic': 50},
     varietyContribution: true,
@@ -81,6 +85,7 @@ const buildingRegistry = <BuildingType>[
     researchCost: 1,
     unlockRule: UnlockRule(
       requiredBuildingsPlaced: <String>{'mayors_office'},
+      requiredBeatsRead: <String>{'demand_power'},
     ),
     serviceProvision: <String, int>{'power': 200},
     varietyContribution: true,
@@ -94,6 +99,7 @@ const buildingRegistry = <BuildingType>[
     researchCost: 1,
     unlockRule: UnlockRule(
       requiredBuildingsPlaced: <String>{'mayors_office'},
+      requiredBeatsRead: <String>{'demand_waste'},
     ),
     serviceProvision: <String, int>{'waste': 150},
     varietyContribution: true,
@@ -108,6 +114,7 @@ const buildingRegistry = <BuildingType>[
     researchCost: 1,
     unlockRule: UnlockRule(
       requiredBuildingsPlaced: <String>{'mayors_office'},
+      requiredBeatsRead: <String>{'demand_grocery'},
     ),
     varietyContribution: true,
   ),
@@ -120,6 +127,7 @@ const buildingRegistry = <BuildingType>[
     researchCost: 1,
     unlockRule: UnlockRule(
       requiredBuildingsPlaced: <String>{'mayors_office'},
+      requiredBeatsRead: <String>{'demand_coffee_shop'},
     ),
     varietyContribution: true,
   ),
@@ -133,6 +141,7 @@ const buildingRegistry = <BuildingType>[
     researchCost: 1,
     unlockRule: UnlockRule(
       requiredBuildingsPlaced: <String>{'mayors_office'},
+      requiredBeatsRead: <String>{'demand_more_parks'},
     ),
     varietyContribution: true,
   ),
@@ -156,7 +165,7 @@ Iterable<BuildingType> get preResearchedBuildings => buildingRegistry.where(
           lifetimeBricksEarned: 0,
           population: 0,
           placedBuildingTypeIds: <String>{},
-          firedBeatIds: <String>{},
+          readBeatIds: <String>{},
         ),
       ),
 );

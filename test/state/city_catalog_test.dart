@@ -38,36 +38,69 @@ void main() {
       expect(catalog.single.researched, isTrue);
     });
 
-    test('placing the mayor unlocks the rest as locked (researchable) cards',
-        () async {
-      final db = AppDatabase(NativeDatabase.memory());
-      final player = await db.createPlayer(
-        name: 'Sam',
-        gradeLevel: 2,
-        avatarConfigJson: '{}',
-      );
-      final city = await db.cityForPlayer(player.id);
-      await db.placeBuilding(
-        cityId: city.id,
-        playerId: player.id,
-        buildingTypeId: 'mayors_office',
-        gridX: 5,
-        gridY: 5,
-        brickCost: 0,
-      );
+    test(
+      'placing the mayor alone does not unlock the gated buildings',
+      () async {
+        final db = AppDatabase(NativeDatabase.memory());
+        final player = await db.createPlayer(
+          name: 'Sam',
+          gradeLevel: 2,
+          avatarConfigJson: '{}',
+        );
+        final city = await db.cityForPlayer(player.id);
+        await db.placeBuilding(
+          cityId: city.id,
+          playerId: player.id,
+          buildingTypeId: 'mayors_office',
+          gridX: 5,
+          gridY: 5,
+          brickCost: 0,
+        );
 
-      final container = await _container(db, player.id);
-      addTearDown(container.dispose);
+        final container = await _container(db, player.id);
+        addTearDown(container.dispose);
 
-      final catalog = await container.read(cityCatalogProvider.future);
-      final byId = {for (final e in catalog) e.building.id: e};
+        // No demand beat read yet, so nothing past the mayor shows.
+        final catalog = await container.read(cityCatalogProvider.future);
+        expect(catalog.map((e) => e.building.id), ['mayors_office']);
+      },
+    );
 
-      // Mayor stays researched; the gated buildings now appear, unresearched.
-      expect(byId['mayors_office']!.researched, isTrue);
-      expect(byId['single_home']!.researched, isFalse);
-      expect(byId['clinic']!.researched, isFalse);
-      expect(catalog.length, greaterThan(1));
-    });
+    test(
+      'reading a demand beat reveals just that building as a locked card',
+      () async {
+        final db = AppDatabase(NativeDatabase.memory());
+        final player = await db.createPlayer(
+          name: 'Sam',
+          gradeLevel: 2,
+          avatarConfigJson: '{}',
+        );
+        final city = await db.cityForPlayer(player.id);
+        await db.placeBuilding(
+          cityId: city.id,
+          playerId: player.id,
+          buildingTypeId: 'mayors_office',
+          gridX: 5,
+          gridY: 5,
+          brickCost: 0,
+        );
+        // The first-home demand fires, then the player opens (reads) it.
+        await db.recordBeatFired(player.id, 'demand_first_home', 0);
+        await db.markBeatRead(player.id, 'demand_first_home', 0);
+
+        final container = await _container(db, player.id);
+        addTearDown(container.dispose);
+
+        final catalog = await container.read(cityCatalogProvider.future);
+        final byId = {for (final e in catalog) e.building.id: e};
+
+        // Mayor stays researched; the single home now appears, unresearched.
+        expect(byId['mayors_office']!.researched, isTrue);
+        expect(byId['single_home']!.researched, isFalse);
+        // The clinic's demand hasn't been read, so its card stays hidden.
+        expect(byId.containsKey('clinic'), isFalse);
+      },
+    );
 
     test('a researched building flips to a placeable entry', () async {
       final db = AppDatabase(NativeDatabase.memory());
