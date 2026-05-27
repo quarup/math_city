@@ -95,20 +95,37 @@ const kReadHideRounds = 3;
 /// first-ever fire is always allowed. Phase-7 placeholder — tuned in 8/9.
 const kNewBeatSpacingRounds = 5;
 
+/// A beat currently on screen, plus whether it's in its post-completion ✓
+/// flash. Completed bubbles render differently (praise-green ring + ✓ badge)
+/// and the overlay auto-retires them after a short wall-clock delay.
+class OnScreenBeat {
+  const OnScreenBeat({required this.beat, required this.completed});
+
+  final StoryBeat beat;
+  final bool completed;
+}
+
 /// Story beats currently showing as bubbles in the active city, newest fires
 /// included. The UI caps how many it draws (~5) and handles tap-to-expand.
 /// A beat shows while it's in the `onScreen` state and either: hasn't been read
 /// and fired within the last [kBubbleRotationRounds] rounds, or was read within
 /// the last [kReadHideRounds] rounds. Older bubbles drop out of this list.
-final onScreenBeatsProvider = FutureProvider<List<StoryBeat>>((ref) async {
+/// `'completed'` beats are always surfaced — the overlay retires them on a
+/// short timer.
+final onScreenBeatsProvider = FutureProvider<List<OnScreenBeat>>((ref) async {
   final playerId = ref.watch(activePlayerIdProvider);
-  if (playerId == null) return const <StoryBeat>[];
+  if (playerId == null) return const <OnScreenBeat>[];
   final db = ref.read(appDatabaseProvider);
   final player = await db.getPlayerById(playerId);
   final states = await db.storyBeatStatesForPlayer(playerId);
-  final beats = <StoryBeat>[];
+  final beats = <OnScreenBeat>[];
   for (final entry in states.entries) {
     final st = entry.value;
+    if (st.state == 'completed') {
+      final beat = findBeatById(entry.key);
+      if (beat != null) beats.add(OnScreenBeat(beat: beat, completed: true));
+      continue;
+    }
     if (st.state != 'onScreen') continue;
     final ackedAt = st.ackedAtRound;
     if (ackedAt != null) {
@@ -123,7 +140,7 @@ final onScreenBeatsProvider = FutureProvider<List<StoryBeat>>((ref) async {
       }
     }
     final beat = findBeatById(entry.key);
-    if (beat != null) beats.add(beat);
+    if (beat != null) beats.add(OnScreenBeat(beat: beat, completed: false));
   }
   return beats;
 });
@@ -224,6 +241,25 @@ class CityActions {
             : player.lifetimeBricksEarned - lastBricks,
       );
     }
+
+    // Player-satisfied demands/warnings (the building they nudged toward now
+    // exists, etc.) flip to 'completed' so the overlay shows a brief ✓ flash
+    // before retiring. Praise beats don't fulfil — leave them on the normal
+    // read/rotation path. Reload state if anything changed.
+    var completed = false;
+    for (final entry in states.entries) {
+      final st = entry.value;
+      if (st.state != 'onScreen') continue;
+      final beat = findBeatById(entry.key);
+      if (beat == null) continue;
+      if (beat.kind != BeatKind.demand && beat.kind != BeatKind.warning) {
+        continue;
+      }
+      if (beat.triggerRule.evaluate(contextFor(beat))) continue;
+      await db.markBeatCompleted(playerId, beat.id);
+      completed = true;
+    }
+    if (completed) states = await db.storyBeatStatesForPlayer(playerId);
 
     // New beats trickle out a few rounds apart instead of bursting all at once
     // when a single build makes several eligible. Gate against the most recent
@@ -337,6 +373,19 @@ class CityActions {
     _ref
       ..invalidate(onScreenBeatsProvider)
       ..invalidate(cityCatalogProvider);
+  }
+
+  /// Retires a beat that's been showing in its post-completion ✓ flash —
+  /// called by the overlay after the wall-clock hold elapses (or the player
+  /// taps the ✓ sticker). Transitions 'completed' → 'acked' so it stops
+  /// showing and the trigger may re-fire later if it ever becomes eligible
+  /// again. No-op when there's no active player.
+  Future<void> retireCompletedBeat(String beatId) async {
+    final playerId = _ref.read(activePlayerIdProvider);
+    if (playerId == null) return;
+    final db = _ref.read(appDatabaseProvider);
+    await db.setBeatState(playerId, beatId, 'acked');
+    _ref.invalidate(onScreenBeatsProvider);
   }
 
   // ---- Debug-only helpers (kDebugMode; driven by the city debug sheet) ----

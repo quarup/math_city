@@ -38,7 +38,15 @@ Future<void> _place(
 );
 
 Set<String> _onScreenIds(ProviderContainer c) =>
-    c.read(onScreenBeatsProvider).asData!.value.map((b) => b.id).toSet();
+    c.read(onScreenBeatsProvider).asData!.value.map((b) => b.beat.id).toSet();
+
+Set<String> _completedIds(ProviderContainer c) => c
+    .read(onScreenBeatsProvider)
+    .asData!
+    .value
+    .where((b) => b.completed)
+    .map((b) => b.beat.id)
+    .toSet();
 
 /// Beats now trickle out one per [kNewBeatSpacingRounds] rounds, so reaching a
 /// beat that isn't first in registry order takes several rounds of play. Steps
@@ -144,15 +152,42 @@ void main() {
       await actions.fireBeats();
       expect(await db.firedBeatIds(pid), contains('demand_first_home'));
 
-      // Now build a home: the (already-fired) demand stops being eligible but
-      // keeps its recorded fire; the praise trickles out once the new-beat
-      // spacing window elapses.
+      // Now build a home: the (already-fired) demand stops being eligible and
+      // flips to its 'completed' ✓ flash; the praise trickles out once the
+      // new-beat spacing window elapses.
       await _place(db, city.id, pid, 'single_home', 1);
-      await _drainUntil(db, pid, actions, 'praise_first_home');
+      await actions.fireBeats();
+      final states = await db.storyBeatStatesForPlayer(pid);
+      expect(states['demand_first_home']!.state, 'completed');
 
+      await _drainUntil(db, pid, actions, 'praise_first_home');
       await container.refresh(onScreenBeatsProvider.future);
       expect(_onScreenIds(container), contains('praise_first_home'));
       expect(await db.firedBeatIds(pid), contains('praise_first_home'));
+    });
+
+    test('completed flash is surfaced and retireable', () async {
+      final (db, pid, container) = await _setup();
+      addTearDown(container.dispose);
+      final city = await db.cityForPlayer(pid);
+      final actions = container.read(cityActionsProvider);
+      await _place(db, city.id, pid, 'mayors_office', 0);
+      await actions.fireBeats();
+
+      // Build the home: the demand's trigger no longer holds, so fireBeats
+      // transitions it to the 'completed' ✓ flash.
+      await _place(db, city.id, pid, 'single_home', 1);
+      await actions.fireBeats();
+      await container.refresh(onScreenBeatsProvider.future);
+      expect(_completedIds(container), contains('demand_first_home'));
+
+      // The overlay calls retireCompletedBeat once its hold elapses; that
+      // takes the bubble off-screen and leaves the row in 'acked'.
+      await actions.retireCompletedBeat('demand_first_home');
+      final states = await db.storyBeatStatesForPlayer(pid);
+      expect(states['demand_first_home']!.state, 'acked');
+      await container.refresh(onScreenBeatsProvider.future);
+      expect(_onScreenIds(container), isNot(contains('demand_first_home')));
     });
 
     test('newly-eligible beats trickle out a few rounds apart', () async {

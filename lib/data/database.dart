@@ -195,7 +195,8 @@ class ConceptBandMilestones extends Table {
 class StoryBeatStates extends Table {
   IntColumn get playerId => integer().references(Players, #id)();
   TextColumn get beatId => text()();
-  TextColumn get state => text()(); // 'onScreen' | 'dismissed' | 'acked'
+  TextColumn get state =>
+      text()(); // 'onScreen' | 'completed' | 'dismissed' | 'acked'
   IntColumn get lastFiredAtRound => integer().nullable()();
   IntColumn get fireCount => integer().withDefault(const Constant(0))();
   IntColumn get lifetimeBricksAtLastFire => integer().nullable()();
@@ -659,6 +660,16 @@ class AppDatabase extends _$AppDatabase {
             (t) => t.playerId.equals(playerId) & t.beatId.equals(beatId),
           ))
           .write(StoryBeatStatesCompanion(ackedAtRound: Value(atRound)));
+
+  /// Flips an on-screen demand/warning into its post-fulfilment 'completed'
+  /// form: the player did the thing the bubble nudged them toward, so the UI
+  /// shows a brief ✓ flash and then retires it. No-op if the beat has never
+  /// fired.
+  Future<void> markBeatCompleted(int playerId, String beatId) =>
+      (update(storyBeatStates)..where(
+            (t) => t.playerId.equals(playerId) & t.beatId.equals(beatId),
+          ))
+          .write(const StoryBeatStatesCompanion(state: Value('completed')));
 
   /// Places one building: inserts the placement row and spends [brickCost]
   /// from the player's balance (lifetime stays monotone via

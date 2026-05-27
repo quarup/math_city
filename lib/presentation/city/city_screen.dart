@@ -781,14 +781,26 @@ Color _beatColor(BeatKind kind) => switch (kind) {
   BeatKind.warning => const Color(0xFFEF5350),
 };
 
+/// How long a `completed` ✓ flash bubble stays on screen before the overlay
+/// retires it. Wall-clock, not rounds — completion happens on placement, and
+/// the round clock only ticks on answered math questions.
+const _kCompletedFlashDuration = Duration(milliseconds: 1500);
+
 /// Floating citizen-bubble layer drawn over the city. Shows up to 5 of the
 /// beats currently in the `onScreen` state (from [onScreenBeatsProvider]) as
 /// emoji stickers along the top; tapping one marks it read and expands it into
 /// a card with the full sentence and a "Got it" button. Opening a demand
 /// bubble is what unlocks the building it asks for; the sticker itself lingers
 /// a few rounds before retiring (see [kReadHideRounds]). "Got it" just closes
-/// the card. Empty regions don't absorb touches, so the city stays pannable;
-/// while a card is open a scrim catches outside taps to collapse it.
+/// the card.
+///
+/// Demand/warning bubbles whose request has been fulfilled (e.g. the player
+/// built the house the demand asked for) come back from the provider in their
+/// `completed` form: praise-green ring + ✓ badge. They auto-retire after
+/// [_kCompletedFlashDuration]; tapping them retires immediately.
+///
+/// Empty regions don't absorb touches, so the city stays pannable; while a
+/// card is open a scrim catches outside taps to collapse it.
 class _CitizenBubbleOverlay extends ConsumerStatefulWidget {
   const _CitizenBubbleOverlay();
 
@@ -800,19 +812,67 @@ class _CitizenBubbleOverlay extends ConsumerStatefulWidget {
 class _CitizenBubbleOverlayState extends ConsumerState<_CitizenBubbleOverlay> {
   String? _expandedId;
 
+  /// Auto-retire timers for each currently-displayed `completed` bubble, keyed
+  /// by beat id. Cancelled on disposal so the dispatched retire-action doesn't
+  /// fire after the screen is gone.
+  final Map<String, Timer> _completedTimers = {};
+
+  void _scheduleRetire(String beatId) {
+    if (_completedTimers.containsKey(beatId)) return;
+    _completedTimers[beatId] = Timer(_kCompletedFlashDuration, () {
+      _completedTimers.remove(beatId);
+      if (!mounted) return;
+      unawaited(ref.read(cityActionsProvider).retireCompletedBeat(beatId));
+    });
+  }
+
+  void _retireNow(String beatId) {
+    _completedTimers.remove(beatId)?.cancel();
+    unawaited(ref.read(cityActionsProvider).retireCompletedBeat(beatId));
+  }
+
+  @override
+  void dispose() {
+    for (final t in _completedTimers.values) {
+      t.cancel();
+    }
+    _completedTimers.clear();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final beats =
-        ref.watch(onScreenBeatsProvider).asData?.value ?? const <StoryBeat>[];
+        ref.watch(onScreenBeatsProvider).asData?.value ??
+        const <OnScreenBeat>[];
     final shown = beats.take(5).toList();
+
+    // Maintain timers in sync with what's currently in the completed state.
+    // Schedule a retire for each new completed bubble, and drop timers for any
+    // that have already left the list (e.g. the provider raced ahead of us).
+    final liveCompletedIds = <String>{
+      for (final b in shown)
+        if (b.completed) b.beat.id,
+    }..forEach(_scheduleRetire);
+    _completedTimers.removeWhere((id, t) {
+      if (liveCompletedIds.contains(id)) return false;
+      t.cancel();
+      return true;
+    });
+
     if (shown.isEmpty) {
       _expandedId = null;
       return const SizedBox.shrink();
     }
 
+    // Completed bubbles aren't expandable — they auto-retire. If the user
+    // somehow has one expanded when it completes, close the card.
     final expanded = _expandedId == null
         ? null
-        : shown.where((b) => b.id == _expandedId).firstOrNull;
+        : shown
+              .where((b) => b.beat.id == _expandedId && !b.completed)
+              .firstOrNull
+              ?.beat;
 
     return Stack(
       children: [
@@ -829,15 +889,21 @@ class _CitizenBubbleOverlayState extends ConsumerState<_CitizenBubbleOverlay> {
               children: [
                 for (final b in shown)
                   _BubbleSticker(
-                    beat: b,
-                    // Opening a bubble marks it read — which both starts its
-                    // linger timer and unlocks the building a demand asks for.
-                    onTap: () {
-                      unawaited(
-                        ref.read(cityActionsProvider).markBeatRead(b.id),
-                      );
-                      setState(() => _expandedId = b.id);
-                    },
+                    beat: b.beat,
+                    completed: b.completed,
+                    // Completed bubbles auto-retire on tap; for live bubbles,
+                    // opening one marks it read — which both starts its linger
+                    // timer and unlocks the building a demand asks for.
+                    onTap: b.completed
+                        ? () => _retireNow(b.beat.id)
+                        : () {
+                            unawaited(
+                              ref
+                                  .read(cityActionsProvider)
+                                  .markBeatRead(b.beat.id),
+                            );
+                            setState(() => _expandedId = b.beat.id);
+                          },
                   ),
               ],
             ),
@@ -869,33 +935,81 @@ class _CitizenBubbleOverlayState extends ConsumerState<_CitizenBubbleOverlay> {
 }
 
 /// Collapsed bubble: a round emoji sticker ringed in its beat's accent color.
+/// When [completed] is true (a demand/warning whose request has been fulfilled)
+/// the ring flips to praise-green and a ✓ badge overlays the emoji as a brief
+/// "done!" confirmation before the overlay retires the bubble.
 class _BubbleSticker extends StatelessWidget {
-  const _BubbleSticker({required this.beat, required this.onTap});
+  const _BubbleSticker({
+    required this.beat,
+    required this.onTap,
+    this.completed = false,
+  });
 
   final StoryBeat beat;
   final VoidCallback onTap;
+  final bool completed;
+
+  static const _completedAccent = Color(0xFF66BB6A);
 
   @override
   Widget build(BuildContext context) {
+    final accent = completed ? _completedAccent : _beatColor(beat.kind);
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        width: 46,
-        height: 46,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          shape: BoxShape.circle,
-          border: Border.all(color: _beatColor(beat.kind), width: 3),
-          boxShadow: const [
-            BoxShadow(
-              color: Color(0x33000000),
-              blurRadius: 4,
-              offset: Offset(0, 2),
+      child: SizedBox(
+        width: 52,
+        height: 52,
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            Center(
+              child: Container(
+                width: 46,
+                height: 46,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                  border: Border.all(color: accent, width: 3),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Color(0x33000000),
+                      blurRadius: 4,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Text(beat.emoji, style: const TextStyle(fontSize: 22)),
+              ),
             ),
+            if (completed)
+              Positioned(
+                right: 0,
+                bottom: 0,
+                child: Container(
+                  width: 20,
+                  height: 20,
+                  alignment: Alignment.center,
+                  decoration: const BoxDecoration(
+                    color: _completedAccent,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Color(0x33000000),
+                        blurRadius: 2,
+                        offset: Offset(0, 1),
+                      ),
+                    ],
+                  ),
+                  child: const Icon(
+                    Icons.check_rounded,
+                    size: 14,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
           ],
         ),
-        child: Text(beat.emoji, style: const TextStyle(fontSize: 22)),
       ),
     );
   }
