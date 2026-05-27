@@ -781,10 +781,20 @@ Color _beatColor(BeatKind kind) => switch (kind) {
   BeatKind.warning => const Color(0xFFEF5350),
 };
 
-/// How long a `completed` ✓ flash bubble stays on screen before the overlay
-/// retires it. Wall-clock, not rounds — completion happens on placement, and
-/// the round clock only ticks on answered math questions.
-const _kCompletedFlashDuration = Duration(milliseconds: 1500);
+/// The ✓ flash sequence for a fulfilled demand: a quick attention-grabbing pop
+/// (scale 1.0 → [_kPopMaxScale] → 1.0), then a hold, then a fade-out. Total
+/// wall-clock duration is [_kCompletedFlashDuration]; the overlay's retire
+/// timer matches it so the bubble's state row only flips to 'acked' once the
+/// fade has finished. Wall-clock and not rounds — completion happens on
+/// placement, and the round clock only ticks on answered math questions.
+const _kCompletedPopUp = Duration(milliseconds: 200);
+const _kCompletedPopDown = Duration(milliseconds: 200);
+const _kCompletedHold = Duration(seconds: 5);
+const _kCompletedFade = Duration(seconds: 3);
+const _kPopMaxScale = 1.5;
+const _kCompletedFlashDuration = Duration(
+  milliseconds: 200 + 200 + 5000 + 3000, // == pop-up + pop-down + hold + fade
+);
 
 /// Floating citizen-bubble layer drawn over the city. Shows up to 5 of the
 /// beats currently in the `onScreen` state (from [onScreenBeatsProvider]) as
@@ -889,6 +899,7 @@ class _CitizenBubbleOverlayState extends ConsumerState<_CitizenBubbleOverlay> {
               children: [
                 for (final b in shown)
                   _BubbleSticker(
+                    key: ValueKey('beat-${b.beat.id}'),
                     beat: b.beat,
                     completed: b.completed,
                     // Completed bubbles auto-retire on tap; for live bubbles,
@@ -936,12 +947,19 @@ class _CitizenBubbleOverlayState extends ConsumerState<_CitizenBubbleOverlay> {
 
 /// Collapsed bubble: a round emoji sticker ringed in its beat's accent color.
 /// When [completed] is true (a demand/warning whose request has been fulfilled)
-/// the ring flips to praise-green and a ✓ badge overlays the emoji as a brief
-/// "done!" confirmation before the overlay retires the bubble.
-class _BubbleSticker extends StatelessWidget {
+/// the ring flips to praise-green and a ✓ badge overlays the emoji. The
+/// sticker also runs the four-stage flash animation in that state:
+///   1. pop up to [_kPopMaxScale] over [_kCompletedPopUp]
+///   2. pop back to 1.0 over [_kCompletedPopDown]
+///   3. hold at full opacity for [_kCompletedHold]
+///   4. fade to invisible over [_kCompletedFade]
+/// The overlay's retire timer is sized to [_kCompletedFlashDuration] so the
+/// state row only flips to 'acked' once the fade has run.
+class _BubbleSticker extends StatefulWidget {
   const _BubbleSticker({
     required this.beat,
     required this.onTap,
+    super.key,
     this.completed = false,
   });
 
@@ -949,67 +967,183 @@ class _BubbleSticker extends StatelessWidget {
   final VoidCallback onTap;
   final bool completed;
 
+  @override
+  State<_BubbleSticker> createState() => _BubbleStickerState();
+}
+
+class _BubbleStickerState extends State<_BubbleSticker>
+    with SingleTickerProviderStateMixin {
   static const _completedAccent = Color(0xFF66BB6A);
+
+  /// Drives scale + opacity for the completed flash. Null while the bubble
+  /// is in its normal (non-completed) state.
+  AnimationController? _flash;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.completed) _startFlash();
+  }
+
+  @override
+  void didUpdateWidget(_BubbleSticker old) {
+    super.didUpdateWidget(old);
+    // Bubble transitions into completion (e.g. user placed the building):
+    // start the pop/hold/fade. Going back out of completed is unusual but
+    // harmless — drop the controller so the bubble snaps to its idle look.
+    if (widget.completed && !old.completed) {
+      _startFlash();
+    } else if (!widget.completed && old.completed) {
+      _flash?.dispose();
+      _flash = null;
+    }
+  }
+
+  void _startFlash() {
+    _flash?.dispose();
+    final controller = AnimationController(
+      vsync: this,
+      duration: _kCompletedFlashDuration,
+    );
+    _flash = controller;
+    unawaited(controller.forward().orCancel.catchError((Object _) {}));
+  }
+
+  @override
+  void dispose() {
+    _flash?.dispose();
+    super.dispose();
+  }
+
+  double _scaleFor(double tMs) {
+    final popUp = _kCompletedPopUp.inMilliseconds.toDouble();
+    final popDownEnd = popUp + _kCompletedPopDown.inMilliseconds;
+    if (tMs <= popUp) {
+      final p = (tMs / popUp).clamp(0.0, 1.0);
+      return 1.0 + (_kPopMaxScale - 1.0) * Curves.easeOut.transform(p);
+    }
+    if (tMs <= popDownEnd) {
+      final p = ((tMs - popUp) / _kCompletedPopDown.inMilliseconds).clamp(
+        0.0,
+        1.0,
+      );
+      return _kPopMaxScale - (_kPopMaxScale - 1) * Curves.easeIn.transform(p);
+    }
+    return 1;
+  }
+
+  double _opacityFor(double tMs) {
+    final fadeStart = (_kCompletedPopUp + _kCompletedPopDown + _kCompletedHold)
+        .inMilliseconds
+        .toDouble();
+    final fadeMs = _kCompletedFade.inMilliseconds.toDouble();
+    if (tMs <= fadeStart) return 1;
+    if (tMs >= fadeStart + fadeMs) return 0;
+    return 1 - (tMs - fadeStart) / fadeMs;
+  }
 
   @override
   Widget build(BuildContext context) {
-    final accent = completed ? _completedAccent : _beatColor(beat.kind);
-    return GestureDetector(
-      onTap: onTap,
-      child: SizedBox(
-        width: 52,
-        height: 52,
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            Center(
+    final sticker = _Sticker(
+      beat: widget.beat,
+      accent: widget.completed
+          ? _completedAccent
+          : _beatColor(widget.beat.kind),
+      showCheck: widget.completed,
+      checkColor: _completedAccent,
+    );
+    final flash = _flash;
+    final child = (widget.completed && flash != null)
+        ? AnimatedBuilder(
+            animation: flash,
+            builder: (context, cachedChild) {
+              final tMs = flash.value * _kCompletedFlashDuration.inMilliseconds;
+              return Opacity(
+                opacity: _opacityFor(tMs),
+                child: Transform.scale(
+                  scale: _scaleFor(tMs),
+                  child: cachedChild,
+                ),
+              );
+            },
+            child: sticker,
+          )
+        : sticker;
+    return GestureDetector(onTap: widget.onTap, child: child);
+  }
+}
+
+/// The pure visual: the emoji disc + optional ✓ badge. Pulled out of
+/// [_BubbleSticker] so the [AnimatedBuilder] can keep it as a const-ish child
+/// while the wrapper rebuilds on every tick.
+class _Sticker extends StatelessWidget {
+  const _Sticker({
+    required this.beat,
+    required this.accent,
+    required this.showCheck,
+    required this.checkColor,
+  });
+
+  final StoryBeat beat;
+  final Color accent;
+  final bool showCheck;
+  final Color checkColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 52,
+      height: 52,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Center(
+            child: Container(
+              width: 46,
+              height: 46,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+                border: Border.all(color: accent, width: 3),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color(0x33000000),
+                    blurRadius: 4,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Text(beat.emoji, style: const TextStyle(fontSize: 22)),
+            ),
+          ),
+          if (showCheck)
+            Positioned(
+              right: 0,
+              bottom: 0,
               child: Container(
-                width: 46,
-                height: 46,
+                width: 20,
+                height: 20,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: checkColor,
                   shape: BoxShape.circle,
-                  border: Border.all(color: accent, width: 3),
                   boxShadow: const [
                     BoxShadow(
                       color: Color(0x33000000),
-                      blurRadius: 4,
-                      offset: Offset(0, 2),
+                      blurRadius: 2,
+                      offset: Offset(0, 1),
                     ),
                   ],
                 ),
-                child: Text(beat.emoji, style: const TextStyle(fontSize: 22)),
-              ),
-            ),
-            if (completed)
-              Positioned(
-                right: 0,
-                bottom: 0,
-                child: Container(
-                  width: 20,
-                  height: 20,
-                  alignment: Alignment.center,
-                  decoration: const BoxDecoration(
-                    color: _completedAccent,
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Color(0x33000000),
-                        blurRadius: 2,
-                        offset: Offset(0, 1),
-                      ),
-                    ],
-                  ),
-                  child: const Icon(
-                    Icons.check_rounded,
-                    size: 14,
-                    color: Colors.white,
-                  ),
+                child: const Icon(
+                  Icons.check_rounded,
+                  size: 14,
+                  color: Colors.white,
                 ),
               ),
-          ],
-        ),
+            ),
+        ],
       ),
     );
   }
