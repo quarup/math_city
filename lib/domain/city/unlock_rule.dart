@@ -7,7 +7,7 @@ class UnlockRule {
     this.minLifetimeBricks,
     this.requiredBuildingsPlaced = const <String>{},
     this.minPopulation,
-    this.requiredBeatsFired = const <String>{},
+    this.requiredBeatsRead = const <String>{},
   });
 
   /// Empty rule — always satisfied. Use for ungated starter buildings.
@@ -16,7 +16,12 @@ class UnlockRule {
   final int? minLifetimeBricks;
   final Set<String> requiredBuildingsPlaced;
   final int? minPopulation;
-  final Set<String> requiredBeatsFired;
+
+  /// Story beats the player must have *opened* (tapped to read) before this
+  /// building shows as available-to-research. This is how a "we want a clinic!"
+  /// demand bubble gates the clinic card: the building stays hidden until the
+  /// citizen actually asks for it and the player reads the ask.
+  final Set<String> requiredBeatsRead;
 
   bool evaluate(UnlockContext ctx) {
     if (minLifetimeBricks != null &&
@@ -29,7 +34,7 @@ class UnlockRule {
     if (!ctx.placedBuildingTypeIds.containsAll(requiredBuildingsPlaced)) {
       return false;
     }
-    if (!ctx.firedBeatIds.containsAll(requiredBeatsFired)) {
+    if (!ctx.readBeatIds.containsAll(requiredBeatsRead)) {
       return false;
     }
     return true;
@@ -42,7 +47,7 @@ class UnlockContext {
     required this.lifetimeBricksEarned,
     required this.population,
     required this.placedBuildingTypeIds,
-    required this.firedBeatIds,
+    required this.readBeatIds,
   });
 
   final int lifetimeBricksEarned;
@@ -53,8 +58,8 @@ class UnlockContext {
   /// `'single_home'` once).
   final Set<String> placedBuildingTypeIds;
 
-  /// The set of `StoryBeat.id` values that have fired at least once for this
-  /// player. Beats that re-fire (e.g. "we want more parks") only need to
-  /// have fired *once* to satisfy `requiredBeatsFired`.
-  final Set<String> firedBeatIds;
+  /// The set of `StoryBeat.id` values the player has opened (read) at least
+  /// once. A beat that re-fires only needs to have been read *once* to satisfy
+  /// `requiredBeatsRead`.
+  final Set<String> readBeatIds;
 }

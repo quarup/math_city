@@ -5,6 +5,20 @@ import 'package:math_city/domain/city/unlock_rule.dart';
 void main() {
   const engine = BuildingDagEngine();
 
+  // Every demand beat that gates a building's research card. Reading all of
+  // them (with the mayor's office placed) unlocks the whole catalog.
+  const allDemandBeats = <String>{
+    'demand_first_home',
+    'demand_school',
+    'demand_apartment',
+    'demand_clinic',
+    'demand_power',
+    'demand_waste',
+    'demand_grocery',
+    'demand_coffee_shop',
+    'demand_more_parks',
+  };
+
   group('availableToResearch', () {
     test("a fresh player can only research mayor's office", () {
       final available = engine.availableToResearch(
@@ -12,27 +26,51 @@ void main() {
           lifetimeBricksEarned: 0,
           population: 0,
           placedBuildingTypeIds: <String>{},
-          firedBeatIds: <String>{},
+          readBeatIds: <String>{},
         ),
       );
       expect(available.map((b) => b.id), ['mayors_office']);
     });
 
     test(
-      "after placing the mayor's office, every other building is available",
+      "placing the mayor's office alone unlocks nothing new — buildings stay "
+      'gated behind their demand beat being read',
       () {
         final available = engine.availableToResearch(
           const UnlockContext(
             lifetimeBricksEarned: 0,
             population: 0,
             placedBuildingTypeIds: <String>{'mayors_office'},
-            firedBeatIds: <String>{},
+            readBeatIds: <String>{},
           ),
         );
-        // All 10 buildings should now be available.
-        expect(available, hasLength(10));
+        expect(available.map((b) => b.id), ['mayors_office']);
       },
     );
+
+    test('reading a demand beat unlocks just that building', () {
+      final available = engine.availableToResearch(
+        const UnlockContext(
+          lifetimeBricksEarned: 0,
+          population: 0,
+          placedBuildingTypeIds: <String>{'mayors_office'},
+          readBeatIds: <String>{'demand_first_home'},
+        ),
+      );
+      expect(available.map((b) => b.id), ['mayors_office', 'single_home']);
+    });
+
+    test('mayor placed + every demand read makes all 10 available', () {
+      final available = engine.availableToResearch(
+        const UnlockContext(
+          lifetimeBricksEarned: 0,
+          population: 0,
+          placedBuildingTypeIds: <String>{'mayors_office'},
+          readBeatIds: allDemandBeats,
+        ),
+      );
+      expect(available, hasLength(10));
+    });
   });
 
   group('notYetResearched', () {
@@ -42,7 +80,7 @@ void main() {
           lifetimeBricksEarned: 0,
           population: 0,
           placedBuildingTypeIds: <String>{'mayors_office'},
-          firedBeatIds: <String>{},
+          readBeatIds: allDemandBeats,
         ),
         alreadyResearched: <String>{
           'mayors_office',
@@ -64,7 +102,7 @@ void main() {
           lifetimeBricksEarned: 0,
           population: 0,
           placedBuildingTypeIds: <String>{},
-          firedBeatIds: <String>{},
+          readBeatIds: <String>{},
         ),
         alreadyResearched: <String>{'mayors_office'},
       );

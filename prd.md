@@ -154,7 +154,7 @@ The design ambition is **"feels infinite"**: hundreds of building types over the
 - *Lifetime bricks threshold* — enough lifetime 🧱 earned to date.
 - *Prerequisite buildings placed* — e.g. a hospital requires at least one clinic and apartment-tier-2 already on the map (multi-parent prereqs use AND semantics, kept narratively coherent — we don't add prereqs that would feel random).
 - *Population minimum* — e.g. the cinema only becomes available once the city passes 50 residents.
-- *Story beat completed* — a citizen request has surfaced (the player doesn't need to explicitly accept it, but the beat must have appeared at least once).
+- *Story beat opened* — the citizen request that asks for this building has not only surfaced but been **opened (tapped to read) at least once**. Merely having the bubble appear isn't enough; the player must read the ask. This is the primary gate in the Phase-7 catalog: every non-starter building is hidden until the player opens the demand bubble that asks for it.
 
 Once available, the player **spends 🔬 research credit** to actually unlock the building — at which point it's permanently in the build menu and can be placed any number of times for its 🧱 brick cost. Research is finite and earned by genuine learning progress (band-crossings on the math curriculum), so the player has to choose which available building to research next — that choice IS the player's progression decision.
 
@@ -162,7 +162,7 @@ Because the DAG is branching, different players will follow different paths — 
 
 **Citizen requests — floating emoji bubbles.** The city screen surfaces what citizens want and what they're celebrating, via cute emoji / sticker bubbles that float above the buildings:
 
-- Bubbles use simple visual language — a 🏥 over a head for "we need healthcare", a 🎉 over a coffee shop after it opens, a 🚮 over a pile for "the trash situation is getting out of hand". Tapping a bubble expands it into a full sentence explaining the citizen's request or feeling.
+- Bubbles use simple visual language — a 🏥 over a head for "we need healthcare", a 🎉 over a coffee shop after it opens, a 🚮 over a pile for "the trash situation is getting out of hand". Tapping a bubble expands it into a full sentence explaining the citizen's request or feeling. **Tapping open a demand bubble is also what reveals the matching building's research card** — the citizen has to ask (and the player has to read the ask) before the building shows up to unlock.
 - Tone is mixed — kid-friendly silly ("Mrs. Pomeroy's cat ate a sock — we need a vet!") sits alongside slightly less cutesy civic notes ("The neighborhood is tired of stepping over garbage — we need a Waste Management facility!"). The mix keeps it interesting for the older end of the 6–14 range.
 - **Both demands and praise.** Bubbles show needs ("we want a park") but also positive feedback ("citizens love the new bakery", "the garbage gets collected on time now"). Praise bubbles validate recent placements; demand bubbles hint at what's available or about to unlock.
 - **Max ~5 bubbles on screen at once.** Unacknowledged bubbles rotate — if the player doesn't act on one, it disappears for a while and may resurface later. Bubble state persists across sessions (a request the player ignored last night can still be there tomorrow, or come back in a different form).

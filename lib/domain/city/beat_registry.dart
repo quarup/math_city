@@ -6,6 +6,11 @@ import 'package:math_city/domain/city/trigger_rule.dart';
 /// demand, an anti-prereq warning, post-placement commercial praise, and an
 /// age + prior-beat gated milestone. The rich hundreds-of-beats catalog is
 /// Phase 8 / 9. Text is kid-friendly with a deliberate silly/civic/cozy mix.
+///
+/// Each "demand" beat doubles as the unlock gate for the building it asks for:
+/// a building's `requiredBeatsRead` lists its demand beat, so the building's
+/// research card only appears once the player has opened (read) that ask. See
+/// `building_registry.dart`.
 const beatRegistry = <StoryBeat>[
   // -- Housing --------------------------------------------------------------
   StoryBeat(
@@ -33,6 +38,35 @@ const beatRegistry = <StoryBeat>[
         'she sends thanks.',
     triggerRule: TriggerRule(
       buildingsPresent: <String>{'single_home'},
+    ),
+  ),
+  StoryBeat(
+    id: 'demand_school',
+    kind: BeatKind.demand,
+    tone: BeatTone.civic,
+    emoji: '🏫',
+    shortLabel: 'a school?',
+    longText:
+        'The neighborhood kids have nowhere to practice their math — could we '
+        'build a school?',
+    triggerRule: TriggerRule(
+      buildingsPresent: <String>{'single_home'},
+      buildingsAbsent: <String>{'school'},
+    ),
+  ),
+  StoryBeat(
+    id: 'demand_apartment',
+    kind: BeatKind.demand,
+    tone: BeatTone.cozy,
+    emoji: '🏢',
+    shortLabel: 'more homes!',
+    longText:
+        'More families want to move in but every house is full — an apartment '
+        'block would give them somewhere to live.',
+    triggerRule: TriggerRule(
+      buildingsPresent: <String>{'single_home'},
+      buildingsAbsent: <String>{'apartment'},
+      minPopulation: 8,
     ),
   ),
 
@@ -79,6 +113,36 @@ const beatRegistry = <StoryBeat>[
       buildingsPresent: <String>{'single_home'},
       buildingsAbsent: <String>{'waste_management'},
       minPopulation: 12,
+    ),
+  ),
+
+  // -- Commercial demands (pre-placement asks that gate the shops) ----------
+  StoryBeat(
+    id: 'demand_grocery',
+    kind: BeatKind.demand,
+    tone: BeatTone.cozy,
+    emoji: '🛒',
+    shortLabel: 'groceries?',
+    longText:
+        'Folks are tired of driving far for milk and bread — a grocery store '
+        'would be so handy.',
+    triggerRule: TriggerRule(
+      buildingsPresent: <String>{'single_home'},
+      buildingsAbsent: <String>{'grocery'},
+    ),
+  ),
+  StoryBeat(
+    id: 'demand_coffee_shop',
+    kind: BeatKind.demand,
+    tone: BeatTone.cozy,
+    emoji: '☕',
+    shortLabel: 'coffee?',
+    longText:
+        'A cozy coffee shop would give everyone a warm place to meet up — '
+        'what do you think?',
+    triggerRule: TriggerRule(
+      buildingsPresent: <String>{'single_home'},
+      buildingsAbsent: <String>{'coffee_shop'},
     ),
   ),
 

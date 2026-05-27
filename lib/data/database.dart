@@ -588,13 +588,26 @@ class AppDatabase extends _$AppDatabase {
   }
 
   /// IDs of beats that have fired at least once for [playerId]. Feeds the
-  /// `requiredBeatsFired` gate on both story beats and building unlock rules.
+  /// `requiredBeatsFired` gate on story-beat triggers.
   Future<Set<String>> firedBeatIds(int playerId) async {
     final rows =
         await (select(storyBeatStates)..where(
               (t) =>
                   t.playerId.equals(playerId) &
                   t.fireCount.isBiggerThanValue(0),
+            ))
+            .get();
+    return rows.map((r) => r.beatId).toSet();
+  }
+
+  /// IDs of beats the player has opened (read) at least once — i.e. rows with
+  /// a non-null `ackedAtRound`. Feeds the `requiredBeatsRead` gate on building
+  /// unlock rules, so a building's card only appears after the player reads the
+  /// demand beat that asks for it.
+  Future<Set<String>> readBeatIds(int playerId) async {
+    final rows =
+        await (select(storyBeatStates)..where(
+              (t) => t.playerId.equals(playerId) & t.ackedAtRound.isNotNull(),
             ))
             .get();
     return rows.map((r) => r.beatId).toSet();

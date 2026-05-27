@@ -51,16 +51,17 @@ final cityCatalogProvider = FutureProvider<List<CatalogEntry>>((ref) async {
   final city = await ref.watch(activeCityProvider.future);
   final placements = await ref.watch(placementsProvider.future);
   final researchedIds = await db.researchedBuildingTypeIds(playerId);
-  final firedBeats = await db.firedBeatIds(playerId);
+  final readBeats = await db.readBeatIds(playerId);
 
-  // Population (stepped by `tickPopulation`) and fired beats (recorded by
-  // `fireBeats`) are both live now — v1's buildings only gate on placed
-  // buildings, but richer Phase 8/9 unlock rules can use either.
+  // A building's card only appears once the player has opened the demand beat
+  // that asks for it (`requiredBeatsRead`), on top of any placement/population
+  // gates. Population is stepped by `tickPopulation`; read beats by
+  // `markBeatRead`.
   final ctx = UnlockContext(
     lifetimeBricksEarned: player.lifetimeBricksEarned,
     population: city.population,
     placedBuildingTypeIds: placements.map((p) => p.buildingTypeId).toSet(),
-    firedBeatIds: firedBeats,
+    readBeatIds: readBeats,
   );
   const engine = BuildingDagEngine();
   final availableIds = engine.availableToResearch(ctx).map((b) => b.id).toSet();
@@ -320,18 +321,22 @@ class CityActions {
     _ref.invalidate(placementsProvider);
   }
 
-  /// Marks an on-screen citizen bubble as read by the player. The bubble does
-  /// NOT vanish immediately — it lingers for [kReadHideRounds] more rounds of
-  /// math play before [fireBeats] retires it off screen (after which it can
-  /// re-fire once its trigger passes again, subject to its brick-spacing
-  /// cooldown). No-op when there's no active player.
+  /// Marks an on-screen citizen bubble as read (opened) by the player. The
+  /// bubble does NOT vanish immediately — it lingers for [kReadHideRounds] more
+  /// rounds of math play before [fireBeats] retires it off screen (after which
+  /// it can re-fire once its trigger passes again, subject to its brick-spacing
+  /// cooldown). Opening a demand beat is also what unlocks the building it asks
+  /// for, so this refreshes the catalog too. No-op when there's no active
+  /// player.
   Future<void> markBeatRead(String beatId) async {
     final playerId = _ref.read(activePlayerIdProvider);
     if (playerId == null) return;
     final db = _ref.read(appDatabaseProvider);
     final player = await db.getPlayerById(playerId);
     await db.markBeatRead(playerId, beatId, player.roundsPlayed);
-    _ref.invalidate(onScreenBeatsProvider);
+    _ref
+      ..invalidate(onScreenBeatsProvider)
+      ..invalidate(cityCatalogProvider);
   }
 
   // ---- Debug-only helpers (kDebugMode; driven by the city debug sheet) ----

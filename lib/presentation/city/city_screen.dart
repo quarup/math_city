@@ -783,11 +783,12 @@ Color _beatColor(BeatKind kind) => switch (kind) {
 
 /// Floating citizen-bubble layer drawn over the city. Shows up to 5 of the
 /// beats currently in the `onScreen` state (from [onScreenBeatsProvider]) as
-/// emoji stickers along the top; tapping one expands it into a card with the
-/// full sentence and a "Got it" button. "Got it" marks the bubble read and
-/// closes the card, but the sticker lingers a few rounds before retiring (see
-/// [kReadHideRounds]). Empty regions don't absorb touches, so the city stays
-/// pannable; while a card is open a scrim catches outside taps to collapse it.
+/// emoji stickers along the top; tapping one marks it read and expands it into
+/// a card with the full sentence and a "Got it" button. Opening a demand
+/// bubble is what unlocks the building it asks for; the sticker itself lingers
+/// a few rounds before retiring (see [kReadHideRounds]). "Got it" just closes
+/// the card. Empty regions don't absorb touches, so the city stays pannable;
+/// while a card is open a scrim catches outside taps to collapse it.
 class _CitizenBubbleOverlay extends ConsumerStatefulWidget {
   const _CitizenBubbleOverlay();
 
@@ -829,7 +830,14 @@ class _CitizenBubbleOverlayState extends ConsumerState<_CitizenBubbleOverlay> {
                 for (final b in shown)
                   _BubbleSticker(
                     beat: b,
-                    onTap: () => setState(() => _expandedId = b.id),
+                    // Opening a bubble marks it read — which both starts its
+                    // linger timer and unlocks the building a demand asks for.
+                    onTap: () {
+                      unawaited(
+                        ref.read(cityActionsProvider).markBeatRead(b.id),
+                      );
+                      setState(() => _expandedId = b.id);
+                    },
                   ),
               ],
             ),
@@ -849,12 +857,8 @@ class _CitizenBubbleOverlayState extends ConsumerState<_CitizenBubbleOverlay> {
             child: SafeArea(
               child: _ExpandedBeatCard(
                 beat: expanded,
-                onDismiss: () {
-                  unawaited(
-                    ref.read(cityActionsProvider).markBeatRead(expanded.id),
-                  );
-                  setState(() => _expandedId = null);
-                },
+                // Already marked read on open; "Got it" just closes the card.
+                onDismiss: () => setState(() => _expandedId = null),
               ),
             ),
           ),

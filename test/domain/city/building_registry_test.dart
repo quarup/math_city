@@ -30,7 +30,7 @@ void main() {
             lifetimeBricksEarned: 0,
             population: 0,
             placedBuildingTypeIds: <String>{},
-            firedBeatIds: <String>{},
+            readBeatIds: <String>{},
           ),
         ),
         isTrue,
