@@ -7,9 +7,10 @@ import 'package:math_city/domain/city/unlock_rule.dart';
 /// exercise the mechanics; real numbers are tuned in Phase 8 / 9 from play.
 ///
 /// Mayor's office is free and ungated so every player can place it on turn
-/// one. Single home is free-to-place but requires 1 🔬 to research, so the
-/// very first 🔬 award (band-crossing on a starter concept) unlocks the
-/// player's first non-mayor building immediately.
+/// one. Single home costs 5 🧱 to place and 1 🔬 to research, so the very
+/// first 🔬 award (band-crossing on a starter concept) unlocks the research
+/// card and a handful of correct answers afterward earns the bricks to
+/// place the first house.
 const buildingRegistry = <BuildingType>[
   // -- Civic & housing ---------------------------------------------------
   BuildingType(
@@ -27,7 +28,7 @@ const buildingRegistry = <BuildingType>[
     name: 'Single home',
     emoji: '🏠',
     category: BuildingCategory.civicHousing,
-    brickCost: 0,
+    brickCost: 5,
     researchCost: 1,
     unlockRule: UnlockRule(
       requiredBuildingsPlaced: <String>{'mayors_office'},

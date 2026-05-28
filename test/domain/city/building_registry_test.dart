@@ -37,10 +37,10 @@ void main() {
       );
     });
 
-    test('single home is free to place but costs 1 research', () {
+    test('single home costs 5 bricks to place and 1 research to unlock', () {
       final home = findBuildingTypeById('single_home');
       expect(home, isNotNull);
-      expect(home!.brickCost, 0);
+      expect(home!.brickCost, 5);
       expect(home.researchCost, 1);
     });
 
