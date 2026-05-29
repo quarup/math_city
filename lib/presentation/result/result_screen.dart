@@ -7,11 +7,14 @@ import 'package:math_city/domain/concepts/dag_engine.dart';
 import 'package:math_city/domain/questions/answer_check.dart';
 import 'package:math_city/domain/questions/diagram_spec.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
+import 'package:math_city/domain/questions/is_word_problem.dart';
 import 'package:math_city/presentation/city/city_screen.dart';
 import 'package:math_city/presentation/diagrams/diagram_renderer.dart';
 import 'package:math_city/presentation/spin/spin_screen.dart';
 import 'package:math_city/presentation/theme/app_palette.dart';
+import 'package:math_city/presentation/widgets/speech_toggle_button.dart';
 import 'package:math_city/state/game_session_provider.dart';
+import 'package:math_city/state/tts_provider.dart';
 
 class ResultScreen extends ConsumerStatefulWidget {
   const ResultScreen({
@@ -52,6 +55,18 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
   final GlobalKey _starKey = GlobalKey();
   bool _starVisible = true;
 
+  /// Joined explanation text iff this result screen has something worth
+  /// reading aloud — that is, a wrong-answer explanation that contains
+  /// real prose (per [isWordProblem]). Correct answers show no
+  /// explanation, and purely numeric explanations don't gain anything
+  /// from synthesis.
+  String? get _speakableText {
+    if (widget.outcome != AnswerOutcome.wrong) return null;
+    final joined = widget.question.explanation.join(' ');
+    if (!isWordProblem(joined)) return null;
+    return joined;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -61,6 +76,21 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
         ref.read(totalBricksProvider.notifier).add(widget.bricksEarned);
       });
     }
+    final text = _speakableText;
+    if (text != null) {
+      // Defer so the provider read happens after first frame, matching
+      // the bricks animation hook above.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        unawaited(speakIfEnabled(ref, text));
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    unawaited(ref.read(ttsServiceProvider).stop());
+    super.dispose();
   }
 
   Future<void> _onNextRound() async {
@@ -134,78 +164,104 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
     final isCorrect = widget.outcome != AnswerOutcome.wrong;
     final isEquivalentNonCanonical =
         widget.outcome == AnswerOutcome.equivalentNonCanonical;
+    final speakable = _speakableText;
+
+    // Toggle off→on while this screen is alive: re-read the explanation.
+    // Initial AsyncLoading→AsyncData(true) is suppressed so the initState
+    // post-frame speak isn't doubled.
+    ref.listen<AsyncValue<bool>>(ttsEnabledProvider, (prev, next) {
+      final wasExplicitlyOff = prev is AsyncData<bool> && !prev.value;
+      final isOn = next is AsyncData<bool> && next.value;
+      if (!wasExplicitlyOff || !isOn) return;
+      if (speakable == null) return;
+      unawaited(ref.read(ttsServiceProvider).speak(speakable));
+    });
 
     return Scaffold(
       backgroundColor: isCorrect
           ? palette.successGreenSoft
           : palette.errorRedSoft,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Spacer(),
-              Icon(
-                isCorrect ? Icons.check_circle_rounded : Icons.cancel_rounded,
-                size: 80,
-                color: isCorrect
-                    ? palette.successGreenDeep
-                    : palette.errorRedDeep,
+        child: Stack(
+          children: [
+            if (speakable != null)
+              const Positioned(
+                top: 4,
+                right: 4,
+                child: SpeechToggleIconButton(),
               ),
-              const SizedBox(height: 16),
-              Text(
-                isCorrect ? 'Correct!' : 'Not quite…',
-                style: theme.textTheme.headlineLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: isCorrect
-                      ? palette.successGreenDeep
-                      : palette.errorRedDeep,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              if (isCorrect && widget.bricksEarned > 0) ...[
-                const SizedBox(height: 16),
-                Opacity(
-                  opacity: _starVisible ? 1.0 : 0.0,
-                  child: _BrickAward(
-                    key: _starKey,
-                    bricks: widget.bricksEarned,
-                    theme: theme,
+            Padding(
+              padding: const EdgeInsets.all(32),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Spacer(),
+                  Icon(
+                    isCorrect
+                        ? Icons.check_circle_rounded
+                        : Icons.cancel_rounded,
+                    size: 80,
+                    color: isCorrect
+                        ? palette.successGreenDeep
+                        : palette.errorRedDeep,
                   ),
-                ),
-              ],
-              if (isEquivalentNonCanonical) ...[
-                const SizedBox(height: 16),
-                _EquivalentNudgeCard(
-                  playerAnswer: widget.selectedAnswer,
-                  canonical: widget.question.correctAnswer,
-                ),
-              ],
-              if (isCorrect && widget.unlockEvent != null) ...[
-                const SizedBox(height: 24),
-                _UnlockCard(event: widget.unlockEvent!),
-              ],
-              if (!isCorrect) ...[
-                const SizedBox(height: 24),
-                _ExplanationCard(
-                  selectedAnswer: widget.selectedAnswer,
-                  explanation: widget.question.explanation,
-                  diagram: widget.question.explanationDiagram,
-                ),
-              ],
-              const Spacer(),
-              FilledButton(
-                onPressed: _onNextRound,
-                style: FilledButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 18),
-                  textStyle: theme.textTheme.titleLarge,
-                ),
-                child: Text(widget.debugMode ? 'Try another' : 'Next Round'),
+                  const SizedBox(height: 16),
+                  Text(
+                    isCorrect ? 'Correct!' : 'Not quite…',
+                    style: theme.textTheme.headlineLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: isCorrect
+                          ? palette.successGreenDeep
+                          : palette.errorRedDeep,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  if (isCorrect && widget.bricksEarned > 0) ...[
+                    const SizedBox(height: 16),
+                    Opacity(
+                      opacity: _starVisible ? 1.0 : 0.0,
+                      child: _BrickAward(
+                        key: _starKey,
+                        bricks: widget.bricksEarned,
+                        theme: theme,
+                      ),
+                    ),
+                  ],
+                  if (isEquivalentNonCanonical) ...[
+                    const SizedBox(height: 16),
+                    _EquivalentNudgeCard(
+                      playerAnswer: widget.selectedAnswer,
+                      canonical: widget.question.correctAnswer,
+                    ),
+                  ],
+                  if (isCorrect && widget.unlockEvent != null) ...[
+                    const SizedBox(height: 24),
+                    _UnlockCard(event: widget.unlockEvent!),
+                  ],
+                  if (!isCorrect) ...[
+                    const SizedBox(height: 24),
+                    _ExplanationCard(
+                      selectedAnswer: widget.selectedAnswer,
+                      explanation: widget.question.explanation,
+                      diagram: widget.question.explanationDiagram,
+                    ),
+                  ],
+                  const Spacer(),
+                  FilledButton(
+                    onPressed: _onNextRound,
+                    style: FilledButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 18),
+                      textStyle: theme.textTheme.titleLarge,
+                    ),
+                    child: Text(
+                      widget.debugMode ? 'Try another' : 'Next Round',
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                ],
               ),
-              const SizedBox(height: 12),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

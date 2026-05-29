@@ -190,6 +190,21 @@ class ConceptBandMilestones extends Table {
   Set<Column<Object>> get primaryKey => {playerId, conceptId, bandIndex};
 }
 
+/// App-wide settings (not per-player). Single-row table keyed on `id = 1`;
+/// the row is auto-created on first read. Added in v10 for the
+/// text-to-speech toggle and reserved as the home for any future
+/// app-level preferences.
+class AppSettings extends Table {
+  IntColumn get id => integer()();
+
+  /// Text-to-speech for question prompts and story beats. On by default
+  /// (see prd.md accessibility goals); persists across sessions.
+  BoolColumn get ttsEnabled => boolean().withDefault(const Constant(true))();
+
+  @override
+  Set<Column<Object>> get primaryKey => {id};
+}
+
 /// Per-player story-beat state. State enum stored as text. Bubble state
 /// survives across sessions per prd.md.
 class StoryBeatStates extends Table {
@@ -227,13 +242,14 @@ class StoryBeatStates extends Table {
     BuildingTypesResearched,
     ConceptBandMilestones,
     StoryBeatStates,
+    AppSettings,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 9;
+  int get schemaVersion => 10;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -259,20 +275,31 @@ class AppDatabase extends _$AppDatabase {
       // v9: added StoryBeatStates.ackedAtRound — stamps when the player reads
       //   a bubble so it lingers a few rounds before retiring instead of
       //   vanishing on tap.
-      // Wipe is acceptable while we have no real users; proper additive
-      // migrations land in Phase 11. See plan.md.
-      await customStatement('DROP TABLE IF EXISTS story_beat_states');
-      await customStatement('DROP TABLE IF EXISTS concept_band_milestones');
-      await customStatement('DROP TABLE IF EXISTS building_types_researched');
-      await customStatement('DROP TABLE IF EXISTS building_placements');
-      await customStatement('DROP TABLE IF EXISTS cities');
-      await customStatement('DROP TABLE IF EXISTS dataset_questions');
-      await customStatement('DROP TABLE IF EXISTS introduced_concepts');
-      await customStatement('DROP TABLE IF EXISTS concepts');
-      await customStatement('DROP TABLE IF EXISTS concept_proficiencies');
-      await customStatement('DROP TABLE IF EXISTS players');
-      await m.createAll();
-      await _seedConceptCatalog();
+      // v10: AppSettings (single-row, app-wide) — home for the text-to-
+      //   speech toggle. Purely additive; ran as a conditional step so
+      //   v9→v10 preserves player data (the pre-v10 wipe block only runs
+      //   when coming from a pre-v9 schema).
+      if (from < 9) {
+        // Wipe is acceptable while we have no real users; proper additive
+        // migrations land in Phase 11. See plan.md.
+        await customStatement('DROP TABLE IF EXISTS story_beat_states');
+        await customStatement('DROP TABLE IF EXISTS concept_band_milestones');
+        await customStatement(
+          'DROP TABLE IF EXISTS building_types_researched',
+        );
+        await customStatement('DROP TABLE IF EXISTS building_placements');
+        await customStatement('DROP TABLE IF EXISTS cities');
+        await customStatement('DROP TABLE IF EXISTS dataset_questions');
+        await customStatement('DROP TABLE IF EXISTS introduced_concepts');
+        await customStatement('DROP TABLE IF EXISTS concepts');
+        await customStatement('DROP TABLE IF EXISTS concept_proficiencies');
+        await customStatement('DROP TABLE IF EXISTS players');
+        await m.createAll();
+        await _seedConceptCatalog();
+      }
+      if (from < 10) {
+        await m.createTable(appSettings);
+      }
     },
   );
 
@@ -777,6 +804,33 @@ class AppDatabase extends _$AppDatabase {
           introducedAt: DateTime.now(),
         ),
       );
+
+  // ---- App-wide settings ----
+
+  /// Reads (and lazily creates) the app-wide settings row. Returns the
+  /// row with default values on first call.
+  Future<AppSetting> _getOrCreateAppSettings() async {
+    final existing = await (select(
+      appSettings,
+    )..where((t) => t.id.equals(1))).getSingleOrNull();
+    if (existing != null) return existing;
+    await into(appSettings).insert(
+      const AppSettingsCompanion(id: Value(1)),
+    );
+    return (select(appSettings)..where((t) => t.id.equals(1))).getSingle();
+  }
+
+  /// Whether text-to-speech is enabled. Defaults to true on first launch.
+  Future<bool> getTtsEnabled() async =>
+      (await _getOrCreateAppSettings()).ttsEnabled;
+
+  /// Persists the text-to-speech toggle state.
+  Future<void> setTtsEnabled(bool enabled) async {
+    await _getOrCreateAppSettings();
+    await (update(appSettings)..where((t) => t.id.equals(1))).write(
+      AppSettingsCompanion(ttsEnabled: Value(enabled)),
+    );
+  }
 
   /// Wipes a player's recorded proficiencies AND introduced-concept set,
   /// returning them to the "fresh player" state. The next read of

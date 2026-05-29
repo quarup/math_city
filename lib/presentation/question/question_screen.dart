@@ -6,11 +6,14 @@ import 'package:math_city/domain/concepts/concept_registry.dart';
 import 'package:math_city/domain/proficiency/proficiency_band.dart';
 import 'package:math_city/domain/questions/answer_check.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
+import 'package:math_city/domain/questions/is_word_problem.dart';
 import 'package:math_city/presentation/diagrams/diagram_renderer.dart';
 import 'package:math_city/presentation/question/number_pad_widget.dart';
 import 'package:math_city/presentation/result/result_screen.dart';
+import 'package:math_city/presentation/widgets/speech_toggle_button.dart';
 import 'package:math_city/state/introduced_concepts_provider.dart';
 import 'package:math_city/state/proficiency_provider.dart';
+import 'package:math_city/state/tts_provider.dart';
 
 class QuestionScreen extends ConsumerStatefulWidget {
   const QuestionScreen({
@@ -55,6 +58,18 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen> {
       _question = q;
       _shuffledChoices = List.of(q.allChoices)..shuffle();
     });
+    // Auto-read word problems only — bare equations like "3 + 4 = ?"
+    // sound robotic when synthesised and don't help readers.
+    if (isWordProblem(q.prompt)) {
+      unawaited(speakIfEnabled(ref, q.prompt));
+    }
+  }
+
+  @override
+  void dispose() {
+    // Silence anything still in flight when the player leaves the screen.
+    unawaited(ref.read(ttsServiceProvider).stop());
+    super.dispose();
   }
 
   Future<void> _onAnswerSubmitted(String answer) async {
@@ -98,11 +113,28 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Re-read the prompt when the user flips the speech toggle off→on, so
+    // they can hear what's currently on screen. We only react to a true
+    // user transition (AsyncData(false) → AsyncData(true)) — the initial
+    // loading→AsyncData(true) emission is suppressed so the load path
+    // (which already calls `speakIfEnabled` once) doesn't double-speak.
+    ref.listen<AsyncValue<bool>>(ttsEnabledProvider, (prev, next) {
+      final wasExplicitlyOff = prev is AsyncData<bool> && !prev.value;
+      final isOn = next is AsyncData<bool> && next.value;
+      if (!wasExplicitlyOff || !isOn) return;
+      final q = _question;
+      if (q == null) return;
+      if (!isWordProblem(q.prompt)) return;
+      unawaited(ref.read(ttsServiceProvider).speak(q.prompt));
+    });
+
     final conceptName =
         findConceptById(widget.conceptId)?.name ?? widget.conceptId;
     final question = _question;
 
     if (question == null) {
+      // Hide the speaker until we know whether the prompt is speakable —
+      // we don't yet know if this generator emits a word problem.
       return Scaffold(
         appBar: AppBar(
           title: Text(conceptName),
@@ -113,6 +145,7 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen> {
         ),
       );
     }
+    final speakablePrompt = isWordProblem(question.prompt);
 
     // Keypad eligibility is gated by BOTH band AND answer format. The
     // keypad can only enter numeric values (digits + a small extra-chars
@@ -126,6 +159,9 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen> {
       appBar: AppBar(
         title: Text(conceptName),
         automaticallyImplyLeading: false,
+        actions: [
+          if (speakablePrompt) const SpeechToggleIconButton(),
+        ],
       ),
       body: SafeArea(
         child: Padding(

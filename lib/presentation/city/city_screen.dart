@@ -18,8 +18,10 @@ import 'package:math_city/game/city/iso_city_game.dart';
 import 'package:math_city/game/city/iso_grid.dart';
 import 'package:math_city/presentation/player/adventurer_avatar_widget.dart';
 import 'package:math_city/presentation/spin/spin_screen.dart';
+import 'package:math_city/presentation/widgets/speech_toggle_button.dart';
 import 'package:math_city/state/city_provider.dart';
 import 'package:math_city/state/player_provider.dart';
+import 'package:math_city/state/tts_provider.dart';
 
 /// Category → placeholder building color (presentation concern, not domain).
 const _categoryColors = <BuildingCategory, Color>{
@@ -852,6 +854,26 @@ class _CitizenBubbleOverlayState extends ConsumerState<_CitizenBubbleOverlay> {
 
   @override
   Widget build(BuildContext context) {
+    // Repeat the currently-open bubble's long text when the user flips
+    // speech off→on. Only a real user toggle counts — initial
+    // loading→AsyncData(true) is suppressed so we don't speak on every
+    // mount of the city screen.
+    ref.listen<AsyncValue<bool>>(ttsEnabledProvider, (prev, next) {
+      final wasExplicitlyOff = prev is AsyncData<bool> && !prev.value;
+      final isOn = next is AsyncData<bool> && next.value;
+      if (!wasExplicitlyOff || !isOn) return;
+      final id = _expandedId;
+      if (id == null) return;
+      final current = ref
+          .read(onScreenBeatsProvider)
+          .asData
+          ?.value
+          .where((b) => b.beat.id == id && !b.completed)
+          .firstOrNull;
+      if (current == null) return;
+      unawaited(ref.read(ttsServiceProvider).speak(current.beat.longText));
+    });
+
     final beats =
         ref.watch(onScreenBeatsProvider).asData?.value ??
         const <OnScreenBeat>[];
@@ -913,6 +935,9 @@ class _CitizenBubbleOverlayState extends ConsumerState<_CitizenBubbleOverlay> {
                                   .read(cityActionsProvider)
                                   .markBeatRead(b.beat.id),
                             );
+                            unawaited(
+                              speakIfEnabled(ref, b.beat.longText),
+                            );
                             setState(() => _expandedId = b.beat.id);
                           },
                   ),
@@ -924,7 +949,10 @@ class _CitizenBubbleOverlayState extends ConsumerState<_CitizenBubbleOverlay> {
           Positioned.fill(
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
-              onTap: () => setState(() => _expandedId = null),
+              onTap: () {
+                unawaited(ref.read(ttsServiceProvider).stop());
+                setState(() => _expandedId = null);
+              },
             ),
           ),
           Positioned(
@@ -935,7 +963,10 @@ class _CitizenBubbleOverlayState extends ConsumerState<_CitizenBubbleOverlay> {
               child: _ExpandedBeatCard(
                 beat: expanded,
                 // Already marked read on open; "Got it" just closes the card.
-                onDismiss: () => setState(() => _expandedId = null),
+                onDismiss: () {
+                  unawaited(ref.read(ttsServiceProvider).stop());
+                  setState(() => _expandedId = null);
+                },
               ),
             ),
           ),
@@ -1191,13 +1222,16 @@ class _ExpandedBeatCard extends StatelessWidget {
             const SizedBox(height: 8),
             Text(beat.longText, style: theme.textTheme.bodyMedium),
             const SizedBox(height: 12),
-            Align(
-              alignment: Alignment.centerRight,
-              child: FilledButton(
-                style: FilledButton.styleFrom(backgroundColor: accent),
-                onPressed: onDismiss,
-                child: const Text('Got it'),
-              ),
+            Row(
+              children: [
+                const SpeechToggleIconButton(),
+                const Spacer(),
+                FilledButton(
+                  style: FilledButton.styleFrom(backgroundColor: accent),
+                  onPressed: onDismiss,
+                  child: const Text('Got it'),
+                ),
+              ],
             ),
           ],
         ),
