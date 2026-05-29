@@ -825,7 +825,7 @@ class AppDatabase extends _$AppDatabase {
       (await _getOrCreateAppSettings()).ttsEnabled;
 
   /// Persists the text-to-speech toggle state.
-  Future<void> setTtsEnabled(bool enabled) async {
+  Future<void> setTtsEnabled({required bool enabled}) async {
     await _getOrCreateAppSettings();
     await (update(appSettings)..where((t) => t.id.equals(1))).write(
       AppSettingsCompanion(ttsEnabled: Value(enabled)),

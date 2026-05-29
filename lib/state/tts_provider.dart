@@ -22,7 +22,7 @@ class TtsEnabledNotifier extends AsyncNotifier<bool> {
     final next = !current;
     state = AsyncData(next);
     final db = ref.read(appDatabaseProvider);
-    await db.setTtsEnabled(next);
+    await db.setTtsEnabled(enabled: next);
     // If we just turned TTS off, silence anything still being spoken.
     if (!next) {
       await ref.read(ttsServiceProvider).stop();
