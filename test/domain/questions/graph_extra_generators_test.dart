@@ -90,7 +90,9 @@ void main() {
 
   group('simulate_compound', () {
     test('correct = happened/trials in canonical form', () {
-      final re = RegExp(r'flipped (\d+) times\. Both came up heads (\d+) times');
+      final re = RegExp(
+        r'flipped (\d+) times\. Both came up heads (\d+) times',
+      );
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'simulate_compound', i);
         final m = re.firstMatch(q.prompt);

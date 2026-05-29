@@ -60,11 +60,12 @@ class _Box3DPainter extends CustomPainter {
     const isoDepth = 0.45;
     final maxW = spec.length + spec.width * isoDepth;
     final maxH = spec.height + spec.width * isoDepth;
-    final cell = (0.85 *
-            (size.width / maxW < size.height / maxH
-                ? size.width / maxW
-                : size.height / maxH))
-        .clamp(8.0, 64.0);
+    final cell =
+        (0.85 *
+                (size.width / maxW < size.height / maxH
+                    ? size.width / maxW
+                    : size.height / maxH))
+            .clamp(8.0, 64.0);
     final boxW = cell * spec.length;
     final boxH = cell * spec.height;
     final depthDx = cell * spec.width * isoDepth;
@@ -181,8 +182,7 @@ class _Box3DPainter extends CustomPainter {
       _drawText(
         canvas,
         '${spec.width}',
-        Offset((ftr.dx + btr.dx) / 2 + 6,
-            (ftr.dy + btr.dy) / 2 - 4),
+        Offset((ftr.dx + btr.dx) / 2 + 6, (ftr.dy + btr.dy) / 2 - 4),
         alignLeft: true,
       );
     }

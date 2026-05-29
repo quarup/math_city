@@ -169,8 +169,12 @@ class _LineFigurePainter extends CustomPainter {
 
   /// Draws a small arrowhead at [b] pointing in the direction
   /// `(b - a)`. Two short lines forming the V.
-  void _arrow(Canvas canvas, Paint stroke,
-      {required Offset a, required Offset b}) {
+  void _arrow(
+    Canvas canvas,
+    Paint stroke, {
+    required Offset a,
+    required Offset b,
+  }) {
     final dx = b.dx - a.dx;
     final dy = b.dy - a.dy;
     final angle = math.atan2(dy, dx);

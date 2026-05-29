@@ -66,8 +66,12 @@ void main() {
 
   group('fraction_word_problems', () {
     test('correct answer parses as fraction; equals shown arithmetic', () {
-      final reAdd = RegExp(r'eats (\d+)/(\d+) of a pizza\. Then \w+ eats (\d+)/(\d+) more');
-      final reSub = RegExp(r'has (\d+)/(\d+) of a pizza\. \w+ eats (\d+)/(\d+) of the pizza');
+      final reAdd = RegExp(
+        r'eats (\d+)/(\d+) of a pizza\. Then \w+ eats (\d+)/(\d+) more',
+      );
+      final reSub = RegExp(
+        r'has (\d+)/(\d+) of a pizza\. \w+ eats (\d+)/(\d+) of the pizza',
+      );
       var sawAdd = false;
       var sawSub = false;
       for (var i = 0; i < _iterations; i++) {
@@ -129,7 +133,9 @@ void main() {
 
   group('word_problem_two_step_eq', () {
     test('px + q = r recovery: answer = (r-q)/p', () {
-      final re = RegExp(r'apples at \$(\d+) each, plus a \$(\d+) delivery fee. The total cost is \$(\d+)\.');
+      final re = RegExp(
+        r'apples at \$(\d+) each, plus a \$(\d+) delivery fee. The total cost is \$(\d+)\.',
+      );
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'word_problem_two_step_eq', i);
         final m = re.firstMatch(q.prompt);
@@ -146,7 +152,9 @@ void main() {
 
   group('system_word_problem', () {
     test('larger/smaller recovered from sum & diff', () {
-      final re = RegExp(r'add to (\d+)\. Their difference is (\d+)\. What is the (larger|smaller) number\?');
+      final re = RegExp(
+        r'add to (\d+)\. Their difference is (\d+)\. What is the (larger|smaller) number\?',
+      );
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'system_word_problem', i);
         final m = re.firstMatch(q.prompt);

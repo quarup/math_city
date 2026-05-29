@@ -68,8 +68,10 @@ void main() {
         final q = _gen(registry, 'volume_unit_cubes', i);
         final spec = q.diagram! as Box3DSpec;
         expect(spec.showUnitGrid, isTrue);
-        expect(int.parse(q.correctAnswer),
-            spec.length * spec.width * spec.height);
+        expect(
+          int.parse(q.correctAnswer),
+          spec.length * spec.width * spec.height,
+        );
         _expectThreeDistinctDistractors(q);
       }
     });
@@ -91,10 +93,9 @@ void main() {
     test('answer = a + b drawn from the prompt', () {
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'area_polygon_decompose', i);
-        final nums = RegExp(r'\d+')
-            .allMatches(q.prompt)
-            .map((m) => int.parse(m.group(0)!))
-            .toList();
+        final nums = RegExp(
+          r'\d+',
+        ).allMatches(q.prompt).map((m) => int.parse(m.group(0)!)).toList();
         expect(nums.length, greaterThanOrEqualTo(2));
         final a = nums[0];
         final b = nums[1];
@@ -110,10 +111,9 @@ void main() {
       var inverseCount = 0;
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'scale_drawing', i);
-        final nums = RegExp(r'\d+')
-            .allMatches(q.prompt)
-            .map((m) => int.parse(m.group(0)!))
-            .toList();
+        final nums = RegExp(
+          r'\d+',
+        ).allMatches(q.prompt).map((m) => int.parse(m.group(0)!)).toList();
         expect(nums.length, greaterThanOrEqualTo(2));
         final ans = int.parse(q.correctAnswer);
         if (q.prompt.contains('long is the actual wall')) {

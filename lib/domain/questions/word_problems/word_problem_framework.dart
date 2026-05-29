@@ -147,7 +147,8 @@ const List<WordProblemContext> multContextsV1 = [
   WordProblemContext(
     id: 'bakes',
     op: WordProblemOp.mult,
-    action: '{Name} bakes {a} {items} in each batch, '
+    action:
+        '{Name} bakes {a} {items} in each batch, '
         'and makes {b} batches.',
     requiresEdibleItems: true,
   ),

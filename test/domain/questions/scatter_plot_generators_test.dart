@@ -84,8 +84,7 @@ void main() {
           final q = _gen(registry, 'scatter_plot_describe', i);
           expect(q.prompt, 'What pattern does this scatter plot show?');
           expect(q.correctAnswer, isIn(patterns));
-          expect(q.distractors.toSet(),
-              patterns.difference({q.correctAnswer}));
+          expect(q.distractors.toSet(), patterns.difference({q.correctAnswer}));
           expect(q.diagram, isA<ScatterPlotSpec>());
           final spec = q.diagram! as ScatterPlotSpec;
           expect(spec.points, hasLength(8));
@@ -94,8 +93,7 @@ void main() {
           // adjacent steps in the x-sorted point list. Real data has
           // jitter so we tolerate noise but require a clear directional
           // signal for the linear patterns.
-          final pts = [...spec.points]
-            ..sort((a, b) => a.x.compareTo(b.x));
+          final pts = [...spec.points]..sort((a, b) => a.x.compareTo(b.x));
           var ups = 0;
           var downs = 0;
           for (var i = 1; i < pts.length; i++) {
@@ -104,15 +102,23 @@ void main() {
           }
           switch (q.correctAnswer) {
             case 'Positive association':
-              expect(ups, greaterThan(downs),
-                  reason: 'positive needs net upward trend');
+              expect(
+                ups,
+                greaterThan(downs),
+                reason: 'positive needs net upward trend',
+              );
             case 'Negative association':
-              expect(downs, greaterThan(ups),
-                  reason: 'negative needs net downward trend');
+              expect(
+                downs,
+                greaterThan(ups),
+                reason: 'negative needs net downward trend',
+              );
             case 'No association':
               // No strong invariant — just confirm not all-same y
-              expect(pts.map((p) => p.y).toSet().length,
-                  greaterThanOrEqualTo(2));
+              expect(
+                pts.map((p) => p.y).toSet().length,
+                greaterThanOrEqualTo(2),
+              );
             case 'Nonlinear':
               // V-shape generator yields a minimum around x=6 — first half
               // mostly decreasing, second half mostly increasing.

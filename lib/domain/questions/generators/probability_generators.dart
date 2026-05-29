@@ -119,9 +119,9 @@ GeneratedQuestion probabilitySimpleEvent(Random rand) {
 
   final prompt = useSpinner
       ? 'The spinner shown has $total equal sectors. If you spin it once, '
-          'what is P(${colors.$1})?'
+            'what is P(${colors.$1})?'
       : 'A bag has $a ${colors.$1} marbles and $b ${colors.$2} marbles. '
-          'You pick one at random. What is P(${colors.$1})?';
+            'You pick one at random. What is P(${colors.$1})?';
   final diagram = useSpinner
       ? SpinnerSpec(
           sectors: [

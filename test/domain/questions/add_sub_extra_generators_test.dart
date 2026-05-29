@@ -50,14 +50,17 @@ void main() {
     test('answer = max/min based on direction', () {
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'compare_2digit', i);
-        final m = RegExp(r'(greater|smaller): (\d+) or (\d+)')
-            .firstMatch(q.prompt);
+        final m = RegExp(
+          r'(greater|smaller): (\d+) or (\d+)',
+        ).firstMatch(q.prompt);
         expect(m, isNotNull);
         final dir = m!.group(1)!;
         final a = int.parse(m.group(2)!);
         final b = int.parse(m.group(3)!);
-        expect(int.parse(q.correctAnswer),
-            dir == 'greater' ? max(a, b) : min(a, b));
+        expect(
+          int.parse(q.correctAnswer),
+          dir == 'greater' ? max(a, b) : min(a, b),
+        );
         _expectThreeDistinctDistractors(q);
       }
     });
@@ -94,20 +97,22 @@ void main() {
   });
 
   group('equal_sign_meaning', () {
-    test('correctAnswer matches whether the shown equation is arithmetically true',
-        () {
-      for (var i = 0; i < _iterations; i++) {
-        final q = _gen(registry, 'equal_sign_meaning', i);
-        final m = RegExp(r'(\d+) \+ (\d+) = (\d+)').firstMatch(q.prompt);
-        expect(m, isNotNull);
-        final a = int.parse(m!.group(1)!);
-        final b = int.parse(m.group(2)!);
-        final shown = int.parse(m.group(3)!);
-        final expected = (a + b == shown) ? 'True' : 'False';
-        expect(q.correctAnswer, expected);
-        _expectThreeDistinctDistractors(q);
-      }
-    });
+    test(
+      'correctAnswer matches whether the shown equation is arithmetically true',
+      () {
+        for (var i = 0; i < _iterations; i++) {
+          final q = _gen(registry, 'equal_sign_meaning', i);
+          final m = RegExp(r'(\d+) \+ (\d+) = (\d+)').firstMatch(q.prompt);
+          expect(m, isNotNull);
+          final a = int.parse(m!.group(1)!);
+          final b = int.parse(m.group(2)!);
+          final shown = int.parse(m.group(3)!);
+          final expected = (a + b == shown) ? 'True' : 'False';
+          expect(q.correctAnswer, expected);
+          _expectThreeDistinctDistractors(q);
+        }
+      },
+    );
   });
 
   group('commutative_add', () {

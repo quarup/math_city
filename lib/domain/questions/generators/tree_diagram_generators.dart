@@ -112,7 +112,8 @@ GeneratedQuestion treeDiagram(Random rand) {
 
   return GeneratedQuestion(
     conceptId: 'tree_diagram',
-    prompt: '${_phraseFor(stages)} '
+    prompt:
+        '${_phraseFor(stages)} '
         'How many possible outcomes are there in total?',
     diagram: spec,
     correctAnswer: '$correct',
@@ -157,7 +158,8 @@ GeneratedQuestion compoundEventProbability(Random rand) {
 
   return GeneratedQuestion(
     conceptId: 'compound_event_probability',
-    prompt: '${_phraseFor(stages)} '
+    prompt:
+        '${_phraseFor(stages)} '
         'What is the probability of getting $outcomeStr?',
     diagram: spec,
     correctAnswer: correct,

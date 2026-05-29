@@ -66,8 +66,10 @@ void main() {
         final shapesSeen = <String>{};
         for (var i = 0; i < _iterations; i++) {
           final q = _gen(registry, 'describe_distribution', i);
-          expect(q.prompt,
-              'Which best describes the shape of this distribution?');
+          expect(
+            q.prompt,
+            'Which best describes the shape of this distribution?',
+          );
           expect(q.correctAnswer, isIn(shapes));
           expect(q.answerFormat, AnswerFormat.string);
           // Distractors are exactly the other 3 shape names.

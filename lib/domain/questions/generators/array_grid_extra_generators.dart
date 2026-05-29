@@ -159,8 +159,7 @@ GeneratedQuestion multMeaningGroups(Random rand) {
   final correct = '$rows × $cols';
   return GeneratedQuestion(
     conceptId: 'mult_meaning_groups',
-    prompt:
-        'Which multiplication describes this array (rows × columns)?',
+    prompt: 'Which multiplication describes this array (rows × columns)?',
     diagram: AreaGridSpec(
       rows: rows,
       cols: cols,
@@ -417,8 +416,7 @@ GeneratedQuestion approximateIrrational(Random rand) {
   final correct = '$lo and $hi';
   return GeneratedQuestion(
     conceptId: 'approximate_irrational',
-    prompt:
-        'Between which two consecutive integers does √$n lie?',
+    prompt: 'Between which two consecutive integers does √$n lie?',
     diagram: NumberLineSpec(
       min: lo - 1,
       max: hi + 1,

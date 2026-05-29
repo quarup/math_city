@@ -185,11 +185,16 @@ GeneratedQuestion multDivWord2step(Random rand) {
     final multCtx = pickRandom(multContextsV1, rand);
     final subCtxPool = addSubContextsV1
         .where((c) => c.op == WordProblemOp.sub)
-        .where((c) => !multCtx.requiresEdibleItems || c.requiresEdibleItems
-            // sub `eats` requires edibles; only block when the mult
-            // context is bakes (edibles) and the sub context would
-            // otherwise pick a non-edible verb.
-            || !c.requiresEdibleItems)
+        .where(
+          (c) =>
+              !multCtx.requiresEdibleItems ||
+              c.requiresEdibleItems
+              // sub `eats` requires edibles; only block when the mult
+              // context is bakes (edibles) and the sub context would
+              // otherwise pick a non-edible verb.
+              ||
+              !c.requiresEdibleItems,
+        )
         .toList();
     final subCtx = pickRandom(subCtxPool, rand);
     final items = (multCtx.requiresEdibleItems || subCtx.requiresEdibleItems)
@@ -207,7 +212,8 @@ GeneratedQuestion multDivWord2step(Random rand) {
         .replaceAll('{Name}', name)
         .replaceAll('{b}', '$c')
         .replaceAll('{items}', items);
-    final prompt = '$setup Then $subAction '
+    final prompt =
+        '$setup Then $subAction '
         'How many $items does $name have left?';
 
     return GeneratedQuestion(

@@ -38,8 +38,7 @@ class Ruler extends StatelessWidget {
               edgeColor: theme.colorScheme.onSurface,
               tickColor: theme.colorScheme.onSurface,
               labelStyle:
-                  theme.textTheme.labelSmall ??
-                  const TextStyle(fontSize: 11),
+                  theme.textTheme.labelSmall ?? const TextStyle(fontSize: 11),
             ),
           ),
         );

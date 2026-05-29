@@ -215,8 +215,7 @@ void main() {
           expect(pre, hasLength(3));
           expect(img, hasLength(3));
 
-          final isCongruent =
-              q.correctAnswer.startsWith('Yes');
+          final isCongruent = q.correctAnswer.startsWith('Yes');
           outcomesSeen.add(isCongruent ? 'yes' : 'no');
 
           // Confirm: if congruent, side lengths preserved; if not,
@@ -305,11 +304,17 @@ void main() {
             (r0 - r2).abs(),
           ].reduce((a, b) => a > b ? a : b);
           if (isSimilar) {
-            expect(maxDelta, lessThan(1e-6),
-                reason: 'similar figures should have uniform side ratios');
+            expect(
+              maxDelta,
+              lessThan(1e-6),
+              reason: 'similar figures should have uniform side ratios',
+            );
           } else {
-            expect(maxDelta, greaterThan(1e-6),
-                reason: 'non-similar figures should have varying ratios');
+            expect(
+              maxDelta,
+              greaterThan(1e-6),
+              reason: 'non-similar figures should have varying ratios',
+            );
           }
           _expectThreeDistinctDistractors(q);
         }

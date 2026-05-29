@@ -61,10 +61,9 @@ void main() {
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'volume_composite', i);
         expect((q.diagram! as ShapeSpec).kind, ShapeKind.cube);
-        final nums = RegExp(r'\d+')
-            .allMatches(q.prompt)
-            .map((m) => int.parse(m.group(0)!))
-            .toList();
+        final nums = RegExp(
+          r'\d+',
+        ).allMatches(q.prompt).map((m) => int.parse(m.group(0)!)).toList();
         // First three numbers = "first" prism, next three = "second"
         // prism. Check both come from the prompt before "1" / "2"
         // ordinals — that gets parsed as a number too. Filter to the

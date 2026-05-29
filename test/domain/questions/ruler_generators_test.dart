@@ -59,8 +59,11 @@ void main() {
         final q = _gen(registry, 'measure_to_half_quarter_inch', i);
         final spec = _spec(q);
         expect([2, 4], contains(spec.subdivisions));
-        expect(spec.markedLength % spec.subdivisions, isNot(0),
-            reason: 'must land on a fractional tick');
+        expect(
+          spec.markedLength % spec.subdivisions,
+          isNot(0),
+          reason: 'must land on a fractional tick',
+        );
         subsSeen.add(spec.subdivisions);
 
         // Parse correctAnswer ("W A/B" or "A/B") and confirm value.

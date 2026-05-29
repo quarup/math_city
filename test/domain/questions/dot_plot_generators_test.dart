@@ -46,8 +46,11 @@ void main() {
 
           final countAtAsked = spec.values.where((v) => v == askedV).length;
           expect(int.parse(q.correctAnswer), countAtAsked);
-          expect(countAtAsked, greaterThanOrEqualTo(1),
-              reason: 'asked value should always be present');
+          expect(
+            countAtAsked,
+            greaterThanOrEqualTo(1),
+            reason: 'asked value should always be present',
+          );
 
           themesSeen.add(spec.title);
           _expectThreeDistinctDistractors(q);
@@ -82,8 +85,7 @@ void main() {
           expect(correctCount, greaterThanOrEqualTo(1));
           final candidates = <int>[
             for (var v = spec.minX; v <= spec.maxX; v++)
-              if (spec.values.where((x) => x == v).length == correctCount)
-                v,
+              if (spec.values.where((x) => x == v).length == correctCount) v,
           ];
           // At least one tick has that count (the asked one). Confirm one
           // such tick's display appears in the prompt.

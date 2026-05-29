@@ -46,18 +46,30 @@ class PositionalScene extends StatelessWidget {
       case PositionRelation.above:
         return Column(
           mainAxisSize: MainAxisSize.min,
-          children: [subject, SizedBox(height: gap), reference],
+          children: [
+            subject,
+            SizedBox(height: gap),
+            reference,
+          ],
         );
       case PositionRelation.below:
         return Column(
           mainAxisSize: MainAxisSize.min,
-          children: [reference, SizedBox(height: gap), subject],
+          children: [
+            reference,
+            SizedBox(height: gap),
+            subject,
+          ],
         );
       case PositionRelation.beside:
         return Row(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.end,
-          children: [reference, SizedBox(width: gap), subject],
+          children: [
+            reference,
+            SizedBox(width: gap),
+            subject,
+          ],
         );
       case PositionRelation.inside:
         return SizedBox(

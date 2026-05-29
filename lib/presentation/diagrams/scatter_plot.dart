@@ -58,8 +58,7 @@ class ScatterPlot extends StatelessWidget {
               labelStyle:
                   theme.textTheme.labelSmall ?? const TextStyle(fontSize: 11),
               axisLabelStyle:
-                  (theme.textTheme.labelMedium ??
-                          const TextStyle(fontSize: 12))
+                  (theme.textTheme.labelMedium ?? const TextStyle(fontSize: 12))
                       .copyWith(fontWeight: FontWeight.w600),
             ),
           ),
@@ -160,9 +159,8 @@ class _ScatterPlotPainter extends CustomPainter {
     }
 
     if (spec.xAxisLabel != null) {
-      final mid = (_pixel(spec.minX, spec.minY) +
-              _pixel(spec.maxX, spec.minY)) /
-          2;
+      final mid =
+          (_pixel(spec.minX, spec.minY) + _pixel(spec.maxX, spec.minY)) / 2;
       _drawText(
         canvas,
         spec.xAxisLabel!,
@@ -171,9 +169,8 @@ class _ScatterPlotPainter extends CustomPainter {
       );
     }
     if (spec.yAxisLabel != null) {
-      final mid = (_pixel(spec.minX, spec.minY) +
-              _pixel(spec.minX, spec.maxY)) /
-          2;
+      final mid =
+          (_pixel(spec.minX, spec.minY) + _pixel(spec.minX, spec.maxY)) / 2;
       canvas
         ..save()
         ..translate(mid.dx - 24, mid.dy)

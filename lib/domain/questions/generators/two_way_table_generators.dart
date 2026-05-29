@@ -141,8 +141,7 @@ GeneratedQuestion twoWayTableConstruct(Random rand) {
 
   return GeneratedQuestion(
     conceptId: 'two_way_table_construct',
-    prompt:
-        'How many ${theme.rowLabels[r].toLowerCase()} $colPhrase?',
+    prompt: 'How many ${theme.rowLabels[r].toLowerCase()} $colPhrase?',
     diagram: TwoWayTableSpec(
       title: theme.title,
       rowLabels: theme.rowLabels,

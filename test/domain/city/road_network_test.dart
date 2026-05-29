@@ -39,9 +39,14 @@ void main() {
   test('a lone building gets a connected 8-tile hug ring', () {
     final roads = _roads([_at(5, 5)]);
     expect(roads, {
-      (4, 4), (5, 4), (6, 4),
-      (4, 5), (6, 5),
-      (4, 6), (5, 6), (6, 6),
+      (4, 4),
+      (5, 4),
+      (6, 4),
+      (4, 5),
+      (6, 5),
+      (4, 6),
+      (5, 6),
+      (6, 6),
     });
     expect(roads, isNot(contains((5, 5)))); // the building itself
     expect(_isConnected(roads), isTrue);
@@ -54,9 +59,16 @@ void main() {
   test('touching buildings share one outline, no interior fill', () {
     final roads = _roads([_at(5, 5), _at(6, 5)]);
     expect(roads, {
-      (4, 4), (5, 4), (6, 4), (7, 4),
-      (4, 5), (7, 5),
-      (4, 6), (5, 6), (6, 6), (7, 6),
+      (4, 4),
+      (5, 4),
+      (6, 4),
+      (7, 4),
+      (4, 5),
+      (7, 5),
+      (4, 6),
+      (5, 6),
+      (6, 6),
+      (7, 6),
     });
     expect(roads, isNot(contains((5, 5))));
     expect(roads, isNot(contains((6, 5))));

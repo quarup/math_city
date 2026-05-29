@@ -55,8 +55,7 @@ class CoordinatePlane extends StatelessWidget {
               labelStyle:
                   theme.textTheme.labelSmall ?? const TextStyle(fontSize: 11),
               pointLabelStyle:
-                  (theme.textTheme.labelMedium ??
-                          const TextStyle(fontSize: 13))
+                  (theme.textTheme.labelMedium ?? const TextStyle(fontSize: 13))
                       .copyWith(
                         fontWeight: FontWeight.bold,
                         color: theme.colorScheme.primary,

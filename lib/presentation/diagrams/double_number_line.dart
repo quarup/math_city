@@ -36,10 +36,10 @@ class DoubleNumberLine extends StatelessWidget {
             painter: _DoubleNumberLinePainter(
               spec: spec,
               edge: theme.colorScheme.onSurface,
-              labelStyle: theme.textTheme.labelSmall ??
-                  const TextStyle(fontSize: 11),
-              titleStyle: theme.textTheme.labelMedium ??
-                  const TextStyle(fontSize: 12),
+              labelStyle:
+                  theme.textTheme.labelSmall ?? const TextStyle(fontSize: 11),
+              titleStyle:
+                  theme.textTheme.labelMedium ?? const TextStyle(fontSize: 12),
             ),
           ),
         );
@@ -86,20 +86,37 @@ class _DoubleNumberLinePainter extends CustomPainter {
       canvas
         ..drawLine(Offset(x, topY - 5), Offset(x, topY + 5), stroke)
         ..drawLine(Offset(x, botY - 5), Offset(x, botY + 5), stroke);
-      _drawText(canvas, '${spec.topValues[i]}', Offset(x, topY - 14),
-          labelStyle);
-      _drawText(canvas, '${spec.bottomValues[i]}', Offset(x, botY + 14),
-          labelStyle);
+      _drawText(
+        canvas,
+        '${spec.topValues[i]}',
+        Offset(x, topY - 14),
+        labelStyle,
+      );
+      _drawText(
+        canvas,
+        '${spec.bottomValues[i]}',
+        Offset(x, botY + 14),
+        labelStyle,
+      );
     }
 
     if (spec.topLabel != null) {
-      _drawText(canvas, spec.topLabel!, Offset(padX, topY - 28), titleStyle,
-          alignLeft: true);
+      _drawText(
+        canvas,
+        spec.topLabel!,
+        Offset(padX, topY - 28),
+        titleStyle,
+        alignLeft: true,
+      );
     }
     if (spec.bottomLabel != null) {
-      _drawText(canvas, spec.bottomLabel!, Offset(padX, botY + 28),
-          titleStyle,
-          alignLeft: true);
+      _drawText(
+        canvas,
+        spec.bottomLabel!,
+        Offset(padX, botY + 28),
+        titleStyle,
+        alignLeft: true,
+      );
     }
   }
 

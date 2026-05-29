@@ -143,8 +143,7 @@ void main() {
           final asked = spinM.group(2)!;
           final spec = q.diagram! as SpinnerSpec;
           expect(spec.sectors.length, total);
-          final favCount =
-              spec.sectors.where((c) => c == asked).length;
+          final favCount = spec.sectors.where((c) => c == asked).length;
           final expected = Fraction(favCount, total).reduce().toCanonical();
           expect(q.correctAnswer, expected);
         } else {
@@ -155,8 +154,11 @@ void main() {
         _expectThreeDistinctDistractors(q);
       }
       expect(sawBag, isTrue, reason: 'should sometimes use bag framing');
-      expect(sawSpinner, isTrue,
-          reason: 'should sometimes use spinner framing');
+      expect(
+        sawSpinner,
+        isTrue,
+        reason: 'should sometimes use spinner framing',
+      );
     });
   });
 }

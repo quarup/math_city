@@ -139,7 +139,8 @@ GeneratedQuestion countTo100By10(Random rand) {
   ];
   return GeneratedQuestion(
     conceptId: 'count_to_100_by_10',
-    prompt: 'Counting by 10s: ${shown.join(", ")}, __. '
+    prompt:
+        'Counting by 10s: ${shown.join(", ")}, __. '
         'What comes next?',
     correctAnswer: '$correct',
     distractors: _distinctIntStrings(correct, candidates),
@@ -192,7 +193,8 @@ GeneratedQuestion countForwardFromN(Random rand) {
   ];
   return GeneratedQuestion(
     conceptId: 'count_forward_from_n',
-    prompt: 'Start at $start and count forward $count steps. '
+    prompt:
+        'Start at $start and count forward $count steps. '
         'What number do you reach?',
     correctAnswer: '$correct',
     distractors: _distinctIntStrings(correct, candidates),
@@ -254,7 +256,8 @@ GeneratedQuestion _skipCountByStep(
   ];
   return GeneratedQuestion(
     conceptId: conceptId,
-    prompt: 'Skip count by ${step}s: ${shown.join(", ")}. '
+    prompt:
+        'Skip count by ${step}s: ${shown.join(", ")}. '
         'What number goes in the blank?',
     correctAnswer: '$correct',
     distractors: _distinctIntStrings(correct, candidates),
@@ -307,7 +310,8 @@ GeneratedQuestion skipCount2(Random rand) {
   ];
   return GeneratedQuestion(
     conceptId: 'skip_count_2',
-    prompt: 'Skip count by 2s: ${sequence.join(", ")}. '
+    prompt:
+        'Skip count by 2s: ${sequence.join(", ")}. '
         'What number goes in the blank?',
     correctAnswer: '$correct',
     distractors: _distinctIntStrings(correct, candidates),

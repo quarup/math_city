@@ -120,7 +120,8 @@ GeneratedQuestion barGraphRead(Random rand) {
   // collide with `correct`, which can't happen here since values are
   // distinct.
   final otherValues = [
-    for (var i = 0; i < 4; i++) if (i != askIndex) '${values[i]}',
+    for (var i = 0; i < 4; i++)
+      if (i != askIndex) '${values[i]}',
   ];
 
   final maxV = values.reduce(max);
@@ -182,7 +183,8 @@ GeneratedQuestion barGraphCompare(Random rand) {
   //   - one of the two bar values (gave just one count)
   //   - difference using a wrong pair from the other two bars
   final others = [
-    for (var i = 0; i < 4; i++) if (i != hi && i != lo) values[i],
+    for (var i = 0; i < 4; i++)
+      if (i != hi && i != lo) values[i],
   ];
   final wrongDiff = (others[0] - others[1]).abs();
   final candidates = <String>[
@@ -245,7 +247,8 @@ GeneratedQuestion scaledBarGraphRead(Random rand) {
   final candidates = <String>[
     '$correctMultiplier',
     '${correctMultiplier * scale * scale}',
-    for (var i = 0; i < 4; i++) if (i != askIndex) '${values[i]}',
+    for (var i = 0; i < 4; i++)
+      if (i != askIndex) '${values[i]}',
   ];
 
   final maxV = values.reduce(max);

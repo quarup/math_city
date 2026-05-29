@@ -39,13 +39,15 @@ GeneratedQuestion scatterPlotConstruct(Random rand) {
   // (which would make the swap-distractor identical to the answer).
   late List<List<int>> pairs;
   for (var attempt = 0; attempt < 30; attempt++) {
-    final xs =
-        (List.generate(10, (i) => i + 1)..shuffle(rand)).take(5).toList()
-          ..sort();
-    final ys = (List.generate(10, (i) => i + 1)..shuffle(rand))
-        .take(5)
-        .toList();
-    pairs = [for (var i = 0; i < 5; i++) [xs[i], ys[i]]];
+    final xs = (List.generate(10, (i) => i + 1)..shuffle(rand)).take(5).toList()
+      ..sort();
+    final ys = (List.generate(
+      10,
+      (i) => i + 1,
+    )..shuffle(rand)).take(5).toList();
+    pairs = [
+      for (var i = 0; i < 5; i++) [xs[i], ys[i]],
+    ];
     if (pairs.every((p) => p[0] != p[1])) break;
   }
 
@@ -56,8 +58,7 @@ GeneratedQuestion scatterPlotConstruct(Random rand) {
 
   final plotted = [
     for (var i = 0; i < 5; i++)
-      if (i != missingIdx)
-        ScatterPlotPoint(x: pairs[i][0], y: pairs[i][1]),
+      if (i != missingIdx) ScatterPlotPoint(x: pairs[i][0], y: pairs[i][1]),
   ];
 
   // Distractors:
@@ -100,9 +101,7 @@ GeneratedQuestion scatterPlotConstruct(Random rand) {
     }
   }
 
-  final tableRows = pairs
-      .map((p) => '(${p[0]}, ${p[1]})')
-      .join('; ');
+  final tableRows = pairs.map((p) => '(${p[0]}, ${p[1]})').join('; ');
 
   return GeneratedQuestion(
     conceptId: 'scatter_plot_construct',

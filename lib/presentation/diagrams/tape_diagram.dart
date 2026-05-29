@@ -19,8 +19,9 @@ class TapeDiagram extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final maxUnits =
-        spec.topUnits > spec.bottomUnits ? spec.topUnits : spec.bottomUnits;
+    final maxUnits = spec.topUnits > spec.bottomUnits
+        ? spec.topUnits
+        : spec.bottomUnits;
     final width = maxUnits * unitSize;
     final topFill = theme.colorScheme.primary.withValues(alpha: 0.20);
     final bottomFill = theme.colorScheme.secondary.withValues(alpha: 0.20);

@@ -58,18 +58,15 @@ class BoxPlot extends StatelessWidget {
               boxBorderColor: theme.colorScheme.primary,
               medianColor: theme.colorScheme.tertiary,
               titleStyle:
-                  (theme.textTheme.titleSmall ??
-                          const TextStyle(fontSize: 13))
+                  (theme.textTheme.titleSmall ?? const TextStyle(fontSize: 13))
                       .copyWith(fontWeight: FontWeight.bold),
               tickStyle:
                   theme.textTheme.labelSmall ?? const TextStyle(fontSize: 11),
               rowLabelStyle:
-                  (theme.textTheme.labelMedium ??
-                          const TextStyle(fontSize: 12))
+                  (theme.textTheme.labelMedium ?? const TextStyle(fontSize: 12))
                       .copyWith(fontWeight: FontWeight.bold),
               axisLabelStyle:
-                  theme.textTheme.labelMedium ??
-                  const TextStyle(fontSize: 12),
+                  theme.textTheme.labelMedium ?? const TextStyle(fontSize: 12),
             ),
           ),
         );
@@ -139,8 +136,7 @@ class _BoxPlotPainter extends CustomPainter {
       titleStyle,
     );
 
-    double xFor(num v) =>
-        plotLeft + (v - spec.minX) * unitPx;
+    double xFor(num v) => plotLeft + (v - spec.minX) * unitPx;
 
     // Each row: row label on the left, then box plot.
     for (var i = 0; i < spec.summaries.length; i++) {

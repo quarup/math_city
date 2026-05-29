@@ -76,11 +76,15 @@ void main() {
         _expectThreeDistinctDistractors(q);
         // Each scenario answer is units-typed; assert a "unit" word
         // (inch/inches/foot/feet) appears in the correct answer.
-        final hasUnit = q.correctAnswer.contains('inch') ||
+        final hasUnit =
+            q.correctAnswer.contains('inch') ||
             q.correctAnswer.contains('foot') ||
             q.correctAnswer.contains('feet');
-        expect(hasUnit, isTrue,
-            reason: 'correct answer "${q.correctAnswer}" must include units');
+        expect(
+          hasUnit,
+          isTrue,
+          reason: 'correct answer "${q.correctAnswer}" must include units',
+        );
       }
     });
   });

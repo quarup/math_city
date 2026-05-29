@@ -65,9 +65,14 @@ Set<(int, int)> generateRoads({
 
 const _ortho = [(0, -1), (0, 1), (-1, 0), (1, 0)];
 const _moore = [
-  (-1, -1), (0, -1), (1, -1),
-  (-1, 0), (1, 0),
-  (-1, 1), (0, 1), (1, 1),
+  (-1, -1),
+  (0, -1),
+  (1, -1),
+  (-1, 0),
+  (1, 0),
+  (-1, 1),
+  (0, 1),
+  (1, 1),
 ];
 
 int _cmp((int, int) a, (int, int) b) {
@@ -112,8 +117,7 @@ Set<(int, int)>? _shortestConnector(
 ) {
   final parent = <(int, int), (int, int)>{};
   final visited = <(int, int)>{...sources};
-  final queue = ListQueue<(int, int)>()
-    ..addAll(sources.toList()..sort(_cmp));
+  final queue = ListQueue<(int, int)>()..addAll(sources.toList()..sort(_cmp));
 
   while (queue.isNotEmpty) {
     final (c, r) = queue.removeFirst();

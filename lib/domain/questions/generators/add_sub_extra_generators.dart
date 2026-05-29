@@ -174,8 +174,7 @@ GeneratedQuestion equalSignMeaning(Random rand) {
   final b = rand.nextInt(8) + 1; // 1..8
   final realSum = a + b;
   final isTrue = rand.nextBool();
-  final shownSum =
-      isTrue ? realSum : realSum + (rand.nextBool() ? 1 : -1);
+  final shownSum = isTrue ? realSum : realSum + (rand.nextBool() ? 1 : -1);
   return GeneratedQuestion(
     conceptId: 'equal_sign_meaning',
     prompt: 'Is the equation $a + $b = $shownSum true?',

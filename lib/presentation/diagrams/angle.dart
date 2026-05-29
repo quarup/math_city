@@ -120,7 +120,5 @@ class _AnglePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_AnglePainter old) =>
-      old.spec != spec ||
-      old.rayColor != rayColor ||
-      old.arcColor != arcColor;
+      old.spec != spec || old.rayColor != rayColor || old.arcColor != arcColor;
 }

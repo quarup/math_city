@@ -112,8 +112,13 @@ GeneratedQuestion plotFirstQuadrant(Random rand) {
   } while (x == y);
 
   final distractors = _pickDistractorPoints(
-    x, y, rand,
-    minX: 0, maxX: 10, minY: 0, maxY: 10,
+    x,
+    y,
+    rand,
+    minX: 0,
+    maxX: 10,
+    minY: 0,
+    maxY: 10,
   );
 
   // Shuffle four (point, label) pairs.
@@ -137,7 +142,10 @@ GeneratedQuestion plotFirstQuadrant(Random rand) {
     conceptId: 'plot_first_quadrant',
     prompt: 'Which point is at ${_coord(x, y)}?',
     diagram: CoordinatePlaneSpec(
-      minX: 0, maxX: 10, minY: 0, maxY: 10,
+      minX: 0,
+      maxX: 10,
+      minY: 0,
+      maxY: 10,
       points: points,
     ),
     correctAnswer: correctLabel,
@@ -166,15 +174,23 @@ GeneratedQuestion readFirstQuadrant(Random rand) {
   } while (x == y);
 
   final distractorPoints = _pickDistractorPoints(
-    x, y, rand,
-    minX: 0, maxX: 10, minY: 0, maxY: 10,
+    x,
+    y,
+    rand,
+    minX: 0,
+    maxX: 10,
+    minY: 0,
+    maxY: 10,
   );
 
   return GeneratedQuestion(
     conceptId: 'read_first_quadrant',
     prompt: 'What are the coordinates of point A?',
     diagram: CoordinatePlaneSpec(
-      minX: 0, maxX: 10, minY: 0, maxY: 10,
+      minX: 0,
+      maxX: 10,
+      minY: 0,
+      maxY: 10,
       points: [CoordinatePlanePoint(x: x, y: y, label: 'A')],
     ),
     correctAnswer: _coord(x, y),
@@ -210,8 +226,13 @@ GeneratedQuestion plotFourQuadrants(Random rand) {
   } while (x == y);
 
   final distractors = _pickDistractorPoints(
-    x, y, rand,
-    minX: -5, maxX: 5, minY: -5, maxY: 5,
+    x,
+    y,
+    rand,
+    minX: -5,
+    maxX: 5,
+    minY: -5,
+    maxY: 5,
   );
 
   final allPoints = <List<int>>[
@@ -234,7 +255,10 @@ GeneratedQuestion plotFourQuadrants(Random rand) {
     conceptId: 'plot_four_quadrants',
     prompt: 'Which point is at ${_coord(x, y)}?',
     diagram: CoordinatePlaneSpec(
-      minX: -5, maxX: 5, minY: -5, maxY: 5,
+      minX: -5,
+      maxX: 5,
+      minY: -5,
+      maxY: 5,
       points: points,
     ),
     correctAnswer: correctLabel,
@@ -299,7 +323,10 @@ GeneratedQuestion coordDistanceSameLine(Random rand) {
     conceptId: 'coord_distance_same_line',
     prompt: 'What is the distance from A to B?',
     diagram: CoordinatePlaneSpec(
-      minX: -5, maxX: 5, minY: -5, maxY: 5,
+      minX: -5,
+      maxX: 5,
+      minY: -5,
+      maxY: 5,
       points: [
         CoordinatePlanePoint(x: ax, y: ay, label: 'A'),
         CoordinatePlanePoint(x: bx, y: by, label: 'B'),
@@ -369,7 +396,10 @@ GeneratedQuestion pythagoreanDistanceCoords(Random rand) {
     conceptId: 'pythagorean_distance_coords',
     prompt: 'What is the distance from A to B?',
     diagram: CoordinatePlaneSpec(
-      minX: lo, maxX: hi, minY: lo, maxY: hi,
+      minX: lo,
+      maxX: hi,
+      minY: lo,
+      maxY: hi,
       points: [
         CoordinatePlanePoint(x: ax, y: ay, label: 'A'),
         CoordinatePlanePoint(x: bx, y: by, label: 'B'),

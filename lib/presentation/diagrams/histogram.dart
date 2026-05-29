@@ -55,14 +55,12 @@ class Histogram extends StatelessWidget {
                 alpha: 0.3,
               ),
               titleStyle:
-                  (theme.textTheme.titleSmall ??
-                          const TextStyle(fontSize: 13))
+                  (theme.textTheme.titleSmall ?? const TextStyle(fontSize: 13))
                       .copyWith(fontWeight: FontWeight.bold),
               tickStyle:
                   theme.textTheme.labelSmall ?? const TextStyle(fontSize: 11),
               axisLabelStyle:
-                  theme.textTheme.labelMedium ??
-                  const TextStyle(fontSize: 12),
+                  theme.textTheme.labelMedium ?? const TextStyle(fontSize: 12),
             ),
           ),
         );
@@ -164,8 +162,7 @@ class _HistogramPainter extends CustomPainter {
       _drawText(canvas, '$binLow', Offset(left, plotBottom + 12), tickStyle);
     }
     // Final right-edge tick label (closes the last bin).
-    final lastBinHigh =
-        spec.binStart + spec.counts.length * spec.binWidth;
+    final lastBinHigh = spec.binStart + spec.counts.length * spec.binWidth;
     _drawText(
       canvas,
       '$lastBinHigh',

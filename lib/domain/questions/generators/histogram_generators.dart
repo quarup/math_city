@@ -133,7 +133,8 @@ GeneratedQuestion histogramReading(Random rand) {
 
   return GeneratedQuestion(
     conceptId: 'histogram',
-    prompt: 'How many ${theme.itemPlural} ${theme.measurePhrase} '
+    prompt:
+        'How many ${theme.itemPlural} ${theme.measurePhrase} '
         '$lo and $hi?',
     diagram: HistogramSpec(
       title: theme.title,

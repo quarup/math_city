@@ -30,8 +30,7 @@ void main() {
         ]) {
           for (var i = 0; i < _iterations; i++) {
             final q = _gen(registry, cid, i);
-            final m =
-                RegExp(r'right after (\d+)\?').firstMatch(q.prompt);
+            final m = RegExp(r'right after (\d+)\?').firstMatch(q.prompt);
             expect(m, isNotNull, reason: '$cid prompt: ${q.prompt}');
             final n = int.parse(m!.group(1)!);
             expect(int.parse(q.correctAnswer), n + 1);
@@ -50,8 +49,9 @@ void main() {
         final dirsSeen = <String>{};
         for (var i = 0; i < _iterations; i++) {
           final q = _gen(registry, 'one_more_one_less_within_20', i);
-          final m =
-              RegExp(r'one (more|less) than (\d+)\?').firstMatch(q.prompt);
+          final m = RegExp(
+            r'one (more|less) than (\d+)\?',
+          ).firstMatch(q.prompt);
           expect(m, isNotNull);
           final dir = m!.group(1)!;
           final n = int.parse(m.group(2)!);
@@ -72,8 +72,9 @@ void main() {
         final dirsSeen = <String>{};
         for (var i = 0; i < _iterations; i++) {
           final q = _gen(registry, 'compare_numerals_1_10', i);
-          final m = RegExp(r'(greater|smaller): (\d+) or (\d+)\?')
-              .firstMatch(q.prompt);
+          final m = RegExp(
+            r'(greater|smaller): (\d+) or (\d+)\?',
+          ).firstMatch(q.prompt);
           expect(m, isNotNull);
           final dir = m!.group(1)!;
           final a = int.parse(m.group(2)!);

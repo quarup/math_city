@@ -54,8 +54,7 @@ GeneratedQuestion missingFactor(Random rand) {
   final product = known * answer;
   return GeneratedQuestion(
     conceptId: 'missing_factor',
-    prompt:
-        'What number, when multiplied by $known, gives $product?',
+    prompt: 'What number, when multiplied by $known, gives $product?',
     correctAnswer: '$answer',
     distractors: integerDistractorsWith(
       answer,
@@ -214,8 +213,7 @@ GeneratedQuestion identifyPartsExpression(Random rand) {
   late List<String> distractors;
   switch (flavor) {
     case 0: // coefficient
-      prompt =
-          'In the expression ${a}x + $b, what is the coefficient of x?';
+      prompt = 'In the expression ${a}x + $b, what is the coefficient of x?';
       correct = '$a';
       distractors = integerDistractorsWith(
         a,

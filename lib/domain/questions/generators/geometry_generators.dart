@@ -597,8 +597,7 @@ GeneratedQuestion circleCircumference(Random rand) {
 
   return GeneratedQuestion(
     conceptId: 'circle_circumference',
-    prompt:
-        'What is the circumference of this circle? Use π ≈ 3.14.',
+    prompt: 'What is the circumference of this circle? Use π ≈ 3.14.',
     diagram: CircleSpec(radius: r),
     correctAnswer: correct.toCanonical(),
     distractors: _decimalDistractors(correct, candidates),

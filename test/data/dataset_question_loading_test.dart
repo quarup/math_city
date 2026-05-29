@@ -88,8 +88,7 @@ void main() {
     }
   });
 
-  test('sort_rationals items round-trip with AnswerFormat.commaList',
-      () async {
+  test('sort_rationals items round-trip with AnswerFormat.commaList', () async {
     final db = AppDatabase(NativeDatabase.memory());
     addTearDown(db.close);
     final byConcept = await db.allDatasetQuestionsByConcept();

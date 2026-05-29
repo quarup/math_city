@@ -98,12 +98,13 @@ void main() {
           // bIntercept = y1 - m·x1.
           final slopes = <int>{};
           for (final line in spec.lines) {
-            final m = ((line.y2 - line.y1) /
-                    (line.x2 - line.x1))
-                .round();
+            final m = ((line.y2 - line.y1) / (line.x2 - line.x1)).round();
             final bInt = (line.y1 - m * line.x1).round();
-            expect(m * ax + bInt, ay,
-                reason: 'line $line does not pass through ($ax, $ay)');
+            expect(
+              m * ax + bInt,
+              ay,
+              reason: 'line $line does not pass through ($ax, $ay)',
+            );
             slopes.add(m);
           }
           // Distinct slopes — otherwise no unique intersection.

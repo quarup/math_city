@@ -110,8 +110,7 @@ void main() {
   });
 
   group('line_of_symmetry', () {
-    test('answer matches the known symmetry-count for the rendered kind',
-        () {
+    test('answer matches the known symmetry-count for the rendered kind', () {
       // Mirror of _symmetryCounts in shape_generators.dart.
       const expected = {
         ShapeKind.triangleEquilateral: 3,
@@ -130,8 +129,11 @@ void main() {
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'line_of_symmetry', i);
         final spec = _spec(q);
-        expect(expected.containsKey(spec.kind), isTrue,
-            reason: 'kind ${spec.kind} should have a known symmetry count');
+        expect(
+          expected.containsKey(spec.kind),
+          isTrue,
+          reason: 'kind ${spec.kind} should have a known symmetry count',
+        );
         expect(int.parse(q.correctAnswer), expected[spec.kind]);
         _expectThreeDistinctDistractors(q);
       }
@@ -139,8 +141,7 @@ void main() {
   });
 
   group('classify_2d_hierarchy', () {
-    test('both True and False appear across seeds; answer is one of them',
-        () {
+    test('both True and False appear across seeds; answer is one of them', () {
       final seen = <String>{};
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'classify_2d_hierarchy', i);

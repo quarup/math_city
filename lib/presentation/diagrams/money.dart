@@ -39,8 +39,9 @@ class _MoneyChip extends StatelessWidget {
     final coinColor = _coinColor(denom, theme);
     final billColor = theme.colorScheme.tertiaryContainer;
     final labelStyle =
-        (theme.textTheme.labelMedium ?? const TextStyle(fontSize: 12))
-            .copyWith(fontWeight: FontWeight.bold);
+        (theme.textTheme.labelMedium ?? const TextStyle(fontSize: 12)).copyWith(
+          fontWeight: FontWeight.bold,
+        );
 
     if (isCoin) {
       return Container(

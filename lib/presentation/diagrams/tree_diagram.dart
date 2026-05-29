@@ -61,8 +61,7 @@ class TreeDiagram extends StatelessWidget {
               labelStyle:
                   theme.textTheme.labelSmall ?? const TextStyle(fontSize: 11),
               leafStyle:
-                  (theme.textTheme.labelMedium ??
-                          const TextStyle(fontSize: 12))
+                  (theme.textTheme.labelMedium ?? const TextStyle(fontSize: 12))
                       .copyWith(fontWeight: FontWeight.bold),
             ),
           ),

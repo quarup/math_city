@@ -67,14 +67,12 @@ class DotPlot extends StatelessWidget {
               axisColor: theme.colorScheme.onSurface,
               dotColor: theme.colorScheme.primary,
               titleStyle:
-                  (theme.textTheme.titleSmall ??
-                          const TextStyle(fontSize: 13))
+                  (theme.textTheme.titleSmall ?? const TextStyle(fontSize: 13))
                       .copyWith(fontWeight: FontWeight.bold),
               tickStyle:
                   theme.textTheme.labelSmall ?? const TextStyle(fontSize: 11),
               axisLabelStyle:
-                  theme.textTheme.labelMedium ??
-                  const TextStyle(fontSize: 12),
+                  theme.textTheme.labelMedium ?? const TextStyle(fontSize: 12),
             ),
           ),
         );

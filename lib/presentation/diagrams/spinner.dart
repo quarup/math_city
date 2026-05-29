@@ -27,9 +27,9 @@ class Spinner extends StatelessWidget {
         painter: _SpinnerPainter(
           spec: spec,
           edge: theme.colorScheme.onSurface,
-          labelStyle: (theme.textTheme.labelSmall ??
-                  const TextStyle(fontSize: 11))
-              .copyWith(color: Colors.white),
+          labelStyle:
+              (theme.textTheme.labelSmall ?? const TextStyle(fontSize: 11))
+                  .copyWith(color: Colors.white),
         ),
       ),
     );

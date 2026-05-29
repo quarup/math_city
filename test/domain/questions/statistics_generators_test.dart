@@ -26,8 +26,7 @@ void main() {
         final q = _gen(registry, 'mean', i);
         final xs = (q.diagram! as DotPlotSpec).values;
         final sum = xs.reduce((a, b) => a + b);
-        expect(sum % xs.length, 0,
-            reason: 'non-integer mean in values $xs');
+        expect(sum % xs.length, 0, reason: 'non-integer mean in values $xs');
         expect(q.correctAnswer, '${sum ~/ xs.length}');
         _expectThreeDistinctDistractors(q);
       }
@@ -57,8 +56,7 @@ void main() {
           counts[x] = (counts[x] ?? 0) + 1;
         }
         final maxCount = counts.values.reduce((a, b) => a > b ? a : b);
-        final modes =
-            counts.entries.where((e) => e.value == maxCount).toList();
+        final modes = counts.entries.where((e) => e.value == maxCount).toList();
         expect(modes, hasLength(1));
         expect(q.correctAnswer, '${modes.single.key}');
         _expectThreeDistinctDistractors(q);

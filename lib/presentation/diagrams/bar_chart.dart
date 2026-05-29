@@ -30,15 +30,14 @@ class BarChart extends StatelessWidget {
     const rightGutter = 12.0;
     const topGutter = 28.0;
     const bottomGutter = 30.0;
-    final naturalBars = spec.labels.length * barWidth +
-        (spec.labels.length + 1) * barGap;
+    final naturalBars =
+        spec.labels.length * barWidth + (spec.labels.length + 1) * barGap;
     return LayoutBuilder(
       builder: (context, constraints) {
         var bw = barWidth;
         var gap = barGap;
         if (constraints.maxWidth.isFinite) {
-          final availPlot =
-              constraints.maxWidth - leftGutter - rightGutter;
+          final availPlot = constraints.maxWidth - leftGutter - rightGutter;
           if (availPlot > 0 && naturalBars > availPlot) {
             final scaleFactor = availPlot / naturalBars;
             bw = barWidth * scaleFactor;
@@ -62,14 +61,12 @@ class BarChart extends StatelessWidget {
               axisColor: theme.colorScheme.onSurface,
               barColor: theme.colorScheme.primary,
               titleStyle:
-                  (theme.textTheme.titleSmall ??
-                          const TextStyle(fontSize: 13))
+                  (theme.textTheme.titleSmall ?? const TextStyle(fontSize: 13))
                       .copyWith(fontWeight: FontWeight.bold),
               tickStyle:
                   theme.textTheme.labelSmall ?? const TextStyle(fontSize: 11),
               labelStyle:
-                  theme.textTheme.labelMedium ??
-                  const TextStyle(fontSize: 12),
+                  theme.textTheme.labelMedium ?? const TextStyle(fontSize: 12),
             ),
           ),
         );
@@ -133,8 +130,7 @@ class _BarChartPainter extends CustomPainter {
     // Horizontal gridlines at every multiple of scale up to maxY, plus
     // labels on the left for each tick.
     final ticks = spec.maxY ~/ spec.scale;
-    double yFor(num v) =>
-        plotBottom - (v / spec.maxY) * plotHeight;
+    double yFor(num v) => plotBottom - (v / spec.maxY) * plotHeight;
     for (var i = 0; i <= ticks; i++) {
       final value = i * spec.scale;
       final y = yFor(value);

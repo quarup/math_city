@@ -46,7 +46,8 @@ GeneratedQuestion ratioToCoordinatePairs(Random rand) {
 
   return GeneratedQuestion(
     conceptId: 'ratio_to_coordinate_pairs',
-    prompt: 'These three plotted points all show the same ratio of '
+    prompt:
+        'These three plotted points all show the same ratio of '
         'x-value to y-value. What ratio is it?',
     diagram: CoordinatePlaneSpec(
       minX: 0,
@@ -92,31 +93,36 @@ const _scenarios = <_Scenario>[
   _Scenario(
     dependent: 'cost',
     independent: 'hours worked',
-    context: 'A handyman charges by the hour. Total cost depends on '
+    context:
+        'A handyman charges by the hour. Total cost depends on '
         'the hours worked.',
   ),
   _Scenario(
     dependent: 'distance travelled',
     independent: 'time',
-    context: 'A car drives at a steady speed. The distance travelled '
+    context:
+        'A car drives at a steady speed. The distance travelled '
         'depends on the time elapsed.',
   ),
   _Scenario(
     dependent: 'plant height',
     independent: 'days since planting',
-    context: 'A bean plant grows a bit each day. Its height depends '
+    context:
+        'A bean plant grows a bit each day. Its height depends '
         'on how many days have passed since planting.',
   ),
   _Scenario(
     dependent: 'water in the tank',
     independent: 'minutes filling',
-    context: 'A tank is being filled at a constant rate. The amount '
+    context:
+        'A tank is being filled at a constant rate. The amount '
         'of water depends on the minutes spent filling.',
   ),
   _Scenario(
     dependent: 'cost',
     independent: 'number of apples',
-    context: r'Apples cost $1 each. The total cost depends on the '
+    context:
+        r'Apples cost $1 each. The total cost depends on the '
         'number of apples bought.',
   ),
 ];
@@ -132,7 +138,8 @@ GeneratedQuestion dependentIndependentVars(Random rand) {
 
   return GeneratedQuestion(
     conceptId: 'dependent_independent_vars',
-    prompt: '${s.context} Which is the '
+    prompt:
+        '${s.context} Which is the '
         '${askIndependent ? "independent" : "dependent"} variable?',
     correctAnswer: correct,
     distractors: [

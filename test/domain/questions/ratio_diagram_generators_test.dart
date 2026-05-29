@@ -29,8 +29,9 @@ void main() {
         expect(spec.bottomUnits, inInclusiveRange(2, 5));
         expect(spec.topUnits, isNot(spec.bottomUnits));
         // Parse 2 numbers from prompt: a, a*k.
-        final nums =
-            RegExp(r'-?\d+').allMatches(q.prompt).map((m) => int.parse(m.group(0)!)).toList();
+        final nums = RegExp(
+          r'-?\d+',
+        ).allMatches(q.prompt).map((m) => int.parse(m.group(0)!)).toList();
         expect(nums.length, greaterThanOrEqualTo(3));
         final a = spec.topUnits;
         final b = spec.bottomUnits;

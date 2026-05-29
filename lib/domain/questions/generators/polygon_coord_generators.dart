@@ -190,7 +190,8 @@ GeneratedQuestion transformationsTranslation(Random rand) {
 
   return GeneratedQuestion(
     conceptId: 'transformations_translation',
-    prompt: 'Translate the triangle by the rule $ruleStr. '
+    prompt:
+        'Translate the triangle by the rule $ruleStr. '
         "What are the coordinates of $askedLabel'?",
     diagram: CoordinatePlaneSpec(
       minX: -8,
@@ -276,8 +277,7 @@ GeneratedQuestion transformationsReflection(Random rand) {
   }
 
   final image = [
-    for (final v in pre)
-      acrossX ? [v[0], -v[1]] : [-v[0], v[1]],
+    for (final v in pre) acrossX ? [v[0], -v[1]] : [-v[0], v[1]],
   ];
 
   final askIdx = rand.nextInt(3);
@@ -307,7 +307,8 @@ GeneratedQuestion transformationsReflection(Random rand) {
 
   return GeneratedQuestion(
     conceptId: 'transformations_reflection',
-    prompt: 'Reflect the triangle across the $axisName. '
+    prompt:
+        'Reflect the triangle across the $axisName. '
         "What are the coordinates of $askedLabel'?",
     diagram: CoordinatePlaneSpec(
       minX: -6,
@@ -414,7 +415,8 @@ GeneratedQuestion transformationsRotation(Random rand) {
 
   return GeneratedQuestion(
     conceptId: 'transformations_rotation',
-    prompt: 'Rotate the triangle $degrees° counter-clockwise about the '
+    prompt:
+        'Rotate the triangle $degrees° counter-clockwise about the '
         "origin. What are the coordinates of $askedLabel'?",
     diagram: CoordinatePlaneSpec(
       minX: -6,
@@ -512,7 +514,8 @@ GeneratedQuestion transformationsDilation(Random rand) {
 
   return GeneratedQuestion(
     conceptId: 'transformations_dilation',
-    prompt: 'Dilate the triangle by factor $k centred at the origin. '
+    prompt:
+        'Dilate the triangle by factor $k centred at the origin. '
         "What are the coordinates of $askedLabel'?",
     diagram: CoordinatePlaneSpec(
       minX: -9,

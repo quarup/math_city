@@ -269,8 +269,10 @@ class _ShapePainter extends CustomPainter {
   void _drawCube(Canvas c, Rect box, Paint fill, Paint stroke) {
     final s = box.shortestSide * 0.66;
     final off = s * 0.32;
-    final tl = Offset(box.center.dx - s / 2 - off / 2,
-        box.center.dy - s / 2 + off / 2);
+    final tl = Offset(
+      box.center.dx - s / 2 - off / 2,
+      box.center.dy - s / 2 + off / 2,
+    );
     final tr = tl + Offset(s, 0);
     final bl = tl + Offset(0, s);
     final br = tl + Offset(s, s);

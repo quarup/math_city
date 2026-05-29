@@ -118,8 +118,9 @@ GeneratedQuestion lineplotWhole(Random rand) {
   //   - count at neighbouring values (kid read the wrong column)
   //   - total count (kid summed instead of read the single column)
   //   - count at the modal value (kid read the tallest stack)
-  final modeV = occurred
-      .reduce((a, b) => (counts[a] ?? 0) >= (counts[b] ?? 0) ? a : b);
+  final modeV = occurred.reduce(
+    (a, b) => (counts[a] ?? 0) >= (counts[b] ?? 0) ? a : b,
+  );
   final candidates = <String>[
     '${counts[askedV - 1] ?? 0}',
     '${counts[askedV + 1] ?? 0}',
@@ -301,8 +302,9 @@ GeneratedQuestion lineplotFractional(Random rand) {
   //   - count at the nearest neighbour subticks (off by 1/denom)
   //   - total count (kid summed instead of read one column)
   //   - the modal count (kid read the tallest stack)
-  final modeV = occurred
-      .reduce((a, b) => (counts[a] ?? 0) >= (counts[b] ?? 0) ? a : b);
+  final modeV = occurred.reduce(
+    (a, b) => (counts[a] ?? 0) >= (counts[b] ?? 0) ? a : b,
+  );
   final candidates = <String>[
     '${counts[askedInternal - 1] ?? 0}',
     '${counts[askedInternal + 1] ?? 0}',
@@ -312,7 +314,8 @@ GeneratedQuestion lineplotFractional(Random rand) {
 
   return GeneratedQuestion(
     conceptId: 'line_plot_fractional',
-    prompt: 'How many ${d.theme.itemPlural} are '
+    prompt:
+        'How many ${d.theme.itemPlural} are '
         '$askedDisplay ${d.theme.measureUnit} long?',
     diagram: DotPlotSpec(
       title: d.theme.title,
@@ -353,11 +356,12 @@ GeneratedQuestion lineplotFractionWord(Random rand) {
     // otherwise the "just gave the count" distractor can collide with the
     // correct total (count × 1 == count, count × 2 == 2N can collide with
     // count "2" when count=2, etc.).
-    final repeats = counts.entries
-        .where((e) => e.value >= 2 && e.key % d.denom != 0)
-        .map((e) => e.key)
-        .toList()
-      ..sort();
+    final repeats =
+        counts.entries
+            .where((e) => e.value >= 2 && e.key % d.denom != 0)
+            .map((e) => e.key)
+            .toList()
+          ..sort();
     if (repeats.isEmpty) return attempt(depth + 1);
 
     final askedInternal = repeats[rand.nextInt(repeats.length)];
@@ -377,14 +381,14 @@ GeneratedQuestion lineplotFractionWord(Random rand) {
       '$count',
       askedDisplay,
       _formatInternal((count + 1) * askedInternal, d.denom),
-      if (count >= 2)
-        _formatInternal((count - 1) * askedInternal, d.denom),
+      if (count >= 2) _formatInternal((count - 1) * askedInternal, d.denom),
       _formatInternal(count * (askedInternal + 1), d.denom),
     ];
 
     return GeneratedQuestion(
       conceptId: 'line_plot_fraction_word',
-      prompt: 'What is the total ${d.theme.measureNoun} of all '
+      prompt:
+          'What is the total ${d.theme.measureNoun} of all '
           '${d.theme.itemPlural} that are $askedDisplay '
           '${d.theme.measureUnit}?',
       diagram: DotPlotSpec(
@@ -452,7 +456,8 @@ GeneratedQuestion lineplot5thGradeOps(Random rand) {
 
     return GeneratedQuestion(
       conceptId: 'line_plot_5th_grade_ops',
-      prompt: 'What is the difference between the longest and shortest '
+      prompt:
+          'What is the difference between the longest and shortest '
           '${_singularize(d.theme.itemPlural)} ${d.theme.measureNoun}?',
       diagram: DotPlotSpec(
         title: d.theme.title,
