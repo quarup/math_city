@@ -11,7 +11,7 @@
 
 - **Last updated:** 2026-05-31
 - **Phase:** Phase 8 — City Builder: Research & Rich Design. Content-authoring only, **no code changes**. Deliverable is this document; Phase 9 implements it.
-- **Drafting mode:** *structure-first*. §1 (references) and §2 (categories) are drafted in full. **§3 is currently a DAG skeleton** — building IDs, categories, within-category arcs, and the prereq graph are laid out, but the per-building cost / service-profile / full `unlockRule` / emoji specs are **pending review** before they're filled in. §4–§7 are stubbed pending the §3 review.
+- **Drafting mode:** *fill pass complete (first draft)*. §1 (references), §2 (categories), §3 (full building specs — 55 anchors), §4 (beat catalog), §5 (asset checklist), and §7 (open questions) are drafted. §6 (implementation status) carries only the Phase-7 ✅ rows; Phase 9 ticks the rest. Three structure decisions are locked (2026-05-31): education (`school`/`high_school`) lives under `services`; `water` is a hard-gating service; the housing spine keeps all 7 rungs. **Still expects Phase-9 iteration** — costs and service ratios are designed-coherent placeholders, finalized by playtest.
 - **Framework:** extends the Phase-7 model unchanged — two currencies (🧱 bricks + 🔬 research), four categories, the service-ratio + variety-multiplier growth model, and the typed `UnlockRule` / `TriggerRule` gates. No schema or domain-shape changes proposed. (Per the Phase-8 planning decision: *extend, don't redesign*.)
 - **Scope of this pass:** *representative breadth* — full coherent arcs across all four categories with ~55 anchor buildings individually specced; the long-tail variants (cosmetic re-skins, minor tier infills) are described as patterned templates rather than itemized. This keeps the design coherent and reviewable and gives Phase 9 a clear queue without committing to hundreds of hand-authored rows up front.
 - **Source of truth note:** once Phase 9 starts wiring content, the building/beat **IDs here become the source of truth**, mirrored by [building_registry.dart](lib/domain/city/building_registry.dart) and [beat_registry.dart](lib/domain/city/beat_registry.dart) — exactly as `curriculum.md` is mirrored by `generator_registry.dart`.
@@ -158,245 +158,454 @@ machinery. *(`water` joins the gating set; `police`/`fire`/`transit` are soft.)*
 
 ---
 
-## 3. Building catalog — DAG skeleton *(full specs pending review)*
+## 3. Building catalog
 
-> **This section is a skeleton.** It lays out the four within-category arcs, the
-> building IDs, their tier (early / mid / late game), and the prereq graph (what
-> each rung chains from). The full per-building spec — 🧱 `brickCost`,
-> 🔬 `researchCost`, `populationContribution`, `serviceProvision`,
-> `varietyContribution`, `footprint`, `emoji`, and the complete typed
-> `unlockRule` — is **filled in after the structure review**.
->
-> **Reading the arcs:** "chains from" lists the building(s) a rung's `unlockRule`
-> requires via `requiredBuildingsPlaced`, plus any `minPopulation` /
-> `minLifetimeBricks` gate. As in Phase 7, **every non-starter building also names
-> a demand beat in `requiredBeatsRead`** (§4) — that demand bubble is what reveals
-> the research card. The prereq-building + population/brick gates shape *when* the
-> demand can fire; reading it is what surfaces the card.
->
-> **Tiers** are a narrative pacing label (not a schema field): **Early** = first
-> founding moves, **Mid** = a growing town, **Late** = a full city, **Capstone** =
-> aspirational landmark. They map loosely to rising population / lifetime-brick
-> gates.
+The full DAG. Each category below is a within-category arc rooted (directly or
+indirectly) at `mayors_office`. Tier (Early / Mid / Late / Capstone) is a
+narrative pacing label, not a schema field — it maps loosely to the rising
+population / lifetime-brick gates in the unlock rule.
+
+**Reading the spec tables.** Columns: 🧱 = `brickCost` (per placement), 🔬 =
+`researchCost` (one-shot, to add the type to the build menu), **Pop** =
+`populationContribution`, **Service** = `serviceProvision` (`id:capacity`), **V** =
+`varietyContribution`, **Foot** = `footprint` (`w×h` tiles). The **Unlock rule**
+column is the typed `UnlockRule`, written in shorthand:
+
+- `B` (bare building id) → `requiredBuildingsPlaced` includes B
+- `pop≥N` → `minPopulation: N`
+- `life🧱≥N` → `minLifetimeBricks: N`
+- `reads:beat_id` → `requiredBeatsRead` includes that demand beat (the discovery
+  gate — the card stays hidden until the player opens that bubble; see §4)
+
+Every non-starter building names exactly one demand beat in `reads:` — that beat
+is what reveals its research card. `✓P7` marks the ten buildings already shipped
+in the Phase-7 registry (IDs and Phase-7 numbers preserved).
 
 ### 3.1 Civic & Housing (`civicHousing`)
 
-**Civic-core line** (unique anchors; each is the narrative+unlock hub of its era):
+**Civic-core line** (unique narrative anchors; gate later arcs):
 
-| ID | Name | Tier | Chains from | Role |
-|---|---|---|---|---|
-| `mayors_office` | Mayor's office | Early | — (starter, ungated, unique) | The founding tile; everything chains off it |
-| `town_hall` | Town hall | Mid | `mayors_office` + pop gate | Mid-game civic upgrade; gates several mid services |
-| `city_hall` | City hall | Late | `town_hall` + pop gate | Late-game civic capstone (unique) |
-| `library` | Library | Mid | `school` | Soft education amenity; cozy/civic beats |
-| `post_office` | Post office | Mid | `town_hall` | Small civic amenity |
+| Building | 🧱 | 🔬 | Pop | Service | V | Foot | Unlock rule |
+|---|---|---|---|---|---|---|---|
+| `mayors_office` 🏛️ ✓P7 | 0 | 0 | 0 | — | – | 1×1 | *open* (starter, **unique**) |
+| `town_hall` 🏤 | 30 | 2 | 0 | — | – | 1×1 | `mayors_office` + pop≥20 · reads:`demand_town_hall` (**unique**) |
+| `city_hall` 🏙️ | 80 | 3 | 0 | — | – | 2×2 | `town_hall` + pop≥80 · reads:`demand_city_hall` (**unique**) |
+| `library` 📚 | 20 | 2 | 0 | — | – | 1×1 | `school` · reads:`demand_library` |
+| `post_office` 📮 | 20 | 2 | 0 | — | – | 1×1 | `town_hall` · reads:`demand_post_office` |
 
-**Housing line** (the population spine — a clean upgrade ladder, rising `populationContribution`):
+**Housing line** (the population spine — 7-rung ladder, rising `Pop`):
 
-| ID | Name | Tier | Chains from | Role |
-|---|---|---|---|---|
-| `single_home` | Single home | Early | `mayors_office` | First housing; smallest pop |
-| `duplex` | Duplex | Early–Mid | `single_home` | 2× a home |
-| `townhouse_row` | Townhouse row | Mid | `duplex` + pop gate | Denser low-rise |
-| `apartment` | Apartment | Mid | `single_home` + pop gate | Existing Phase-7 rung |
-| `mid_rise_apartment` | Mid-rise apartments | Mid–Late | `apartment` + pop gate | Steps up density |
-| `high_rise` | High-rise tower | Late | `mid_rise_apartment` + pop + brick gate | Big density (2×2 footprint) |
-| `luxury_condo` | Luxury condo | Late | `high_rise` | Lower pop, higher desirability (variety-counts) |
-| `farmhouse` | Farmhouse | Early | `single_home` | Countryside-flavor home (cozy beats; small pop) |
+| Building | 🧱 | 🔬 | Pop | Service | V | Foot | Unlock rule |
+|---|---|---|---|---|---|---|---|
+| `single_home` 🏠 ✓P7 | 5 | 1 | 4 | — | – | 1×1 | `mayors_office` · reads:`demand_first_home` |
+| `duplex` 🏘️ | 10 | 1 | 8 | — | – | 1×1 | `single_home` · reads:`demand_duplex` |
+| `townhouse_row` 🏘️ | 20 | 2 | 12 | — | – | 2×1 | `duplex` + pop≥12 · reads:`demand_townhouse_row` |
+| `apartment` 🏢 ✓P7 | 10 | 1 | 16 | — | – | 1×1 | `single_home` + pop≥8 · reads:`demand_apartment` |
+| `mid_rise_apartment` 🏢 | 30 | 2 | 30 | — | – | 1×1 | `apartment` + pop≥30 · reads:`demand_mid_rise` |
+| `high_rise` 🌆 | 60 | 3 | 60 | — | – | 2×2 | `mid_rise_apartment` + pop≥60 + life🧱≥300 · reads:`demand_high_rise` |
+| `luxury_condo` 🏨 | 100 | 3 | 50 | — | ✅ | 2×2 | `high_rise` + life🧱≥500 · reads:`demand_luxury_condo` |
+| `farmhouse` 🏡 | 8 | 1 | 3 | — | – | 1×1 | `single_home` · reads:`demand_farmhouse` (countryside flavor) |
 
 ### 3.2 Services (`services`)
 
-Gating infrastructure (lifts hard population ceilings) + soft amenities (desirability only).
+Gating infrastructure (hard population caps) + soft amenities (desirability only).
+Gating-service rows are `varietyContribution: true` (matching Phase 7); soft
+services are `false`. **Education moved here from `civicHousing`** per the
+2026-05-31 decision.
 
 **Power** (`power`, gating):
 
-| ID | Name | Tier | Chains from | Role |
-|---|---|---|---|---|
-| `power_plant` | Power plant | Mid | `single_home` | Existing Phase-7 rung; base power |
-| `power_station` | Power station | Late | `power_plant` + pop gate | Higher `power` capacity |
-| `solar_farm` | Solar farm | Late | `power_station` | Clean-energy capstone (entertainment-adjacent praise) |
+| Building | 🧱 | 🔬 | Service | V | Foot | Unlock rule |
+|---|---|---|---|---|---|---|
+| `power_plant` ⚡ ✓P7 | 10 | 1 | `power:200` | ✅ | 1×1 | `single_home` · reads:`demand_power` |
+| `power_station` 🏭 | 40 | 3 | `power:500` | ✅ | 2×2 | `power_plant` + pop≥40 · reads:`demand_power_station` |
+| `solar_farm` ☀️ | 70 | 3 | `power:800` | ✅ | 2×2 | `power_station` + life🧱≥400 · reads:`demand_solar_farm` |
 
 **Water** (`water`, gating — **new service ID**):
 
-| ID | Name | Tier | Chains from | Role |
-|---|---|---|---|---|
-| `water_tower` | Water tower | Early–Mid | `single_home` | Base `water` capacity |
-| `water_treatment` | Water treatment plant | Mid | `water_tower` + pop gate | Higher `water` capacity |
+| Building | 🧱 | 🔬 | Service | V | Foot | Unlock rule |
+|---|---|---|---|---|---|---|
+| `water_tower` 🚰 | 10 | 1 | `water:150` | ✅ | 1×1 | `single_home` · reads:`demand_water` |
+| `water_treatment` 💧 | 40 | 3 | `water:500` | ✅ | 2×2 | `water_tower` + pop≥40 · reads:`demand_water_treatment` |
 
 **Waste** (`waste`, gating):
 
-| ID | Name | Tier | Chains from | Role |
-|---|---|---|---|---|
-| `waste_management` | Waste management | Mid | `single_home` + pop gate | Existing Phase-7 rung (warning beat) |
-| `recycling_center` | Recycling center | Late | `waste_management` | Higher `waste` capacity; green praise |
+| Building | 🧱 | 🔬 | Service | V | Foot | Unlock rule |
+|---|---|---|---|---|---|---|
+| `waste_management` 🚮 ✓P7 | 10 | 1 | `waste:150` | ✅ | 1×1 | `single_home` + pop≥12 · reads:`demand_waste` |
+| `recycling_center` ♻️ | 40 | 3 | `waste:400` | ✅ | 1×1 | `waste_management` + pop≥40 · reads:`demand_recycling` |
 
 **Health** (`clinic`, gating):
 
-| ID | Name | Tier | Chains from | Role |
-|---|---|---|---|---|
-| `clinic` | Clinic | Mid | `single_home` | Existing Phase-7 rung |
-| `hospital` | Hospital | Late | `clinic` + pop gate | Big `clinic` capacity (2×2) |
+| Building | 🧱 | 🔬 | Service | V | Foot | Unlock rule |
+|---|---|---|---|---|---|---|
+| `clinic` 🏥 ✓P7 | 10 | 1 | `clinic:50` | ✅ | 1×1 | `single_home` · reads:`demand_clinic` |
+| `hospital` 🚑 | 60 | 3 | `clinic:200` | ✅ | 2×2 | `clinic` + pop≥60 · reads:`demand_hospital` |
 
 **Education** (`school`, soft):
 
-| ID | Name | Tier | Chains from | Role |
-|---|---|---|---|---|
-| `school` | School | Mid | `single_home` | Existing rung *(currently `civicHousing` in Phase 7 — see §7 reclassification note)* |
-| `high_school` | High school | Late | `school` + pop gate | Higher education amenity |
+| Building | 🧱 | 🔬 | Service | V | Foot | Unlock rule |
+|---|---|---|---|---|---|---|
+| `school` 🏫 ✓P7 | 10 | 1 | `school:60` | – | 1×1 | `single_home` · reads:`demand_school` *(was `civicHousing` in P7)* |
+| `high_school` 🎓 | 40 | 2 | `school:150` | – | 1×1 | `school` + pop≥40 · reads:`demand_high_school` |
 
-**Safety** (soft — **new service IDs `police`/`fire`**):
+**Safety** (soft — **new service IDs `police` / `fire`**):
 
-| ID | Name | Tier | Chains from | Role |
-|---|---|---|---|---|
-| `fire_station` | Fire station | Mid | `town_hall` | Safety amenity; civic beats |
-| `police_station` | Police station | Mid | `town_hall` | Safety amenity; civic beats |
+| Building | 🧱 | 🔬 | Service | V | Foot | Unlock rule |
+|---|---|---|---|---|---|---|
+| `fire_station` 🚒 | 25 | 2 | `fire:100` | – | 1×1 | `town_hall` · reads:`demand_fire` |
+| `police_station` 🚓 | 25 | 2 | `police:100` | – | 1×1 | `town_hall` · reads:`demand_police` |
 
 **Transit** (soft — **new service ID `transit`**):
 
-| ID | Name | Tier | Chains from | Role |
-|---|---|---|---|---|
-| `bus_depot` | Bus depot | Late | `city_hall` | Transit amenity |
-| `train_station` | Train station | Capstone | `bus_depot` + pop gate | Transit capstone (2×2) |
+| Building | 🧱 | 🔬 | Service | V | Foot | Unlock rule |
+|---|---|---|---|---|---|---|
+| `bus_depot` 🚌 | 40 | 3 | `transit:200` | – | 1×1 | `city_hall` · reads:`demand_bus_depot` |
+| `train_station` 🚉 | 120 | 5 | `transit:500` | – | 2×2 | `bus_depot` + pop≥100 + life🧱≥600 · reads:`demand_train_station` |
 
 ### 3.3 Commercial (`commercial`)
 
-Shops / food / offices — the desirability-multiplier and "town life" channel (all variety-counts).
+Shops / food / offices — the desirability-multiplier and "town life" channel. All
+`varietyContribution: true`, no `populationContribution`.
 
 **Food & daily goods:**
 
-| ID | Name | Tier | Chains from | Role |
+| Building | 🧱 | 🔬 | Foot | Unlock rule |
 |---|---|---|---|---|
-| `market_stall` | Market stall | Early | `single_home` | Tiny first shop |
-| `grocery` | Grocery | Early–Mid | `single_home` | Existing Phase-7 rung |
-| `supermarket` | Supermarket | Mid | `grocery` + pop gate | Bigger grocery |
-| `bakery` | Bakery | Mid | `grocery` | Cozy food shop |
-| `coffee_shop` | Coffee shop | Early–Mid | `single_home` | Existing Phase-7 rung |
-| `restaurant` | Restaurant | Mid | `coffee_shop` | Food/social |
-| `farmers_market` | Farmers market | Mid | `farmhouse` | Countryside-flavor commercial |
+| `market_stall` 🍎 | 8 | 1 | 1×1 | `single_home` · reads:`demand_market_stall` |
+| `grocery` 🛒 ✓P7 | 10 | 1 | 1×1 | `single_home` · reads:`demand_grocery` |
+| `supermarket` 🏪 | 30 | 2 | 1×1 | `grocery` + pop≥20 · reads:`demand_supermarket` |
+| `bakery` 🥐 | 20 | 2 | 1×1 | `grocery` · reads:`demand_bakery` |
+| `coffee_shop` ☕ ✓P7 | 10 | 1 | 1×1 | `single_home` · reads:`demand_coffee_shop` |
+| `restaurant` 🍽️ | 25 | 2 | 1×1 | `coffee_shop` · reads:`demand_restaurant` |
+| `farmers_market` 🧺 | 20 | 2 | 1×1 | `farmhouse` · reads:`demand_farmers_market` |
 
 **Retail & offices:**
 
-| ID | Name | Tier | Chains from | Role |
+| Building | 🧱 | 🔬 | Foot | Unlock rule |
 |---|---|---|---|---|
-| `bookshop` | Bookshop | Mid | `library` | Small retail (ties to education) |
-| `toy_store` | Toy store | Mid | `grocery` | Kid-delight retail |
-| `clothing_store` | Clothing store | Mid | `supermarket` | Retail |
-| `office_building` | Office building | Mid–Late | `town_hall` | Jobs flavor |
-| `shopping_mall` | Shopping mall | Late | `supermarket` + `clothing_store` + pop gate | Big retail (2×2; multi-parent) |
-| `business_tower` | Business tower | Late | `office_building` + pop gate | Commercial capstone (2×2) |
+| `bookshop` 📖 | 20 | 2 | 1×1 | `library` · reads:`demand_bookshop` |
+| `toy_store` 🧸 | 20 | 2 | 1×1 | `grocery` · reads:`demand_toy_store` |
+| `clothing_store` 👕 | 25 | 2 | 1×1 | `supermarket` · reads:`demand_clothing_store` |
+| `office_building` 🏬 | 40 | 3 | 1×1 | `town_hall` · reads:`demand_office` |
+| `shopping_mall` 🛍️ | 80 | 3 | 2×2 | `supermarket` + `clothing_store` + pop≥80 · reads:`demand_shopping_mall` *(multi-parent)* |
+| `business_tower` 🏢 | 100 | 3 | 2×2 | `office_building` + pop≥80 + life🧱≥400 · reads:`demand_business_tower` |
 
 ### 3.4 Entertainment (`entertainment`)
 
-Parks / culture / recreation — the cozy, praise-heavy delight channel (all variety-counts).
+Parks / culture / recreation — the cozy, praise-heavy delight channel. All
+`varietyContribution: true`, no `populationContribution`.
 
 **Green & cozy:**
 
-| ID | Name | Tier | Chains from | Role |
+| Building | 🧱 | 🔬 | Foot | Unlock rule |
 |---|---|---|---|---|
-| `park` | Park | Early | `single_home` | Existing Phase-7 rung (recurring demand) |
-| `playground` | Playground | Early | `park` | Kid-delight; small |
-| `community_garden` | Community garden | Early–Mid | `park` | Cozy green |
-| `fountain_plaza` | Fountain plaza | Mid | `town_hall` | Decorative civic-adjacent delight |
-| `botanical_garden` | Botanical garden | Late | `community_garden` + pop gate | Bigger green attraction |
+| `park` 🌳 ✓P7 | 10 | 1 | 1×1 | `single_home` · reads:`demand_more_parks` *(recurring — see §4)* |
+| `playground` 🛝 | 10 | 1 | 1×1 | `park` · reads:`demand_playground` |
+| `community_garden` 🌻 | 15 | 2 | 1×1 | `park` · reads:`demand_community_garden` |
+| `fountain_plaza` ⛲ | 25 | 2 | 1×1 | `town_hall` · reads:`demand_fountain_plaza` |
+| `botanical_garden` 🌺 | 50 | 3 | 2×2 | `community_garden` + pop≥50 · reads:`demand_botanical_garden` |
 
 **Recreation & culture:**
 
-| ID | Name | Tier | Chains from | Role |
+| Building | 🧱 | 🔬 | Foot | Unlock rule |
 |---|---|---|---|---|
-| `sports_field` | Sports field | Mid | `school` | Recreation (ties to education) |
-| `swimming_pool` | Swimming pool | Mid | `sports_field` | Recreation |
-| `movie_theater` | Movie theater | Mid | `restaurant` | Culture/social |
-| `museum` | Museum | Mid–Late | `library` | Culture (ties to education) |
-| `stadium` | Stadium | Late | `sports_field` + pop gate | Big recreation (2×2) |
+| `sports_field` ⚽ | 25 | 2 | 2×1 | `school` · reads:`demand_sports_field` |
+| `swimming_pool` 🏊 | 30 | 2 | 1×1 | `sports_field` · reads:`demand_swimming_pool` |
+| `movie_theater` 🎬 | 40 | 3 | 1×1 | `restaurant` · reads:`demand_movie_theater` |
+| `museum` 🏛️ | 50 | 3 | 2×2 | `library` · reads:`demand_museum` |
+| `stadium` 🏟️ | 90 | 3 | 2×2 | `sports_field` + pop≥80 · reads:`demand_stadium` |
 
-**Capstone attractions** (aspirational, late-game, big footprints, signature praise beats):
+**Capstone attractions** (aspirational, late-game, signature praise beats):
 
-| ID | Name | Tier | Chains from | Role |
+| Building | 🧱 | 🔬 | Foot | Unlock rule |
 |---|---|---|---|---|
-| `zoo` | Zoo | Late | `botanical_garden` + pop gate | Signature attraction (2×2) |
-| `aquarium` | Aquarium | Late | `museum` + pop gate | Signature attraction (2×2) |
-| `amusement_park` | Amusement park | Capstone | `stadium` + pop + brick gate | Signature attraction (2×2) |
-| `observation_tower` | Observation tower | Capstone | `city_hall` + brick gate | City landmark (signature) |
+| `zoo` 🦁 | 120 | 5 | 2×2 | `botanical_garden` + pop≥100 · reads:`demand_zoo` |
+| `aquarium` 🐠 | 120 | 5 | 2×2 | `museum` + pop≥100 · reads:`demand_aquarium` |
+| `amusement_park` 🎢 | 200 | 5 | 2×2 | `stadium` + pop≥120 + life🧱≥800 · reads:`demand_amusement_park` |
+| `observation_tower` 🗼 | 250 | 5 | 1×1 | `city_hall` + life🧱≥1000 · reads:`demand_observation_tower` |
 
-### 3.5 Long-tail variants (patterned, not itemized)
+### 3.5 Economy sanity check
 
-Beyond the ~55 anchors above, the "feels infinite" long tail is generated by
-*pattern*, not by hand-authoring hundreds of unique rows. Three patterns, to be
-specified concretely in the fill pass:
+- **Total 🔬 to research the whole catalog ≈ 122** (early ≈1, mid ≈2, late ≈3,
+  capstone ≈5 each). The lifetime 🔬 ceiling is ~732 (≈366 sub-concepts × 2 award
+  bands — see [plan.md](plan.md) *Research-currency earning*), so the full city is
+  comfortably affordable through normal play with research to spare. No artificial
+  scarcity (the §1.3 reject).
+- **🧱 curve** runs 5–30 (early/mid) → 40–120 (late) → 200–250 (capstone). At
+  3–5 🧱 per correct answer, a capstone (~200 🧱) is ~40–60 correct answers of
+  saving — a satisfying long-arc trophy, not a wall.
+- **`life🧱` gates** (300 / 400 / 500 / 600 / 800 / 1000) read as "you've played a
+  lot" milestones; 1000 lifetime bricks ≈ 250 correct answers. Capstones gate on
+  lifetime bricks so they feel earned by *total practice*, not just city state.
 
-1. **Cosmetic re-skins** of an existing rung (e.g. a home with a different roof
-   color) — same stats, different `assetRef`/`emoji`, no new `unlockRule` logic.
-2. **Tier infills** — additional rungs slotted between two anchors when play shows
-   a pacing gap (the arc shape already supports it; just a new `requiredBuildingsPlaced`).
-3. **Map-themed variants** (countryside / city / futuristic, Phase 9 maps) — the
+### 3.6 Long-tail variants (patterned, not itemized)
+
+Beyond the 55 anchors, the "feels infinite" long tail is generated by *pattern*,
+not hand-authored rows:
+
+1. **Cosmetic re-skins** of an existing rung — same stats, different
+   `assetRef`/`emoji`, no new unlock logic (e.g. a blue-roof vs red-roof home).
+2. **Tier infills** — a new rung slotted between two anchors when play shows a
+   pacing gap; just a new `requiredBuildingsPlaced` link, no new mechanic.
+3. **Map-themed variants** (countryside / city / futuristic — Phase 9 maps) — the
    same arc re-skinned per theme. The `farmhouse` / `farmers_market` pair is the
    first countryside seed.
 
-**Skeleton totals:** 13 civic & housing · 15 services · 13 commercial · 14 entertainment = **55 anchor buildings**, plus the three long-tail patterns.
+**Anchor totals:** 13 civic & housing · 15 services · 13 commercial · 14 entertainment = **55**.
 
-### 3.6 DAG sanity (skeleton-level)
+### 3.7 DAG sanity check
 
-- **No cycles:** every "chains from" points to an earlier/same-tier rung; the
-  graph is a forest rooted at `mayors_office` (+ its `single_home` child, off
-  which every service/commercial/entertainment arc hangs).
-- **Multi-parent nodes** (intentional, narratively sensible): `shopping_mall`
-  (supermarket + clothing store) and a few "ties to education/green" soft links
-  (`bookshop`←library, `sports_field`/`museum`←education/library). To be reviewed
-  for coherence in the fill pass; nothing requires an unrelated cross-category
-  prereq.
-- **Every building gets ≥1 trigger beat** in §4 (to be authored against this list).
-
----
-
-## 4. Story beat catalog *(stub — authored after §3 review)*
-
-Will mirror §3: for every building, at least one **demand** beat (the discovery
-gate via `requiredBeatsRead`) and, where it fits, a **praise** beat on placement;
-plus **warning** beats for the imbalance cases the growth model produces
-(under-served gating service, lopsidedness). Each beat: `id`, `kind`
-(demand/praise/warning), `tone` (silly/civic/cozy), `emoji`, `shortLabel`,
-`longText`, `triggerRule`, cross-referenced to its §3 building ID(s). Target:
-the rich hundreds-of-beats catalog, authored in clusters per arc.
+- **No cycles.** Every "chains from" points to an earlier or same-tier rung; the
+  graph is a forest rooted at `mayors_office` → `single_home`, off which every
+  service / commercial / entertainment arc hangs.
+- **Multi-parent nodes** are intentional and narratively sensible:
+  `shopping_mall` ← (`supermarket` + `clothing_store`); plus soft cross-links that
+  read naturally — `library` ← `school`, `bookshop` ← `library`,
+  `museum`/`sports_field` ← education/library, `farmers_market` ← `farmhouse`.
+  No building depends on an unrelated cross-category prereq.
+- **Every building has ≥1 trigger beat** in §4 (the `reads:` demand beat, at
+  minimum).
 
 ---
 
-## 5. Asset checklist *(stub — authored after §3 review)*
+## 4. Story beat catalog
 
-Per §3 building: art needed (isometric tile sprite, per-tier where applicable),
-sourcing strategy (Kenney City Kit / OpenGameArt / procedural `CustomPainter` /
-image-gen), and license — **CC0 / CC-BY / equivalent only; CC-BY-NC and
-CC-BY-NC-SA excluded** (matches [curriculum.md](curriculum.md) §7 /
-[LICENSES_THIRD_PARTY.md](LICENSES_THIRD_PARTY.md)). Tracks the Phase 9 "Building
-art pipeline" decision (CC0 kits for anchors + procedural for the long tail).
+Mirrors §3. Three kinds (Phase-7 `BeatKind`): **demand** (a request — also the
+discovery gate via `requiredBeatsRead`), **praise** (placement celebration), and
+**warning** (an imbalance the growth model is producing). Tone ∈ silly / civic /
+cozy. Each beat below is `id` · tone · emoji `shortLabel` · longText · trigger
+summary. Trigger shorthand: `+B` present, `−B` absent, `pop≥N`, `age(B)≥N`
+(building age in rounds), `fired:X` (`requiredBeatsFired`), `🧱since≥N`
+(`minBricksEarnedSinceLastBeat`). The exact `TriggerRule` encodes in Phase 9.
+
+> **Authoring convention.** A demand beat fires when its prereq is present and its
+> target building is still absent (`+prereq −self`, plus any pop gate matching the
+> §3 unlock rule). Once the building is placed it flips to `completed` and clears
+> (the Phase-7 demand-completion behavior). Praise beats fire on `+self`.
+
+### 4.1 Demand beats (one per non-starter building — the discovery gates)
+
+**Civic & housing:**
+
+| Beat | Tone | Sticker | Text | Trigger |
+|---|---|---|---|---|
+| `demand_first_home` ✓P7 | cozy | 🏠 a home! | "We've got a mayor's office but nowhere to live yet — could we get a house, please?" | `+mayors_office −single_home −apartment` |
+| `demand_duplex` | cozy | 🏘️ share a yard | "Two families want to share a yard — a duplex would fit them both nicely." | `+single_home −duplex` |
+| `demand_townhouse_row` | cozy | 🏘️ row houses | "Lots of folks want to live close together — how about a row of townhouses?" | `+duplex pop≥12 −townhouse_row` |
+| `demand_apartment` ✓P7 | cozy | 🏢 more homes! | "More families want to move in but every house is full — an apartment block would help." | `+single_home pop≥8 −apartment` |
+| `demand_mid_rise` | cozy | 🏢 go taller | "The apartment filled up in a flash — a taller mid-rise would house even more." | `+apartment pop≥30 −mid_rise_apartment` |
+| `demand_high_rise` | civic | 🌆 to the sky | "People are lining up to move in — a high-rise tower would reach for the sky!" | `+mid_rise_apartment pop≥60 −high_rise` |
+| `demand_luxury_condo` | silly | 🏨 fancy! | "Mr. Alvarez sold his avocados for a fortune and wants a fancy condo." | `+high_rise −luxury_condo` |
+| `demand_farmhouse` | cozy | 🏡 chickens? | "Someone wants chickens and a big garden — a farmhouse on the edge of town?" | `+single_home −farmhouse` |
+| `demand_town_hall` | civic | 🏤 town hall | "The mayor's office is bursting at the seams — a proper town hall would give the town a real heart." | `+single_home pop≥20 −town_hall` |
+| `demand_city_hall` | civic | 🏙️ a city! | "The town's grown into a city — time for a grand city hall to run it all." | `+town_hall pop≥80 −city_hall` |
+| `demand_library` | cozy | 📚 books! | "The kids have read every book in the school twice — can we build a library?" | `+school −library` |
+| `demand_post_office` | civic | 📮 mail! | "Letters are piling up at the town hall — a post office would sort things out." | `+town_hall −post_office` |
+
+**Services:**
+
+| Beat | Tone | Sticker | Text | Trigger |
+|---|---|---|---|---|
+| `demand_clinic` ✓P7 | civic | 🏥 a clinic? | "Someone tripped chasing the ice-cream truck and there's nowhere to get a bandage — could we build a clinic?" | `+single_home −clinic` |
+| `demand_power` ✓P7 | civic | ⚡ power! | "The lights keep flickering and the fridges are getting warm — the town really needs a power plant." | `+single_home −power_plant` |
+| `demand_water` ⚠ | civic | 🚰 water! | "The taps are sputtering and the gardens are going brown — the town needs a water tower." | `+single_home −water_tower` |
+| `demand_waste` ✓P7 ⚠ | civic | 🚮 trash! | "The neighborhood is tired of stepping over garbage — we need a Waste Management facility before it gets worse!" | `+single_home pop≥12 −waste_management` |
+| `demand_power_station` ⚠ | civic | 🏭 brownouts | "The power plant's maxed out and brownouts are spreading — a bigger power station would keep the lights on." | `+power_plant pop≥40 −power_station` |
+| `demand_solar_farm` | cozy | ☀️ go green | "Why not go green? A solar farm would power the whole city from sunshine." | `+power_station −solar_farm` |
+| `demand_water_treatment` ⚠ | civic | 💧 clean water | "More homes means more water — a treatment plant would keep it flowing and clean." | `+water_tower pop≥40 −water_treatment` |
+| `demand_recycling` | cozy | ♻️ recycle | "We're throwing away things we could reuse — a recycling center would help the town go green." | `+waste_management pop≥40 −recycling_center` |
+| `demand_hospital` ⚠ | civic | 🚑 hospital | "The clinic can't keep up with everyone — the city really needs a proper hospital." | `+clinic pop≥60 −hospital` |
+| `demand_school` ✓P7 | civic | 🏫 a school? | "The neighborhood kids have nowhere to practice their math — could we build a school?" | `+single_home −school` |
+| `demand_high_school` | civic | 🎓 high school | "The kids have outgrown the school — a high school is the natural next step." | `+school pop≥40 −high_school` |
+| `demand_fire` | civic | 🚒 fire truck! | "Someone's stove caught fire and there's no truck nearby — a fire station, please!" | `+town_hall −fire_station` |
+| `demand_police` | civic | 🚓 police? | "A few too many bikes have gone missing — a police station would help everyone feel safe." | `+town_hall −police_station` |
+| `demand_bus_depot` | civic | 🚌 buses! | "Walking everywhere is tiring — a bus depot would get folks around the city." | `+city_hall −bus_depot` |
+| `demand_train_station` | civic | 🚉 all aboard | "The city's ready to connect to the world — a train station would do it!" | `+bus_depot pop≥100 −train_station` |
+
+**Commercial:**
+
+| Beat | Tone | Sticker | Text | Trigger |
+|---|---|---|---|---|
+| `demand_market_stall` | cozy | 🍎 a stall | "A little market stall would be a sweet first shop for the neighborhood." | `+single_home −market_stall` |
+| `demand_grocery` ✓P7 | cozy | 🛒 groceries? | "Folks are tired of driving far for milk and bread — a grocery store would be so handy." | `+single_home −grocery` |
+| `demand_supermarket` | cozy | 🏪 bigger! | "The grocery's always crowded — a big supermarket would have room for everyone." | `+grocery pop≥20 −supermarket` |
+| `demand_bakery` | silly | 🥐 fresh bread | "The whole street woke up dreaming of warm bread — a bakery, please!" | `+grocery −bakery` |
+| `demand_coffee_shop` ✓P7 | cozy | ☕ coffee? | "A cozy coffee shop would give everyone a warm place to meet up — what do you think?" | `+single_home −coffee_shop` |
+| `demand_restaurant` | cozy | 🍽️ dinner out | "Coffee's lovely, but folks are hungry for dinner out — a restaurant?" | `+coffee_shop −restaurant` |
+| `demand_farmers_market` | cozy | 🧺 farm fresh | "The farmhouse has extra veggies to sell — a farmers market would be perfect." | `+farmhouse −farmers_market` |
+| `demand_bookshop` | cozy | 📖 a bookshop | "Readers want their own copies to keep — a bookshop next to the library?" | `+library −bookshop` |
+| `demand_toy_store` | silly | 🧸 toys! | "Every kid in town has the same birthday wish this year: a toy store!" | `+grocery −toy_store` |
+| `demand_clothing_store` | cozy | 👕 new clothes | "Folks want something new to wear — a clothing store would be a hit." | `+supermarket −clothing_store` |
+| `demand_office` | civic | 🏬 jobs | "Grown-ups need somewhere in town to work — an office building?" | `+town_hall −office_building` |
+| `demand_shopping_mall` | civic | 🛍️ one big roof | "All these shops could share one big roof — a shopping mall!" | `+supermarket +clothing_store pop≥80 −shopping_mall` |
+| `demand_business_tower` | civic | 🏢 booming | "Business is booming — a tall business tower would put the city on the map." | `+office_building pop≥80 −business_tower` |
+
+**Entertainment:**
+
+| Beat | Tone | Sticker | Text | Trigger |
+|---|---|---|---|---|
+| `demand_more_parks` ✓P7 | cozy | 🌳 a park? | "The town's feeling a little grey — a new park would brighten everyone's day." | `+single_home 🧱since≥150` *(recurring)* |
+| `demand_playground` | cozy | 🛝 playground | "The little ones need somewhere to climb and slide — a playground!" | `+park −playground` |
+| `demand_community_garden` | cozy | 🌻 grow together | "Neighbors want to grow tomatoes together — a community garden?" | `+park −community_garden` |
+| `demand_fountain_plaza` | cozy | ⛲ town square | "The town square feels empty — a fountain plaza would make it sparkle." | `+town_hall −fountain_plaza` |
+| `demand_botanical_garden` | cozy | 🌺 rare plants | "The garden's a hit — imagine a whole botanical garden of rare plants." | `+community_garden pop≥50 −botanical_garden` |
+| `demand_sports_field` | civic | ⚽ let's play | "The school kids need somewhere to run and play — a sports field!" | `+school −sports_field` |
+| `demand_swimming_pool` | silly | 🏊 so hot! | "It's sweltering and everyone's fighting over the sprinkler — a swimming pool?" | `+sports_field −swimming_pool` |
+| `demand_movie_theater` | cozy | 🎬 movie night | "Friday nights need a movie — can we build a theater?" | `+restaurant −movie_theater` |
+| `demand_museum` | civic | 🏛️ our story | "The town's got stories to tell — a museum would show them off." | `+library −museum` |
+| `demand_stadium` | civic | 🏟️ go team! | "The team's outgrown the field — a stadium would pack in the crowds!" | `+sports_field pop≥80 −stadium` |
+| `demand_zoo` | silly | 🦁 a zoo! | "A lonely penguin needs a home — and so do its friends. A zoo, please!" | `+botanical_garden pop≥100 −zoo` |
+| `demand_aquarium` | silly | 🐠 fishy | "The museum's little fish tank started a craze — let's build a whole aquarium." | `+museum pop≥100 −aquarium` |
+| `demand_amusement_park` | silly | 🎢 coaster! | "The whole city is chanting for a roller coaster — an amusement park!" | `+stadium pop≥120 −amusement_park` |
+| `demand_observation_tower` | civic | 🗼 the view | "The city's so beautiful now — a tower to see it all from the very top." | `+city_hall −observation_tower` |
+
+### 4.2 Praise beats (placement celebrations)
+
+| Beat | Tone | Sticker | Text | Trigger |
+|---|---|---|---|---|
+| `praise_first_home` ✓P7 | silly | 🎉 home sweet home | "The new home is cozy! Mrs. Pomeroy moved her cat in already — she sends thanks." | `+single_home` |
+| `praise_school` | civic | 🔔 first bell | "The school bell rang for the first time — the kids can't wait for math class!" | `+school` |
+| `praise_town_hall` | civic | 🎀 ribbon cut | "Ribbon cut! The new town hall already feels like the heart of the town." | `+town_hall` |
+| `praise_library` | cozy | 📚 storytime | "Storytime at the library is packed — kids are reading more than ever." | `+library` |
+| `praise_grocery` ✓P7 | silly | 🛒 yum! | "The new grocery is a hit — Mr. Alvarez bought twelve avocados and won't say why." | `+grocery` |
+| `praise_coffee_shop` ✓P7 | cozy | ☕ cozy! | "The coffee shop smells amazing — half the town is in there swapping stories." | `+coffee_shop` |
+| `praise_hospital` | civic | 🚑 thank you | "The new hospital is open and the doctors send their heartfelt thanks, Mayor." | `+hospital` |
+| `praise_solar_farm` | cozy | ☀️ sunshine | "The solar farm gleams in the sun — the whole city runs on sunshine now." | `+solar_farm` |
+| `praise_recycling` | cozy | ♻️ green day | "Recycling day is the neighborhood's new favorite — green and clean!" | `+recycling_center` |
+| `praise_high_rise` | silly | 🌆 what a view | "Whoa — you can see the whole town from the top floor! Residents are thrilled." | `+high_rise` |
+| `praise_museum` | civic | 🏛️ grand opening | "The museum's grand opening drew a line all the way around the block." | `+museum` |
+| `praise_stadium` | silly | 🏟️ the wave | "The first game sold out — the crowd did the wave for ten whole minutes!" | `+stadium` |
+| `praise_zoo` | silly | 🦁 hello! | "The penguins have settled in and the whole city came to say hello." | `+zoo` |
+| `praise_amusement_park` | silly | 🎢 wheee! | "The roller coaster's first riders are still grinning — what a day!" | `+amusement_park` |
+| `praise_observation_tower` | cozy | 🗼 magical | "From the tower the city looks magical at night. You built this, Mayor." | `+observation_tower` |
+
+### 4.3 Warning beats (imbalance the growth model is producing)
+
+These narrate *why growth stalled*. The capacity-pressure cases are encoded as
+the `⚠`-marked **demand** beats in §4.1 (each names the upgrade that relieves the
+pressure, so the warning *and* the unlock are one bubble). The two genuinely
+ratio-driven cases below have no single target building, so they need a small
+`TriggerRule` extension (see §7) — drafted here, wired in Phase 9.
+
+| Beat | Tone | Sticker | Text | Trigger (needs §7 extension) |
+|---|---|---|---|---|
+| `warn_lopsided` | civic | 🏚️ no homes! | "So many shops and not enough homes — folks love to visit, but nobody can stay! Let's build some housing." | `lopsided` flag (amenities ≫ housing) |
+| `warn_growth_stalled` | civic | 🐌 stuck | "The city's stopped growing — something's holding it back. Check your power, water, clinics, and trash." | `population == capacity < housing` |
+
+### 4.4 Recurring & milestone beats
+
+| Beat | Kind | Tone | Text | Trigger |
+|---|---|---|---|---|
+| `demand_more_parks` ✓P7 | demand | cozy | (see §4.1 — re-fires with 🧱 spacing even after a park exists) | `+single_home 🧱since≥150` |
+| `praise_established_town` ✓P7 | praise | civic | "The town's really taking shape — folks are proud to call it home. Nice work, Mayor!" | `+single_home age(mayors_office)≥10 fired:praise_first_home` |
+| `milestone_big_city` | praise | civic | "From a single office to a whole skyline — what an incredible journey, Mayor." | `+high_rise age(mayors_office)≥40 fired:praise_established_town` |
+
+### 4.5 Beat catalog totals
+
+54 demand (one per non-starter building; 5 marked `⚠` are warning-toned
+capacity asks) · 15 praise · 2 ratio-warnings · 3 recurring/milestone = **~74
+beats** in this first pass. The hundreds-of-beats target is reached in Phase 9 by
+adding flavor variants (multiple interchangeable texts per trigger, picked at
+random) — a content multiplier on the same trigger set, not new mechanics.
 
 ---
 
-## 6. Implementation status *(stub — Phase 9 ticks these)*
+## 5. Asset checklist
 
-Will carry ✅ markers per §3 building and §4 beat, auto-managed by
-`tools/city_builder/sync_implementation_status.py` (to be stood up in Phase 9,
-mirroring `tools/curriculum/sync_implementation_status.py`). Initially the only
-✅ rows are the Phase-7 set: `mayors_office`, `single_home`, `apartment`,
-`school`, `clinic`, `power_plant`, `waste_management`, `grocery`, `coffee_shop`,
-`park` and their nine Phase-7 beats.
+Every art/audio asset must be **CC0, CC-BY, or equivalent — CC-BY-NC and
+CC-BY-NC-SA are excluded** (matches [curriculum.md](curriculum.md) §7 and the
+licensing rules in [CLAUDE.md](CLAUDE.md)). Attribution accrues in
+[LICENSES_THIRD_PARTY.md](LICENSES_THIRD_PARTY.md). Per
+[plan.md](plan.md) Phase 9, art is a **hybrid pipeline**: CC0 isometric kits for
+the anchors + procedural `CustomPainter` widgets for the long tail, with a
+style-anchored image generator for the distinctive capstones.
+
+**Per-building need:** one isometric sprite (PNG-with-transparency, single
+dimetric 2:1 projection), with footprint metadata (`1×1` / `2×1` / `2×2`) and a
+base anchor point so it sits on the grid. Phase-7's `assetRef` stays opaque, so
+swapping emoji-placeholder → sprite is a resolver change with no domain churn.
+
+| Building group (§3) | Art needed | Sourcing bucket | License target |
+|---|---|---|---|
+| Homes (`single_home`…`townhouse_row`, `farmhouse`) | small house sprites | **Kenney City Kit** (CC0) | CC0 |
+| Apartments / towers (`apartment`, `mid_rise_apartment`, `high_rise`, `luxury_condo`, `business_tower`) | mid/high-rise sprites (2×2 for towers) | Kenney City Kit + **image-gen** for tall variants | CC0 / generated |
+| Civic core (`mayors_office`…`post_office`) | civic-building sprites | Kenney + OpenGameArt (CC0/CC-BY) | CC0 / CC-BY |
+| Services — utilities (`power_*`, `water_*`, `waste_*`, `recycling`, `solar_farm`) | industrial/utility sprites | Kenney City Kit **Industrial** (CC0) | CC0 |
+| Services — civic (`clinic`, `hospital`, `school`, `high_school`, `fire_station`, `police_station`, transit) | service-building sprites | Kenney + OpenGameArt | CC0 / CC-BY |
+| Commercial (`market_stall`…`shopping_mall`) | shopfront sprites | Kenney + **procedural** re-skins for variety | CC0 |
+| Entertainment — green (`park`…`botanical_garden`) | parks/greenery tiles | Kenney nature + **procedural** | CC0 |
+| Entertainment — capstones (`stadium`, `zoo`, `aquarium`, `amusement_park`, `observation_tower`) | distinctive signature sprites | **image-gen, style-anchored** to 2–3 Kenney refs | generated (verify license clean) |
+| Long-tail re-skins / tier infills (§3.6) | palette/roof variants | **procedural `CustomPainter`** | n/a (code) |
+
+**Audio** (deferred to Phase 11 per plan.md, listed for completeness): a
+building-placed SFX and a bubble-pop SFX cover the whole catalog; capstones may
+get a one-off fanfare. Source CC0 from Freesound / OpenGameArt.
+
+**Image-gen note.** Style consistency is the binding constraint (plan.md "Art
+roadmap"): feed the generator the same 2–3 anchor sprites as style references on
+every prompt. Confirm output license is clean before bundling — generated art's
+license status is the one yellow flag in this checklist; if it can't be cleared,
+fall back to procedural or narrow the capstone set.
+
+---
+
+## 6. Implementation status
+
+✅ markers per §3 building and §4 beat will be **auto-managed by**
+`tools/city_builder/sync_implementation_status.py` (stood up in Phase 9, mirroring
+[tools/curriculum/sync_implementation_status.py](tools/curriculum/sync_implementation_status.py)),
+syncing against `building_registry.dart` / `beat_registry.dart` / `assets/data/city/`.
+Until then the counts are tracked by hand.
+
+**Implemented today (Phase 7 — 10 buildings, 13 beats):**
+- **Buildings:** `mayors_office`, `single_home`, `apartment`, `school`, `clinic`,
+  `power_plant`, `waste_management`, `grocery`, `coffee_shop`, `park`.
+- **Beats:** `demand_first_home`, `praise_first_home`, `demand_school`,
+  `demand_apartment`, `demand_clinic`, `demand_power`, `demand_waste`,
+  `demand_grocery`, `demand_coffee_shop`, `demand_more_parks`, `praise_grocery`,
+  `praise_coffee_shop`, `praise_established_town`.
+
+**Remaining for Phase 9:** 45 buildings + ~61 beats from §3 / §4, plus the
+`school` category move and the four new service IDs (`water`, `police`, `fire`,
+`transit`).
 
 ---
 
 ## 7. Open questions
 
-- **Education reclassification.** Phase 7 placed `school` under `civicHousing`;
-  this design groups education under `services` (with `high_school`) for taxonomic
-  cleanliness. Phase 9 should reconcile — either move `school`'s category (a
-  one-field content change) or keep it in `civicHousing` and note the exception.
-  *Decision needed before fill.*
-- **New service IDs.** `water` (gating), `police` / `fire` / `transit` (soft) are
-  proposed additions to `serviceProvision` keys + `gatingServiceIds`. Confirm we
-  want `water` as a *second* hard-gating service (more infrastructure pressure
-  early) vs. keeping it soft.
-- **Tier count per arc.** Housing has 7 rungs; is that the right depth, or should
-  the spine be shorter (less grind) / longer (more "next rung")? Needs playtest.
-- **Capstone gating.** Should capstones (amusement park, observation tower, train
-  station) gate on *lifetime bricks* (total practice) so they read as "you've
-  played a lot" trophies, or purely on city state? Leaning lifetime-brick.
-- **Service-ratio + cost numbers.** All deferred to the fill pass and ultimately
-  to Phase 9 playtest tuning (per plan.md's Phase-9 open question).
+**Resolved during Phase 8 drafting (2026-05-31):**
+- **Education category** → moved to `services` (`school` + `high_school`). Phase 9
+  applies the one-field category change to the existing `school` row.
+- **Water** → a **hard-gating** service (`water` joins `gatingServiceIds`), arc
+  `water_tower` → `water_treatment`.
+- **Housing depth** → keep all **7 rungs**; tune pacing by playtest.
+- **Capstone gating** → capstones gate on **lifetime bricks** (300–1000) so they
+  read as "you've practiced a lot" trophies. Applied in §3; confirm feel in
+  playtest.
+
+**Still open (need Phase-9 implementation or playtest):**
+- **2×2 (and 2×1) footprints.** Every Phase-7 building is 1×1. The placement
+  invariant in [placement_rules.dart](lib/domain/city/placement_rules.dart) already
+  walks the real footprint ring, but the **renderer, tap-to-place hit-testing, and
+  road generation** need verification/work for multi-tile buildings before the
+  many 2×2 entries here can ship. First Phase-9 task on the art/placement track.
+- **`TriggerRule` extension for ratio warnings.** `warn_lopsided` and
+  `warn_growth_stalled` (§4.3) can't be expressed with the current
+  buildingsPresent/absent/pop/age/beats/bricks fields — they need the growth
+  model to surface a `lopsided` boolean and a `growthStalled` boolean into
+  `TriggerContext`. Small, additive; the only mechanic touch Phase 9 needs beyond
+  content. Everything else in this doc fits the existing typed rules.
+- **Flavor-variant beats.** §4.5's path to "hundreds of beats" is multiple
+  interchangeable texts per trigger, chosen at random. Confirm the
+  `StoryBeat`/registry shape wants a `List<String>` of longTexts vs. separate beat
+  rows — a Phase-9 authoring-ergonomics call.
+- **Service-ratio & cost tuning.** All §3 numbers are designed-coherent
+  placeholders; final values come from Phase-9 playtest (per plan.md's standing
+  Phase-9 open question on residents-per-service and variety curves).
+- **Per-tier upgrades vs. distinct types.** This design models progression as
+  *distinct building types* in an arc (place a new high-rise next to the old
+  apartment). Phase 9 also lists "building upgrade tiers" (upgrade-in-place, up to
+  3 visual tiers). Decide per arc which rungs are new-type vs. in-place upgrades;
+  the `maxTier` / `assetRefByTier` fields in the Data Model already anticipate the
+  in-place path.
