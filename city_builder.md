@@ -181,30 +181,52 @@ Every non-starter building names exactly one demand beat in `reads:` — that be
 is what reveals its research card. `✓P7` marks the ten buildings already shipped
 in the Phase-7 registry (IDs and Phase-7 numbers preserved).
 
+**Footprint scale.** `1×1` is the base unit — a single house lot. Sizes scale with
+how big the real building reads, *not* with how much land we want to spend (land
+isn't scarce: the player unlocks more space over time via Phase-9 land expansion,
+so footprints aim for *plausibility*, not economy). Guidelines used below:
+
+- **Small shops & utilities** (market stall, coffee shop, bakery, water tower,
+  bookshop) — `1×1`–`1×2`.
+- **Houses → blocks** grow along the ladder: home `1×1` → duplex `1×2` →
+  townhouse row `3×1` (long & thin) → apartment `2×2` → mid-rise `2×3`.
+- **Towers stay compact but tall** — `high_rise` / `luxury_condo` / `business_tower`
+  / `observation_tower` sit on a `2×2`–`3×3` base; their *scale is conveyed by
+  height in the art*, not by sprawling footprint (realistic, and keeps skylines
+  legible).
+- **Civic & big services** (town/city hall, hospital, school, power station, water
+  treatment) — `2×2`–`3×3`.
+- **Naturally rectangular things are rectangular** — train station `4×2` (long
+  platform shed), sports field `3×2`, solar farm `4×3`, townhouse row `3×1`.
+- **Capstone attractions sprawl** — stadium / shopping mall `4×4`, zoo `5×5`,
+  amusement park `6×6`. These are deliberately large "wow" builds that **assume an
+  expanded map** (the beginner `12×12` map can't hold a `6×6` park alongside a
+  city — see §7 on land expansion / starting map size).
+
 ### 3.1 Civic & Housing (`civicHousing`)
 
 **Civic-core line** (unique narrative anchors; gate later arcs):
 
 | Building | 🧱 | 🔬 | Pop | Service | V | Foot | Unlock rule |
 |---|---|---|---|---|---|---|---|
-| `mayors_office` 🏛️ ✓P7 | 0 | 0 | 0 | — | – | 1×1 | *open* (starter, **unique**) |
-| `town_hall` 🏤 | 30 | 2 | 0 | — | – | 1×1 | `mayors_office` + pop≥20 · reads:`demand_town_hall` (**unique**) |
-| `city_hall` 🏙️ | 80 | 3 | 0 | — | – | 2×2 | `town_hall` + pop≥80 · reads:`demand_city_hall` (**unique**) |
-| `library` 📚 | 20 | 2 | 0 | — | – | 1×1 | `school` · reads:`demand_library` |
-| `post_office` 📮 | 20 | 2 | 0 | — | – | 1×1 | `town_hall` · reads:`demand_post_office` |
+| `mayors_office` 🏛️ ✓P7 | 0 | 0 | 0 | — | – | 2×2 | *open* (starter, **unique**) |
+| `town_hall` 🏤 | 30 | 2 | 0 | — | – | 2×3 | `mayors_office` + pop≥20 · reads:`demand_town_hall` (**unique**) |
+| `city_hall` 🏙️ | 80 | 3 | 0 | — | – | 3×3 | `town_hall` + pop≥80 · reads:`demand_city_hall` (**unique**) |
+| `library` 📚 | 20 | 2 | 0 | — | – | 2×2 | `school` · reads:`demand_library` |
+| `post_office` 📮 | 20 | 2 | 0 | — | – | 1×2 | `town_hall` · reads:`demand_post_office` |
 
 **Housing line** (the population spine — 7-rung ladder, rising `Pop`):
 
 | Building | 🧱 | 🔬 | Pop | Service | V | Foot | Unlock rule |
 |---|---|---|---|---|---|---|---|
 | `single_home` 🏠 ✓P7 | 5 | 1 | 4 | — | – | 1×1 | `mayors_office` · reads:`demand_first_home` |
-| `duplex` 🏘️ | 10 | 1 | 8 | — | – | 1×1 | `single_home` · reads:`demand_duplex` |
-| `townhouse_row` 🏘️ | 20 | 2 | 12 | — | – | 2×1 | `duplex` + pop≥12 · reads:`demand_townhouse_row` |
-| `apartment` 🏢 ✓P7 | 10 | 1 | 16 | — | – | 1×1 | `single_home` + pop≥8 · reads:`demand_apartment` |
-| `mid_rise_apartment` 🏢 | 30 | 2 | 30 | — | – | 1×1 | `apartment` + pop≥30 · reads:`demand_mid_rise` |
-| `high_rise` 🌆 | 60 | 3 | 60 | — | – | 2×2 | `mid_rise_apartment` + pop≥60 + life🧱≥300 · reads:`demand_high_rise` |
-| `luxury_condo` 🏨 | 100 | 3 | 50 | — | ✅ | 2×2 | `high_rise` + life🧱≥500 · reads:`demand_luxury_condo` |
-| `farmhouse` 🏡 | 8 | 1 | 3 | — | – | 1×1 | `single_home` · reads:`demand_farmhouse` (countryside flavor) |
+| `duplex` 🏘️ | 10 | 1 | 8 | — | – | 1×2 | `single_home` · reads:`demand_duplex` |
+| `townhouse_row` 🏘️ | 20 | 2 | 12 | — | – | 3×1 | `duplex` + pop≥12 · reads:`demand_townhouse_row` |
+| `apartment` 🏢 ✓P7 | 10 | 1 | 16 | — | – | 2×2 | `single_home` + pop≥8 · reads:`demand_apartment` |
+| `mid_rise_apartment` 🏢 | 30 | 2 | 30 | — | – | 2×3 | `apartment` + pop≥30 · reads:`demand_mid_rise` |
+| `high_rise` 🌆 | 60 | 3 | 60 | — | – | 3×3 | `mid_rise_apartment` + pop≥60 + life🧱≥300 · reads:`demand_high_rise` |
+| `luxury_condo` 🏨 | 100 | 3 | 50 | — | ✅ | 3×3 | `high_rise` + life🧱≥500 · reads:`demand_luxury_condo` |
+| `farmhouse` 🏡 | 8 | 1 | 3 | — | – | 2×2 | `single_home` · reads:`demand_farmhouse` (countryside flavor) |
 
 ### 3.2 Services (`services`)
 
@@ -217,51 +239,51 @@ services are `false`. **Education moved here from `civicHousing`** per the
 
 | Building | 🧱 | 🔬 | Service | V | Foot | Unlock rule |
 |---|---|---|---|---|---|---|
-| `power_plant` ⚡ ✓P7 | 10 | 1 | `power:200` | ✅ | 1×1 | `single_home` · reads:`demand_power` |
-| `power_station` 🏭 | 40 | 3 | `power:500` | ✅ | 2×2 | `power_plant` + pop≥40 · reads:`demand_power_station` |
-| `solar_farm` ☀️ | 70 | 3 | `power:800` | ✅ | 2×2 | `power_station` + life🧱≥400 · reads:`demand_solar_farm` |
+| `power_plant` ⚡ ✓P7 | 10 | 1 | `power:200` | ✅ | 2×2 | `single_home` · reads:`demand_power` |
+| `power_station` 🏭 | 40 | 3 | `power:500` | ✅ | 3×3 | `power_plant` + pop≥40 · reads:`demand_power_station` |
+| `solar_farm` ☀️ | 70 | 3 | `power:800` | ✅ | 4×3 | `power_station` + life🧱≥400 · reads:`demand_solar_farm` |
 
 **Water** (`water`, gating — **new service ID**):
 
 | Building | 🧱 | 🔬 | Service | V | Foot | Unlock rule |
 |---|---|---|---|---|---|---|
 | `water_tower` 🚰 | 10 | 1 | `water:150` | ✅ | 1×1 | `single_home` · reads:`demand_water` |
-| `water_treatment` 💧 | 40 | 3 | `water:500` | ✅ | 2×2 | `water_tower` + pop≥40 · reads:`demand_water_treatment` |
+| `water_treatment` 💧 | 40 | 3 | `water:500` | ✅ | 3×3 | `water_tower` + pop≥40 · reads:`demand_water_treatment` |
 
 **Waste** (`waste`, gating):
 
 | Building | 🧱 | 🔬 | Service | V | Foot | Unlock rule |
 |---|---|---|---|---|---|---|
-| `waste_management` 🚮 ✓P7 | 10 | 1 | `waste:150` | ✅ | 1×1 | `single_home` + pop≥12 · reads:`demand_waste` |
-| `recycling_center` ♻️ | 40 | 3 | `waste:400` | ✅ | 1×1 | `waste_management` + pop≥40 · reads:`demand_recycling` |
+| `waste_management` 🚮 ✓P7 | 10 | 1 | `waste:150` | ✅ | 2×2 | `single_home` + pop≥12 · reads:`demand_waste` |
+| `recycling_center` ♻️ | 40 | 3 | `waste:400` | ✅ | 2×3 | `waste_management` + pop≥40 · reads:`demand_recycling` |
 
 **Health** (`clinic`, gating):
 
 | Building | 🧱 | 🔬 | Service | V | Foot | Unlock rule |
 |---|---|---|---|---|---|---|
-| `clinic` 🏥 ✓P7 | 10 | 1 | `clinic:50` | ✅ | 1×1 | `single_home` · reads:`demand_clinic` |
-| `hospital` 🚑 | 60 | 3 | `clinic:200` | ✅ | 2×2 | `clinic` + pop≥60 · reads:`demand_hospital` |
+| `clinic` 🏥 ✓P7 | 10 | 1 | `clinic:50` | ✅ | 1×2 | `single_home` · reads:`demand_clinic` |
+| `hospital` 🚑 | 60 | 3 | `clinic:200` | ✅ | 3×3 | `clinic` + pop≥60 · reads:`demand_hospital` |
 
 **Education** (`school`, soft):
 
 | Building | 🧱 | 🔬 | Service | V | Foot | Unlock rule |
 |---|---|---|---|---|---|---|
-| `school` 🏫 ✓P7 | 10 | 1 | `school:60` | – | 1×1 | `single_home` · reads:`demand_school` *(was `civicHousing` in P7)* |
-| `high_school` 🎓 | 40 | 2 | `school:150` | – | 1×1 | `school` + pop≥40 · reads:`demand_high_school` |
+| `school` 🏫 ✓P7 | 10 | 1 | `school:60` | – | 2×3 | `single_home` · reads:`demand_school` *(was `civicHousing` in P7)* |
+| `high_school` 🎓 | 40 | 2 | `school:150` | – | 3×3 | `school` + pop≥40 · reads:`demand_high_school` |
 
 **Safety** (soft — **new service IDs `police` / `fire`**):
 
 | Building | 🧱 | 🔬 | Service | V | Foot | Unlock rule |
 |---|---|---|---|---|---|---|
-| `fire_station` 🚒 | 25 | 2 | `fire:100` | – | 1×1 | `town_hall` · reads:`demand_fire` |
-| `police_station` 🚓 | 25 | 2 | `police:100` | – | 1×1 | `town_hall` · reads:`demand_police` |
+| `fire_station` 🚒 | 25 | 2 | `fire:100` | – | 2×2 | `town_hall` · reads:`demand_fire` |
+| `police_station` 🚓 | 25 | 2 | `police:100` | – | 2×2 | `town_hall` · reads:`demand_police` |
 
 **Transit** (soft — **new service ID `transit`**):
 
 | Building | 🧱 | 🔬 | Service | V | Foot | Unlock rule |
 |---|---|---|---|---|---|---|
-| `bus_depot` 🚌 | 40 | 3 | `transit:200` | – | 1×1 | `city_hall` · reads:`demand_bus_depot` |
-| `train_station` 🚉 | 120 | 5 | `transit:500` | – | 2×2 | `bus_depot` + pop≥100 + life🧱≥600 · reads:`demand_train_station` |
+| `bus_depot` 🚌 | 40 | 3 | `transit:200` | – | 2×3 | `city_hall` · reads:`demand_bus_depot` |
+| `train_station` 🚉 | 120 | 5 | `transit:500` | – | 4×2 | `bus_depot` + pop≥100 + life🧱≥600 · reads:`demand_train_station` |
 
 ### 3.3 Commercial (`commercial`)
 
@@ -273,22 +295,22 @@ Shops / food / offices — the desirability-multiplier and "town life" channel. 
 | Building | 🧱 | 🔬 | Foot | Unlock rule |
 |---|---|---|---|---|
 | `market_stall` 🍎 | 8 | 1 | 1×1 | `single_home` · reads:`demand_market_stall` |
-| `grocery` 🛒 ✓P7 | 10 | 1 | 1×1 | `single_home` · reads:`demand_grocery` |
-| `supermarket` 🏪 | 30 | 2 | 1×1 | `grocery` + pop≥20 · reads:`demand_supermarket` |
-| `bakery` 🥐 | 20 | 2 | 1×1 | `grocery` · reads:`demand_bakery` |
+| `grocery` 🛒 ✓P7 | 10 | 1 | 1×2 | `single_home` · reads:`demand_grocery` |
+| `supermarket` 🏪 | 30 | 2 | 2×3 | `grocery` + pop≥20 · reads:`demand_supermarket` |
+| `bakery` 🥐 | 20 | 2 | 1×2 | `grocery` · reads:`demand_bakery` |
 | `coffee_shop` ☕ ✓P7 | 10 | 1 | 1×1 | `single_home` · reads:`demand_coffee_shop` |
-| `restaurant` 🍽️ | 25 | 2 | 1×1 | `coffee_shop` · reads:`demand_restaurant` |
-| `farmers_market` 🧺 | 20 | 2 | 1×1 | `farmhouse` · reads:`demand_farmers_market` |
+| `restaurant` 🍽️ | 25 | 2 | 1×2 | `coffee_shop` · reads:`demand_restaurant` |
+| `farmers_market` 🧺 | 20 | 2 | 2×2 | `farmhouse` · reads:`demand_farmers_market` |
 
 **Retail & offices:**
 
 | Building | 🧱 | 🔬 | Foot | Unlock rule |
 |---|---|---|---|---|
 | `bookshop` 📖 | 20 | 2 | 1×1 | `library` · reads:`demand_bookshop` |
-| `toy_store` 🧸 | 20 | 2 | 1×1 | `grocery` · reads:`demand_toy_store` |
-| `clothing_store` 👕 | 25 | 2 | 1×1 | `supermarket` · reads:`demand_clothing_store` |
-| `office_building` 🏬 | 40 | 3 | 1×1 | `town_hall` · reads:`demand_office` |
-| `shopping_mall` 🛍️ | 80 | 3 | 2×2 | `supermarket` + `clothing_store` + pop≥80 · reads:`demand_shopping_mall` *(multi-parent)* |
+| `toy_store` 🧸 | 20 | 2 | 1×2 | `grocery` · reads:`demand_toy_store` |
+| `clothing_store` 👕 | 25 | 2 | 1×2 | `supermarket` · reads:`demand_clothing_store` |
+| `office_building` 🏬 | 40 | 3 | 2×2 | `town_hall` · reads:`demand_office` |
+| `shopping_mall` 🛍️ | 80 | 3 | 4×4 | `supermarket` + `clothing_store` + pop≥80 · reads:`demand_shopping_mall` *(multi-parent)* |
 | `business_tower` 🏢 | 100 | 3 | 2×2 | `office_building` + pop≥80 + life🧱≥400 · reads:`demand_business_tower` |
 
 ### 3.4 Entertainment (`entertainment`)
@@ -300,30 +322,30 @@ Parks / culture / recreation — the cozy, praise-heavy delight channel. All
 
 | Building | 🧱 | 🔬 | Foot | Unlock rule |
 |---|---|---|---|---|
-| `park` 🌳 ✓P7 | 10 | 1 | 1×1 | `single_home` · reads:`demand_more_parks` *(recurring — see §4)* |
-| `playground` 🛝 | 10 | 1 | 1×1 | `park` · reads:`demand_playground` |
-| `community_garden` 🌻 | 15 | 2 | 1×1 | `park` · reads:`demand_community_garden` |
-| `fountain_plaza` ⛲ | 25 | 2 | 1×1 | `town_hall` · reads:`demand_fountain_plaza` |
-| `botanical_garden` 🌺 | 50 | 3 | 2×2 | `community_garden` + pop≥50 · reads:`demand_botanical_garden` |
+| `park` 🌳 ✓P7 | 10 | 1 | 2×2 | `single_home` · reads:`demand_more_parks` *(recurring — see §4)* |
+| `playground` 🛝 | 10 | 1 | 1×2 | `park` · reads:`demand_playground` |
+| `community_garden` 🌻 | 15 | 2 | 2×2 | `park` · reads:`demand_community_garden` |
+| `fountain_plaza` ⛲ | 25 | 2 | 2×2 | `town_hall` · reads:`demand_fountain_plaza` |
+| `botanical_garden` 🌺 | 50 | 3 | 3×3 | `community_garden` + pop≥50 · reads:`demand_botanical_garden` |
 
 **Recreation & culture:**
 
 | Building | 🧱 | 🔬 | Foot | Unlock rule |
 |---|---|---|---|---|
-| `sports_field` ⚽ | 25 | 2 | 2×1 | `school` · reads:`demand_sports_field` |
-| `swimming_pool` 🏊 | 30 | 2 | 1×1 | `sports_field` · reads:`demand_swimming_pool` |
-| `movie_theater` 🎬 | 40 | 3 | 1×1 | `restaurant` · reads:`demand_movie_theater` |
-| `museum` 🏛️ | 50 | 3 | 2×2 | `library` · reads:`demand_museum` |
-| `stadium` 🏟️ | 90 | 3 | 2×2 | `sports_field` + pop≥80 · reads:`demand_stadium` |
+| `sports_field` ⚽ | 25 | 2 | 3×2 | `school` · reads:`demand_sports_field` |
+| `swimming_pool` 🏊 | 30 | 2 | 2×2 | `sports_field` · reads:`demand_swimming_pool` |
+| `movie_theater` 🎬 | 40 | 3 | 2×3 | `restaurant` · reads:`demand_movie_theater` |
+| `museum` 🏛️ | 50 | 3 | 3×3 | `library` · reads:`demand_museum` |
+| `stadium` 🏟️ | 90 | 3 | 4×4 | `sports_field` + pop≥80 · reads:`demand_stadium` |
 
 **Capstone attractions** (aspirational, late-game, signature praise beats):
 
 | Building | 🧱 | 🔬 | Foot | Unlock rule |
 |---|---|---|---|---|
-| `zoo` 🦁 | 120 | 5 | 2×2 | `botanical_garden` + pop≥100 · reads:`demand_zoo` |
-| `aquarium` 🐠 | 120 | 5 | 2×2 | `museum` + pop≥100 · reads:`demand_aquarium` |
-| `amusement_park` 🎢 | 200 | 5 | 2×2 | `stadium` + pop≥120 + life🧱≥800 · reads:`demand_amusement_park` |
-| `observation_tower` 🗼 | 250 | 5 | 1×1 | `city_hall` + life🧱≥1000 · reads:`demand_observation_tower` |
+| `zoo` 🦁 | 120 | 5 | 5×5 | `botanical_garden` + pop≥100 · reads:`demand_zoo` |
+| `aquarium` 🐠 | 120 | 5 | 3×4 | `museum` + pop≥100 · reads:`demand_aquarium` |
+| `amusement_park` 🎢 | 200 | 5 | 6×6 | `stadium` + pop≥120 + life🧱≥800 · reads:`demand_amusement_park` |
+| `observation_tower` 🗼 | 250 | 5 | 2×2 | `city_hall` + life🧱≥1000 · reads:`demand_observation_tower` |
 
 ### 3.5 Economy sanity check
 
@@ -522,14 +544,15 @@ the anchors + procedural `CustomPainter` widgets for the long tail, with a
 style-anchored image generator for the distinctive capstones.
 
 **Per-building need:** one isometric sprite (PNG-with-transparency, single
-dimetric 2:1 projection), with footprint metadata (`1×1` / `2×1` / `2×2`) and a
-base anchor point so it sits on the grid. Phase-7's `assetRef` stays opaque, so
-swapping emoji-placeholder → sprite is a resolver change with no domain churn.
+dimetric 2:1 projection), sized to its §3 footprint (which ranges from `1×1` up to
+`6×6` — see the footprint scale in §3), with a base anchor point so it sits on the
+grid. Phase-7's `assetRef` stays opaque, so swapping emoji-placeholder → sprite is
+a resolver change with no domain churn.
 
 | Building group (§3) | Art needed | Sourcing bucket | License target |
 |---|---|---|---|
 | Homes (`single_home`…`townhouse_row`, `farmhouse`) | small house sprites | **Kenney City Kit** (CC0) | CC0 |
-| Apartments / towers (`apartment`, `mid_rise_apartment`, `high_rise`, `luxury_condo`, `business_tower`) | mid/high-rise sprites (2×2 for towers) | Kenney City Kit + **image-gen** for tall variants | CC0 / generated |
+| Apartments / towers (`apartment`, `mid_rise_apartment`, `high_rise`, `luxury_condo`, `business_tower`) | mid/high-rise sprites (compact `2×2`–`3×3` base, scale via height) | Kenney City Kit + **image-gen** for tall variants | CC0 / generated |
 | Civic core (`mayors_office`…`post_office`) | civic-building sprites | Kenney + OpenGameArt (CC0/CC-BY) | CC0 / CC-BY |
 | Services — utilities (`power_*`, `water_*`, `waste_*`, `recycling`, `solar_farm`) | industrial/utility sprites | Kenney City Kit **Industrial** (CC0) | CC0 |
 | Services — civic (`clinic`, `hospital`, `school`, `high_school`, `fire_station`, `police_station`, transit) | service-building sprites | Kenney + OpenGameArt | CC0 / CC-BY |
@@ -585,11 +608,22 @@ Until then the counts are tracked by hand.
   playtest.
 
 **Still open (need Phase-9 implementation or playtest):**
-- **2×2 (and 2×1) footprints.** Every Phase-7 building is 1×1. The placement
-  invariant in [placement_rules.dart](lib/domain/city/placement_rules.dart) already
-  walks the real footprint ring, but the **renderer, tap-to-place hit-testing, and
-  road generation** need verification/work for multi-tile buildings before the
-  many 2×2 entries here can ship. First Phase-9 task on the art/placement track.
+- **Multi-tile footprints (up to `6×6`).** Every Phase-7 building is `1×1`; this
+  catalog uses footprints from `1×1` to `6×6`, including rectangular ones (`3×1`,
+  `4×2`, `4×3`). The placement invariant in
+  [placement_rules.dart](lib/domain/city/placement_rules.dart) already walks the
+  real footprint ring, but the **renderer, tap-to-place hit-testing, and road
+  generation** need verification/work for multi-tile (and non-square) buildings
+  before these can ship. First Phase-9 task on the art/placement track.
+- **Starting map size & land expansion.** The beginner map is `12×12`
+  ([city_map_registry.dart](lib/domain/city/city_map_registry.dart)). With the
+  realistic footprints above, that fills up by mid-game and *cannot* hold the
+  late/capstone builds (a `6×6` amusement park is a quarter of it). Phase 9's
+  **land expansion** is therefore a prerequisite for the late game, not optional
+  polish — and the beginner map may want a modest bump. The big capstone unlock
+  rules (`pop≥100`+, `life🧱≥800`+) already pace these well past the point where a
+  player would have expanded. Confirm the starting size + expansion cadence in
+  Phase 9.
 - **`TriggerRule` extension for ratio warnings.** `warn_lopsided` and
   `warn_growth_stalled` (§4.3) can't be expressed with the current
   buildingsPresent/absent/pop/age/beats/bricks fields — they need the growth
