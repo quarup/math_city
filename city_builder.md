@@ -535,41 +535,69 @@ random) — a content multiplier on the same trigger set, not new mechanics.
 
 ## 5. Asset checklist
 
-Every art/audio asset must be **CC0, CC-BY, or equivalent — CC-BY-NC and
-CC-BY-NC-SA are excluded** (matches [curriculum.md](curriculum.md) §7 and the
-licensing rules in [CLAUDE.md](CLAUDE.md)). Attribution accrues in
-[LICENSES_THIRD_PARTY.md](LICENSES_THIRD_PARTY.md). Per
-[plan.md](plan.md) Phase 9, art is a **hybrid pipeline**: CC0 isometric kits for
-the anchors + procedural `CustomPainter` widgets for the long tail, with a
-style-anchored image generator for the distinctive capstones.
+Bundled third-party assets must be **CC0, CC-BY, or equivalent —
+CC-BY-NC and CC-BY-NC-SA are excluded** (matches [curriculum.md](curriculum.md)
+§7 and the licensing rules in [CLAUDE.md](CLAUDE.md)). Attribution accrues in
+[LICENSES_THIRD_PARTY.md](LICENSES_THIRD_PARTY.md). **AI-generated building art
+is a separate bucket** — we own the rights to outputs under the generator's
+commercial-use terms; any *style-anchor reference images* used to constrain the
+generator are still attributed if their source license requires it.
 
-**Per-building need:** one isometric sprite (PNG-with-transparency, single
-dimetric 2:1 projection), sized to its §3 footprint (which ranges from `1×1` up to
-`6×6` — see the footprint scale in §3), with a base anchor point so it sits on the
-grid. Phase-7's `assetRef` stays opaque, so swapping emoji-placeholder → sprite is
-a resolver change with no domain churn.
+**Per-building need:** one raster sprite, **PNG with transparency**, single
+dimetric 2:1 projection, sized to its §3 footprint (`1×1`–`6×6`), with a base
+anchor point so the sprite sits on the grid. Phase-7's opaque `assetRef` makes
+the emoji-placeholder → sprite swap a resolver change with no domain churn.
 
-| Building group (§3) | Art needed | Sourcing bucket | License target |
-|---|---|---|---|
-| Homes (`single_home`…`townhouse_row`, `farmhouse`) | small house sprites | **Kenney City Kit** (CC0) | CC0 |
-| Apartments / towers (`apartment`, `mid_rise_apartment`, `high_rise`, `luxury_condo`, `business_tower`) | mid/high-rise sprites (compact `2×2`–`3×3` base, scale via height) | Kenney City Kit + **image-gen** for tall variants | CC0 / generated |
-| Civic core (`mayors_office`…`post_office`) | civic-building sprites | Kenney + OpenGameArt (CC0/CC-BY) | CC0 / CC-BY |
-| Services — utilities (`power_*`, `water_*`, `waste_*`, `recycling`, `solar_farm`) | industrial/utility sprites | Kenney City Kit **Industrial** (CC0) | CC0 |
-| Services — civic (`clinic`, `hospital`, `school`, `high_school`, `fire_station`, `police_station`, transit) | service-building sprites | Kenney + OpenGameArt | CC0 / CC-BY |
-| Commercial (`market_stall`…`shopping_mall`) | shopfront sprites | Kenney + **procedural** re-skins for variety | CC0 |
-| Entertainment — green (`park`…`botanical_garden`) | parks/greenery tiles | Kenney nature + **procedural** | CC0 |
-| Entertainment — capstones (`stadium`, `zoo`, `aquarium`, `amusement_park`, `observation_tower`) | distinctive signature sprites | **image-gen, style-anchored** to 2–3 Kenney refs | generated (verify license clean) |
-| Long-tail re-skins / tier infills (§3.6) | palette/roof variants | **procedural `CustomPainter`** | n/a (code) |
+### 5.1 Building art pipeline — locked 2026-06-04
 
-**Audio** (deferred to Phase 11 per plan.md, listed for completeness): a
+**Pipeline: Nano Banana, style-anchored to hand-curated reference images.** A
+small set of 2–3 anchor refs (e.g. one home, one tall building, one
+cozy/park) — sourced from a CC0 isometric kit so the style influence is
+licensing-clean (**Kenney's "Isometric Tiles" series** is the leading anchor
+source per the prior-session Kenney research) — is fed on *every* prompt so
+palette, line weight, shadow direction, and projection stay coherent across all
+55 buildings.
+
+**Workflow (per building):**
+1. Compose the prompt: same anchor refs + per-building noun phrase + tier
+   descriptor + "2:1 dimetric, transparent background."
+2. Generate 4–6 variants; pick best; light cleanup (trim, base alignment).
+3. Side-by-side coherence check every ~10 buildings — drift becomes visible
+   quickly; if it has, re-lock the anchors before continuing.
+4. Save under `assets/buildings/<building_id>.png`; `building_registry.dart`'s
+   `assetRef` points to it. Rendered as Flame sprites (the existing isometric
+   renderer already loads tiles by path).
+
+**Hard rules:**
+- **No procedural `CustomPainter` art for buildings.** The Phase-7 placeholders
+  (colored tile + emoji + label) read as flat / cardboard-y; we won't extend the
+  approach to real buildings. *Procedural diagrams for math content
+  (`FractionBar`, `Clock`, …) are unaffected — those stay procedural per
+  [curriculum.md](curriculum.md).*
+- **No mixing finished sprites from different CC0 packs.** Style seams between
+  artists are immediately visible to kids and read as amateur.
+- **No multi-source generation.** Same anchor refs, same generator, every time.
+
+### 5.2 Alternatives considered (research log)
+
+Recorded so the decision is reviewable and we don't re-litigate it next session.
+
+| Option | Why considered | Why rejected |
+|---|---|---|
+| **CC0 vector pack as the only source** (Kenney Isometric Vector Buildings) | Vector = beautiful, scales infinitely, CC0, $0 cost. | Covers ~25–30 of the 55 anchors; **missing solar farm, water tower, amusement park, zoo, aquarium, observation tower, train station, recycling** — the late-game capstones the player works toward. Backfilling them by mixing other packs hits the style-seams rule. |
+| **Mix multiple CC0 packs** (Kenney + Freepik + OpenGameArt) | Could plug the catalog holes from disparate CC0 sources. | Visible style seams between artists — kids notice and it reads amateur. Hard rule in §5.1. |
+| **Procedural `CustomPainter` buildings** (parameterized, mirrors `curriculum.md`'s diagram strategy) | Infinite scaling, no asset pipeline, no licensing surface. | Phase-7 placeholders demonstrated the problem: parameterized shapes look flat next to real sprites. Hard rule in §5.1. |
+| **Commission a freelance vector artist** | Best aesthetic ceiling; one consistent hand across the catalog. | ~$1.5–3k indie for the 10-building Phase-7 set; ~$8–20k indie for the full 55 (sources: Whimsy Games, Pixune, 2D Will Never Die — see prior-session research notes). Out of budget for a free hobby project; calendar time (months for 55) also bad. |
+| **Recraft V4 Vector** (native SVG GenAI, "Style Lock") | True SVG output; strongest style-consistency feature among native-vector tools; paid plan grants commercial rights. | First-hand evaluation (2026-06-04) unimpressive at the quality bar we want for game art. |
+| **Magnific AI Vector** | Also true SVG output. | First-hand evaluation unimpressive (prior session). |
+| **Midjourney / SDXL / Flux → Vectorizer.ai trace** | Painterly look possible; Flux + LoRA is the strongest consistency tactic across many assets. | Raster→SVG traces produce thousands of anchor points — heavy, slow to render, painful to clean. Painterly mismatches the chunky-iso aesthetic. |
+| **Nano Banana, style-anchored to CC0 refs ← chosen** | Raster output is a native fit for the Flame sprite pipeline (no vector-trace tax). 2026 quality on the iso / clean-geometric end is strong. Anchor-refs-on-every-prompt is the right consistency tactic for 55+ assets. Commercial rights covered by the generator's TOS; reference-style attribution clean via CC0 sources. | Trade-offs: per-building curation cost; coherence drifts and must be re-checked every ~10 buildings; not vector (loses infinite scaling — acceptable since target devices are phones at known DPI ranges). |
+
+### 5.3 Audio
+
+Deferred to Phase 11 per [plan.md](plan.md), listed for completeness: a
 building-placed SFX and a bubble-pop SFX cover the whole catalog; capstones may
 get a one-off fanfare. Source CC0 from Freesound / OpenGameArt.
-
-**Image-gen note.** Style consistency is the binding constraint (plan.md "Art
-roadmap"): feed the generator the same 2–3 anchor sprites as style references on
-every prompt. Confirm output license is clean before bundling — generated art's
-license status is the one yellow flag in this checklist; if it can't be cleared,
-fall back to procedural or narrow the capstone set.
 
 ---
 
