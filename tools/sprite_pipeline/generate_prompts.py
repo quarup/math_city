@@ -2,17 +2,23 @@
 """Emit Nano Banana prompts for every building in city_builder.md §3.
 
 Parses the §3.x building tables, reads each building's ID and footprint,
-humanises the ID into a display name, and prints one prompt per line.
+humanises the ID into a display name, multiplies the footprint by the
+fixed 10m/tile scale, and prints one prompt per line prefixed with the
+per-building sprite-variant count from city_builder.md §5.4.
 """
 
 from __future__ import annotations
 
 import re
+import sys
 from pathlib import Path
 
+# 1 tile = 10m × 10m on the ground (see city_builder.md §5.1 — Scale).
+TILE_METERS = 10
+
 PROMPT_TEMPLATE = (
-    "Generate an image of an isometric {name} with a {dim} footprint "
-    "matching the style of the reference image. "
+    "{n}x Generate an image of an isometric {name} with a {w}m x {h}m "
+    "footprint matching the style of the reference image. "
     "Solid bright green background. "
     "Single 2:1 dimetric isometric projection, no perspective."
 )
@@ -20,6 +26,71 @@ PROMPT_TEMPLATE = (
 # Only IDs whose `_`→` ` form is wrong (apostrophes, etc.) need an entry.
 NAME_OVERRIDES = {
     "mayors_office": "mayor's office",
+}
+
+# Per-building sprite-variant count. Source of truth mirrored in
+# city_builder.md §5.4 — keep both in sync when tuning. Missing IDs default
+# to 1 (with a stderr warning) so a new row in §3 doesn't break the script.
+VARIANT_COUNTS = {
+    # Civic & Housing
+    "mayors_office": 1,
+    "town_hall": 1,
+    "city_hall": 1,
+    "library": 2,
+    "post_office": 2,
+    "single_home": 5,
+    "duplex": 4,
+    "townhouse_row": 3,
+    "apartment": 4,
+    "mid_rise_apartment": 2,
+    "high_rise": 2,
+    "luxury_condo": 2,
+    "farmhouse": 3,
+    # Services
+    "power_plant": 2,
+    "power_station": 1,
+    "solar_farm": 1,
+    "water_tower": 2,
+    "water_treatment": 1,
+    "waste_management": 2,
+    "recycling_center": 1,
+    "clinic": 2,
+    "hospital": 1,
+    "school": 2,
+    "high_school": 1,
+    "fire_station": 1,
+    "police_station": 1,
+    "bus_depot": 1,
+    "train_station": 1,
+    # Commercial
+    "market_stall": 3,
+    "grocery": 2,
+    "supermarket": 1,
+    "bakery": 2,
+    "coffee_shop": 4,
+    "restaurant": 2,
+    "farmers_market": 2,
+    "bookshop": 1,
+    "toy_store": 1,
+    "clothing_store": 1,
+    "office_building": 2,
+    "shopping_mall": 1,
+    "business_tower": 1,
+    # Entertainment
+    "park": 5,
+    "playground": 3,
+    "community_garden": 2,
+    "fountain_plaza": 1,
+    "botanical_garden": 1,
+    "sports_field": 2,
+    "swimming_pool": 1,
+    "movie_theater": 1,
+    "museum": 1,
+    "stadium": 1,
+    "zoo": 1,
+    "aquarium": 1,
+    "amusement_park": 1,
+    "observation_tower": 1,
 }
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -32,6 +103,16 @@ SEP_CHARS = set("-:| ")
 
 def display_name(building_id: str) -> str:
     return NAME_OVERRIDES.get(building_id, building_id.replace("_", " "))
+
+
+def variant_count(building_id: str) -> int:
+    if building_id not in VARIANT_COUNTS:
+        print(
+            f"warning: {building_id} has no VARIANT_COUNTS entry; defaulting to 1",
+            file=sys.stderr,
+        )
+        return 1
+    return VARIANT_COUNTS[building_id]
 
 
 def main() -> None:
@@ -74,9 +155,12 @@ def main() -> None:
         if not (m_id and m_dim):
             continue
 
-        name = display_name(m_id.group(1))
-        dim = f"{m_dim.group(1)}x{m_dim.group(2)}"
-        print(PROMPT_TEMPLATE.format(name=name, dim=dim))
+        building_id = m_id.group(1)
+        name = display_name(building_id)
+        w_m = int(m_dim.group(1)) * TILE_METERS
+        h_m = int(m_dim.group(2)) * TILE_METERS
+        n = variant_count(building_id)
+        print(PROMPT_TEMPLATE.format(n=n, name=name, w=w_m, h=h_m))
 
 
 if __name__ == "__main__":

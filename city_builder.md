@@ -558,6 +558,24 @@ source per the prior-session Kenney research) — is fed on *every* prompt so
 palette, line weight, shadow direction, and projection stay coherent across all
 55 buildings.
 
+**Scale: 1 tile = 10m × 10m on the ground.** Pinned because a residential
+street (6m roadway + 2m sidewalk × 2) is exactly one tile wide, and 10m/tile
+sanity-checks across the catalog (a 1×1 `single_home` reads as a 10×10m lot, a
+2×2 `apartment` as a 20×20m footprint, etc.). Capstones (`stadium`,
+`shopping_mall`, `zoo`, `amusement_park`) are intentionally stylised-small
+relative to real-world counterparts so they remain buildable on the player's
+grid; their *iconic art cues* (stadium roof, rollercoaster silhouette) carry
+the recognition, not square-meterage. The prompt template uses absolute
+meters — `"a 20m x 20m footprint"` — to give Nano Banana a consistent scale
+reference across the catalog. Height is conveyed by the building's *name*
+(`high_rise`, `tower`, `mid_rise`) rather than an explicit meters figure.
+
+**Variants per building.** Generic buildings placed many times (low-rung
+housing, parks, coffee shop) ship with multiple sprite variants chosen at
+random per placement; unique and rare-late-game buildings ship with one. See
+§5.4 for the per-building counts. Phase-9 adds `BuildingType.numVariants` +
+`BuildingPlacement.assetVariantIndex` to wire this in.
+
 **Workflow (per building):**
 1. Compose the prompt: same anchor refs + per-building noun phrase + tier
    descriptor + "2:1 dimetric, transparent background."
@@ -598,6 +616,68 @@ Recorded so the decision is reviewable and we don't re-litigate it next session.
 Deferred to Phase 11 per [plan.md](plan.md), listed for completeness: a
 building-placed SFX and a bubble-pop SFX cover the whole catalog; capstones may
 get a one-off fanfare. Source CC0 from Freesound / OpenGameArt.
+
+### 5.4 Sprite variant counts
+
+**Total: 97 sprites for the 55 anchor buildings.**
+
+Rubric: unique or capstone → 1 · common mid-arc → 2 · frequently placed → 3 ·
+highest-volume (low-rung housing, parks, coffee shop) → 4–5. Authoritative copy
+of these counts mirrors in
+[tools/sprite_pipeline/generate_prompts.py](tools/sprite_pipeline/generate_prompts.py)'s
+`VARIANT_COUNTS` dict (the script emits an `Nx` prefix on each generated prompt
+from this); keep both in sync when tuning.
+
+**Civic & Housing — 32 sprites**
+
+| Building | Variants | Building | Variants |
+|---|---|---|---|
+| `mayors_office` | 1 | `apartment` | 4 |
+| `town_hall` | 1 | `mid_rise_apartment` | 2 |
+| `city_hall` | 1 | `high_rise` | 2 |
+| `library` | 2 | `luxury_condo` | 2 |
+| `post_office` | 2 | `farmhouse` | 3 |
+| `single_home` | 5 | | |
+| `duplex` | 4 | | |
+| `townhouse_row` | 3 | | |
+
+**Services — 20 sprites**
+
+| Building | Variants | Building | Variants |
+|---|---|---|---|
+| `power_plant` | 2 | `school` | 2 |
+| `power_station` | 1 | `high_school` | 1 |
+| `solar_farm` | 1 | `fire_station` | 1 |
+| `water_tower` | 2 | `police_station` | 1 |
+| `water_treatment` | 1 | `bus_depot` | 1 |
+| `waste_management` | 2 | `train_station` | 1 |
+| `recycling_center` | 1 | | |
+| `clinic` | 2 | | |
+| `hospital` | 1 | | |
+
+**Commercial — 23 sprites**
+
+| Building | Variants | Building | Variants |
+|---|---|---|---|
+| `market_stall` | 3 | `bookshop` | 1 |
+| `grocery` | 2 | `toy_store` | 1 |
+| `supermarket` | 1 | `clothing_store` | 1 |
+| `bakery` | 2 | `office_building` | 2 |
+| `coffee_shop` | 4 | `shopping_mall` | 1 |
+| `restaurant` | 2 | `business_tower` | 1 |
+| `farmers_market` | 2 | | |
+
+**Entertainment — 22 sprites**
+
+| Building | Variants | Building | Variants |
+|---|---|---|---|
+| `park` | 5 | `movie_theater` | 1 |
+| `playground` | 3 | `museum` | 1 |
+| `community_garden` | 2 | `stadium` | 1 |
+| `fountain_plaza` | 1 | `zoo` | 1 |
+| `botanical_garden` | 1 | `aquarium` | 1 |
+| `sports_field` | 2 | `amusement_park` | 1 |
+| `swimming_pool` | 1 | `observation_tower` | 1 |
 
 ---
 
