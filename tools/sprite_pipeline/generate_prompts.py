@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import re
 import sys
+from math import gcd
 from pathlib import Path
 
 # 1 tile = 10m × 10m on the ground (see city_builder.md §5.1 — Scale).
@@ -18,7 +19,8 @@ TILE_METERS = 10
 
 PROMPT_TEMPLATE = (
     "{n}x Generate an image of an isometric {name} with a {w}m x {h}m "
-    "footprint matching the style of the reference image. "
+    "footprint (strict {rw}:{rh} ratio) "
+    "matching the style of the reference image. "
     "Solid bright green background. "
     "Single 2:1 dimetric isometric projection, no perspective."
 )
@@ -157,10 +159,14 @@ def main() -> None:
 
         building_id = m_id.group(1)
         name = display_name(building_id)
-        w_m = int(m_dim.group(1)) * TILE_METERS
-        h_m = int(m_dim.group(2)) * TILE_METERS
+        w_tiles = int(m_dim.group(1))
+        h_tiles = int(m_dim.group(2))
+        w_m = w_tiles * TILE_METERS
+        h_m = h_tiles * TILE_METERS
+        g = gcd(w_tiles, h_tiles)
+        rw, rh = w_tiles // g, h_tiles // g
         n = variant_count(building_id)
-        print(PROMPT_TEMPLATE.format(n=n, name=name, w=w_m, h=h_m))
+        print(PROMPT_TEMPLATE.format(n=n, name=name, w=w_m, h=h_m, rw=rw, rh=rh))
 
 
 if __name__ == "__main__":
