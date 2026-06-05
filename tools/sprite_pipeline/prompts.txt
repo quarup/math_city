@@ -1,0 +1,55 @@
+Generate an image of an isometric mayor's office with a 2x2 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric town hall with a 2x3 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric city hall with a 3x3 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric library with a 2x2 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric post office with a 1x2 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric single home with a 1x1 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric duplex with a 1x2 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric townhouse row with a 3x1 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric apartment with a 2x2 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric mid rise apartment with a 2x3 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric high rise with a 3x3 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric luxury condo with a 3x3 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric farmhouse with a 2x2 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric power plant with a 2x2 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric power station with a 3x3 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric solar farm with a 4x3 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric water tower with a 1x1 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric water treatment with a 3x3 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric waste management with a 2x2 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric recycling center with a 2x3 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric clinic with a 1x2 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric hospital with a 3x3 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric school with a 2x3 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric high school with a 3x3 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric fire station with a 2x2 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric police station with a 2x2 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric bus depot with a 2x3 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric train station with a 4x2 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric market stall with a 1x1 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric grocery with a 1x2 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric supermarket with a 2x3 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric bakery with a 1x2 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric coffee shop with a 1x1 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric restaurant with a 1x2 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric farmers market with a 2x2 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric bookshop with a 1x1 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric toy store with a 1x2 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric clothing store with a 1x2 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric office building with a 2x2 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric shopping mall with a 4x4 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric business tower with a 2x2 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric park with a 2x2 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric playground with a 1x2 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric community garden with a 2x2 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric fountain plaza with a 2x2 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric botanical garden with a 3x3 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric sports field with a 3x2 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric swimming pool with a 2x2 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric movie theater with a 2x3 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric museum with a 3x3 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric stadium with a 4x4 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric zoo with a 5x5 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric aquarium with a 3x4 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric amusement park with a 6x6 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
+Generate an image of an isometric observation tower with a 2x2 footprint matching the style of the reference image. Solid bright green background. Single 2:1 dimetric isometric projection, no perspective.
