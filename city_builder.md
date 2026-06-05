@@ -595,6 +595,12 @@ random per placement; unique and rare-late-game buildings ship with one. See
 - **No mixing finished sprites from different CC0 packs.** Style seams between
   artists are immediately visible to kids and read as amateur.
 - **No multi-source generation.** Same anchor refs, same generator, every time.
+- **No text on any sprite** — no shop signs, brand names, building lettering,
+  street numbers, or other readable characters. Required because the renderer
+  flips sprites horizontally per placement to make the building's "front" face
+  the nearest road (see §7 *Sprite facing*); mirrored text would read backwards.
+  Enforced by appending `"No text."` to every prompt
+  ([generate_prompts.py](../tools/sprite_pipeline/generate_prompts.py)).
 
 ### 5.2 Alternatives considered (research log)
 
@@ -714,6 +720,27 @@ Until then the counts are tracked by hand.
 - **Capstone gating** → capstones gate on **lifetime bricks** (300–1000) so they
   read as "you've practiced a lot" trophies. Applied in §3; confirm feel in
   playtest.
+
+**Resolved 2026-06-04 (art-pipeline session):**
+- **Sprite facing** → one sprite per building variant, all generated in the
+  same south-west-facing convention Nano Banana produces by default (entrance
+  on the bottom-left face). The renderer **flips horizontally per placement**
+  when that orientation would point the building's front toward the nearest
+  adjacent road. **No 4-facing rotation system** — mobile-iso convention is
+  fixed camera + at most 2 effective facings; 4× generation cost not justified
+  for a kids math game. The §5.1 "No text on any sprite" hard rule is the
+  corollary that makes horizontal mirroring legal (mirrored text reads
+  backwards). Phase 9 adds (a) a `BuildingPlacement.flipped: bool` column
+  (additive, default `false` — no schema-wipe needed), (b) a flip-decision step
+  in `road_network.dart` that walks each placed building and picks the
+  orientation whose south-west face touches the most adjacent road tiles, and
+  (c) a `flipHorizontally: bool` parameter on the sprite-draw call in the Flame
+  city renderer.
+- **No camera rotation in v1** → fixed isometric camera angle, no
+  clockwise/counter-clockwise rotation control. Mobile-iso convention; players
+  adapt in seconds; would gate on the 4-facing system above. Forward-compatible
+  if added in a later phase — `BuildingPlacement.flipped` extends cleanly to a
+  `facing: enum` if the decision is ever revisited.
 
 **Still open (need Phase-9 implementation or playtest):**
 - **Multi-tile footprints (up to `6×6`).** Every Phase-7 building is `1×1`; this

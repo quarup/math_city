@@ -22,7 +22,8 @@ PROMPT_TEMPLATE = (
     "footprint (strict {rw}:{rh} ratio) "
     "matching the style of the reference image. "
     "Solid bright green background. "
-    "Single 2:1 dimetric isometric projection, no perspective."
+    "Single 2:1 dimetric isometric projection, no perspective. "
+    "No text."
 )
 
 # Only IDs whose `_`→` ` form is wrong (apostrophes, etc.) need an entry.
