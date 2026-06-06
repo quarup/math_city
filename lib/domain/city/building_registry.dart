@@ -21,6 +21,8 @@ const buildingRegistry = <BuildingType>[
     brickCost: 0,
     researchCost: 0,
     unlockRule: UnlockRule.open,
+    footprint: (2, 2),
+    numVariants: 1,
     unique: true,
   ),
   BuildingType(
@@ -35,6 +37,7 @@ const buildingRegistry = <BuildingType>[
       requiredBeatsRead: <String>{'demand_first_home'},
     ),
     populationContribution: 4,
+    numVariants: 6,
   ),
   BuildingType(
     id: 'apartment',
@@ -48,6 +51,8 @@ const buildingRegistry = <BuildingType>[
       requiredBeatsRead: <String>{'demand_apartment'},
     ),
     populationContribution: 16,
+    footprint: (2, 2),
+    numVariants: 5,
   ),
   BuildingType(
     id: 'school',
@@ -131,6 +136,7 @@ const buildingRegistry = <BuildingType>[
       requiredBeatsRead: <String>{'demand_coffee_shop'},
     ),
     varietyContribution: true,
+    numVariants: 4,
   ),
   // -- Entertainment ----------------------------------------------------
   BuildingType(

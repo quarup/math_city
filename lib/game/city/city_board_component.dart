@@ -5,6 +5,11 @@ import 'package:flame/events.dart';
 import 'package:flame/text.dart';
 import 'package:math_city/game/city/iso_grid.dart';
 
+/// Sprites are authored at this many pixels per tile (see
+/// `tools/sprite_pipeline/process.py` `TILE_W`). The renderer scales them down
+/// to `grid.tileWidth`, so they stay sharp up to the camera's max zoom.
+const double kSpriteAuthoringTilePx = 192;
+
 /// Lightweight render model for one placed building. Built by the
 /// presentation layer from a `BuildingPlacement` + the building registry, so
 /// this component stays ignorant of domain types.
@@ -14,22 +19,42 @@ class PlacedBuildingView {
     required this.row,
     required this.emoji,
     required this.color,
+    this.footprint = const (1, 1),
+    this.assetPath,
   });
 
   final int col;
   final int row;
   final String emoji;
   final Color color;
+
+  /// `(widthTiles, heightTiles)`. Drives the sprite's on-screen size + the
+  /// south-corner anchor; the box-placeholder fallback ignores it (all
+  /// non-sprite Phase-7 buildings are 1×1).
+  final (int, int) footprint;
+
+  /// `assets/buildings/<id>_v<n>.png` filename to render, or null to fall back
+  /// to the colored-box + emoji placeholder. Resolved to a loaded [Sprite] by
+  /// the host game's cache; null until that load completes.
+  final String? assetPath;
 }
 
 /// Renders the isometric terrain grid plus placeholder extruded-box buildings,
 /// and reports tile taps back to the presentation layer. Phase 7 placeholder
 /// art per plan.md — colored diamonds + emoji, no PNGs.
 class CityBoardComponent extends PositionComponent with TapCallbacks {
-  CityBoardComponent({required this.grid, required this.onTileTapped});
+  CityBoardComponent({
+    required this.grid,
+    required this.onTileTapped,
+    required this.spriteFor,
+  });
 
   final IsoGrid grid;
   final void Function(int col, int row) onTileTapped;
+
+  /// Resolves a `<id>_v<n>.png` filename to a loaded sprite, or null if it
+  /// isn't loaded yet (the host game loads them asynchronously and caches).
+  final Sprite? Function(String assetPath) spriteFor;
 
   /// Current placement render set. Reassigned (cheaply) by the host game
   /// whenever placements change.
@@ -99,6 +124,37 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
   }
 
   void _drawBuilding(Canvas canvas, PlacedBuildingView b) {
+    final path = b.assetPath;
+    if (path != null) {
+      final sprite = spriteFor(path);
+      if (sprite != null) {
+        _drawSprite(canvas, b, sprite);
+        return;
+      }
+      // Sprite not loaded yet — fall through to the box so the building still
+      // shows this frame; it swaps to the sprite once the async load lands.
+    }
+    _drawBox(canvas, b);
+  }
+
+  /// Draws the building sprite anchored at the south corner of its footprint,
+  /// scaled from authoring resolution down to the live tile size.
+  void _drawSprite(Canvas canvas, PlacedBuildingView b, Sprite sprite) {
+    final (w, hTiles) = b.footprint;
+    // The footprint's lowest on-screen point is the south corner of its
+    // furthest (max col+row) tile.
+    final (mcx, mcy) = grid.centerOf(b.col + w - 1, b.row + hTiles - 1);
+    final south = Vector2(mcx, mcy + _halfH);
+    final scale = grid.tileWidth / kSpriteAuthoringTilePx;
+    sprite.render(
+      canvas,
+      position: south,
+      size: sprite.srcSize * scale,
+      anchor: Anchor.bottomCenter,
+    );
+  }
+
+  void _drawBox(Canvas canvas, PlacedBuildingView b) {
     final (cx, cy) = grid.centerOf(b.col, b.row);
     final h = grid.tileWidth * 0.5;
 

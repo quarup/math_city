@@ -45,7 +45,12 @@ DEBUG_DIR = REPO_ROOT / "tools" / "sprite_pipeline" / "debug"
 ID_RE = re.compile(r"^`(\w+)`")
 DIM_RE = re.compile(r"(\d+)×(\d+)")
 SEP_CHARS = set("-:| ")
-FILENAME_RE = re.compile(r"^(\w+?)_v\d+\.png$")
+# Accept raw outputs as <id>.<ext>, <id>_<n>.<ext>, or <id>_v<n>.<ext> with
+# ext in {png, jpg, jpeg}. A bare singleton (no number) is variant 1. The
+# building id is matched greedily against the known §3 ids in
+# building_id_and_variant(), so multi-underscore ids like `coffee_shop`
+# aren't split on their internal underscore.
+FILENAME_RE = re.compile(r"^(?P<stem>\w+?)(?:_v?(?P<n>\d+))?\.(?:png|jpe?g)$", re.IGNORECASE)
 
 
 def parse_footprints() -> dict[str, tuple[int, int]]:
@@ -86,13 +91,14 @@ def parse_footprints() -> dict[str, tuple[int, int]]:
     return out
 
 
-def building_id_from_filename(path: Path) -> str:
+def building_id_and_variant(path: Path) -> tuple[str, int]:
+    """(<id>, <variant>) from a raw filename. Bare singleton → variant 1."""
     m = FILENAME_RE.match(path.name)
     if not m:
         raise ValueError(
-            f"filename {path.name!r} does not match <id>_v<n>.png pattern"
+            f"filename {path.name!r} does not match <id>[_<n>].(png|jpg|jpeg)"
         )
-    return m.group(1)
+    return m.group("stem"), int(m.group("n")) if m.group("n") else 1
 
 
 def canvas_size(w_tiles: int, h_tiles: int) -> tuple[int, int, int]:
@@ -104,7 +110,8 @@ def canvas_size(w_tiles: int, h_tiles: int) -> tuple[int, int, int]:
 
 
 def process(raw_path: Path, footprints: dict[str, tuple[int, int]]) -> Path:
-    building_id = building_id_from_filename(raw_path)
+    building_id, variant = building_id_and_variant(raw_path)
+    out_name = f"{building_id}_v{variant}.png"
     if building_id not in footprints:
         raise ValueError(
             f"no footprint for {building_id!r} in city_builder.md §3 "
@@ -133,14 +140,14 @@ def process(raw_path: Path, footprints: dict[str, tuple[int, int]]) -> Path:
     canvas.paste(resized, (paste_x, paste_y), resized)
 
     ASSETS_DIR.mkdir(parents=True, exist_ok=True)
-    out_path = ASSETS_DIR / raw_path.name
+    out_path = ASSETS_DIR / out_name
     canvas.save(out_path, "PNG", optimize=True)
     _maybe_pngquant(out_path)
 
     DEBUG_DIR.mkdir(parents=True, exist_ok=True)
     debug = canvas.copy()
     _draw_diamond(debug, w_tiles, h_tiles)
-    debug.save(DEBUG_DIR / raw_path.name, "PNG")
+    debug.save(DEBUG_DIR / out_name, "PNG")
 
     return out_path
 

@@ -1,7 +1,10 @@
+import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:flame/cache.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
+import 'package:flame/sprite.dart';
 import 'package:math_city/game/city/city_board_component.dart';
 import 'package:math_city/game/city/iso_grid.dart';
 
@@ -53,9 +56,44 @@ class IsoCityGame extends FlameGame with DragCallbacks {
   (int, int)? _pendingHighlight;
   bool _hasPendingHighlight = false;
 
+  /// Building sprites live under `assets/buildings/`, outside Flame's default
+  /// `assets/images/` image cache, so they get their own cache + prefix.
+  final Images _buildingImages = Images(prefix: 'assets/buildings/');
+  final Map<String, Sprite> _sprites = <String, Sprite>{};
+  final Set<String> _loadingSprites = <String>{};
+
+  /// The loaded sprite for `<id>_v<n>.png`, or null if it isn't loaded yet.
+  /// Read synchronously by the board during render.
+  Sprite? spriteFor(String assetPath) => _sprites[assetPath];
+
+  /// Kicks off async loads for any referenced sprite we don't have cached.
+  /// Each completed load lands in [_sprites]; Flame re-renders every frame, so
+  /// the building swaps from box placeholder to sprite as soon as it arrives.
+  void _ensureSpritesLoaded(Iterable<String> assetPaths) {
+    for (final path in assetPaths) {
+      if (_sprites.containsKey(path) || !_loadingSprites.add(path)) continue;
+      unawaited(
+        Sprite.load(path, images: _buildingImages)
+            .then((sprite) {
+              _sprites[path] = sprite;
+              _loadingSprites.remove(path);
+            })
+            .catchError((Object _) {
+              // Missing/corrupt asset: drop the in-flight marker so a later
+              // frame can retry, and leave the box placeholder showing.
+              _loadingSprites.remove(path);
+            }),
+      );
+    }
+  }
+
   @override
   Future<void> onLoad() async {
-    board = CityBoardComponent(grid: grid, onTileTapped: onTileTapped);
+    board = CityBoardComponent(
+      grid: grid,
+      onTileTapped: onTileTapped,
+      spriteFor: spriteFor,
+    );
     if (_pendingBuildings != null) board.buildings = _pendingBuildings!;
     if (_pendingRoads != null) board.roads = _pendingRoads!;
     if (_hasPendingHighlight) board.highlightTile = _pendingHighlight;
@@ -142,6 +180,9 @@ class IsoCityGame extends FlameGame with DragCallbacks {
   /// Pushes the latest placement set into the rendered board. Buffered if
   /// called before [onLoad] finishes — see [_pendingBuildings].
   void setBuildings(List<PlacedBuildingView> buildings) {
+    _ensureSpritesLoaded(
+      buildings.map((b) => b.assetPath).whereType<String>(),
+    );
     if (isLoaded) {
       board.buildings = buildings;
     } else {

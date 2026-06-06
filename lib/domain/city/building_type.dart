@@ -17,6 +17,7 @@ class BuildingType {
     this.varietyContribution = false,
     this.footprint = const (1, 1),
     this.assetRef,
+    this.numVariants = 0,
     this.unique = false,
   });
 
@@ -51,6 +52,13 @@ class BuildingType {
   /// `CustomPainter` placeholder; Phase 9 swaps the resolver to PNG-loading
   /// without any domain-layer change.
   final String? assetRef;
+
+  /// How many PNG sprite variants exist for this type under
+  /// `assets/buildings/<id>_v<n>.png` (`n` 1-based). `0` means no real art yet
+  /// — the renderer falls back to the Phase-7 colored-box + emoji placeholder.
+  /// The renderer picks a variant deterministically per placement until the
+  /// `BuildingPlacement.assetVariantIndex` column lands (see plan.md Phase 9).
+  final int numVariants;
 
   /// At most one instance per city. A second "place" of a unique type moves
   /// the existing one instead of inserting a new placement row. The mayor's

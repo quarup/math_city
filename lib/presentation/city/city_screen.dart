@@ -321,10 +321,23 @@ class _CityScreenState extends ConsumerState<CityScreen> {
           row: p.gridY,
           emoji: type.emoji,
           color: _colorFor(type),
+          footprint: type.footprint,
+          assetPath: _assetPathFor(type, p),
         ),
       );
     }
     return out;
+  }
+
+  /// `<id>_v<n>.png` for a placement, picking a variant deterministically from
+  /// the tile coordinates, or null if the type has no sprite art yet (renders
+  /// the Phase-7 box placeholder). Deterministic-per-tile keeps a building's
+  /// look stable across rebuilds until `BuildingPlacement.assetVariantIndex`
+  /// lands (see plan.md Phase 9).
+  String? _assetPathFor(BuildingType type, BuildingPlacement p) {
+    if (type.numVariants <= 0) return null;
+    final variant = (p.gridX * 1000 + p.gridY).abs() % type.numVariants + 1;
+    return '${type.id}_v$variant.png';
   }
 
   @override
