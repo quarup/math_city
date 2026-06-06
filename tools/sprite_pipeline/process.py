@@ -23,6 +23,7 @@ import subprocess
 import sys
 from pathlib import Path
 
+import numpy as np
 from PIL import Image, ImageDraw
 from rembg import remove
 
@@ -36,6 +37,30 @@ TILE_H = TILE_W // 2  # 2:1 dimetric — diamond bounding box is W x W/2
 # diamond's pixel height. Covers building height + any flags/spires; the
 # canvas auto-extends further if the resized sprite needs more room.
 TOWER_HEADROOM = 1.5
+
+# The grid is a true 2:1 dimetric diamond. Nano Banana draws a slightly
+# steeper isometric (its ground diamonds measure ~1.8:1), so a sprite scaled
+# to fill the footprint width ends up ~10% too tall and its base edges cross
+# the tile edges instead of running along them. We measure each sprite's own
+# ground-diamond aspect (from its south/east/west opaque tips) and squash it
+# vertically to land a true 2:1 base on the tile. Clamped so a stray pixel
+# (a flag, an overhanging branch) can't produce a wild correction.
+# A pixel counts as Nano Banana backdrop-green when its green channel exceeds
+# both red and blue by this margin. Shade-independent (works whatever exact
+# green the export used); cleanly excludes gray plaza / tan stone / brick,
+# which have G ≈ R ≈ B.
+GREEN_MARGIN = 30
+
+TARGET_GROUND_ASPECT = 2.0
+# Use only solidly-opaque pixels when locating the ground tips, so a faint
+# rembg halo / drop shadow doesn't get mistaken for the plaza corner.
+SILHOUETTE_CUTOFF = 128
+# Only trust a measured aspect that lands in a plausible isometric range;
+# outside it the tip detection has almost certainly latched onto a tree or
+# overhang, so fall back to the measured-typical NB projection (~1.8:1 → 0.9).
+PLAUSIBLE_ASPECT = (1.6, 2.0)
+DEFAULT_SQUASH = 0.90
+MIN_SQUASH = 0.80
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 CITY_BUILDER_MD = REPO_ROOT / "city_builder.md"
@@ -109,6 +134,56 @@ def canvas_size(w_tiles: int, h_tiles: int) -> tuple[int, int, int]:
     return canvas_w, canvas_h, diamond_h
 
 
+def remove_green_bg(raw: Image.Image) -> Image.Image:
+    """Matte out the green Nano Banana backdrop, protecting non-green ground.
+
+    rembg's ML matte is the only thing that reliably separates *green*
+    foreground (trees, lawn, hedges) from the matching green backdrop — a
+    plain colour key can't, since foliage and screen are the same green. But
+    rembg sometimes over-removes a building's flat gray plaza as 'ground'.
+    Since the only true background here is the green screen, any pixel that
+    isn't backdrop-green is foreground by definition, so we force it opaque;
+    green pixels are left to rembg (backdrop dropped, foliage kept).
+    """
+    cut = np.asarray(remove(raw))  # rembg RGBA, soft alpha
+    rgb = np.asarray(raw.convert("RGB")).astype(np.int16)
+    greenish = (rgb[..., 1] - np.maximum(rgb[..., 0], rgb[..., 2])) > GREEN_MARGIN
+    alpha = cut[..., 3].copy()
+    alpha[~greenish] = 255  # non-green is never the green screen → keep it
+    out = np.dstack([rgb.astype(np.uint8), alpha.astype(np.uint8)])
+    return Image.fromarray(out, "RGBA")
+
+
+def ground_squash(img: Image.Image) -> tuple[float, float | None]:
+    """Vertical squash to bring this sprite's ground diamond to a true 2:1.
+
+    Returns `(squash, measured_aspect)` (`measured_aspect` is None if the
+    silhouette was empty). The ground diamond is read from the solidly-opaque
+    silhouette's south (lowest), west (leftmost) and east (rightmost) tips:
+    `aspect = width / (2 · south→E/W rise)`. When that lands in a plausible
+    isometric range we squash by `aspect / 2.0`; otherwise the detection has
+    latched onto a tree/overhang and we fall back to [DEFAULT_SQUASH]. Applied
+    as a height multiplier on top of the uniform width fit.
+    """
+    op = np.asarray(img)[..., 3] > SILHOUETTE_CUTOFF
+    cols = np.where(op.any(axis=0))[0]
+    rows = np.where(op.any(axis=1))[0]
+    if len(cols) == 0 or len(rows) == 0:
+        return DEFAULT_SQUASH, None
+    xmin, xmax, ymax = int(cols[0]), int(cols[-1]), int(rows[-1])
+    y_w = float(np.median(np.where(op[:, xmin])[0]))
+    y_e = float(np.median(np.where(op[:, xmax])[0]))
+    width = xmax - xmin
+    rise = ymax - (y_w + y_e) / 2
+    if rise <= 1 or width <= 1:
+        return DEFAULT_SQUASH, None
+    aspect = width / (2 * rise)
+    lo, hi = PLAUSIBLE_ASPECT
+    if not (lo <= aspect <= hi):
+        return DEFAULT_SQUASH, aspect
+    return max(MIN_SQUASH, min(1.0, aspect / TARGET_GROUND_ASPECT)), aspect
+
+
 def process(raw_path: Path, footprints: dict[str, tuple[int, int]]) -> Path:
     building_id, variant = building_id_and_variant(raw_path)
     out_name = f"{building_id}_v{variant}.png"
@@ -121,16 +196,25 @@ def process(raw_path: Path, footprints: dict[str, tuple[int, int]]) -> Path:
     canvas_w, base_canvas_h, diamond_h = canvas_size(w_tiles, h_tiles)
 
     raw = Image.open(raw_path).convert("RGBA")
-    cut = remove(raw)
+    cut = remove_green_bg(raw)
     bbox = cut.getbbox()
     if bbox is None:
         raise ValueError(f"{raw_path.name}: no opaque pixels after rembg")
     cropped = cut.crop(bbox)
 
-    # Resize so cropped width fills the canvas width, preserving aspect.
+    # Resize so cropped width fills the canvas width, then squash vertically so
+    # the building's ground diamond is a true 2:1 that sits on the tile.
+    squash, aspect = ground_squash(cropped)
     new_w = canvas_w
-    new_h = round(cropped.height * canvas_w / cropped.width)
+    new_h = round(cropped.height * canvas_w / cropped.width * squash)
     resized = cropped.resize((new_w, new_h), Image.Resampling.LANCZOS)
+    lo, hi = PLAUSIBLE_ASPECT
+    measured = "n/a" if aspect is None else f"{aspect:.2f}:1"
+    note = "" if (aspect is not None and lo <= aspect <= hi) else "  [default]"
+    print(
+        f"  {raw_path.name}: ground aspect {measured} → squash ×{squash:.3f}{note}",
+        file=sys.stderr,
+    )
 
     # Final canvas height grows if the resized sprite is taller than headroom.
     canvas_h = max(base_canvas_h, new_h)

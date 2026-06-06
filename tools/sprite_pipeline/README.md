@@ -11,8 +11,9 @@ into a game-ready sprite.
   per building (with the `Nx` variant-count prefix from §5.4).
 - `prompts.txt` — generated output (committed; regenerate after §3 edits).
 - `process.py` — turn a raw Nano Banana PNG into a game-ready asset
-  (rembg → bbox crop → resize to per-footprint canvas → bottom-center
-  anchor → pngquant compress, plus a debug overlay for visual QA).
+  (background removal → bbox crop → resize to per-footprint canvas →
+  vertical squash to a true 2:1 ground diamond → bottom-center anchor →
+  pngquant compress, plus a debug overlay for visual QA).
 - `raw/` — raw Nano Banana outputs, named `<id>_v<n>.{png,jpg,jpeg}` (`n`
   1-based; a bare `<id>.<ext>` singleton is treated as `v1`). Committed
   (source of truth; lets us re-run `process.py` if the resolver changes).
@@ -47,9 +48,18 @@ the input extension, the processed sprite is always emitted as
 One-time setup:
 
 ```sh
-pip install Pillow "rembg[cpu]"
+pip install Pillow numpy "rembg[cpu]"
 # pngquant binary: apt-get install pngquant (Linux) or brew install pngquant (macOS)
 ```
+
+Background removal is a **hybrid**: rembg's ML matte (the only thing that can
+separate green foreground — trees, lawn — from the matching green Nano Banana
+backdrop) plus a **non-green protection** pass. The raw exports use a solid
+green backdrop, so the only true background is green; any pixel that isn't
+backdrop-green (gray plaza, stone, brick) is forced opaque, which stops rembg
+from occasionally eating a building's flat gray plaza as "ground." "Green" is
+judged by greenness (G exceeding R and B by `GREEN_MARGIN`), so it's
+shade-independent.
 
 Per-sprite:
 
