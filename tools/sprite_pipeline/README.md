@@ -13,7 +13,8 @@ into a game-ready sprite.
 - `process.py` — turn a raw Nano Banana PNG into a game-ready asset
   (rembg → bbox crop → resize to per-footprint canvas → bottom-center
   anchor → pngquant compress, plus a debug overlay for visual QA).
-- `raw/` — raw Nano Banana outputs, named `<id>_v<n>.png`. Committed
+- `raw/` — raw Nano Banana outputs, named `<id>_v<n>.{png,jpg,jpeg}` (`n`
+  1-based; a bare `<id>.<ext>` singleton is treated as `v1`). Committed
   (source of truth; lets us re-run `process.py` if the resolver changes).
 - `debug/` — QA overlays with the tile diamond drawn over each sprite.
   Gitignored — regenerate by re-running `process.py`.
@@ -35,8 +36,11 @@ generate (e.g. `5x …` for `single_home`).
 ### 2. Generate sprites in Nano Banana
 
 Run each prompt in Nano Banana (we use Google Flow). Save each output as
-`tools/sprite_pipeline/raw/<id>_v<n>.png`, where `<id>` is the building ID
-from `city_builder.md §3` and `<n>` is a 1-based variant number.
+`tools/sprite_pipeline/raw/<id>_v<n>.png` (a `.jpg` / `.jpeg` export is fine
+too — `process.py` accepts either), where `<id>` is the building ID from
+`city_builder.md §3` and `<n>` is a 1-based variant number. Regardless of
+the input extension, the processed sprite is always emitted as
+`assets/buildings/<id>_v<n>.png`.
 
 ### 3. Process
 
