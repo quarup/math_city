@@ -26,6 +26,7 @@ from pathlib import Path
 import numpy as np
 from PIL import Image, ImageDraw
 from rembg import remove
+from scipy import ndimage
 
 # Match the Flame iso renderer (lib/game/city/iso_grid.dart): world tile
 # diamond is 64 wide, max camera zoom is 3, so authoring at 192 px / tile
@@ -50,6 +51,11 @@ TOWER_HEADROOM = 1.5
 # green the export used); cleanly excludes gray plaza / tan stone / brick,
 # which have G ≈ R ≈ B.
 GREEN_MARGIN = 30
+
+# A pixel this opaque counts as solid ground/building when bleeding the base
+# out to the footprint edges (everything less opaque inside the footprint gets
+# filled from the nearest solid pixel).
+FILL_SOLID_ALPHA = 250
 
 TARGET_GROUND_ASPECT = 2.0
 # Use only solidly-opaque pixels when locating the ground tips, so a faint
@@ -184,6 +190,45 @@ def ground_squash(img: Image.Image) -> tuple[float, float | None]:
     return max(MIN_SQUASH, min(1.0, aspect / TARGET_GROUND_ASPECT)), aspect
 
 
+def fill_footprint_gaps(
+    img: Image.Image, w_tiles: int, h_tiles: int
+) -> Image.Image:
+    """Bleed the building's ground out to the footprint-diamond edges.
+
+    After the squash the painted plaza nearly fills its 2:1 footprint, but the
+    base outline is irregular (entrance recesses, planters, the lawn edge), so
+    thin transparent wedges remain *inside* the tile and the terrain shows
+    through. For every not-fully-opaque pixel inside the footprint diamond, copy
+    the colour of the nearest solid pixel and set alpha to 255, so the ground
+    meets the tile edges with no seam. Mirrors [_draw_diamond]'s geometry: a
+    full-width 2:1 diamond with its south corner at the canvas bottom-centre.
+    """
+    arr = np.array(img)
+    h, w = arr.shape[:2]
+    alpha = arr[..., 3]
+
+    diamond_w = (w_tiles + h_tiles) * TILE_W // 2
+    diamond_h = (w_tiles + h_tiles) * TILE_H // 2
+    # NOTE: assumes a SQUARE footprint (symmetric diamond). For non-square
+    # footprints the iso footprint is a tilted parallelogram; fix when wiring
+    # the first rectangular building — see issue #90.
+    cx = w / 2
+    cy = h - diamond_h / 2  # diamond centre (south corner sits at y = h)
+    ys, xs = np.mgrid[0:h, 0:w]
+    inside = (
+        np.abs(xs - cx) / (diamond_w / 2) + np.abs(ys - cy) / (diamond_h / 2)
+    ) <= 1.0
+
+    solid = alpha >= FILL_SOLID_ALPHA
+    gap = inside & ~solid
+    if not gap.any() or not solid.any():
+        return img
+    _, (iy, ix) = ndimage.distance_transform_edt(~solid, return_indices=True)
+    arr[..., :3][gap] = arr[..., :3][iy[gap], ix[gap]]
+    arr[..., 3][gap] = 255
+    return Image.fromarray(arr, "RGBA")
+
+
 def process(raw_path: Path, footprints: dict[str, tuple[int, int]]) -> Path:
     building_id, variant = building_id_and_variant(raw_path)
     out_name = f"{building_id}_v{variant}.png"
@@ -222,6 +267,7 @@ def process(raw_path: Path, footprints: dict[str, tuple[int, int]]) -> Path:
     paste_x = (canvas_w - new_w) // 2
     paste_y = canvas_h - new_h
     canvas.paste(resized, (paste_x, paste_y), resized)
+    canvas = fill_footprint_gaps(canvas, w_tiles, h_tiles)
 
     ASSETS_DIR.mkdir(parents=True, exist_ok=True)
     out_path = ASSETS_DIR / out_name
@@ -256,6 +302,8 @@ def _maybe_pngquant(path: Path) -> None:
 
 
 def _draw_diamond(img: Image.Image, w_tiles: int, h_tiles: int) -> None:
+    # NOTE: assumes a SQUARE footprint — for non-square the diamond is a tilted
+    # parallelogram (south corner off-centre). Fix with the renderer, see #90.
     draw = ImageDraw.Draw(img, "RGBA")
     diamond_w = (w_tiles + h_tiles) * TILE_W // 2
     diamond_h = (w_tiles + h_tiles) * TILE_H // 2
