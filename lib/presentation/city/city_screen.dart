@@ -311,6 +311,22 @@ class _CityScreenState extends ConsumerState<CityScreen> {
   }
 
   List<PlacedBuildingView> _viewsFor(List<BuildingPlacement> placements) {
+    // Round-robin variant assignment: order each building type's placements by
+    // id (insertion order) and cycle through its sprite variants, so adjacent
+    // buildings of the same type don't repeat. Keyed by id (not tile), so a
+    // moved building keeps its variant and a new one advances the cycle.
+    final idsByType = <String, List<int>>{};
+    for (final p in placements) {
+      (idsByType[p.buildingTypeId] ??= <int>[]).add(p.id);
+    }
+    final slotById = <int, int>{};
+    for (final ids in idsByType.values) {
+      ids.sort();
+      for (var i = 0; i < ids.length; i++) {
+        slotById[ids[i]] = i;
+      }
+    }
+
     final out = <PlacedBuildingView>[];
     for (final p in placements) {
       final type = findBuildingTypeById(p.buildingTypeId);
@@ -322,21 +338,21 @@ class _CityScreenState extends ConsumerState<CityScreen> {
           emoji: type.emoji,
           color: _colorFor(type),
           footprint: type.footprint,
-          assetPath: _assetPathFor(type, p),
+          assetPath: _assetPathFor(type, slotById[p.id] ?? 0),
         ),
       );
     }
     return out;
   }
 
-  /// `<id>_v<n>.png` for a placement, picking a variant deterministically from
-  /// the tile coordinates, or null if the type has no sprite art yet (renders
-  /// the Phase-7 box placeholder). Deterministic-per-tile keeps a building's
-  /// look stable across rebuilds until `BuildingPlacement.assetVariantIndex`
-  /// lands (see plan.md Phase 9).
-  String? _assetPathFor(BuildingType type, BuildingPlacement p) {
+  /// `<id>_v<n>.png` for the round-robin [slot] (a building's 0-based index
+  /// among placements of its type), or null if the type has no sprite art yet
+  /// (renders the Phase-7 box placeholder). Cycling by placement order keeps
+  /// adjacent same-type buildings varied, until `BuildingPlacement
+  /// .assetVariantIndex` makes the choice explicit (see plan.md Phase 9).
+  String? _assetPathFor(BuildingType type, int slot) {
     if (type.numVariants <= 0) return null;
-    final variant = (p.gridX * 1000 + p.gridY).abs() % type.numVariants + 1;
+    final variant = slot % type.numVariants + 1;
     return '${type.id}_v$variant.png';
   }
 
@@ -372,7 +388,11 @@ class _CityScreenState extends ConsumerState<CityScreen> {
     // have to click the mayor's office before placing it. Once the catalog
     // grows (more researched buildings, or locked ones to research), the
     // player makes an explicit pick.
-    final catalog = catalogAsync.asData?.value;
+    // .value (not asData?.value) so a refresh — which the catalog does on
+    // every placement — keeps the *previous* catalog instead of momentarily
+    // dropping to null. Otherwise the bottom bar collapses for a frame, which
+    // resizes the Flame viewport and makes the camera jump (see bottomNavBar).
+    final catalog = catalogAsync.value;
     if (_selected == null && catalog != null) {
       final placeable = catalog.where((e) => e.researched).toList();
       if (placeable.length == 1) _selected = placeable.first.building;
@@ -435,17 +455,18 @@ class _CityScreenState extends ConsumerState<CityScreen> {
                 _pickedUpId = null;
               }),
             )
-          : catalogAsync.when(
-              loading: () => const SizedBox.shrink(),
-              error: (_, _) => const SizedBox.shrink(),
-              data: (catalog) => _BuildCatalogBar(
-                catalog: catalog,
-                selected: _selected,
-                brickBalance: player?.brickBalance ?? 0,
-                researchBalance: player?.researchBalance ?? 0,
-                onSelect: (b) => setState(() => _selected = b),
-                onResearch: _confirmResearch,
-              ),
+          // Render from the retained catalog so a per-placement refresh never
+          // collapses the bar (which would resize the game and jump the
+          // camera). Only the very first load — before any data — is empty.
+          : catalog == null
+          ? const SizedBox.shrink()
+          : _BuildCatalogBar(
+              catalog: catalog,
+              selected: _selected,
+              brickBalance: player?.brickBalance ?? 0,
+              researchBalance: player?.researchBalance ?? 0,
+              onSelect: (b) => setState(() => _selected = b),
+              onResearch: _confirmResearch,
             ),
       floatingActionButton: Column(
         mainAxisSize: MainAxisSize.min,
