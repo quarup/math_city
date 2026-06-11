@@ -99,7 +99,8 @@ VARIANT_COUNTS = {
 REPO_ROOT = Path(__file__).resolve().parents[2]
 CITY_BUILDER_MD = REPO_ROOT / "city_builder.md"
 
-ID_RE = re.compile(r"^`(\w+)`")
+# Rows gain a leading "✅ " once wired (tools/city_builder/sync_implementation_status.py).
+ID_RE = re.compile(r"^(?:✅ )?`(\w+)`")
 DIM_RE = re.compile(r"(\d+)×(\d+)")
 SEP_CHARS = set("-:| ")
 
