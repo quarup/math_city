@@ -197,11 +197,18 @@ so footprints aim for *plausibility*, not economy). Guidelines used below:
 - **Civic & big services** (town/city hall, hospital, school, power station, water
   treatment) — `2×2`–`3×3`.
 - **Naturally rectangular things are rectangular** — train station `4×2` (long
-  platform shed), sports field `3×2`, solar farm `4×3`, townhouse row `3×1`.
+  platform shed), sports field `3×2`, solar farm `4×4` (NB drew the lot square — reconciled 2026-06-12), townhouse row `1×3`.
 - **Capstone attractions sprawl** — stadium / shopping mall `4×4`, zoo `5×5`,
   amusement park `6×6`. These are deliberately large "wow" builds that **assume an
   expanded map** (the beginner `12×12` map can't hold a `6×6` park alongside a
   city — see §7 on land expansion / starting map size).
+- **Footprint orientation follows the art** (2026-06-12). NB tends to draw a
+  rectangular building's long axis toward screen lower-right regardless of the
+  prompt, so a `W×H` row is reconciled to the generated sprite at wiring time
+  (`duplex`/`post_office` → `2×1`, `town_hall` → `3×2`, `townhouse_row` →
+  `1×3`, `aquarium` → `4×3`). Orientation is purely cosmetic — the placement
+  engine is orientation-agnostic, and mirroring the art instead would flip its
+  shadow direction.
 
 ### 3.1 Civic & Housing (`civicHousing`)
 
@@ -210,18 +217,18 @@ so footprints aim for *plausibility*, not economy). Guidelines used below:
 | Building | 🧱 | 🔬 | Pop | Service | V | Foot | Unlock rule |
 |---|---|---|---|---|---|---|---|
 | `mayors_office` 🏛️ ✓P7 | 0 | 0 | 0 | — | – | 2×2 | *open* (starter, **unique**) |
-| `town_hall` 🏤 | 30 | 2 | 0 | — | – | 2×3 | `mayors_office` + pop≥20 · reads:`demand_town_hall` (**unique**) |
+| `town_hall` 🏤 | 30 | 2 | 0 | — | – | 3×2 | `mayors_office` + pop≥20 · reads:`demand_town_hall` (**unique**) |
 | `city_hall` 🏙️ | 80 | 3 | 0 | — | – | 3×3 | `town_hall` + pop≥80 · reads:`demand_city_hall` (**unique**) |
 | `library` 📚 | 20 | 2 | 0 | — | – | 2×2 | `school` · reads:`demand_library` |
-| `post_office` 📮 | 20 | 2 | 0 | — | – | 1×2 | `town_hall` · reads:`demand_post_office` |
+| `post_office` 📮 | 20 | 2 | 0 | — | – | 2×1 | `town_hall` · reads:`demand_post_office` |
 
 **Housing line** (the population spine — 7-rung ladder, rising `Pop`):
 
 | Building | 🧱 | 🔬 | Pop | Service | V | Foot | Unlock rule |
 |---|---|---|---|---|---|---|---|
 | `single_home` 🏠 ✓P7 | 5 | 1 | 4 | — | – | 1×1 | `mayors_office` · reads:`demand_first_home` |
-| `duplex` 🏘️ | 10 | 1 | 8 | — | – | 1×2 | `single_home` · reads:`demand_duplex` |
-| `townhouse_row` 🏘️ | 20 | 2 | 12 | — | – | 3×1 | `duplex` + pop≥12 · reads:`demand_townhouse_row` |
+| `duplex` 🏘️ | 10 | 1 | 8 | — | – | 2×1 | `single_home` · reads:`demand_duplex` |
+| `townhouse_row` 🏘️ | 20 | 2 | 12 | — | – | 1×3 | `duplex` + pop≥12 · reads:`demand_townhouse_row` |
 | `apartment` 🏢 ✓P7 | 10 | 1 | 16 | — | – | 2×2 | `single_home` + pop≥8 · reads:`demand_apartment` |
 | `mid_rise_apartment` 🏢 | 30 | 2 | 30 | — | – | 2×3 | `apartment` + pop≥30 · reads:`demand_mid_rise` |
 | `high_rise` 🌆 | 60 | 3 | 60 | — | – | 3×3 | `mid_rise_apartment` + pop≥60 + life🧱≥300 · reads:`demand_high_rise` |
@@ -241,7 +248,7 @@ services are `false`. **Education moved here from `civicHousing`** per the
 |---|---|---|---|---|---|---|
 | `power_plant` ⚡ ✓P7 | 10 | 1 | `power:200` | ✅ | 2×2 | `single_home` · reads:`demand_power` |
 | `power_station` 🏭 | 40 | 3 | `power:500` | ✅ | 3×3 | `power_plant` + pop≥40 · reads:`demand_power_station` |
-| `solar_farm` ☀️ | 70 | 3 | `power:800` | ✅ | 4×3 | `power_station` + life🧱≥400 · reads:`demand_solar_farm` |
+| `solar_farm` ☀️ | 70 | 3 | `power:800` | ✅ | 4×4 | `power_station` + life🧱≥400 · reads:`demand_solar_farm` |
 
 **Water** (`water`, gating — **new service ID**):
 
@@ -343,7 +350,7 @@ Parks / culture / recreation — the cozy, praise-heavy delight channel. All
 | Building | 🧱 | 🔬 | Foot | Unlock rule |
 |---|---|---|---|---|
 | `zoo` 🦁 | 120 | 5 | 5×5 | `botanical_garden` + pop≥100 · reads:`demand_zoo` |
-| `aquarium` 🐠 | 120 | 5 | 3×4 | `museum` + pop≥100 · reads:`demand_aquarium` |
+| `aquarium` 🐠 | 120 | 5 | 4×3 | `museum` + pop≥100 · reads:`demand_aquarium` |
 | `amusement_park` 🎢 | 200 | 5 | 6×6 | `stadium` + pop≥120 + life🧱≥800 · reads:`demand_amusement_park` |
 | `observation_tower` 🗼 | 250 | 5 | 2×2 | `city_hall` + life🧱≥1000 · reads:`demand_observation_tower` |
 

@@ -190,40 +190,67 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     final (mcx, mcy) = grid.centerOf(b.col + w - 1, b.row + hTiles - 1);
     final south = Vector2(mcx, mcy + _halfH);
     final scale = grid.tileWidth / kSpriteAuthoringTilePx;
+    // In the authored canvas the footprint's south corner sits w/(w+h) of the
+    // way across (the bottom-center only for square footprints — for a
+    // rectangle the iso footprint is a tilted parallelogram, issue #90).
+    final anchorX = w / (w + hTiles);
     sprite.render(
       canvas,
       position: south,
       size: sprite.srcSize * scale,
-      anchor: Anchor.bottomCenter,
+      anchor: Anchor(anchorX, 1),
     );
   }
 
+  /// Extruded-box placeholder spanning the full footprint: the top face is
+  /// the footprint quad (a parallelogram for rectangular footprints) lifted by
+  /// the box height; the two visible walls drop from its south-facing edges.
   void _drawBox(Canvas canvas, PlacedBuildingView b) {
-    final (cx, cy) = grid.centerOf(b.col, b.row);
+    final (w, hTiles) = b.footprint;
     final h = grid.tileWidth * 0.5;
 
+    // Footprint corner points (ground level), via the corner tiles' centers.
+    final (ncx, ncy) = grid.centerOf(b.col, b.row);
+    final (ecx, ecy) = grid.centerOf(b.col + w - 1, b.row);
+    final (scx, scy) = grid.centerOf(b.col + w - 1, b.row + hTiles - 1);
+    final (wcx, wcy) = grid.centerOf(b.col, b.row + hTiles - 1);
+    final north = Offset(ncx, ncy - _halfH);
+    final east = Offset(ecx + _halfW, ecy);
+    final south = Offset(scx, scy + _halfH);
+    final west = Offset(wcx - _halfW, wcy);
+
     final left = Path()
-      ..moveTo(cx - _halfW, cy - h)
-      ..lineTo(cx, cy + _halfH - h)
-      ..lineTo(cx, cy + _halfH)
-      ..lineTo(cx - _halfW, cy)
+      ..moveTo(west.dx, west.dy - h)
+      ..lineTo(south.dx, south.dy - h)
+      ..lineTo(south.dx, south.dy)
+      ..lineTo(west.dx, west.dy)
       ..close();
     final right = Path()
-      ..moveTo(cx + _halfW, cy - h)
-      ..lineTo(cx, cy + _halfH - h)
-      ..lineTo(cx, cy + _halfH)
-      ..lineTo(cx + _halfW, cy)
+      ..moveTo(east.dx, east.dy - h)
+      ..lineTo(south.dx, south.dy - h)
+      ..lineTo(south.dx, south.dy)
+      ..lineTo(east.dx, east.dy)
+      ..close();
+    final top = Path()
+      ..moveTo(north.dx, north.dy - h)
+      ..lineTo(east.dx, east.dy - h)
+      ..lineTo(south.dx, south.dy - h)
+      ..lineTo(west.dx, west.dy - h)
       ..close();
 
     canvas
       ..drawPath(left, Paint()..color = _shade(b.color, 0.7))
       ..drawPath(right, Paint()..color = _shade(b.color, 0.55))
-      ..drawPath(_diamond(cx, cy, h), Paint()..color = b.color);
+      ..drawPath(top, Paint()..color = b.color);
 
+    final center = Offset(
+      (east.dx + west.dx) / 2,
+      (north.dy + south.dy) / 2 - h,
+    );
     _emojiPaint.render(
       canvas,
       b.emoji,
-      Vector2(cx, cy - h),
+      Vector2(center.dx, center.dy),
       anchor: Anchor.center,
     );
   }

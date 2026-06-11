@@ -2,9 +2,12 @@ import 'package:math_city/domain/city/building_type.dart';
 import 'package:math_city/domain/city/category.dart';
 import 'package:math_city/domain/city/unlock_rule.dart';
 
-/// Phase 7 building catalog — the 10-building "simple DAG proof" set.
-/// Costs are placeholders (10 🧱 / 1 🔬 with a few overrides) chosen to
-/// exercise the mechanics; real numbers are tuned in Phase 8 / 9 from play.
+/// Building catalog, authored against `city_builder.md §3` (the §3 row is the
+/// source of truth for costs / footprints / unlock rules). Phase 7 shipped the
+/// first 10; Phase 9 grows the list building-by-building as sprite art lands.
+/// `numVariants: 0` means no art yet — the renderer keeps the Phase-7
+/// box+emoji placeholder (a few such rows exist purely as DAG prereqs for
+/// art-backed buildings further up their arc).
 ///
 /// Mayor's office is free and ungated so every player can place it on turn
 /// one. Single home costs 5 🧱 to place and 1 🔬 to research, so the very
@@ -58,7 +61,9 @@ const buildingRegistry = <BuildingType>[
     id: 'school',
     name: 'School',
     emoji: '🏫',
-    category: BuildingCategory.civicHousing,
+    // §3.2: education moved from civicHousing to services (2026-05-31
+    // city_builder.md decision; the one-field change Phase 9 applies).
+    category: BuildingCategory.services,
     brickCost: 10,
     researchCost: 1,
     unlockRule: UnlockRule(
@@ -95,6 +100,8 @@ const buildingRegistry = <BuildingType>[
     ),
     serviceProvision: <String, int>{'power': 200},
     varietyContribution: true,
+    footprint: (2, 2),
+    numVariants: 2,
   ),
   BuildingType(
     id: 'waste_management',
@@ -151,6 +158,314 @@ const buildingRegistry = <BuildingType>[
       requiredBeatsRead: <String>{'demand_more_parks'},
     ),
     varietyContribution: true,
+  ),
+
+  // ======================================================================
+  // Phase 9 catalog growth (city_builder.md §3) — civic & housing arc
+  // ======================================================================
+  BuildingType(
+    id: 'town_hall',
+    name: 'Town hall',
+    emoji: '🏤',
+    category: BuildingCategory.civicHousing,
+    brickCost: 30,
+    researchCost: 2,
+    unlockRule: UnlockRule(
+      requiredBuildingsPlaced: <String>{'mayors_office'},
+      minPopulation: 20,
+      requiredBeatsRead: <String>{'demand_town_hall'},
+    ),
+    footprint: (3, 2),
+    numVariants: 1,
+    unique: true,
+  ),
+  BuildingType(
+    id: 'city_hall',
+    name: 'City hall',
+    emoji: '🏙️',
+    category: BuildingCategory.civicHousing,
+    brickCost: 80,
+    researchCost: 3,
+    unlockRule: UnlockRule(
+      requiredBuildingsPlaced: <String>{'town_hall'},
+      minPopulation: 80,
+      requiredBeatsRead: <String>{'demand_city_hall'},
+    ),
+    footprint: (3, 3),
+    numVariants: 1,
+    unique: true,
+  ),
+  BuildingType(
+    id: 'library',
+    name: 'Library',
+    emoji: '📚',
+    category: BuildingCategory.civicHousing,
+    brickCost: 20,
+    researchCost: 2,
+    unlockRule: UnlockRule(
+      requiredBuildingsPlaced: <String>{'school'},
+      requiredBeatsRead: <String>{'demand_library'},
+    ),
+    footprint: (2, 2),
+    numVariants: 2,
+  ),
+  BuildingType(
+    id: 'post_office',
+    name: 'Post office',
+    emoji: '📮',
+    category: BuildingCategory.civicHousing,
+    brickCost: 20,
+    researchCost: 2,
+    unlockRule: UnlockRule(
+      requiredBuildingsPlaced: <String>{'town_hall'},
+      requiredBeatsRead: <String>{'demand_post_office'},
+    ),
+    footprint: (2, 1),
+    numVariants: 2,
+  ),
+  BuildingType(
+    id: 'duplex',
+    name: 'Duplex',
+    emoji: '🏘️',
+    category: BuildingCategory.civicHousing,
+    brickCost: 10,
+    researchCost: 1,
+    unlockRule: UnlockRule(
+      requiredBuildingsPlaced: <String>{'single_home'},
+      requiredBeatsRead: <String>{'demand_duplex'},
+    ),
+    populationContribution: 8,
+    footprint: (2, 1),
+    numVariants: 4,
+  ),
+  BuildingType(
+    id: 'townhouse_row',
+    name: 'Townhouse row',
+    emoji: '🏘️',
+    category: BuildingCategory.civicHousing,
+    brickCost: 20,
+    researchCost: 2,
+    unlockRule: UnlockRule(
+      requiredBuildingsPlaced: <String>{'duplex'},
+      minPopulation: 12,
+      requiredBeatsRead: <String>{'demand_townhouse_row'},
+    ),
+    populationContribution: 12,
+    footprint: (1, 3),
+    numVariants: 3,
+  ),
+  BuildingType(
+    id: 'mid_rise_apartment',
+    name: 'Mid-rise apartment',
+    emoji: '🏢',
+    category: BuildingCategory.civicHousing,
+    brickCost: 30,
+    researchCost: 2,
+    unlockRule: UnlockRule(
+      requiredBuildingsPlaced: <String>{'apartment'},
+      minPopulation: 30,
+      requiredBeatsRead: <String>{'demand_mid_rise'},
+    ),
+    populationContribution: 30,
+    footprint: (2, 3),
+  ),
+  BuildingType(
+    id: 'high_rise',
+    name: 'High-rise',
+    emoji: '🌆',
+    category: BuildingCategory.civicHousing,
+    brickCost: 60,
+    researchCost: 3,
+    unlockRule: UnlockRule(
+      minLifetimeBricks: 300,
+      requiredBuildingsPlaced: <String>{'mid_rise_apartment'},
+      minPopulation: 60,
+      requiredBeatsRead: <String>{'demand_high_rise'},
+    ),
+    populationContribution: 60,
+    footprint: (3, 3),
+    numVariants: 3,
+  ),
+  BuildingType(
+    id: 'luxury_condo',
+    name: 'Luxury condo',
+    emoji: '🏨',
+    category: BuildingCategory.civicHousing,
+    brickCost: 100,
+    researchCost: 3,
+    unlockRule: UnlockRule(
+      minLifetimeBricks: 500,
+      requiredBuildingsPlaced: <String>{'high_rise'},
+      requiredBeatsRead: <String>{'demand_luxury_condo'},
+    ),
+    populationContribution: 50,
+    varietyContribution: true,
+    footprint: (3, 3),
+    numVariants: 2,
+  ),
+  BuildingType(
+    id: 'farmhouse',
+    name: 'Farmhouse',
+    emoji: '🏡',
+    category: BuildingCategory.civicHousing,
+    brickCost: 8,
+    researchCost: 1,
+    unlockRule: UnlockRule(
+      requiredBuildingsPlaced: <String>{'single_home'},
+      requiredBeatsRead: <String>{'demand_farmhouse'},
+    ),
+    populationContribution: 3,
+    footprint: (2, 2),
+    numVariants: 3,
+  ),
+
+  // ======================================================================
+  // Phase 9 catalog growth — services (power + water arcs)
+  // ======================================================================
+  BuildingType(
+    id: 'power_station',
+    name: 'Power station',
+    emoji: '🏭',
+    category: BuildingCategory.services,
+    brickCost: 40,
+    researchCost: 3,
+    unlockRule: UnlockRule(
+      requiredBuildingsPlaced: <String>{'power_plant'},
+      minPopulation: 40,
+      requiredBeatsRead: <String>{'demand_power_station'},
+    ),
+    serviceProvision: <String, int>{'power': 500},
+    varietyContribution: true,
+    footprint: (3, 3),
+    numVariants: 1,
+  ),
+  BuildingType(
+    id: 'solar_farm',
+    name: 'Solar farm',
+    emoji: '☀️',
+    category: BuildingCategory.services,
+    brickCost: 70,
+    researchCost: 3,
+    unlockRule: UnlockRule(
+      minLifetimeBricks: 400,
+      requiredBuildingsPlaced: <String>{'power_station'},
+      requiredBeatsRead: <String>{'demand_solar_farm'},
+    ),
+    serviceProvision: <String, int>{'power': 800},
+    varietyContribution: true,
+    footprint: (4, 4),
+    numVariants: 1,
+  ),
+  BuildingType(
+    id: 'water_tower',
+    name: 'Water tower',
+    emoji: '🚰',
+    category: BuildingCategory.services,
+    brickCost: 10,
+    researchCost: 1,
+    unlockRule: UnlockRule(
+      requiredBuildingsPlaced: <String>{'single_home'},
+      requiredBeatsRead: <String>{'demand_water'},
+    ),
+    serviceProvision: <String, int>{'water': 150},
+    varietyContribution: true,
+    numVariants: 2,
+  ),
+
+  // ======================================================================
+  // Phase 9 catalog growth — entertainment arc (culture + capstones)
+  // ======================================================================
+  BuildingType(
+    id: 'sports_field',
+    name: 'Sports field',
+    emoji: '⚽',
+    category: BuildingCategory.entertainment,
+    brickCost: 25,
+    researchCost: 2,
+    unlockRule: UnlockRule(
+      requiredBuildingsPlaced: <String>{'school'},
+      requiredBeatsRead: <String>{'demand_sports_field'},
+    ),
+    varietyContribution: true,
+    footprint: (3, 2),
+  ),
+  BuildingType(
+    id: 'museum',
+    name: 'Museum',
+    emoji: '🏛️',
+    category: BuildingCategory.entertainment,
+    brickCost: 50,
+    researchCost: 3,
+    unlockRule: UnlockRule(
+      requiredBuildingsPlaced: <String>{'library'},
+      requiredBeatsRead: <String>{'demand_museum'},
+    ),
+    varietyContribution: true,
+    footprint: (3, 3),
+  ),
+  BuildingType(
+    id: 'stadium',
+    name: 'Stadium',
+    emoji: '🏟️',
+    category: BuildingCategory.entertainment,
+    brickCost: 90,
+    researchCost: 3,
+    unlockRule: UnlockRule(
+      requiredBuildingsPlaced: <String>{'sports_field'},
+      minPopulation: 80,
+      requiredBeatsRead: <String>{'demand_stadium'},
+    ),
+    varietyContribution: true,
+    footprint: (4, 4),
+  ),
+  BuildingType(
+    id: 'aquarium',
+    name: 'Aquarium',
+    emoji: '🐠',
+    category: BuildingCategory.entertainment,
+    brickCost: 120,
+    researchCost: 5,
+    unlockRule: UnlockRule(
+      requiredBuildingsPlaced: <String>{'museum'},
+      minPopulation: 100,
+      requiredBeatsRead: <String>{'demand_aquarium'},
+    ),
+    varietyContribution: true,
+    footprint: (4, 3),
+    numVariants: 1,
+  ),
+  BuildingType(
+    id: 'amusement_park',
+    name: 'Amusement park',
+    emoji: '🎢',
+    category: BuildingCategory.entertainment,
+    brickCost: 200,
+    researchCost: 5,
+    unlockRule: UnlockRule(
+      minLifetimeBricks: 800,
+      requiredBuildingsPlaced: <String>{'stadium'},
+      minPopulation: 120,
+      requiredBeatsRead: <String>{'demand_amusement_park'},
+    ),
+    varietyContribution: true,
+    footprint: (6, 6),
+    numVariants: 2,
+  ),
+  BuildingType(
+    id: 'observation_tower',
+    name: 'Observation tower',
+    emoji: '🗼',
+    category: BuildingCategory.entertainment,
+    brickCost: 250,
+    researchCost: 5,
+    unlockRule: UnlockRule(
+      minLifetimeBricks: 1000,
+      requiredBuildingsPlaced: <String>{'city_hall'},
+      requiredBeatsRead: <String>{'demand_observation_tower'},
+    ),
+    varietyContribution: true,
+    footprint: (2, 2),
+    numVariants: 1,
   ),
 ];
 

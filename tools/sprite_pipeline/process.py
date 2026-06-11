@@ -207,17 +207,20 @@ def fill_footprint_gaps(
     h, w = arr.shape[:2]
     alpha = arr[..., 3]
 
-    diamond_w = (w_tiles + h_tiles) * TILE_W // 2
+    # The footprint is a w_tiles x h_tiles iso parallelogram (a diamond only
+    # when square — issue #90). Inverse-project each pixel into footprint
+    # tile coordinates and test the rectangle there. North corner sits at
+    # x = h_tiles * TILE_W/2 from the canvas left, diamond top edge at the
+    # bottom of the canvas's diamond band.
     diamond_h = (w_tiles + h_tiles) * TILE_H // 2
-    # NOTE: assumes a SQUARE footprint (symmetric diamond). For non-square
-    # footprints the iso footprint is a tilted parallelogram; fix when wiring
-    # the first rectangular building — see issue #90.
-    cx = w / 2
-    cy = h - diamond_h / 2  # diamond centre (south corner sits at y = h)
+    nx = h_tiles * TILE_W / 2
+    ny = h - diamond_h
     ys, xs = np.mgrid[0:h, 0:w]
-    inside = (
-        np.abs(xs - cx) / (diamond_w / 2) + np.abs(ys - cy) / (diamond_h / 2)
-    ) <= 1.0
+    dx = (xs - nx) / (TILE_W / 2)
+    dy = (ys - ny) / (TILE_H / 2)
+    c = (dx + dy) / 2  # tile-space col axis (screen lower-right)
+    r = (dy - dx) / 2  # tile-space row axis (screen lower-left)
+    inside = (c >= 0) & (c <= w_tiles) & (r >= 0) & (r <= h_tiles)
 
     solid = alpha >= FILL_SOLID_ALPHA
     gap = inside & ~solid
@@ -229,15 +232,23 @@ def fill_footprint_gaps(
     return Image.fromarray(arr, "RGBA")
 
 
-def process(raw_path: Path, footprints: dict[str, tuple[int, int]]) -> Path:
+def process(
+    raw_path: Path,
+    footprints: dict[str, tuple[int, int]],
+    squash_override: float | None = None,
+    footprint_override: tuple[int, int] | None = None,
+) -> Path:
     building_id, variant = building_id_and_variant(raw_path)
     out_name = f"{building_id}_v{variant}.png"
-    if building_id not in footprints:
+    if footprint_override is not None:
+        w_tiles, h_tiles = footprint_override
+    elif building_id in footprints:
+        w_tiles, h_tiles = footprints[building_id]
+    else:
         raise ValueError(
             f"no footprint for {building_id!r} in city_builder.md §3 "
             f"(known: {sorted(footprints)[:5]}…)"
         )
-    w_tiles, h_tiles = footprints[building_id]
     canvas_w, base_canvas_h, diamond_h = canvas_size(w_tiles, h_tiles)
 
     raw = Image.open(raw_path).convert("RGBA")
@@ -250,6 +261,8 @@ def process(raw_path: Path, footprints: dict[str, tuple[int, int]]) -> Path:
     # Resize so cropped width fills the canvas width, then squash vertically so
     # the building's ground diamond is a true 2:1 that sits on the tile.
     squash, aspect = ground_squash(cropped)
+    if squash_override is not None:
+        squash = squash_override
     new_w = canvas_w
     new_h = round(cropped.height * canvas_w / cropped.width * squash)
     resized = cropped.resize((new_w, new_h), Image.Resampling.LANCZOS)
@@ -302,31 +315,50 @@ def _maybe_pngquant(path: Path) -> None:
 
 
 def _draw_diamond(img: Image.Image, w_tiles: int, h_tiles: int) -> None:
-    # NOTE: assumes a SQUARE footprint — for non-square the diamond is a tilted
-    # parallelogram (south corner off-centre). Fix with the renderer, see #90.
+    # True iso footprint quad: a parallelogram-cornered diamond when the
+    # footprint is rectangular (issue #90), the familiar diamond when square.
     draw = ImageDraw.Draw(img, "RGBA")
-    diamond_w = (w_tiles + h_tiles) * TILE_W // 2
     diamond_h = (w_tiles + h_tiles) * TILE_H // 2
-    cx = img.width // 2
-    by = img.height  # canvas bottom = lot-diamond south corner
-    south = (cx, by - 1)
-    east = (cx + diamond_w // 2, by - diamond_h // 2)
-    north = (cx, by - diamond_h)
-    west = (cx - diamond_w // 2, by - diamond_h // 2)
+    ny = img.height - diamond_h
+    north = (h_tiles * TILE_W // 2, ny)
+    # Corners via the +col (TILE_W/2, TILE_H/2) and +row (-TILE_W/2, TILE_H/2)
+    # tile axes from the north corner.
+    east = (north[0] + w_tiles * TILE_W // 2, ny + w_tiles * TILE_H // 2)
+    south = (
+        north[0] + (w_tiles - h_tiles) * TILE_W // 2,
+        ny + (w_tiles + h_tiles) * TILE_H // 2 - 1,
+    )
+    west = (north[0] - h_tiles * TILE_W // 2, ny + h_tiles * TILE_H // 2)
     draw.polygon([south, east, north, west], outline=(255, 0, 0, 220), width=3)
 
 
 def main() -> None:
-    if len(sys.argv) < 2:
-        print(f"usage: {sys.argv[0]} <raw_png_path> [...]", file=sys.stderr)
+    args = sys.argv[1:]
+    squash_override: float | None = None
+    footprint_override: tuple[int, int] | None = None
+    paths: list[Path] = []
+    for arg in args:
+        # Manual overrides for outlier raws (e.g. NB drew a flat ground object
+        # near-top-down instead of 2:1 dimetric): --squash=0.6 --footprint=4x4
+        if arg.startswith("--squash="):
+            squash_override = float(arg.split("=", 1)[1])
+        elif arg.startswith("--footprint="):
+            w, h = arg.split("=", 1)[1].lower().split("x")
+            footprint_override = (int(w), int(h))
+        else:
+            paths.append(Path(arg))
+    if not paths:
+        print(
+            f"usage: {sys.argv[0]} [--squash=F] [--footprint=WxH] <raw_png> [...]",
+            file=sys.stderr,
+        )
         sys.exit(1)
     footprints = parse_footprints()
-    for arg in sys.argv[1:]:
-        raw_path = Path(arg)
+    for raw_path in paths:
         if not raw_path.exists():
             print(f"error: {raw_path} not found", file=sys.stderr)
             sys.exit(1)
-        out = process(raw_path, footprints)
+        out = process(raw_path, footprints, squash_override, footprint_override)
         print(f"{raw_path.name} → {out.relative_to(REPO_ROOT)}")
 
 

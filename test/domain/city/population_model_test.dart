@@ -67,7 +67,8 @@ void main() {
     });
 
     test('all gating services present lift the cap to the thinnest one', () {
-      // power: 20+200=220, clinic: 20+50=70, waste: 20+150=170 -> min 70.
+      // power: 20+200=220, clinic: 20+50=70, waste: 20+150=170,
+      // water: 20+150=170 -> min 70.
       final placed = [
         _b(id: 'tower', pop: 100),
         _b(
@@ -84,6 +85,11 @@ void main() {
           id: 'waste',
           category: BuildingCategory.services,
           service: {'waste': 150},
+        ),
+        _b(
+          id: 'water_tower',
+          category: BuildingCategory.services,
+          service: {'water': 150},
         ),
       ];
       expect(populationCapacity(placed), 70);
@@ -112,6 +118,11 @@ void main() {
           id: 'waste',
           category: BuildingCategory.services,
           service: {'waste': 150},
+        ),
+        _b(
+          id: 'water_tower',
+          category: BuildingCategory.services,
+          service: {'water': 150},
         ),
       ];
       expect(populationCapacity(placed), 100);
@@ -150,6 +161,11 @@ void main() {
           service: {'waste': 1000},
           variety: true,
         ),
+        _b(
+          id: 'water_tower',
+          category: BuildingCategory.services,
+          service: {'water': 1000},
+        ),
       ];
       expect(populationCapacity(placed), 115);
     });
@@ -187,6 +203,11 @@ void main() {
           category: BuildingCategory.services,
           service: {'waste': 1000},
         ),
+        _b(
+          id: 'water_tower',
+          category: BuildingCategory.services,
+          service: {'water': 1000},
+        ),
         for (var i = 0; i < 20; i++)
           _b(
             id: 'shop$i',
@@ -218,6 +239,11 @@ void main() {
           id: 'waste',
           category: BuildingCategory.services,
           service: {'waste': 1000},
+        ),
+        _b(
+          id: 'water_tower',
+          category: BuildingCategory.services,
+          service: {'water': 1000},
         ),
         _b(id: 'grocery', category: BuildingCategory.commercial, variety: true),
         _b(id: 'cafe', category: BuildingCategory.commercial, variety: true),

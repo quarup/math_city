@@ -5,10 +5,6 @@ import 'package:math_city/domain/city/unlock_rule.dart';
 
 void main() {
   group('buildingRegistry', () {
-    test('contains exactly 10 entries (Phase 7 catalog)', () {
-      expect(buildingRegistry, hasLength(10));
-    });
-
     test('all IDs are unique', () {
       final ids = buildingRegistry.map((b) => b.id).toSet();
       expect(ids.length, buildingRegistry.length);
@@ -44,15 +40,74 @@ void main() {
       expect(home.researchCost, 1);
     });
 
-    test("every non-mayor building requires mayor's office placed", () {
+    test('every prereq building referenced by an unlock rule exists', () {
+      final ids = buildingRegistry.map((b) => b.id).toSet();
+      for (final b in buildingRegistry) {
+        for (final prereq in b.unlockRule.requiredBuildingsPlaced) {
+          expect(
+            ids,
+            contains(prereq),
+            reason: '${b.id} requires unknown building $prereq',
+          );
+        }
+      }
+    });
+
+    test(
+      "every non-mayor building chains back to the mayor's office (no "
+      'orphans, no cycles)',
+      () {
+        final byId = {for (final b in buildingRegistry) b.id: b};
+        for (final b in buildingRegistry) {
+          if (b.id == 'mayors_office') continue;
+          // Walk prereq edges; we must reach mayors_office within the
+          // registry size (a cycle or orphan would exhaust the budget).
+          var frontier = b.unlockRule.requiredBuildingsPlaced;
+          var found = false;
+          for (
+            var hops = 0;
+            hops < buildingRegistry.length && frontier.isNotEmpty;
+            hops++
+          ) {
+            if (frontier.contains('mayors_office')) {
+              found = true;
+              break;
+            }
+            frontier = frontier
+                .expand((id) => byId[id]!.unlockRule.requiredBuildingsPlaced)
+                .toSet();
+          }
+          expect(
+            found,
+            isTrue,
+            reason: '${b.id} does not chain back to mayors_office',
+          );
+        }
+      },
+    );
+
+    test('every non-mayor building is gated on reading a demand beat', () {
       for (final b in buildingRegistry) {
         if (b.id == 'mayors_office') continue;
         expect(
-          b.unlockRule.requiredBuildingsPlaced.contains('mayors_office'),
-          isTrue,
-          reason: '${b.id} should require mayors_office',
+          b.unlockRule.requiredBeatsRead,
+          isNotEmpty,
+          reason: '${b.id} should be discovery-gated via requiredBeatsRead',
         );
       }
+    });
+
+    test('buildings with sprite art have positive variant counts', () {
+      // Spot-check the Phase-9 wiring: numVariants matches the processed
+      // assets/buildings/<id>_v<n>.png files for a sample of buildings.
+      expect(findBuildingTypeById('single_home')!.numVariants, 6);
+      expect(findBuildingTypeById('duplex')!.numVariants, 4);
+      expect(findBuildingTypeById('high_rise')!.numVariants, 3);
+      expect(findBuildingTypeById('water_tower')!.numVariants, 2);
+      expect(findBuildingTypeById('amusement_park')!.numVariants, 2);
+      // Placeholder-only prereq rows ship without art.
+      expect(findBuildingTypeById('mid_rise_apartment')!.numVariants, 0);
+      expect(findBuildingTypeById('stadium')!.numVariants, 0);
     });
 
     test("preResearchedBuildings is exactly the mayor's office", () {

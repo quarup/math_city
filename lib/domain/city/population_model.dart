@@ -16,8 +16,9 @@ import 'package:math_city/domain/city/category.dart';
 
 /// Service IDs that gate growth: the city can't house more residents than its
 /// thinnest gating service supports. `school` (a soft amenity) is deliberately
-/// not gating in v1.
-const gatingServiceIds = {'power', 'clinic', 'waste'};
+/// not gating in v1. `water` joined as the fourth hard gate per the
+/// city_builder.md 2026-05-31 decision (wired with the water_tower arc).
+const gatingServiceIds = {'power', 'clinic', 'waste', 'water'};
 
 /// Residents each gating service tolerates with zero providers — a hamlet
 /// survives without infrastructure. Keeps a brand-new city (homes, no
