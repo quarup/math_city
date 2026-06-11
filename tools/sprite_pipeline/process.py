@@ -57,6 +57,13 @@ GREEN_MARGIN = 30
 # filled from the nearest solid pixel).
 FILL_SOLID_ALPHA = 250
 
+# Disconnected opaque islands smaller than this fraction of the largest one
+# are dropped as noise: when a raw export's backdrop is noisy/textured, the
+# non-green protection in remove_green_bg keeps the not-green-enough flecks,
+# leaving speckles floating around the building. Real detached props are
+# orders of magnitude larger than flecks.
+DESPECKLE_MIN_FRACTION = 0.03
+
 TARGET_GROUND_ASPECT = 2.0
 # Use only solidly-opaque pixels when locating the ground tips, so a faint
 # rembg halo / drop shadow doesn't get mistaken for the plaza corner.
@@ -73,7 +80,8 @@ CITY_BUILDER_MD = REPO_ROOT / "city_builder.md"
 ASSETS_DIR = REPO_ROOT / "assets" / "buildings"
 DEBUG_DIR = REPO_ROOT / "tools" / "sprite_pipeline" / "debug"
 
-ID_RE = re.compile(r"^`(\w+)`")
+# Rows gain a leading "✅ " once wired (tools/city_builder/sync_implementation_status.py).
+ID_RE = re.compile(r"^(?:✅ )?`(\w+)`")
 DIM_RE = re.compile(r"(\d+)×(\d+)")
 SEP_CHARS = set("-:| ")
 # Accept raw outputs as <id>.<ext>, <id>_<n>.<ext>, or <id>_v<n>.<ext> with
@@ -158,6 +166,24 @@ def remove_green_bg(raw: Image.Image) -> Image.Image:
     alpha[~greenish] = 255  # non-green is never the green screen → keep it
     out = np.dstack([rgb.astype(np.uint8), alpha.astype(np.uint8)])
     return Image.fromarray(out, "RGBA")
+
+
+def despeckle(img: Image.Image) -> Image.Image:
+    """Drop tiny disconnected opaque islands (noisy-backdrop residue).
+
+    Speckles also inflate the bounding-box crop and pull the ground-tip
+    detection off the real silhouette, so this must run before either.
+    """
+    arr = np.array(img)
+    labels, n = ndimage.label(arr[..., 3] > 0, structure=np.ones((3, 3)))
+    if n <= 1:
+        return img
+    sizes = np.bincount(labels.ravel())
+    sizes[0] = 0
+    keep = sizes >= sizes.max() * DESPECKLE_MIN_FRACTION
+    keep[0] = False
+    arr[..., 3][~keep[labels]] = 0
+    return Image.fromarray(arr, "RGBA")
 
 
 def ground_squash(img: Image.Image) -> tuple[float, float | None]:
@@ -252,7 +278,7 @@ def process(
     canvas_w, base_canvas_h, diamond_h = canvas_size(w_tiles, h_tiles)
 
     raw = Image.open(raw_path).convert("RGBA")
-    cut = remove_green_bg(raw)
+    cut = despeckle(remove_green_bg(raw))
     bbox = cut.getbbox()
     if bbox is None:
         raise ValueError(f"{raw_path.name}: no opaque pixels after rembg")

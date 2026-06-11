@@ -71,6 +71,8 @@ const buildingRegistry = <BuildingType>[
       requiredBeatsRead: <String>{'demand_school'},
     ),
     serviceProvision: <String, int>{'school': 60},
+    footprint: (2, 3),
+    numVariants: 2,
   ),
   // -- Services ----------------------------------------------------------
   BuildingType(
@@ -86,6 +88,10 @@ const buildingRegistry = <BuildingType>[
     ),
     serviceProvision: <String, int>{'clinic': 50},
     varietyContribution: true,
+    // §3 said 1×2 pre-art; both NB raws are drawn on a square lot, so the
+    // footprint was bumped to 2×2 (§3 updated to match, 2026-06-12).
+    footprint: (2, 2),
+    numVariants: 2,
   ),
   BuildingType(
     id: 'power_plant',
@@ -116,6 +122,8 @@ const buildingRegistry = <BuildingType>[
     ),
     serviceProvision: <String, int>{'waste': 150},
     varietyContribution: true,
+    footprint: (2, 2),
+    numVariants: 2,
   ),
   // -- Commercial -------------------------------------------------------
   BuildingType(
@@ -370,6 +378,57 @@ const buildingRegistry = <BuildingType>[
     serviceProvision: <String, int>{'water': 150},
     varietyContribution: true,
     numVariants: 2,
+  ),
+  BuildingType(
+    id: 'water_treatment',
+    name: 'Water treatment',
+    emoji: '💧',
+    category: BuildingCategory.services,
+    brickCost: 40,
+    researchCost: 3,
+    unlockRule: UnlockRule(
+      requiredBuildingsPlaced: <String>{'water_tower'},
+      minPopulation: 40,
+      requiredBeatsRead: <String>{'demand_water_treatment'},
+    ),
+    serviceProvision: <String, int>{'water': 500},
+    varietyContribution: true,
+    footprint: (3, 3),
+    numVariants: 1,
+  ),
+  BuildingType(
+    id: 'recycling_center',
+    name: 'Recycling center',
+    emoji: '♻️',
+    category: BuildingCategory.services,
+    brickCost: 40,
+    researchCost: 3,
+    unlockRule: UnlockRule(
+      requiredBuildingsPlaced: <String>{'waste_management'},
+      minPopulation: 40,
+      requiredBeatsRead: <String>{'demand_recycling'},
+    ),
+    serviceProvision: <String, int>{'waste': 400},
+    varietyContribution: true,
+    footprint: (2, 3),
+    numVariants: 1,
+  ),
+  BuildingType(
+    id: 'hospital',
+    name: 'Hospital',
+    emoji: '🚑',
+    category: BuildingCategory.services,
+    brickCost: 60,
+    researchCost: 3,
+    unlockRule: UnlockRule(
+      requiredBuildingsPlaced: <String>{'clinic'},
+      minPopulation: 60,
+      requiredBeatsRead: <String>{'demand_hospital'},
+    ),
+    serviceProvision: <String, int>{'clinic': 200},
+    varietyContribution: true,
+    footprint: (3, 3),
+    numVariants: 1,
   ),
 
   // ======================================================================

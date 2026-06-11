@@ -403,6 +403,51 @@ const beatRegistry = <StoryBeat>[
       buildingsAbsent: <String>{'solar_farm'},
     ),
   ),
+  StoryBeat(
+    id: 'demand_water_treatment',
+    kind: BeatKind.warning,
+    tone: BeatTone.civic,
+    emoji: '💧',
+    shortLabel: 'clean water',
+    longText:
+        'More homes means more water — a treatment plant would keep it '
+        'flowing and clean.',
+    triggerRule: TriggerRule(
+      buildingsPresent: <String>{'water_tower'},
+      buildingsAbsent: <String>{'water_treatment'},
+      minPopulation: 40,
+    ),
+  ),
+  StoryBeat(
+    id: 'demand_recycling',
+    kind: BeatKind.demand,
+    tone: BeatTone.cozy,
+    emoji: '♻️',
+    shortLabel: 'recycle',
+    longText:
+        "We're throwing away things we could reuse — a recycling center "
+        'would help the town go green.',
+    triggerRule: TriggerRule(
+      buildingsPresent: <String>{'waste_management'},
+      buildingsAbsent: <String>{'recycling_center'},
+      minPopulation: 40,
+    ),
+  ),
+  StoryBeat(
+    id: 'demand_hospital',
+    kind: BeatKind.warning,
+    tone: BeatTone.civic,
+    emoji: '🚑',
+    shortLabel: 'hospital',
+    longText:
+        "The clinic can't keep up with everyone — the city really needs a "
+        'proper hospital.',
+    triggerRule: TriggerRule(
+      buildingsPresent: <String>{'clinic'},
+      buildingsAbsent: <String>{'hospital'},
+      minPopulation: 60,
+    ),
+  ),
 
   // -- Entertainment-arc demands ----------------------------------------------
   StoryBeat(
@@ -527,6 +572,32 @@ const beatRegistry = <StoryBeat>[
         'ever.',
     triggerRule: TriggerRule(
       buildingsPresent: <String>{'library'},
+    ),
+  ),
+  StoryBeat(
+    id: 'praise_hospital',
+    kind: BeatKind.praise,
+    tone: BeatTone.civic,
+    emoji: '🚑',
+    shortLabel: 'thank you',
+    longText:
+        'The new hospital is open and the doctors send their heartfelt '
+        'thanks, Mayor.',
+    triggerRule: TriggerRule(
+      buildingsPresent: <String>{'hospital'},
+    ),
+  ),
+  StoryBeat(
+    id: 'praise_recycling',
+    kind: BeatKind.praise,
+    tone: BeatTone.cozy,
+    emoji: '♻️',
+    shortLabel: 'green day',
+    longText:
+        "Recycling day is the neighborhood's new favorite — green and "
+        'clean!',
+    triggerRule: TriggerRule(
+      buildingsPresent: <String>{'recycling_center'},
     ),
   ),
   StoryBeat(

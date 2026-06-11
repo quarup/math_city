@@ -11,9 +11,9 @@ into a game-ready sprite.
   per building (with the `Nx` variant-count prefix from §5.4).
 - `prompts.txt` — generated output (committed; regenerate after §3 edits).
 - `process.py` — turn a raw Nano Banana PNG into a game-ready asset
-  (background removal → bbox crop → resize to per-footprint canvas →
-  vertical squash to a true 2:1 ground diamond → bottom-center anchor →
-  pngquant compress, plus a debug overlay for visual QA).
+  (background removal → despeckle → bbox crop → resize to per-footprint
+  canvas → vertical squash to a true 2:1 ground diamond → bottom-center
+  anchor → pngquant compress, plus a debug overlay for visual QA).
 - `raw/` — raw Nano Banana outputs, named `<id>_v<n>.{png,jpg,jpeg}` (`n`
   1-based; a bare `<id>.<ext>` singleton is treated as `v1`). Committed
   (source of truth; lets us re-run `process.py` if the resolver changes).
@@ -60,6 +60,12 @@ backdrop-green (gray plaza, stone, brick) is forced opaque, which stops rembg
 from occasionally eating a building's flat gray plaza as "ground." "Green" is
 judged by greenness (G exceeding R and B by `GREEN_MARGIN`), so it's
 shade-independent.
+
+A **despeckle** pass then drops tiny disconnected opaque islands: when a raw
+export's backdrop is noisy (hospital_v1 was the first case), the non-green
+protection keeps the not-green-enough flecks, leaving speckles floating around
+the building that would also skew the bbox crop and the ground-tip detection.
+Components smaller than `DESPECKLE_MIN_FRACTION` of the largest one are noise.
 
 Per-sprite:
 
