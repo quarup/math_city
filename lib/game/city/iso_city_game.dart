@@ -5,6 +5,7 @@ import 'package:flame/cache.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flame/sprite.dart';
+import 'package:math_city/domain/city/road_sprites.dart';
 import 'package:math_city/game/city/city_board_component.dart';
 import 'package:math_city/game/city/iso_grid.dart';
 
@@ -193,6 +194,9 @@ class IsoCityGame extends FlameGame with DragCallbacks {
   /// Pushes the latest auto-generated road tiles into the board. Buffered if
   /// called before [onLoad] finishes — see [_pendingRoads].
   void setRoads(Set<(int, int)> roads) {
+    if (roads.isNotEmpty) {
+      _ensureSpritesLoaded(RoadSpriteShape.values.map((s) => s.fileName));
+    }
     if (isLoaded) {
       board.roads = roads;
     } else {

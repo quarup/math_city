@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/text.dart';
+import 'package:math_city/domain/city/road_sprites.dart';
 import 'package:math_city/game/city/iso_grid.dart';
 
 /// Sprites are authored at this many pixels per tile (see
@@ -97,6 +98,12 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
         _drawTile(canvas, col, row);
       }
     }
+    // Roads draw after all terrain: the sprites carry a small overscan rim
+    // (seam cover), which a later-drawn neighbouring grass diamond would
+    // otherwise clip.
+    for (final (col, row) in roads) {
+      _drawRoadTile(canvas, col, row);
+    }
     // Painter's order: tiles further back (smaller col+row) draw first so
     // nearer buildings overlap them correctly.
     final sorted = [...buildings]
@@ -115,12 +122,49 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
   void _drawTile(Canvas canvas, int col, int row) {
     final (cx, cy) = grid.centerOf(col, row);
     final path = _diamond(cx, cy, 0);
-    final fill = roads.contains((col, row))
-        ? _roadFill
-        : ((col + row).isEven ? _grassFill : _grassFillAlt);
+    final fill = (col + row).isEven ? _grassFill : _grassFillAlt;
     canvas
       ..drawPath(path, Paint()..color = fill)
       ..drawPath(path, _tileStroke);
+  }
+
+  /// Draws one auto-road tile: resolves the connection mask to a canonical
+  /// sprite + screen flips (see `road_sprites.dart`), falling back to the
+  /// flat grey diamond until the sprite's async load lands.
+  void _drawRoadTile(Canvas canvas, int col, int row) {
+    final (cx, cy) = grid.centerOf(col, row);
+    final spec = roadSpriteFor(
+      east: roads.contains((col + 1, row)),
+      south: roads.contains((col, row + 1)),
+      west: roads.contains((col - 1, row)),
+      north: roads.contains((col, row - 1)),
+    );
+    final sprite = spriteFor(spec.shape.fileName);
+    if (sprite == null) {
+      canvas.drawPath(_diamond(cx, cy, 0), Paint()..color = _roadFill);
+      return;
+    }
+    final size = sprite.srcSize * (grid.tileWidth / kSpriteAuthoringTilePx);
+    if (spec.flipH || spec.flipV) {
+      canvas
+        ..save()
+        ..translate(cx, cy)
+        ..scale(spec.flipH ? -1 : 1, spec.flipV ? -1 : 1);
+      sprite.render(
+        canvas,
+        position: Vector2.zero(),
+        size: size,
+        anchor: Anchor.center,
+      );
+      canvas.restore();
+    } else {
+      sprite.render(
+        canvas,
+        position: Vector2(cx, cy),
+        size: size,
+        anchor: Anchor.center,
+      );
+    }
   }
 
   void _drawBuilding(Canvas canvas, PlacedBuildingView b) {
