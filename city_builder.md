@@ -9,7 +9,7 @@
 
 ## Status
 
-- **Last updated:** 2026-05-31
+- **Last updated:** 2026-06-11 (road-tile art decisions added — §5.5)
 - **Phase:** Phase 8 — City Builder: Research & Rich Design. Content-authoring only, **no code changes**. Deliverable is this document; Phase 9 implements it.
 - **Drafting mode:** *fill pass complete (first draft)*. §1 (references), §2 (categories), §3 (full building specs — 55 anchors), §4 (beat catalog), §5 (asset checklist), and §7 (open questions) are drafted. §6 (implementation status) carries only the Phase-7 ✅ rows; Phase 9 ticks the rest. Three structure decisions are locked (2026-05-31): education (`school`/`high_school`) lives under `services`; `water` is a hard-gating service; the housing spine keeps all 7 rungs. **Still expects Phase-9 iteration** — costs and service ratios are designed-coherent placeholders, finalized by playtest.
 - **Framework:** extends the Phase-7 model unchanged — two currencies (🧱 bricks + 🔬 research), four categories, the service-ratio + variety-multiplier growth model, and the typed `UnlockRule` / `TriggerRule` gates. No schema or domain-shape changes proposed. (Per the Phase-8 planning decision: *extend, don't redesign*.)
@@ -684,6 +684,83 @@ from this); keep both in sync when tuning.
 | `botanical_garden` | 1 | `aquarium` | 1 |
 | `sports_field` | 2 | `amusement_park` | 1 |
 | `swimming_pool` | 1 | `observation_tower` | 1 |
+
+### 5.5 Road tiles — decided 2026-06-11
+
+Roads are **auto-generated**, not hand-placed: `generateRoads()`
+([road_network.dart](lib/domain/city/road_network.dart)) hugs each building
+cluster and connects clusters into one network, returning a set of road tiles.
+Today they render as a **flat grey diamond fill** (`_roadFill` in
+[city_board_component.dart](lib/game/city/city_board_component.dart)); Phase 9
+replaces that with sprite art on the same dimetric pipeline as buildings (§5.1).
+
+**The tile set — 7 sprites (5 core + 2 safety).** A road tile connects only to
+its **4 orthogonal grid neighbours**, so there are 2⁴ = 16 possible
+neighbour masks. The 2:1 dimetric diamond survives **horizontal and vertical
+mirroring but *not* 90° rotation** (rotating a 2:1 diamond yields a wrong 1:2),
+so the available symmetry group is the flip group `{identity, H, V, 180°}` — not
+the full rotate-and-reflect group a square top-down tileset enjoys. Collapsing
+the 16 masks under that group yields **7 distinct sprites**:
+
+| Sprite | Connects | Covered by flips | Status |
+|---|---|---|---|
+| `road_cross` | 4-way (+) | symmetric (no flip) | core |
+| `road_tee` | 3-way (T) | 1 sprite → all 4 orientations via H/V/180 | core |
+| `road_straight` | 2 opposite | 1 sprite → both diagonals via flip | core |
+| `road_curve_ud` | 2 adjacent (opens up/down) | 1 → 2 via V-flip | core |
+| `road_curve_lr` | 2 adjacent (opens left/right) | 1 → 2 via H-flip | core |
+| `road_deadend` | 1-way (stub) | 1 → 4 via flips | safety |
+| *(isolated)* | none (0-way) | symmetric | optional — reuse `road_cross` or skip |
+
+**Two curve sprites, not one,** because flips can't perform the 90° rotation that
+would turn an "opens-up" bend into an "opens-right" bend — the iso projection
+costs exactly one extra curve versus a rotatable top-down set. In practice the
+hug-ring + connector generator emits only **≥2-connection** tiles, so
+`road_deadend` and the isolated tile essentially never occur; ship `road_deadend`
+as a cheap renderer fallback and skip the isolated tile.
+
+**Required code — the autotiling resolver (Phase 9, new).** For each road tile
+the renderer must compute its **4 orthogonal road-neighbour mask** (derived from
+the building layout that `road_network.dart` already paves into a road set) and
+map it to a `(sprite, transform)` pair, where `transform ∈ {none, flipH, flipV,
+flip180}`. This is the road analogue of the building **Sprite facing** flip (§7):
+a pure function `mask → (RoadSprite, flip)`. It does **not** exist yet and is the
+first road-rendering task in Phase 9 — the 7-sprite set above is unusable without
+it.
+
+**Art conventions** (shared with building sprites, §5.1): 2:1 dimetric, **192 px**
+authoring tile, **solid green background** (`process.py`'s `remove_green_bg` keys
+it out — *not* transparent), anchored to the same CC0 refs, **no text**.
+Road-specific: the asphalt must **exit each connected diamond edge exactly at its
+midpoint** so neighbouring tiles join seamlessly; per the §5.1 10 m/tile scale a
+road is **6 m roadway + 2 m sidewalk each side** (= one tile wide). Each road tile
+is a **flat 1×1 ground tile** that *replaces* the terrain diamond — not an
+extruded object.
+
+**Pipeline mechanics — coherence beats convenience.** The pieces must butt
+together with no seam, so they should be generated in **one image** (one render →
+identical road width / asphalt shade / edge positions) rather than six
+independent generations. Since `process.py` is **one-sprite-per-file**, the flow
+is:
+1. Raw NB sheet → **`tools/sprite_pipeline/raw_sheets/roads.png`** (a *new* dir —
+   **not** `raw/`, which is reserved for one-sprite-per-file inputs).
+2. A **new slice step** cuts the sheet into the per-tile files in `raw/`, named
+   `road_cross.png`, `road_tee.png`, … (avoid `_v` / `_<digit>` suffixes —
+   `process.py`'s `FILENAME_RE` reads those as the variant marker).
+3. `process.py` processes each slice — but **needs a 1×1 flat-tile path** (or a
+   `--footprint 1x1` override), since road ids aren't buildings in §3 and the
+   building base-align / squash / `TOWER_HEADROOM` logic is built for *extruded*
+   objects, not a flat ground tile.
+
+**Open — generation method.** The "one NB prompt emits the whole sheet" approach
+**tested poorly** (tiles came out inconsistent and edges didn't meet at the
+diamond-edge midpoints, breaking seamless tiling). The **tile set, flip math,
+resolver requirement, and slicing pipeline above all stand** — only the
+*image-generation method* is unresolved. Options to try in Phase 9: per-tile
+prompts with a locked road-style reference; hand-authoring the 6 tiles over a
+fixed diamond template; or a **procedural road-diamond painter** — which would be
+the *one sanctioned exception* to §5.1's "no procedural building art" rule, since
+road tiles are flat geometric ground, not buildings.
 
 ---
 
