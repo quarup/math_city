@@ -1,10 +1,4 @@
 {
-  "permissions": {
-    "allow": [
-      "Bash(python3 -c ' *)",
-      "Bash(ls *)"
-    ]
-  },
   "hooks": {
     "SessionStart": [
       {
