@@ -5,7 +5,9 @@ import 'package:math_city/domain/city/beat_engine.dart';
 import 'package:math_city/domain/city/beat_registry.dart';
 import 'package:math_city/domain/city/building_registry.dart';
 import 'package:math_city/domain/city/building_type.dart';
+import 'package:math_city/domain/city/city_map_registry.dart';
 import 'package:math_city/domain/city/dag_engine.dart';
+import 'package:math_city/domain/city/land_expansion.dart';
 import 'package:math_city/domain/city/population_model.dart';
 import 'package:math_city/domain/city/story_beat.dart';
 import 'package:math_city/domain/city/trigger_rule.dart';
@@ -340,6 +342,42 @@ class CityActions {
     );
     _ref
       ..invalidate(cityCatalogProvider)
+      ..invalidate(activePlayerProvider)
+      ..invalidate(allPlayersProvider);
+  }
+
+  /// Buys the next land expansion for the active city: spends the offer's 🧱,
+  /// grows the grid, and shifts existing placements so the old land stays
+  /// centered (see `land_expansion.dart`). Recomputes the offer against the
+  /// persisted state, so it's a no-op if the city is already at the cap or
+  /// the player can't afford it (the UI checks too — this is the backstop).
+  Future<void> expandLand() async {
+    final playerId = _ref.read(activePlayerIdProvider);
+    if (playerId == null) return;
+    final db = _ref.read(appDatabaseProvider);
+    final player = await db.getPlayerById(playerId);
+    final city = await db.cityForPlayer(playerId);
+    final map = findCityMapById(city.cityMapId);
+    if (map == null) return;
+    final offer = nextLandExpansion(
+      gridWidth: city.gridWidth,
+      gridHeight: city.gridHeight,
+      baseGridWidth: map.baseGridWidth,
+      baseGridHeight: map.baseGridHeight,
+    );
+    if (offer == null || player.brickBalance < offer.brickCost) return;
+    await db.expandCityLand(
+      cityId: city.id,
+      playerId: playerId,
+      newGridWidth: offer.newGridWidth,
+      newGridHeight: offer.newGridHeight,
+      shiftX: offer.shiftX,
+      shiftY: offer.shiftY,
+      brickCost: offer.brickCost,
+    );
+    _ref
+      ..invalidate(activeCityProvider)
+      ..invalidate(placementsProvider)
       ..invalidate(activePlayerProvider)
       ..invalidate(allPlayersProvider);
   }

@@ -10,6 +10,8 @@ import 'package:math_city/domain/city/beat_registry.dart';
 import 'package:math_city/domain/city/building_registry.dart';
 import 'package:math_city/domain/city/building_type.dart';
 import 'package:math_city/domain/city/category.dart';
+import 'package:math_city/domain/city/city_map_registry.dart';
+import 'package:math_city/domain/city/land_expansion.dart';
 import 'package:math_city/domain/city/placement_rules.dart';
 import 'package:math_city/domain/city/road_network.dart';
 import 'package:math_city/domain/city/story_beat.dart';
@@ -272,6 +274,51 @@ class _CityScreenState extends ConsumerState<CityScreen> {
     );
   }
 
+  /// The next land expansion available for [city], or null at the 24×24 cap.
+  LandExpansionOffer? _expansionOffer(City city) {
+    final map = findCityMapById(city.cityMapId);
+    if (map == null) return null;
+    return nextLandExpansion(
+      gridWidth: city.gridWidth,
+      gridHeight: city.gridHeight,
+      baseGridWidth: map.baseGridWidth,
+      baseGridHeight: map.baseGridHeight,
+    );
+  }
+
+  /// Tap on the expand FAB: confirm the size + 🧱 cost, then buy the
+  /// expansion. Mirrors the research-confirm flow.
+  Future<void> _confirmExpand(LandExpansionOffer offer) async {
+    final bricks = ref.read(activePlayerProvider).asData?.value.brickBalance;
+    if (bricks == null || offer.brickCost > bricks) {
+      _toast('Not enough bricks to expand — keep playing math!');
+      return;
+    }
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Expand your land?'),
+        content: Text(
+          'Spend 🧱 ${offer.brickCost} to grow the map to '
+          '${offer.newGridWidth}×${offer.newGridHeight} tiles.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: const Text('Expand'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed ?? false) {
+      await ref.read(cityActionsProvider).expandLand();
+    }
+  }
+
   /// Tap on a locked (available-to-research) catalog card: confirm, then spend
   /// 🔬 to unlock the type. On success the newly-researched building is
   /// auto-selected so the player can place it right away.
@@ -366,9 +413,14 @@ class _CityScreenState extends ConsumerState<CityScreen> {
     final player = playerAsync.asData?.value;
 
     // Build the game once the grid size is known, then keep its render model
-    // in sync with the latest placements.
+    // in sync with the latest placements. A land expansion changes the grid
+    // size, so the game is rebuilt against the new grid when that happens
+    // (the camera re-centers on the bigger board — a nice reveal).
     final city = cityAsync.asData?.value;
-    if (_game == null && city != null) {
+    if (city != null &&
+        (_game == null ||
+            _game!.grid.cols != city.gridWidth ||
+            _game!.grid.rows != city.gridHeight)) {
       _game = IsoCityGame(
         grid: IsoGrid(cols: city.gridWidth, rows: city.gridHeight),
         onTileTapped: _onTileTapped,
@@ -495,6 +547,17 @@ class _CityScreenState extends ConsumerState<CityScreen> {
             ),
             const SizedBox(height: 12),
           ],
+          // Land expansion — hidden in move mode and at the 24×24 cap.
+          if (city != null && !_moveMode)
+            if (_expansionOffer(city) case final LandExpansionOffer offer) ...[
+              FloatingActionButton.small(
+                heroTag: 'cityExpandFab',
+                tooltip: 'Expand land (🧱 ${offer.brickCost})',
+                onPressed: () => unawaited(_confirmExpand(offer)),
+                child: const Icon(Icons.zoom_out_map_rounded),
+              ),
+              const SizedBox(height: 12),
+            ],
           FloatingActionButton.extended(
             heroTag: 'citySpinFab',
             onPressed: _openSpin,
@@ -576,8 +639,10 @@ class _CityDebugSheetState extends ConsumerState<_CityDebugSheet> {
     final city = ref.watch(activeCityProvider).asData?.value;
     final pop = (_pop ?? (city?.population ?? 0).toDouble()).clamp(0.0, 500.0);
 
+    // Scrollable: the force-fire chip list grows with the beat registry
+    // (48 chips and counting), far taller than any screen.
     return SafeArea(
-      child: Padding(
+      child: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
         child: Column(
           mainAxisSize: MainAxisSize.min,

@@ -530,6 +530,43 @@ class AppDatabase extends _$AppDatabase {
         CitiesCompanion(population: Value(population)),
       );
 
+  /// Applies one land expansion: grows the grid to the new size, shifts every
+  /// existing placement by `(shiftX, shiftY)` so the old land sits centered in
+  /// the grown grid, and spends [brickCost] 🧱 (lifetime stays monotone). The
+  /// new size / shift / cost come from the pure offer policy
+  /// (`lib/domain/city/land_expansion.dart`); the caller must have verified
+  /// affordability. Transactional, so a failure can't leave placements
+  /// half-shifted.
+  Future<void> expandCityLand({
+    required int cityId,
+    required int playerId,
+    required int newGridWidth,
+    required int newGridHeight,
+    required int shiftX,
+    required int shiftY,
+    required int brickCost,
+  }) => transaction(() async {
+    await (update(cities)..where((t) => t.id.equals(cityId))).write(
+      CitiesCompanion(
+        gridWidth: Value(newGridWidth),
+        gridHeight: Value(newGridHeight),
+      ),
+    );
+    if (shiftX != 0 || shiftY != 0) {
+      await customUpdate(
+        'UPDATE building_placements '
+        'SET grid_x = grid_x + ?, grid_y = grid_y + ? WHERE city_id = ?',
+        variables: [
+          Variable.withInt(shiftX),
+          Variable.withInt(shiftY),
+          Variable.withInt(cityId),
+        ],
+        updates: {buildingPlacements},
+      );
+    }
+    if (brickCost > 0) await incrementPlayerBricks(playerId, -brickCost);
+  });
+
   /// Debug-only: wipes a player's city-builder state back to the
   /// just-created baseline — clears placements, researched buildings (then
   /// re-seeds the pre-researched set), beat states, and band-milestone
