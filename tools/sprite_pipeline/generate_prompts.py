@@ -64,7 +64,6 @@ VARIANT_COUNTS = {
     "fire_station": 1,
     "police_station": 1,
     "bus_depot": 1,
-    "train_station": 1,
     # Commercial
     "market_stall": 3,
     "grocery": 2,

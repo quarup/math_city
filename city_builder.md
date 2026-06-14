@@ -9,11 +9,11 @@
 
 ## Status
 
-- **Last updated:** 2026-06-12 (road-tile art shipped — §5.5 resolver + compositor implemented, device-verified)
+- **Last updated:** 2026-06-14 (Phase-9 catalog completed — all 54 anchors wired + sprite-backed; `train_station` dropped, the rail can't be drawn coherently in 2:1 dimetric)
 - **Phase:** Phase 8 — City Builder: Research & Rich Design. Content-authoring only, **no code changes**. Deliverable is this document; Phase 9 implements it.
-- **Drafting mode:** *fill pass complete (first draft)*. §1 (references), §2 (categories), §3 (full building specs — 55 anchors), §4 (beat catalog), §5 (asset checklist), and §7 (open questions) are drafted. §6 (implementation status) carries only the Phase-7 ✅ rows; Phase 9 ticks the rest. Three structure decisions are locked (2026-05-31): education (`school`/`high_school`) lives under `services`; `water` is a hard-gating service; the housing spine keeps all 7 rungs. **Still expects Phase-9 iteration** — costs and service ratios are designed-coherent placeholders, finalized by playtest.
+- **Drafting mode:** *fill pass complete (first draft)*. §1 (references), §2 (categories), §3 (full building specs — 54 anchors), §4 (beat catalog), §5 (asset checklist), and §7 (open questions) are drafted. §6 (implementation status) is auto-managed by [tools/city_builder/sync_implementation_status.py](tools/city_builder/sync_implementation_status.py); as of 2026-06-14 all 54 anchors are wired and sprite-backed. Three structure decisions are locked (2026-05-31): education (`school`/`high_school`) lives under `services`; `water` is a hard-gating service; the housing spine keeps all 7 rungs. **Still expects Phase-9 iteration** — costs and service ratios are designed-coherent placeholders, finalized by playtest.
 - **Framework:** extends the Phase-7 model unchanged — two currencies (🧱 bricks + 🔬 research), four categories, the service-ratio + variety-multiplier growth model, and the typed `UnlockRule` / `TriggerRule` gates. No schema or domain-shape changes proposed. (Per the Phase-8 planning decision: *extend, don't redesign*.)
-- **Scope of this pass:** *representative breadth* — full coherent arcs across all four categories with ~55 anchor buildings individually specced; the long-tail variants (cosmetic re-skins, minor tier infills) are described as patterned templates rather than itemized. This keeps the design coherent and reviewable and gives Phase 9 a clear queue without committing to hundreds of hand-authored rows up front.
+- **Scope of this pass:** *representative breadth* — full coherent arcs across all four categories with ~54 anchor buildings individually specced; the long-tail variants (cosmetic re-skins, minor tier infills) are described as patterned templates rather than itemized. This keeps the design coherent and reviewable and gives Phase 9 a clear queue without committing to hundreds of hand-authored rows up front.
 - **Source of truth note:** once Phase 9 starts wiring content, the building/beat **IDs here become the source of truth**, mirrored by [building_registry.dart](lib/domain/city/building_registry.dart) and [beat_registry.dart](lib/domain/city/beat_registry.dart) — exactly as `curriculum.md` is mirrored by `generator_registry.dart`.
 
 ---
@@ -196,8 +196,8 @@ so footprints aim for *plausibility*, not economy). Guidelines used below:
   legible).
 - **Civic & big services** (town/city hall, hospital, school, power station, water
   treatment) — `2×2`–`3×3`.
-- **Naturally rectangular things are rectangular** — train station `4×2` (long
-  platform shed), sports field `3×2`, solar farm `4×4` (NB drew the lot square — reconciled 2026-06-12), townhouse row `1×3`.
+- **Naturally rectangular things are rectangular** — sports field `3×2`, solar
+  farm `4×4` (NB drew the lot square — reconciled 2026-06-12), townhouse row `1×3`.
 - **Capstone attractions sprawl** — stadium / shopping mall `4×4`, zoo `5×5`,
   amusement park `6×6`. These are deliberately large "wow" builds that **assume an
   expanded map** (the beginner `12×12` map can't hold a `6×6` park alongside a
@@ -276,21 +276,20 @@ services are `false`. **Education moved here from `civicHousing`** per the
 | Building | 🧱 | 🔬 | Service | V | Foot | Unlock rule |
 |---|---|---|---|---|---|---|
 | ✅ `school` 🏫 ✓P7 | 10 | 1 | `school:60` | – | 2×3 | `single_home` · reads:`demand_school` *(was `civicHousing` in P7)* |
-| `high_school` 🎓 | 40 | 2 | `school:150` | – | 3×3 | `school` + pop≥40 · reads:`demand_high_school` |
+| ✅ `high_school` 🎓 | 40 | 2 | `school:150` | – | 3×3 | `school` + pop≥40 · reads:`demand_high_school` |
 
 **Safety** (soft — **new service IDs `police` / `fire`**):
 
 | Building | 🧱 | 🔬 | Service | V | Foot | Unlock rule |
 |---|---|---|---|---|---|---|
-| `fire_station` 🚒 | 25 | 2 | `fire:100` | – | 2×2 | `town_hall` · reads:`demand_fire` |
-| `police_station` 🚓 | 25 | 2 | `police:100` | – | 2×2 | `town_hall` · reads:`demand_police` |
+| ✅ `fire_station` 🚒 | 25 | 2 | `fire:100` | – | 2×2 | `town_hall` · reads:`demand_fire` |
+| ✅ `police_station` 🚓 | 25 | 2 | `police:100` | – | 2×2 | `town_hall` · reads:`demand_police` |
 
 **Transit** (soft — **new service ID `transit`**):
 
 | Building | 🧱 | 🔬 | Service | V | Foot | Unlock rule |
 |---|---|---|---|---|---|---|
-| `bus_depot` 🚌 | 40 | 3 | `transit:200` | – | 2×3 | `city_hall` · reads:`demand_bus_depot` |
-| `train_station` 🚉 | 120 | 5 | `transit:500` | – | 4×2 | `bus_depot` + pop≥100 + life🧱≥600 · reads:`demand_train_station` |
+| ✅ `bus_depot` 🚌 | 40 | 3 | `transit:200` | – | 2×3 | `city_hall` · reads:`demand_bus_depot` |
 
 ### 3.3 Commercial (`commercial`)
 
@@ -301,24 +300,24 @@ Shops / food / offices — the desirability-multiplier and "town life" channel. 
 
 | Building | 🧱 | 🔬 | Foot | Unlock rule |
 |---|---|---|---|---|
-| `market_stall` 🍎 | 8 | 1 | 1×1 | `single_home` · reads:`demand_market_stall` |
+| ✅ `market_stall` 🍎 | 8 | 1 | 1×1 | `single_home` · reads:`demand_market_stall` |
 | ✅ `grocery` 🛒 ✓P7 | 10 | 1 | 1×2 | `single_home` · reads:`demand_grocery` |
-| `supermarket` 🏪 | 30 | 2 | 2×3 | `grocery` + pop≥20 · reads:`demand_supermarket` |
-| `bakery` 🥐 | 20 | 2 | 1×2 | `grocery` · reads:`demand_bakery` |
+| ✅ `supermarket` 🏪 | 30 | 2 | 2×3 | `grocery` + pop≥20 · reads:`demand_supermarket` |
+| ✅ `bakery` 🥐 | 20 | 2 | 1×2 | `grocery` · reads:`demand_bakery` |
 | ✅ `coffee_shop` ☕ ✓P7 | 10 | 1 | 1×1 | `single_home` · reads:`demand_coffee_shop` |
-| `restaurant` 🍽️ | 25 | 2 | 1×2 | `coffee_shop` · reads:`demand_restaurant` |
-| `farmers_market` 🧺 | 20 | 2 | 2×2 | `farmhouse` · reads:`demand_farmers_market` |
+| ✅ `restaurant` 🍽️ | 25 | 2 | 1×2 | `coffee_shop` · reads:`demand_restaurant` |
+| ✅ `farmers_market` 🧺 | 20 | 2 | 2×2 | `farmhouse` · reads:`demand_farmers_market` |
 
 **Retail & offices:**
 
 | Building | 🧱 | 🔬 | Foot | Unlock rule |
 |---|---|---|---|---|
-| `bookshop` 📖 | 20 | 2 | 1×1 | `library` · reads:`demand_bookshop` |
-| `toy_store` 🧸 | 20 | 2 | 1×2 | `grocery` · reads:`demand_toy_store` |
-| `clothing_store` 👕 | 25 | 2 | 1×2 | `supermarket` · reads:`demand_clothing_store` |
-| `office_building` 🏬 | 40 | 3 | 2×2 | `town_hall` · reads:`demand_office` |
-| `shopping_mall` 🛍️ | 80 | 3 | 4×4 | `supermarket` + `clothing_store` + pop≥80 · reads:`demand_shopping_mall` *(multi-parent)* |
-| `business_tower` 🏢 | 100 | 3 | 2×2 | `office_building` + pop≥80 + life🧱≥400 · reads:`demand_business_tower` |
+| ✅ `bookshop` 📖 | 20 | 2 | 1×1 | `library` · reads:`demand_bookshop` |
+| ✅ `toy_store` 🧸 | 20 | 2 | 1×2 | `grocery` · reads:`demand_toy_store` |
+| ✅ `clothing_store` 👕 | 25 | 2 | 1×2 | `supermarket` · reads:`demand_clothing_store` |
+| ✅ `office_building` 🏬 | 40 | 3 | 2×2 | `town_hall` · reads:`demand_office` |
+| ✅ `shopping_mall` 🛍️ | 80 | 3 | 4×4 | `supermarket` + `clothing_store` + pop≥80 · reads:`demand_shopping_mall` *(multi-parent)* |
+| ✅ `business_tower` 🏢 | 100 | 3 | 2×2 | `office_building` + pop≥80 + life🧱≥400 · reads:`demand_business_tower` |
 
 ### 3.4 Entertainment (`entertainment`)
 
@@ -330,18 +329,18 @@ Parks / culture / recreation — the cozy, praise-heavy delight channel. All
 | Building | 🧱 | 🔬 | Foot | Unlock rule |
 |---|---|---|---|---|
 | ✅ `park` 🌳 ✓P7 | 10 | 1 | 2×2 | `single_home` · reads:`demand_more_parks` *(recurring — see §4)* |
-| `playground` 🛝 | 10 | 1 | 1×2 | `park` · reads:`demand_playground` |
-| `community_garden` 🌻 | 15 | 2 | 2×2 | `park` · reads:`demand_community_garden` |
-| `fountain_plaza` ⛲ | 25 | 2 | 2×2 | `town_hall` · reads:`demand_fountain_plaza` |
-| `botanical_garden` 🌺 | 50 | 3 | 3×3 | `community_garden` + pop≥50 · reads:`demand_botanical_garden` |
+| ✅ `playground` 🛝 | 10 | 1 | 1×2 | `park` · reads:`demand_playground` |
+| ✅ `community_garden` 🌻 | 15 | 2 | 2×2 | `park` · reads:`demand_community_garden` |
+| ✅ `fountain_plaza` ⛲ | 25 | 2 | 2×2 | `town_hall` · reads:`demand_fountain_plaza` |
+| ✅ `botanical_garden` 🌺 | 50 | 3 | 3×3 | `community_garden` + pop≥50 · reads:`demand_botanical_garden` |
 
 **Recreation & culture:**
 
 | Building | 🧱 | 🔬 | Foot | Unlock rule |
 |---|---|---|---|---|
 | ✅ `sports_field` ⚽ | 25 | 2 | 3×2 | `school` · reads:`demand_sports_field` |
-| `swimming_pool` 🏊 | 30 | 2 | 2×2 | `sports_field` · reads:`demand_swimming_pool` |
-| `movie_theater` 🎬 | 40 | 3 | 2×3 | `restaurant` · reads:`demand_movie_theater` |
+| ✅ `swimming_pool` 🏊 | 30 | 2 | 2×2 | `sports_field` · reads:`demand_swimming_pool` |
+| ✅ `movie_theater` 🎬 | 40 | 3 | 2×3 | `restaurant` · reads:`demand_movie_theater` |
 | ✅ `museum` 🏛️ | 50 | 3 | 3×3 | `library` · reads:`demand_museum` |
 | ✅ `stadium` 🏟️ | 90 | 3 | 4×4 | `sports_field` + pop≥80 · reads:`demand_stadium` |
 
@@ -349,14 +348,14 @@ Parks / culture / recreation — the cozy, praise-heavy delight channel. All
 
 | Building | 🧱 | 🔬 | Foot | Unlock rule |
 |---|---|---|---|---|
-| `zoo` 🦁 | 120 | 5 | 5×5 | `botanical_garden` + pop≥100 · reads:`demand_zoo` |
+| ✅ `zoo` 🦁 | 120 | 5 | 5×5 | `botanical_garden` + pop≥100 · reads:`demand_zoo` |
 | ✅ `aquarium` 🐠 | 120 | 5 | 4×3 | `museum` + pop≥100 · reads:`demand_aquarium` |
 | ✅ `amusement_park` 🎢 | 200 | 5 | 6×6 | `stadium` + pop≥120 + life🧱≥800 · reads:`demand_amusement_park` |
 | ✅ `observation_tower` 🗼 | 250 | 5 | 2×2 | `city_hall` + life🧱≥1000 · reads:`demand_observation_tower` |
 
 ### 3.5 Economy sanity check
 
-- **Total 🔬 to research the whole catalog ≈ 122** (early ≈1, mid ≈2, late ≈3,
+- **Total 🔬 to research the whole catalog ≈ 117** (early ≈1, mid ≈2, late ≈3,
   capstone ≈5 each). The lifetime 🔬 ceiling is ~732 (≈366 sub-concepts × 2 award
   bands — see [plan.md](plan.md) *Research-currency earning*), so the full city is
   comfortably affordable through normal play with research to spare. No artificial
@@ -370,7 +369,7 @@ Parks / culture / recreation — the cozy, praise-heavy delight channel. All
 
 ### 3.6 Long-tail variants (patterned, not itemized)
 
-Beyond the 55 anchors, the "feels infinite" long tail is generated by *pattern*,
+Beyond the 54 anchors, the "feels infinite" long tail is generated by *pattern*,
 not hand-authored rows:
 
 1. **Cosmetic re-skins** of an existing rung — same stats, different
@@ -381,7 +380,7 @@ not hand-authored rows:
    same arc re-skinned per theme. The `farmhouse` / `farmers_market` pair is the
    first countryside seed.
 
-**Anchor totals:** 13 civic & housing · 15 services · 13 commercial · 14 entertainment = **55**.
+**Anchor totals:** 13 civic & housing · 14 services · 13 commercial · 14 entertainment = **54**.
 
 ### 3.7 DAG sanity check
 
@@ -446,45 +445,44 @@ summary. Trigger shorthand: `+B` present, `−B` absent, `pop≥N`, `age(B)≥N`
 | ✅ `demand_recycling` | cozy | ♻️ recycle | "We're throwing away things we could reuse — a recycling center would help the town go green." | `+waste_management pop≥40 −recycling_center` |
 | ✅ `demand_hospital` ⚠ | civic | 🚑 hospital | "The clinic can't keep up with everyone — the city really needs a proper hospital." | `+clinic pop≥60 −hospital` |
 | ✅ `demand_school` ✓P7 | civic | 🏫 a school? | "The neighborhood kids have nowhere to practice their math — could we build a school?" | `+single_home −school` |
-| `demand_high_school` | civic | 🎓 high school | "The kids have outgrown the school — a high school is the natural next step." | `+school pop≥40 −high_school` |
-| `demand_fire` | civic | 🚒 fire truck! | "Someone's stove caught fire and there's no truck nearby — a fire station, please!" | `+town_hall −fire_station` |
-| `demand_police` | civic | 🚓 police? | "A few too many bikes have gone missing — a police station would help everyone feel safe." | `+town_hall −police_station` |
-| `demand_bus_depot` | civic | 🚌 buses! | "Walking everywhere is tiring — a bus depot would get folks around the city." | `+city_hall −bus_depot` |
-| `demand_train_station` | civic | 🚉 all aboard | "The city's ready to connect to the world — a train station would do it!" | `+bus_depot pop≥100 −train_station` |
+| ✅ `demand_high_school` | civic | 🎓 high school | "The kids have outgrown the school — a high school is the natural next step." | `+school pop≥40 −high_school` |
+| ✅ `demand_fire` | civic | 🚒 fire truck! | "Someone's stove caught fire and there's no truck nearby — a fire station, please!" | `+town_hall −fire_station` |
+| ✅ `demand_police` | civic | 🚓 police? | "A few too many bikes have gone missing — a police station would help everyone feel safe." | `+town_hall −police_station` |
+| ✅ `demand_bus_depot` | civic | 🚌 buses! | "Walking everywhere is tiring — a bus depot would get folks around the city." | `+city_hall −bus_depot` |
 
 **Commercial:**
 
 | Beat | Tone | Sticker | Text | Trigger |
 |---|---|---|---|---|
-| `demand_market_stall` | cozy | 🍎 a stall | "A little market stall would be a sweet first shop for the neighborhood." | `+single_home −market_stall` |
+| ✅ `demand_market_stall` | cozy | 🍎 a stall | "A little market stall would be a sweet first shop for the neighborhood." | `+single_home −market_stall` |
 | ✅ `demand_grocery` ✓P7 | cozy | 🛒 groceries? | "Folks are tired of driving far for milk and bread — a grocery store would be so handy." | `+single_home −grocery` |
-| `demand_supermarket` | cozy | 🏪 bigger! | "The grocery's always crowded — a big supermarket would have room for everyone." | `+grocery pop≥20 −supermarket` |
-| `demand_bakery` | silly | 🥐 fresh bread | "The whole street woke up dreaming of warm bread — a bakery, please!" | `+grocery −bakery` |
+| ✅ `demand_supermarket` | cozy | 🏪 bigger! | "The grocery's always crowded — a big supermarket would have room for everyone." | `+grocery pop≥20 −supermarket` |
+| ✅ `demand_bakery` | silly | 🥐 fresh bread | "The whole street woke up dreaming of warm bread — a bakery, please!" | `+grocery −bakery` |
 | ✅ `demand_coffee_shop` ✓P7 | cozy | ☕ coffee? | "A cozy coffee shop would give everyone a warm place to meet up — what do you think?" | `+single_home −coffee_shop` |
-| `demand_restaurant` | cozy | 🍽️ dinner out | "Coffee's lovely, but folks are hungry for dinner out — a restaurant?" | `+coffee_shop −restaurant` |
-| `demand_farmers_market` | cozy | 🧺 farm fresh | "The farmhouse has extra veggies to sell — a farmers market would be perfect." | `+farmhouse −farmers_market` |
-| `demand_bookshop` | cozy | 📖 a bookshop | "Readers want their own copies to keep — a bookshop next to the library?" | `+library −bookshop` |
-| `demand_toy_store` | silly | 🧸 toys! | "Every kid in town has the same birthday wish this year: a toy store!" | `+grocery −toy_store` |
-| `demand_clothing_store` | cozy | 👕 new clothes | "Folks want something new to wear — a clothing store would be a hit." | `+supermarket −clothing_store` |
-| `demand_office` | civic | 🏬 jobs | "Grown-ups need somewhere in town to work — an office building?" | `+town_hall −office_building` |
-| `demand_shopping_mall` | civic | 🛍️ one big roof | "All these shops could share one big roof — a shopping mall!" | `+supermarket +clothing_store pop≥80 −shopping_mall` |
-| `demand_business_tower` | civic | 🏢 booming | "Business is booming — a tall business tower would put the city on the map." | `+office_building pop≥80 −business_tower` |
+| ✅ `demand_restaurant` | cozy | 🍽️ dinner out | "Coffee's lovely, but folks are hungry for dinner out — a restaurant?" | `+coffee_shop −restaurant` |
+| ✅ `demand_farmers_market` | cozy | 🧺 farm fresh | "The farmhouse has extra veggies to sell — a farmers market would be perfect." | `+farmhouse −farmers_market` |
+| ✅ `demand_bookshop` | cozy | 📖 a bookshop | "Readers want their own copies to keep — a bookshop next to the library?" | `+library −bookshop` |
+| ✅ `demand_toy_store` | silly | 🧸 toys! | "Every kid in town has the same birthday wish this year: a toy store!" | `+grocery −toy_store` |
+| ✅ `demand_clothing_store` | cozy | 👕 new clothes | "Folks want something new to wear — a clothing store would be a hit." | `+supermarket −clothing_store` |
+| ✅ `demand_office` | civic | 🏬 jobs | "Grown-ups need somewhere in town to work — an office building?" | `+town_hall −office_building` |
+| ✅ `demand_shopping_mall` | civic | 🛍️ one big roof | "All these shops could share one big roof — a shopping mall!" | `+supermarket +clothing_store pop≥80 −shopping_mall` |
+| ✅ `demand_business_tower` | civic | 🏢 booming | "Business is booming — a tall business tower would put the city on the map." | `+office_building pop≥80 −business_tower` |
 
 **Entertainment:**
 
 | Beat | Tone | Sticker | Text | Trigger |
 |---|---|---|---|---|
 | ✅ `demand_more_parks` ✓P7 | cozy | 🌳 a park? | "The town's feeling a little grey — a new park would brighten everyone's day." | `+single_home 🧱since≥150` *(recurring)* |
-| `demand_playground` | cozy | 🛝 playground | "The little ones need somewhere to climb and slide — a playground!" | `+park −playground` |
-| `demand_community_garden` | cozy | 🌻 grow together | "Neighbors want to grow tomatoes together — a community garden?" | `+park −community_garden` |
-| `demand_fountain_plaza` | cozy | ⛲ town square | "The town square feels empty — a fountain plaza would make it sparkle." | `+town_hall −fountain_plaza` |
-| `demand_botanical_garden` | cozy | 🌺 rare plants | "The garden's a hit — imagine a whole botanical garden of rare plants." | `+community_garden pop≥50 −botanical_garden` |
+| ✅ `demand_playground` | cozy | 🛝 playground | "The little ones need somewhere to climb and slide — a playground!" | `+park −playground` |
+| ✅ `demand_community_garden` | cozy | 🌻 grow together | "Neighbors want to grow tomatoes together — a community garden?" | `+park −community_garden` |
+| ✅ `demand_fountain_plaza` | cozy | ⛲ town square | "The town square feels empty — a fountain plaza would make it sparkle." | `+town_hall −fountain_plaza` |
+| ✅ `demand_botanical_garden` | cozy | 🌺 rare plants | "The garden's a hit — imagine a whole botanical garden of rare plants." | `+community_garden pop≥50 −botanical_garden` |
 | ✅ `demand_sports_field` | civic | ⚽ let's play | "The school kids need somewhere to run and play — a sports field!" | `+school −sports_field` |
-| `demand_swimming_pool` | silly | 🏊 so hot! | "It's sweltering and everyone's fighting over the sprinkler — a swimming pool?" | `+sports_field −swimming_pool` |
-| `demand_movie_theater` | cozy | 🎬 movie night | "Friday nights need a movie — can we build a theater?" | `+restaurant −movie_theater` |
+| ✅ `demand_swimming_pool` | silly | 🏊 so hot! | "It's sweltering and everyone's fighting over the sprinkler — a swimming pool?" | `+sports_field −swimming_pool` |
+| ✅ `demand_movie_theater` | cozy | 🎬 movie night | "Friday nights need a movie — can we build a theater?" | `+restaurant −movie_theater` |
 | ✅ `demand_museum` | civic | 🏛️ our story | "The town's got stories to tell — a museum would show them off." | `+library −museum` |
 | ✅ `demand_stadium` | civic | 🏟️ go team! | "The team's outgrown the field — a stadium would pack in the crowds!" | `+sports_field pop≥80 −stadium` |
-| `demand_zoo` | silly | 🦁 a zoo! | "A lonely penguin needs a home — and so do its friends. A zoo, please!" | `+botanical_garden pop≥100 −zoo` |
+| ✅ `demand_zoo` | silly | 🦁 a zoo! | "A lonely penguin needs a home — and so do its friends. A zoo, please!" | `+botanical_garden pop≥100 −zoo` |
 | ✅ `demand_aquarium` | silly | 🐠 fishy | "The museum's little fish tank started a craze — let's build a whole aquarium." | `+museum pop≥100 −aquarium` |
 | ✅ `demand_amusement_park` | silly | 🎢 coaster! | "The whole city is chanting for a roller coaster — an amusement park!" | `+stadium pop≥120 −amusement_park` |
 | ✅ `demand_observation_tower` | civic | 🗼 the view | "The city's so beautiful now — a tower to see it all from the very top." | `+city_hall −observation_tower` |
@@ -505,7 +503,7 @@ summary. Trigger shorthand: `+B` present, `−B` absent, `pop≥N`, `age(B)≥N`
 | ✅ `praise_high_rise` | silly | 🌆 what a view | "Whoa — you can see the whole town from the top floor! Residents are thrilled." | `+high_rise` |
 | ✅ `praise_museum` | civic | 🏛️ grand opening | "The museum's grand opening drew a line all the way around the block." | `+museum` |
 | ✅ `praise_stadium` | silly | 🏟️ the wave | "The first game sold out — the crowd did the wave for ten whole minutes!" | `+stadium` |
-| `praise_zoo` | silly | 🦁 hello! | "The penguins have settled in and the whole city came to say hello." | `+zoo` |
+| ✅ `praise_zoo` | silly | 🦁 hello! | "The penguins have settled in and the whole city came to say hello." | `+zoo` |
 | ✅ `praise_amusement_park` | silly | 🎢 wheee! | "The roller coaster's first riders are still grinning — what a day!" | `+amusement_park` |
 | ✅ `praise_observation_tower` | cozy | 🗼 magical | "From the tower the city looks magical at night. You built this, Mayor." | `+observation_tower` |
 
@@ -532,8 +530,8 @@ ratio-driven cases below have no single target building, so they need a small
 
 ### 4.5 Beat catalog totals
 
-54 demand (one per non-starter building; 5 marked `⚠` are warning-toned
-capacity asks) · 15 praise · 2 ratio-warnings · 3 recurring/milestone = **~74
+53 demand (one per non-starter building; 5 marked `⚠` are warning-toned
+capacity asks) · 15 praise · 2 ratio-warnings · 3 recurring/milestone = **~73
 beats** in this first pass. The hundreds-of-beats target is reached in Phase 9 by
 adding flavor variants (multiple interchangeable texts per trigger, picked at
 random) — a content multiplier on the same trigger set, not new mechanics.
@@ -563,7 +561,7 @@ cozy/park) — sourced from a CC0 isometric kit so the style influence is
 licensing-clean (**Kenney's "Isometric Tiles" series** is the leading anchor
 source per the prior-session Kenney research) — is fed on *every* prompt so
 palette, line weight, shadow direction, and projection stay coherent across all
-55 buildings.
+54 buildings.
 
 **Scale: 1 tile = 10m × 10m on the ground.** Pinned because a residential
 street (6m roadway + 2m sidewalk × 2) is exactly one tile wide, and 10m/tile
@@ -615,7 +613,7 @@ Recorded so the decision is reviewable and we don't re-litigate it next session.
 
 | Option | Why considered | Why rejected |
 |---|---|---|
-| **CC0 vector pack as the only source** (Kenney Isometric Vector Buildings) | Vector = beautiful, scales infinitely, CC0, $0 cost. | Covers ~25–30 of the 55 anchors; **missing solar farm, water tower, amusement park, zoo, aquarium, observation tower, train station, recycling** — the late-game capstones the player works toward. Backfilling them by mixing other packs hits the style-seams rule. |
+| **CC0 vector pack as the only source** (Kenney Isometric Vector Buildings) | Vector = beautiful, scales infinitely, CC0, $0 cost. | Covers ~25–30 of the 54 anchors; **missing solar farm, water tower, amusement park, zoo, aquarium, observation tower, recycling** — the late-game capstones the player works toward. Backfilling them by mixing other packs hits the style-seams rule. |
 | **Mix multiple CC0 packs** (Kenney + Freepik + OpenGameArt) | Could plug the catalog holes from disparate CC0 sources. | Visible style seams between artists — kids notice and it reads amateur. Hard rule in §5.1. |
 | **Procedural `CustomPainter` buildings** (parameterized, mirrors `curriculum.md`'s diagram strategy) | Infinite scaling, no asset pipeline, no licensing surface. | Phase-7 placeholders demonstrated the problem: parameterized shapes look flat next to real sprites. Hard rule in §5.1. |
 | **Commission a freelance vector artist** | Best aesthetic ceiling; one consistent hand across the catalog. | ~$1.5–3k indie for the 10-building Phase-7 set; ~$8–20k indie for the full 55 (sources: Whimsy Games, Pixune, 2D Will Never Die — see prior-session research notes). Out of budget for a free hobby project; calendar time (months for 55) also bad. |
@@ -632,7 +630,7 @@ get a one-off fanfare. Source CC0 from Freesound / OpenGameArt.
 
 ### 5.4 Sprite variant counts
 
-**Total: 97 sprites for the 55 anchor buildings.**
+**Total: 96 sprites for the 54 anchor buildings.**
 
 Rubric: unique or capstone → 1 · common mid-arc → 2 · frequently placed → 3 ·
 highest-volume (low-rung housing, parks, coffee shop) → 4–5. Authoritative copy
@@ -654,7 +652,7 @@ from this); keep both in sync when tuning.
 | `duplex` | 4 | | |
 | `townhouse_row` | 3 | | |
 
-**Services — 20 sprites**
+**Services — 19 sprites**
 
 | Building | Variants | Building | Variants |
 |---|---|---|---|
@@ -663,7 +661,7 @@ from this); keep both in sync when tuning.
 | `solar_farm` | 1 | `fire_station` | 1 |
 | `water_tower` | 2 | `police_station` | 1 |
 | `water_treatment` | 1 | `bus_depot` | 1 |
-| `waste_management` | 2 | `train_station` | 1 |
+| `waste_management` | 2 | | |
 | `recycling_center` | 1 | | |
 | `clinic` | 2 | | |
 | `hospital` | 1 | | |
@@ -777,10 +775,10 @@ geometric ground, not buildings, and the surface pixels are still NB's.
 ## 6. Implementation status
 
 <!-- IMPL_STATUS_BEGIN (auto-generated by tools/city_builder/sync_implementation_status.py) -->
-- **Implementation status (auto-updated 2026-06-12):**
-  - §3 buildings: **32 / 55 wired** — see ✅ marks in §3.1–§3.4. Source of truth: [building_registry.dart](lib/domain/city/building_registry.dart).
-  - §4 beats: **48 / 74 wired** — see ✅ marks in §4.x. Source of truth: [beat_registry.dart](lib/domain/city/beat_registry.dart).
-  - Sprite art: **26 / 32 wired buildings have processed art** in [assets/buildings/](assets/buildings/). Still on the box placeholder: `grocery`, `mid_rise_apartment`, `museum`, `park`, `sports_field`, `stadium`.
+- **Implementation status (auto-updated 2026-06-14):**
+  - §3 buildings: **54 / 54 wired** — see ✅ marks in §3.1–§3.4. Source of truth: [building_registry.dart](lib/domain/city/building_registry.dart).
+  - §4 beats: **71 / 73 wired** — see ✅ marks in §4.x. Source of truth: [beat_registry.dart](lib/domain/city/beat_registry.dart).
+  - Sprite art: **54 / 54 wired buildings have processed art** in [assets/buildings/](assets/buildings/). Still on the box placeholder: (none).
   - To refresh these counts and the per-row ✅ marks, run `python3 tools/city_builder/sync_implementation_status.py`.
 <!-- IMPL_STATUS_END -->
 

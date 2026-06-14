@@ -105,9 +105,20 @@ void main() {
       expect(findBuildingTypeById('high_rise')!.numVariants, 3);
       expect(findBuildingTypeById('water_tower')!.numVariants, 2);
       expect(findBuildingTypeById('amusement_park')!.numVariants, 2);
-      // Placeholder-only prereq rows ship without art.
-      expect(findBuildingTypeById('mid_rise_apartment')!.numVariants, 0);
-      expect(findBuildingTypeById('stadium')!.numVariants, 0);
+      expect(findBuildingTypeById('mid_rise_apartment')!.numVariants, 2);
+      expect(findBuildingTypeById('stadium')!.numVariants, 1);
+    });
+
+    test('the full §3 catalog is now sprite-backed', () {
+      // Phase 9 finished the art pass: every wired building has ≥1 variant
+      // (the box+emoji placeholder is no longer used by any registered type).
+      for (final b in buildingRegistry) {
+        expect(
+          b.numVariants,
+          greaterThan(0),
+          reason: '${b.id} should have processed sprite art',
+        );
+      }
     });
 
     test("preResearchedBuildings is exactly the mayor's office", () {

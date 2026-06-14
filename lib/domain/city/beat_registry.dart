@@ -678,6 +678,331 @@ const beatRegistry = <StoryBeat>[
     ),
   ),
 
+  // ==========================================================================
+  // Phase 9 catalog growth (city_builder.md §4) — services demands
+  // ==========================================================================
+  StoryBeat(
+    id: 'demand_high_school',
+    kind: BeatKind.demand,
+    tone: BeatTone.civic,
+    emoji: '🎓',
+    shortLabel: 'high school',
+    longText:
+        'The kids have outgrown the school — a high school is the natural '
+        'next step.',
+    triggerRule: TriggerRule(
+      buildingsPresent: <String>{'school'},
+      buildingsAbsent: <String>{'high_school'},
+      minPopulation: 40,
+    ),
+  ),
+  StoryBeat(
+    id: 'demand_fire',
+    kind: BeatKind.demand,
+    tone: BeatTone.civic,
+    emoji: '🚒',
+    shortLabel: 'fire truck!',
+    longText:
+        "Someone's stove caught fire and there's no truck nearby — a fire "
+        'station, please!',
+    triggerRule: TriggerRule(
+      buildingsPresent: <String>{'town_hall'},
+      buildingsAbsent: <String>{'fire_station'},
+    ),
+  ),
+  StoryBeat(
+    id: 'demand_police',
+    kind: BeatKind.demand,
+    tone: BeatTone.civic,
+    emoji: '🚓',
+    shortLabel: 'police?',
+    longText:
+        'A few too many bikes have gone missing — a police station would help '
+        'everyone feel safe.',
+    triggerRule: TriggerRule(
+      buildingsPresent: <String>{'town_hall'},
+      buildingsAbsent: <String>{'police_station'},
+    ),
+  ),
+  StoryBeat(
+    id: 'demand_bus_depot',
+    kind: BeatKind.demand,
+    tone: BeatTone.civic,
+    emoji: '🚌',
+    shortLabel: 'buses!',
+    longText:
+        'Walking everywhere is tiring — a bus depot would get folks around '
+        'the city.',
+    triggerRule: TriggerRule(
+      buildingsPresent: <String>{'city_hall'},
+      buildingsAbsent: <String>{'bus_depot'},
+    ),
+  ),
+
+  // ==========================================================================
+  // Phase 9 catalog growth — commercial demands
+  // ==========================================================================
+  StoryBeat(
+    id: 'demand_market_stall',
+    kind: BeatKind.demand,
+    tone: BeatTone.cozy,
+    emoji: '🍎',
+    shortLabel: 'a stall',
+    longText:
+        'A little market stall would be a sweet first shop for the '
+        'neighborhood.',
+    triggerRule: TriggerRule(
+      buildingsPresent: <String>{'single_home'},
+      buildingsAbsent: <String>{'market_stall'},
+    ),
+  ),
+  StoryBeat(
+    id: 'demand_supermarket',
+    kind: BeatKind.demand,
+    tone: BeatTone.cozy,
+    emoji: '🏪',
+    shortLabel: 'bigger!',
+    longText:
+        "The grocery's always crowded — a big supermarket would have room for "
+        'everyone.',
+    triggerRule: TriggerRule(
+      buildingsPresent: <String>{'grocery'},
+      buildingsAbsent: <String>{'supermarket'},
+      minPopulation: 20,
+    ),
+  ),
+  StoryBeat(
+    id: 'demand_bakery',
+    kind: BeatKind.demand,
+    tone: BeatTone.silly,
+    emoji: '🥐',
+    shortLabel: 'fresh bread',
+    longText:
+        'The whole street woke up dreaming of warm bread — a bakery, please!',
+    triggerRule: TriggerRule(
+      buildingsPresent: <String>{'grocery'},
+      buildingsAbsent: <String>{'bakery'},
+    ),
+  ),
+  StoryBeat(
+    id: 'demand_restaurant',
+    kind: BeatKind.demand,
+    tone: BeatTone.cozy,
+    emoji: '🍽️',
+    shortLabel: 'dinner out',
+    longText:
+        "Coffee's lovely, but folks are hungry for dinner out — a restaurant?",
+    triggerRule: TriggerRule(
+      buildingsPresent: <String>{'coffee_shop'},
+      buildingsAbsent: <String>{'restaurant'},
+    ),
+  ),
+  StoryBeat(
+    id: 'demand_farmers_market',
+    kind: BeatKind.demand,
+    tone: BeatTone.cozy,
+    emoji: '🧺',
+    shortLabel: 'farm fresh',
+    longText:
+        'The farmhouse has extra veggies to sell — a farmers market would be '
+        'perfect.',
+    triggerRule: TriggerRule(
+      buildingsPresent: <String>{'farmhouse'},
+      buildingsAbsent: <String>{'farmers_market'},
+    ),
+  ),
+  StoryBeat(
+    id: 'demand_bookshop',
+    kind: BeatKind.demand,
+    tone: BeatTone.cozy,
+    emoji: '📖',
+    shortLabel: 'a bookshop',
+    longText:
+        'Readers want their own copies to keep — a bookshop next to the '
+        'library?',
+    triggerRule: TriggerRule(
+      buildingsPresent: <String>{'library'},
+      buildingsAbsent: <String>{'bookshop'},
+    ),
+  ),
+  StoryBeat(
+    id: 'demand_toy_store',
+    kind: BeatKind.demand,
+    tone: BeatTone.silly,
+    emoji: '🧸',
+    shortLabel: 'toys!',
+    longText:
+        'Every kid in town has the same birthday wish this year: a toy store!',
+    triggerRule: TriggerRule(
+      buildingsPresent: <String>{'grocery'},
+      buildingsAbsent: <String>{'toy_store'},
+    ),
+  ),
+  StoryBeat(
+    id: 'demand_clothing_store',
+    kind: BeatKind.demand,
+    tone: BeatTone.cozy,
+    emoji: '👕',
+    shortLabel: 'new clothes',
+    longText:
+        'Folks want something new to wear — a clothing store would be a hit.',
+    triggerRule: TriggerRule(
+      buildingsPresent: <String>{'supermarket'},
+      buildingsAbsent: <String>{'clothing_store'},
+    ),
+  ),
+  StoryBeat(
+    id: 'demand_office',
+    kind: BeatKind.demand,
+    tone: BeatTone.civic,
+    emoji: '🏬',
+    shortLabel: 'jobs',
+    longText: 'Grown-ups need somewhere in town to work — an office building?',
+    triggerRule: TriggerRule(
+      buildingsPresent: <String>{'town_hall'},
+      buildingsAbsent: <String>{'office_building'},
+    ),
+  ),
+  StoryBeat(
+    id: 'demand_shopping_mall',
+    kind: BeatKind.demand,
+    tone: BeatTone.civic,
+    emoji: '🛍️',
+    shortLabel: 'one big roof',
+    longText: 'All these shops could share one big roof — a shopping mall!',
+    triggerRule: TriggerRule(
+      buildingsPresent: <String>{'supermarket', 'clothing_store'},
+      buildingsAbsent: <String>{'shopping_mall'},
+      minPopulation: 80,
+    ),
+  ),
+  StoryBeat(
+    id: 'demand_business_tower',
+    kind: BeatKind.demand,
+    tone: BeatTone.civic,
+    emoji: '🏢',
+    shortLabel: 'booming',
+    longText:
+        'Business is booming — a tall business tower would put the city on '
+        'the map.',
+    triggerRule: TriggerRule(
+      buildingsPresent: <String>{'office_building'},
+      buildingsAbsent: <String>{'business_tower'},
+      minPopulation: 80,
+    ),
+  ),
+
+  // ==========================================================================
+  // Phase 9 catalog growth — entertainment demands
+  // ==========================================================================
+  StoryBeat(
+    id: 'demand_playground',
+    kind: BeatKind.demand,
+    tone: BeatTone.cozy,
+    emoji: '🛝',
+    shortLabel: 'playground',
+    longText:
+        'The little ones need somewhere to climb and slide — a playground!',
+    triggerRule: TriggerRule(
+      buildingsPresent: <String>{'park'},
+      buildingsAbsent: <String>{'playground'},
+    ),
+  ),
+  StoryBeat(
+    id: 'demand_community_garden',
+    kind: BeatKind.demand,
+    tone: BeatTone.cozy,
+    emoji: '🌻',
+    shortLabel: 'grow together',
+    longText: 'Neighbors want to grow tomatoes together — a community garden?',
+    triggerRule: TriggerRule(
+      buildingsPresent: <String>{'park'},
+      buildingsAbsent: <String>{'community_garden'},
+    ),
+  ),
+  StoryBeat(
+    id: 'demand_fountain_plaza',
+    kind: BeatKind.demand,
+    tone: BeatTone.cozy,
+    emoji: '⛲',
+    shortLabel: 'town square',
+    longText:
+        'The town square feels empty — a fountain plaza would make it '
+        'sparkle.',
+    triggerRule: TriggerRule(
+      buildingsPresent: <String>{'town_hall'},
+      buildingsAbsent: <String>{'fountain_plaza'},
+    ),
+  ),
+  StoryBeat(
+    id: 'demand_botanical_garden',
+    kind: BeatKind.demand,
+    tone: BeatTone.cozy,
+    emoji: '🌺',
+    shortLabel: 'rare plants',
+    longText:
+        "The garden's a hit — imagine a whole botanical garden of rare "
+        'plants.',
+    triggerRule: TriggerRule(
+      buildingsPresent: <String>{'community_garden'},
+      buildingsAbsent: <String>{'botanical_garden'},
+      minPopulation: 50,
+    ),
+  ),
+  StoryBeat(
+    id: 'demand_swimming_pool',
+    kind: BeatKind.demand,
+    tone: BeatTone.silly,
+    emoji: '🏊',
+    shortLabel: 'so hot!',
+    longText:
+        "It's sweltering and everyone's fighting over the sprinkler — a "
+        'swimming pool?',
+    triggerRule: TriggerRule(
+      buildingsPresent: <String>{'sports_field'},
+      buildingsAbsent: <String>{'swimming_pool'},
+    ),
+  ),
+  StoryBeat(
+    id: 'demand_movie_theater',
+    kind: BeatKind.demand,
+    tone: BeatTone.cozy,
+    emoji: '🎬',
+    shortLabel: 'movie night',
+    longText: 'Friday nights need a movie — can we build a theater?',
+    triggerRule: TriggerRule(
+      buildingsPresent: <String>{'restaurant'},
+      buildingsAbsent: <String>{'movie_theater'},
+    ),
+  ),
+  StoryBeat(
+    id: 'demand_zoo',
+    kind: BeatKind.demand,
+    tone: BeatTone.silly,
+    emoji: '🦁',
+    shortLabel: 'a zoo!',
+    longText:
+        'A lonely penguin needs a home — and so do its friends. A zoo, '
+        'please!',
+    triggerRule: TriggerRule(
+      buildingsPresent: <String>{'botanical_garden'},
+      buildingsAbsent: <String>{'zoo'},
+      minPopulation: 100,
+    ),
+  ),
+  StoryBeat(
+    id: 'praise_zoo',
+    kind: BeatKind.praise,
+    tone: BeatTone.silly,
+    emoji: '🦁',
+    shortLabel: 'hello!',
+    longText:
+        'The penguins have settled in and the whole city came to say hello.',
+    triggerRule: TriggerRule(
+      buildingsPresent: <String>{'zoo'},
+    ),
+  ),
+
   // -- Phase 9 milestone -----------------------------------------------------
   StoryBeat(
     id: 'milestone_big_city',
