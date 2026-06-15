@@ -268,7 +268,7 @@ services are `false`. **Education moved here from `civicHousing`** per the
 
 | Building | 🧱 | 🔬 | Service | V | Foot | Unlock rule |
 |---|---|---|---|---|---|---|
-| ✅ `clinic` 🏥 ✓P7 | 10 | 1 | `clinic:50` | ✅ | 2×2 | `single_home` · reads:`demand_clinic` |
+| ✅ `clinic` 🏥 ✓P7 | 10 | 1 | `clinic:50` | ✅ | 2×1 | `single_home` · reads:`demand_clinic` |
 | ✅ `hospital` 🚑 | 60 | 3 | `clinic:200` | ✅ | 3×3 | `clinic` + pop≥60 · reads:`demand_hospital` |
 
 **Education** (`school`, soft):

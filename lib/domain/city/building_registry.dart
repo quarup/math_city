@@ -88,9 +88,10 @@ const buildingRegistry = <BuildingType>[
     ),
     serviceProvision: <String, int>{'clinic': 50},
     varietyContribution: true,
-    // §3 said 1×2 pre-art; both NB raws are drawn on a square lot, so the
-    // footprint was bumped to 2×2 (§3 updated to match, 2026-06-12).
-    footprint: (2, 2),
+    // Both NB raws are drawn as a wide ~2:1 building (≈20×10m), so the
+    // footprint is 2×1 (§3 updated to match, 2026-06-15 — corrects an earlier
+    // 2×2 guess that mismatched the art and forced the squash fallback).
+    footprint: (2, 1),
     numVariants: 2,
   ),
   BuildingType(
