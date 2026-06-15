@@ -591,7 +591,7 @@ def process(
     footprint_override: tuple[int, int] | None = None,
     flip_override: bool | None = None,
     affine_override: bool | None = None,
-) -> tuple[Path, str | None]:
+) -> tuple[Path, str | None, str | None]:
     building_id, variant = building_id_and_variant(raw_path)
     out_name = f"{building_id}_v{variant}.png"
     if footprint_override is not None:
@@ -629,6 +629,20 @@ def process(
             f"horizontal flip {'applied' if flip else 'not needed'}{forced}",
             file=sys.stderr,
         )
+
+    # Source-resolution check: every NB raw is ~1024px regardless of footprint,
+    # so a bigger footprint spreads the same detail over more tiles. If the
+    # building's cropped pixels are fewer than the target canvas width, the warp
+    # upscales it and the sprite is soft on screen — flag for higher-res
+    # regeneration (process.py can't invent detail the source doesn't have).
+    lowres: str | None = None
+    if cropped.width < canvas_w:
+        lowres = (
+            f"source {cropped.width}px → {canvas_w}px canvas "
+            f"({w_tiles}×{h_tiles}); regenerate in NB at "
+            f"≥{round(canvas_w * 1.3 / 64) * 64}px for full sharpness"
+        )
+        print(f"  {raw_path.name}: ⚠ low-res ({lowres})", file=sys.stderr)
 
     # Primary path: affine-fit the drawn ground plate onto the exact footprint
     # corners (corrects ratio + projection angle). Disabled by an explicit
@@ -713,7 +727,7 @@ def process(
     _draw_diamond(debug, w_tiles, h_tiles)
     debug.save(DEBUG_DIR / out_name, "PNG")
 
-    return out_path, mismatch
+    return out_path, mismatch, lowres
 
 
 def _maybe_pngquant(path: Path) -> None:
@@ -789,11 +803,12 @@ def main() -> None:
         sys.exit(1)
     footprints = parse_footprints()
     mismatches: list[tuple[str, str]] = []
+    lowres: list[tuple[str, str]] = []
     for raw_path in paths:
         if not raw_path.exists():
             print(f"error: {raw_path} not found", file=sys.stderr)
             sys.exit(1)
-        out, mismatch = process(
+        out, mismatch, low = process(
             raw_path,
             footprints,
             squash_override,
@@ -804,6 +819,18 @@ def main() -> None:
         print(f"{raw_path.name} → {out.relative_to(REPO_ROOT)}")
         if mismatch is not None:
             mismatches.append((raw_path.name, mismatch))
+        if low is not None:
+            lowres.append((raw_path.name, low))
+
+    if lowres:
+        print(
+            f"\nℹ {len(lowres)} sprite(s) are source-limited (the ~1024px raw "
+            "is upscaled to a larger canvas) — regenerate at higher resolution "
+            "for full sharpness:",
+            file=sys.stderr,
+        )
+        for name, reason in lowres:
+            print(f"  · {name}: {reason}", file=sys.stderr)
 
     if mismatches:
         print(
