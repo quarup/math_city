@@ -232,8 +232,12 @@ def _ground_tips(img: Image.Image) -> tuple[int, int, int, float, float] | None:
     """`(xmin, xmax, ymax, y_w, y_e)` of the solidly-opaque silhouette.
 
     `xmin`/`xmax` are the west/east tip columns, `ymax` the south tip row, and
-    `y_w`/`y_e` the median opaque rows in the west/east tip columns. None if the
-    silhouette is empty. Shared by [ground_squash] and [needs_horizontal_flip].
+    `y_w`/`y_e` the *bottom-most* opaque rows in those columns — the ground
+    line. (Median would land mid-wall when a tall structure sits at the sprite's
+    left/right extreme — e.g. solar_farm's control building — corrupting the
+    aspect and the affine corners; the ground corner is at the base.) None if
+    the silhouette is empty. Shared by [ground_squash] and
+    [needs_horizontal_flip].
     """
     op = np.asarray(img)[..., 3] > SILHOUETTE_CUTOFF
     cols = np.where(op.any(axis=0))[0]
@@ -241,8 +245,8 @@ def _ground_tips(img: Image.Image) -> tuple[int, int, int, float, float] | None:
     if len(cols) == 0 or len(rows) == 0:
         return None
     xmin, xmax, ymax = int(cols[0]), int(cols[-1]), int(rows[-1])
-    y_w = float(np.median(np.where(op[:, xmin])[0]))
-    y_e = float(np.median(np.where(op[:, xmax])[0]))
+    y_w = float(np.where(op[:, xmin])[0][-1])
+    y_e = float(np.where(op[:, xmax])[0][-1])
     return xmin, xmax, ymax, y_w, y_e
 
 
