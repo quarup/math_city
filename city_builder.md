@@ -638,7 +638,7 @@ get a one-off fanfare. Source CC0 from Freesound / OpenGameArt.
 
 ### 5.4 Sprite variant counts
 
-**Total: 98 sprites for the 55 anchor buildings.**
+**Total: 97 sprites for the 55 anchor buildings.**
 
 Rubric: unique or capstone → 1 · common mid-arc → 2 · frequently placed → 3 ·
 highest-volume (low-rung housing, parks, coffee shop) → 4–5. Authoritative copy
@@ -660,7 +660,7 @@ from this); keep both in sync when tuning.
 | `duplex` | 4 | | |
 | `townhouse_row` | 3 | | |
 
-**Services — 21 sprites**
+**Services — 20 sprites**
 
 | Building | Variants | Building | Variants |
 |---|---|---|---|
@@ -669,7 +669,7 @@ from this); keep both in sync when tuning.
 | `solar_farm` | 1 | `fire_station` | 1 |
 | `water_tower` | 2 | `police_station` | 1 |
 | `water_treatment` | 1 | `bus_depot` | 1 |
-| `waste_management` | 2 | `gym` | 2 |
+| `waste_management` | 2 | `gym` | 1 |
 | `recycling_center` | 1 | | |
 | `clinic` | 2 | | |
 | `hospital` | 1 | | |

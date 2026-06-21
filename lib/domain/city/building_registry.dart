@@ -615,8 +615,6 @@ const buildingRegistry = <BuildingType>[
     // still lifts desirability (city_builder.md §3.2 "Wellness").
     varietyContribution: true,
     footprint: (2, 2),
-    // gym_v2 raw shipped with a lime (not bright-green) backdrop the chroma key
-    // can't remove — only v1 is usable until v2 is regenerated. §5.4 target: 2.
     numVariants: 1,
   ),
 
