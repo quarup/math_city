@@ -600,6 +600,25 @@ const buildingRegistry = <BuildingType>[
     footprint: (2, 3),
     numVariants: 1,
   ),
+  BuildingType(
+    id: 'gym',
+    name: 'Gym',
+    emoji: '🏋️',
+    category: BuildingCategory.services,
+    brickCost: 25,
+    researchCost: 2,
+    unlockRule: UnlockRule(
+      requiredBuildingsPlaced: <String>{'sports_field'},
+      requiredBeatsRead: <String>{'demand_gym'},
+    ),
+    // Wellness amenity: no gating service, but counts toward variety so it
+    // still lifts desirability (city_builder.md §3.2 "Wellness").
+    varietyContribution: true,
+    footprint: (2, 2),
+    // gym_v2 raw shipped with a lime (not bright-green) backdrop the chroma key
+    // can't remove — only v1 is usable until v2 is regenerated. §5.4 target: 2.
+    numVariants: 1,
+  ),
 
   // ======================================================================
   // Phase 9 catalog growth — commercial (food / retail / offices)

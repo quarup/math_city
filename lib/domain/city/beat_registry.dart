@@ -738,6 +738,20 @@ const beatRegistry = <StoryBeat>[
       buildingsAbsent: <String>{'bus_depot'},
     ),
   ),
+  StoryBeat(
+    id: 'demand_gym',
+    kind: BeatKind.demand,
+    tone: BeatTone.silly,
+    emoji: '🏋️',
+    shortLabel: 'get fit',
+    longText:
+        'All that running at the field gave folks the bug — could we build a '
+        'gym to work out indoors too?',
+    triggerRule: TriggerRule(
+      buildingsPresent: <String>{'sports_field'},
+      buildingsAbsent: <String>{'gym'},
+    ),
+  ),
 
   // ==========================================================================
   // Phase 9 catalog growth — commercial demands
