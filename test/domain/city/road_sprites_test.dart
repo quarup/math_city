@@ -100,4 +100,51 @@ void main() {
       expect(seen, hasLength(RoadSpriteShape.values.length));
     });
   });
+
+  group('roadSpriteAt — parallel-lane suppression', () {
+    RoadTileSprite at(Set<(int, int)> roads, int col, int row) => roadSpriteAt(
+      isRoad: (c, r) => roads.contains((c, r)),
+      col: col,
+      row: row,
+    );
+
+    test('a lone horizontal road stays a straight', () {
+      final roads = {(4, 5), (5, 5), (6, 5)};
+      expect(at(roads, 5, 5).shape, RoadSpriteShape.straight);
+    });
+
+    test('two parallel horizontal lanes both render as straights', () {
+      // A 2-wide horizontal band (rows 5 and 6, cols 4..6) — the strip paved
+      // between two building rows two tiles apart.
+      final roads = {
+        (4, 5), (5, 5), (6, 5), // top lane
+        (4, 6), (5, 6), (6, 6), // bottom lane
+      };
+      // Interior tiles: without suppression these would be tees (E,W + seam).
+      expect(at(roads, 5, 5).shape, RoadSpriteShape.straight);
+      expect(at(roads, 5, 6).shape, RoadSpriteShape.straight);
+    });
+
+    test('two parallel vertical lanes both render as straights', () {
+      final roads = {
+        (5, 4), (5, 5), (5, 6), // left lane
+        (6, 4), (6, 5), (6, 6), // right lane
+      };
+      expect(at(roads, 5, 5).shape, RoadSpriteShape.straight);
+      expect(at(roads, 6, 5).shape, RoadSpriteShape.straight);
+    });
+
+    test('a genuine single-road cross is preserved', () {
+      // One horizontal road crossing one vertical road — the crossing arms are
+      // each a single tile wide, so no suppression fires.
+      final roads = {(4, 5), (6, 5), (5, 4), (5, 6), (5, 5)};
+      expect(at(roads, 5, 5).shape, RoadSpriteShape.cross);
+    });
+
+    test('a genuine single-road tee is preserved', () {
+      // Horizontal road with a one-tile-wide stub going south at col 5.
+      final roads = {(4, 5), (5, 5), (6, 5), (5, 6)};
+      expect(at(roads, 5, 5).shape, RoadSpriteShape.tee);
+    });
+  });
 }

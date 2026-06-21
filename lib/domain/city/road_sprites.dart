@@ -30,7 +30,8 @@ enum RoadSpriteShape {
   curveLr('road_curve_lr.png'),
 
   /// 1 connection; canonical = east.
-  deadend('road_deadend.png');
+  deadend('road_deadend.png')
+  ;
 
   const RoadSpriteShape(this.fileName);
 
@@ -48,6 +49,48 @@ RoadTileSprite _spec(
   bool flipH = false,
   bool flipV = false,
 }) => (shape: shape, flipH: flipH, flipV: flipV);
+
+/// Resolves a road tile's sprite + flips like [roadSpriteFor], but first
+/// applies **parallel-lane suppression**: where a tile sits in a road band two
+/// (or more) lanes thick — e.g. the 2-wide strip paved between two building
+/// rows that are two tiles apart — the seam link to the neighbouring parallel
+/// lane is dropped, so the band renders as separate parallel straight roads
+/// instead of a ladder of tee/cross junctions (see plan.md — "fewer useless
+/// crossroads in open gaps").
+///
+/// A genuine single-road junction is left intact: a connection is dropped only
+/// when the perpendicular neighbour is *itself a through-lane in this tile's
+/// orientation* (so a lone cross/tee, where the crossing road is one tile wide,
+/// keeps all its arms). [isRoad] reports whether grid tile `(col, row)` is a
+/// road. Pure.
+RoadTileSprite roadSpriteAt({
+  required bool Function(int col, int row) isRoad,
+  required int col,
+  required int row,
+}) {
+  var east = isRoad(col + 1, row);
+  var south = isRoad(col, row + 1);
+  var west = isRoad(col - 1, row);
+  var north = isRoad(col, row - 1);
+
+  bool horizThrough(int c, int r) => isRoad(c + 1, r) && isRoad(c - 1, r);
+  bool vertThrough(int c, int r) => isRoad(c, r + 1) && isRoad(c, r - 1);
+
+  // Only one orientation is suppressed per tile, so a tile that is through in
+  // both axes (a thick block's interior) collapses to a straight rather than
+  // being stripped of every arm.
+  if (east && west) {
+    // Horizontal lane: drop the link to a parallel lane directly above/below.
+    if (north && horizThrough(col, row - 1)) north = false;
+    if (south && horizThrough(col, row + 1)) south = false;
+  } else if (north && south) {
+    // Vertical lane: drop the link to a parallel lane directly left/right.
+    if (east && vertThrough(col + 1, row)) east = false;
+    if (west && vertThrough(col - 1, row)) west = false;
+  }
+
+  return roadSpriteFor(east: east, south: south, west: west, north: north);
+}
 
 /// Resolves the sprite + flips for a road tile whose orthogonal neighbours'
 /// road-ness is given by [east] (col+1), [south] (row+1), [west] (col-1) and

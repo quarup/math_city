@@ -136,11 +136,10 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
   /// flat grey diamond until the sprite's async load lands.
   void _drawRoadTile(Canvas canvas, int col, int row) {
     final (cx, cy) = grid.centerOf(col, row);
-    final spec = roadSpriteFor(
-      east: roads.contains((col + 1, row)),
-      south: roads.contains((col, row + 1)),
-      west: roads.contains((col - 1, row)),
-      north: roads.contains((col, row - 1)),
+    final spec = roadSpriteAt(
+      isRoad: (c, r) => roads.contains((c, r)),
+      col: col,
+      row: row,
     );
     final sprite = spriteFor(spec.shape.fileName);
     if (sprite == null) {
