@@ -271,6 +271,12 @@ class _CityScreenState extends ConsumerState<CityScreen> {
         context: context,
         isScrollControlled: true,
         showDragHandle: true,
+        // Cap the height so a scrim band stays tappable above the sheet (and
+        // the drag handle keeps working to dismiss) — a scroll-controlled
+        // sheet otherwise grows to ~full height with no way back to the city.
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 0.85,
+        ),
         builder: (_) => _CityDebugSheet(
           onReset: () => setState(() {
             _selected = null;
