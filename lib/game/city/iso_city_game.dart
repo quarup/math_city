@@ -52,11 +52,6 @@ class IsoCityGame extends FlameGame with DragCallbacks {
   /// Same buffering rationale as [_pendingBuildings].
   Set<(int, int)>? _pendingRoads;
 
-  /// Move-mode highlight pushed before [onLoad] ran. The flag distinguishes
-  /// "clear the highlight" (null) from "never set", same buffering rationale.
-  (int, int)? _pendingHighlight;
-  bool _hasPendingHighlight = false;
-
   /// Building sprites live under `assets/buildings/`, outside Flame's default
   /// `assets/images/` image cache, so they get their own cache + prefix.
   final Images _buildingImages = Images(prefix: 'assets/buildings/');
@@ -97,7 +92,6 @@ class IsoCityGame extends FlameGame with DragCallbacks {
     );
     if (_pendingBuildings != null) board.buildings = _pendingBuildings!;
     if (_pendingRoads != null) board.roads = _pendingRoads!;
-    if (_hasPendingHighlight) board.highlightTile = _pendingHighlight;
     await world.add(board);
     camera.viewfinder.position = _boardCenter;
     _maybeFit();
@@ -201,17 +195,6 @@ class IsoCityGame extends FlameGame with DragCallbacks {
       board.roads = roads;
     } else {
       _pendingRoads = roads;
-    }
-  }
-
-  /// Sets (or clears, with null) the move-mode highlight tile. Buffered if
-  /// called before [onLoad] finishes — see [_pendingHighlight].
-  void setHighlight((int, int)? tile) {
-    if (isLoaded) {
-      board.highlightTile = tile;
-    } else {
-      _pendingHighlight = tile;
-      _hasPendingHighlight = true;
     }
   }
 

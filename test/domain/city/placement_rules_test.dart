@@ -159,4 +159,76 @@ void main() {
       );
     });
   });
+
+  group('resolvePlacement — auto-fit to cover the tapped tile', () {
+    GridFootprint? resolve(
+      int tapCol,
+      int tapRow, {
+      int w = 1,
+      int h = 1,
+      List<GridFootprint> existing = const [],
+      int gridWidth = 12,
+      int gridHeight = 12,
+    }) => resolvePlacement(
+      gridWidth: gridWidth,
+      gridHeight: gridHeight,
+      existing: existing,
+      width: w,
+      height: h,
+      tapCol: tapCol,
+      tapRow: tapRow,
+    );
+
+    test('1×1 anchors exactly on the tapped tile', () {
+      final spot = resolve(5, 5);
+      expect((spot?.col, spot?.row), (5, 5));
+    });
+
+    test('multi-tile prefers anchoring at the tap (no slide needed)', () {
+      // Open ground: the cheapest legal fit anchors at the tapped tile, so the
+      // building extends south-east from it.
+      final spot = resolve(5, 5, w: 2, h: 2);
+      expect((spot?.col, spot?.row, spot?.width, spot?.height), (5, 5, 2, 2));
+    });
+
+    test('slides the anchor when anchoring at the tap spills off-grid', () {
+      // Tap the far corner of a 6×6 grid with a 2×2: anchoring there would poke
+      // past the edge, so it slides back to (4,4) — still covering (5,5).
+      final spot = resolve(5, 5, w: 2, h: 2, gridWidth: 6, gridHeight: 6);
+      expect((spot?.col, spot?.row), (4, 4));
+      expect(spot!.tiles().toSet().contains((5, 5)), isTrue);
+    });
+
+    test('slides around an occupied neighbor to still cover the tap', () {
+      // A building sits on (5,5)..(6,6); tapping the free tile (4,4) with a 2×2
+      // can't anchor there (would overlap), so it slides to cover (4,4).
+      final existing = [_at(5, 5, w: 2, h: 2)];
+      final spot = resolve(4, 4, w: 2, h: 2, existing: existing);
+      expect(spot, isNotNull);
+      expect(spot!.tiles().toSet().contains((4, 4)), isTrue);
+      // No overlap with the existing building.
+      expect(
+        spot.tiles().toSet().intersection(
+          _at(5, 5, w: 2, h: 2).tiles().toSet(),
+        ),
+        isEmpty,
+      );
+    });
+
+    test('returns null when the tapped tile itself is occupied', () {
+      expect(resolve(5, 5, existing: [_at(5, 5)]), isNull);
+    });
+
+    test('returns null when the tapped tile is out of bounds', () {
+      expect(resolve(-1, 5), isNull);
+      expect(resolve(5, 99), isNull);
+    });
+
+    test('returns null when no covering footprint is legal', () {
+      // Tap a lone free tile fully ringed by buildings: a 1×1 there would be
+      // boxed in (no open side), so there's no legal placement.
+      final ring = [_at(4, 5), _at(6, 5), _at(5, 4), _at(5, 6)];
+      expect(resolve(5, 5, existing: ring), isNull);
+    });
+  });
 }

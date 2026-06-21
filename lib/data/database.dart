@@ -743,7 +743,9 @@ class AppDatabase extends _$AppDatabase {
   /// `placedAtRound` is stamped with the player's current round clock
   /// ([Players.roundsPlayed]) so the "building age" beat trigger measures age
   /// in answered questions since placement (age = current clock − this stamp).
-  Future<void> placeBuilding({
+  /// Inserts the placement and returns its new row id (used to immediately
+  /// select the just-placed building for repositioning — see plan.md Phase 9).
+  Future<int> placeBuilding({
     required int cityId,
     required int playerId,
     required String buildingTypeId,
@@ -752,7 +754,7 @@ class AppDatabase extends _$AppDatabase {
     required int brickCost,
   }) async {
     final player = await getPlayerById(playerId);
-    await into(buildingPlacements).insert(
+    final id = await into(buildingPlacements).insert(
       BuildingPlacementsCompanion.insert(
         cityId: cityId,
         buildingTypeId: buildingTypeId,
@@ -762,6 +764,7 @@ class AppDatabase extends _$AppDatabase {
       ),
     );
     if (brickCost > 0) await incrementPlayerBricks(playerId, -brickCost);
+    return id;
   }
 
   /// Moves an existing placement to `(gridX, gridY)`. Used for unique

@@ -157,14 +157,16 @@ class CityActions {
   final Ref _ref;
 
   /// Spends the building's `brickCost` and records the placement at
-  /// `(col, row)`. No-op if there's no active player. Invalidates the
-  /// placement, player, and player-list providers so every screen refreshes.
-  Future<void> placeBuilding(BuildingType type, int col, int row) async {
+  /// `(col, row)`. Returns the new placement's id (so the caller can keep it
+  /// selected for repositioning), or null if there's no active player.
+  /// Invalidates the placement, player, and player-list providers so every
+  /// screen refreshes.
+  Future<int?> placeBuilding(BuildingType type, int col, int row) async {
     final playerId = _ref.read(activePlayerIdProvider);
-    if (playerId == null) return;
+    if (playerId == null) return null;
     final db = _ref.read(appDatabaseProvider);
     final city = await _ref.read(activeCityProvider.future);
-    await db.placeBuilding(
+    final id = await db.placeBuilding(
       cityId: city.id,
       playerId: playerId,
       buildingTypeId: type.id,
@@ -181,6 +183,7 @@ class CityActions {
     // re-evaluate beats (e.g. a placement clears a demand / triggers praise).
     await tickPopulation();
     await fireBeats();
+    return id;
   }
 
   /// Re-evaluates every story beat against the current city + player state and

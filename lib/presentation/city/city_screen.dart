@@ -52,17 +52,37 @@ class CityScreen extends ConsumerStatefulWidget {
 
 class _CityScreenState extends ConsumerState<CityScreen> {
   IsoCityGame? _game;
+
+  /// Catalog building type chosen for *new* placement. Independent of
+  /// [_movingId]: it stays remembered (and re-highlighted in the catalog) after
+  /// the player finishes repositioning whatever they just placed/picked up.
   BuildingType? _selected;
 
-  /// Move mode: pick up a placed building and drop it on a free tile (no 🧱).
-  bool _moveMode = false;
+  /// The placed building currently picked up for repositioning (yellow tint +
+  /// footprint outline), or null when nothing is selected. Set by tapping a
+  /// building, or automatically right after one is bought + placed so the
+  /// player can nudge it into place on a small screen.
+  int? _movingId;
 
-  /// The placement currently picked up in move mode, or null if none.
-  int? _pickedUpId;
-
+  /// One tap on the board. Tapping a placed building selects it for moving
+  /// (tapping the already-selected one drops it); tapping a free tile either
+  /// repositions the picked-up building or places the catalog selection, in
+  /// both cases auto-fitting the footprint to cover the tapped tile.
   void _onTileTapped(int col, int row) {
-    if (_moveMode) {
-      _handleMoveTap(col, row);
+    final placements = ref.read(placementsProvider).asData?.value ?? const [];
+    final city = ref.read(activeCityProvider).asData?.value;
+    if (city == null) return;
+
+    final occupant = _buildingAt(placements, col, row);
+    if (occupant != null) {
+      // Tap a building to pick it up; tap the held one again to drop it.
+      setState(() => _movingId = occupant.id == _movingId ? null : occupant.id);
+      return;
+    }
+
+    // A free tile: reposition the held building, else place the catalog pick.
+    if (_movingId != null) {
+      _tryMove(_movingId!, col, row, placements, city);
       return;
     }
     final selected = _selected;
@@ -70,108 +90,105 @@ class _CityScreenState extends ConsumerState<CityScreen> {
       _toast('Pick a building below first');
       return;
     }
-    final placements = ref.read(placementsProvider).asData?.value ?? const [];
-    final city = ref.read(activeCityProvider).asData?.value;
-    if (city == null) return;
-
-    // Unique types (mayor's office): a second "place" relocates the
-    // existing instance instead of inserting a duplicate.
-    if (selected.unique) {
-      final existing = placements
-          .where((p) => p.buildingTypeId == selected.id)
-          .firstOrNull;
-      if (existing != null) {
-        if (existing.gridX == col && existing.gridY == row) return;
-        // The moved building vacates its old tiles, so exclude it from the
-        // road-access check.
-        final check = _checkPlacement(
-          selected,
-          col,
-          row,
-          placements,
-          city,
-          excludePlacementId: existing.id,
-        );
-        if (!check.isLegal) {
-          _toast(_rejectionMessage(check.rejection!, selected));
-          return;
-        }
-        unawaited(
-          ref.read(cityActionsProvider).moveBuilding(existing.id, col, row),
-        );
-        return;
-      }
-    }
-
-    final check = _checkPlacement(selected, col, row, placements, city);
-    if (!check.isLegal) {
-      _toast(_rejectionMessage(check.rejection!, selected));
-      return;
-    }
-    final bricks = ref.read(activePlayerProvider).asData?.value.brickBalance;
-    if (bricks == null || selected.brickCost > bricks) {
-      _toast('Not enough bricks for ${selected.name}');
-      return;
-    }
-    unawaited(ref.read(cityActionsProvider).placeBuilding(selected, col, row));
-    // Deselect if the player can no longer afford another one.
-    if (bricks - selected.brickCost < selected.brickCost) {
-      setState(() => _selected = null);
-    }
+    _tryPlace(selected, col, row, placements, city);
   }
 
-  /// Move-mode tap handling: first tap on a building picks it up, then a tap on
-  /// a free tile drops it there (validated by the road-access invariant, free
-  /// of 🧱). Tapping another building switches the pick-up; tapping the held
-  /// building again puts it back down.
-  void _handleMoveTap(int col, int row) {
-    final placements = ref.read(placementsProvider).asData?.value ?? const [];
-    final city = ref.read(activeCityProvider).asData?.value;
-    if (city == null) return;
-    final occupant = placements
-        .where((p) => p.gridX == col && p.gridY == row)
-        .firstOrNull;
-
-    final pickedId = _pickedUpId;
-    if (pickedId == null) {
-      if (occupant == null) {
-        _toast('Tap a building to move it');
-      } else {
-        setState(() => _pickedUpId = occupant.id);
+  /// The placement whose footprint covers tile `(col, row)`, or null if that
+  /// tile is free. Walks the real footprint (not just the anchor tile) so a tap
+  /// anywhere on a multi-tile building selects it.
+  BuildingPlacement? _buildingAt(
+    List<BuildingPlacement> placements,
+    int col,
+    int row,
+  ) {
+    for (final p in placements) {
+      final t = findBuildingTypeById(p.buildingTypeId);
+      if (t == null) continue;
+      final (w, h) = t.footprint;
+      if (col >= p.gridX &&
+          col < p.gridX + w &&
+          row >= p.gridY &&
+          row < p.gridY + h) {
+        return p;
       }
-      return;
     }
+    return null;
+  }
 
-    // Tapped a building while holding one: switch to it, or put down if same.
-    if (occupant != null) {
-      final next = occupant.id == pickedId ? null : occupant.id;
-      setState(() => _pickedUpId = next);
-      return;
-    }
-
-    // Tapped a free tile: try to drop the held building here.
-    final picked = placements.where((p) => p.id == pickedId).firstOrNull;
+  /// Repositions the picked-up placement so its footprint covers `(col, row)`,
+  /// auto-sliding the anchor as needed. Free (no 🧱). Stays selected so the
+  /// player can keep nudging it.
+  void _tryMove(
+    int placementId,
+    int col,
+    int row,
+    List<BuildingPlacement> placements,
+    City city,
+  ) {
+    final picked = placements.where((p) => p.id == placementId).firstOrNull;
     final type = picked == null
         ? null
         : findBuildingTypeById(picked.buildingTypeId);
     if (picked == null || type == null) {
-      setState(() => _pickedUpId = null);
+      setState(() => _movingId = null);
       return;
     }
-    final check = _checkPlacement(
-      type,
-      col,
-      row,
-      placements,
-      city,
-      excludePlacementId: picked.id,
+    final spot = _resolve(type, col, row, placements, city, exclude: picked.id);
+    if (spot == null) {
+      _toast('No room for ${type.name} there');
+      return;
+    }
+    unawaited(
+      ref.read(cityActionsProvider).moveBuilding(picked.id, spot.col, spot.row),
     );
-    if (!check.isLegal) {
-      _toast(_rejectionMessage(check.rejection!, type));
+  }
+
+  /// Places [type] so its footprint covers `(col, row)` (auto-sliding the
+  /// anchor). For unique types that already exist, moves the existing instance
+  /// instead. On success the placed/moved building is left selected so the
+  /// player can fine-tune its position.
+  void _tryPlace(
+    BuildingType type,
+    int col,
+    int row,
+    List<BuildingPlacement> placements,
+    City city,
+  ) {
+    // Unique types (mayor's office): relocate the existing instance rather than
+    // stacking a duplicate.
+    if (type.unique) {
+      final existing = placements
+          .where((p) => p.buildingTypeId == type.id)
+          .firstOrNull;
+      if (existing != null) {
+        setState(() => _movingId = existing.id);
+        _tryMove(existing.id, col, row, placements, city);
+        return;
+      }
+    }
+
+    final spot = _resolve(type, col, row, placements, city);
+    if (spot == null) {
+      _toast('No room for ${type.name} there');
       return;
     }
-    unawaited(ref.read(cityActionsProvider).moveBuilding(picked.id, col, row));
-    setState(() => _pickedUpId = null);
+    final bricks = ref.read(activePlayerProvider).asData?.value.brickBalance;
+    if (bricks == null || type.brickCost > bricks) {
+      _toast('Not enough bricks for ${type.name}');
+      return;
+    }
+    unawaited(() async {
+      final id = await ref
+          .read(cityActionsProvider)
+          .placeBuilding(type, spot.col, spot.row);
+      if (!mounted) return;
+      setState(() {
+        // Keep the just-placed building selected so it can be nudged (req. #3),
+        // and drop the catalog pick if the player can't afford another.
+        _movingId = id;
+        if (bricks - type.brickCost < type.brickCost) _selected = null;
+      });
+    }());
   }
 
   /// Maps placements to grid footprints via the building registry. Pass
@@ -198,27 +215,26 @@ class _CityScreenState extends ConsumerState<CityScreen> {
     return out;
   }
 
-  /// Runs the pure-Dart road-access invariant for placing/moving [type] to
-  /// `(col, row)`. Pass [excludePlacementId] when moving so the moved
-  /// building's old tiles don't count as occupied.
-  PlacementCheck _checkPlacement(
+  /// Auto-fits [type]'s footprint to cover the tapped `(col, row)`, sliding the
+  /// anchor as needed (see `resolvePlacement`). Returns null when the tapped
+  /// tile is taken or there's no legal spot. Pass [exclude] when moving so the
+  /// moved building's own tiles don't count as occupied.
+  GridFootprint? _resolve(
     BuildingType type,
     int col,
     int row,
     List<BuildingPlacement> placements,
     City city, {
-    int? excludePlacementId,
+    int? exclude,
   }) {
-    return checkPlacement(
+    return resolvePlacement(
       gridWidth: city.gridWidth,
       gridHeight: city.gridHeight,
-      existing: _footprintsOf(placements, exclude: excludePlacementId),
-      candidate: GridFootprint(
-        col: col,
-        row: row,
-        width: type.footprint.$1,
-        height: type.footprint.$2,
-      ),
+      existing: _footprintsOf(placements, exclude: exclude),
+      width: type.footprint.$1,
+      height: type.footprint.$2,
+      tapCol: col,
+      tapRow: row,
     );
   }
 
@@ -232,19 +248,6 @@ class _CityScreenState extends ConsumerState<CityScreen> {
     gridHeight: city.gridHeight,
     buildings: _footprintsOf(placements),
   );
-
-  String _rejectionMessage(PlacementRejection reason, BuildingType type) {
-    switch (reason) {
-      case PlacementRejection.outOfBounds:
-        return 'That doesn’t fit on the map';
-      case PlacementRejection.overlap:
-        return 'That spot is taken';
-      case PlacementRejection.wouldBoxInSelf:
-        return '${type.name} needs an open side for a road';
-      case PlacementRejection.wouldBoxInNeighbor:
-        return 'That would block a building from the road';
-    }
-  }
 
   void _toast(String message) {
     ScaffoldMessenger.of(context)
@@ -268,8 +271,12 @@ class _CityScreenState extends ConsumerState<CityScreen> {
         context: context,
         isScrollControlled: true,
         showDragHandle: true,
-        builder: (_) =>
-            _CityDebugSheet(onReset: () => setState(() => _selected = null)),
+        builder: (_) => _CityDebugSheet(
+          onReset: () => setState(() {
+            _selected = null;
+            _movingId = null;
+          }),
+        ),
       ),
     );
   }
@@ -386,6 +393,7 @@ class _CityScreenState extends ConsumerState<CityScreen> {
           color: _colorFor(type),
           footprint: type.footprint,
           assetPath: _assetPathFor(type, slotById[p.id] ?? 0),
+          selected: p.id == _movingId,
         ),
       );
     }
@@ -427,14 +435,25 @@ class _CityScreenState extends ConsumerState<CityScreen> {
       );
     }
     final placements = placementsAsync.asData?.value;
+    // Drop a stale selection (e.g. the building was removed by a reset) so the
+    // Done bar doesn't linger over nothing.
+    if (_movingId != null &&
+        placements != null &&
+        !placements.any((p) => p.id == _movingId)) {
+      _movingId = null;
+    }
     if (_game != null && placements != null) {
       _game!.setBuildings(_viewsFor(placements));
       if (city != null) _game!.setRoads(_roadTilesFor(placements, city));
-      final picked = _pickedUpId == null
-          ? null
-          : placements.where((p) => p.id == _pickedUpId).firstOrNull;
-      _game!.setHighlight(picked == null ? null : (picked.gridX, picked.gridY));
     }
+    // The building currently picked up for repositioning, if any — drives the
+    // Done bar's label.
+    final moving = _movingId == null
+        ? null
+        : placements?.where((p) => p.id == _movingId).firstOrNull;
+    final movingType = moving == null
+        ? null
+        : findBuildingTypeById(moving.buildingTypeId);
 
     // Auto-select the only researched building so the starter player doesn't
     // have to click the mayor's office before placing it. Once the catalog
@@ -499,13 +518,12 @@ class _CityScreenState extends ConsumerState<CityScreen> {
                 const Positioned.fill(child: _CitizenBubbleOverlay()),
               ],
             ),
-      bottomNavigationBar: _moveMode
+      // While a building is picked up, the catalog is swapped for a Done bar
+      // (tap the building again, or Done, to drop it).
+      bottomNavigationBar: _movingId != null
           ? _MoveModeBar(
-              picking: _pickedUpId != null,
-              onDone: () => setState(() {
-                _moveMode = false;
-                _pickedUpId = null;
-              }),
+              name: movingType?.name,
+              onDone: () => setState(() => _movingId = null),
             )
           // Render from the retained catalog so a per-placement refresh never
           // collapses the bar (which would resize the game and jump the
@@ -534,21 +552,9 @@ class _CityScreenState extends ConsumerState<CityScreen> {
             ),
             const SizedBox(height: 12),
           ],
-          // Move-mode toggle — only useful once something's been placed.
-          if ((placements?.isNotEmpty ?? false) && !_moveMode) ...[
-            FloatingActionButton.small(
-              heroTag: 'cityMoveFab',
-              onPressed: () => setState(() {
-                _moveMode = true;
-                _pickedUpId = null;
-                _selected = null;
-              }),
-              child: const Icon(Icons.open_with_rounded),
-            ),
-            const SizedBox(height: 12),
-          ],
-          // Land expansion — hidden in move mode and at the 24×24 cap.
-          if (city != null && !_moveMode)
+          // Land expansion — hidden while a building is picked up (it shifts
+          // every placement) and at the 24×24 cap.
+          if (city != null && _movingId == null)
             if (_expansionOffer(city) case final LandExpansionOffer offer) ...[
               FloatingActionButton.small(
                 heroTag: 'cityExpandFab',
@@ -834,17 +840,20 @@ class _PopulationChip extends StatelessWidget {
   }
 }
 
-/// Bottom strip shown while move mode is active: an instruction that changes
-/// once a building is picked up, plus a Done button to exit.
+/// Bottom strip shown while a building is picked up for repositioning: a hint
+/// to tap a tile to move it, plus a Done button to drop it and bring the build
+/// catalog back.
 class _MoveModeBar extends StatelessWidget {
-  const _MoveModeBar({required this.picking, required this.onDone});
+  const _MoveModeBar({required this.onDone, this.name});
 
-  final bool picking;
+  /// Name of the picked-up building, for the hint text.
+  final String? name;
   final VoidCallback onDone;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final what = name ?? 'building';
     return Material(
       elevation: 8,
       color: theme.colorScheme.surfaceContainer,
@@ -858,9 +867,7 @@ class _MoveModeBar extends StatelessWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  picking
-                      ? 'Tap an empty tile to drop it here'
-                      : 'Move mode — tap a building to pick it up',
+                  'Moving $what — tap a tile to place it',
                   style: theme.textTheme.bodyMedium,
                 ),
               ),

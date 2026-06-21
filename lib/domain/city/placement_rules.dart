@@ -135,3 +135,70 @@ PlacementCheck checkPlacement({
 
   return const PlacementCheck.ok();
 }
+
+/// Auto-fit a `[width]×[height]` footprint so it *covers* the tapped tile
+/// `(tapCol, tapRow)`, sliding the anchor as needed (see prd.md "Placement" /
+/// plan.md Phase 9 — "place the building on the area containing the tile under
+/// the click, even if the anchor needs to move").
+///
+/// The footprint's anchor is its north (min col+row) corner, so on its own a
+/// tap that wants a multi-tile building *centered* on a tile would push the
+/// building south-east off a usable spot. This walks every anchor offset that
+/// keeps the tapped tile inside the footprint and returns the first fully-legal
+/// one (bounds + overlap + the two-way road-access invariant via
+/// [checkPlacement]), **preferring the smallest slide** from "anchor at the
+/// tapped tile" — so the building lands as close to where the player tapped as
+/// its footprint allows.
+///
+/// Returns null when the tapped tile is itself out of bounds or occupied, or no
+/// covering footprint is legal. For a **move**, exclude the moved building from
+/// [existing] (its old tiles are vacated).
+GridFootprint? resolvePlacement({
+  required int gridWidth,
+  required int gridHeight,
+  required List<GridFootprint> existing,
+  required int width,
+  required int height,
+  required int tapCol,
+  required int tapRow,
+}) {
+  // The tapped tile itself must be on the board and free — the player is
+  // pointing at where the building should go.
+  if (tapCol < 0 || tapRow < 0 || tapCol >= gridWidth || tapRow >= gridHeight) {
+    return null;
+  }
+  for (final f in existing) {
+    for (final t in f.tiles()) {
+      if (t == (tapCol, tapRow)) return null;
+    }
+  }
+
+  GridFootprint? best;
+  int? bestCost;
+  // (dCol, dRow) is the tapped tile's position *within* the footprint, so the
+  // anchor is (tapCol - dCol, tapRow - dRow). Cost is the slide distance from
+  // anchoring at the tap; the smaller, the nearer the building lands to the
+  // tap (cost 0 == the legacy "anchor at the tapped tile" behaviour).
+  for (var dCol = 0; dCol < width; dCol++) {
+    for (var dRow = 0; dRow < height; dRow++) {
+      final cost = dCol + dRow;
+      if (bestCost != null && cost >= bestCost) continue;
+      final candidate = GridFootprint(
+        col: tapCol - dCol,
+        row: tapRow - dRow,
+        width: width,
+        height: height,
+      );
+      final check = checkPlacement(
+        gridWidth: gridWidth,
+        gridHeight: gridHeight,
+        existing: existing,
+        candidate: candidate,
+      );
+      if (!check.isLegal) continue;
+      best = candidate;
+      bestCost = cost;
+    }
+  }
+  return best;
+}

@@ -22,12 +22,18 @@ class PlacedBuildingView {
     required this.color,
     this.footprint = const (1, 1),
     this.assetPath,
+    this.selected = false,
   });
 
   final int col;
   final int row;
   final String emoji;
   final Color color;
+
+  /// True for the building the player currently has picked up for placement /
+  /// moving: it renders with a yellow tint and a yellow footprint outline so
+  /// it's obvious which one a tap will reposition.
+  final bool selected;
 
   /// `(widthTiles, heightTiles)`. Drives the sprite's on-screen size + the
   /// south-corner anchor; the box-placeholder fallback ignores it (all
@@ -66,10 +72,6 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
   /// game whenever placements change.
   Set<(int, int)> roads = const {};
 
-  /// Tile of the building currently "picked up" in move mode, outlined so the
-  /// player can see what they're relocating. Null when nothing is picked up.
-  (int, int)? highlightTile;
-
   static const _grassFill = Color(0xFF7CB342);
   static const _grassFillAlt = Color(0xFF689F38);
   static const _roadFill = Color(0xFF9E9E9E);
@@ -77,10 +79,15 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     ..color = const Color(0x33000000)
     ..style = PaintingStyle.stroke
     ..strokeWidth = 1;
-  final _highlightStroke = Paint()
-    ..color = const Color(0xFFFFEB3B)
-    ..style = PaintingStyle.stroke
-    ..strokeWidth = 3;
+
+  /// Yellow wash laid over the selected building's sprite (its opaque pixels
+  /// only) so it reads as "picked up" without hiding the artwork.
+  static const _selectedTint = Color(0xFFFFEB3B);
+  final _selectedSpritePaint = Paint()
+    ..colorFilter = const ColorFilter.mode(
+      Color(0x80FFEB3B),
+      BlendMode.srcATop,
+    );
 
   late final TextPaint _emojiPaint = TextPaint(
     style: TextStyle(fontSize: grid.tileWidth * 0.42),
@@ -106,16 +113,12 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     }
     // Painter's order: tiles further back (smaller col+row) draw first so
     // nearer buildings overlap them correctly.
+    // Selected (picked-up) buildings render with a yellow tint (see
+    // `_drawSprite` / `_drawBox`) — that alone signals what a tap repositions.
     final sorted = [...buildings]
       ..sort((a, b) => (a.col + a.row).compareTo(b.col + b.row));
     for (final b in sorted) {
       _drawBuilding(canvas, b);
-    }
-    // Move-mode highlight: ring the top face of the picked-up building.
-    final hl = highlightTile;
-    if (hl != null) {
-      final (cx, cy) = grid.centerOf(hl.$1, hl.$2);
-      canvas.drawPath(_diamond(cx, cy, grid.tileWidth * 0.5), _highlightStroke);
     }
   }
 
@@ -199,6 +202,7 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
       position: south,
       size: sprite.srcSize * scale,
       anchor: Anchor(anchorX, 1),
+      overridePaint: b.selected ? _selectedSpritePaint : null,
     );
   }
 
@@ -238,10 +242,15 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
       ..lineTo(west.dx, west.dy - h)
       ..close();
 
+    // Selected buildings wash toward yellow so the placeholder also reads as
+    // "picked up", matching the sprite tint.
+    final base = b.selected
+        ? Color.lerp(b.color, _selectedTint, 0.55)!
+        : b.color;
     canvas
-      ..drawPath(left, Paint()..color = _shade(b.color, 0.7))
-      ..drawPath(right, Paint()..color = _shade(b.color, 0.55))
-      ..drawPath(top, Paint()..color = b.color);
+      ..drawPath(left, Paint()..color = _shade(base, 0.7))
+      ..drawPath(right, Paint()..color = _shade(base, 0.55))
+      ..drawPath(top, Paint()..color = base);
 
     final center = Offset(
       (east.dx + west.dx) / 2,
