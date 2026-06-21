@@ -267,24 +267,29 @@ class _PlayerChip extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 2),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Text('🧱', style: TextStyle(fontSize: 11)),
-                      const SizedBox(width: 2),
-                      Text(
-                        '${player.brickBalance}',
-                        style: theme.textTheme.labelSmall,
-                      ),
-                      const SizedBox(width: 4),
-                      const Text('🔬', style: TextStyle(fontSize: 11)),
-                      const SizedBox(width: 2),
-                      Text(
-                        '${player.researchBalance}',
-                        style: theme.textTheme.labelSmall,
-                      ),
-                    ],
+                  // Scale the currency row down to fit the fixed-width card so
+                  // large balances (🧱 1322 …) don't overflow the right edge.
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text('🧱', style: TextStyle(fontSize: 11)),
+                        const SizedBox(width: 2),
+                        Text(
+                          '${player.brickBalance}',
+                          style: theme.textTheme.labelSmall,
+                        ),
+                        const SizedBox(width: 4),
+                        const Text('🔬', style: TextStyle(fontSize: 11)),
+                        const SizedBox(width: 2),
+                        Text(
+                          '${player.researchBalance}',
+                          style: theme.textTheme.labelSmall,
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
