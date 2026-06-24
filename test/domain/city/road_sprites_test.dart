@@ -146,5 +146,34 @@ void main() {
       final roads = {(4, 5), (5, 5), (6, 5), (5, 6)};
       expect(at(roads, 5, 5).shape, RoadSpriteShape.tee);
     });
+
+    test('a vertical road feeding a crossroads keeps its connection', () {
+      // (5,5) is a 4-way cross; a vertical road runs through col 4 and Ts into
+      // the cross from the west. The junction tile (5,5) is through in both
+      // axes (not a pure lane), so the band tile (4,5) must NOT mistake it for
+      // a parallel lane and drop the link — (4,5) stays a tee pointing east.
+      final roads = {
+        (4, 4), (4, 5), (4, 6), // vertical road in col 4
+        (6, 5), (5, 4), (5, 6), (5, 5), // the crossroads at (5,5)
+      };
+      expect(at(roads, 5, 5).shape, RoadSpriteShape.cross);
+      final tee = at(roads, 4, 5);
+      expect(tee.shape, RoadSpriteShape.tee); // keeps E + N + S
+    });
+
+    test('a side street crossing a 2-wide band stays connected', () {
+      // Horizontal 2-wide band (rows 5,6, cols 3..7) with a one-tile-wide
+      // vertical road cutting through col 5. The two crossing tiles are
+      // junctions (cross); the interior of each lane is a straight.
+      final roads = {
+        (3, 5), (4, 5), (5, 5), (6, 5), (7, 5), // top lane
+        (3, 6), (4, 6), (5, 6), (6, 6), (7, 6), // bottom lane
+        (5, 4), (5, 7), // the side street's ends
+      };
+      expect(at(roads, 5, 5).shape, RoadSpriteShape.cross);
+      expect(at(roads, 5, 6).shape, RoadSpriteShape.cross);
+      expect(at(roads, 4, 5).shape, RoadSpriteShape.straight);
+      expect(at(roads, 6, 6).shape, RoadSpriteShape.straight);
+    });
   });
 }

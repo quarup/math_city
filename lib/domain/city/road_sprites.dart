@@ -52,17 +52,20 @@ RoadTileSprite _spec(
 
 /// Resolves a road tile's sprite + flips like [roadSpriteFor], but first
 /// applies **parallel-lane suppression**: where a tile sits in a road band two
-/// (or more) lanes thick — e.g. the 2-wide strip paved between two building
-/// rows that are two tiles apart — the seam link to the neighbouring parallel
-/// lane is dropped, so the band renders as separate parallel straight roads
-/// instead of a ladder of tee/cross junctions (see plan.md — "fewer useless
-/// crossroads in open gaps").
+/// lanes thick — e.g. the 2-wide strip paved between two building rows that are
+/// two tiles apart — the seam link to the neighbouring parallel lane is
+/// dropped, so the band renders as separate parallel straight roads instead of
+/// a ladder of tee/cross junctions (see plan.md — "fewer useless crossroads in
+/// open gaps").
 ///
-/// A genuine single-road junction is left intact: a connection is dropped only
-/// when the perpendicular neighbour is *itself a through-lane in this tile's
-/// orientation* (so a lone cross/tee, where the crossing road is one tile wide,
-/// keeps all its arms). [isRoad] reports whether grid tile `(col, row)` is a
-/// road. Pure.
+/// Only the seam between two **pure lanes** is dropped. A *pure lane* runs
+/// through in exactly one direction (a straight run); a tile that is through in
+/// *both* axes is a genuine junction (a crossroads, or where a side street
+/// meets the band) and is left fully connected. The seam test is symmetric —
+/// it holds identically from either tile — so a connection is never dropped on
+/// one side while the neighbour keeps it (which would leave a road arm jutting
+/// into a curb). [isRoad] reports whether grid tile `(col, row)` is a road.
+/// Pure.
 RoadTileSprite roadSpriteAt({
   required bool Function(int col, int row) isRoad,
   required int col,
@@ -73,20 +76,25 @@ RoadTileSprite roadSpriteAt({
   var west = isRoad(col - 1, row);
   var north = isRoad(col, row - 1);
 
-  bool horizThrough(int c, int r) => isRoad(c + 1, r) && isRoad(c - 1, r);
-  bool vertThrough(int c, int r) => isRoad(c, r + 1) && isRoad(c, r - 1);
+  // A pure horizontal/vertical lane: through one axis only, not a junction.
+  bool pureH(int c, int r) =>
+      isRoad(c + 1, r) &&
+      isRoad(c - 1, r) &&
+      !(isRoad(c, r - 1) && isRoad(c, r + 1));
+  bool pureV(int c, int r) =>
+      isRoad(c, r - 1) &&
+      isRoad(c, r + 1) &&
+      !(isRoad(c + 1, r) && isRoad(c - 1, r));
 
-  // Only one orientation is suppressed per tile, so a tile that is through in
-  // both axes (a thick block's interior) collapses to a straight rather than
-  // being stripped of every arm.
-  if (east && west) {
-    // Horizontal lane: drop the link to a parallel lane directly above/below.
-    if (north && horizThrough(col, row - 1)) north = false;
-    if (south && horizThrough(col, row + 1)) south = false;
-  } else if (north && south) {
-    // Vertical lane: drop the link to a parallel lane directly left/right.
-    if (east && vertThrough(col + 1, row)) east = false;
-    if (west && vertThrough(col - 1, row)) west = false;
+  if (pureH(col, row)) {
+    // Drop the seam only to a parallel pure-horizontal lane directly above /
+    // below — never to a junction (which isn't pure), keeping side streets and
+    // crossings connected.
+    if (north && pureH(col, row - 1)) north = false;
+    if (south && pureH(col, row + 1)) south = false;
+  } else if (pureV(col, row)) {
+    if (east && pureV(col + 1, row)) east = false;
+    if (west && pureV(col - 1, row)) west = false;
   }
 
   return roadSpriteFor(east: east, south: south, west: west, north: north);
