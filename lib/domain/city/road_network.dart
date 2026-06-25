@@ -14,12 +14,13 @@ import 'package:math_city/domain/city/placement_rules.dart';
 ///
 /// Returns an empty set when there are no buildings. The road-access invariant
 /// ([checkPlacement]) guarantees every building has an open orthogonal
-/// neighbour, so every building is always fronted by road.
+/// neighbour, so every building is always fronted by road. Roads only ever run
+/// on [ownedTiles] — the city's purchased land — so islands separated by
+/// unowned land stay unlinked.
 ///
 /// Pure — no Flutter / Flame / Drift.
 Set<(int, int)> generateRoads({
-  required int gridWidth,
-  required int gridHeight,
+  required Set<(int, int)> ownedTiles,
   required List<GridFootprint> buildings,
 }) {
   if (buildings.isEmpty) return const {};
@@ -29,8 +30,7 @@ Set<(int, int)> generateRoads({
     buildingTiles.addAll(b.tiles());
   }
 
-  bool inBounds(int c, int r) =>
-      c >= 0 && r >= 0 && c < gridWidth && r < gridHeight;
+  bool inBounds(int c, int r) => ownedTiles.contains((c, r));
 
   // Step 1: hug rings.
   final roads = <(int, int)>{};

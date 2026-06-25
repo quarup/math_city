@@ -73,24 +73,21 @@ class PlacementCheck {
   bool get isLegal => rejection == null;
 }
 
-/// Validates placing (or moving) [candidate] onto a `gridWidth × gridHeight`
-/// grid that already holds [existing] footprints.
+/// Validates placing (or moving) [candidate] onto the city's owned land
+/// ([ownedTiles], the set of purchased world tiles) which already holds
+/// [existing] footprints.
 ///
 /// Enforces the road-access invariant two-way: it rejects both a [candidate]
 /// that would have no open perimeter side, and a [candidate] that would take
 /// the last open side of an existing neighbor it now abuts. For a **move**,
 /// exclude the moved building from [existing] (its old tiles are vacated).
 PlacementCheck checkPlacement({
-  required int gridWidth,
-  required int gridHeight,
+  required Set<(int, int)> ownedTiles,
   required List<GridFootprint> existing,
   required GridFootprint candidate,
 }) {
-  // 1. Bounds.
-  if (candidate.col < 0 ||
-      candidate.row < 0 ||
-      candidate.col + candidate.width > gridWidth ||
-      candidate.row + candidate.height > gridHeight) {
+  // 1. Bounds: every tile of the footprint must sit on owned land.
+  if (!candidate.tiles().every(ownedTiles.contains)) {
     return const PlacementCheck.rejected(PlacementRejection.outOfBounds);
   }
 
@@ -111,8 +108,9 @@ PlacementCheck checkPlacement({
 
   bool hasRoadAccess(GridFootprint f) {
     for (final (c, r) in f.perimeter()) {
-      final inBounds = c >= 0 && r >= 0 && c < gridWidth && r < gridHeight;
-      if (inBounds && !after.contains((c, r))) return true;
+      // A road can only run on owned land, so the edge of owned land does not
+      // count as an open side.
+      if (ownedTiles.contains((c, r)) && !after.contains((c, r))) return true;
     }
     return false;
   }
@@ -150,21 +148,20 @@ PlacementCheck checkPlacement({
 /// tapped tile" — so the building lands as close to where the player tapped as
 /// its footprint allows.
 ///
-/// Returns null when the tapped tile is itself out of bounds or occupied, or no
-/// covering footprint is legal. For a **move**, exclude the moved building from
-/// [existing] (its old tiles are vacated).
+/// Returns null when the tapped tile is itself off owned land or occupied, or
+/// no covering footprint is legal. For a **move**, exclude the moved building
+/// from [existing] (its old tiles are vacated).
 GridFootprint? resolvePlacement({
-  required int gridWidth,
-  required int gridHeight,
+  required Set<(int, int)> ownedTiles,
   required List<GridFootprint> existing,
   required int width,
   required int height,
   required int tapCol,
   required int tapRow,
 }) {
-  // The tapped tile itself must be on the board and free — the player is
+  // The tapped tile itself must be on owned land and free — the player is
   // pointing at where the building should go.
-  if (tapCol < 0 || tapRow < 0 || tapCol >= gridWidth || tapRow >= gridHeight) {
+  if (!ownedTiles.contains((tapCol, tapRow))) {
     return null;
   }
   for (final f in existing) {
@@ -190,8 +187,7 @@ GridFootprint? resolvePlacement({
         height: height,
       );
       final check = checkPlacement(
-        gridWidth: gridWidth,
-        gridHeight: gridHeight,
+        ownedTiles: ownedTiles,
         existing: existing,
         candidate: candidate,
       );

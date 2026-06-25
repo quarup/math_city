@@ -5,14 +5,20 @@ import 'package:math_city/domain/city/placement_rules.dart';
 GridFootprint _at(int col, int row, {int w = 1, int h = 1}) =>
     GridFootprint(col: col, row: row, width: w, height: h);
 
+/// Owned land as the rectangle `[0,gridWidth) × [0,gridHeight)`, matching the
+/// old fixed-grid fixtures (block geometry is exercised in land_blocks_test).
+Set<(int, int)> _rect(int gridWidth, int gridHeight) => {
+  for (var c = 0; c < gridWidth; c++)
+    for (var r = 0; r < gridHeight; r++) (c, r),
+};
+
 PlacementCheck _check(
   GridFootprint candidate, {
   List<GridFootprint> existing = const [],
   int gridWidth = 12,
   int gridHeight = 12,
 }) => checkPlacement(
-  gridWidth: gridWidth,
-  gridHeight: gridHeight,
+  ownedTiles: _rect(gridWidth, gridHeight),
   existing: existing,
   candidate: candidate,
 );
@@ -130,8 +136,7 @@ void main() {
       // Two buildings: the "mover" at (5,5) and a bystander at (8,8). Moving
       // the mover to (5,6) with itself excluded from `existing` is legal.
       final result = checkPlacement(
-        gridWidth: 12,
-        gridHeight: 12,
+        ownedTiles: _rect(12, 12),
         existing: [_at(8, 8)], // mover excluded
         candidate: _at(5, 6),
       );
@@ -170,8 +175,7 @@ void main() {
       int gridWidth = 12,
       int gridHeight = 12,
     }) => resolvePlacement(
-      gridWidth: gridWidth,
-      gridHeight: gridHeight,
+      ownedTiles: _rect(gridWidth, gridHeight),
       existing: existing,
       width: w,
       height: h,
