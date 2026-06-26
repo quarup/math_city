@@ -5,9 +5,8 @@ import 'package:math_city/domain/city/beat_engine.dart';
 import 'package:math_city/domain/city/beat_registry.dart';
 import 'package:math_city/domain/city/building_registry.dart';
 import 'package:math_city/domain/city/building_type.dart';
-import 'package:math_city/domain/city/city_map_registry.dart';
 import 'package:math_city/domain/city/dag_engine.dart';
-import 'package:math_city/domain/city/land_expansion.dart';
+import 'package:math_city/domain/city/land_blocks.dart';
 import 'package:math_city/domain/city/population_model.dart';
 import 'package:math_city/domain/city/story_beat.dart';
 import 'package:math_city/domain/city/trigger_rule.dart';
@@ -28,6 +27,14 @@ final placementsProvider = FutureProvider<List<BuildingPlacement>>((ref) async {
   final city = await ref.watch(activeCityProvider.future);
   final db = ref.read(appDatabaseProvider);
   return db.placementsForCity(city.id);
+});
+
+/// The set of owned 4×4 land blocks (block coords) for the active city. Drives
+/// the terrain the board paints and which blocks are placeable / buyable.
+final ownedBlocksProvider = FutureProvider<Set<(int, int)>>((ref) async {
+  final city = await ref.watch(activeCityProvider.future);
+  final db = ref.read(appDatabaseProvider);
+  return db.ownedBlocksForCity(city.id);
 });
 
 /// One row in the build-mode catalog. Researched entries are placeable;
@@ -349,37 +356,31 @@ class CityActions {
       ..invalidate(allPlayersProvider);
   }
 
-  /// Buys the next land expansion for the active city: spends the offer's 🧱,
-  /// grows the grid, and shifts existing placements so the old land stays
-  /// centered (see `land_expansion.dart`). Recomputes the offer against the
-  /// persisted state, so it's a no-op if the city is already at the cap or
-  /// the player can't afford it (the UI checks too — this is the backstop).
-  Future<void> expandLand() async {
+  /// Buys land block `(blockX, blockY)` for the active city: spends its
+  /// ring-priced 🧱 and records ownership. Re-validates against persisted state
+  /// (block not already owned, on the purchasable edge frontier, affordable),
+  /// so it's a safe no-op backstop behind the UI's own checks.
+  Future<void> buyLandBlock(int blockX, int blockY) async {
     final playerId = _ref.read(activePlayerIdProvider);
     if (playerId == null) return;
     final db = _ref.read(appDatabaseProvider);
     final player = await db.getPlayerById(playerId);
     final city = await db.cityForPlayer(playerId);
-    final map = findCityMapById(city.cityMapId);
-    if (map == null) return;
-    final offer = nextLandExpansion(
-      gridWidth: city.gridWidth,
-      gridHeight: city.gridHeight,
-      baseGridWidth: map.baseGridWidth,
-      baseGridHeight: map.baseGridHeight,
-    );
-    if (offer == null || player.brickBalance < offer.brickCost) return;
-    await db.expandCityLand(
+    final owned = await db.ownedBlocksForCity(city.id);
+    final block = (blockX, blockY);
+    if (owned.contains(block)) return; // already owned
+    if (!purchasableBlocks(owned).contains(block)) return; // off the frontier
+    final cost = blockCost(blockX, blockY);
+    if (player.brickBalance < cost) return;
+    await db.buyCityLandBlock(
       cityId: city.id,
       playerId: playerId,
-      newGridWidth: offer.newGridWidth,
-      newGridHeight: offer.newGridHeight,
-      shiftX: offer.shiftX,
-      shiftY: offer.shiftY,
-      brickCost: offer.brickCost,
+      blockX: blockX,
+      blockY: blockY,
+      brickCost: cost,
     );
     _ref
-      ..invalidate(activeCityProvider)
+      ..invalidate(ownedBlocksProvider)
       ..invalidate(placementsProvider)
       ..invalidate(activePlayerProvider)
       ..invalidate(allPlayersProvider);
