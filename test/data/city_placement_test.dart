@@ -23,8 +23,7 @@ void main() {
     test('cityForPlayer returns the auto-created beginner city', () async {
       final (db, player, city) = await freshCity();
       expect(city.playerId, player.id);
-      expect(city.gridWidth, 12);
-      expect(city.gridHeight, 12);
+      expect(city.cityMapId, isNotEmpty);
     });
 
     test('researchedBuildingTypeIds includes pre-researched mayor', () async {

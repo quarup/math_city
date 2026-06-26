@@ -2637,28 +2637,6 @@ class $CitiesTable extends Cities with TableInfo<$CitiesTable, City> {
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _gridWidthMeta = const VerificationMeta(
-    'gridWidth',
-  );
-  @override
-  late final GeneratedColumn<int> gridWidth = GeneratedColumn<int>(
-    'grid_width',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _gridHeightMeta = const VerificationMeta(
-    'gridHeight',
-  );
-  @override
-  late final GeneratedColumn<int> gridHeight = GeneratedColumn<int>(
-    'grid_height',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
-  );
   static const VerificationMeta _populationMeta = const VerificationMeta(
     'population',
   );
@@ -2687,8 +2665,6 @@ class $CitiesTable extends Cities with TableInfo<$CitiesTable, City> {
     id,
     playerId,
     cityMapId,
-    gridWidth,
-    gridHeight,
     population,
     createdAt,
   ];
@@ -2722,22 +2698,6 @@ class $CitiesTable extends Cities with TableInfo<$CitiesTable, City> {
       );
     } else if (isInserting) {
       context.missing(_cityMapIdMeta);
-    }
-    if (data.containsKey('grid_width')) {
-      context.handle(
-        _gridWidthMeta,
-        gridWidth.isAcceptableOrUnknown(data['grid_width']!, _gridWidthMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_gridWidthMeta);
-    }
-    if (data.containsKey('grid_height')) {
-      context.handle(
-        _gridHeightMeta,
-        gridHeight.isAcceptableOrUnknown(data['grid_height']!, _gridHeightMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_gridHeightMeta);
     }
     if (data.containsKey('population')) {
       context.handle(
@@ -2774,14 +2734,6 @@ class $CitiesTable extends Cities with TableInfo<$CitiesTable, City> {
         DriftSqlType.string,
         data['${effectivePrefix}city_map_id'],
       )!,
-      gridWidth: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}grid_width'],
-      )!,
-      gridHeight: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}grid_height'],
-      )!,
       population: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}population'],
@@ -2803,16 +2755,12 @@ class City extends DataClass implements Insertable<City> {
   final int id;
   final int playerId;
   final String cityMapId;
-  final int gridWidth;
-  final int gridHeight;
   final int population;
   final DateTime createdAt;
   const City({
     required this.id,
     required this.playerId,
     required this.cityMapId,
-    required this.gridWidth,
-    required this.gridHeight,
     required this.population,
     required this.createdAt,
   });
@@ -2822,8 +2770,6 @@ class City extends DataClass implements Insertable<City> {
     map['id'] = Variable<int>(id);
     map['player_id'] = Variable<int>(playerId);
     map['city_map_id'] = Variable<String>(cityMapId);
-    map['grid_width'] = Variable<int>(gridWidth);
-    map['grid_height'] = Variable<int>(gridHeight);
     map['population'] = Variable<int>(population);
     map['created_at'] = Variable<DateTime>(createdAt);
     return map;
@@ -2834,8 +2780,6 @@ class City extends DataClass implements Insertable<City> {
       id: Value(id),
       playerId: Value(playerId),
       cityMapId: Value(cityMapId),
-      gridWidth: Value(gridWidth),
-      gridHeight: Value(gridHeight),
       population: Value(population),
       createdAt: Value(createdAt),
     );
@@ -2850,8 +2794,6 @@ class City extends DataClass implements Insertable<City> {
       id: serializer.fromJson<int>(json['id']),
       playerId: serializer.fromJson<int>(json['playerId']),
       cityMapId: serializer.fromJson<String>(json['cityMapId']),
-      gridWidth: serializer.fromJson<int>(json['gridWidth']),
-      gridHeight: serializer.fromJson<int>(json['gridHeight']),
       population: serializer.fromJson<int>(json['population']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
@@ -2863,8 +2805,6 @@ class City extends DataClass implements Insertable<City> {
       'id': serializer.toJson<int>(id),
       'playerId': serializer.toJson<int>(playerId),
       'cityMapId': serializer.toJson<String>(cityMapId),
-      'gridWidth': serializer.toJson<int>(gridWidth),
-      'gridHeight': serializer.toJson<int>(gridHeight),
       'population': serializer.toJson<int>(population),
       'createdAt': serializer.toJson<DateTime>(createdAt),
     };
@@ -2874,16 +2814,12 @@ class City extends DataClass implements Insertable<City> {
     int? id,
     int? playerId,
     String? cityMapId,
-    int? gridWidth,
-    int? gridHeight,
     int? population,
     DateTime? createdAt,
   }) => City(
     id: id ?? this.id,
     playerId: playerId ?? this.playerId,
     cityMapId: cityMapId ?? this.cityMapId,
-    gridWidth: gridWidth ?? this.gridWidth,
-    gridHeight: gridHeight ?? this.gridHeight,
     population: population ?? this.population,
     createdAt: createdAt ?? this.createdAt,
   );
@@ -2892,10 +2828,6 @@ class City extends DataClass implements Insertable<City> {
       id: data.id.present ? data.id.value : this.id,
       playerId: data.playerId.present ? data.playerId.value : this.playerId,
       cityMapId: data.cityMapId.present ? data.cityMapId.value : this.cityMapId,
-      gridWidth: data.gridWidth.present ? data.gridWidth.value : this.gridWidth,
-      gridHeight: data.gridHeight.present
-          ? data.gridHeight.value
-          : this.gridHeight,
       population: data.population.present
           ? data.population.value
           : this.population,
@@ -2909,8 +2841,6 @@ class City extends DataClass implements Insertable<City> {
           ..write('id: $id, ')
           ..write('playerId: $playerId, ')
           ..write('cityMapId: $cityMapId, ')
-          ..write('gridWidth: $gridWidth, ')
-          ..write('gridHeight: $gridHeight, ')
           ..write('population: $population, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
@@ -2918,15 +2848,8 @@ class City extends DataClass implements Insertable<City> {
   }
 
   @override
-  int get hashCode => Object.hash(
-    id,
-    playerId,
-    cityMapId,
-    gridWidth,
-    gridHeight,
-    population,
-    createdAt,
-  );
+  int get hashCode =>
+      Object.hash(id, playerId, cityMapId, population, createdAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2934,8 +2857,6 @@ class City extends DataClass implements Insertable<City> {
           other.id == this.id &&
           other.playerId == this.playerId &&
           other.cityMapId == this.cityMapId &&
-          other.gridWidth == this.gridWidth &&
-          other.gridHeight == this.gridHeight &&
           other.population == this.population &&
           other.createdAt == this.createdAt);
 }
@@ -2944,16 +2865,12 @@ class CitiesCompanion extends UpdateCompanion<City> {
   final Value<int> id;
   final Value<int> playerId;
   final Value<String> cityMapId;
-  final Value<int> gridWidth;
-  final Value<int> gridHeight;
   final Value<int> population;
   final Value<DateTime> createdAt;
   const CitiesCompanion({
     this.id = const Value.absent(),
     this.playerId = const Value.absent(),
     this.cityMapId = const Value.absent(),
-    this.gridWidth = const Value.absent(),
-    this.gridHeight = const Value.absent(),
     this.population = const Value.absent(),
     this.createdAt = const Value.absent(),
   });
@@ -2961,21 +2878,15 @@ class CitiesCompanion extends UpdateCompanion<City> {
     this.id = const Value.absent(),
     required int playerId,
     required String cityMapId,
-    required int gridWidth,
-    required int gridHeight,
     this.population = const Value.absent(),
     required DateTime createdAt,
   }) : playerId = Value(playerId),
        cityMapId = Value(cityMapId),
-       gridWidth = Value(gridWidth),
-       gridHeight = Value(gridHeight),
        createdAt = Value(createdAt);
   static Insertable<City> custom({
     Expression<int>? id,
     Expression<int>? playerId,
     Expression<String>? cityMapId,
-    Expression<int>? gridWidth,
-    Expression<int>? gridHeight,
     Expression<int>? population,
     Expression<DateTime>? createdAt,
   }) {
@@ -2983,8 +2894,6 @@ class CitiesCompanion extends UpdateCompanion<City> {
       if (id != null) 'id': id,
       if (playerId != null) 'player_id': playerId,
       if (cityMapId != null) 'city_map_id': cityMapId,
-      if (gridWidth != null) 'grid_width': gridWidth,
-      if (gridHeight != null) 'grid_height': gridHeight,
       if (population != null) 'population': population,
       if (createdAt != null) 'created_at': createdAt,
     });
@@ -2994,8 +2903,6 @@ class CitiesCompanion extends UpdateCompanion<City> {
     Value<int>? id,
     Value<int>? playerId,
     Value<String>? cityMapId,
-    Value<int>? gridWidth,
-    Value<int>? gridHeight,
     Value<int>? population,
     Value<DateTime>? createdAt,
   }) {
@@ -3003,8 +2910,6 @@ class CitiesCompanion extends UpdateCompanion<City> {
       id: id ?? this.id,
       playerId: playerId ?? this.playerId,
       cityMapId: cityMapId ?? this.cityMapId,
-      gridWidth: gridWidth ?? this.gridWidth,
-      gridHeight: gridHeight ?? this.gridHeight,
       population: population ?? this.population,
       createdAt: createdAt ?? this.createdAt,
     );
@@ -3022,12 +2927,6 @@ class CitiesCompanion extends UpdateCompanion<City> {
     if (cityMapId.present) {
       map['city_map_id'] = Variable<String>(cityMapId.value);
     }
-    if (gridWidth.present) {
-      map['grid_width'] = Variable<int>(gridWidth.value);
-    }
-    if (gridHeight.present) {
-      map['grid_height'] = Variable<int>(gridHeight.value);
-    }
     if (population.present) {
       map['population'] = Variable<int>(population.value);
     }
@@ -3043,10 +2942,271 @@ class CitiesCompanion extends UpdateCompanion<City> {
           ..write('id: $id, ')
           ..write('playerId: $playerId, ')
           ..write('cityMapId: $cityMapId, ')
-          ..write('gridWidth: $gridWidth, ')
-          ..write('gridHeight: $gridHeight, ')
           ..write('population: $population, ')
           ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $OwnedLandBlocksTable extends OwnedLandBlocks
+    with TableInfo<$OwnedLandBlocksTable, OwnedLandBlock> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $OwnedLandBlocksTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _cityIdMeta = const VerificationMeta('cityId');
+  @override
+  late final GeneratedColumn<int> cityId = GeneratedColumn<int>(
+    'city_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES cities (id)',
+    ),
+  );
+  static const VerificationMeta _blockXMeta = const VerificationMeta('blockX');
+  @override
+  late final GeneratedColumn<int> blockX = GeneratedColumn<int>(
+    'block_x',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _blockYMeta = const VerificationMeta('blockY');
+  @override
+  late final GeneratedColumn<int> blockY = GeneratedColumn<int>(
+    'block_y',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [cityId, blockX, blockY];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'owned_land_blocks';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<OwnedLandBlock> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('city_id')) {
+      context.handle(
+        _cityIdMeta,
+        cityId.isAcceptableOrUnknown(data['city_id']!, _cityIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_cityIdMeta);
+    }
+    if (data.containsKey('block_x')) {
+      context.handle(
+        _blockXMeta,
+        blockX.isAcceptableOrUnknown(data['block_x']!, _blockXMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_blockXMeta);
+    }
+    if (data.containsKey('block_y')) {
+      context.handle(
+        _blockYMeta,
+        blockY.isAcceptableOrUnknown(data['block_y']!, _blockYMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_blockYMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {cityId, blockX, blockY};
+  @override
+  OwnedLandBlock map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return OwnedLandBlock(
+      cityId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}city_id'],
+      )!,
+      blockX: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}block_x'],
+      )!,
+      blockY: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}block_y'],
+      )!,
+    );
+  }
+
+  @override
+  $OwnedLandBlocksTable createAlias(String alias) {
+    return $OwnedLandBlocksTable(attachedDatabase, alias);
+  }
+}
+
+class OwnedLandBlock extends DataClass implements Insertable<OwnedLandBlock> {
+  final int cityId;
+  final int blockX;
+  final int blockY;
+  const OwnedLandBlock({
+    required this.cityId,
+    required this.blockX,
+    required this.blockY,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['city_id'] = Variable<int>(cityId);
+    map['block_x'] = Variable<int>(blockX);
+    map['block_y'] = Variable<int>(blockY);
+    return map;
+  }
+
+  OwnedLandBlocksCompanion toCompanion(bool nullToAbsent) {
+    return OwnedLandBlocksCompanion(
+      cityId: Value(cityId),
+      blockX: Value(blockX),
+      blockY: Value(blockY),
+    );
+  }
+
+  factory OwnedLandBlock.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return OwnedLandBlock(
+      cityId: serializer.fromJson<int>(json['cityId']),
+      blockX: serializer.fromJson<int>(json['blockX']),
+      blockY: serializer.fromJson<int>(json['blockY']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'cityId': serializer.toJson<int>(cityId),
+      'blockX': serializer.toJson<int>(blockX),
+      'blockY': serializer.toJson<int>(blockY),
+    };
+  }
+
+  OwnedLandBlock copyWith({int? cityId, int? blockX, int? blockY}) =>
+      OwnedLandBlock(
+        cityId: cityId ?? this.cityId,
+        blockX: blockX ?? this.blockX,
+        blockY: blockY ?? this.blockY,
+      );
+  OwnedLandBlock copyWithCompanion(OwnedLandBlocksCompanion data) {
+    return OwnedLandBlock(
+      cityId: data.cityId.present ? data.cityId.value : this.cityId,
+      blockX: data.blockX.present ? data.blockX.value : this.blockX,
+      blockY: data.blockY.present ? data.blockY.value : this.blockY,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('OwnedLandBlock(')
+          ..write('cityId: $cityId, ')
+          ..write('blockX: $blockX, ')
+          ..write('blockY: $blockY')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(cityId, blockX, blockY);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is OwnedLandBlock &&
+          other.cityId == this.cityId &&
+          other.blockX == this.blockX &&
+          other.blockY == this.blockY);
+}
+
+class OwnedLandBlocksCompanion extends UpdateCompanion<OwnedLandBlock> {
+  final Value<int> cityId;
+  final Value<int> blockX;
+  final Value<int> blockY;
+  final Value<int> rowid;
+  const OwnedLandBlocksCompanion({
+    this.cityId = const Value.absent(),
+    this.blockX = const Value.absent(),
+    this.blockY = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  OwnedLandBlocksCompanion.insert({
+    required int cityId,
+    required int blockX,
+    required int blockY,
+    this.rowid = const Value.absent(),
+  }) : cityId = Value(cityId),
+       blockX = Value(blockX),
+       blockY = Value(blockY);
+  static Insertable<OwnedLandBlock> custom({
+    Expression<int>? cityId,
+    Expression<int>? blockX,
+    Expression<int>? blockY,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (cityId != null) 'city_id': cityId,
+      if (blockX != null) 'block_x': blockX,
+      if (blockY != null) 'block_y': blockY,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  OwnedLandBlocksCompanion copyWith({
+    Value<int>? cityId,
+    Value<int>? blockX,
+    Value<int>? blockY,
+    Value<int>? rowid,
+  }) {
+    return OwnedLandBlocksCompanion(
+      cityId: cityId ?? this.cityId,
+      blockX: blockX ?? this.blockX,
+      blockY: blockY ?? this.blockY,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (cityId.present) {
+      map['city_id'] = Variable<int>(cityId.value);
+    }
+    if (blockX.present) {
+      map['block_x'] = Variable<int>(blockX.value);
+    }
+    if (blockY.present) {
+      map['block_y'] = Variable<int>(blockY.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('OwnedLandBlocksCompanion(')
+          ..write('cityId: $cityId, ')
+          ..write('blockX: $blockX, ')
+          ..write('blockY: $blockY, ')
+          ..write('rowid: $rowid')
           ..write(')'))
         .toString();
   }
@@ -4848,6 +5008,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     this,
   );
   late final $CitiesTable cities = $CitiesTable(this);
+  late final $OwnedLandBlocksTable ownedLandBlocks = $OwnedLandBlocksTable(
+    this,
+  );
   late final $BuildingPlacementsTable buildingPlacements =
       $BuildingPlacementsTable(this);
   late final $BuildingTypesResearchedTable buildingTypesResearched =
@@ -4869,6 +5032,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     concepts,
     datasetQuestions,
     cities,
+    ownedLandBlocks,
     buildingPlacements,
     buildingTypesResearched,
     conceptBandMilestones,
@@ -7073,8 +7237,6 @@ typedef $$CitiesTableCreateCompanionBuilder =
       Value<int> id,
       required int playerId,
       required String cityMapId,
-      required int gridWidth,
-      required int gridHeight,
       Value<int> population,
       required DateTime createdAt,
     });
@@ -7083,8 +7245,6 @@ typedef $$CitiesTableUpdateCompanionBuilder =
       Value<int> id,
       Value<int> playerId,
       Value<String> cityMapId,
-      Value<int> gridWidth,
-      Value<int> gridHeight,
       Value<int> population,
       Value<DateTime> createdAt,
     });
@@ -7107,6 +7267,26 @@ final class $$CitiesTableReferences
     if (item == null) return manager;
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static MultiTypedResultKey<$OwnedLandBlocksTable, List<OwnedLandBlock>>
+  _ownedLandBlocksRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.ownedLandBlocks,
+    aliasName: $_aliasNameGenerator(db.cities.id, db.ownedLandBlocks.cityId),
+  );
+
+  $$OwnedLandBlocksTableProcessedTableManager get ownedLandBlocksRefs {
+    final manager = $$OwnedLandBlocksTableTableManager(
+      $_db,
+      $_db.ownedLandBlocks,
+    ).filter((f) => f.cityId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _ownedLandBlocksRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
     );
   }
 
@@ -7154,16 +7334,6 @@ class $$CitiesTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<int> get gridWidth => $composableBuilder(
-    column: $table.gridWidth,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get gridHeight => $composableBuilder(
-    column: $table.gridHeight,
-    builder: (column) => ColumnFilters(column),
-  );
-
   ColumnFilters<int> get population => $composableBuilder(
     column: $table.population,
     builder: (column) => ColumnFilters(column),
@@ -7195,6 +7365,31 @@ class $$CitiesTableFilterComposer
           ),
     );
     return composer;
+  }
+
+  Expression<bool> ownedLandBlocksRefs(
+    Expression<bool> Function($$OwnedLandBlocksTableFilterComposer f) f,
+  ) {
+    final $$OwnedLandBlocksTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.ownedLandBlocks,
+      getReferencedColumn: (t) => t.cityId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$OwnedLandBlocksTableFilterComposer(
+            $db: $db,
+            $table: $db.ownedLandBlocks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
   }
 
   Expression<bool> buildingPlacementsRefs(
@@ -7239,16 +7434,6 @@ class $$CitiesTableOrderingComposer
 
   ColumnOrderings<String> get cityMapId => $composableBuilder(
     column: $table.cityMapId,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get gridWidth => $composableBuilder(
-    column: $table.gridWidth,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get gridHeight => $composableBuilder(
-    column: $table.gridHeight,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -7301,14 +7486,6 @@ class $$CitiesTableAnnotationComposer
   GeneratedColumn<String> get cityMapId =>
       $composableBuilder(column: $table.cityMapId, builder: (column) => column);
 
-  GeneratedColumn<int> get gridWidth =>
-      $composableBuilder(column: $table.gridWidth, builder: (column) => column);
-
-  GeneratedColumn<int> get gridHeight => $composableBuilder(
-    column: $table.gridHeight,
-    builder: (column) => column,
-  );
-
   GeneratedColumn<int> get population => $composableBuilder(
     column: $table.population,
     builder: (column) => column,
@@ -7338,6 +7515,31 @@ class $$CitiesTableAnnotationComposer
           ),
     );
     return composer;
+  }
+
+  Expression<T> ownedLandBlocksRefs<T extends Object>(
+    Expression<T> Function($$OwnedLandBlocksTableAnnotationComposer a) f,
+  ) {
+    final $$OwnedLandBlocksTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.ownedLandBlocks,
+      getReferencedColumn: (t) => t.cityId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$OwnedLandBlocksTableAnnotationComposer(
+            $db: $db,
+            $table: $db.ownedLandBlocks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
   }
 
   Expression<T> buildingPlacementsRefs<T extends Object>(
@@ -7380,7 +7582,11 @@ class $$CitiesTableTableManager
           $$CitiesTableUpdateCompanionBuilder,
           (City, $$CitiesTableReferences),
           City,
-          PrefetchHooks Function({bool playerId, bool buildingPlacementsRefs})
+          PrefetchHooks Function({
+            bool playerId,
+            bool ownedLandBlocksRefs,
+            bool buildingPlacementsRefs,
+          })
         > {
   $$CitiesTableTableManager(_$AppDatabase db, $CitiesTable table)
     : super(
@@ -7398,16 +7604,12 @@ class $$CitiesTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<int> playerId = const Value.absent(),
                 Value<String> cityMapId = const Value.absent(),
-                Value<int> gridWidth = const Value.absent(),
-                Value<int> gridHeight = const Value.absent(),
                 Value<int> population = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
               }) => CitiesCompanion(
                 id: id,
                 playerId: playerId,
                 cityMapId: cityMapId,
-                gridWidth: gridWidth,
-                gridHeight: gridHeight,
                 population: population,
                 createdAt: createdAt,
               ),
@@ -7416,16 +7618,12 @@ class $$CitiesTableTableManager
                 Value<int> id = const Value.absent(),
                 required int playerId,
                 required String cityMapId,
-                required int gridWidth,
-                required int gridHeight,
                 Value<int> population = const Value.absent(),
                 required DateTime createdAt,
               }) => CitiesCompanion.insert(
                 id: id,
                 playerId: playerId,
                 cityMapId: cityMapId,
-                gridWidth: gridWidth,
-                gridHeight: gridHeight,
                 population: population,
                 createdAt: createdAt,
               ),
@@ -7436,10 +7634,15 @@ class $$CitiesTableTableManager
               )
               .toList(),
           prefetchHooksCallback:
-              ({playerId = false, buildingPlacementsRefs = false}) {
+              ({
+                playerId = false,
+                ownedLandBlocksRefs = false,
+                buildingPlacementsRefs = false,
+              }) {
                 return PrefetchHooks(
                   db: db,
                   explicitlyWatchedTables: [
+                    if (ownedLandBlocksRefs) db.ownedLandBlocks,
                     if (buildingPlacementsRefs) db.buildingPlacements,
                   ],
                   addJoins:
@@ -7476,6 +7679,27 @@ class $$CitiesTableTableManager
                       },
                   getPrefetchedDataCallback: (items) async {
                     return [
+                      if (ownedLandBlocksRefs)
+                        await $_getPrefetchedData<
+                          City,
+                          $CitiesTable,
+                          OwnedLandBlock
+                        >(
+                          currentTable: table,
+                          referencedTable: $$CitiesTableReferences
+                              ._ownedLandBlocksRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$CitiesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).ownedLandBlocksRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.cityId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
                       if (buildingPlacementsRefs)
                         await $_getPrefetchedData<
                           City,
@@ -7517,7 +7741,300 @@ typedef $$CitiesTableProcessedTableManager =
       $$CitiesTableUpdateCompanionBuilder,
       (City, $$CitiesTableReferences),
       City,
-      PrefetchHooks Function({bool playerId, bool buildingPlacementsRefs})
+      PrefetchHooks Function({
+        bool playerId,
+        bool ownedLandBlocksRefs,
+        bool buildingPlacementsRefs,
+      })
+    >;
+typedef $$OwnedLandBlocksTableCreateCompanionBuilder =
+    OwnedLandBlocksCompanion Function({
+      required int cityId,
+      required int blockX,
+      required int blockY,
+      Value<int> rowid,
+    });
+typedef $$OwnedLandBlocksTableUpdateCompanionBuilder =
+    OwnedLandBlocksCompanion Function({
+      Value<int> cityId,
+      Value<int> blockX,
+      Value<int> blockY,
+      Value<int> rowid,
+    });
+
+final class $$OwnedLandBlocksTableReferences
+    extends
+        BaseReferences<_$AppDatabase, $OwnedLandBlocksTable, OwnedLandBlock> {
+  $$OwnedLandBlocksTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $CitiesTable _cityIdTable(_$AppDatabase db) => db.cities.createAlias(
+    $_aliasNameGenerator(db.ownedLandBlocks.cityId, db.cities.id),
+  );
+
+  $$CitiesTableProcessedTableManager get cityId {
+    final $_column = $_itemColumn<int>('city_id')!;
+
+    final manager = $$CitiesTableTableManager(
+      $_db,
+      $_db.cities,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_cityIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$OwnedLandBlocksTableFilterComposer
+    extends Composer<_$AppDatabase, $OwnedLandBlocksTable> {
+  $$OwnedLandBlocksTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get blockX => $composableBuilder(
+    column: $table.blockX,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get blockY => $composableBuilder(
+    column: $table.blockY,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$CitiesTableFilterComposer get cityId {
+    final $$CitiesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.cityId,
+      referencedTable: $db.cities,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CitiesTableFilterComposer(
+            $db: $db,
+            $table: $db.cities,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$OwnedLandBlocksTableOrderingComposer
+    extends Composer<_$AppDatabase, $OwnedLandBlocksTable> {
+  $$OwnedLandBlocksTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get blockX => $composableBuilder(
+    column: $table.blockX,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get blockY => $composableBuilder(
+    column: $table.blockY,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$CitiesTableOrderingComposer get cityId {
+    final $$CitiesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.cityId,
+      referencedTable: $db.cities,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CitiesTableOrderingComposer(
+            $db: $db,
+            $table: $db.cities,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$OwnedLandBlocksTableAnnotationComposer
+    extends Composer<_$AppDatabase, $OwnedLandBlocksTable> {
+  $$OwnedLandBlocksTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get blockX =>
+      $composableBuilder(column: $table.blockX, builder: (column) => column);
+
+  GeneratedColumn<int> get blockY =>
+      $composableBuilder(column: $table.blockY, builder: (column) => column);
+
+  $$CitiesTableAnnotationComposer get cityId {
+    final $$CitiesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.cityId,
+      referencedTable: $db.cities,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CitiesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.cities,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$OwnedLandBlocksTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $OwnedLandBlocksTable,
+          OwnedLandBlock,
+          $$OwnedLandBlocksTableFilterComposer,
+          $$OwnedLandBlocksTableOrderingComposer,
+          $$OwnedLandBlocksTableAnnotationComposer,
+          $$OwnedLandBlocksTableCreateCompanionBuilder,
+          $$OwnedLandBlocksTableUpdateCompanionBuilder,
+          (OwnedLandBlock, $$OwnedLandBlocksTableReferences),
+          OwnedLandBlock,
+          PrefetchHooks Function({bool cityId})
+        > {
+  $$OwnedLandBlocksTableTableManager(
+    _$AppDatabase db,
+    $OwnedLandBlocksTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$OwnedLandBlocksTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$OwnedLandBlocksTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$OwnedLandBlocksTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> cityId = const Value.absent(),
+                Value<int> blockX = const Value.absent(),
+                Value<int> blockY = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => OwnedLandBlocksCompanion(
+                cityId: cityId,
+                blockX: blockX,
+                blockY: blockY,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required int cityId,
+                required int blockX,
+                required int blockY,
+                Value<int> rowid = const Value.absent(),
+              }) => OwnedLandBlocksCompanion.insert(
+                cityId: cityId,
+                blockX: blockX,
+                blockY: blockY,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$OwnedLandBlocksTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({cityId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (cityId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.cityId,
+                                referencedTable:
+                                    $$OwnedLandBlocksTableReferences
+                                        ._cityIdTable(db),
+                                referencedColumn:
+                                    $$OwnedLandBlocksTableReferences
+                                        ._cityIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$OwnedLandBlocksTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $OwnedLandBlocksTable,
+      OwnedLandBlock,
+      $$OwnedLandBlocksTableFilterComposer,
+      $$OwnedLandBlocksTableOrderingComposer,
+      $$OwnedLandBlocksTableAnnotationComposer,
+      $$OwnedLandBlocksTableCreateCompanionBuilder,
+      $$OwnedLandBlocksTableUpdateCompanionBuilder,
+      (OwnedLandBlock, $$OwnedLandBlocksTableReferences),
+      OwnedLandBlock,
+      PrefetchHooks Function({bool cityId})
     >;
 typedef $$BuildingPlacementsTableCreateCompanionBuilder =
     BuildingPlacementsCompanion Function({
@@ -9041,6 +9558,8 @@ class $AppDatabaseManager {
       $$DatasetQuestionsTableTableManager(_db, _db.datasetQuestions);
   $$CitiesTableTableManager get cities =>
       $$CitiesTableTableManager(_db, _db.cities);
+  $$OwnedLandBlocksTableTableManager get ownedLandBlocks =>
+      $$OwnedLandBlocksTableTableManager(_db, _db.ownedLandBlocks);
   $$BuildingPlacementsTableTableManager get buildingPlacements =>
       $$BuildingPlacementsTableTableManager(_db, _db.buildingPlacements);
   $$BuildingTypesResearchedTableTableManager get buildingTypesResearched =>

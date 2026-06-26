@@ -7,6 +7,7 @@ import 'package:flutter/services.dart' show AssetManifest, rootBundle;
 import 'package:math_city/domain/avatar/adventurer_config.dart';
 import 'package:math_city/domain/city/building_registry.dart';
 import 'package:math_city/domain/city/city_map_registry.dart';
+import 'package:math_city/domain/city/land_blocks.dart';
 import 'package:math_city/domain/concepts/concept.dart' as dom;
 import 'package:math_city/domain/concepts/concept_registry.dart' as dom;
 import 'package:math_city/domain/questions/dataset_question.dart';
@@ -146,10 +147,23 @@ class Cities extends Table {
   IntColumn get id => integer().autoIncrement()();
   IntColumn get playerId => integer().references(Players, #id)();
   TextColumn get cityMapId => text()();
-  IntColumn get gridWidth => integer()();
-  IntColumn get gridHeight => integer()();
   IntColumn get population => integer().withDefault(const Constant(0))();
   DateTimeColumn get createdAt => dateTime()();
+}
+
+/// One row per owned 4×4 land block in a city. Land is a *set of blocks* on an
+/// effectively-infinite plane (see `lib/domain/city/land_blocks.dart`): the
+/// center block is `(0,0)` and the starting 3×3 (rings 0–1) is seeded free at
+/// city creation, the rest bought with 🧱. A block is owned iff a row exists.
+class OwnedLandBlocks extends Table {
+  IntColumn get cityId => integer().references(Cities, #id)();
+  IntColumn get blockX => integer()();
+  IntColumn get blockY => integer()();
+
+  /// Composite key: a block is owned at most once per city, and the index it
+  /// creates is exactly the lookup `ownedBlocksForCity` needs.
+  @override
+  Set<Column<Object>> get primaryKey => {cityId, blockX, blockY};
 }
 
 /// One row per placed building. `placedAtRound` is the player's round clock
@@ -238,6 +252,7 @@ class StoryBeatStates extends Table {
     Concepts,
     DatasetQuestions,
     Cities,
+    OwnedLandBlocks,
     BuildingPlacements,
     BuildingTypesResearched,
     ConceptBandMilestones,
@@ -249,7 +264,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 10;
+  int get schemaVersion => 11;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -279,6 +294,10 @@ class AppDatabase extends _$AppDatabase {
       //   speech toggle. Purely additive; ran as a conditional step so
       //   v9→v10 preserves player data (the pre-v10 wipe block only runs
       //   when coming from a pre-v9 schema).
+      // v11: land model changed from a fixed gridWidth×gridHeight rectangle to
+      //   a set of owned 4×4 blocks (OwnedLandBlocks); the grid columns were
+      //   dropped. Wiped (not migrated) — pre-launch, no real users. See
+      //   plan.md.
       if (from < 9) {
         // Wipe is acceptable while we have no real users; proper additive
         // migrations land in Phase 11. See plan.md.
@@ -299,6 +318,19 @@ class AppDatabase extends _$AppDatabase {
       }
       if (from < 10) {
         await m.createTable(appSettings);
+      }
+      if (from < 11) {
+        // Land became a set of owned blocks. Wipe the city-builder tables and
+        // recreate them (now without grid columns, plus owned_land_blocks);
+        // a fresh city re-seeds the starting 3×3 via createPlayer. Mirrors the
+        // pre-v9 wipe precedent — acceptable while we have no real users.
+        await customStatement('DROP TABLE IF EXISTS owned_land_blocks');
+        await customStatement('DROP TABLE IF EXISTS story_beat_states');
+        await customStatement('DROP TABLE IF EXISTS concept_band_milestones');
+        await customStatement('DROP TABLE IF EXISTS building_types_researched');
+        await customStatement('DROP TABLE IF EXISTS building_placements');
+        await customStatement('DROP TABLE IF EXISTS cities');
+        await m.createAll();
       }
     },
   );
@@ -378,15 +410,14 @@ class AppDatabase extends _$AppDatabase {
     //     and each gets its own City row), and
     // (b) pre-researched entries for every building type that's free to
     //     research and ungated (the mayor's office in v1).
-    await into(cities).insert(
+    final cityId = await into(cities).insert(
       CitiesCompanion.insert(
         playerId: id,
         cityMapId: beginnerCityMap.id,
-        gridWidth: beginnerCityMap.baseGridWidth,
-        gridHeight: beginnerCityMap.baseGridHeight,
         createdAt: DateTime.now(),
       ),
     );
+    await _seedStartingLand(cityId);
     final now = DateTime.now();
     for (final b in preResearchedBuildings) {
       await into(buildingTypesResearched).insert(
@@ -530,40 +561,46 @@ class AppDatabase extends _$AppDatabase {
         CitiesCompanion(population: Value(population)),
       );
 
-  /// Applies one land expansion: grows the grid to the new size, shifts every
-  /// existing placement by `(shiftX, shiftY)` so the old land sits centered in
-  /// the grown grid, and spends [brickCost] 🧱 (lifetime stays monotone). The
-  /// new size / shift / cost come from the pure offer policy
-  /// (`lib/domain/city/land_expansion.dart`); the caller must have verified
-  /// affordability. Transactional, so a failure can't leave placements
-  /// half-shifted.
-  Future<void> expandCityLand({
+  /// Seeds the starting 3×3 land (rings 0–1) for a freshly created [cityId].
+  Future<void> _seedStartingLand(int cityId) async {
+    await batch((b) {
+      b.insertAll(ownedLandBlocks, [
+        for (final (bx, by) in startingOwnedBlocks())
+          OwnedLandBlocksCompanion.insert(
+            cityId: cityId,
+            blockX: bx,
+            blockY: by,
+          ),
+      ]);
+    });
+  }
+
+  /// The set of owned 4×4 blocks (block coords) for [cityId].
+  Future<Set<(int, int)>> ownedBlocksForCity(int cityId) async {
+    final rows = await (select(
+      ownedLandBlocks,
+    )..where((t) => t.cityId.equals(cityId))).get();
+    return {for (final r in rows) (r.blockX, r.blockY)};
+  }
+
+  /// Buys land block `(blockX, blockY)` for [cityId]: records the ownership row
+  /// and spends [brickCost] 🧱 (lifetime stays monotone). The caller must have
+  /// verified the block is on the purchasable frontier and affordable.
+  /// Transactional, so a failed spend can't leave a free block behind.
+  Future<void> buyCityLandBlock({
     required int cityId,
     required int playerId,
-    required int newGridWidth,
-    required int newGridHeight,
-    required int shiftX,
-    required int shiftY,
+    required int blockX,
+    required int blockY,
     required int brickCost,
   }) => transaction(() async {
-    await (update(cities)..where((t) => t.id.equals(cityId))).write(
-      CitiesCompanion(
-        gridWidth: Value(newGridWidth),
-        gridHeight: Value(newGridHeight),
+    await into(ownedLandBlocks).insert(
+      OwnedLandBlocksCompanion.insert(
+        cityId: cityId,
+        blockX: blockX,
+        blockY: blockY,
       ),
     );
-    if (shiftX != 0 || shiftY != 0) {
-      await customUpdate(
-        'UPDATE building_placements '
-        'SET grid_x = grid_x + ?, grid_y = grid_y + ? WHERE city_id = ?',
-        variables: [
-          Variable.withInt(shiftX),
-          Variable.withInt(shiftY),
-          Variable.withInt(cityId),
-        ],
-        updates: {buildingPlacements},
-      );
-    }
     if (brickCost > 0) await incrementPlayerBricks(playerId, -brickCost);
   });
 
@@ -577,6 +614,10 @@ class AppDatabase extends _$AppDatabase {
     await (delete(
       buildingPlacements,
     )..where((t) => t.cityId.equals(city.id))).go();
+    await (delete(
+      ownedLandBlocks,
+    )..where((t) => t.cityId.equals(city.id))).go();
+    await _seedStartingLand(city.id);
     await (delete(
       buildingTypesResearched,
     )..where((t) => t.playerId.equals(playerId))).go();

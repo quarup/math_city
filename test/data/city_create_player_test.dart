@@ -3,6 +3,7 @@ import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:math_city/data/database.dart';
 import 'package:math_city/domain/city/city_map_registry.dart';
+import 'package:math_city/domain/city/land_blocks.dart';
 
 void main() {
   setUp(() {
@@ -23,9 +24,21 @@ void main() {
       )..where((t) => t.playerId.equals(player.id))).get();
       expect(cities, hasLength(1));
       expect(cities.first.cityMapId, beginnerCityMap.id);
-      expect(cities.first.gridWidth, beginnerCityMap.baseGridWidth);
-      expect(cities.first.gridHeight, beginnerCityMap.baseGridHeight);
       expect(cities.first.population, 0);
+    });
+
+    test('seeds the starting 3×3 owned land blocks', () async {
+      final db = AppDatabase(NativeDatabase.memory());
+      final player = await db.createPlayer(
+        name: 'Robin',
+        gradeLevel: 2,
+        avatarConfigJson: '{}',
+      );
+      final city = await db.cityForPlayer(player.id);
+
+      final owned = await db.ownedBlocksForCity(city.id);
+      expect(owned, startingOwnedBlocks());
+      expect(owned, hasLength(9));
     });
 
     test("pre-researches the mayor's office for the new player", () async {
