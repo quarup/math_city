@@ -22,7 +22,10 @@ import 'package:math_city/game/city/iso_grid.dart';
 class IsoCityGame extends FlameGame with DragCallbacks {
   IsoCityGame({required this.grid, required this.onTileTapped});
 
-  final IsoGrid grid;
+  /// The current window's geometry. Reassigned in place by [updateLand] when
+  /// land is bought and the window grows — the game is never rebuilt for a land
+  /// change, so the camera/zoom survive a purchase.
+  IsoGrid grid;
   final void Function(int col, int row) onTileTapped;
 
   late final CityBoardComponent board;
@@ -51,6 +54,11 @@ class IsoCityGame extends FlameGame with DragCallbacks {
   /// Road tiles pushed before [onLoad] ran — applied once the board exists.
   /// Same buffering rationale as [_pendingBuildings].
   Set<(int, int)>? _pendingRoads;
+
+  /// Owned / buyable land tiles (window-local) pushed before [onLoad] ran —
+  /// applied once the board exists. Same buffering rationale as above.
+  Set<(int, int)>? _pendingOwned;
+  Set<(int, int)>? _pendingBuyable;
 
   /// Building sprites live under `assets/buildings/`, outside Flame's default
   /// `assets/images/` image cache, so they get their own cache + prefix.
@@ -92,6 +100,8 @@ class IsoCityGame extends FlameGame with DragCallbacks {
     );
     if (_pendingBuildings != null) board.buildings = _pendingBuildings!;
     if (_pendingRoads != null) board.roads = _pendingRoads!;
+    if (_pendingOwned != null) board.ownedTiles = _pendingOwned!;
+    if (_pendingBuyable != null) board.buyableTiles = _pendingBuyable!;
     await world.add(board);
     camera.viewfinder.position = _boardCenter;
     _maybeFit();
@@ -195,6 +205,35 @@ class IsoCityGame extends FlameGame with DragCallbacks {
       board.roads = roads;
     } else {
       _pendingRoads = roads;
+    }
+  }
+
+  /// Pushes the latest land window into the board: the owned + buyable tile
+  /// sets (window-local) and, when the window grew, a larger [newGrid]. Growing
+  /// the window moves the local origin, so [cameraOffsetDeltaPx] is the screen
+  /// shift of any fixed world tile; adding it to the viewfinder keeps the view
+  /// visually put (no jump). Buffered before [onLoad]; the one-time initial fit
+  /// frames the start, so the delta is irrelevant then.
+  void updateLand({
+    required IsoGrid newGrid,
+    required Set<(int, int)> ownedLocalTiles,
+    required Set<(int, int)> buyableLocalTiles,
+    required Vector2 cameraOffsetDeltaPx,
+  }) {
+    grid = newGrid;
+    if (isLoaded) {
+      board
+        ..grid = newGrid
+        ..size = Vector2(newGrid.boardWidth, newGrid.boardHeight)
+        ..ownedTiles = ownedLocalTiles
+        ..buyableTiles = buyableLocalTiles;
+      if (!cameraOffsetDeltaPx.isZero()) {
+        camera.viewfinder.position += cameraOffsetDeltaPx;
+        _clampCamera();
+      }
+    } else {
+      _pendingOwned = ownedLocalTiles;
+      _pendingBuyable = buyableLocalTiles;
     }
   }
 

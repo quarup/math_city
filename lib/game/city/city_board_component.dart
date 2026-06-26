@@ -56,7 +56,10 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     required this.spriteFor,
   });
 
-  final IsoGrid grid;
+  /// The board's tile↔screen geometry for the current window. Reassigned by the
+  /// host game when land is bought and the window grows (see
+  /// `IsoCityGame.updateLand`); the render loop reads it live each frame.
+  IsoGrid grid;
   final void Function(int col, int row) onTileTapped;
 
   /// Resolves a `<id>_v<n>.png` filename to a loaded sprite, or null if it
@@ -72,9 +75,22 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
   /// game whenever placements change.
   Set<(int, int)> roads = const {};
 
+  /// Owned (purchased) land tiles in **window-local** coords — painted as the
+  /// two-tone grass the city sits on. Reassigned by the host game as land is
+  /// bought. The set is what's drawn, so the owned region can be non-rectangle.
+  Set<(int, int)> ownedTiles = const {};
+
+  /// The purchasable frontier in **window-local** coords — painted pale; a tap
+  /// on one of these buys that 4×4 block. Reassigned alongside [ownedTiles].
+  Set<(int, int)> buyableTiles = const {};
+
   static const _grassFill = Color(0xFF7CB342);
   static const _grassFillAlt = Color(0xFF689F38);
   static const _roadFill = Color(0xFF9E9E9E);
+
+  /// Pale wash for unowned-but-purchasable land — a desaturated, translucent
+  /// green so it clearly reads as "not yours yet, tap to claim".
+  static const _buyableFill = Color(0x5566A36B);
   final _tileStroke = Paint()
     ..color = const Color(0x33000000)
     ..style = PaintingStyle.stroke
@@ -100,10 +116,13 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
 
   @override
   void render(Canvas canvas) {
-    for (var row = 0; row < grid.rows; row++) {
-      for (var col = 0; col < grid.cols; col++) {
-        _drawTile(canvas, col, row);
-      }
+    // Owned land first (two-tone grass), then the pale purchasable frontier.
+    // Both are explicit tile sets — the owned region is no longer a rectangle.
+    for (final (col, row) in ownedTiles) {
+      _drawTile(canvas, col, row);
+    }
+    for (final (col, row) in buyableTiles) {
+      _drawPaleTile(canvas, col, row);
     }
     // Roads draw after all terrain: the sprites carry a small overscan rim
     // (seam cover), which a later-drawn neighbouring grass diamond would
@@ -128,6 +147,16 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     final fill = (col + row).isEven ? _grassFill : _grassFillAlt;
     canvas
       ..drawPath(path, Paint()..color = fill)
+      ..drawPath(path, _tileStroke);
+  }
+
+  /// A pale, purchasable land tile (part of an unowned 4×4 block on the buy
+  /// frontier). Drawn flat and translucent so it reads as not-yet-owned.
+  void _drawPaleTile(Canvas canvas, int col, int row) {
+    final (cx, cy) = grid.centerOf(col, row);
+    final path = _diamond(cx, cy, 0);
+    canvas
+      ..drawPath(path, Paint()..color = _buyableFill)
       ..drawPath(path, _tileStroke);
   }
 
