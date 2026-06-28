@@ -10,14 +10,14 @@ import 'package:math_city/domain/city/beat_registry.dart';
 import 'package:math_city/domain/city/building_registry.dart';
 import 'package:math_city/domain/city/building_type.dart';
 import 'package:math_city/domain/city/category.dart';
-import 'package:math_city/domain/city/city_map_registry.dart';
-import 'package:math_city/domain/city/land_expansion.dart';
+import 'package:math_city/domain/city/land_blocks.dart';
 import 'package:math_city/domain/city/placement_rules.dart';
 import 'package:math_city/domain/city/road_network.dart';
 import 'package:math_city/domain/city/story_beat.dart';
 import 'package:math_city/game/city/city_board_component.dart';
 import 'package:math_city/game/city/iso_city_game.dart';
 import 'package:math_city/game/city/iso_grid.dart';
+import 'package:math_city/game/city/land_window.dart';
 import 'package:math_city/presentation/player/adventurer_avatar_widget.dart';
 import 'package:math_city/presentation/spin/spin_screen.dart';
 import 'package:math_city/presentation/widgets/speech_toggle_button.dart';
@@ -53,6 +53,11 @@ class CityScreen extends ConsumerStatefulWidget {
 class _CityScreenState extends ConsumerState<CityScreen> {
   IsoCityGame? _game;
 
+  /// The world-tile window the board currently renders (owned land + pale
+  /// frontier bounding box). Drives the world↔local translation; grows
+  /// monotonically as land is bought. Null until the first build with data.
+  LandWindow? _window;
+
   /// Catalog building type chosen for *new* placement. Independent of
   /// [_movingId]: it stays remembered (and re-highlighted in the catalog) after
   /// the player finishes repositioning whatever they just placed/picked up.
@@ -64,15 +69,31 @@ class _CityScreenState extends ConsumerState<CityScreen> {
   /// player can nudge it into place on a small screen.
   int? _movingId;
 
-  /// One tap on the board. Tapping a placed building selects it for moving
-  /// (tapping the already-selected one drops it); tapping a free tile either
-  /// repositions the picked-up building or places the catalog selection, in
-  /// both cases auto-fitting the footprint to cover the tapped tile.
-  void _onTileTapped(int col, int row) {
-    final placements = ref.read(placementsProvider).asData?.value ?? const [];
-    final city = ref.read(activeCityProvider).asData?.value;
-    if (city == null) return;
+  /// One tap on the board. The board reports a **window-local** tile; we map it
+  /// back to world coords via the current window, then dispatch in order:
+  /// a tap on the pale buyable frontier buys that 4×4 block; a tap on a placed
+  /// building picks it up (or drops the held one); a tap on free owned land
+  /// repositions the held building or places the catalog pick (auto-fitting the
+  /// footprint to cover the tapped tile). A tap on bare background (neither
+  /// owned nor buyable) does nothing.
+  void _onTileTapped(int localCol, int localRow) {
+    final window = _window;
+    final ownedBlocks = ref.read(ownedBlocksProvider).asData?.value;
+    if (window == null || ownedBlocks == null) return;
+    final col = localCol + window.minCol;
+    final row = localRow + window.minRow;
 
+    final ownedTiles = ownedTilesOf(ownedBlocks);
+    if (!ownedTiles.contains((col, row))) {
+      // Off owned land: if it's a pale frontier block, offer to buy it.
+      final block = blockOfTile(col, row);
+      if (purchasableBlocks(ownedBlocks).contains(block)) {
+        unawaited(_confirmBuyBlock(block));
+      }
+      return;
+    }
+
+    final placements = ref.read(placementsProvider).asData?.value ?? const [];
     final occupant = _buildingAt(placements, col, row);
     if (occupant != null) {
       // Tap a building to pick it up; tap the held one again to drop it.
@@ -80,9 +101,9 @@ class _CityScreenState extends ConsumerState<CityScreen> {
       return;
     }
 
-    // A free tile: reposition the held building, else place the catalog pick.
+    // A free owned tile: reposition the held building, else place the pick.
     if (_movingId != null) {
-      _tryMove(_movingId!, col, row, placements, city);
+      _tryMove(_movingId!, col, row, placements, ownedTiles);
       return;
     }
     final selected = _selected;
@@ -90,7 +111,7 @@ class _CityScreenState extends ConsumerState<CityScreen> {
       _toast('Pick a building below first');
       return;
     }
-    _tryPlace(selected, col, row, placements, city);
+    _tryPlace(selected, col, row, placements, ownedTiles);
   }
 
   /// The placement whose footprint covers tile `(col, row)`, or null if that
@@ -123,7 +144,7 @@ class _CityScreenState extends ConsumerState<CityScreen> {
     int col,
     int row,
     List<BuildingPlacement> placements,
-    City city,
+    Set<(int, int)> ownedTiles,
   ) {
     final picked = placements.where((p) => p.id == placementId).firstOrNull;
     final type = picked == null
@@ -133,7 +154,14 @@ class _CityScreenState extends ConsumerState<CityScreen> {
       setState(() => _movingId = null);
       return;
     }
-    final spot = _resolve(type, col, row, placements, city, exclude: picked.id);
+    final spot = _resolve(
+      type,
+      col,
+      row,
+      placements,
+      ownedTiles,
+      exclude: picked.id,
+    );
     if (spot == null) {
       _toast('No room for ${type.name} there');
       return;
@@ -152,7 +180,7 @@ class _CityScreenState extends ConsumerState<CityScreen> {
     int col,
     int row,
     List<BuildingPlacement> placements,
-    City city,
+    Set<(int, int)> ownedTiles,
   ) {
     // Unique types (mayor's office): relocate the existing instance rather than
     // stacking a duplicate.
@@ -162,12 +190,12 @@ class _CityScreenState extends ConsumerState<CityScreen> {
           .firstOrNull;
       if (existing != null) {
         setState(() => _movingId = existing.id);
-        _tryMove(existing.id, col, row, placements, city);
+        _tryMove(existing.id, col, row, placements, ownedTiles);
         return;
       }
     }
 
-    final spot = _resolve(type, col, row, placements, city);
+    final spot = _resolve(type, col, row, placements, ownedTiles);
     if (spot == null) {
       _toast('No room for ${type.name} there');
       return;
@@ -224,12 +252,11 @@ class _CityScreenState extends ConsumerState<CityScreen> {
     int col,
     int row,
     List<BuildingPlacement> placements,
-    City city, {
+    Set<(int, int)> ownedTiles, {
     int? exclude,
   }) {
     return resolvePlacement(
-      gridWidth: city.gridWidth,
-      gridHeight: city.gridHeight,
+      ownedTiles: ownedTiles,
       existing: _footprintsOf(placements, exclude: exclude),
       width: type.footprint.$1,
       height: type.footprint.$2,
@@ -238,16 +265,70 @@ class _CityScreenState extends ConsumerState<CityScreen> {
     );
   }
 
-  /// The auto-generated road tiles for the current placements (see
-  /// `road_network.dart`).
+  /// The auto-generated road tiles for the current placements, confined to
+  /// [ownedTiles] (see `road_network.dart`).
   Set<(int, int)> _roadTilesFor(
     List<BuildingPlacement> placements,
-    City city,
+    Set<(int, int)> ownedTiles,
   ) => generateRoads(
-    gridWidth: city.gridWidth,
-    gridHeight: city.gridHeight,
+    ownedTiles: ownedTiles,
     buildings: _footprintsOf(placements),
   );
+
+  /// Recomputes the render window over owned land + its pale frontier and feeds
+  /// it to the game. On first call constructs the game; afterwards grows the
+  /// window in place, compensating the camera so a land purchase doesn't jump
+  /// the view (see `IsoCityGame.updateLand`). Sets [_window].
+  void _syncLand(Set<(int, int)> ownedBlocks, Set<(int, int)> ownedTiles) {
+    final buyableTiles = ownedTilesOf(purchasableBlocks(ownedBlocks));
+    final window = computeLandWindow({...ownedTiles, ...buyableTiles}, _window);
+    final grid = IsoGrid(cols: window.cols, rows: window.rows);
+    final ownedLocal = _localTilesIn(ownedTiles, window);
+    final buyableLocal = _localTilesIn(buyableTiles, window);
+
+    if (_game == null) {
+      _game = IsoCityGame(grid: grid, onTileTapped: _onTileTapped);
+      _game!.updateLand(
+        newGrid: grid,
+        ownedLocalTiles: ownedLocal,
+        buyableLocalTiles: buyableLocal,
+        cameraOffsetDeltaPx: Vector2.zero(),
+      );
+    } else {
+      final delta = window.sameAs(_window!)
+          ? Vector2.zero()
+          : _cameraDelta(_game!.grid, _window!, grid, window);
+      _game!.updateLand(
+        newGrid: grid,
+        ownedLocalTiles: ownedLocal,
+        buyableLocalTiles: buyableLocal,
+        cameraOffsetDeltaPx: delta,
+      );
+    }
+    _window = window;
+  }
+
+  /// Screen-space shift of a fixed world tile between the old and new windows,
+  /// to add to the viewfinder so content stays put when the window grows. World
+  /// tile (0,0) is always owned, so it's present in both windows.
+  Vector2 _cameraDelta(
+    IsoGrid oldGrid,
+    LandWindow oldWindow,
+    IsoGrid newGrid,
+    LandWindow newWindow,
+  ) {
+    final (ox, oy) = oldGrid.centerOf(-oldWindow.minCol, -oldWindow.minRow);
+    final (nx, ny) = newGrid.centerOf(-newWindow.minCol, -newWindow.minRow);
+    return Vector2(nx - ox, ny - oy);
+  }
+
+  /// World tiles → current window-local tiles (subtract the window origin).
+  Set<(int, int)> _localTiles(Set<(int, int)> world) =>
+      _localTilesIn(world, _window!);
+
+  Set<(int, int)> _localTilesIn(Set<(int, int)> world, LandWindow window) => {
+    for (final (c, r) in world) (c - window.minCol, r - window.minRow),
+  };
 
   void _toast(String message) {
     ScaffoldMessenger.of(context)
@@ -287,34 +368,20 @@ class _CityScreenState extends ConsumerState<CityScreen> {
     );
   }
 
-  /// The next land expansion available for [city], or null at the 24×24 cap.
-  LandExpansionOffer? _expansionOffer(City city) {
-    final map = findCityMapById(city.cityMapId);
-    if (map == null) return null;
-    return nextLandExpansion(
-      gridWidth: city.gridWidth,
-      gridHeight: city.gridHeight,
-      baseGridWidth: map.baseGridWidth,
-      baseGridHeight: map.baseGridHeight,
-    );
-  }
-
-  /// Tap on the expand FAB: confirm the size + 🧱 cost, then buy the
-  /// expansion. Mirrors the research-confirm flow.
-  Future<void> _confirmExpand(LandExpansionOffer offer) async {
+  /// Tap on a pale frontier block: confirm the ring-priced 🧱 cost, then buy.
+  /// Mirrors the research-confirm flow.
+  Future<void> _confirmBuyBlock((int, int) block) async {
+    final cost = blockCost(block.$1, block.$2);
     final bricks = ref.read(activePlayerProvider).asData?.value.brickBalance;
-    if (bricks == null || offer.brickCost > bricks) {
-      _toast('Not enough bricks to expand — keep playing math!');
+    if (bricks == null || cost > bricks) {
+      _toast('Not enough bricks for new land — keep playing math!');
       return;
     }
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Expand your land?'),
-        content: Text(
-          'Spend 🧱 ${offer.brickCost} to grow the map to '
-          '${offer.newGridWidth}×${offer.newGridHeight} tiles.',
-        ),
+        title: const Text('Buy this land?'),
+        content: Text('Spend 🧱 $cost to claim a new 4×4 block.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(false),
@@ -322,13 +389,13 @@ class _CityScreenState extends ConsumerState<CityScreen> {
           ),
           FilledButton(
             onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: const Text('Expand'),
+            child: const Text('Buy'),
           ),
         ],
       ),
     );
     if (confirmed ?? false) {
-      await ref.read(cityActionsProvider).expandLand();
+      await ref.read(cityActionsProvider).buyLandBlock(block.$1, block.$2);
     }
   }
 
@@ -370,7 +437,10 @@ class _CityScreenState extends ConsumerState<CityScreen> {
     }
   }
 
-  List<PlacedBuildingView> _viewsFor(List<BuildingPlacement> placements) {
+  List<PlacedBuildingView> _viewsFor(
+    List<BuildingPlacement> placements,
+    LandWindow window,
+  ) {
     // Round-robin variant assignment: order each building type's placements by
     // id (insertion order) and cycle through its sprite variants, so adjacent
     // buildings of the same type don't repeat. Keyed by id (not tile), so a
@@ -393,8 +463,8 @@ class _CityScreenState extends ConsumerState<CityScreen> {
       if (type == null) continue;
       out.add(
         PlacedBuildingView(
-          col: p.gridX,
-          row: p.gridY,
+          col: p.gridX - window.minCol,
+          row: p.gridY - window.minRow,
           emoji: type.emoji,
           color: _colorFor(type),
           footprint: type.footprint,
@@ -422,24 +492,21 @@ class _CityScreenState extends ConsumerState<CityScreen> {
     final playerAsync = ref.watch(activePlayerProvider);
     final cityAsync = ref.watch(activeCityProvider);
     final placementsAsync = ref.watch(placementsProvider);
+    final ownedBlocksAsync = ref.watch(ownedBlocksProvider);
     final catalogAsync = ref.watch(cityCatalogProvider);
 
     final player = playerAsync.asData?.value;
 
-    // Build the game once the grid size is known, then keep its render model
-    // in sync with the latest placements. A land expansion changes the grid
-    // size, so the game is rebuilt against the new grid when that happens
-    // (the camera re-centers on the bigger board — a nice reveal).
+    // Build the game once the owned land is known, then keep its render model
+    // in sync. Buying land grows the window in place (no rebuild) so the camera
+    // survives a purchase — see `_syncLand`.
     final city = cityAsync.asData?.value;
-    if (city != null &&
-        (_game == null ||
-            _game!.grid.cols != city.gridWidth ||
-            _game!.grid.rows != city.gridHeight)) {
-      _game = IsoCityGame(
-        grid: IsoGrid(cols: city.gridWidth, rows: city.gridHeight),
-        onTileTapped: _onTileTapped,
-      );
-    }
+    final ownedBlocks = ownedBlocksAsync.asData?.value;
+    final ownedTiles = ownedBlocks == null
+        ? const <(int, int)>{}
+        : ownedTilesOf(ownedBlocks);
+    if (ownedBlocks != null) _syncLand(ownedBlocks, ownedTiles);
+
     final placements = placementsAsync.asData?.value;
     // Drop a stale selection (e.g. the building was removed by a reset) so the
     // Done bar doesn't linger over nothing.
@@ -449,8 +516,8 @@ class _CityScreenState extends ConsumerState<CityScreen> {
       _movingId = null;
     }
     if (_game != null && placements != null) {
-      _game!.setBuildings(_viewsFor(placements));
-      if (city != null) _game!.setRoads(_roadTilesFor(placements, city));
+      _game!.setBuildings(_viewsFor(placements, _window!));
+      _game!.setRoads(_localTiles(_roadTilesFor(placements, ownedTiles)));
     }
     // The building currently picked up for repositioning, if any — drives the
     // Done bar's label.
@@ -558,18 +625,6 @@ class _CityScreenState extends ConsumerState<CityScreen> {
             ),
             const SizedBox(height: 12),
           ],
-          // Land expansion — hidden while a building is picked up (it shifts
-          // every placement) and at the 24×24 cap.
-          if (city != null && _movingId == null)
-            if (_expansionOffer(city) case final LandExpansionOffer offer) ...[
-              FloatingActionButton.small(
-                heroTag: 'cityExpandFab',
-                tooltip: 'Expand land (🧱 ${offer.brickCost})',
-                onPressed: () => unawaited(_confirmExpand(offer)),
-                child: const Icon(Icons.zoom_out_map_rounded),
-              ),
-              const SizedBox(height: 12),
-            ],
           FloatingActionButton.extended(
             heroTag: 'citySpinFab',
             onPressed: _openSpin,
