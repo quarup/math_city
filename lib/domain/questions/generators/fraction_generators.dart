@@ -1103,6 +1103,7 @@ GeneratedQuestion multAsScaling(Random rand) {
     conceptId: 'mult_as_scaling',
     prompt: 'Without computing: $n × $numerator/$denominator is ___ than $n.',
     correctAnswer: result,
+    answerFormat: AnswerFormat.string,
     distractors: pool.where((s) => s != result).toList(),
     explanation: [
       if (numerator < denominator) '$numerator/$denominator is less than 1.',

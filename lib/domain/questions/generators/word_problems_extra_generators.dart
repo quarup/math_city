@@ -380,6 +380,7 @@ GeneratedQuestion statisticalQuestion(Random rand) {
         'Which of these is a statistical question (one that anticipates '
         'variability)?',
     correctAnswer: stat,
+    answerFormat: AnswerFormat.string,
     distractors: distractors,
     explanation: [
       'A statistical question anticipates variability in the data.',
@@ -430,6 +431,7 @@ GeneratedQuestion samplingRepresentativeness(Random rand) {
     conceptId: 'sampling_representativeness',
     prompt: '${s.$1} Is this a fair (representative) sample?',
     correctAnswer: isBiased ? 'No' : 'Yes',
+    answerFormat: AnswerFormat.string,
     distractors: [
       if (isBiased) 'Yes' else 'No',
       'Only if the sample is bigger',

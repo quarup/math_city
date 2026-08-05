@@ -93,6 +93,7 @@ GeneratedQuestion numericalPatternRule(Random rand) {
     conceptId: 'numerical_pattern_rule',
     prompt: 'Look at the pattern: $t0, $t1, $t2, $t3. What is the rule?',
     correctAnswer: correct,
+    answerFormat: AnswerFormat.string,
     distractors: list.take(3).toList(),
     explanation: [
       '$t1 − $t0 = $step, $t2 − $t1 = $step, $t3 − $t2 = $step.',
@@ -191,6 +192,7 @@ GeneratedQuestion writeExpressionFromWords(Random rand) {
     conceptId: 'write_expression_from_words',
     prompt: 'Which expression matches "$phrase"?',
     correctAnswer: correct,
+    answerFormat: AnswerFormat.string,
     distractors: list.take(3).toList(),
     explanation: ['"$phrase" → $correct'],
   );

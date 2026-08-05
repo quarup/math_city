@@ -45,6 +45,7 @@ GeneratedQuestion amPm(Random rand) {
     conceptId: 'am_pm',
     prompt: '$hour:$mm $ctx is ___',
     correctAnswer: correct,
+    answerFormat: AnswerFormat.string,
     distractors: [wrong, 'Both', 'Neither'],
     explanation: ['"$ctx" tells you it is $correct.'],
   );
@@ -116,6 +117,7 @@ GeneratedQuestion triangleInequalityRecognize(Random rand) {
     conceptId: 'triangle_inequality_recognize',
     prompt: 'Can a triangle have sides of length $a, $b, and $c?',
     correctAnswer: correct,
+    answerFormat: AnswerFormat.string,
     distractors: [
       if (wantValid) 'No' else 'Yes',
       'Only if it is a right triangle',
@@ -272,6 +274,7 @@ GeneratedQuestion inspectSystemNoSolution(Random rand) {
         '• y = ${_fmtMx(m1)} ${_fmtB(b1)}\n'
         '• y = ${_fmtMx(m2)} ${_fmtB(b2)}',
     correctAnswer: correct,
+    answerFormat: AnswerFormat.string,
     distractors: distractors,
     explanation: [
       'Same slope, same intercept → infinitely many.',

@@ -62,6 +62,7 @@ GeneratedQuestion writeNumerals0to20(Random rand) {
     conceptId: 'write_numerals_0_20',
     prompt: 'How do you write the number $n in words?',
     correctAnswer: correct,
+    answerFormat: AnswerFormat.string,
     distractors: list.take(3).toList(),
     explanation: ['$n is written as "$correct".'],
   );
