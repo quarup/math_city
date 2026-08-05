@@ -8,21 +8,31 @@ description: Launch Math City on the Android emulator and drive it (tap, screens
 The recipe below is verified for this machine. Follow it instead of a bare
 `flutter run` — several non-obvious steps bite otherwise.
 
-## 0. Pre-flight: clear the iCloud `* 2.*` duplicate-file pollution
+## 0. Pre-flight: clear the iCloud `* N.*` duplicate-file pollution
 
 This repo lives under `~/Documents`, which is iCloud-synced. Finder/iCloud
-periodically creates duplicate files with a ` 2` suffix (e.g.
-`libsqlite3 2.so`, `flutter_export_environment 2.sh`). A stray `… 2.so`
-under `build/` makes the Android Gradle build fail at
-`:app:packJniLibsflutterBuildDebug` ("Could not add file … to ZIP").
+periodically creates duplicate files with a ` N` suffix — and it keeps
+counting, so you get `kernel_blob 2.bin` … `kernel_blob 8.bin`, plus
+extensionless ones like `.dart_tool/flutter_build 3`. Two distinct
+failures:
 
-If you've just pulled/synced, or a build fails with a `packJniLibs` / ZIP
-error, clean it first:
+- A stray `… 2.so` under `build/` makes the Android Gradle build fail at
+  `:app:packJniLibsflutterBuildDebug` ("Could not add file … to ZIP").
+- Duplicate `flutter_assets` get packaged **into the APK**, bloating it
+  (274 MB instead of 90 MB — six copies of the 67 MB `kernel_blob.bin`)
+  until installs die with `INSTALL_FAILED_INSUFFICIENT_STORAGE`.
+
+If you've just pulled/synced, or a build fails with `packJniLibs` / ZIP /
+insufficient-storage, clean it first:
 
 ```sh
 flutter clean
-find . -path ./.git -prune -o -name '* 2.*' -delete
+find . -path ./.git -prune -o \( -name '* [0-9].*' -o -name '* [0-9]' \) -delete
 ```
+
+(`flutter clean` alone is not enough — it misses `.dart_tool/`. Verify the
+APK is ~90 MB, not ~270 MB; if it's still fat, re-run the `find`. Nothing
+tracked by git ever matches these patterns, so the delete is safe.)
 
 (`flutter clean` wipes `build/`; the `find` sweeps `.dart_tool/` and any
 tracked tree. Both are safe — only generated/duplicate files match.)
