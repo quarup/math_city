@@ -59,6 +59,7 @@ class IsoCityGame extends FlameGame with DragCallbacks {
   /// applied once the board exists. Same buffering rationale as above.
   Set<(int, int)>? _pendingOwned;
   Set<(int, int)>? _pendingBuyable;
+  Set<(int, int)>? _pendingBuying;
 
   /// Building sprites live under `assets/buildings/`, outside Flame's default
   /// `assets/images/` image cache, so they get their own cache + prefix.
@@ -102,6 +103,7 @@ class IsoCityGame extends FlameGame with DragCallbacks {
     if (_pendingRoads != null) board.roads = _pendingRoads!;
     if (_pendingOwned != null) board.ownedTiles = _pendingOwned!;
     if (_pendingBuyable != null) board.buyableTiles = _pendingBuyable!;
+    if (_pendingBuying != null) board.buyingTiles = _pendingBuying!;
     await world.add(board);
     camera.viewfinder.position = _boardCenter;
     _maybeFit();
@@ -234,6 +236,17 @@ class IsoCityGame extends FlameGame with DragCallbacks {
     } else {
       _pendingOwned = ownedLocalTiles;
       _pendingBuyable = buyableLocalTiles;
+    }
+  }
+
+  /// Pushes the tiles (window-local) of the frontier block currently selected
+  /// for purchase — empty when none. Buffered before [onLoad] like the rest of
+  /// the land sets.
+  void setBuyingTiles(Set<(int, int)> tiles) {
+    if (isLoaded) {
+      board.buyingTiles = tiles;
+    } else {
+      _pendingBuying = tiles;
     }
   }
 

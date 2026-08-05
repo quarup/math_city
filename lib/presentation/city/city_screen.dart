@@ -69,13 +69,19 @@ class _CityScreenState extends ConsumerState<CityScreen> {
   /// player can nudge it into place on a small screen.
   int? _movingId;
 
+  /// The frontier block currently selected for purchase (yellow highlight +
+  /// confirm bar at the bottom), or null. Selecting is allowed even when the
+  /// player can't afford it — the bar then shows how many 🧱 are missing.
+  (int, int)? _buyingBlock;
+
   /// One tap on the board. The board reports a **window-local** tile; we map it
   /// back to world coords via the current window, then dispatch in order:
-  /// a tap on the pale buyable frontier buys that 4×4 block; a tap on a placed
-  /// building picks it up (or drops the held one); a tap on free owned land
-  /// repositions the held building or places the catalog pick (auto-fitting the
-  /// footprint to cover the tapped tile). A tap on bare background (neither
-  /// owned nor buyable) does nothing.
+  /// a tap on the pale buyable frontier selects that block for purchase
+  /// (confirmed via the bottom bar, movable by tapping elsewhere on the
+  /// frontier); a tap on a placed building picks it up (or drops the held one);
+  /// a tap on free owned land repositions the held building or places the
+  /// catalog pick (auto-fitting the footprint to cover the tapped tile). A tap
+  /// on bare background (neither owned nor buyable) does nothing.
   void _onTileTapped(int localCol, int localRow) {
     final window = _window;
     final ownedBlocks = ref.read(ownedBlocksProvider).asData?.value;
@@ -85,11 +91,23 @@ class _CityScreenState extends ConsumerState<CityScreen> {
 
     final ownedTiles = ownedTilesOf(ownedBlocks);
     if (!ownedTiles.contains((col, row))) {
-      // Off owned land: if it's a pale frontier block, offer to buy it.
+      // Off owned land: a tap on a pale frontier block selects it for
+      // purchase (or re-taps toggle it off); land selection replaces any
+      // picked-up building since the bottom bar shows one mode at a time.
       final block = blockOfTile(col, row);
       if (purchasableBlocks(ownedBlocks).contains(block)) {
-        unawaited(_confirmBuyBlock(block));
+        setState(() {
+          _buyingBlock = block == _buyingBlock ? null : block;
+          _movingId = null;
+        });
       }
+      return;
+    }
+
+    // A tap back on owned land while picking land to buy just cancels the
+    // selection — it shouldn't also place or pick up a building.
+    if (_buyingBlock != null) {
+      setState(() => _buyingBlock = null);
       return;
     }
 
@@ -368,35 +386,14 @@ class _CityScreenState extends ConsumerState<CityScreen> {
     );
   }
 
-  /// Tap on a pale frontier block: confirm the ring-priced 🧱 cost, then buy.
-  /// Mirrors the research-confirm flow.
-  Future<void> _confirmBuyBlock((int, int) block) async {
-    final cost = blockCost(block.$1, block.$2);
-    final bricks = ref.read(activePlayerProvider).asData?.value.brickBalance;
-    if (bricks == null || cost > bricks) {
-      _toast('Not enough bricks for new land — keep playing math!');
-      return;
-    }
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: const Text('Buy this land?'),
-        content: Text('Spend 🧱 $cost to claim a new 4×4 block.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: const Text('Buy'),
-          ),
-        ],
-      ),
-    );
-    if (confirmed ?? false) {
-      await ref.read(cityActionsProvider).buyLandBlock(block.$1, block.$2);
-    }
+  /// Confirms the pending land selection: spends the ring-priced 🧱 and clears
+  /// the selection. Only reachable from the buy bar's enabled Buy button, so
+  /// affordability was already checked (and the action re-validates anyway).
+  void _buySelectedBlock() {
+    final block = _buyingBlock;
+    if (block == null) return;
+    setState(() => _buyingBlock = null);
+    unawaited(ref.read(cityActionsProvider).buyLandBlock(block.$1, block.$2));
   }
 
   /// Tap on a locked (available-to-research) catalog card: confirm, then spend
@@ -507,6 +504,23 @@ class _CityScreenState extends ConsumerState<CityScreen> {
         : ownedTilesOf(ownedBlocks);
     if (ownedBlocks != null) _syncLand(ownedBlocks, ownedTiles);
 
+    // Drop a stale land selection (already bought, or gone after a reset), then
+    // feed the highlight tiles to the board.
+    final buyingBlock = _buyingBlock;
+    if (buyingBlock != null &&
+        ownedBlocks != null &&
+        !purchasableBlocks(ownedBlocks).contains(buyingBlock)) {
+      _buyingBlock = null;
+    }
+    if (_game != null) {
+      final selected = _buyingBlock;
+      _game!.setBuyingTiles(
+        selected == null
+            ? const {}
+            : _localTiles(tilesOfBlock(selected.$1, selected.$2).toSet()),
+      );
+    }
+
     final placements = placementsAsync.asData?.value;
     // Drop a stale selection (e.g. the building was removed by a reset) so the
     // Done bar doesn't linger over nothing.
@@ -591,9 +605,17 @@ class _CityScreenState extends ConsumerState<CityScreen> {
                 const Positioned.fill(child: _CitizenBubbleOverlay()),
               ],
             ),
-      // While a building is picked up, the catalog is swapped for a Done bar
-      // (tap the building again, or Done, to drop it).
-      bottomNavigationBar: _movingId != null
+      // While land is selected for purchase, the catalog is swapped for the
+      // buy-confirm bar; while a building is picked up, for a Done bar (tap
+      // the building again, or Done, to drop it).
+      bottomNavigationBar: _buyingBlock != null
+          ? _BuyLandBar(
+              cost: blockCost(_buyingBlock!.$1, _buyingBlock!.$2),
+              brickBalance: player?.brickBalance ?? 0,
+              onBuy: _buySelectedBlock,
+              onCancel: () => setState(() => _buyingBlock = null),
+            )
+          : _movingId != null
           ? _MoveModeBar(
               name: movingType?.name,
               onDone: () => setState(() => _movingId = null),
@@ -934,6 +956,64 @@ class _MoveModeBar extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               FilledButton(onPressed: onDone, child: const Text('Done')),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Bottom strip shown while a frontier block is selected for purchase. Not a
+/// dialog on purpose: the city stays visible and tappable, so the player can
+/// still move the selection to a different spot before confirming. When the
+/// player can't afford the land yet, Buy is disabled and the text says how
+/// many more 🧱 they need.
+class _BuyLandBar extends StatelessWidget {
+  const _BuyLandBar({
+    required this.cost,
+    required this.brickBalance,
+    required this.onBuy,
+    required this.onCancel,
+  });
+
+  final int cost;
+  final int brickBalance;
+  final VoidCallback onBuy;
+  final VoidCallback onCancel;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final missing = cost - brickBalance;
+    final affordable = missing <= 0;
+    return Material(
+      elevation: 8,
+      color: theme.colorScheme.surfaceContainer,
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Row(
+            children: [
+              const Icon(Icons.landscape_rounded),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  affordable
+                      ? 'Buy this land for 🧱 $cost?'
+                      : 'This land costs 🧱 $cost — '
+                            'earn 🧱 $missing more to buy it!',
+                  style: theme.textTheme.bodyMedium,
+                ),
+              ),
+              const SizedBox(width: 8),
+              TextButton(onPressed: onCancel, child: const Text('Cancel')),
+              const SizedBox(width: 4),
+              FilledButton(
+                onPressed: affordable ? onBuy : null,
+                child: const Text('Buy'),
+              ),
             ],
           ),
         ),

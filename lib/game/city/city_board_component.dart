@@ -81,16 +81,31 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
   Set<(int, int)> ownedTiles = const {};
 
   /// The purchasable frontier in **window-local** coords — painted pale; a tap
-  /// on one of these buys that 4×4 block. Reassigned alongside [ownedTiles].
+  /// on one of these selects that block for purchase. Reassigned alongside
+  /// [ownedTiles].
   Set<(int, int)> buyableTiles = const {};
+
+  /// Tiles (window-local) of the frontier block the player currently has
+  /// selected to buy — highlighted yellow over the pale wash, mirroring the
+  /// picked-up-building tint, until the purchase is confirmed or cancelled.
+  Set<(int, int)> buyingTiles = const {};
 
   static const _grassFill = Color(0xFF7CB342);
   static const _grassFillAlt = Color(0xFF689F38);
   static const _roadFill = Color(0xFF9E9E9E);
 
   /// Pale wash for unowned-but-purchasable land — a desaturated, translucent
-  /// green so it clearly reads as "not yours yet, tap to claim".
+  /// green so it clearly reads as "not yours yet, tap to buy".
   static const _buyableFill = Color(0x5566A36B);
+
+  /// Yellow wash for the block selected for purchase, drawn over the pale
+  /// wash. Matches the picked-up-building tint so "selected" reads the same
+  /// everywhere.
+  static const _buyingFill = Color(0x66FFEB3B);
+  final _buyingStroke = Paint()
+    ..color = const Color(0xFFF9A825)
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 2;
   final _tileStroke = Paint()
     ..color = const Color(0x33000000)
     ..style = PaintingStyle.stroke
@@ -123,6 +138,9 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     }
     for (final (col, row) in buyableTiles) {
       _drawPaleTile(canvas, col, row);
+    }
+    for (final (col, row) in buyingTiles) {
+      _drawBuyingTile(canvas, col, row);
     }
     // Roads draw after all terrain: the sprites carry a small overscan rim
     // (seam cover), which a later-drawn neighbouring grass diamond would
@@ -158,6 +176,17 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     canvas
       ..drawPath(path, Paint()..color = _buyableFill)
       ..drawPath(path, _tileStroke);
+  }
+
+  /// A tile of the block selected for purchase: yellow wash + amber stroke on
+  /// top of its pale wash, so the pending selection stands out from the rest
+  /// of the frontier.
+  void _drawBuyingTile(Canvas canvas, int col, int row) {
+    final (cx, cy) = grid.centerOf(col, row);
+    final path = _diamond(cx, cy, 0);
+    canvas
+      ..drawPath(path, Paint()..color = _buyingFill)
+      ..drawPath(path, _buyingStroke);
   }
 
   /// Draws one auto-road tile: resolves the connection mask to a canonical
