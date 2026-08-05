@@ -27,18 +27,38 @@ class _ConceptDebugScreenState extends ConsumerState<ConceptDebugScreen> {
   // Default to multiple choice so distractors are exercised.
   ProficiencyBand _band = ProficiencyBand.challenging;
 
+  final _searchController = TextEditingController();
+  String _query = '';
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  /// Lowercase, with `_`/`-` collapsed to spaces so "place value" matches
+  /// `place_value` and vice versa.
+  static String _normalize(String s) =>
+      s.toLowerCase().replaceAll(RegExp('[_-]+'), ' ');
+
   @override
   Widget build(BuildContext context) {
     assert(kDebugMode, 'Debug screen reached in a non-debug build');
 
     final registry = ref.watch(generatorRegistryProvider);
     final implementedIds = registry.implementedConceptIds.toSet();
+    final query = _normalize(_query.trim());
 
     // Group implemented concepts by category, preserving curriculum.md
     // category order and within-category row order.
     final byCategory = <String, List<Concept>>{};
     for (final c in allConcepts) {
       if (!implementedIds.contains(c.id)) continue;
+      if (query.isNotEmpty &&
+          !_normalize(c.name).contains(query) &&
+          !_normalize(c.id).contains(query)) {
+        continue;
+      }
       byCategory.putIfAbsent(c.categoryId, () => []).add(c);
     }
     for (final list in byCategory.values) {
@@ -79,19 +99,56 @@ class _ConceptDebugScreenState extends ConsumerState<ConceptDebugScreen> {
               ],
             ),
           ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            child: TextField(
+              controller: _searchController,
+              autocorrect: false,
+              textInputAction: TextInputAction.search,
+              onChanged: (v) => setState(() => _query = v),
+              decoration: InputDecoration(
+                isDense: true,
+                hintText: 'Search by name or id…',
+                prefixIcon: const Icon(Icons.search_rounded),
+                suffixIcon: _query.isEmpty
+                    ? null
+                    : IconButton(
+                        icon: const Icon(Icons.clear_rounded),
+                        tooltip: 'Clear',
+                        onPressed: () {
+                          _searchController.clear();
+                          setState(() => _query = '');
+                        },
+                      ),
+                border: const OutlineInputBorder(),
+              ),
+            ),
+          ),
           const Divider(height: 1),
           Expanded(
-            child: ListView(
-              children: [
-                for (final cat in orderedCategories)
-                  if (byCategory[cat.id]?.isNotEmpty ?? false)
-                    _CategoryGroup(
-                      category: cat,
-                      concepts: byCategory[cat.id]!,
-                      onTap: _openQuestion,
+            child: byCategory.isEmpty
+                ? Center(
+                    child: Text(
+                      'No concepts match "${_query.trim()}"',
+                      style: Theme.of(context).textTheme.bodyMedium,
                     ),
-              ],
-            ),
+                  )
+                : ListView(
+                    children: [
+                      for (final cat in orderedCategories)
+                        if (byCategory[cat.id]?.isNotEmpty ?? false)
+                          _CategoryGroup(
+                            // Re-key on the query so a category the user
+                            // collapsed earlier springs back open for a new
+                            // search instead of hiding its matches.
+                            key: ValueKey('${cat.id}|$query'),
+                            category: cat,
+                            concepts: byCategory[cat.id]!,
+                            filtering: query.isNotEmpty,
+                            onTap: _openQuestion,
+                          ),
+                    ],
+                  ),
           ),
         ],
       ),
@@ -117,11 +174,14 @@ class _CategoryGroup extends StatelessWidget {
   const _CategoryGroup({
     required this.category,
     required this.concepts,
+    required this.filtering,
     required this.onTap,
+    super.key,
   });
 
   final ConceptCategory category;
   final List<Concept> concepts;
+  final bool filtering;
   final ValueChanged<Concept> onTap;
 
   @override
@@ -134,7 +194,11 @@ class _CategoryGroup extends StatelessWidget {
           fontWeight: FontWeight.w600,
         ),
       ),
-      subtitle: Text('${concepts.length} implemented'),
+      subtitle: Text(
+        filtering
+            ? '${concepts.length} matching'
+            : '${concepts.length} implemented',
+      ),
       initiallyExpanded: true,
       childrenPadding: const EdgeInsets.only(bottom: 8),
       children: [
