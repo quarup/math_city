@@ -92,15 +92,22 @@ class _CityScreenState extends ConsumerState<CityScreen> {
     final ownedTiles = ownedTilesOf(ownedBlocks);
     if (!ownedTiles.contains((col, row))) {
       // Off owned land: a tap on a pale frontier block selects it for
-      // purchase (or re-taps toggle it off); land selection replaces any
-      // picked-up building since the bottom bar shows one mode at a time.
+      // purchase, and a second tap on the *same* block confirms the buy —
+      // mirroring how re-tapping a picked-up building drops it there. Land
+      // selection replaces any picked-up building, since the bottom bar shows
+      // one mode at a time.
       final block = blockOfTile(col, row);
-      if (purchasableBlocks(ownedBlocks).contains(block)) {
-        setState(() {
-          _buyingBlock = block == _buyingBlock ? null : block;
-          _movingId = null;
-        });
+      if (!purchasableBlocks(ownedBlocks).contains(block)) return;
+      if (block == _buyingBlock) {
+        // Re-tap on an unaffordable block is a no-op (like the disabled Buy
+        // button), leaving it selected so the bar keeps showing the price.
+        _buySelectedBlock();
+        return;
       }
+      setState(() {
+        _buyingBlock = block;
+        _movingId = null;
+      });
       return;
     }
 
@@ -387,11 +394,14 @@ class _CityScreenState extends ConsumerState<CityScreen> {
   }
 
   /// Confirms the pending land selection: spends the ring-priced 🧱 and clears
-  /// the selection. Only reachable from the buy bar's enabled Buy button, so
-  /// affordability was already checked (and the action re-validates anyway).
+  /// the selection. Reached from the buy bar's Buy button and from a second tap
+  /// on the selected block, so it checks affordability itself — an unaffordable
+  /// block stays selected (and priced) rather than silently doing nothing.
   void _buySelectedBlock() {
     final block = _buyingBlock;
     if (block == null) return;
+    final bricks = ref.read(activePlayerProvider).asData?.value.brickBalance;
+    if (bricks == null || blockCost(block.$1, block.$2) > bricks) return;
     setState(() => _buyingBlock = null);
     unawaited(ref.read(cityActionsProvider).buyLandBlock(block.$1, block.$2));
   }
