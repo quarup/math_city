@@ -106,7 +106,13 @@ class ProficiencyNotifier extends AsyncNotifier<Map<String, double>> {
     await cityActions.tickPopulation();
     await cityActions.fireBeats();
 
-    ref.invalidateSelf();
+    // The round clock advanced above, and 🔬 may have too. Refetch the active
+    // player so the city screen's currency bar and the unlock catalog — both
+    // of which read straight off activePlayerProvider — don't keep serving the
+    // balances cached before this round.
+    ref
+      ..invalidate(activePlayerProvider)
+      ..invalidateSelf();
     return unlock;
   }
 }
