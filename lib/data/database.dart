@@ -321,9 +321,10 @@ class AppDatabase extends _$AppDatabase {
       }
       if (from < 11) {
         // Land became a set of owned blocks. Wipe the city-builder tables and
-        // recreate them (now without grid columns, plus owned_land_blocks);
-        // a fresh city re-seeds the starting 3×3 via createPlayer. Mirrors the
-        // pre-v9 wipe precedent — acceptable while we have no real users.
+        // recreate them (now without grid columns, plus owned_land_blocks),
+        // then re-seed a fresh starting city per existing player — players (and
+        // their currency) are kept; only city layout resets. Mirrors the pre-v9
+        // wipe precedent, acceptable while we have no real users.
         await customStatement('DROP TABLE IF EXISTS owned_land_blocks');
         await customStatement('DROP TABLE IF EXISTS story_beat_states');
         await customStatement('DROP TABLE IF EXISTS concept_band_milestones');
@@ -331,6 +332,9 @@ class AppDatabase extends _$AppDatabase {
         await customStatement('DROP TABLE IF EXISTS building_placements');
         await customStatement('DROP TABLE IF EXISTS cities');
         await m.createAll();
+        for (final player in await getAllPlayers()) {
+          await _seedCityBuilderState(player.id);
+        }
       }
     },
   );
@@ -405,14 +409,21 @@ class AppDatabase extends _$AppDatabase {
       ),
     );
 
-    // Seed Phase 7 city-builder state for the new player:
-    // (a) one City row tied to the beginner map (more maps unlock later
-    //     and each gets its own City row), and
-    // (b) pre-researched entries for every building type that's free to
-    //     research and ungated (the mayor's office in v1).
+    await _seedCityBuilderState(id);
+    return getPlayerById(id);
+  }
+
+  /// Seeds a player's Phase 7 city-builder baseline:
+  /// (a) one City row tied to the beginner map (more maps unlock later and each
+  ///     gets its own City row), with its starting 3×3 owned land, and
+  /// (b) pre-researched entries for every building type that's free to research
+  ///     and ungated (the mayor's office in v1).
+  /// Used both at player creation and by the v11 migration to give existing
+  /// players a fresh city after the land model change.
+  Future<void> _seedCityBuilderState(int playerId) async {
     final cityId = await into(cities).insert(
       CitiesCompanion.insert(
-        playerId: id,
+        playerId: playerId,
         cityMapId: beginnerCityMap.id,
         createdAt: DateTime.now(),
       ),
@@ -422,14 +433,12 @@ class AppDatabase extends _$AppDatabase {
     for (final b in preResearchedBuildings) {
       await into(buildingTypesResearched).insert(
         BuildingTypesResearchedCompanion.insert(
-          playerId: id,
+          playerId: playerId,
           buildingTypeId: b.id,
           researchedAt: now,
         ),
       );
     }
-
-    return getPlayerById(id);
   }
 
   Future<void> updatePlayer(
