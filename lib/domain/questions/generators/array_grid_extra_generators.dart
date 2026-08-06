@@ -24,32 +24,18 @@ List<String> _distinctStrings(String correct, List<String> candidates) {
 
 GeneratedQuestion countObjectsTo10(Random rand) {
   final n = rand.nextInt(9) + 2; // 2..10
-  // Single-row layout if n ≤ 5, else 2 rows.
-  late int rows;
-  late int cols;
-  if (n <= 5) {
-    rows = 1;
-    cols = n;
-  } else {
-    rows = 2;
-    cols = (n + 1) ~/ 2; // 3 cols for 5..6, 4 cols for 7..8, 5 cols for 9..10
-  }
-  // shadedRows × shadedCols may over-shade in the 2-row case; clamp.
+  // Single row if n ≤ 5, else two rows (the second is short for odd n).
+  final cols = n <= 5 ? n : (n + 1) ~/ 2;
   final correct = n;
   return GeneratedQuestion(
     conceptId: 'count_objects_to_10',
     prompt: 'How many objects are shown?',
-    diagram: AreaGridSpec(
-      rows: rows,
-      cols: cols,
-      shadedRows: rows,
-      shadedCols: cols,
-    ),
+    diagram: AreaGridSpec.count(cols: cols, count: n),
     correctAnswer: '$correct',
     distractors: integerDistractorsWith(
       correct,
       rand,
-      misconception: rows * cols, // gave total cells (over-counted)
+      misconception: correct + 1, // counted one twice
     ),
     explanation: ['There are $correct objects shaded.'],
   );
@@ -61,24 +47,18 @@ GeneratedQuestion countObjectsTo10(Random rand) {
 
 GeneratedQuestion countObjectsTo20(Random rand) {
   final n = rand.nextInt(10) + 11; // 11..20
-  // 2 rows × cols (cols = ceil(n/2)).
-  const rows = 2;
+  // Two rows, the second one short for odd n.
   final cols = (n + 1) ~/ 2;
   final correct = n;
   return GeneratedQuestion(
     conceptId: 'count_objects_to_20',
     prompt: 'How many objects are shown?',
-    diagram: AreaGridSpec(
-      rows: rows,
-      cols: cols,
-      shadedRows: rows,
-      shadedCols: cols,
-    ),
+    diagram: AreaGridSpec.count(cols: cols, count: n),
     correctAnswer: '$correct',
     distractors: integerDistractorsWith(
       correct,
       rand,
-      misconception: rows * cols,
+      misconception: correct + 1, // counted one twice
     ),
     explanation: ['There are $correct objects shaded.'],
   );

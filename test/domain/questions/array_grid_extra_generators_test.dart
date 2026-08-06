@@ -20,6 +20,24 @@ void main() {
   late GeneratorRegistry registry;
   setUp(() => registry = GeneratorRegistry.defaultRegistry());
 
+  // Regression (#92): these once laid an odd count out in a rows × cols grid
+  // and shaded the whole thing, drawing n+1 objects for the answer n — and the
+  // over-count was on the answer list, so counting the picture correctly was
+  // marked wrong. The drawn count must equal the answer.
+  void expectDrawnCountMatchesAnswer(GeneratedQuestion q) {
+    final spec = q.diagram! as AreaGridSpec;
+    final drawn = spec.shadedCount;
+    expect(
+      drawn,
+      isNotNull,
+      reason: 'a counting question must use AreaGridSpec.count',
+    );
+    expect(drawn, int.parse(q.correctAnswer));
+    expect(q.distractors, isNot(contains('$drawn')));
+    // Laid out cols-per-row with only the last row short.
+    expect(spec.rows, (drawn! + spec.cols - 1) ~/ spec.cols);
+  }
+
   group('count_objects_to_10', () {
     test('correct ∈ [2, 10]; diagram is AreaGrid', () {
       for (var i = 0; i < _iterations; i++) {
@@ -28,6 +46,12 @@ void main() {
         expect(n, inInclusiveRange(2, 10));
         expect(q.diagram, isA<AreaGridSpec>());
         _expectThreeDistinctDistractors(q);
+      }
+    });
+
+    test('draws exactly as many objects as the answer', () {
+      for (var i = 0; i < _iterations; i++) {
+        expectDrawnCountMatchesAnswer(_gen(registry, 'count_objects_to_10', i));
       }
     });
   });
@@ -40,6 +64,26 @@ void main() {
         expect(n, inInclusiveRange(11, 20));
         _expectThreeDistinctDistractors(q);
       }
+    });
+
+    test('draws exactly as many objects as the answer', () {
+      for (var i = 0; i < _iterations; i++) {
+        expectDrawnCountMatchesAnswer(_gen(registry, 'count_objects_to_20', i));
+      }
+    });
+
+    test('odd counts are covered by the seeds under test', () {
+      // Guards the guard: n was odd in exactly the broken cases, so a run
+      // that never produced an odd n would pass vacuously.
+      var odd = 0;
+      for (var i = 0; i < _iterations; i++) {
+        if (int.parse(
+          _gen(registry, 'count_objects_to_20', i).correctAnswer,
+        ).isOdd) {
+          odd++;
+        }
+      }
+      expect(odd, greaterThan(0));
     });
   });
 

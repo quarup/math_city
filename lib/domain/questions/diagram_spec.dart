@@ -62,7 +62,8 @@ class AreaGridSpec extends DiagramSpec {
     required this.cols,
     required this.shadedRows,
     required this.shadedCols,
-  }) : assert(rows > 0 && cols > 0, 'rows and cols must be > 0'),
+  }) : shadedCount = null,
+       assert(rows > 0 && cols > 0, 'rows and cols must be > 0'),
        assert(
          shadedRows >= 0 && shadedRows <= rows,
          'shadedRows must be in 0..rows',
@@ -72,10 +73,33 @@ class AreaGridSpec extends DiagramSpec {
          'shadedCols must be in 0..cols',
        );
 
+  /// Counting layout: exactly [count] objects laid out [cols] per row,
+  /// filling row-major, with a shorter final row when `count` isn't a
+  /// multiple of `cols`. Nothing is drawn beyond the last object, so the
+  /// number of shapes on screen always equals `count`.
+  ///
+  /// The rows × columns constructor above can only shade whole rows and
+  /// whole columns, so it cannot render an arbitrary count — asking it for
+  /// 13 objects in a 2×7 grid draws 14. Use this for "how many objects are
+  /// shown?" questions.
+  const AreaGridSpec.count({
+    required this.cols,
+    required int count,
+  }) : shadedCount = count,
+       rows = (count + cols - 1) ~/ cols,
+       shadedRows = 0,
+       shadedCols = 0,
+       assert(cols > 0, 'cols must be > 0'),
+       assert(count > 0, 'count must be > 0');
+
   final int rows;
   final int cols;
   final int shadedRows;
   final int shadedCols;
+
+  /// Non-null only for [AreaGridSpec.count] — the exact number of objects
+  /// to draw, row-major. When set, `shadedRows`/`shadedCols` are unused.
+  final int? shadedCount;
 }
 
 /// A 10×10 grid with the first [shadedCount] cells shaded in row-major

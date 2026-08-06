@@ -8,6 +8,11 @@ import 'package:math_city/domain/questions/diagram_spec.dart';
 /// color. Used for fraction × fraction (`mult_fractions_proper`) where
 /// kids see a/cols horizontally, b/rows vertically, and the product as
 /// the overlap rectangle.
+///
+/// [AreaGridSpec.count] switches to the counting layout instead: exactly
+/// `shadedCount` shapes, row-major, with a shorter final row. No empty
+/// placeholder cells are drawn, so counting what's on screen always
+/// yields the answer.
 class AreaGrid extends StatelessWidget {
   const AreaGrid({
     required this.spec,
@@ -26,6 +31,17 @@ class AreaGrid extends StatelessWidget {
     final rowShade = theme.colorScheme.secondary.withValues(alpha: 0.4);
     final emptyColor = theme.colorScheme.surfaceContainerHighest;
     final borderColor = theme.colorScheme.outline;
+
+    final count = spec.shadedCount;
+    if (count != null) {
+      return _CountGrid(
+        count: count,
+        cols: spec.cols,
+        cellSize: cellSize,
+        fill: overlapColor,
+        borderColor: borderColor,
+      );
+    }
 
     return SizedBox(
       width: cellSize * spec.cols,
@@ -57,6 +73,52 @@ class AreaGrid extends StatelessWidget {
           );
         }),
       ),
+    );
+  }
+}
+
+/// The counting layout for [AreaGridSpec.count]: [count] shapes at [cols]
+/// per row, left-aligned, with a shorter last row. Cells are fixed-size
+/// (not `Expanded`) so a short final row keeps its objects the same size as
+/// the rows above instead of stretching them across the full width.
+class _CountGrid extends StatelessWidget {
+  const _CountGrid({
+    required this.count,
+    required this.cols,
+    required this.cellSize,
+    required this.fill,
+    required this.borderColor,
+  });
+
+  final int count;
+  final int cols;
+  final double cellSize;
+  final Color fill;
+  final Color borderColor;
+
+  @override
+  Widget build(BuildContext context) {
+    final rows = (count + cols - 1) ~/ cols;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: List.generate(rows, (r) {
+        final inThisRow = (count - r * cols).clamp(0, cols);
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: List.generate(
+            inThisRow,
+            (_) => Container(
+              width: cellSize,
+              height: cellSize,
+              decoration: BoxDecoration(
+                color: fill,
+                border: Border.all(color: borderColor, width: 0.8),
+              ),
+            ),
+          ),
+        );
+      }),
     );
   }
 }
