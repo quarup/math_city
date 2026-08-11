@@ -54,6 +54,11 @@ void main() {
         expect(q.correctAnswer, '$a/$b');
         expect(q.answerFormat, AnswerFormat.fraction);
         expect(q.answerShape, AnswerShape.exactString);
+        // Regression (#104): `fraction` is keypad-eligible, and on a keypad
+        // `exactString` rejects 6/10 and 0.6 — both honestly "the same as the
+        // ratio 3:5". The distractors are what bound the answer space, so the
+        // choices have to be on screen.
+        expect(q.multipleChoiceOnly, isTrue);
         _expectThreeDistinctDistractors(q);
       }
     });

@@ -177,6 +177,12 @@ GeneratedQuestion ratioLanguage(Random rand) {
     // to accept e.g. 6/10 as "equivalent to 3:5" — that's a different
     // lesson (equivalent_ratios).
     answerShape: AnswerShape.exactString,
+    // Recognition task: the point is picking a/b out of the rival notations,
+    // which needs them on screen. On a keypad the prompt never says fraction
+    // form is wanted, and exactString then rejects 6/10 and 0.6 — both of
+    // which genuinely are "the same as the ratio 3:5". The distractors are
+    // what bound the answer space here.
+    multipleChoiceOnly: true,
   );
 }
 
