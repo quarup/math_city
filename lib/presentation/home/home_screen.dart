@@ -333,6 +333,7 @@ class _AddChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final palette = theme.extension<AppPalette>()!;
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -346,16 +347,18 @@ class _AddChip extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            // brandTealDeep, not primary: the logo teal only reaches 2.1:1 on
+            // this card fill.
             Icon(
               Icons.person_add_rounded,
               size: 28,
-              color: theme.colorScheme.primary,
+              color: palette.brandTealDeep,
             ),
             const SizedBox(height: 6),
             Text(
               'Add',
               style: theme.textTheme.labelMedium?.copyWith(
-                color: theme.colorScheme.primary,
+                color: palette.brandTealDeep,
               ),
             ),
           ],
@@ -377,7 +380,10 @@ class _DebugChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final accent = theme.colorScheme.tertiary;
+    // The logo yellow lands at 1.29:1 on this card fill — all but invisible.
+    // A neutral keeps the dev-only chip legible and subordinate to the teal
+    // player/add cards; the bug glyph is what distinguishes it, not the hue.
+    final accent = theme.colorScheme.onSurfaceVariant;
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -417,28 +423,46 @@ class _EmptyPlayerPrompt extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final palette = theme.extension<AppPalette>()!;
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          OutlinedButton.icon(
+          // Solid fill, not an outline: the sky gradient sits behind these, and
+          // a transparent button leaves both the label and the border far under
+          // WCAG contrast (see AppPalette.brandTealDeep).
+          FilledButton.icon(
             onPressed: onAdd,
             icon: const Icon(Icons.person_add_rounded),
             label: const Text('Create Player'),
-            style: OutlinedButton.styleFrom(
+            style: FilledButton.styleFrom(
+              backgroundColor: palette.brandTealDeep,
+              foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(
-                horizontal: 24,
-                vertical: 14,
+                horizontal: 28,
+                vertical: 16,
               ),
-              textStyle: theme.textTheme.titleMedium,
+              textStyle: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
           if (onDebug != null) ...[
-            const SizedBox(height: 12),
-            TextButton.icon(
+            const SizedBox(height: 14),
+            // Deliberately quieter than the primary action, but still on a
+            // solid ground so it doesn't dissolve into the sky.
+            FilledButton.icon(
               onPressed: onDebug,
-              icon: const Icon(Icons.bug_report_rounded),
+              icon: const Icon(Icons.bug_report_rounded, size: 20),
               label: const Text('Debug'),
+              style: FilledButton.styleFrom(
+                backgroundColor: theme.colorScheme.surfaceContainerLowest,
+                foregroundColor: theme.colorScheme.onSurfaceVariant,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 10,
+                ),
+              ),
             ),
           ],
         ],

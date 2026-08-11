@@ -8,6 +8,7 @@ class AppPalette extends ThemeExtension<AppPalette> {
   const AppPalette({
     required this.skyGradientStart,
     required this.skyGradientEnd,
+    required this.brandTealDeep,
     required this.coinGold,
     required this.coinGoldDeep,
     required this.streakOrange,
@@ -21,6 +22,18 @@ class AppPalette extends ThemeExtension<AppPalette> {
 
   final Color skyGradientStart;
   final Color skyGradientEnd;
+
+  /// Deeper companion to `colorScheme.primary` (the logo teal) for anything
+  /// that has to read against the sky gradient or a light surface.
+  ///
+  /// The logo teal is far too light to carry contrast on this app's light
+  /// grounds — as a label on the sky it lands at 1.3:1, and white text on a
+  /// teal fill at 2.6:1, both well under WCAG's 4.5:1 for text and 3:1 for
+  /// UI shapes. This tone clears both: 3.1:1 as a fill against the sky,
+  /// 6.1:1 for white text on it, and 5.0:1 as a label on `surfaceContainer`.
+  /// Use it for buttons and labels; keep `primary` for large decorative fills
+  /// where contrast isn't load-bearing.
+  final Color brandTealDeep;
 
   /// Star/coin yellow (logo gear inner).
   final Color coinGold;
@@ -50,6 +63,7 @@ class AppPalette extends ThemeExtension<AppPalette> {
   static const light = AppPalette(
     skyGradientStart: Color(0xFF5DB7E8),
     skyGradientEnd: Color(0xFFA4DDC9),
+    brandTealDeep: Color(0xFF0E6E62),
     coinGold: Color(0xFFF0CC30),
     coinGoldDeep: Color(0xFFB8860B),
     streakOrange: Color(0xFFF2A33A),
@@ -65,6 +79,7 @@ class AppPalette extends ThemeExtension<AppPalette> {
   AppPalette copyWith({
     Color? skyGradientStart,
     Color? skyGradientEnd,
+    Color? brandTealDeep,
     Color? coinGold,
     Color? coinGoldDeep,
     Color? streakOrange,
@@ -78,6 +93,7 @@ class AppPalette extends ThemeExtension<AppPalette> {
     return AppPalette(
       skyGradientStart: skyGradientStart ?? this.skyGradientStart,
       skyGradientEnd: skyGradientEnd ?? this.skyGradientEnd,
+      brandTealDeep: brandTealDeep ?? this.brandTealDeep,
       coinGold: coinGold ?? this.coinGold,
       coinGoldDeep: coinGoldDeep ?? this.coinGoldDeep,
       streakOrange: streakOrange ?? this.streakOrange,
@@ -100,6 +116,7 @@ class AppPalette extends ThemeExtension<AppPalette> {
         t,
       )!,
       skyGradientEnd: Color.lerp(skyGradientEnd, other.skyGradientEnd, t)!,
+      brandTealDeep: Color.lerp(brandTealDeep, other.brandTealDeep, t)!,
       coinGold: Color.lerp(coinGold, other.coinGold, t)!,
       coinGoldDeep: Color.lerp(coinGoldDeep, other.coinGoldDeep, t)!,
       streakOrange: Color.lerp(streakOrange, other.streakOrange, t)!,
