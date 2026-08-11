@@ -147,12 +147,16 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen> {
     }
     final speakablePrompt = isWordProblem(question.prompt);
 
-    // Keypad eligibility is gated by BOTH band AND answer format. The
-    // keypad can only enter numeric values (digits + a small extra-chars
-    // row); answer formats whose surface form is text-shaped (string,
-    // commaList) force MC even at the comfortable band.
+    // Keypad eligibility is gated by band, answer format, AND the question's
+    // own opt-out. The keypad can only enter numeric values (digits + a small
+    // extra-chars row); answer formats whose surface form is text-shaped
+    // (string, commaList) force MC even at the comfortable band. Questions
+    // that read against a list of choices ("Which of these is a factor of
+    // 24?") set `multipleChoiceOnly` — their answer is numeric, but more than
+    // one number is right and only the stored one is accepted.
     final useNumberPad =
         widget.band == ProficiencyBand.comfortable &&
+        !question.multipleChoiceOnly &&
         formatSupportsKeypad(question.answerFormat);
 
     return Scaffold(

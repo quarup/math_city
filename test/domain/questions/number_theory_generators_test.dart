@@ -59,7 +59,7 @@ void main() {
 
   group('gcf_two_numbers', () {
     test('answer is gcd(a, b)', () {
-      final re = RegExp(r'^Find the GCF of (\d+) and (\d+)\.$');
+      final re = RegExp(r'^What is the greatest common factor of (\d+) and (\d+)\?$');
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'gcf_two_numbers', i);
         final m = re.firstMatch(q.prompt);
@@ -82,7 +82,7 @@ void main() {
 
   group('lcm_two_numbers', () {
     test('answer is divisible by both a and b; no smaller common multiple', () {
-      final re = RegExp(r'^Find the LCM of (\d+) and (\d+)\.$');
+      final re = RegExp(r'^What is the least common multiple of (\d+) and (\d+)\?$');
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'lcm_two_numbers', i);
         final m = re.firstMatch(q.prompt);
@@ -291,7 +291,7 @@ void main() {
 
   group('distributive_with_gcf', () {
     test('answer factors a+b as g(p+q) with gcd(p,q)=1 and g·p+g·q=a+b', () {
-      final re = RegExp(r'^Factor out the GCF: (\d+) \+ (\d+)$');
+      final re = RegExp(r'^Rewrite (\d+) \+ (\d+) using the greatest common factor\.$');
       final ansRe = RegExp(r'^(\d+)\((\d+) \+ (\d+)\)$');
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'distributive_with_gcf', i);

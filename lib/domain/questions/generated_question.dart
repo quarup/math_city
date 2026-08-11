@@ -77,6 +77,7 @@ class GeneratedQuestion {
     this.explanationDiagram,
     this.answerFormat = AnswerFormat.integer,
     this.answerShape = AnswerShape.any,
+    this.multipleChoiceOnly = false,
   });
 
   final String conceptId;
@@ -114,6 +115,17 @@ class GeneratedQuestion {
 
   /// Surface-form constraint on accepted answers. See [AnswerShape].
   final AnswerShape answerShape;
+
+  /// Forces multiple choice even at the comfortable band, regardless of
+  /// [answerFormat].
+  ///
+  /// For "Which of these is a factor of 24?" the answer is a plain integer,
+  /// so the format alone would allow the keypad — but the question *refers to
+  /// the choices*, and 24 has eight factors. Typing any of the other seven is
+  /// mathematically right and would be marked wrong. Set this whenever the
+  /// prompt only makes sense against a list, or when many values would be
+  /// correct and only the stored one is accepted.
+  final bool multipleChoiceOnly;
 
   /// All four choices unsorted — callers should shuffle before displaying.
   List<String> get allChoices => [correctAnswer, ...distractors];

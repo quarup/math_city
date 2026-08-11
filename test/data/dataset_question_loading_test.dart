@@ -112,6 +112,40 @@ void main() {
     expect(addItems!.first.answerFormat, AnswerFormat.integer);
   });
 
+  // Regression (#103): the ingest script formatted the number with Python's
+  // `:g`, which tips anything past six significant digits into exponent form.
+  // 123 rounding explanations shipped reading "Round 2.76508e+08 to nearest
+  // 1000000 gives 277000000" — unreadable for the Grade 4-5 audience the
+  // concept targets. Guards every bundled item, not just the rounding ones,
+  // since the datasets are generated outside this repo.
+  test('no bundled dataset text uses scientific notation', () async {
+    final db = AppDatabase(NativeDatabase.memory());
+    addTearDown(db.close);
+    final byConcept = await db.allDatasetQuestionsByConcept();
+
+    // A digit, then `e`, then an optional sign and more digits: 2.76508e+08.
+    final sci = RegExp('[0-9]e[+-]?[0-9]');
+    final offenders = <String>[];
+    for (final entry in byConcept.entries) {
+      for (final q in entry.value) {
+        for (final text in [q.prompt, ...q.explanation]) {
+          if (sci.hasMatch(text)) {
+            offenders.add('${entry.key}: $text');
+            break;
+          }
+        }
+      }
+    }
+
+    expect(
+      offenders,
+      isEmpty,
+      reason:
+          'Dataset text must be readable by a child:\n'
+          '${offenders.take(5).join('\n')}',
+    );
+  });
+
   test(
     'loadBundledDatasetQuestions: binding-present path loads items',
     () async {

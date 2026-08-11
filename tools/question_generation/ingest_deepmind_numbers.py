@@ -214,6 +214,15 @@ NEAREST_PLACE_POWER: dict[str, int] = {
 # Extract a signed number (possibly with a decimal point) from the prompt.
 SIGNED_NUMBER_RE = re.compile(r"-?\d+(?:\.\d+)?")
 
+# Pulls the number and the place wording back out of the source prompt, so the
+# explanation can echo them verbatim instead of re-rendering them. Covers both
+# DeepMind phrasings: "Round 4969562 to the nearest one million." and "What is
+# 2651 rounded to the nearest 100?".
+ROUND_PROMPT_ECHO_RE = re.compile(
+    r"^(?:Round|What is)\s+(?P<value>-?[\d.]+)\s+(?:rounded\s+)?"
+    r"to\s+(?P<place>.+?)\s*[.?]?$"
+)
+
 WORD_TO_INT: dict[str, int] = {
     "zero": 0, "one": 1, "two": 2, "three": 3, "four": 4,
     "five": 5, "six": 6, "seven": 7, "eight": 8, "nine": 9,
@@ -431,13 +440,31 @@ def ingest_round_number(
             stats["rejected_distractor_short"] += 1
             continue
 
-        place_phrase = (
-            f"{k} decimal place{'s' if k != 1 else ''}"
-            if kind == "dps"
-            else f"nearest {10**k}"
-        )
+        # Echo the prompt's own rendering of the number and the place.
+        #
+        # This used to be `f"Round {value:g} to nearest {10**k} ..."`, and `:g`
+        # tips anything past six significant digits into exponent form — so a
+        # Grade 4 child rounding to the nearest million was told "Round
+        # 2.76508e+08 to nearest 1000000 gives 277000000". Echoing the prompt
+        # also keeps the vocabulary consistent: the prompt says "the nearest
+        # one million", so the explanation no longer answers with "1000000".
+        echo = ROUND_PROMPT_ECHO_RE.match(prompt)
+        if kind == "dps":
+            # Normalised ("two dps" → "2 decimal places") rather than echoed,
+            # since the source phrasing varies more than it's worth mirroring.
+            place_phrase = f"{k} decimal place{'s' if k != 1 else ''}"
+        elif echo:
+            place_phrase = echo.group("place")
+        else:
+            place_phrase = f"nearest {10**k}"
+        if echo:
+            value_str = echo.group("value")
+        elif float(value).is_integer():
+            value_str = str(int(value))
+        else:
+            value_str = f"{value:g}"
         explanation = [
-            f"Round {value:g} to {place_phrase} gives {correct_answer_str}."
+            f"Round {value_str} to {place_phrase} gives {correct_answer_str}."
         ]
 
         item = build_item(

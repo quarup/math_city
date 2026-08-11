@@ -79,6 +79,9 @@ GeneratedQuestion factorsOfN(Random rand) {
       '$n ÷ $factor = ${n ~/ factor}, with no remainder.',
       'So $factor is a factor of $n.',
     ],
+    // "Which of these" only means something against the choices, and $n has
+    // several factors — on a keypad every other one is right too.
+    multipleChoiceOnly: true,
   );
 }
 
@@ -110,6 +113,8 @@ GeneratedQuestion multiplesOfN(Random rand) {
       '$correct = $n × $k.',
       'So $correct is a multiple of $n.',
     ],
+    // Multiples of $n are unbounded — a keypad answer can't be graded.
+    multipleChoiceOnly: true,
   );
 }
 
@@ -508,7 +513,10 @@ GeneratedQuestion gcfTwoNumbers(Random rand) {
 
   return GeneratedQuestion(
     conceptId: 'gcf_two_numbers',
-    prompt: 'Find the GCF of $a and $b.',
+    // Spelled out, per Common Core 6.NS.B.4 — the standard says "greatest
+    // common factor" and never abbreviates. The acronym is classroom
+    // shorthand that varies by teacher and textbook.
+    prompt: 'What is the greatest common factor of $a and $b?',
     correctAnswer: correct,
     distractors: _wholeDistractors(g, candidates, rand),
     explanation: [
@@ -575,11 +583,14 @@ GeneratedQuestion distributiveWithGcf(Random rand) {
 
   return GeneratedQuestion(
     conceptId: 'distributive_with_gcf',
-    prompt: 'Factor out the GCF: $a + $b',
+    // "Factor out the GCF" packed an acronym and a procedure name into four
+    // words. Common Core 6.NS.B.4 states this one concretely — "express
+    // 36 + 8 as 4 (9 + 2)" — so say what to produce, not what to perform.
+    prompt: 'Rewrite $a + $b using the greatest common factor.',
     correctAnswer: correct,
     distractors: distractors,
     explanation: [
-      'GCF of $a and $b is $g.',
+      'The greatest common factor of $a and $b is $g.',
       '$a = $g × $p; $b = $g × $q.',
       '$a + $b = $correct.',
     ],
@@ -618,7 +629,8 @@ GeneratedQuestion lcmTwoNumbers(Random rand) {
 
   return GeneratedQuestion(
     conceptId: 'lcm_two_numbers',
-    prompt: 'Find the LCM of $a and $b.',
+    // Spelled out — see the greatest-common-factor prompt above.
+    prompt: 'What is the least common multiple of $a and $b?',
     correctAnswer: correct,
     distractors: _wholeDistractors(lcm, candidates, rand),
     explanation: [
