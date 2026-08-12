@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:math_city/domain/questions/generated_question.dart';
+import 'package:math_city/domain/questions/superscripts.dart';
 
 /// Late-grade generators: Pythagorean, volume formula, scientific
 /// notation operations, rational ordering, rational-vs-irrational.
@@ -151,18 +152,18 @@ GeneratedQuestion scientificNotationOps(Random rand) {
   final q = rand.nextInt(4) + 2;
   final productCoeff = a * b;
   final productExp = p + q;
-  final correct = '$productCoeff × 10^$productExp';
+  final correct = '$productCoeff × 10${sup(productExp)}';
 
   // Build candidates that don't collide with the correct answer for any
   // (p, q) combination — the p×q variant collides when p+q == p·q (only
   // when both are 2). Several fallbacks keep the pool ≥ 3.
   final candidates = <String>[
-    '$productCoeff × 10^${p * q}',
-    '${a + b} × 10^$productExp',
-    '$productCoeff × 10^$p',
-    '$productCoeff × 10^$q',
-    '${productCoeff + 1} × 10^$productExp',
-    '$productCoeff × 10^${productExp + 1}',
+    '$productCoeff × 10${sup(p * q)}',
+    '${a + b} × 10${sup(productExp)}',
+    '$productCoeff × 10${sup(p)}',
+    '$productCoeff × 10${sup(q)}',
+    '${productCoeff + 1} × 10${sup(productExp)}',
+    '$productCoeff × 10${sup(productExp + 1)}',
   ];
   final distractors = <String>[];
   final seen = <String>{correct};
@@ -173,7 +174,7 @@ GeneratedQuestion scientificNotationOps(Random rand) {
 
   return GeneratedQuestion(
     conceptId: 'scientific_notation_ops',
-    prompt: '($a × 10^$p) × ($b × 10^$q) = ?',
+    prompt: '($a × 10${sup(p)}) × ($b × 10${sup(q)}) = ?',
     correctAnswer: correct,
     distractors: distractors,
     explanation: [

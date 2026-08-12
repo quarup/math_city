@@ -15,6 +15,11 @@ void _expectThreeDistinctDistractors(GeneratedQuestion q) {
   expect(q.distractors, isNot(contains(q.correctAnswer)));
 }
 
+/// Parses a run of Unicode superscript digits back to an int ('²³' → 23).
+const _supDigits = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+int _supToInt(String s) =>
+    int.parse(s.split('').map((c) => _supDigits.indexOf(c)).join());
+
 void main() {
   late GeneratorRegistry registry;
   setUp(() => registry = GeneratorRegistry.defaultRegistry());
@@ -59,7 +64,9 @@ void main() {
 
   group('gcf_two_numbers', () {
     test('answer is gcd(a, b)', () {
-      final re = RegExp(r'^What is the greatest common factor of (\d+) and (\d+)\?$');
+      final re = RegExp(
+        r'^What is the greatest common factor of (\d+) and (\d+)\?$',
+      );
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'gcf_two_numbers', i);
         final m = re.firstMatch(q.prompt);
@@ -82,7 +89,9 @@ void main() {
 
   group('lcm_two_numbers', () {
     test('answer is divisible by both a and b; no smaller common multiple', () {
-      final re = RegExp(r'^What is the least common multiple of (\d+) and (\d+)\?$');
+      final re = RegExp(
+        r'^What is the least common multiple of (\d+) and (\d+)\?$',
+      );
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'lcm_two_numbers', i);
         final m = re.firstMatch(q.prompt);
@@ -125,13 +134,13 @@ void main() {
 
   group('exponents_whole_number', () {
     test('answer = base^exp computed integer', () {
-      final re = RegExp(r'^What is (\d+)\^(\d+)\?$');
+      final re = RegExp(r'^What is (\d+)([⁰¹²³⁴⁵⁶⁷⁸⁹]+)\?$');
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'exponents_whole_number', i);
         final m = re.firstMatch(q.prompt);
         expect(m, isNotNull, reason: q.prompt);
         final base = int.parse(m!.group(1)!);
-        final exp = int.parse(m.group(2)!);
+        final exp = _supToInt(m.group(2)!);
         var v = 1;
         for (var k = 0; k < exp; k++) {
           v *= base;
@@ -144,9 +153,9 @@ void main() {
 
   group('order_of_operations_with_exp', () {
     test('answer evaluates with exponent-first precedence', () {
-      final reAdd = RegExp(r'^(\d+) \+ (\d+)\^2 = \?$');
-      final reMult = RegExp(r'^(\d+) × (\d+)\^2 = \?$');
-      final reSub = RegExp(r'^(\d+) − (\d+)\^2 = \?$');
+      final reAdd = RegExp(r'^(\d+) \+ (\d+)² = \?$');
+      final reMult = RegExp(r'^(\d+) × (\d+)² = \?$');
+      final reSub = RegExp(r'^(\d+) − (\d+)² = \?$');
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'order_of_operations_with_exp', i);
         int? expected;
@@ -208,7 +217,8 @@ void main() {
   group('scientific_notation_read', () {
     test('answer = coefficient × 10^exp (integer)', () {
       final re = RegExp(
-        r'^What is (\d+)\.(\d+) × 10\^(\d+) written as a whole number\?$',
+        r'^What is (\d+)\.(\d+) × 10([⁰¹²³⁴⁵⁶⁷⁸⁹]+) '
+        r'written as a whole number\?$',
       );
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'scientific_notation_read', i);
@@ -216,7 +226,7 @@ void main() {
         expect(m, isNotNull, reason: q.prompt);
         final whole = int.parse(m!.group(1)!);
         final frac = int.parse(m.group(2)!);
-        final exp = int.parse(m.group(3)!);
+        final exp = _supToInt(m.group(3)!);
         final coeffTenths = whole * 10 + frac;
         var expected = coeffTenths;
         for (var k = 1; k < exp; k++) {
@@ -231,7 +241,7 @@ void main() {
   group('scientific_notation_write', () {
     test('answer parses back to the prompt value', () {
       final re = RegExp(r'^Write (\d+) in scientific notation\.$');
-      final ansRe = RegExp(r'^(\d+)\.(\d+) × 10\^(\d+)$');
+      final ansRe = RegExp(r'^(\d+)\.(\d+) × 10([⁰¹²³⁴⁵⁶⁷⁸⁹]+)$');
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'scientific_notation_write', i);
         final m = re.firstMatch(q.prompt);
@@ -241,7 +251,7 @@ void main() {
         expect(am, isNotNull, reason: q.correctAnswer);
         final whole = int.parse(am!.group(1)!);
         final frac = int.parse(am.group(2)!);
-        final exp = int.parse(am.group(3)!);
+        final exp = _supToInt(am.group(3)!);
         var reconstructed = whole * 10 + frac;
         for (var k = 1; k < exp; k++) {
           reconstructed *= 10;
@@ -254,32 +264,33 @@ void main() {
 
   group('integer_exponent_props', () {
     test('answer matches exponent rule for the prompt shape', () {
-      final reMult = RegExp(r'^Simplify: (\d+)\^(\d+) × (\d+)\^(\d+)$');
-      final reDiv = RegExp(r'^Simplify: (\d+)\^(\d+) ÷ (\d+)\^(\d+)$');
-      final rePow = RegExp(r'^Simplify: \((\d+)\^(\d+)\)\^(\d+)$');
-      final ansRe = RegExp(r'^(\d+)\^(\d+)$');
+      const sup = '([⁰¹²³⁴⁵⁶⁷⁸⁹]+)';
+      final reMult = RegExp('^Simplify: (\\d+)$sup × (\\d+)$sup\$');
+      final reDiv = RegExp('^Simplify: (\\d+)$sup ÷ (\\d+)$sup\$');
+      final rePow = RegExp('^Simplify: \\((\\d+)$sup\\)$sup\$');
+      final ansRe = RegExp('^(\\d+)$sup\$');
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'integer_exponent_props', i);
         final am = ansRe.firstMatch(q.correctAnswer);
         expect(am, isNotNull, reason: q.correctAnswer);
         final base = int.parse(am!.group(1)!);
-        final newExp = int.parse(am.group(2)!);
+        final newExp = _supToInt(am.group(2)!);
         final mM = reMult.firstMatch(q.prompt);
         final mD = reDiv.firstMatch(q.prompt);
         final mP = rePow.firstMatch(q.prompt);
         if (mM != null) {
           expect(int.parse(mM.group(1)!), base);
           expect(int.parse(mM.group(3)!), base);
-          final m = int.parse(mM.group(2)!);
-          final n = int.parse(mM.group(4)!);
+          final m = _supToInt(mM.group(2)!);
+          final n = _supToInt(mM.group(4)!);
           expect(newExp, m + n);
         } else if (mD != null) {
-          final m = int.parse(mD.group(2)!);
-          final n = int.parse(mD.group(4)!);
+          final m = _supToInt(mD.group(2)!);
+          final n = _supToInt(mD.group(4)!);
           expect(newExp, m - n);
         } else if (mP != null) {
-          final m = int.parse(mP.group(2)!);
-          final n = int.parse(mP.group(3)!);
+          final m = _supToInt(mP.group(2)!);
+          final n = _supToInt(mP.group(3)!);
           expect(newExp, m * n);
         } else {
           fail('unrecognised prompt: ${q.prompt}');
@@ -291,7 +302,9 @@ void main() {
 
   group('distributive_with_gcf', () {
     test('answer factors a+b as g(p+q) with gcd(p,q)=1 and g·p+g·q=a+b', () {
-      final re = RegExp(r'^Rewrite (\d+) \+ (\d+) using the greatest common factor\.$');
+      final re = RegExp(
+        r'^Rewrite (\d+) \+ (\d+) using the greatest common factor\.$',
+      );
       final ansRe = RegExp(r'^(\d+)\((\d+) \+ (\d+)\)$');
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'distributive_with_gcf', i);

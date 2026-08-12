@@ -15,6 +15,11 @@ void _expectThreeDistinctDistractors(GeneratedQuestion q) {
   expect(q.distractors, isNot(contains(q.correctAnswer)));
 }
 
+/// Parses a run of Unicode superscript digits back to an int ('²³' → 23).
+const _supDigits = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+int _supToInt(String s) =>
+    int.parse(s.split('').map((c) => _supDigits.indexOf(c)).join());
+
 void main() {
   late GeneratorRegistry registry;
   setUp(() => registry = GeneratorRegistry.defaultRegistry());
@@ -72,21 +77,22 @@ void main() {
   group('scientific_notation_ops', () {
     test('multiplication: ab × 10^(p+q)', () {
       final re = RegExp(
-        r'^\((\d+) × 10\^(\d+)\) × \((\d+) × 10\^(\d+)\) = \?$',
+        r'^\((\d+) × 10([⁰¹²³⁴⁵⁶⁷⁸⁹]+)\) × '
+        r'\((\d+) × 10([⁰¹²³⁴⁵⁶⁷⁸⁹]+)\) = \?$',
       );
-      final ansRe = RegExp(r'^(\d+) × 10\^(\d+)$');
+      final ansRe = RegExp(r'^(\d+) × 10([⁰¹²³⁴⁵⁶⁷⁸⁹]+)$');
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'scientific_notation_ops', i);
         final m = re.firstMatch(q.prompt);
         expect(m, isNotNull, reason: q.prompt);
         final a = int.parse(m!.group(1)!);
-        final p = int.parse(m.group(2)!);
+        final p = _supToInt(m.group(2)!);
         final b = int.parse(m.group(3)!);
-        final qq = int.parse(m.group(4)!);
+        final qq = _supToInt(m.group(4)!);
         final am = ansRe.firstMatch(q.correctAnswer);
         expect(am, isNotNull, reason: q.correctAnswer);
         expect(int.parse(am!.group(1)!), a * b);
-        expect(int.parse(am.group(2)!), p + qq);
+        expect(_supToInt(am.group(2)!), p + qq);
         _expectThreeDistinctDistractors(q);
       }
     });

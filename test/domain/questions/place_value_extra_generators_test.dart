@@ -252,12 +252,15 @@ void main() {
 
   group('powers_of_10', () {
     test('10^exp = correct, exp ∈ [1, 6]', () {
-      final re = RegExp(r'^10\^(\d+) = \?$');
+      final re = RegExp(r'^10([⁰¹²³⁴⁵⁶⁷⁸⁹]+) = \?$');
+      const supDigits = '⁰¹²³⁴⁵⁶⁷⁸⁹';
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'powers_of_10', i);
         final m = re.firstMatch(q.prompt);
         expect(m, isNotNull);
-        final exp = int.parse(m!.group(1)!);
+        final exp = int.parse(
+          m!.group(1)!.split('').map((c) => supDigits.indexOf(c)).join(),
+        );
         expect(exp, inInclusiveRange(1, 6));
         var expected = 1;
         for (var k = 0; k < exp; k++) {

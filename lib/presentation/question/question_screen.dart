@@ -10,6 +10,7 @@ import 'package:math_city/domain/questions/is_word_problem.dart';
 import 'package:math_city/presentation/diagrams/diagram_renderer.dart';
 import 'package:math_city/presentation/question/number_pad_widget.dart';
 import 'package:math_city/presentation/result/result_screen.dart';
+import 'package:math_city/presentation/widgets/math_text.dart';
 import 'package:math_city/presentation/widgets/speech_toggle_button.dart';
 import 'package:math_city/state/introduced_concepts_provider.dart';
 import 'package:math_city/state/proficiency_provider.dart';
@@ -270,7 +271,7 @@ class _PromptCard extends StatelessWidget {
       elevation: 4,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
-        child: Text(
+        child: MathText(
           prompt,
           style: theme.textTheme.headlineMedium?.copyWith(
             fontWeight: FontWeight.bold,
@@ -297,7 +298,7 @@ class _ChoiceButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 18),
         textStyle: theme.textTheme.headlineSmall,
       ),
-      child: Text(label),
+      child: MathText(label),
     );
   }
 }
