@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:math_city/domain/questions/distractors.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
+import 'package:math_city/domain/questions/superscripts.dart';
 
 /// K-G5 place-value and algebra-property fill-in. Text-only single-integer
 /// or MC-over-digit-strings answers.
@@ -464,14 +465,14 @@ GeneratedQuestion placeValueRelationship10x(Random rand) {
 // powers_of_10 (G5)
 // ─────────────────────────────────────────────────────────────────────────
 
-/// "10^4 = ?" → 10000. Exponent ∈ [1, 6] so the answer fits without
+/// "10⁴ = ?" → 10000. Exponent ∈ [1, 6] so the answer fits without
 /// stretching into the millions where the keypad gets awkward.
 GeneratedQuestion powersOf10(Random rand) {
   final exp = rand.nextInt(6) + 1; // 1..6
   final correct = _pow10(exp);
   return GeneratedQuestion(
     conceptId: 'powers_of_10',
-    prompt: '10^$exp = ?',
+    prompt: '10${sup(exp)} = ?',
     correctAnswer: '$correct',
     distractors: integerDistractorsWith(
       correct,
@@ -479,8 +480,8 @@ GeneratedQuestion powersOf10(Random rand) {
       misconception: 10 * exp, // multiplied instead of repeated mult
     ),
     explanation: [
-      '10^$exp means 10 multiplied by itself $exp times.',
-      '10^$exp = $correct.',
+      '10${sup(exp)} means 10 multiplied by itself $exp times.',
+      '10${sup(exp)} = $correct.',
     ],
   );
 }

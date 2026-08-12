@@ -12,6 +12,7 @@ import 'package:math_city/presentation/city/city_screen.dart';
 import 'package:math_city/presentation/diagrams/diagram_renderer.dart';
 import 'package:math_city/presentation/spin/spin_screen.dart';
 import 'package:math_city/presentation/theme/app_palette.dart';
+import 'package:math_city/presentation/widgets/math_text.dart';
 import 'package:math_city/presentation/widgets/speech_toggle_button.dart';
 import 'package:math_city/state/game_session_provider.dart';
 import 'package:math_city/state/tts_provider.dart';
@@ -316,7 +317,7 @@ class _ExplanationCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            MathText(
               'You answered: $selectedAnswer',
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: palette.errorRedDeep,
@@ -330,7 +331,7 @@ class _ExplanationCard extends StatelessWidget {
             for (final step in explanation)
               Padding(
                 padding: const EdgeInsets.only(bottom: 6),
-                child: Text(
+                child: MathText(
                   step,
                   style: theme.textTheme.bodyLarge?.copyWith(
                     fontWeight: FontWeight.bold,
@@ -378,7 +379,7 @@ class _EquivalentNudgeCard extends StatelessWidget {
             ),
             const SizedBox(width: 12),
             Expanded(
-              child: Text(
+              child: MathText(
                 "You said $playerAnswer — that's equal to $canonical!",
                 style: theme.textTheme.bodyLarge?.copyWith(
                   fontWeight: FontWeight.w600,
