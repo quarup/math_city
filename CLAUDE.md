@@ -35,8 +35,6 @@ State flows via Riverpod providers at the boundary between presentation and doma
 
 ## Commands
 
-> Project skeleton not yet created — these will apply once Phase 0 is done.
-
 ```sh
 flutter pub get        # install deps
 flutter run            # run on connected device/simulator
@@ -44,6 +42,52 @@ flutter test           # run all tests
 flutter analyze        # static analysis
 dart format .          # format
 ```
+
+## Finding UX bugs in question content
+
+**`/ux-sweep` is the main tool for auditing question quality.** Use it
+whenever you touch generators or diagram widgets, and before calling a
+content phase done. It plays real questions on the emulator and writes a
+reviewed, screenshotted report.
+
+```
+/ux-sweep 3.5              # one curriculum section
+/ux-sweep fractions        # a category
+/ux-sweep add_within_10    # a single concept
+/ux-sweep all              # the whole catalogue (~27 min, ~60 MB of PNGs)
+```
+
+Per concept it captures the question screen in **both** input modes
+(multiple choice and keypad), answers it correctly and checks the green
+screen, then replays the identical question from its seed, answers it
+wrong, and captures the red screen with its explanation. Output lands in
+`ux_reports/<date>-<scope>-<band>/report.md`, committed alongside the
+code.
+
+It found two real bugs on its first run, so treat its findings as
+credible. Full workflow — including resuming an interrupted sweep — is in
+[.claude/skills/ux-sweep/SKILL.md](.claude/skills/ux-sweep/SKILL.md).
+
+**How it works, and why you can't drive the app by hand instead.** The app
+runs a `kDebugMode`-only HTTP control port
+([lib/services/debug_harness.dart](lib/services/debug_harness.dart)) on
+`127.0.0.1:8081`, driven by [tools/ux_sweep/uxctl.py](tools/ux_sweep/uxctl.py)
+over `adb forward`. The port takes a concept id and puts that question on
+screen — no tapping, no navigating by screenshot — and hands back the
+correct answer, the displayed choice order, and any `FlutterError`s raised
+while the screen rendered. That last part means **overflows and build
+exceptions arrive as data**, not as something you have to spot in pixels.
+Getting the answer from the app rather than solving it from a screenshot
+is the whole point: an agent doing the maths itself gets some wrong and
+files bugs that aren't real.
+
+If you add state to `QuestionScreen` or `ResultScreen`, keep the
+`DebugHarness.instance.attach*` calls intact or the sweep goes blind.
+
+`build_report.py` **validates its own coverage** and exits non-zero if
+anything is missing — a probe that died partway, a concept with no note, a
+note with an invalid verdict, a missing screenshot. Never present a report
+that exited non-zero as finished.
 
 ## Conventions
 
