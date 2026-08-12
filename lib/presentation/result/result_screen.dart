@@ -14,6 +14,8 @@ import 'package:math_city/presentation/spin/spin_screen.dart';
 import 'package:math_city/presentation/theme/app_palette.dart';
 import 'package:math_city/presentation/widgets/math_text.dart';
 import 'package:math_city/presentation/widgets/speech_toggle_button.dart';
+import 'package:math_city/services/debug_harness.dart';
+import 'package:math_city/services/tts_service.dart';
 import 'package:math_city/state/game_session_provider.dart';
 import 'package:math_city/state/tts_provider.dart';
 
@@ -56,6 +58,10 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
   final GlobalKey _starKey = GlobalKey();
   bool _starVisible = true;
 
+  /// Cached in `initState`: `ref` is unsafe once the widget has been
+  /// deactivated, so `dispose` cannot look the service up itself.
+  late final TtsService _tts;
+
   /// Joined explanation text iff this result screen has something worth
   /// reading aloud — that is, a wrong-answer explanation that contains
   /// real prose (per [isWordProblem]). Correct answers show no
@@ -71,6 +77,8 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
   @override
   void initState() {
     super.initState();
+    _tts = ref.read(ttsServiceProvider);
+    DebugHarness.instance.attachResult(outcome: widget.outcome);
     if (widget.bricksEarned > 0) {
       // Defer so we're not mutating provider state during a build.
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -90,7 +98,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
 
   @override
   void dispose() {
-    unawaited(ref.read(ttsServiceProvider).stop());
+    unawaited(_tts.stop());
     super.dispose();
   }
 

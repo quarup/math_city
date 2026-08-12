@@ -9,6 +9,7 @@ import 'package:math_city/presentation/debug/concept_debug_screen.dart';
 import 'package:math_city/presentation/player/adventurer_avatar_widget.dart';
 import 'package:math_city/presentation/player/player_creation_screen.dart';
 import 'package:math_city/presentation/theme/app_palette.dart';
+import 'package:math_city/services/debug_harness.dart';
 import 'package:math_city/state/player_provider.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -34,6 +35,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   @override
   void initState() {
     super.initState();
+    // Tells the UX-sweep harness the splash screen is done replacing
+    // itself, so a pushed question won't get clobbered.
+    DebugHarness.instance.markHomeReady();
     _intro = AnimationController(
       vsync: this,
       duration: _fadeDuration,

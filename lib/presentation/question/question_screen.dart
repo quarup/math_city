@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,6 +13,8 @@ import 'package:math_city/presentation/question/number_pad_widget.dart';
 import 'package:math_city/presentation/result/result_screen.dart';
 import 'package:math_city/presentation/widgets/math_text.dart';
 import 'package:math_city/presentation/widgets/speech_toggle_button.dart';
+import 'package:math_city/services/debug_harness.dart';
+import 'package:math_city/services/tts_service.dart';
 import 'package:math_city/state/introduced_concepts_provider.dart';
 import 'package:math_city/state/proficiency_provider.dart';
 import 'package:math_city/state/tts_provider.dart';
@@ -21,6 +24,7 @@ class QuestionScreen extends ConsumerStatefulWidget {
     required this.conceptId,
     required this.band,
     this.debugMode = false,
+    this.seed,
     super.key,
   });
 
@@ -36,6 +40,12 @@ class QuestionScreen extends ConsumerStatefulWidget {
   /// spin wheel. Player profile state stays untouched.
   final bool debugMode;
 
+  /// When set, the question and its choice order are drawn from
+  /// `Random(seed)` instead of an unseeded one, so the same seed replays
+  /// the identical question. Used by the kDebugMode UX-sweep harness to
+  /// show the same question twice — once answered right, once wrong.
+  final int? seed;
+
   @override
   ConsumerState<QuestionScreen> createState() => _QuestionScreenState();
 }
@@ -43,22 +53,39 @@ class QuestionScreen extends ConsumerStatefulWidget {
 class _QuestionScreenState extends ConsumerState<QuestionScreen> {
   GeneratedQuestion? _question;
   List<String> _shuffledChoices = const [];
+  bool _useNumberPad = false;
   bool _answered = false;
+
+  /// Cached in `initState`: `ref` is unsafe once the widget has been
+  /// deactivated, so `dispose` cannot look the service up itself.
+  late final TtsService _tts;
 
   @override
   void initState() {
     super.initState();
+    _tts = ref.read(ttsServiceProvider);
     unawaited(_loadQuestion());
   }
 
   Future<void> _loadQuestion() async {
     final source = await ref.read(questionSourceProvider.future);
     if (!mounted) return;
-    final q = source.generate(widget.conceptId);
+    // One Random drives both the generator and the choice shuffle, so a
+    // given seed reproduces the screen exactly.
+    final seed = widget.seed;
+    final rand = seed == null ? null : Random(seed);
+    final q = source.generate(widget.conceptId, random: rand);
     setState(() {
       _question = q;
-      _shuffledChoices = List.of(q.allChoices)..shuffle();
+      _shuffledChoices = List.of(q.allChoices)..shuffle(rand);
+      _useNumberPad = _keypadEligible(q);
     });
+    DebugHarness.instance.attachQuestion(
+      question: q,
+      displayedChoices: _shuffledChoices,
+      usesKeypad: _useNumberPad,
+      submit: (answer) => unawaited(_onAnswerSubmitted(answer)),
+    );
     // Auto-read word problems only — bare equations like "3 + 4 = ?"
     // sound robotic when synthesised and don't help readers.
     if (isWordProblem(q.prompt)) {
@@ -69,9 +96,21 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen> {
   @override
   void dispose() {
     // Silence anything still in flight when the player leaves the screen.
-    unawaited(ref.read(ttsServiceProvider).stop());
+    unawaited(_tts.stop());
     super.dispose();
   }
+
+  /// Keypad eligibility is gated by band, answer format, AND the question's
+  /// own opt-out. The keypad can only enter numeric values (digits + a small
+  /// extra-chars row); answer formats whose surface form is text-shaped
+  /// (string, commaList) force MC even at the comfortable band. Questions
+  /// that read against a list of choices ("Which of these is a factor of
+  /// 24?") set `multipleChoiceOnly` — their answer is numeric, but more than
+  /// one number is right and only the stored one is accepted.
+  bool _keypadEligible(GeneratedQuestion q) =>
+      widget.band == ProficiencyBand.comfortable &&
+      !q.multipleChoiceOnly &&
+      formatSupportsKeypad(q.answerFormat);
 
   Future<void> _onAnswerSubmitted(String answer) async {
     if (_answered) return;
@@ -148,18 +187,6 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen> {
     }
     final speakablePrompt = isWordProblem(question.prompt);
 
-    // Keypad eligibility is gated by band, answer format, AND the question's
-    // own opt-out. The keypad can only enter numeric values (digits + a small
-    // extra-chars row); answer formats whose surface form is text-shaped
-    // (string, commaList) force MC even at the comfortable band. Questions
-    // that read against a list of choices ("Which of these is a factor of
-    // 24?") set `multipleChoiceOnly` — their answer is numeric, but more than
-    // one number is right and only the stored one is accepted.
-    final useNumberPad =
-        widget.band == ProficiencyBand.comfortable &&
-        !question.multipleChoiceOnly &&
-        formatSupportsKeypad(question.answerFormat);
-
     return Scaffold(
       appBar: AppBar(
         title: Text(conceptName),
@@ -197,7 +224,7 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen> {
                 ),
               ),
               const SizedBox(height: 16),
-              if (useNumberPad)
+              if (_useNumberPad)
                 NumberPadWidget(
                   onSubmit: _onAnswerSubmitted,
                   extraChars: _extraCharsFor(question.correctAnswer),
