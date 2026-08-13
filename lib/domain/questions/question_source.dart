@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:math_city/domain/questions/column_form.dart';
 import 'package:math_city/domain/questions/dataset_question.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
 import 'package:math_city/domain/questions/generator_registry.dart';
@@ -85,15 +86,22 @@ class QuestionSource {
   DatasetQuestion _pick(List<DatasetQuestion> pool, Random rand) =>
       pool[rand.nextInt(pool.length)];
 
-  GeneratedQuestion _datasetItemToGenerated(DatasetQuestion q) =>
-      GeneratedQuestion(
-        conceptId: q.conceptId,
-        prompt: q.prompt,
-        correctAnswer: q.correctAnswer,
-        distractors: q.distractors,
-        explanation: q.explanation.isEmpty
-            ? ['The correct answer is ${q.correctAnswer}.']
-            : q.explanation,
-        answerFormat: q.answerFormat,
-      );
+  GeneratedQuestion _datasetItemToGenerated(DatasetQuestion q) {
+    final generated = GeneratedQuestion(
+      conceptId: q.conceptId,
+      prompt: q.prompt,
+      correctAnswer: q.correctAnswer,
+      distractors: q.distractors,
+      explanation: q.explanation.isEmpty
+          ? ['The correct answer is ${q.correctAnswer}.']
+          : q.explanation,
+      answerFormat: q.answerFormat,
+    );
+    // Dataset items are plain text; their generator siblings lay the same
+    // concept out in stacked columns. Convert here so a kid drilling
+    // multi-digit ± sees one presentation, not whichever the mix picked.
+    return columnFormConcepts.contains(q.conceptId)
+        ? columnForm(generated)
+        : generated;
+  }
 }

@@ -17,6 +17,23 @@ void _expectThreeDistinctDistractors(GeneratedQuestion q) {
   expect(q.distractors, isNot(contains(q.correctAnswer)));
 }
 
+/// The operands as presented: inline in the prompt for small numbers,
+/// stacked in a [ColumnArithmeticSpec] once the concept crosses into
+/// column form (`add_within_1000` and up).
+List<int> _operands(GeneratedQuestion q, String opChar) {
+  final diagram = q.diagram;
+  if (diagram is ColumnArithmeticSpec) {
+    expect(q.prompt, opChar == '+' ? 'Add.' : 'Subtract.');
+    expect(diagram.result, isNull, reason: 'the answer is what we ask for');
+    return diagram.operands;
+  }
+  return q.prompt
+      .replaceAll(' = ?', '')
+      .split(' $opChar ')
+      .map(int.parse)
+      .toList();
+}
+
 int _gcdInt(int a, int b) {
   var x = a.abs();
   var y = b.abs();
@@ -45,9 +62,9 @@ void main() {
         final n = entry.value;
         for (var i = 0; i < _iterations; i++) {
           final q = _gen(registry, entry.key, i);
-          final parts = q.prompt.replaceAll(' = ?', '').split(' + ');
-          final a = int.parse(parts[0]);
-          final b = int.parse(parts[1]);
+          final parts = _operands(q, '+');
+          final a = parts[0];
+          final b = parts[1];
           final correct = int.parse(q.correctAnswer);
           expect(a, inInclusiveRange(0, n));
           expect(b, inInclusiveRange(0, n));
@@ -72,9 +89,9 @@ void main() {
         final n = entry.value;
         for (var i = 0; i < _iterations; i++) {
           final q = _gen(registry, entry.key, i);
-          final parts = q.prompt.replaceAll(' = ?', '').split(' − ');
-          final a = int.parse(parts[0]);
-          final b = int.parse(parts[1]);
+          final parts = _operands(q, '−');
+          final a = parts[0];
+          final b = parts[1];
           final correct = int.parse(q.correctAnswer);
           expect(a, inInclusiveRange(0, n));
           expect(b, inInclusiveRange(0, a));
@@ -134,9 +151,9 @@ void main() {
     test('add_multidigit: 3–5 digit operands, correct sum', () {
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'add_multidigit_standard_alg', i);
-        final parts = q.prompt.replaceAll(' = ?', '').split(' + ');
-        final a = int.parse(parts[0]);
-        final b = int.parse(parts[1]);
+        final parts = _operands(q, '+');
+        final a = parts[0];
+        final b = parts[1];
         expect(a, inInclusiveRange(100, 99999));
         expect(b, inInclusiveRange(100, 99999));
         expect(a + b, int.parse(q.correctAnswer));
@@ -146,9 +163,9 @@ void main() {
     test('sub_multidigit: minuend ≥ subtrahend, correct diff', () {
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'sub_multidigit_standard_alg', i);
-        final parts = q.prompt.replaceAll(' = ?', '').split(' − ');
-        final a = int.parse(parts[0]);
-        final b = int.parse(parts[1]);
+        final parts = _operands(q, '−');
+        final a = parts[0];
+        final b = parts[1];
         expect(a, greaterThanOrEqualTo(b));
         expect(a - b, int.parse(q.correctAnswer));
       }

@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:math_city/domain/questions/column_form.dart';
 import 'package:math_city/domain/questions/diagram_spec.dart';
 import 'package:math_city/domain/questions/distractors.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
@@ -25,18 +26,24 @@ String _subConceptIdForN(int n) => switch (n) {
   _ => throw ArgumentError('Unsupported n: $n'),
 };
 
+/// Above this magnitude the operands are set out in stacked columns
+/// rather than inline — three digits is where lining the place values up
+/// stops being something a kid can hold in their head.
+const _columnLayoutFrom = 1000;
+
 /// "Add within N": a, b ∈ [0, N], sum ≤ N.
 QuestionGenerator addWithinN(int n) => (rand) {
   final a = rand.nextInt(n + 1); // 0..N
   final b = rand.nextInt(n - a + 1); // 0..N-a so sum ≤ N
   final correct = a + b;
-  return GeneratedQuestion(
+  final q = GeneratedQuestion(
     conceptId: _addConceptIdForN(n),
     prompt: '$a + $b = ?',
     correctAnswer: correct.toString(),
     distractors: integerDistractors(correct, rand),
     explanation: ['$a + $b = $correct'],
   );
+  return n >= _columnLayoutFrom ? columnForm(q) : q;
 };
 
 /// "Subtract within N": minuend ≤ N, subtrahend ≤ minuend (no negatives).
@@ -44,13 +51,14 @@ QuestionGenerator subWithinN(int n) => (rand) {
   final a = rand.nextInt(n + 1); // 0..N
   final b = rand.nextInt(a + 1); // 0..a
   final correct = a - b;
-  return GeneratedQuestion(
+  final q = GeneratedQuestion(
     conceptId: _subConceptIdForN(n),
     prompt: '$a $_minus $b = ?',
     correctAnswer: correct.toString(),
     distractors: integerDistractors(correct, rand),
     explanation: ['$a $_minus $b = $correct'],
   );
+  return n >= _columnLayoutFrom ? columnForm(q) : q;
 };
 
 /// 2-digit + 2-digit, *forced regrouping* (ones digits sum ≥ 10).
@@ -121,12 +129,14 @@ GeneratedQuestion addMultidigit(Random rand) {
   final a = lo + rand.nextInt(hi - lo + 1);
   final b = lo + rand.nextInt(hi - lo + 1);
   final correct = a + b;
-  return GeneratedQuestion(
-    conceptId: 'add_multidigit_standard_alg',
-    prompt: '$a + $b = ?',
-    correctAnswer: correct.toString(),
-    distractors: integerDistractors(correct, rand),
-    explanation: ['$a + $b = $correct'],
+  return columnForm(
+    GeneratedQuestion(
+      conceptId: 'add_multidigit_standard_alg',
+      prompt: '$a + $b = ?',
+      correctAnswer: correct.toString(),
+      distractors: integerDistractors(correct, rand),
+      explanation: ['$a + $b = $correct'],
+    ),
   );
 }
 
@@ -138,12 +148,14 @@ GeneratedQuestion subMultidigit(Random rand) {
   final a = lo + rand.nextInt(hi - lo + 1);
   final b = lo + rand.nextInt(a - lo + 1); // b ≤ a
   final correct = a - b;
-  return GeneratedQuestion(
-    conceptId: 'sub_multidigit_standard_alg',
-    prompt: '$a $_minus $b = ?',
-    correctAnswer: correct.toString(),
-    distractors: integerDistractors(correct, rand),
-    explanation: ['$a $_minus $b = $correct'],
+  return columnForm(
+    GeneratedQuestion(
+      conceptId: 'sub_multidigit_standard_alg',
+      prompt: '$a $_minus $b = ?',
+      correctAnswer: correct.toString(),
+      distractors: integerDistractors(correct, rand),
+      explanation: ['$a $_minus $b = $correct'],
+    ),
   );
 }
 

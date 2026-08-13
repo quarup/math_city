@@ -1,9 +1,9 @@
 {
   "items": [
     {
-      "id": "deepmind_mathematics_dataset_arith_304f0875dc",
+      "id": "deepmind_mathematics_dataset_arith_c8fb09d298",
       "concept_id": "sub_within_5",
-      "prompt": "Subtract 0 from 1.",
+      "prompt": "1 − 0 = ?",
       "correct_answer": "1",
       "distractors": [
         "4",
@@ -18,9 +18,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_45d31908e4",
+      "id": "deepmind_mathematics_dataset_arith_48f89fbf47",
       "concept_id": "sub_within_5",
-      "prompt": "What is the difference between 0 and 4?",
+      "prompt": "4 − 0 = ?",
       "correct_answer": "4",
       "distractors": [
         "7",
@@ -35,9 +35,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_45fe141fb7",
+      "id": "deepmind_mathematics_dataset_arith_f03738e96e",
       "concept_id": "sub_within_5",
-      "prompt": "What is 4 − 3?",
+      "prompt": "4 − 3 = ?",
       "correct_answer": "1",
       "distractors": [
         "7",
@@ -52,9 +52,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_81b1757b45",
+      "id": "deepmind_mathematics_dataset_arith_508083ed8c",
       "concept_id": "sub_within_5",
-      "prompt": "What is the distance between 3 and 3?",
+      "prompt": "3 − 3 = ?",
       "correct_answer": "0",
       "distractors": [
         "4",
@@ -69,26 +69,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_b7162cf765",
+      "id": "deepmind_mathematics_dataset_arith_9d781b62cd",
       "concept_id": "sub_within_5",
-      "prompt": "What is 4 − 0?",
-      "correct_answer": "4",
-      "distractors": [
-        "5",
-        "9",
-        "1"
-      ],
-      "explanation": [
-        "4 − 0 = 4"
-      ],
-      "source": "deepmind_mathematics_dataset",
-      "source_module": "arithmetic.add_or_sub",
-      "license": "Apache-2.0"
-    },
-    {
-      "id": "deepmind_mathematics_dataset_arith_e0fa3a4e31",
-      "concept_id": "sub_within_5",
-      "prompt": "3 − 1",
+      "prompt": "3 − 1 = ?",
       "correct_answer": "2",
       "distractors": [
         "4",

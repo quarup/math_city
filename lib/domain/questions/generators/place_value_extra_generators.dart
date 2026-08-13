@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:math_city/domain/questions/column_form.dart';
 import 'package:math_city/domain/questions/distractors.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
 import 'package:math_city/domain/questions/superscripts.dart';
@@ -139,7 +140,10 @@ GeneratedQuestion decompose10(Random rand) {
 // associative_add (G1)
 // ─────────────────────────────────────────────────────────────────────────
 
-/// "If (a + b) + c = s, then a + (b + c) = ?" — analog of commutative_add.
+/// The two groupings on their own lines — "(3 + 4) + 5 = 12" above
+/// "3 + (4 + 5) = ?" — so the kid can see the brackets move. Written
+/// inline as one "If …, then …" sentence they run together and the
+/// parentheses stop being the point. Analog of commutative_add.
 GeneratedQuestion associativeAdd(Random rand) {
   // Three single-digit addends so the sum stays ≤ 27 (a + b + c).
   late int a;
@@ -157,7 +161,7 @@ GeneratedQuestion associativeAdd(Random rand) {
   final rhs = leftFirst ? '$a + ($b + $c)' : '($a + $b) + $c';
   return GeneratedQuestion(
     conceptId: 'associative_add',
-    prompt: 'If $lhs = $sum, then $rhs = ?',
+    prompt: '$lhs = $sum\n$rhs = ?',
     correctAnswer: '$sum',
     distractors: integerDistractorsWith(
       sum,
@@ -205,7 +209,10 @@ GeneratedQuestion add2digitMultipleOf10(Random rand) {
 // ─────────────────────────────────────────────────────────────────────────
 
 /// "12 + 23 + 14 + 35 = ?" — 3 or 4 two-digit addends. Each addend
-/// in [10, 50] so the sum stays ≤ 200 (G2 territory).
+/// in [10, 50] so the sum stays ≤ 200 (G2 territory). Set out in stacked
+/// columns: three or four addends inline is more than a G2 kid can align
+/// mentally. The explanation walks the running total so a student who
+/// slipped can find which step went wrong.
 GeneratedQuestion addUpTo4TwoDigit(Random rand) {
   final n = rand.nextInt(2) + 3; // 3 or 4 addends
   final addends = <int>[];
@@ -213,16 +220,24 @@ GeneratedQuestion addUpTo4TwoDigit(Random rand) {
     addends.add(rand.nextInt(41) + 10); // 10..50
   }
   final correct = addends.reduce((a, b) => a + b);
-  return GeneratedQuestion(
-    conceptId: 'add_up_to_4_2digit',
-    prompt: '${addends.join(' + ')} = ?',
-    correctAnswer: '$correct',
-    distractors: integerDistractorsWith(
-      correct,
-      rand,
-      misconception: correct + 10,
+  final steps = <String>[];
+  var running = addends.first;
+  for (final addend in addends.skip(1)) {
+    steps.add('$running + $addend = ${running + addend}');
+    running += addend;
+  }
+  return columnForm(
+    GeneratedQuestion(
+      conceptId: 'add_up_to_4_2digit',
+      prompt: '${addends.join(' + ')} = ?',
+      correctAnswer: '$correct',
+      distractors: integerDistractorsWith(
+        correct,
+        rand,
+        misconception: correct + 10,
+      ),
+      explanation: steps,
     ),
-    explanation: ['${addends.join(' + ')} = $correct'],
   );
 }
 

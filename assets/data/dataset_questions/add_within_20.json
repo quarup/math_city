@@ -1,9 +1,9 @@
 {
   "items": [
     {
-      "id": "deepmind_mathematics_dataset_arith_0b8fddae3a",
+      "id": "deepmind_mathematics_dataset_arith_3a81f0d9c1",
       "concept_id": "add_within_20",
-      "prompt": "Total of 9 and 8.",
+      "prompt": "9 + 8 = ?",
       "correct_answer": "17",
       "distractors": [
         "22",
@@ -18,9 +18,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_1442caeacf",
+      "id": "deepmind_mathematics_dataset_arith_f9b51d8215",
       "concept_id": "add_within_20",
-      "prompt": "Work out 8 + 8.",
+      "prompt": "8 + 8 = ?",
       "correct_answer": "16",
       "distractors": [
         "0",
@@ -35,9 +35,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_15331a08be",
+      "id": "deepmind_mathematics_dataset_arith_df8b58a74e",
       "concept_id": "add_within_20",
-      "prompt": "Calculate 16 + 1.",
+      "prompt": "16 + 1 = ?",
       "correct_answer": "17",
       "distractors": [
         "21",
@@ -52,9 +52,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_2d694d9420",
+      "id": "deepmind_mathematics_dataset_arith_0eceb2fa0b",
       "concept_id": "add_within_20",
-      "prompt": "14+1",
+      "prompt": "14 + 1 = ?",
       "correct_answer": "15",
       "distractors": [
         "13",
@@ -69,9 +69,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_5f777f04d7",
+      "id": "deepmind_mathematics_dataset_arith_460b59e832",
       "concept_id": "add_within_20",
-      "prompt": "Add together 4 and 15.",
+      "prompt": "4 + 15 = ?",
       "correct_answer": "19",
       "distractors": [
         "22",
@@ -86,9 +86,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_6284624e37",
+      "id": "deepmind_mathematics_dataset_arith_e39596f296",
       "concept_id": "add_within_20",
-      "prompt": "Put together 12 and 4.",
+      "prompt": "12 + 4 = ?",
       "correct_answer": "16",
       "distractors": [
         "8",
@@ -103,9 +103,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_704f0e0281",
+      "id": "deepmind_mathematics_dataset_arith_cd90f2fda5",
       "concept_id": "add_within_20",
-      "prompt": "Work out 11 + 8.",
+      "prompt": "11 + 8 = ?",
       "correct_answer": "19",
       "distractors": [
         "20",
@@ -120,9 +120,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_80e58ff93f",
+      "id": "deepmind_mathematics_dataset_arith_47638ff88f",
       "concept_id": "add_within_20",
-      "prompt": "Add together 10 and 1.",
+      "prompt": "10 + 1 = ?",
       "correct_answer": "11",
       "distractors": [
         "6",
@@ -137,9 +137,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_86f9bcbe55",
+      "id": "deepmind_mathematics_dataset_arith_03b2bf72a2",
       "concept_id": "add_within_20",
-      "prompt": "What is 2 + 15?",
+      "prompt": "2 + 15 = ?",
       "correct_answer": "17",
       "distractors": [
         "15",
@@ -154,9 +154,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_982d1ca51a",
+      "id": "deepmind_mathematics_dataset_arith_5ac76924d9",
       "concept_id": "add_within_20",
-      "prompt": "Add together 15 and 1.",
+      "prompt": "15 + 1 = ?",
       "correct_answer": "16",
       "distractors": [
         "19",
@@ -171,9 +171,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_982f01b756",
+      "id": "deepmind_mathematics_dataset_arith_041831bca8",
       "concept_id": "add_within_20",
-      "prompt": "Sum 9 and 2.",
+      "prompt": "9 + 2 = ?",
       "correct_answer": "11",
       "distractors": [
         "15",
@@ -188,9 +188,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_9e14ac1992",
+      "id": "deepmind_mathematics_dataset_arith_ad085b7498",
       "concept_id": "add_within_20",
-      "prompt": "Sum 0 and 17.",
+      "prompt": "0 + 17 = ?",
       "correct_answer": "17",
       "distractors": [
         "19",
@@ -205,9 +205,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_9f9b98a128",
+      "id": "deepmind_mathematics_dataset_arith_b63631c319",
       "concept_id": "add_within_20",
-      "prompt": "Add together 0 and 14.",
+      "prompt": "0 + 14 = ?",
       "correct_answer": "14",
       "distractors": [
         "11",
@@ -222,9 +222,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_a362b0c2cb",
+      "id": "deepmind_mathematics_dataset_arith_3874e7fa83",
       "concept_id": "add_within_20",
-      "prompt": "Total of 13 and 7.",
+      "prompt": "13 + 7 = ?",
       "correct_answer": "20",
       "distractors": [
         "6",
@@ -239,9 +239,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_b5313c5efc",
+      "id": "deepmind_mathematics_dataset_arith_3c69d19a22",
       "concept_id": "add_within_20",
-      "prompt": "What is 13 plus 3?",
+      "prompt": "13 + 3 = ?",
       "correct_answer": "16",
       "distractors": [
         "11",
@@ -256,9 +256,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_c7dbf0ce67",
+      "id": "deepmind_mathematics_dataset_arith_2cf291f76e",
       "concept_id": "add_within_20",
-      "prompt": "What is 7 + 8?",
+      "prompt": "7 + 8 = ?",
       "correct_answer": "15",
       "distractors": [
         "10",
@@ -273,9 +273,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_cf722dfb72",
+      "id": "deepmind_mathematics_dataset_arith_89db1fa097",
       "concept_id": "add_within_20",
-      "prompt": "1+14",
+      "prompt": "1 + 14 = ?",
       "correct_answer": "15",
       "distractors": [
         "16",
@@ -290,43 +290,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_d2507c1847",
+      "id": "deepmind_mathematics_dataset_arith_004138bf27",
       "concept_id": "add_within_20",
-      "prompt": "0 + 17",
-      "correct_answer": "17",
-      "distractors": [
-        "21",
-        "19",
-        "15"
-      ],
-      "explanation": [
-        "0 + 17 = 17"
-      ],
-      "source": "deepmind_mathematics_dataset",
-      "source_module": "arithmetic.add_or_sub",
-      "license": "Apache-2.0"
-    },
-    {
-      "id": "deepmind_mathematics_dataset_arith_d528ff4cf5",
-      "concept_id": "add_within_20",
-      "prompt": "Work out 9 + 2.",
-      "correct_answer": "11",
-      "distractors": [
-        "7",
-        "6",
-        "13"
-      ],
-      "explanation": [
-        "9 + 2 = 11"
-      ],
-      "source": "deepmind_mathematics_dataset",
-      "source_module": "arithmetic.add_or_sub",
-      "license": "Apache-2.0"
-    },
-    {
-      "id": "deepmind_mathematics_dataset_arith_df9783871e",
-      "concept_id": "add_within_20",
-      "prompt": "Calculate 7 + 6.",
+      "prompt": "7 + 6 = ?",
       "correct_answer": "13",
       "distractors": [
         "11",
@@ -341,9 +307,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_e593e6930a",
+      "id": "deepmind_mathematics_dataset_arith_4081d9d2da",
       "concept_id": "add_within_20",
-      "prompt": "Calculate 11 + 2.",
+      "prompt": "11 + 2 = ?",
       "correct_answer": "13",
       "distractors": [
         "8",
@@ -358,43 +324,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_ec8781cea8",
+      "id": "deepmind_mathematics_dataset_arith_ee4d9838e9",
       "concept_id": "add_within_20",
-      "prompt": "What is 10 plus 1?",
-      "correct_answer": "11",
-      "distractors": [
-        "9",
-        "14",
-        "15"
-      ],
-      "explanation": [
-        "10 + 1 = 11"
-      ],
-      "source": "deepmind_mathematics_dataset",
-      "source_module": "arithmetic.add_or_sub",
-      "license": "Apache-2.0"
-    },
-    {
-      "id": "deepmind_mathematics_dataset_arith_ecfe093ffe",
-      "concept_id": "add_within_20",
-      "prompt": "Put together 0 and 14.",
-      "correct_answer": "14",
-      "distractors": [
-        "15",
-        "10",
-        "13"
-      ],
-      "explanation": [
-        "0 + 14 = 14"
-      ],
-      "source": "deepmind_mathematics_dataset",
-      "source_module": "arithmetic.add_or_sub",
-      "license": "Apache-2.0"
-    },
-    {
-      "id": "deepmind_mathematics_dataset_arith_f8ef81861e",
-      "concept_id": "add_within_20",
-      "prompt": "Work out 3 + 8.",
+      "prompt": "3 + 8 = ?",
       "correct_answer": "11",
       "distractors": [
         "6",

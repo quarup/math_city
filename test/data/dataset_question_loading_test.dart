@@ -146,6 +146,49 @@ void main() {
     );
   });
 
+  // DeepMind phrases the same sum a dozen ways ("Work out 60 + 4.", "What
+  // is the distance between 55 and 6?"). Bare arithmetic concepts state the
+  // equation instead: the wording added reading load without adding maths,
+  // and it made bundled items look unlike the algorithmic ones sitting in
+  // the same concept. Guards the whole bucket, since only one item per
+  // concept surfaces in any given playthrough.
+  test('bundled add/sub items state the equation, not prose', () async {
+    final db = AppDatabase(NativeDatabase.memory());
+    addTearDown(db.close);
+    final byConcept = await db.allDatasetQuestionsByConcept();
+
+    const buckets = {
+      'add_within_5',
+      'sub_within_5',
+      'add_within_10',
+      'sub_within_10',
+      'add_within_20',
+      'sub_within_20',
+      'add_within_100',
+      'sub_within_100',
+      'add_within_1000',
+      'sub_within_1000',
+      'add_2digit_carry',
+      'sub_2digit_borrow',
+    };
+    final equation = RegExp(r'^(\d+) ([+−]) (\d+) = \?$');
+
+    for (final concept in buckets) {
+      for (final q in byConcept[concept]!) {
+        final m = equation.firstMatch(q.prompt);
+        expect(m, isNotNull, reason: '$concept: "${q.prompt}"');
+        final a = int.parse(m!.group(1)!);
+        final b = int.parse(m.group(3)!);
+        final expected = m.group(2) == '+' ? a + b : a - b;
+        expect(
+          q.correctAnswer,
+          '$expected',
+          reason: '$concept: "${q.prompt}" disagrees with its answer',
+        );
+      }
+    }
+  });
+
   test(
     'loadBundledDatasetQuestions: binding-present path loads items',
     () async {

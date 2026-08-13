@@ -7,9 +7,10 @@ import 'package:math_city/domain/questions/diagram_spec.dart';
 /// annotations sit above each column when [ColumnArithmeticSpec.carries]
 /// has a non-zero entry for that column.
 ///
-/// Intended for the explanation screen after a wrong answer to a
-/// multi-digit ± question — the kid sees the column-by-column
-/// regrouping that produced the right answer.
+/// Used both as the question itself for multi-digit ± (result null, so
+/// the answer row shows `?`) and on the explanation screen afterwards,
+/// where the filled-in result and the carry marks show the
+/// column-by-column regrouping.
 class ColumnArithmetic extends StatelessWidget {
   const ColumnArithmetic({required this.spec, super.key});
 
@@ -18,28 +19,37 @@ class ColumnArithmetic extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    // A question column is the focal point of its screen; the explanation
+    // one sits underneath the worked steps, so it stays smaller.
+    final isQuestion = spec.result == null;
+    final digitSize = isQuestion ? 34.0 : 24.0;
+    // Just wider than a monospace digit — enough that the columns read as
+    // columns, tight enough that "10" still reads as ten rather than as a
+    // 1 next to a 0.
+    final cellWidth = digitSize * 0.68;
     final monoStyle = TextStyle(
       fontFamily: 'monospace',
       fontFeatures: const [FontFeature.tabularFigures()],
-      fontSize: 24,
+      fontSize: digitSize,
       height: 1.1,
       color: theme.colorScheme.onSurface,
     );
     final carryStyle = monoStyle.copyWith(
-      fontSize: 12,
+      fontSize: digitSize / 2,
       color: theme.colorScheme.primary,
       fontWeight: FontWeight.w700,
     );
 
+    final result = spec.result;
     final maxDigits = [
       ...spec.operands,
-      spec.result,
+      ?result,
     ].map((v) => v.toString().length).reduce((a, b) => a > b ? a : b);
     final columnCount = maxDigits + 1; // +1 column for the operator gutter
     final opChar = spec.op == ColumnArithmeticOp.add ? '+' : '−';
 
     Widget cell(String text, TextStyle style) => SizedBox(
-      width: 24,
+      width: cellWidth,
       child: Text(text, textAlign: TextAlign.center, style: style),
     );
 
@@ -104,13 +114,21 @@ class ColumnArithmetic extends StatelessWidget {
           Container(
             margin: const EdgeInsets.symmetric(vertical: 4),
             height: 2,
-            width: columnCount * 24.0,
+            width: columnCount * cellWidth,
             color: theme.colorScheme.onSurface,
           ),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: rowFor('${spec.result}'),
-          ),
+          if (result != null)
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: rowFor('$result'),
+            )
+          else
+            // Blank space under the rule, the way a worksheet leaves it.
+            // A `?` here reads as a fifth digit sitting in the column, and
+            // in keypad mode it collides with the `?` in the answer field.
+            // The row is still reserved so the figure doesn't stop dead at
+            // the rule.
+            SizedBox(height: digitSize * 1.1),
         ],
       ),
     );

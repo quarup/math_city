@@ -1,9 +1,9 @@
 {
   "items": [
     {
-      "id": "deepmind_mathematics_dataset_arith_06c26f967f",
+      "id": "deepmind_mathematics_dataset_arith_4eebcfeea7",
       "concept_id": "sub_2digit_borrow",
-      "prompt": "63 − 55",
+      "prompt": "63 − 55 = ?",
       "correct_answer": "8",
       "distractors": [
         "11",
@@ -18,9 +18,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_09586f3753",
+      "id": "deepmind_mathematics_dataset_arith_8472b9e8d3",
       "concept_id": "sub_2digit_borrow",
-      "prompt": "What is 43 minus 17?",
+      "prompt": "43 − 17 = ?",
       "correct_answer": "26",
       "distractors": [
         "60",
@@ -35,9 +35,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_098f88ac39",
+      "id": "deepmind_mathematics_dataset_arith_f726c606a6",
       "concept_id": "sub_2digit_borrow",
-      "prompt": "What is 92 − 85?",
+      "prompt": "92 − 85 = ?",
       "correct_answer": "7",
       "distractors": [
         "9",
@@ -52,9 +52,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_0b72c41e86",
+      "id": "deepmind_mathematics_dataset_arith_66c4198014",
       "concept_id": "sub_2digit_borrow",
-      "prompt": "Subtract 19 from 23.",
+      "prompt": "23 − 19 = ?",
       "correct_answer": "4",
       "distractors": [
         "5",
@@ -69,9 +69,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_0c2c897eef",
+      "id": "deepmind_mathematics_dataset_arith_97fdef99a0",
       "concept_id": "sub_2digit_borrow",
-      "prompt": "What is 29 less than 61?",
+      "prompt": "61 − 29 = ?",
       "correct_answer": "32",
       "distractors": [
         "90",
@@ -86,9 +86,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_0cf90ad59b",
+      "id": "deepmind_mathematics_dataset_arith_93522f700d",
       "concept_id": "sub_2digit_borrow",
-      "prompt": "What is the distance between 15 and 44?",
+      "prompt": "44 − 15 = ?",
       "correct_answer": "29",
       "distractors": [
         "59",
@@ -103,9 +103,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_189d29f881",
+      "id": "deepmind_mathematics_dataset_arith_5a87ede446",
       "concept_id": "sub_2digit_borrow",
-      "prompt": "What is the distance between 75 and 49?",
+      "prompt": "75 − 49 = ?",
       "correct_answer": "26",
       "distractors": [
         "124",
@@ -120,9 +120,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_1b568602b3",
+      "id": "deepmind_mathematics_dataset_arith_6ef1206836",
       "concept_id": "sub_2digit_borrow",
-      "prompt": "What is the distance between 15 and 53?",
+      "prompt": "53 − 15 = ?",
       "correct_answer": "38",
       "distractors": [
         "37",
@@ -137,9 +137,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_1d36f080c9",
+      "id": "deepmind_mathematics_dataset_arith_2c6f325f8f",
       "concept_id": "sub_2digit_borrow",
-      "prompt": "Subtract 22 from 80.",
+      "prompt": "80 − 22 = ?",
       "correct_answer": "58",
       "distractors": [
         "102",
@@ -154,9 +154,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_1e77c6d259",
+      "id": "deepmind_mathematics_dataset_arith_0182405025",
       "concept_id": "sub_2digit_borrow",
-      "prompt": "Subtract 11 from 80.",
+      "prompt": "80 − 11 = ?",
       "correct_answer": "69",
       "distractors": [
         "91",
@@ -171,9 +171,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_225cf81944",
+      "id": "deepmind_mathematics_dataset_arith_52451fcecf",
       "concept_id": "sub_2digit_borrow",
-      "prompt": "What is the difference between 91 and 14?",
+      "prompt": "91 − 14 = ?",
       "correct_answer": "77",
       "distractors": [
         "105",
@@ -188,9 +188,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_2c440154e4",
+      "id": "deepmind_mathematics_dataset_arith_893a95b480",
       "concept_id": "sub_2digit_borrow",
-      "prompt": "What is 71 take away 45?",
+      "prompt": "71 − 45 = ?",
       "correct_answer": "26",
       "distractors": [
         "25",
@@ -205,9 +205,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_2d5b866b9a",
+      "id": "deepmind_mathematics_dataset_arith_906380175b",
       "concept_id": "sub_2digit_borrow",
-      "prompt": "Subtract 19 from 80.",
+      "prompt": "80 − 19 = ?",
       "correct_answer": "61",
       "distractors": [
         "56",
@@ -222,9 +222,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_396c142cd3",
+      "id": "deepmind_mathematics_dataset_arith_9fb5322055",
       "concept_id": "sub_2digit_borrow",
-      "prompt": "What is the difference between 26 and 43?",
+      "prompt": "43 − 26 = ?",
       "correct_answer": "17",
       "distractors": [
         "69",
@@ -239,9 +239,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_3f7b0c09f1",
+      "id": "deepmind_mathematics_dataset_arith_956635ea5d",
       "concept_id": "sub_2digit_borrow",
-      "prompt": "What is the distance between 42 and 33?",
+      "prompt": "42 − 33 = ?",
       "correct_answer": "9",
       "distractors": [
         "10",
@@ -256,9 +256,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_43561a93cc",
+      "id": "deepmind_mathematics_dataset_arith_19ca647c83",
       "concept_id": "sub_2digit_borrow",
-      "prompt": "What is 31 minus 12?",
+      "prompt": "31 − 12 = ?",
       "correct_answer": "19",
       "distractors": [
         "17",
@@ -273,9 +273,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_498cbb9bde",
+      "id": "deepmind_mathematics_dataset_arith_6e6f24dab5",
       "concept_id": "sub_2digit_borrow",
-      "prompt": "Calculate 42 − 34.",
+      "prompt": "42 − 34 = ?",
       "correct_answer": "8",
       "distractors": [
         "76",
@@ -290,9 +290,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_54e9a59c85",
+      "id": "deepmind_mathematics_dataset_arith_a3835dc47a",
       "concept_id": "sub_2digit_borrow",
-      "prompt": "51 − 45",
+      "prompt": "51 − 45 = ?",
       "correct_answer": "6",
       "distractors": [
         "96",
@@ -307,9 +307,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_6c31621509",
+      "id": "deepmind_mathematics_dataset_arith_aa6a02950b",
       "concept_id": "sub_2digit_borrow",
-      "prompt": "What is the distance between 94 and 27?",
+      "prompt": "94 − 27 = ?",
       "correct_answer": "67",
       "distractors": [
         "121",
@@ -324,9 +324,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_6cb699b619",
+      "id": "deepmind_mathematics_dataset_arith_ea35b5c24a",
       "concept_id": "sub_2digit_borrow",
-      "prompt": "What is 40 take away 25?",
+      "prompt": "40 − 25 = ?",
       "correct_answer": "15",
       "distractors": [
         "20",
@@ -341,9 +341,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_7ef822e33f",
+      "id": "deepmind_mathematics_dataset_arith_b686251f68",
       "concept_id": "sub_2digit_borrow",
-      "prompt": "What is the difference between 87 and 39?",
+      "prompt": "87 − 39 = ?",
       "correct_answer": "48",
       "distractors": [
         "45",
@@ -358,9 +358,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_8070027fe1",
+      "id": "deepmind_mathematics_dataset_arith_ecea1e6a86",
       "concept_id": "sub_2digit_borrow",
-      "prompt": "What is the distance between 19 and 33?",
+      "prompt": "33 − 19 = ?",
       "correct_answer": "14",
       "distractors": [
         "52",
@@ -375,9 +375,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_8b31a62a71",
+      "id": "deepmind_mathematics_dataset_arith_cfa5dd76a8",
       "concept_id": "sub_2digit_borrow",
-      "prompt": "Calculate 83 − 16.",
+      "prompt": "83 − 16 = ?",
       "correct_answer": "67",
       "distractors": [
         "65",
@@ -392,9 +392,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_8dfa49bd7d",
+      "id": "deepmind_mathematics_dataset_arith_6c04da3382",
       "concept_id": "sub_2digit_borrow",
-      "prompt": "Calculate 40 − 18.",
+      "prompt": "40 − 18 = ?",
       "correct_answer": "22",
       "distractors": [
         "24",
@@ -409,9 +409,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_90ba67fa19",
+      "id": "deepmind_mathematics_dataset_arith_6487035e61",
       "concept_id": "sub_2digit_borrow",
-      "prompt": "What is the difference between 62 and 26?",
+      "prompt": "62 − 26 = ?",
       "correct_answer": "36",
       "distractors": [
         "40",
@@ -426,9 +426,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_91f02a3104",
+      "id": "deepmind_mathematics_dataset_arith_a1d340697a",
       "concept_id": "sub_2digit_borrow",
-      "prompt": "What is 53 take away 45?",
+      "prompt": "53 − 45 = ?",
       "correct_answer": "8",
       "distractors": [
         "7",
@@ -443,9 +443,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_98683fe668",
+      "id": "deepmind_mathematics_dataset_arith_0c2d27fb7e",
       "concept_id": "sub_2digit_borrow",
-      "prompt": "What is 37 take away 29?",
+      "prompt": "37 − 29 = ?",
       "correct_answer": "8",
       "distractors": [
         "66",
@@ -460,9 +460,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_9cc0309fd4",
+      "id": "deepmind_mathematics_dataset_arith_280e179749",
       "concept_id": "sub_2digit_borrow",
-      "prompt": "What is 47 less than 52?",
+      "prompt": "52 − 47 = ?",
       "correct_answer": "5",
       "distractors": [
         "8",
@@ -477,9 +477,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_9ddbc9d1ec",
+      "id": "deepmind_mathematics_dataset_arith_42fd6896bb",
       "concept_id": "sub_2digit_borrow",
-      "prompt": "Work out 91 − 37.",
+      "prompt": "91 − 37 = ?",
       "correct_answer": "54",
       "distractors": [
         "59",
@@ -494,9 +494,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_ab055d6c14",
+      "id": "deepmind_mathematics_dataset_arith_f74b5dd502",
       "concept_id": "sub_2digit_borrow",
-      "prompt": "What is the difference between 81 and 17?",
+      "prompt": "81 − 17 = ?",
       "correct_answer": "64",
       "distractors": [
         "60",
@@ -511,9 +511,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_ad24221506",
+      "id": "deepmind_mathematics_dataset_arith_2d888b73a9",
       "concept_id": "sub_2digit_borrow",
-      "prompt": "What is the difference between 29 and 96?",
+      "prompt": "96 − 29 = ?",
       "correct_answer": "67",
       "distractors": [
         "65",
@@ -528,9 +528,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_c3f100328c",
+      "id": "deepmind_mathematics_dataset_arith_d6e8f8b37a",
       "concept_id": "sub_2digit_borrow",
-      "prompt": "Work out 40 − 28.",
+      "prompt": "40 − 28 = ?",
       "correct_answer": "12",
       "distractors": [
         "14",
@@ -545,9 +545,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_d1495c2f92",
+      "id": "deepmind_mathematics_dataset_arith_a6a814694f",
       "concept_id": "sub_2digit_borrow",
-      "prompt": "What is the distance between 46 and 82?",
+      "prompt": "82 − 46 = ?",
       "correct_answer": "36",
       "distractors": [
         "38",
@@ -562,9 +562,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_d29dc92101",
+      "id": "deepmind_mathematics_dataset_arith_00d33eac1f",
       "concept_id": "sub_2digit_borrow",
-      "prompt": "31 − 18",
+      "prompt": "31 − 18 = ?",
       "correct_answer": "13",
       "distractors": [
         "9",
@@ -579,9 +579,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_d918ca9777",
+      "id": "deepmind_mathematics_dataset_arith_a1793b85fa",
       "concept_id": "sub_2digit_borrow",
-      "prompt": "70 − 31",
+      "prompt": "70 − 31 = ?",
       "correct_answer": "39",
       "distractors": [
         "36",
@@ -596,9 +596,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_da55aa369c",
+      "id": "deepmind_mathematics_dataset_arith_e068e75d65",
       "concept_id": "sub_2digit_borrow",
-      "prompt": "What is the difference between 66 and 82?",
+      "prompt": "82 − 66 = ?",
       "correct_answer": "16",
       "distractors": [
         "17",
@@ -613,9 +613,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_dc10346f1b",
+      "id": "deepmind_mathematics_dataset_arith_e106553242",
       "concept_id": "sub_2digit_borrow",
-      "prompt": "What is the difference between 19 and 44?",
+      "prompt": "44 − 19 = ?",
       "correct_answer": "25",
       "distractors": [
         "20",
@@ -630,9 +630,9 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "deepmind_mathematics_dataset_arith_e5db6970b3",
+      "id": "deepmind_mathematics_dataset_arith_07173b4d79",
       "concept_id": "sub_2digit_borrow",
-      "prompt": "What is the distance between 51 and 12?",
+      "prompt": "51 − 12 = ?",
       "correct_answer": "39",
       "distractors": [
         "35",

@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:math_city/domain/questions/diagram_spec.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
 import 'package:math_city/domain/questions/generator_registry.dart';
 import 'package:math_city/domain/questions/generators/place_value_extra_generators.dart';
@@ -67,7 +68,7 @@ void main() {
 
   group('associative_add', () {
     test('both groupings evaluate to the same shown sum', () {
-      final re = RegExp(r'^If (.+) = (\d+), then (.+) = \?$');
+      final re = RegExp(r'^(.+) = (\d+)\n(.+) = \?$');
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'associative_add', i);
         final m = re.firstMatch(q.prompt);
@@ -113,14 +114,32 @@ void main() {
     test('3 or 4 addends, each in [10, 50], sum matches answer', () {
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'add_up_to_4_2digit', i);
-        final lhs = q.prompt.replaceAll(' = ?', '');
-        final addends = lhs.split(' + ').map(int.parse).toList();
+        expect(q.prompt, 'Add.');
+        final diagram = q.diagram! as ColumnArithmeticSpec;
+        expect(diagram.op, ColumnArithmeticOp.add);
+        expect(diagram.result, isNull, reason: 'the sum is what we ask for');
+        final addends = diagram.operands;
         expect(addends.length, inInclusiveRange(3, 4));
         for (final a in addends) {
           expect(a, inInclusiveRange(10, 50));
         }
         expect(addends.reduce((a, b) => a + b), int.parse(q.correctAnswer));
         _expectThreeDistinctDistractors(q);
+      }
+    });
+
+    test('explanation walks the running total, one addend at a time', () {
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'add_up_to_4_2digit', i);
+        final addends = (q.diagram! as ColumnArithmeticSpec).operands;
+        expect(q.explanation, hasLength(addends.length - 1));
+        var running = addends.first;
+        for (var step = 0; step < q.explanation.length; step++) {
+          final next = addends[step + 1];
+          expect(q.explanation[step], '$running + $next = ${running + next}');
+          running += next;
+        }
+        expect('$running', q.correctAnswer);
       }
     });
   });

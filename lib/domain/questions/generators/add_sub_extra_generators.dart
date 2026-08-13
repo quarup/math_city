@@ -167,8 +167,16 @@ GeneratedQuestion add3AddendsWithin20(Random rand) {
 // equal_sign_meaning (G1)
 // ─────────────────────────────────────────────────────────────────────────
 
-/// "Is the equation 8 + 3 = 11 true?" — 50/50 true/false. Half-time
+/// "Is this equation true? / 8 + 3 = 11" — 50/50 true/false. Half-time
 /// the equation balances; half-time the right-hand side is off by 1 or 2.
+///
+/// The equation sits on its own line: threaded into the sentence
+/// ("Is the equation 8 + 3 = 11 true?") the digits and the words compete
+/// and a G1 reader has to untangle them before doing any arithmetic.
+///
+/// Two choices only. The equation is either right or it isn't, so
+/// "Cannot tell" and "It's missing a number" were never live options —
+/// they only diluted the guess rate.
 GeneratedQuestion equalSignMeaning(Random rand) {
   final a = rand.nextInt(8) + 1; // 1..8
   final b = rand.nextInt(8) + 1; // 1..8
@@ -177,13 +185,9 @@ GeneratedQuestion equalSignMeaning(Random rand) {
   final shownSum = isTrue ? realSum : realSum + (rand.nextBool() ? 1 : -1);
   return GeneratedQuestion(
     conceptId: 'equal_sign_meaning',
-    prompt: 'Is the equation $a + $b = $shownSum true?',
+    prompt: 'Is this equation true?\n$a + $b = $shownSum',
     correctAnswer: isTrue ? 'True' : 'False',
-    distractors: [
-      if (isTrue) 'False' else 'True',
-      "It's missing a number",
-      'Cannot tell',
-    ],
+    distractors: [if (isTrue) 'False' else 'True'],
     explanation: [
       '$a + $b = $realSum.',
       if (isTrue)
@@ -199,16 +203,18 @@ GeneratedQuestion equalSignMeaning(Random rand) {
 // commutative_add (G1)
 // ─────────────────────────────────────────────────────────────────────────
 
-/// "If a + b = result, then b + a = ?" — tests the commutative property.
-/// Answer is just `result`; the swap distractor (`a + b - 1` etc.) is
-/// included.
+/// The known fact above, the swapped one below — "8 + 6 = 14" then
+/// "6 + 8 = ?" — so the two sit one over the other and the swap is
+/// visible. As a single "If …, then …" sentence the four numbers run
+/// together and the point is buried. Answer is just `result`; the swap
+/// distractor (`a + b - 1` etc.) is included.
 GeneratedQuestion commutativeAdd(Random rand) {
   final a = rand.nextInt(9) + 2; // 2..10
   final b = rand.nextInt(9) + 2; // 2..10
   final sum = a + b;
   return GeneratedQuestion(
     conceptId: 'commutative_add',
-    prompt: 'If $a + $b = $sum, then $b + $a = ?',
+    prompt: '$a + $b = $sum\n$b + $a = ?',
     correctAnswer: '$sum',
     distractors: _distinctIntStrings(sum, [
       '${a + b - 1}', // off-by-one

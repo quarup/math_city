@@ -100,16 +100,20 @@ void main() {
     test(
       'correctAnswer matches whether the shown equation is arithmetically true',
       () {
+        final re = RegExp(r'^Is this equation true\?\n(\d+) \+ (\d+) = (\d+)$');
         for (var i = 0; i < _iterations; i++) {
           final q = _gen(registry, 'equal_sign_meaning', i);
-          final m = RegExp(r'(\d+) \+ (\d+) = (\d+)').firstMatch(q.prompt);
-          expect(m, isNotNull);
+          final m = re.firstMatch(q.prompt);
+          expect(m, isNotNull, reason: 'equation goes on its own line');
           final a = int.parse(m!.group(1)!);
           final b = int.parse(m.group(2)!);
           final shown = int.parse(m.group(3)!);
           final expected = (a + b == shown) ? 'True' : 'False';
           expect(q.correctAnswer, expected);
-          _expectThreeDistinctDistractors(q);
+          // True/False only — the equation is either right or it isn't.
+          expect(q.distractors, [
+            if (expected == 'True') 'False' else 'True',
+          ]);
         }
       },
     );
@@ -117,11 +121,11 @@ void main() {
 
   group('commutative_add', () {
     test('answer equals the stated sum (no recomputation needed)', () {
-      final re = RegExp(r'(\d+) \+ (\d+) = (\d+), then (\d+) \+ (\d+) = \?');
+      final re = RegExp(r'^(\d+) \+ (\d+) = (\d+)\n(\d+) \+ (\d+) = \?$');
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'commutative_add', i);
         final m = re.firstMatch(q.prompt);
-        expect(m, isNotNull);
+        expect(m, isNotNull, reason: 'known fact above, swapped one below');
         final a = int.parse(m!.group(1)!);
         final b = int.parse(m.group(2)!);
         final shownSum = int.parse(m.group(3)!);

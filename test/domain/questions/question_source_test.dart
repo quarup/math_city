@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:math_city/domain/questions/dataset_question.dart';
+import 'package:math_city/domain/questions/diagram_spec.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
 import 'package:math_city/domain/questions/generator_registry.dart';
 import 'package:math_city/domain/questions/question_source.dart';
@@ -176,6 +177,45 @@ void main() {
       );
       final q = source.generate('ds_only', random: Random(0));
       expect(q.explanation, ['The correct answer is 42.']);
+    });
+  });
+
+  group('column-form concepts', () {
+    DatasetQuestion arith(String conceptId, String prompt, String answer) =>
+        DatasetQuestion(
+          id: 'x',
+          conceptId: conceptId,
+          prompt: prompt,
+          correctAnswer: answer,
+          distractors: const ['1', '2', '3'],
+          explanation: const ['because'],
+          source: 'test',
+          sourceModule: 'unit_test',
+          license: 'MIT',
+        );
+
+    test('dataset items are stacked, matching their generator sibling', () {
+      final source = QuestionSource(
+        registry: registryFor(const []),
+        datasetByConcept: {
+          'add_within_1000': [arith('add_within_1000', '358 + 274 = ?', '632')],
+        },
+      );
+      final q = source.generate('add_within_1000', random: Random(0));
+      expect(q.prompt, 'Add.');
+      expect((q.diagram! as ColumnArithmeticSpec).operands, [358, 274]);
+    });
+
+    test('concepts outside the set keep their inline prompt', () {
+      final source = QuestionSource(
+        registry: registryFor(const []),
+        datasetByConcept: {
+          'add_within_100': [arith('add_within_100', '35 + 24 = ?', '59')],
+        },
+      );
+      final q = source.generate('add_within_100', random: Random(0));
+      expect(q.prompt, '35 + 24 = ?');
+      expect(q.diagram, isNull);
     });
   });
 }

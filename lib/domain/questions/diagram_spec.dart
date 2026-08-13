@@ -1010,9 +1010,14 @@ class ShapeSpec extends DiagramSpec {
 enum ColumnArithmeticOp { add, sub }
 
 /// Stacked multi-digit arithmetic in column form, with optional small
-/// carry / borrow digits above each column. Used on the explanation
-/// screen after a wrong answer to multi-digit ± so the kid sees the
-/// regrouping that produced the right answer.
+/// carry / borrow digits above each column. Serves two roles:
+///
+/// * **As the question** — [result] is null, so the answer row renders a
+///   `?`. Multi-digit ± is set out this way because the place values have
+///   to line up before a kid can add or subtract them column by column;
+///   an inline `358 + 274 = ?` makes them do that alignment in their head.
+/// * **As the post-mortem** — [result] is the computed answer, and
+///   [carries] show the regrouping that produced it.
 ///
 /// Operands are written top-down in the order given; the operator
 /// symbol sits to the left of the last operand. A horizontal rule
@@ -1024,15 +1029,19 @@ class ColumnArithmeticSpec extends DiagramSpec {
     required this.result,
     this.carries = const [],
   }) : assert(operands.length >= 2, 'need at least 2 operands'),
-       assert(result >= 0, 'negative results are out of v1 scope');
+       assert(
+         result == null || result >= 0,
+         'negative results are out of v1 scope',
+       );
 
   /// Operands, top-to-bottom. All non-negative.
   final List<int> operands;
 
   final ColumnArithmeticOp op;
 
-  /// The computed result (a + b or a − b).
-  final int result;
+  /// The computed result (a + b or a − b), or null to leave the answer
+  /// row blank — the column *is* the question and the kid supplies it.
+  final int? result;
 
   /// Small annotation digits to render *above* each column. Index 0 is
   /// the ones place; index 1 the tens, etc. Zero or omitted entries

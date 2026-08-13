@@ -264,7 +264,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 11;
+  int get schemaVersion => 12;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -298,6 +298,10 @@ class AppDatabase extends _$AppDatabase {
       //   a set of owned 4×4 blocks (OwnedLandBlocks); the grid columns were
       //   dropped. Wiped (not migrated) — pre-launch, no real users. See
       //   plan.md.
+      // v12: bundled add/sub dataset prompts were re-canonicalised to
+      //   "43 − 7 = ?" (they used to carry DeepMind's prose). The seeded
+      //   rows are a cache of the asset files, so the table is dropped and
+      //   re-seeded on next read; nothing else is touched.
       if (from < 9) {
         // Wipe is acceptable while we have no real users; proper additive
         // migrations land in Phase 11. See plan.md.
@@ -335,6 +339,12 @@ class AppDatabase extends _$AppDatabase {
         for (final player in await getAllPlayers()) {
           await _seedCityBuilderState(player.id);
         }
+      }
+      if (from < 12) {
+        // Bundled content changed; the table is only a cache of the asset
+        // files, so drop it and let the lazy seeder refill it.
+        await customStatement('DROP TABLE IF EXISTS dataset_questions');
+        await m.createTable(datasetQuestions);
       }
     },
   );

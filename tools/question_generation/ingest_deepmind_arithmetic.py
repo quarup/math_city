@@ -227,17 +227,21 @@ def make_distractors(
     return [str(n) for n in result]
 
 
-def normalize_prompt(prompt: str) -> str:
-    """Replace ASCII minus with the typographic U+2212 only when used as
-    subtraction or negation, matching what the rest of the app shows kids.
+def canonical_prompt(a: int, b: int, op: str) -> str:
+    """The equation as the app states it: ``43 − 7 = ?``.
 
-    DeepMind uses ASCII '-' for both. The regex below targets the cases
-    relevant to add_or_sub: negatives like ``-7`` and binary subtraction
-    like ``a - b``. Both are safe to map to U+2212.
+    DeepMind phrases the same sum a dozen ways ("Work out 60 + 4.", "Sum
+    60 and 4.", "What is the distance between 55 and 6?"). Those are
+    bare arithmetic drills wearing a sentence: the wording adds reading
+    load without adding maths, some of it ("distance between") is
+    vocabulary a G2 reader hasn't met, and it made bundled items look
+    unlike the algorithmic ones sitting in the same concept.
+
+    We already recovered oriented operands to verify the answer, so the
+    equation is rebuilt from those rather than patched out of the text.
+    U+2212 minus, matching what the Dart generators emit.
     """
-    out = re.sub(r"(?<![\w-])-(?=\d)", "−", prompt)  # negation
-    out = out.replace(" - ", " − ")  # binary subtraction
-    return out
+    return f"{a} {'+' if op == 'add' else '−'} {b} = ?"
 
 
 def item_id(prompt: str) -> str:
@@ -335,10 +339,13 @@ def ingest(
         if len(buckets[concept_id]) >= items_per_concept:
             continue
 
-        if prompt_raw in seen_prompts:
+        # Dedup on the equation, not DeepMind's wording: "Work out 60 + 4."
+        # and "Sum 60 and 4." are the same question once canonicalised.
+        prompt = canonical_prompt(a, b, op)
+        if prompt in seen_prompts:
             rejected_duplicate += 1
             continue
-        seen_prompts.add(prompt_raw)
+        seen_prompts.add(prompt)
 
         misconception = a - b if op == "add" else a + b
         distractors = make_distractors(answer, misconception, rand)
@@ -346,14 +353,14 @@ def ingest(
         # One-line step-by-step shown on the wrong-answer screen. Mirrors
         # the format the Dart algorithmic generators emit so the kid sees a
         # consistent post-mortem regardless of which side produced the
-        # item. U+2212 minus for sub, matching normalize_prompt().
+        # item. U+2212 minus for sub, matching canonical_prompt().
         op_symbol = "+" if op == "add" else "−"
         explanation = [f"{a} {op_symbol} {b} = {answer}"]
 
         item = {
-            "id": item_id(prompt_raw),
+            "id": item_id(prompt),
             "concept_id": concept_id,
-            "prompt": normalize_prompt(prompt_raw),
+            "prompt": prompt,
             "correct_answer": str(answer),
             "distractors": distractors,
             "explanation": explanation,

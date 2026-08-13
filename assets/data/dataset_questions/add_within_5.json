@@ -1,9 +1,9 @@
 {
   "items": [
     {
-      "id": "deepmind_mathematics_dataset_arith_73d9a7670f",
+      "id": "deepmind_mathematics_dataset_arith_205edc265b",
       "concept_id": "add_within_5",
-      "prompt": "What is 0 plus 0?",
+      "prompt": "0 + 0 = ?",
       "correct_answer": "0",
       "distractors": [
         "2",
