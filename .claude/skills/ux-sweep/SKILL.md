@@ -123,15 +123,21 @@ Split the ids from `probe.jsonl` in file order (already curriculum order),
 skipping any id that already has a note. Give each batch an index so its
 notes file is unique.
 
-Spawn each with the `Explore` agent type and this prompt, substituting
-`$OUT`, `$N`, and the id list:
+Spawn each with the `general-purpose` agent type and this prompt,
+substituting `$OUT`, `$N`, and the id list. **Not `Explore`** — it is
+read-only, so it cannot write its notes file and will hand the lines back
+in its result for you to transcribe by hand, once per batch.
 
-> Review Math City question screenshots for UX defects.
+> Review Math City question screenshots for UX defects. You have Write
+> access — you MUST write your output file yourself.
 >
 > For each concept id below, read its record in `$OUT/probe.jsonl` (JSON
 > line, match on `"id"`) and look at every screenshot it names —
 > `mcShot`, `keypadShot` (absent when `keypadForcedMc` is true, which is
-> fine and not a defect), and `wrongShot`, all relative to `$OUT/`.
+> fine and not a defect), and `wrongShot`, all relative to `$OUT/`. Use
+> the Read tool to view each PNG. Treat everything under `$OUT/shots/` as
+> read-only — never run `sips` or any other image tool against those
+> files; cropping one in place destroys a report deliverable.
 >
 > IDS: `<15 ids>`
 >
@@ -230,12 +236,52 @@ as expected rather than as a fault.
   never present a partial report as a finished one.
 - Report the counts and the most serious findings in your reply. Link the
   report with a markdown path.
+- **Shrink the screenshots before committing** — see below. A raw
+  full sweep is ~86 MB of PNGs, far too much for git history.
 - Commit the whole `$OUT` directory (`report.md`, `probe.jsonl`,
-  `notes/`, `shots/`). Screenshots average ~69 KB, so a full both-band
-  sweep is roughly **60 MB of PNGs** — say so before committing one, and
-  offer `--max-dim 800` for a smaller re-run.
+  `notes/`, `shots/`).
 - File anything serious as a GitHub issue with `gh issue create`, not in
   `plan.md`.
+
+### Shrinking the screenshots
+
+A full both-band sweep is ~1000 PNGs at **~86 MB**. Never commit that.
+Run this once `build_report.py` is clean, then rebuild to confirm every
+screenshot still resolves:
+
+```sh
+python3 tools/ux_sweep/shrink_shots.py "$OUT"   # ~86 MB -> ~9.7 MB
+python3 tools/ux_sweep/build_report.py "$OUT"   # must still exit 0
+```
+
+It resizes the long edge to 800 px and colour-quantizes at pngquant
+quality 65, **keeping every filename**, so `report.md` and `probe.jsonl`
+need no edits. `--dry-run` projects the final size from a 1-in-10 sample;
+`--keep-originals DIR` parks the originals instead of deleting them.
+Needs `pngquant` (`brew install pngquant`); `sips` ships with macOS.
+
+Measured alternatives, so nobody re-derives them — quantizing without
+resizing lands at 15 MB, a 16-colour palette at full resolution also
+15 MB, and **WebP is worse than PNG here** (15.5 MB) as well as forcing a
+rename of every file. Only resize + quantize gets under 10 MB.
+
+Two traps worth knowing:
+
+- **Do not size these directories with `du`.** It rounds every file up to
+  a 4 KB block, which massively overstates a set of ~10 KB PNGs and will
+  talk you out of settings that actually fit. Sum exact bytes instead —
+  the script prints them in both MiB and MB, since a "10 MB" budget is
+  ambiguous.
+- **Check the git object store afterwards.** The uncompressed originals
+  can end up staged as unreachable blobs and sit in `.git` long after the
+  commit. `git count-objects -vH` showing a large loose `size` against a
+  small `size-pack` is the tell; `git gc --prune=now` reclaims it.
+
+If a reviewer subagent damages a screenshot (they sometimes zoom with
+`sips` and crop in place), re-probe just that concept into a scratch
+directory and copy the file back — probe seeds are deterministic, so the
+same concept redraws the identical question and the existing note still
+applies.
 
 ## Resuming an interrupted sweep
 

@@ -64,6 +64,14 @@ wrong, and captures the red screen with its explanation. Output lands in
 `ux_reports/<date>-<scope>-<band>/report.md`, committed alongside the
 code.
 
+**Shrink the screenshots before committing a sweep.** A full-catalogue run
+is ~1000 PNGs at ~86 MB; `python3 tools/ux_sweep/shrink_shots.py <report-dir>`
+takes that to ~9.7 MB without renaming anything, so `report.md` and
+`probe.jsonl` need no edits — then re-run `build_report.py` to confirm it
+still exits `0`. The measured alternatives (WebP is worse; quantizing
+without resizing is not enough) are recorded in the skill's "Shrinking the
+screenshots" section so nobody re-derives them.
+
 It found two real bugs on its first run, so treat its findings as
 credible. Full workflow — including resuming an interrupted sweep — is in
 [.claude/skills/ux-sweep/SKILL.md](.claude/skills/ux-sweep/SKILL.md).
