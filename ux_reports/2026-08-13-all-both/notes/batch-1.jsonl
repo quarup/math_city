@@ -1,0 +1,15 @@
+{"id": "count_to_10", "verdict": "ok", "notes": ""}
+{"id": "count_to_20", "verdict": "ok", "notes": ""}
+{"id": "count_to_100_by_1", "verdict": "ok", "notes": ""}
+{"id": "count_to_100_by_10", "verdict": "improve", "notes": "Prompt shows a blank inside the sequence but asks \"What comes next?\" (\"20, 30, 40, __. What comes next?\"), which reads as the term after the blank; sibling skip_count_2 correctly asks \"What number goes in the blank?\"."}
+{"id": "count_to_120", "verdict": "ok", "notes": ""}
+{"id": "count_forward_from_n", "verdict": "improve", "notes": "Wrong-answer explanation is just \"50 + 4 = 54.\" and never addresses the off-by-one the 53 distractor targets (counting the start number as step 1); showing 51, 52, 53, 54 would teach the method."}
+{"id": "read_numerals_0_20", "verdict": "improve", "notes": "Keypad mode keeps the MC phrasing \"Which number is “twelve”?\" even though there is no list to pick from; \"Write the number twelve\" would fit the typed pad."}
+{"id": "write_numerals_0_20", "verdict": "ok", "notes": ""}
+{"id": "count_objects_to_10", "verdict": "improve", "notes": "\"How many objects are shown?\" renders as a solid-filled 4x2 area grid about 115px wide with thin low-contrast dividers rather than discrete objects, so the cells are hard to count; especially risky in keypad mode where there are no choices to check against."}
+{"id": "count_objects_to_20", "verdict": "improve", "notes": "Same area-grid diagram as count_objects_to_10 but 7x2 cells crammed into ~200px with faint dividers on the teal fill; counting 14 there is guesswork for a young child, and keypad mode gives no choices to fall back on."}
+{"id": "compare_groups_by_count", "verdict": "ok", "notes": ""}
+{"id": "compare_numerals_1_10", "verdict": "improve", "notes": "MC distractors 3 and 6 are not either of the two numbers named in the prompt (\"smaller: 4 or 2?\"), so they can be discarded without doing any comparing; both distractors should come from the pair."}
+{"id": "one_more_one_less_within_20", "verdict": "ok", "notes": ""}
+{"id": "ten_more_ten_less", "verdict": "ok", "notes": ""}
+{"id": "skip_count_2", "verdict": "ok", "notes": ""}

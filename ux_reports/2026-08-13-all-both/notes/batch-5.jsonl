@@ -1,0 +1,15 @@
+{"id": "associative_add", "verdict": "ok", "notes": ""}
+{"id": "add_2digit_1digit", "verdict": "ok", "notes": ""}
+{"id": "add_2digit_multiple_of_10", "verdict": "ok", "notes": ""}
+{"id": "sub_multiples_of_10", "verdict": "ok", "notes": ""}
+{"id": "add_within_100", "verdict": "ok", "notes": "Sampled question (27 + 68) renders clean in both modes, but this is one draw from a 200-question dataset pool, so the concept is not verified as a whole."}
+{"id": "sub_within_100", "verdict": "improve", "notes": "Prompt uses number-line vocabulary a grade-2 reader may not know (\"What is the distance between 55 and 6?\") instead of a subtraction phrasing; from a 131-question dataset pool, so other items may word it differently."}
+{"id": "add_2digit_carry", "verdict": "improve", "notes": "Wrong-answer card for the regrouping concept just restates \"45 + 27 = 72\" with no carry step; distractor 18 is the difference, far outside the plausible range. Drawn from a 49-question dataset pool."}
+{"id": "sub_2digit_borrow", "verdict": "improve", "notes": "Prompt names the smaller number first (\"difference between 66 and 82\"), which in keypad mode invites -16 that the pad cannot type since there is no minus key; explanation silently flips to 82 - 66 without saying why. From a 38-question dataset pool."}
+{"id": "add_up_to_4_2digit", "verdict": "improve", "notes": "Wrong-answer explanation restates the whole chain \"10 + 33 + 13 + 36 = 92\" with no running partial sums, so a student who got 88 cannot locate the slip."}
+{"id": "add_within_1000", "verdict": "improve", "notes": "Prompt renders as bare \"63+164\" with no spaces and no \"= ?\", unlike every sibling concept, so it does not state what to do; from a 200-question dataset pool that likely shares the formatting."}
+{"id": "sub_within_1000", "verdict": "ok", "notes": "Sampled question (569 - 43) renders clean in both modes, but it is one draw from a 200-question dataset pool."}
+{"id": "mental_add_10_or_100", "verdict": "ok", "notes": ""}
+{"id": "add_word_problems_within_100", "verdict": "ok", "notes": ""}
+{"id": "add_sub_2step_word_problems", "verdict": "ok", "notes": "Sampled two-step apples problem is correct and the stepwise explanation is good, but it is one draw from a 300-question dataset pool."}
+{"id": "add_multidigit_standard_alg", "verdict": "improve", "notes": "Concept teaches the standard algorithm but the wrong-answer card shows only \"3626 + 6859 = 10485\" with no column or carry steps."}

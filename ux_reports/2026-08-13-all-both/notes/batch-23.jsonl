@@ -1,0 +1,15 @@
+{"id": "line_plot_whole", "verdict": "ok", "notes": ""}
+{"id": "scaled_bar_graph_read", "verdict": "improve", "notes": "The chart title is ellipsised to \"Favori...\" in both modes even though the card has plenty of unused width; the title should wrap or the chart should use the full card width."}
+{"id": "scaled_picture_graph", "verdict": "improve", "notes": "Wrong-answer explanation reads \"1 icons x 10 = 10.\" (singular/plural bug) and never says to look at the Apple row; the prompt \"How many apples are there?\" also reads oddly against a \"Favourite fruit\" survey graph."}
+{"id": "line_plot_fractional", "verdict": "ok", "notes": ""}
+{"id": "line_plot_fraction_word", "verdict": "ok", "notes": ""}
+{"id": "line_plot_5th_grade_ops", "verdict": "ok", "notes": ""}
+{"id": "statistical_question", "verdict": "improve", "notes": "Long text choices have no horizontal padding: every option's first character sits on top of the pill's rounded border (left) and the text runs to the right border, and the 3-line option reaches the very bottom of the screen."}
+{"id": "dot_plot", "verdict": "ok", "notes": ""}
+{"id": "histogram", "verdict": "improve", "notes": "Chart title ellipsised to \"Daily hi...\" in both modes despite unused card width; \"between 70 and 75\" is also ambiguous about which bin a value of exactly 75 falls into."}
+{"id": "box_plot", "verdict": "improve", "notes": "Wrong-answer explanation is only \"IQR = Q3 - Q1 = 9 - 6 = 3\" - it never says Q1 and Q3 are the left and right edges of the box, so a kid who missed it cannot see where 6 and 9 came from."}
+{"id": "mean", "verdict": "improve", "notes": "Explanation says \"Sum: 95\" without listing the addends (17 + 17 + 19 + 20 + 22), so a kid who added wrong cannot find their mistake."}
+{"id": "median", "verdict": "bug", "notes": "Dot-plot axis labels every integer from 0 to 29 and they collide into an unreadable smear (\"9 101 11 21 31 41 51 61 71 81 92 02 1...\"), so the data values cannot be read in either mode; the dots at 15 and 16 also overlap. lib/presentation/diagrams/dot_plot.dart shrinks tick spacing to fit but never thins the labels."}
+{"id": "mode", "verdict": "ok", "notes": ""}
+{"id": "range_data", "verdict": "bug", "notes": "Same dot-plot axis-label collision: the 2-38 axis prints a label at every integer and everything past ~10 is an illegible smear, so the highest and lowest values the question asks for cannot be read in either mode."}
+{"id": "iqr", "verdict": "bug", "notes": "Worst case of the dot-plot axis-label collision: the 0-47 axis labels every integer and the whole strip is unreadable, so none of the seven data values can be identified from the diagram in either mode."}

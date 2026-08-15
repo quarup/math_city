@@ -1,0 +1,15 @@
+{"id": "mad", "verdict": "ok", "notes": ""}
+{"id": "describe_distribution", "verdict": "improve", "notes": "Histogram title is truncated to \"Student …\" so the context is lost. A flat histogram is also symmetric, so the \"Symmetric\" distractor is not genuinely wrong for a kid who reasons about shape."}
+{"id": "compare_two_distributions", "verdict": "ok", "notes": ""}
+{"id": "sampling_representativeness", "verdict": "ok", "notes": ""}
+{"id": "inference_from_sample", "verdict": "ok", "notes": ""}
+{"id": "probability_zero_to_one", "verdict": "improve", "notes": "The explanation defines 0, 1 and 0.5 but never says that \"very likely\" means close to 1, so it never gets the reader to 0.9."}
+{"id": "probability_simple_event", "verdict": "bug", "notes": "Keypad mode: the prompt card is clipped by the answer box after \"The spinner shown has 3\", hiding which colour is being asked about. Also answerShape is exactString on a reduced fraction, so on seeds like 2 red / 2 blue a typed \"2/4\" would be graded wrong."}
+{"id": "experimental_probability", "verdict": "bug", "notes": "Keypad mode: correct answer is exactString \"2/15\", so typing \"4/30\" — the exact successes/trials the explanation itself shows — is graded wrong, and the prompt never asks for simplest form."}
+{"id": "theoretical_vs_experimental", "verdict": "bug", "notes": "Keypad mode: exactString requires \"3/8\", so the directly computed \"6/16\" is graded wrong with no instruction to simplify."}
+{"id": "sample_space_list", "verdict": "ok", "notes": ""}
+{"id": "compound_event_probability", "verdict": "bug", "notes": "\"What is the probability of getting T and H?\" is ambiguous against the ordered tree — unordered reading gives 1/2, which is offered and marked wrong; prompt also reads \"You flip a coin and then flip a coin\" and the explanation ends \"So P = 1/4 = 1/4.\" Keypad mode additionally clips the prompt card mid-line behind the answer box."}
+{"id": "tree_diagram", "verdict": "bug", "notes": "The prompt card is clipped in both modes — the final line \"total?\" is sliced through — because the tree diagram takes the vertical space."}
+{"id": "simulate_compound", "verdict": "bug", "notes": "Keypad mode: the prompt card is clipped, cutting \"heads?\" in half. Canonical answer is the un-reduced \"19/50\" under exactString, so on a seed like 20/50 a typed \"2/5\" would be graded wrong."}
+{"id": "scatter_plot_construct", "verdict": "bug", "notes": "The prompt card is collapsed to an empty sliver between the plot and the choices, so the list of ordered pairs is entirely invisible and the question is unanswerable as rendered."}
+{"id": "scatter_plot_describe", "verdict": "bug", "notes": "Same layout failure — the prompt card renders as an empty sliver and \"What pattern does this scatter plot show?\" is never displayed; only the choices hint at the task."}

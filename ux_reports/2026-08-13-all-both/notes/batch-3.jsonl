@@ -1,0 +1,15 @@
+{"id": "read_write_multidigit", "verdict": "improve", "notes": "Keypad mode keeps the MC phrasing \"Which number is ...?\" even though no choices are shown. The wrong-answer card only says \"Read the number-name straight off: 1951.\", which restates the answer without addressing the 19510 place-value slip."}
+{"id": "compare_multidigit", "verdict": "improve", "notes": "MC offers 19762 and 19760, numbers that appear nowhere in a prompt that names only 21,586 and 19,761. Prompt uses comma grouping while the choices and the comma-less keypad expect 19761."}
+{"id": "round_multidigit_any_place", "verdict": "improve", "notes": "Two of the four MC distractors (100997, 100999) are not multiples of 1000, so no rounding error produces them; the explanation \"Round 100960 to nearest 1000 gives 101000\" restates the answer instead of naming the hundreds digit rule. datasetPool is 200, so other items in this concept come from the bundled dataset and were not sampled."}
+{"id": "place_value_relationship_10x", "verdict": "improve", "notes": "Prompt \"How many thousands are in 2 ten thousands?\" and explanation \"Each ten thousands is 10 thousands.\" are ungrammatical; hyphenating (2 ten-thousands) or restating as 20,000 would read better for this age."}
+{"id": "factors_of_n", "verdict": "ok", "notes": ""}
+{"id": "multiples_of_n", "verdict": "ok", "notes": ""}
+{"id": "prime_or_composite", "verdict": "ok", "notes": ""}
+{"id": "gcf_two_numbers", "verdict": "ok", "notes": ""}
+{"id": "lcm_two_numbers", "verdict": "ok", "notes": ""}
+{"id": "distributive_with_gcf", "verdict": "ok", "notes": ""}
+{"id": "powers_of_10", "verdict": "improve", "notes": "MC distractors 1001 and 1002 correspond to no plausible student error, leaving only 30 as a real decoy."}
+{"id": "exponents_whole_number", "verdict": "improve", "notes": "Wrong-answer card says \"5² means 5 multiplied by itself 2 times\" and then \"5 × 5 = 25\", which contradicts itself; \"5 used as a factor 2 times\" would match the worked line."}
+{"id": "integer_exponent_props", "verdict": "improve", "notes": "MC exponents render as tiny superscript glyphs, so 8¹², 8¹³ and 8⁸ are hard to tell apart at a glance; the explanation's \"(aᵐ)ⁿ = aᵐⁿ\" is smaller still and the mn product is easy to misread."}
+{"id": "sqrt_perfect_squares", "verdict": "ok", "notes": ""}
+{"id": "cbrt_perfect_cubes", "verdict": "ok", "notes": ""}

@@ -1,0 +1,15 @@
+{"id": "scientific_notation_read", "verdict": "ok", "notes": ""}
+{"id": "scientific_notation_write", "verdict": "ok", "notes": ""}
+{"id": "scientific_notation_ops", "verdict": "ok", "notes": ""}
+{"id": "add_within_5", "verdict": "improve", "notes": "MC distractor 6 falls outside the concept's 0-5 range, and the wrong-answer card only restates '0 + 1 = 1' with no counting-on strategy. datasetPool=1, so this single probe may not represent the bundled item."}
+{"id": "sub_within_5", "verdict": "improve", "notes": "Wrong-answer card is just the restated fact '4 - 4 = 0' with no method. datasetPool=6, so one sample does not cover the bundled items."}
+{"id": "add_within_10", "verdict": "improve", "notes": "Wrong-answer card is just '6 + 3 = 9' restated; distractors 4 and 5 are not near-miss errors for this sum. datasetPool=7, so one sample does not cover the bundled items."}
+{"id": "sub_within_10", "verdict": "improve", "notes": "Wrong-answer card is just '6 - 2 = 4' restated with no count-back or number-line hint. datasetPool=3, so one sample does not cover the bundled items."}
+{"id": "make_10_pair", "verdict": "ok", "notes": ""}
+{"id": "decompose_10", "verdict": "ok", "notes": ""}
+{"id": "add_3_addends_within_20", "verdict": "ok", "notes": ""}
+{"id": "add_within_20", "verdict": "improve", "notes": "Sampled item '17 + 0 = ?' is an identity fact that never exercises adding within 20, and the wrong-answer card only restates '17 + 0 = 17'. datasetPool=24, so this one probe is not representative."}
+{"id": "sub_within_20", "verdict": "improve", "notes": "Wrong-answer card is just '14 - 3 = 11' restated with no regrouping or count-back method. datasetPool=24, so this one probe is not representative."}
+{"id": "add_sub_unknown_position", "verdict": "ok", "notes": ""}
+{"id": "equal_sign_meaning", "verdict": "ok", "notes": ""}
+{"id": "commutative_add", "verdict": "improve", "notes": "App bar title is the algebraic 'a + b = b + a' for a grade-1 concept, unexplained variable notation next to plain-English titles elsewhere; applies to both modes."}

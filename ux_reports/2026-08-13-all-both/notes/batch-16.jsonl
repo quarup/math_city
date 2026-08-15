@@ -1,0 +1,15 @@
+{"id": "positional_words", "verdict": "bug", "notes": "The scene draws the \"box\" and \"toy\" labels at the same point so they overprint into an illegible blob. The prompt also gives the answer away in words (\"The toy is in the box\" -> inside), so the diagram is never read."}
+{"id": "shape_attributes_basic", "verdict": "ok", "notes": ""}
+{"id": "compose_shapes", "verdict": "improve", "notes": "The five-line prompt card is clipped flat at the bottom against the choice list - rounded corner and padding are cut off, though no text is lost."}
+{"id": "partition_circle_rect_halves", "verdict": "improve", "notes": "Distractors \"Only sometimes\" and \"Cannot tell\" are not plausible answers about a specific picture, so it collapses to a Yes/No coin flip; shading only one of the two parts is also irrelevant to the question asked."}
+{"id": "identify_polygons", "verdict": "ok", "notes": ""}
+{"id": "partition_into_rows_columns", "verdict": "ok", "notes": ""}
+{"id": "classify_quadrilaterals", "verdict": "bug", "notes": "A square is shown but \"rectangle\", \"rhombus\" and \"parallelogram\" are offered as distractors - all three are also true of a square, so three of the four choices are correct answers that get marked wrong. The explanation (\"This quadrilateral is a square\") never addresses why the others fail."}
+{"id": "identify_lines_rays_segments", "verdict": "ok", "notes": ""}
+{"id": "right_acute_obtuse_angle", "verdict": "ok", "notes": ""}
+{"id": "parallel_perpendicular_lines", "verdict": "improve", "notes": "\"intersecting\" is offered as a distractor but is genuinely true of the perpendicular pair shown; the prompt should ask for the most specific description or drop that choice."}
+{"id": "classify_2d_by_lines_angles", "verdict": "improve", "notes": "Same weak distractors as the halves question (\"Only sometimes\", \"Cannot tell\") for a yes/no about one drawn shape; the explanation \"a rectangle fits this description\" reads like it is answering about a written description rather than the rectangle on screen."}
+{"id": "line_of_symmetry", "verdict": "improve", "notes": "Explanation says \"A hexagon has 6 lines of symmetry\", which is only true of a regular hexagon and teaches a false generalisation."}
+{"id": "measure_angle_protractor", "verdict": "bug", "notes": "The protractor's 60-120 tick labels are drawn on top of each other into an unreadable smear (\"1201100908070\"), and the correct answer of 105 has to be read from exactly that region, so the angle cannot actually be measured in either mode."}
+{"id": "draw_angle_protractor", "verdict": "bug", "notes": "Same overprinted 60-120 protractor labels as measure_angle_protractor. In keypad mode the prompt card is also clipped flat at the bottom line."}
+{"id": "angle_addition", "verdict": "bug", "notes": "The prompt card truncates the question: MC shows \"What is the total angle\" with the final word \"measure?\" missing entirely, and keypad cuts that line off mid-glyph."}

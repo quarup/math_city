@@ -1,0 +1,15 @@
+{"id": "sub_multidigit_standard_alg", "verdict": "improve", "notes": "The wrong-answer explanation is just '69452 - 23036 = 46416', which teaches nothing about the standard algorithm this concept is named for; a column/regrouping walkthrough would help. Distractors (46411/46412/46417) differ only in the ones digit and model no real borrowing error."}
+{"id": "add_sub_fluency_within_20", "verdict": "ok", "notes": ""}
+{"id": "number_line_add_sub", "verdict": "bug", "notes": "The number line is drawn 0-40 with a tick and label per unit, so the labels collide into an illegible smear ('2223425027893234563840') in both MC and keypad; the jump arc's endpoints cannot be read off the axis."}
+{"id": "equal_groups_intro", "verdict": "improve", "notes": "The 2x3 area grid renders at roughly 90x60 px, far smaller than the prompt card above it and hard to count at a glance; it also shows one undivided rectangle of cells while the prompt talks about '2 equal groups', so the grouping is not visually conveyed."}
+{"id": "array_repeated_addition", "verdict": "bug", "notes": "For the 2-row x 5-column array, the distractor '2 + 2 + 2 + 2 + 2' is also a correct repeated addition of the same total (10) but is graded wrong; either the prompt must say 'one addend per row' or that distractor must not sum to the total."}
+{"id": "mult_meaning_groups", "verdict": "improve", "notes": "The app bar reads 'What does 5 x 7 mean?' while the array on screen is 3 x 4, which reads as a contradictory second question; distractor '7 x 1' has no relation to the picture, and the array renders very small (~115x90 px)."}
+{"id": "mult_facts_within_100", "verdict": "ok", "notes": "datasetPool is 125, so this single generator-style sample ('4 x 2 = ?') is not representative of the bundled dataset questions for this concept."}
+{"id": "mult_facts_2", "verdict": "improve", "notes": "Prompt asks '8 x 2 = ?' but the wrong-answer explanation reads '2 x 8 = 16', flipping the factors relative to the question."}
+{"id": "mult_facts_5", "verdict": "ok", "notes": ""}
+{"id": "mult_facts_10", "verdict": "ok", "notes": ""}
+{"id": "mult_facts_3", "verdict": "ok", "notes": ""}
+{"id": "mult_facts_4", "verdict": "improve", "notes": "Prompt asks '3 x 4 = ?' but the wrong-answer explanation reads '4 x 3 = 12', flipping the factors relative to the question."}
+{"id": "mult_facts_6", "verdict": "improve", "notes": "Prompt asks '5 x 6 = ?' but the wrong-answer explanation reads '6 x 5 = 30', flipping the factors relative to the question."}
+{"id": "mult_facts_7", "verdict": "improve", "notes": "Prompt asks '4 x 7 = ?' but the wrong-answer explanation reads '7 x 4 = 28', flipping the factors relative to the question."}
+{"id": "mult_facts_8", "verdict": "improve", "notes": "Prompt asks '3 x 8 = ?' but the wrong-answer explanation reads '8 x 3 = 24', flipping the factors relative to the question."}

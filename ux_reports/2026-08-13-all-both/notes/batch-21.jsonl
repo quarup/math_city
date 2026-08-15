@@ -1,0 +1,15 @@
+{"id": "dependent_independent_vars", "verdict": "ok", "notes": ""}
+{"id": "add_subtract_linear_expressions", "verdict": "improve", "notes": "The prompt \"Simplify: 2x + 8 + (7x + 9)\" parenthesises only the second group, which looks like a typo; write it as \"(2x + 8) + (7x + 9)\" so the two expressions being added are visually parallel."}
+{"id": "factor_linear_expression", "verdict": "improve", "notes": "Explanation line \"7 = 7 × 1, so 7x = 7 × x; 21 = 7 × 3\" is a garbled non sequitur; the \"7 = 7 × 1\" clause adds nothing and should be dropped."}
+{"id": "expand_linear_expression", "verdict": "ok", "notes": ""}
+{"id": "solve_two_step_eq", "verdict": "ok", "notes": ""}
+{"id": "solve_two_step_eq_distributive", "verdict": "ok", "notes": ""}
+{"id": "solve_two_step_inequality", "verdict": "bug", "notes": "MC shows \"x < 4\" twice (choices: x > 3, x < 3, x < 4, x < 4), so only three distinct options are offered and the duplicated pair signals it cannot be the answer."}
+{"id": "word_problem_two_step_eq", "verdict": "improve", "notes": "Prompt reads \"plus a $8 delivery fee\"; the article should agree with the spoken \"eight\" (\"an $8 delivery fee\") — the template needs a/an selection per amount."}
+{"id": "solve_linear_eq_one_solution", "verdict": "improve", "notes": "Wrong-answer explanation prints \"Move x terms to one side: (1)x = 4\" then \"Divide by 1: x = 4 ÷ 1 = 4\"; the parenthesised coefficient is unexplained notation and the divide-by-1 step is noise when the coefficient is 1."}
+{"id": "solve_linear_eq_no_or_inf", "verdict": "ok", "notes": ""}
+{"id": "solve_linear_eq_with_distrib_collect", "verdict": "ok", "notes": ""}
+{"id": "graph_proportional_slope", "verdict": "bug", "notes": "The coordinate plane eats the vertical space and the prompt card is clipped to a single cut-off line of text in MC (\"This line sh…\" half-visible behind the choices) and collapsed to an empty sliver in keypad mode, so the question itself is unreadable in both modes."}
+{"id": "slope_from_two_points", "verdict": "bug", "notes": "MC: the prompt card renders as an empty sliver under the graph — the \"What is the slope of the line through (−2, 1) and (2, −3)?\" text is entirely invisible, and the graph only labels the points A and B, so nothing on screen states the question."}
+{"id": "linear_function_construct", "verdict": "bug", "notes": "MC: same clipping as slope_from_two_points — the prompt card below the coordinate plane is squeezed to an empty sliver, so \"Find the equation of the line through (1, −2) and (4, 1)\" never appears; the A/B point labels also sit directly on top of their dots."}
+{"id": "function_evaluate_at_point", "verdict": "improve", "notes": "Wrong-answer explanation is \"Substitute k = −4: s(−4) = −10.\" — it restates the answer without showing the substitution arithmetic for −3k² − 17k − 30. datasetPool is 200, so this single probe may not represent the concept's other items."}

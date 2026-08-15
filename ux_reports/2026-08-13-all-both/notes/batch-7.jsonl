@@ -1,0 +1,15 @@
+{"id": "mult_facts_9", "verdict": "ok", "notes": ""}
+{"id": "div_meaning_share", "verdict": "improve", "notes": "The diagram is a solid 24-cell array with no gaps, shading, or labels marking the 6 groups, so it doesn't illustrate 'shared equally into 6 groups' — a kid has to guess whether rows or columns are the groups."}
+{"id": "div_meaning_grouping", "verdict": "improve", "notes": "Same as div_meaning_share: a solid 12-cell array with nothing separating the groups of 6, so the picture adds no meaning to the words."}
+{"id": "div_facts_within_100", "verdict": "ok", "notes": ""}
+{"id": "div_as_unknown_factor", "verdict": "ok", "notes": ""}
+{"id": "commutative_mult", "verdict": "ok", "notes": ""}
+{"id": "associative_mult", "verdict": "improve", "notes": "The prompt wraps mid-expression, leaving '...then 3' on one line and '× (2 × 5) = ?' on the next, which splits the factor from its operator. The app-bar title also writes multiplication as '·' while the question body uses '×'."}
+{"id": "distributive_mult_over_add", "verdict": "improve", "notes": "The 8×5 area grid is drawn as one undifferentiated block, not split into the two 5×4 halves the prompt decomposes, so the diagram doesn't show the distributive property it is there to illustrate."}
+{"id": "mult_1digit_by_multiple_of_10", "verdict": "improve", "notes": "The sampled item is 'What is 1 times 90?' — the ×1 identity case, which tests nothing about multiplying by a multiple of 10. datasetPool is 86, so check whether trivial factors are common in the pool rather than treating this as a one-off."}
+{"id": "div_with_remainder", "verdict": "improve", "notes": "Keypad mode: the prompt is just '14 ÷ 5 = ?' and never states that the answer must be typed as '2R4'; the lone R key above the pad is the only hint. MC is fine because the choices show the format."}
+{"id": "interpret_remainder_word", "verdict": "ok", "notes": ""}
+{"id": "mult_compare_word", "verdict": "ok", "notes": "Clean on this sample, but datasetPool is 300 so one probe isn't representative of the pool."}
+{"id": "mult_4digit_by_1digit", "verdict": "improve", "notes": "The wrong-answer explanation is only '6592 × 5 = 32960' — no partial products or regrouping steps, so a kid who got it wrong learns nothing about the algorithm. datasetPool 200, so the wording of other items wasn't sampled."}
+{"id": "mult_2digit_by_2digit", "verdict": "improve", "notes": "The sampled item is 'Multiply 82 and 10', a ×10 special case rather than a real 2-digit × 2-digit product, and the explanation just restates '82 × 10 = 820' with no partial products. datasetPool 200, so check how many pool items use 10 as a factor."}
+{"id": "div_4digit_by_1digit", "verdict": "improve", "notes": "The wrong-answer explanation gives the quotient plus a multiplication check but no long-division steps, which is the one place a 4-digit ÷ 1-digit question needs them; div_with_remainder shows steps for a much easier case."}

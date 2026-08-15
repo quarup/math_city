@@ -1,0 +1,15 @@
+{"id": "rational_to_decimal_repeating", "verdict": "ok", "notes": ""}
+{"id": "irrational_recognize", "verdict": "improve", "notes": "The prompt is binary (\"Is 0.25 rational or irrational?\") but four choices are offered, two of which (\"integer\", \"neither\") are not options the question named; either widen the prompt or drop the extra choices."}
+{"id": "approximate_irrational", "verdict": "improve", "notes": "The number line above the prompt already plots a dot at ~6.4 between the 6 and 7 ticks, so the answer is readable off the diagram without any estimation; show the ticks without the point, or move the point to the explanation screen."}
+{"id": "missing_addend_within_20", "verdict": "ok", "notes": ""}
+{"id": "missing_factor", "verdict": "ok", "notes": ""}
+{"id": "numerical_pattern_rule", "verdict": "ok", "notes": ""}
+{"id": "two_pattern_relationships", "verdict": "bug", "notes": "The prompt card is clipped mid-sentence at \"Pattern A adds 2 each step; Pattern B adds 1\" — the actual question (\"What is the point on Pattern A at step 2?\") is never shown, so the screen is unanswerable; the coordinate plane is squeezed above it and its A/B labels crowd around (1,2)/(2,2)."}
+{"id": "write_expression_from_words", "verdict": "ok", "notes": ""}
+{"id": "evaluate_expression", "verdict": "ok", "notes": ""}
+{"id": "identify_parts_expression", "verdict": "improve", "notes": "The wrong-answer explanation dumps all three facts (\"Coefficient of x: 4. Constant term: 9. Number of terms: 2.\") instead of answering the coefficient question asked and saying what a coefficient is."}
+{"id": "equivalent_expressions_props", "verdict": "improve", "notes": "The explanation switches to middot notation (\"8(x + 8) = 8·x + 8·8\") while every other screen in this section uses ×; use × so the multiplication sign is not new notation mid-explanation."}
+{"id": "substitute_to_check", "verdict": "improve", "notes": "Two of the four choices are \"Maybe\" and \"Can't tell\", which are never correct for a substitution check and reduce the item to a coin flip between Yes and No."}
+{"id": "solve_one_step_eq_addition", "verdict": "ok", "notes": ""}
+{"id": "solve_one_step_eq_mult", "verdict": "ok", "notes": ""}
+{"id": "inequality_one_var_intro", "verdict": "improve", "notes": "One choice for \"Which inequality is true when x = 3?\" is \"x = 4\", which is an equation rather than an inequality and is eliminable without doing the maths."}

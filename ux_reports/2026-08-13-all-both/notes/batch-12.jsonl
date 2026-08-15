@@ -1,0 +1,15 @@
+{"id": "percent_change", "verdict": "ok", "notes": ""}
+{"id": "markup_markdown", "verdict": "ok", "notes": ""}
+{"id": "sales_tax_tip", "verdict": "ok", "notes": ""}
+{"id": "simple_interest", "verdict": "ok", "notes": ""}
+{"id": "commission", "verdict": "ok", "notes": ""}
+{"id": "convert_fraction_decimal_percent", "verdict": "ok", "notes": ""}
+{"id": "ratio_intro", "verdict": "ok", "notes": ""}
+{"id": "ratio_language", "verdict": "ok", "notes": ""}
+{"id": "equivalent_ratios", "verdict": "ok", "notes": ""}
+{"id": "ratio_table", "verdict": "improve", "notes": "The tape diagram shows only the base 5:2 (5 apple cells, 2 orange cells) while the prompt asks about 20 apples, so reading the picture literally gives the distractor 2 rather than 8. Concept is named 'Ratio tables' but renders a tape, not a table."}
+{"id": "unit_rate", "verdict": "ok", "notes": ""}
+{"id": "unit_pricing", "verdict": "improve", "notes": "Item noun is not singularised in the 'per' slot: prompt reads 'dollars per notebooks' and the explanation reads '$5 per notebooks'."}
+{"id": "constant_speed", "verdict": "ok", "notes": ""}
+{"id": "convert_units_using_ratio", "verdict": "ok", "notes": ""}
+{"id": "double_number_line", "verdict": "bug", "notes": "The top 'cups of flour' label is clipped by the app bar (renders as 'cups oT Tlour') in both modes, and in keypad mode the prompt card's last line '...with 16 cups of flour?' is cut off behind the answer field. The lines also only go to 12 flour / 9 sugar while the question asks about 16 flour, so the answer 12 cannot be read off the diagram and 12 appears as a tick label on the flour line instead."}

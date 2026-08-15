@@ -1,0 +1,15 @@
+{"id": "graph_linear_equation", "verdict": "bug", "notes": "MC: the prompt card is clipped to a sliver by the choice list - only the tops of the letters in \"Which equation does the line on this plane represent?\" are visible, so the question is unreadable next to the coordinate plane."}
+{"id": "identify_linear_vs_nonlinear", "verdict": "improve", "notes": "Prompt says \"Table:\" but renders an inline semicolon list of ordered pairs; a real two-row x/y table would match the skill being tested and read better."}
+{"id": "function_definition_check", "verdict": "ok", "notes": ""}
+{"id": "compare_functions_representations", "verdict": "bug", "notes": "MC: the choice \"They have the same rate of change\" overflows its pill - the text has no horizontal padding, the leading T sits on the rounded left border and both lines run to the pill edges."}
+{"id": "qualitative_graph_features", "verdict": "bug", "notes": "MC: prompt card is clipped - the second line \"this function:\" is cut in half at the bottom of the card by the choices; the axis \"0\" label also sits on top of the plotted line."}
+{"id": "solve_system_by_graphing", "verdict": "bug", "notes": "MC: the prompt card is almost entirely clipped by the choice list - only the top few pixels of \"At what point do the two lines intersect?\" render, leaving the question unreadable."}
+{"id": "solve_system_substitution", "verdict": "ok", "notes": ""}
+{"id": "solve_system_elimination", "verdict": "ok", "notes": ""}
+{"id": "inspect_system_no_solution", "verdict": "improve", "notes": "The app-bar title \"System with no solution\" contradicts this instance's answer (\"Exactly one solution\") and telegraphs a wrong choice; the explanation also just lists all three slope rules without saying which one applies to y = 2x - 1 and y = 0."}
+{"id": "system_word_problem", "verdict": "ok", "notes": ""}
+{"id": "classify_count_categories", "verdict": "improve", "notes": "Picture-graph icons in the Dog row touch/overlap at the ears with no gap between them, and the whole graph renders small and left-aligned against the full-width prompt card - both work against a kindergartener counting icons."}
+{"id": "three_category_data", "verdict": "improve", "notes": "\"How many in all?\" never says in all of what (days), which is weak in keypad mode where nothing bounds the answer; the graph title \"Today's weather log\" also tallies 11 days."}
+{"id": "picture_graph_read", "verdict": "improve", "notes": "The 8-icon Rainy row is packed tighter than the icon width so the rain clouds visibly overlap, making them hard to count; the title \"Today's weather log\" covers 24 days."}
+{"id": "bar_graph_read", "verdict": "bug", "notes": "Prompt \"How many items like signs?\" applies the animate \"how many kids like X\" template to a materials chart and reads as nonsense; the chart title is also truncated to \"Materi...\" and the x-label to \"paint c...\"."}
+{"id": "bar_graph_compare", "verdict": "improve", "notes": "Chart title is truncated to \"Favori...\" - the plot area leaves horizontal room, so the title should wrap or shrink instead of ellipsing."}

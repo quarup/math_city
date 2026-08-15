@@ -1,0 +1,15 @@
+{"id": "skip_count_5", "verdict": "ok", "notes": ""}
+{"id": "skip_count_10", "verdict": "ok", "notes": ""}
+{"id": "skip_count_100", "verdict": "ok", "notes": ""}
+{"id": "count_within_1000", "verdict": "ok", "notes": ""}
+{"id": "even_odd", "verdict": "ok", "notes": ""}
+{"id": "teen_numbers_as_ten_plus", "verdict": "improve", "notes": "Base-ten diagram is tiny and faint (~11px cells with thin pale outlines, ~137x106px above the card), and the 6 ones cubes sit on the same baseline butted against the rod's bottom cell so the figure reads as one L shape and the ten's last cell is easy to count as a one."}
+{"id": "place_value_2digit", "verdict": "ok", "notes": "Nothing wrong in this sample, but datasetPool is 46 so one probe does not cover the bundled items."}
+{"id": "compare_2digit", "verdict": "improve", "notes": "MC distractors 11 and 109 are neither of the two numbers named in the prompt (\"smaller: 49 or 60?\"), so they can be discarded without comparing; both distractors should come from the pair."}
+{"id": "place_value_3digit", "verdict": "ok", "notes": "Nothing wrong in this sample, but datasetPool is 200 so one probe does not cover the bundled items."}
+{"id": "read_write_3digit", "verdict": "improve", "notes": "Keypad mode keeps the MC phrasing \"Which number is “six hundred ninety-four”?\" although there is no list to choose from; \"Write the number six hundred ninety-four\" fits the typed pad."}
+{"id": "expanded_form_3digit", "verdict": "ok", "notes": ""}
+{"id": "compare_3digit", "verdict": "improve", "notes": "MC distractors 550 and 206 are not either of the two numbers named in the prompt (\"greater: 378 or 172?\"), so half the options are eliminable without comparing."}
+{"id": "round_to_10", "verdict": "ok", "notes": "Nothing wrong in this sample, but datasetPool is 23 so one probe does not cover the bundled items."}
+{"id": "round_to_100", "verdict": "improve", "notes": "MC distractors 9205 and 9201 are not multiples of 100, so they can be ruled out without rounding; only 9300 is a real trap. datasetPool is 85, so this is one sample of the pool."}
+{"id": "place_value_multidigit", "verdict": "ok", "notes": "Nothing wrong in this sample, but datasetPool is 200 so one probe does not cover the bundled items."}

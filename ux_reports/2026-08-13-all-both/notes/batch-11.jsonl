@@ -1,0 +1,15 @@
+{"id": "round_decimals", "verdict": "ok", "notes": "Clean in both modes, but datasetPool is 200 so this single sample only covers one item; the bundled pool is unreviewed."}
+{"id": "add_decimals", "verdict": "ok", "notes": ""}
+{"id": "sub_decimals", "verdict": "ok", "notes": ""}
+{"id": "mult_decimal_by_whole", "verdict": "improve", "notes": "Wrong-answer explanation flips the factor order from the prompt (prompt \"3 x 0.4\", explanation \"Ignore the point: 4 x 3 = 12\") and the next line, \"Then put the point 1 from the right\", is missing its noun (1 place / 1 digit)."}
+{"id": "mult_decimals", "verdict": "improve", "notes": "Explanation says to put the point 2 spots from the right of 10, which literally gives 0.10, then jumps straight to 0.1 without showing the trailing zero being dropped."}
+{"id": "div_decimal_by_whole", "verdict": "ok", "notes": ""}
+{"id": "div_by_decimal", "verdict": "ok", "notes": ""}
+{"id": "decimals_fluent_4ops", "verdict": "ok", "notes": ""}
+{"id": "decimal_to_fraction", "verdict": "ok", "notes": ""}
+{"id": "fraction_to_decimal", "verdict": "improve", "notes": "Explanation's middle line, \"Long-divide (or scale to a power-of-10 denominator)\", is jargon for a grade-6 reader and adds nothing over the line that follows it."}
+{"id": "repeating_decimal_recognize", "verdict": "improve", "notes": "Explanation opens with \"Terminates iff the reduced denominator...\" - \"iff\" reads as a typo to a kid - and never applies the rule to the actual number (8 = 2 x 2 x 2), it just asserts \"7/8 -> terminating\"."}
+{"id": "repeating_decimal_to_fraction", "verdict": "improve", "notes": "Explanation line \"Single-digit repeating decimals over /9 (or /3 for the 3/9 family):\" is not a grammatical sentence and never states the method (put the repeating digit over 9, then reduce)."}
+{"id": "percent_intro", "verdict": "ok", "notes": ""}
+{"id": "percent_of_quantity", "verdict": "ok", "notes": ""}
+{"id": "find_whole_from_part_percent", "verdict": "ok", "notes": ""}

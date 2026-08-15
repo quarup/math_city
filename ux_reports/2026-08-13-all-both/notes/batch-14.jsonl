@@ -1,0 +1,15 @@
+{"id": "length_diff_units", "verdict": "ok", "notes": ""}
+{"id": "measure_to_half_quarter_inch", "verdict": "improve", "notes": "Keypad mode: the pad offers an unexplained \"and\" key as the mixed-number separator with no hint that \"2 and 1/2\" is the expected form, and the explanation's own \"5/2\" phrasing is a form a child would plausibly type instead. The ruler and bar are drawn small relative to the empty space above them."}
+{"id": "time_to_hour_half", "verdict": "improve", "notes": "The minute hand is drawn long enough that its tip covers the \"6\" numeral on the face; the explanation also says \"The hour hand is at 6\" when the hand is rendered halfway between 6 and 7."}
+{"id": "time_to_5_min", "verdict": "improve", "notes": "Explanation says \"The minute hand is at 0 (0 minutes)\" though the face is labelled 12, and \"The hour hand is past 7\" when it sits exactly on 7; the minute hand tip also draws over the \"12\"."}
+{"id": "time_to_minute", "verdict": "improve", "notes": "Distractors 7:32/7:33/7:34 sit one minute tick apart on a ~200 px clock face, so choosing between them is a pixel-perception test rather than a clock-reading one, and the explanation is just \"It is 7:33.\" with no method for counting the ticks."}
+{"id": "am_pm", "verdict": "improve", "notes": "Explanation card ends with a doubled period: \"at night\" tells you it is p.m.."}
+{"id": "elapsed_time", "verdict": "ok", "notes": "datasetPool is 200, so this single generator sample is not representative of the concept; the sampled item (clock showing the 7:45 start time, stepwise explanation) was clean."}
+{"id": "coins_id_value", "verdict": "improve", "notes": "The coin disc is printed with \"1¢\", so the answer is read off the label instead of identifying the coin, which defeats the concept; the explanation also reads \"A penny is worth 1 cents\" and \"0\" is an implausible distractor for a coin value."}
+{"id": "count_coins", "verdict": "ok", "notes": ""}
+{"id": "count_bills_coins", "verdict": "ok", "notes": ""}
+{"id": "money_word_problems", "verdict": "ok", "notes": ""}
+{"id": "change_from_purchase", "verdict": "ok", "notes": ""}
+{"id": "liquid_volume_mass", "verdict": "ok", "notes": ""}
+{"id": "convert_units_within_system", "verdict": "improve", "notes": "Explanation reads \"1 feet = 12 inches.\" — the unit name is not singularised."}
+{"id": "convert_units_multistep", "verdict": "bug", "notes": "A mass is described as a length: \"A bag is 9 kg 786 g long. How long is it in g?\" — convertUnitsMultistep in lib/domain/questions/generators/word_problems_extra_generators.dart:319 uses one \"is X ... long / How long is it\" template for all five conversion pairs, so the kg→g row comes out nonsensical."}

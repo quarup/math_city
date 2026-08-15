@@ -1,0 +1,15 @@
+{"id": "classify_2d_hierarchy", "verdict": "ok", "notes": ""}
+{"id": "plot_first_quadrant", "verdict": "improve", "notes": "Point A is generated at (7, 0), so its dot sits on top of the black x-axis and reads as off the grid; keep generated points at y >= 1 for a first-quadrant concept."}
+{"id": "read_first_quadrant", "verdict": "bug", "notes": "The prompt card clips its second line: 'What are the coordinates / of point A?' is sliced through the middle of the letters by the bottom of the card."}
+{"id": "area_triangle", "verdict": "ok", "notes": ""}
+{"id": "area_parallelogram", "verdict": "ok", "notes": ""}
+{"id": "area_trapezoid", "verdict": "ok", "notes": ""}
+{"id": "area_polygon_decompose", "verdict": "bug", "notes": "The prompt is cut off before the actual question in both modes - MC ends at 'square units. What is the' and keypad loses a line and a half more, so 'total area of the polygon?' is never shown. The diagram is also an unlabelled symmetric trapezoid with no split line, which does not match the described rectangle-plus-one-triangle decomposition."}
+{"id": "polygon_on_coordinate_plane", "verdict": "bug", "notes": "The prompt card is collapsed to a sliver: MC shows only the top few pixels of 'What is the area of...' and the keypad shot shows an empty grey card, so the typed version is unanswerable without the question text."}
+{"id": "triangle_inequality_recognize", "verdict": "ok", "notes": ""}
+{"id": "cross_section_3d", "verdict": "ok", "notes": ""}
+{"id": "circle_circumference", "verdict": "bug", "notes": "Keypad mode clips the prompt's last line, hiding 'circle? Use pi = 3.14' - the approximation the exact decimal answer 43.96 depends on is not visible anywhere on screen."}
+{"id": "area_circle", "verdict": "improve", "notes": "Keypad mode clips the bottom edge of the prompt card; both text lines are still readable, but it needs the same vertical-space fix as the other diagram-plus-keypad screens."}
+{"id": "supplementary_angles", "verdict": "improve", "notes": "A single arc sweeps the entire 180 degrees from one end of the line to the other and crosses the ray, so it marks the straight angle rather than the 124 degree region; only the label positions distinguish the two angles. Draw one arc per region as vertical_angles does."}
+{"id": "complementary_angles", "verdict": "improve", "notes": "The single arc spans the full 90 degrees from the vertical ray to the horizontal ray, crossing the middle ray, so neither the 62 degree region nor the '?' region is actually marked."}
+{"id": "vertical_angles", "verdict": "bug", "notes": "Keypad mode chops the final prompt line in half - only the tops of 'vertical to it?' survive, so the question reads as 'What is the angle'."}

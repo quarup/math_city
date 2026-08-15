@@ -1,0 +1,15 @@
+{"id": "area_rectangle_count_squares", "verdict": "ok", "notes": ""}
+{"id": "area_rectangle_formula", "verdict": "ok", "notes": ""}
+{"id": "perimeter_polygon", "verdict": "ok", "notes": ""}
+{"id": "perimeter_unknown_side", "verdict": "improve", "notes": "The wrong-answer explanation writes the variable as a bare lowercase l (\"So l + w = P ÷ 2 = 9\"), which in this font is a plain vertical stroke sitting right next to digits and reads as \"1 + w\". Spell it out as \"length + width\" or use L."}
+{"id": "area_perimeter_word", "verdict": "ok", "notes": ""}
+{"id": "volume_unit_cubes", "verdict": "bug", "notes": "The prompt is clipped in both modes — the card cuts off after \"How many unit cubes\", losing \"does it contain?\"; in keypad mode the fourth line is sliced through mid-glyph. Separately the Box3D labels are ~8px and only two of the three edges are labelled (5 and 5, with the 4 left to be counted)."}
+{"id": "volume_rect_prism_formula", "verdict": "ok", "notes": ""}
+{"id": "volume_composite", "verdict": "bug", "notes": "The prompt is clipped in both modes — MC ends at \"The second is 2 × 4 × 3 cubic\" and drops \"units. What is the total volume?\", keypad slices a line in half. The diagram is also a single plain unlabelled cube, which does not depict the two-prism composite figure the prompt describes."}
+{"id": "volume_prism_fractional_edges", "verdict": "ok", "notes": ""}
+{"id": "surface_area_from_net", "verdict": "improve", "notes": "The edge-length label \"4\" is ~10px (half the size of any other text) and is printed inside the centre face of the net rather than alongside an edge, so it reads as a label for that face rather than as the cube's edge length."}
+{"id": "volume_cylinder", "verdict": "ok", "notes": ""}
+{"id": "volume_cone", "verdict": "ok", "notes": ""}
+{"id": "volume_sphere", "verdict": "improve", "notes": "The ⁴⁄₃ in the explanation renders as superscript/subscript glyphs about half the height of the surrounding text — the smallest thing on the screen — and is inconsistent with the precomposed ⅓ used one concept over in volume_cone."}
+{"id": "identify_shape_2d", "verdict": "improve", "notes": "The wrong-answer explanation only restates the answer (\"This shape is a square.\") with no defining property, so a kid who picked triangle learns nothing about why."}
+{"id": "identify_shape_3d", "verdict": "improve", "notes": "Same as identify_shape_2d: the explanation is just \"This 3D shape is a cube.\" with no distinguishing feature to separate it from the sphere/cylinder/cone distractors."}
