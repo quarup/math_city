@@ -265,6 +265,12 @@ resizing lands at 15 MB, a 16-colour palette at full resolution also
 15 MB, and **WebP is worse than PNG here** (15.5 MB) as well as forcing a
 rename of every file. Only resize + quantize gets under 10 MB.
 
+Because it replaces the screenshots **in place** — same filenames, new
+contents — an open markdown preview will often keep showing the old
+resources and the images look broken. Reload the preview (VS Code:
+`Markdown: Reload Preview`) before believing anything is actually wrong;
+the files themselves are verified by `build_report.py`.
+
 Two traps worth knowing:
 
 - **Do not size these directories with `du`.** It rounds every file up to
