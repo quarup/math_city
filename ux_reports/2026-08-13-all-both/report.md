@@ -10,6 +10,200 @@ Each question screenshot is the exact screen the player sees. The wrong-answer s
 
 The green "Correct!" screen is verified programmatically and not captured — it is identical for every concept.
 
+<!-- OBSERVATIONS: hand-written, preserved across rebuilds -->
+## Observations (quarup)
+
+Hand-written notes on top of the automated review. This file is injected
+into `report.md` verbatim by `build_report.py` — edit it here, not in the
+generated report.
+
+### 1. Fill-in-the-blank prompts are far too verbose
+
+Show the sequence with the gap and nothing else. The prompt should be:
+
+```
+200, 300, ___, 500
+```
+
+Not `"Skip count by 100s: 200, 300, ___, 500. What number goes in the
+blank?"`. No `"Skip count by 100s:"` lead-in, no trailing `"What number
+goes in the blank?"`, and **not even a `"Fill in the blank:"` preamble** —
+a sequence with a gap in it is self-explanatory.
+
+Apply this to **all** fill-in-the-blank questions, not just the ones
+listed. Currently verbose:
+
+| concept | now | should be |
+|---|---|---|
+| `skip_count_2` | Skip count by 2s: 16, 18, \_\_, 22. What number goes in the blank? | `16, 18, ___, 22` |
+| `skip_count_5` | Skip count by 5s: 45, 50, \_\_, 60. What number goes in the blank? | `45, 50, ___, 60` |
+| `skip_count_10` | Skip count by 10s: 20, 30, \_\_, 50. What number goes in the blank? | `20, 30, ___, 50` |
+| `skip_count_100` | Skip count by 100s: 200, 300, \_\_, 500. What number goes in the blank? | `200, 300, ___, 500` |
+| `count_to_100_by_10` | Counting by 10s: 20, 30, 40, \_\_. What comes next? | `20, 30, 40, ___` |
+| `arithmetic_patterns_in_tables` | What comes next? 4, 9, 14, 19, ? | `4, 9, 14, 19, ___` |
+| `equivalent_fractions_compute` | Fill in the blank: 1/5 = ?/25 | `1/5 = ___/25` |
+
+Using `___` as the gap everywhere also fixes two existing complaints: it
+drops the `"What comes next?"` phrasing that reads as *the term after the
+blank* when the gap is mid-sequence (the `count_to_100_by_10` finding), and
+it makes the answer's shape obvious in keypad mode.
+
+These concepts already do it right and are the model to copy:
+`decompose_10` (`10 = ___ + 7`), `missing_addend_within_20`
+(`___ + 10 = 19`), `div_as_unknown_factor` (`5 × ___ = 40`).
+
+**Open question — same treatment for "what comes right after N"?**
+`count_to_10`, `count_to_20`, `count_to_100_by_1`, `count_to_120` and
+`count_within_1000` all render as `"What number comes right after 9?"`.
+That is the same idea in words rather than symbols and could become
+`9, ___` — but it is a different prompt shape, so flagging rather than
+assuming.
+
+### 2. `read_write_multidigit`: remove keypad mode
+
+Force multiple choice (`multipleChoiceOnly`). The prompt is
+`"Which number is “one thousand nine hundred fifty-one”?"` — *which*
+presupposes a list, and there isn't one at the keypad band.
+
+**Two identical siblings — same fix?** `read_numerals_0_20`
+(`"Which number is “twelve”?"`) and `read_write_3digit`
+(`"Which number is “six hundred ninety-four”?"`) have the same prompt
+shape, the same `integer` answer format, and the same finding in the
+sweep. Flagging rather than assuming, but they look like one change.
+
+Note the inverse concept is already correct: `write_numerals_0_20` asks
+`"How do you write the number 20 in words?"` with a `string` answer, so it
+is forced to MC automatically.
+
+### 3. Property-of-operations prompts: two lines, not a sentence
+
+Same principle as §1 — drop the `If … then …` sentence and stack the two
+equations so the transformation is visible at a glance:
+
+```
+2 + 7 = 9
+7 + 2 = ___
+```
+
+not `"If 2 + 7 = 9, then 7 + 2 = ?"`. Reading the property off two aligned
+lines *is* the skill; burying it in prose makes it a reading exercise.
+
+Named: `commutative_add`, `associative_add`. The same `If … then …`
+template is used by three more, which look like the same change:
+
+| concept | now | should be |
+|---|---|---|
+| `commutative_add` | If 2 + 7 = 9, then 7 + 2 = ? | `2 + 7 = 9` / `7 + 2 = ___` |
+| `associative_add` | If 2 + (3 + 7) = 12, then (2 + 3) + 7 = ? | `2 + (3 + 7) = 12` / `(2 + 3) + 7 = ___` |
+| `commutative_mult` | If 6 × 3 = 18, then 3 × 6 = ? | `6 × 3 = 18` / `3 × 6 = ___` |
+| `associative_mult` | If (3 × 2) × 5 = 30, then 3 × (2 × 5) = ? | `(3 × 2) × 5 = 30` / `3 × (2 × 5) = ___` |
+| `distributive_mult_over_add` | 5 × 8 = 5 × (4 + 4) = 5 × 4 + 5 × 4 = ? | already symbolic; just needs the `___` gap and a line break per step |
+
+Also worth fixing while in here: these concepts' **app-bar titles are raw
+algebra** — `a + b = b + a`, `(a+b)+c = a+(b+c)`, `a × b = b × a`,
+`(a·b)·c = a·(b·c)` — shown to grade 1–3 children next to plain-English
+titles everywhere else, and using `·` for multiplication where the question
+body uses `×`. Already raised for `commutative_add` in the sweep.
+### 4. Fraction-division diagrams show one operand, not the operation
+
+`div_unit_fraction_by_whole` and `div_whole_by_unit_fraction` both render a
+`FractionBarSpec` of **only the fraction in the expression**, which does not
+help and in one case actively misleads:
+
+| concept | prompt | answer | diagram actually shows |
+|---|---|---|---|
+| `div_unit_fraction_by_whole` | `1/2 ÷ 4 = ?` | `1/8` | a bar in 2 with 1 shaded — the dividend. Nothing about eighths, and `÷ 4` is invisible |
+| `div_whole_by_unit_fraction` | `5 ÷ 1/4 = ?` | `20` | a bar in 4 with 1 shaded — the divisor. The 5 wholes are invisible, and the **4 cells anchor on the wrong number** when the answer is 20 |
+
+Either make it show the operation, or drop it. The useful versions are not
+hard, and the wording for them **already exists in the explanations** — the
+text describes the right mental model while the picture fails to draw it:
+
+- `1/2 ÷ 4` — draw the half-bar, then subdivide the shaded half into 4, so
+  the whole bar reads as 8 and the answer is countable. The explanation
+  already says _"Splitting 1/2 into 4 equal parts makes each part 4 times
+  smaller."_
+- `5 ÷ 1/4` — draw 5 whole bars each cut into quarters, so the child counts
+  20 pieces. The explanation already says _"How many 1/4 pieces fit in one
+  whole? 4. And in 5 wholes? 5 × 4 = 20."_
+
+Ditching is a legitimate outcome: the sibling `div_fraction_by_fraction`
+(`1/2 ÷ 1/6 = ?`) ships with no diagram at all and reads fine. A wrong
+picture is worse than none.
+### 5. `fraction_denom_10_100`: show the shape, don't describe it
+
+Prompt is `"What fraction is shaded? (Denominator = 10)"`. Replace the
+parenthetical with the answer's actual shape:
+
+```
+What fraction is shaded?
+? / 10
+```
+
+Same principle as §1 and §3 — a filled-in template beats a sentence
+describing one. It also matches the app's existing convention: the `?`
+placeholder is already used for the unknown in `5 ÷ 1/4 = ?` and, in
+exactly this `?/denominator` form, in `equivalent_fractions_compute`
+(`1/5 = ?/25`).
+
+**Pair this with a grading fix, or it inherits a known bug.** The sweep
+found that `equivalent_fractions_compute` displays `?/25` but grades with
+`answerShape: exactString` against the *whole* fraction `5/25`, so a child
+who types `5` — the thing the `?` points at — is marked wrong. This concept
+has the same setup (`answerFormat: fraction`, `answerShape: exactString`,
+canonical answer `7/10`), so showing `? / 10` will invite typing `7` in
+keypad mode. Either accept the bare numerator when the denominator is
+given, or keep the `?` over the whole fraction rather than the numerator
+alone.
+### 6. Units are US-only in places — and inconsistent with each other
+
+`estimate_length` asks _"About how long is a paper clip?"_ with every
+choice imperial: `6 inches` / `1 foot` / `3 feet` / `1 inch`. A child
+outside the US cannot answer it, and metric equivalents (mm, cm, m, km)
+should be available.
+
+Scanning the whole catalogue for units turned up a broader problem: **the
+app already mixes the two systems**, so this is a consistency bug as much
+as an internationalisation one.
+
+Already metric: `measure_with_ruler_cm` (_"in centimetres"_),
+`length_diff_units` (cm), `convert_units_multistep` (kg → g),
+`liquid_volume_mass`, `perimeter_unknown_side`, `area_perimeter_word`,
+`volume_prism_fractional_edges`, `signed_quantities_context` (metres).
+
+Imperial-only, same treatment as `estimate_length`:
+
+| concept | prompt |
+|---|---|
+| `estimate_length` | About how long is a paper clip? (choices in inches/feet) |
+| `convert_units_within_system` | How many inches are in 6 feet? |
+| `scale_drawing` | 1 inch represents 50 feet… |
+| `constant_speed` | A car travels at 30 mph for 6 hours… (in miles) |
+| `unit_rate_with_fractions` | Sam ran 2 1/2 miles in 1/2 hours… |
+| `multistep_ratio_word` | Kenji drives at 51 miles per hour… |
+| `line_plot_fractional` | How many pencils are 1 1/4 inches long? |
+| `line_plot_fraction_word` | total length of all ribbons that are 2 1/2 inches |
+| `dot_plot` | How many plants are at least 3 inches tall? |
+
+`measure_with_ruler_inches` is the deliberate exception — it pairs with
+`measure_with_ruler_cm`, so both systems are taught side by side. Keep that
+pattern; it is the model for the rest.
+
+**Money is the deeper version of this problem.** Currency is hardcoded to
+US dollars in `markup_markdown`, `sales_tax_tip`, `simple_interest`,
+`commission`, `unit_pricing`, `money_word_problems` and
+`word_problem_two_step_eq` — those are just a symbol swap. But
+`coins_id_value`, `count_coins`, `count_bills_coins` and
+`change_from_purchase` are built on the **US denomination set** (penny,
+nickel, dime, quarter) and render US coin diagrams, so they cannot be
+localised by changing a string. Decide whether these are US-only content or
+need a per-locale coin set.
+
+Good news: **every concept listed here is generator-only** (`datasetPool`
+is 0 for all of them), so this is a code change with no dataset
+re-ingestion. No Fahrenheit anywhere, and no imperial mass units.
+<!-- END OBSERVATIONS -->
+
 ## Findings
 
 | | Concept | Finding |

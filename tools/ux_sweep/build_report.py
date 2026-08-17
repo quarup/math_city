@@ -140,6 +140,47 @@ def validate(
     return problems
 
 
+OBS_BEGIN = "<!-- OBSERVATIONS: hand-written, preserved across rebuilds -->"
+OBS_END = "<!-- END OBSERVATIONS -->"
+
+OBS_PLACEHOLDER = """## Observations
+
+_Nothing yet. Type notes between the two `OBSERVATIONS` HTML comments and
+they survive every rebuild — everything outside them is regenerated._"""
+
+
+def carry_observations(root: Path) -> str:
+    """Return the hand-written block to re-emit into the new report.md.
+
+    report.md is generated wholesale, so a human note typed into it would
+    normally be destroyed by the next build. Instead we read the previous
+    report.md and lift the marked block out of it verbatim.
+
+    Falls back to a legacy observations.md (the earlier design) so nothing
+    is lost on the first build after this change, then to a placeholder.
+    """
+    report = root / "report.md"
+    if report.exists():
+        text = report.read_text()
+        start = text.find(OBS_BEGIN)
+        end = text.find(OBS_END, start + 1) if start != -1 else -1
+        if start != -1 and end != -1:
+            return text[start + len(OBS_BEGIN):end].strip("\n")
+        # Markers are gone (hand-mangled, or an older report). Don't
+        # silently discard whatever a human may have written.
+        if start != -1 or end != -1:
+            sys.stderr.write(
+                "warning: report.md has only one OBSERVATIONS marker; "
+                "leaving the block empty rather than guessing its extent\n"
+            )
+
+    legacy = root / "observations.md"
+    if legacy.exists() and legacy.read_text().strip():
+        return legacy.read_text().strip("\n")
+
+    return OBS_PLACEHOLDER
+
+
 def main() -> int:
     args = [a for a in sys.argv[1:] if not a.startswith("-")]
     flags = {a for a in sys.argv[1:] if a.startswith("-")}
@@ -246,6 +287,16 @@ def main() -> int:
         'The green "Correct!" screen is verified programmatically and not '
         "captured — it is identical for every concept."
     )
+    out.append("")
+
+    # -- hand-written observations ---------------------------------------
+    # Everything else in this file is generated, but humans type notes here
+    # too, so the block between these markers is read back off the previous
+    # report.md and re-emitted verbatim. Edit it in place; just keep the
+    # markers. See carry_observations().
+    out.append(OBS_BEGIN)
+    out.append(carry_observations(root))
+    out.append(OBS_END)
     out.append("")
 
     # -- findings first: the reason anyone opens this file ---------------
