@@ -142,7 +142,10 @@ GeneratedQuestion partitionCircleRectHalves(Random rand) {
 // ─────────────────────────────────────────────────────────────────────────
 
 /// "About how long is a typical {object}?" — MC over plausible
-/// lengths in a single unit (inches or feet). CCSS 2.MD.A.3.
+/// lengths in a single unit. Half the scenarios are imperial
+/// (inches/feet) and half metric (centimetres/metres), following the
+/// measure_with_ruler_inches + measure_with_ruler_cm pattern of teaching
+/// both systems side by side. CCSS 2.MD.A.3.
 const List<(String, String, List<String>)> _estimateScenarios = [
   // (object, correct answer, MC pool — must include the correct)
   (
@@ -175,6 +178,37 @@ const List<(String, String, List<String>)> _estimateScenarios = [
     '5 inches',
     ['5 inches', '5 feet', '15 inches', '1 inch'],
   ),
+  // Metric siblings.
+  (
+    'a new pencil',
+    '18 centimetres',
+    ['18 centimetres', '2 centimetres', '2 metres', '18 metres'],
+  ),
+  (
+    'a doorway',
+    '2 metres',
+    ['2 metres', '2 centimetres', '20 metres', '50 centimetres'],
+  ),
+  (
+    'a paper clip',
+    '3 centimetres',
+    ['3 centimetres', '3 metres', '30 centimetres', '1 metre'],
+  ),
+  (
+    'a school bus',
+    '12 metres',
+    ['12 metres', '12 centimetres', '1 metre', '120 metres'],
+  ),
+  (
+    'a sheet of notebook paper',
+    '30 centimetres',
+    ['30 centimetres', '30 metres', '3 centimetres', '3 metres'],
+  ),
+  (
+    'a marker',
+    '13 centimetres',
+    ['13 centimetres', '13 metres', '130 centimetres', '1 centimetre'],
+  ),
 ];
 
 GeneratedQuestion estimateLength(Random rand) {
@@ -186,6 +220,8 @@ GeneratedQuestion estimateLength(Random rand) {
     correctAnswer: answer,
     distractors: stringDistractorsFromPool(answer, s.$3, rand),
     answerFormat: AnswerFormat.string,
-    explanation: ['A typical ${s.$1} is about $answer.'],
+    // "Typically, a paper clip…", not the old "A typical a paper clip…"
+    // (the object strings carry their own article).
+    explanation: ['Typically, ${s.$1} is about $answer.'],
   );
 }

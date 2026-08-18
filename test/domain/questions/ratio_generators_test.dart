@@ -214,13 +214,15 @@ void main() {
   group('constant_speed', () {
     test('distance = rate × time; correct value for each blank variant', () {
       final dist = RegExp(
-        r'^A car travels at (\d+) mph for (\d+) hours\. How far',
+        r'^A car travels at (\d+) (?:mph|km/h) for (\d+) hours\. How far',
       );
       final time = RegExp(
-        r'^A car travels (\d+) miles at (\d+) mph\. How many hours',
+        r'^A car travels (\d+) (?:miles|kilometres) at (\d+) (?:mph|km/h)\. '
+        r'How many hours',
       );
       final rate = RegExp(
-        r'^A car travels (\d+) miles in (\d+) hours\. What is its speed',
+        r'^A car travels (\d+) (?:miles|kilometres) in (\d+) hours\. '
+        r'What is its speed',
       );
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'constant_speed', i);

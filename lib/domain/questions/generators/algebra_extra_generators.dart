@@ -283,11 +283,13 @@ GeneratedQuestion convertUnitsWithinSystem(Random rand) {
   );
 }
 
-String _singular(String plural) {
-  if (plural.endsWith('es')) return plural.substring(0, plural.length - 2);
-  if (plural.endsWith('s')) return plural.substring(0, plural.length - 1);
-  return plural;
-}
+String _singular(String plural) => switch (plural) {
+  // Irregulars first; the generic strip-the-s produced "1 feet" and the
+  // strip-es rule would turn "minutes" into "minut".
+  'feet' => 'foot',
+  'inches' => 'inch',
+  _ => plural.endsWith('s') ? plural.substring(0, plural.length - 1) : plural,
+};
 
 // ─────────────────────────────────────────────────────────────────────────
 // volume_prism_fractional_edges (G6)

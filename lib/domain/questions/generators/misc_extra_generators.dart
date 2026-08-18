@@ -307,7 +307,7 @@ String _fmtB(int b) {
 /// → 2. Distance and time are both fractions; the quotient is forced to
 /// a small whole number so the kid sees a clean unit-rate result.
 GeneratedQuestion unitRateWithFractions(Random rand) {
-  // Build the answer first: rate ∈ {2, 3, 4, 5} mi/hr.
+  // Build the answer first: rate ∈ {2, 3, 4, 5} distance-units per hour.
   final rate = rand.nextInt(4) + 2;
   // Pick a time fraction t = p/q with q ∈ {2, 3, 4}, p ∈ [1, q-1].
   final q = [2, 3, 4][rand.nextInt(3)];
@@ -319,11 +319,15 @@ GeneratedQuestion unitRateWithFractions(Random rand) {
   final correct = '$rate';
   final timeStr = _renderFraction(time);
   final distanceStr = _renderFraction(distance);
+  // Metric alongside imperial, 50/50.
+  final unit = rand.nextBool() ? 'kilometres' : 'miles';
+  // The time fraction is always proper (< 1 hour), so singular "hour" —
+  // "in 1/2 hours" read like a typo.
   return GeneratedQuestion(
     conceptId: 'unit_rate_with_fractions',
     prompt:
-        'Sam ran $distanceStr miles in $timeStr hours. '
-        'How many miles per hour did Sam run?',
+        'Sam ran $distanceStr $unit in $timeStr hour. '
+        'How many $unit per hour did Sam run?',
     correctAnswer: correct,
     distractors: integerDistractorsWith(
       rate,

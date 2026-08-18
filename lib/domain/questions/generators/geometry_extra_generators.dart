@@ -103,50 +103,67 @@ GeneratedQuestion crossSection3d(Random rand) {
 /// Two question flavours drawn 50/50: forward (drawing → real) and
 /// inverse (real → drawing).
 GeneratedQuestion scaleDrawing(Random rand) {
-  // Scale (1 in = s ft) ∈ {5, 10, 20, 25, 50}.
+  // Scale (1 small-unit = s big-units) ∈ {5, 10, 20, 25, 50}.
   const scales = [5, 10, 20, 25, 50];
   final s = scales[rand.nextInt(scales.length)];
-  // Forward: drawing inches ∈ 2..10 → real feet = d × s.
-  // Inverse: real feet that is a multiple of s (so the drawing
-  // inches comes out a whole number).
+  // 50/50 imperial (inch/feet) or metric (centimetre/metres) — both
+  // systems taught side by side, same as the ruler concepts.
+  final metric = rand.nextBool();
+  final small = metric ? 'centimetre' : 'inch';
+  final smalls = metric ? 'centimetres' : 'inches';
+  final bigs = metric ? 'metres' : 'feet';
+  // Forward: drawing length ∈ 2..10 → real = d × s.
+  // Inverse: real length that is a multiple of s (so the drawing
+  // length comes out a whole number).
   final forward = rand.nextInt(2) == 0;
   if (forward) {
     final d = rand.nextInt(9) + 2; // 2..10
     final answer = d * s;
+    // Error-based distractors (off by one drawing unit, added instead of
+    // multiplied): ±1 jitter made the correct answer the only round
+    // number on screen, so it could be picked without scaling anything.
+    final candidates = <String>[
+      '${(d + 1) * s}',
+      '${(d - 1) * s}',
+      '${d + s}',
+      '${answer + s}',
+    ];
+    final distractors = <String>[];
+    final seen = <String>{'$answer'};
+    for (final c in candidates) {
+      if (distractors.length >= 3) break;
+      if (seen.add(c)) distractors.add(c);
+    }
     return GeneratedQuestion(
       conceptId: 'scale_drawing',
       prompt:
-          'On a scale drawing, 1 inch represents $s feet. The drawing of '
-          'a wall is $d inches long. How long is the actual wall, in feet?',
+          'On a scale drawing, 1 $small represents $s $bigs. The drawing of '
+          'a wall is $d $smalls long. How long is the actual wall, '
+          'in $bigs?',
       correctAnswer: '$answer',
-      distractors: integerDistractorsWith(
-        answer,
-        rand,
-        // Misconception: divided instead of multiplied.
-        misconception: d ~/ (s > d ? d : 1),
-      ),
+      distractors: distractors,
       explanation: [
-        '$d inches × $s ft per inch = $answer feet.',
+        '$d $smalls × $s $bigs per $small = $answer $bigs.',
       ],
     );
   } else {
-    final dInches = rand.nextInt(9) + 2; // 2..10
-    final realFeet = dInches * s;
+    final d = rand.nextInt(9) + 2; // 2..10
+    final real = d * s;
     return GeneratedQuestion(
       conceptId: 'scale_drawing',
       prompt:
-          'A wall is $realFeet feet long. On a scale drawing where 1 inch '
-          'represents $s feet, how many inches long is the drawing of '
+          'A wall is $real $bigs long. On a scale drawing where 1 $small '
+          'represents $s $bigs, how many $smalls long is the drawing of '
           'the wall?',
-      correctAnswer: '$dInches',
+      correctAnswer: '$d',
       distractors: integerDistractorsWith(
-        dInches,
+        d,
         rand,
         // Misconception: multiplied instead of divided.
-        misconception: realFeet * s,
+        misconception: real * s,
       ),
       explanation: [
-        '$realFeet feet ÷ $s ft per inch = $dInches inches.',
+        '$real $bigs ÷ $s $bigs per $small = $d $smalls.',
       ],
     );
   }

@@ -208,22 +208,34 @@ GeneratedQuestion multistepRatioWord(Random rand) {
   final name = pickRandom(wordProblemNames, rand);
   final kind = rand.nextInt(2);
   if (kind == 0) {
-    // d = r × t  (distance = rate × time)
-    final rate = rand.nextInt(40) + 30; // 30..69 mph
-    final time = rand.nextInt(4) + 2; // 2..5 hours
-    final correct = rate * time;
+    // Two legs of travel: d = r1·t1 + r2·t2. Two multiplications plus an
+    // addition — a single rate × time was not the multi-STEP problem the
+    // concept is named for. Metric or imperial 50/50.
+    final unit = rand.nextBool() ? 'kilometres' : 'miles';
+    final rate1 = (rand.nextInt(5) + 6) * 5; // 30..50, step 5
+    final time1 = rand.nextInt(3) + 2; // 2..4 hours
+    final rate2 = (rand.nextInt(5) + 4) * 5; // 20..40, step 5
+    final time2 = rand.nextInt(3) + 1; // 1..3 hours
+    final leg1 = rate1 * time1;
+    final leg2 = rate2 * time2;
+    final correct = leg1 + leg2;
     return GeneratedQuestion(
       conceptId: 'multistep_ratio_word',
       prompt:
-          '$name drives at $rate miles per hour for $time hours. '
-          'How many miles does $name drive?',
+          '$name drives at $rate1 $unit per hour for $time1 hours, then at '
+          '$rate2 $unit per hour for $time2 more hours. '
+          'How many $unit does $name drive in total?',
       correctAnswer: '$correct',
       distractors: integerDistractorsWith(
         correct,
         rand,
-        misconception: rate + time, // added instead of multiplied
+        misconception: leg1, // stopped after the first leg
       ),
-      explanation: ['distance = rate × time = $rate × $time = $correct mi.'],
+      explanation: [
+        'First leg: $rate1 × $time1 = $leg1 $unit.',
+        'Second leg: $rate2 × $time2 = $leg2 $unit.',
+        '$leg1 + $leg2 = $correct $unit.',
+      ],
     );
   } else {
     // unit-pricing scaling: "n items cost $p, how much for m items?"

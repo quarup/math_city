@@ -75,11 +75,13 @@ void main() {
         expect(q.answerFormat, AnswerFormat.string);
         _expectThreeDistinctDistractors(q);
         // Each scenario answer is units-typed; assert a "unit" word
-        // (inch/inches/foot/feet) appears in the correct answer.
+        // (imperial or metric) appears in the correct answer.
         final hasUnit =
             q.correctAnswer.contains('inch') ||
             q.correctAnswer.contains('foot') ||
-            q.correctAnswer.contains('feet');
+            q.correctAnswer.contains('feet') ||
+            q.correctAnswer.contains('centimetre') ||
+            q.correctAnswer.contains('metre');
         expect(
           hasUnit,
           isTrue,

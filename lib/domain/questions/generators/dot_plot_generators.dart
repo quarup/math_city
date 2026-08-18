@@ -45,6 +45,14 @@ final _themes = <_DotPlotTheme>[
     exactPrompt: (v) => 'How many plants are $v inches tall?',
     atLeastPrompt: (v) => 'How many plants are at least $v inches tall?',
   ),
+  // Metric sibling — both systems taught side by side.
+  _DotPlotTheme(
+    title: 'Seedling heights',
+    axisLabel: 'Centimetres',
+    exactPrompt: (v) => 'How many seedlings are $v centimetres tall?',
+    atLeastPrompt: (v) =>
+        'How many seedlings are at least $v centimetres tall?',
+  ),
   _DotPlotTheme(
     title: 'Books read',
     axisLabel: 'Books',
@@ -248,6 +256,21 @@ final _fractionalThemes = <_FractionalTheme>[
     itemPlural: 'leaves',
     measureNoun: 'length',
     measureUnit: 'inches',
+  ),
+  // Metric siblings — both systems taught side by side.
+  const _FractionalTheme(
+    title: 'String lengths',
+    axisLabel: 'Centimetres',
+    itemPlural: 'strings',
+    measureNoun: 'length',
+    measureUnit: 'centimetres',
+  ),
+  const _FractionalTheme(
+    title: 'Worm lengths',
+    axisLabel: 'Centimetres',
+    itemPlural: 'worms',
+    measureNoun: 'length',
+    measureUnit: 'centimetres',
   ),
 ];
 

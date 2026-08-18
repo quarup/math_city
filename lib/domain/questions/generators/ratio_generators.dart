@@ -503,9 +503,13 @@ GeneratedQuestion proportionalEquation(Random rand) {
 /// Distance = rate × time. Picks one of three blanks to fill so the
 /// kid practises the same relationship from all three angles.
 GeneratedQuestion constantSpeed(Random rand) {
-  final rate = (rand.nextInt(9) + 2) * 5; // 10, 15, 20, …, 50 (mph)
+  final rate = (rand.nextInt(9) + 2) * 5; // 10, 15, 20, …, 50
   final time = rand.nextInt(7) + 2; // 2..8 hours
   final distance = rate * time;
+  // 50/50 miles or kilometres — metric alongside imperial, per concept.
+  final metric = rand.nextBool();
+  final unit = metric ? 'kilometres' : 'miles';
+  final speedUnit = metric ? 'km/h' : 'mph';
 
   final whichBlank = rand.nextInt(3); // 0 = distance, 1 = time, 2 = rate
   final String prompt;
@@ -513,18 +517,18 @@ GeneratedQuestion constantSpeed(Random rand) {
   switch (whichBlank) {
     case 0:
       prompt =
-          'A car travels at $rate mph for $time hours. '
-          'How far does it go (in miles)?';
+          'A car travels at $rate $speedUnit for $time hours. '
+          'How far does it go (in $unit)?';
       correctInt = distance;
     case 1:
       prompt =
-          'A car travels $distance miles at $rate mph. '
+          'A car travels $distance $unit at $rate $speedUnit. '
           'How many hours does it take?';
       correctInt = time;
     default:
       prompt =
-          'A car travels $distance miles in $time hours. '
-          'What is its speed (in mph)?';
+          'A car travels $distance $unit in $time hours. '
+          'What is its speed (in $speedUnit)?';
       correctInt = rate;
   }
   final correct = '$correctInt';
