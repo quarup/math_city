@@ -242,8 +242,9 @@ GeneratedQuestion perimeterUnknownSide(Random rand) {
     correctAnswer: correct,
     distractors: _wholeDistractors(w, candidates, rand),
     explanation: [
-      'P = 2 × (l + w).  So l + w = P ÷ 2 = ${p ~/ 2}.',
-      'Width = (P ÷ 2) − l = ${p ~/ 2} − $l = $w.',
+      'Perimeter = 2 × (length + width).',
+      'So length + width = $p ÷ 2 = ${p ~/ 2}.',
+      'Width = ${p ~/ 2} − $l = $w.',
     ],
   );
 }
@@ -527,7 +528,7 @@ GeneratedQuestion parallelLinesTransversal(Random rand) {
       if (isSupplementary)
         'Co-interior (same-side interior) angles add up to 180°.'
       else
-        '$relation angles are equal when lines are parallel.',
+        'When lines are parallel, $relation angles are equal.',
       if (isSupplementary)
         'Other = 180° − $a° = ${180 - a}°.'
       else

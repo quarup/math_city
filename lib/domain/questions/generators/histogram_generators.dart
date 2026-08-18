@@ -51,7 +51,7 @@ const _themes = <_HistogramTheme>[
     binWidth: 10,
     binCount: 5,
     itemPlural: 'students',
-    measurePhrase: 'scored between',
+    measurePhrase: 'scored',
   ),
   _HistogramTheme(
     title: 'Student heights',
@@ -60,7 +60,7 @@ const _themes = <_HistogramTheme>[
     binWidth: 2,
     binCount: 5,
     itemPlural: 'students',
-    measurePhrase: 'are between',
+    measurePhrase: 'are',
   ),
   _HistogramTheme(
     title: 'Daily high temperatures',
@@ -69,7 +69,7 @@ const _themes = <_HistogramTheme>[
     binWidth: 5,
     binCount: 5,
     itemPlural: 'days',
-    measurePhrase: 'had a high between',
+    measurePhrase: 'had a high of',
   ),
 ];
 
@@ -133,9 +133,11 @@ GeneratedQuestion histogramReading(Random rand) {
 
   return GeneratedQuestion(
     conceptId: 'histogram',
+    // "at least LO but less than HI" — "between LO and HI" left the
+    // HI-boundary value ambiguous.
     prompt:
         'How many ${theme.itemPlural} ${theme.measurePhrase} '
-        '$lo and $hi?',
+        'at least $lo but less than $hi?',
     diagram: HistogramSpec(
       title: theme.title,
       axisLabel: theme.axisLabel,

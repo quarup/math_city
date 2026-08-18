@@ -86,7 +86,7 @@ GeneratedQuestion meanGenerator(Random rand) {
     correctAnswer: correct,
     distractors: _wholeDistractors(mean, candidates, rand),
     explanation: [
-      'Sum: ${values.reduce((a, b) => a + b)}.',
+      'Add them: ${values.join(' + ')} = ${values.reduce((a, b) => a + b)}.',
       'Divide by how many: $n values.',
       '${values.reduce((a, b) => a + b)} ÷ $n = $mean.',
     ],

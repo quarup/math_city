@@ -26,7 +26,7 @@ void main() {
       'distinct so distractors (other bin counts) are unambiguous; bin '
       'boundaries match binStart/binWidth',
       () {
-        final promptRe = RegExp(r'(\d+) and (\d+)\?$');
+        final promptRe = RegExp(r'at least (\d+) but less than (\d+)\?$');
         for (var i = 0; i < _iterations; i++) {
           final q = _gen(registry, 'histogram', i);
           final m = promptRe.firstMatch(q.prompt);

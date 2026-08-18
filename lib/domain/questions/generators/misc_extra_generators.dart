@@ -46,8 +46,9 @@ GeneratedQuestion amPm(Random rand) {
     prompt: '$hour:$mm $ctx is ___',
     correctAnswer: correct,
     answerFormat: AnswerFormat.string,
-    distractors: [wrong, 'Both', 'Neither'],
-    explanation: ['"$ctx" tells you it is $correct.'],
+    distractors: [wrong],
+    // No trailing period after "a.m." / "p.m." — it doubled up.
+    explanation: ['"$ctx" tells you it is $correct'],
   );
 }
 
@@ -280,9 +281,14 @@ GeneratedQuestion inspectSystemNoSolution(Random rand) {
     answerFormat: AnswerFormat.string,
     distractors: distractors,
     explanation: [
-      'Same slope, same intercept → infinitely many.',
-      'Same slope, different intercept → none.',
-      'Different slope → exactly one.',
+      switch (outcome) {
+        0 => 'The slopes differ, so the lines cross exactly once.',
+        1 =>
+          'Same slope but different intercepts — parallel lines '
+              'that never meet.',
+        _ => 'Same slope AND same intercept — the same line twice.',
+      },
+      'So: $correct.',
     ],
   );
 }

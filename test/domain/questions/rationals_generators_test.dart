@@ -22,7 +22,7 @@ void _expectThreeDistinctDistractors(GeneratedQuestion q) {
 ///     `(<negative>)` (matching the kid-textbook trailing-negative style).
 ({Fraction a, String op, Fraction b}) _parsePrompt(String prompt) {
   final m = RegExp(
-    r'^(-?\d+(?:/\d+)?)\s+([+−×÷])\s+(\(-?\d+(?:/\d+)?\)|-?\d+(?:/\d+)?)'
+    r'^(−?\d+(?:/\d+)?)\s+([+−×÷])\s+(\(−?\d+(?:/\d+)?\)|−?\d+(?:/\d+)?)'
     r'\s+=\s+\?$',
   ).firstMatch(prompt);
   if (m == null) {
@@ -58,7 +58,7 @@ void main() {
           final result = parsed.op == '+'
               ? parsed.a + parsed.b
               : parsed.a - parsed.b;
-          expect(q.correctAnswer, result.toCanonical());
+          expect(q.correctAnswer, result.toCanonical().replaceAll('-', '−'));
           expect(q.answerFormat, AnswerFormat.fraction);
           _expectThreeDistinctDistractors(q);
         }
@@ -70,12 +70,11 @@ void main() {
         final q = _gen(registry, 'rationals_add_sub', i + 1000);
         final parsed = _parsePrompt(q.prompt);
         if (parsed.b.numerator < 0) {
-          // The trailing string had to be `(-x/y)` for the parser to peel
-          // off parens — assert it appears that way in the prompt.
-          final trailing = q.prompt.split(parsed.op).last.trim();
+          // The trailing string had to be `(−x/y)` for the parser to peel
+          // off parens — assert the paren-wrapped negative appears.
           expect(
-            trailing.startsWith('('),
-            isTrue,
+            q.prompt,
+            contains('(−'),
             reason: 'expected paren-wrapped negative: ${q.prompt}',
           );
         }
@@ -93,7 +92,7 @@ void main() {
         final result = parsed.op == '×'
             ? parsed.a * parsed.b
             : parsed.a / parsed.b;
-        expect(q.correctAnswer, result.toCanonical());
+        expect(q.correctAnswer, result.toCanonical().replaceAll('-', '−'));
         expect(q.answerFormat, AnswerFormat.fraction);
         _expectThreeDistinctDistractors(q);
       }

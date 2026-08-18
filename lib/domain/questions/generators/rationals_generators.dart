@@ -11,9 +11,10 @@ import 'package:math_city/domain/questions/generated_question.dart';
 ///   * Answer: bare sign on the numerator (Fraction.toCanonical already
 ///     produces `-3/4` for negative values).
 ///
-/// Note: uses ASCII '-' rather than U+2212 throughout, so the keypad
-/// extra-char surfaces the same '-' the player needs to type to match the
-/// canonical answer.
+/// Uses the typeset minus U+2212 throughout, matching the integer
+/// generators — the ASCII hyphen was easy to miss and inconsistent with
+/// the neighbouring concepts. The keypad's − key and both fraction
+/// parsers accept either glyph.
 
 /// Picks a non-zero signed fraction with denominator 2..6 and numerator
 /// ranging up to 2× the denominator (so improper fractions land roughly
@@ -27,9 +28,12 @@ Fraction _pickSignedFraction(Random rand) {
   return Fraction(sign * mag, denominator);
 }
 
+/// Canonical string with the typeset minus.
+String _typeset(Fraction f) => f.toCanonical().replaceAll('-', '−');
+
 String _trailing(Fraction f) {
-  final s = f.toCanonical();
-  return s.startsWith('-') ? '($s)' : s;
+  final s = _typeset(f);
+  return s.startsWith('−') ? '($s)' : s;
 }
 
 /// Returns three string distractors for a signed-rational answer.
@@ -65,7 +69,7 @@ List<String> _rationalDistractors(
   while (out.length < 3) {
     out.add('${out.length + 7}/9');
   }
-  return out.take(3).toList();
+  return [for (final s in out.take(3)) s.replaceAll('-', '−')];
 }
 
 /// Add or subtract two signed fractions. Result in canonical (reduced)
@@ -84,10 +88,10 @@ GeneratedQuestion rationalsAddSub(Random rand) {
     }
   }
   final result = isAdd ? a + b : a - b;
-  final correct = result.toCanonical();
+  final correct = _typeset(result);
 
   final opSym = isAdd ? '+' : '−';
-  final leadingStr = a.toCanonical();
+  final leadingStr = _typeset(a);
   final trailingStr = _trailing(b);
   final prompt = '$leadingStr $opSym $trailingStr = ?';
 
@@ -136,10 +140,10 @@ GeneratedQuestion rationalsMultiplyDivide(Random rand) {
     }
   }
   final result = isMult ? a * b : a / b;
-  final correct = result.toCanonical();
+  final correct = _typeset(result);
 
   final opSym = isMult ? '×' : '÷';
-  final leadingStr = a.toCanonical();
+  final leadingStr = _typeset(a);
   final trailingStr = _trailing(b);
   final prompt = '$leadingStr $opSym $trailingStr = ?';
 

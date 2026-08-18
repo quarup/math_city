@@ -309,16 +309,19 @@ GeneratedQuestion unitPricing(Random rand) {
   final correct = '$price';
   final candidates = <String>['$total', '$count', '${total - count}'];
 
+  // "per notebook", not "per notebooks" — the item nouns all pluralise
+  // with a trailing s.
+  final single = item.substring(0, item.length - 1);
   return GeneratedQuestion(
     conceptId: 'unit_pricing',
     prompt:
         '$count $item cost \$$total. What is the unit price '
-        '(dollars per $item)?',
+        '(dollars per $single)?',
     correctAnswer: correct,
     distractors: _wholeDistractors(price, candidates, rand),
     explanation: [
       'Unit price = total ÷ how many items.',
-      '\$$total ÷ $count = \$$price per $item.',
+      '\$$total ÷ $count = \$$price per $single.',
     ],
   );
 }

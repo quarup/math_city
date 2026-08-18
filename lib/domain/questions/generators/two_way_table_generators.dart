@@ -26,6 +26,13 @@ class _TableTheme {
   final List<String> colLabels; // e.g. ["Plays sport", "Doesn't"]
   final String rowSubject; // "students" — used in prompts
   final String colVerb; // "play a sport" — used in prompts (cap-sensitive)
+
+  /// Noun phrase for one row group: "Grade 6" needs the subject appended
+  /// ("grade 6 students") while "Boys" is already a noun.
+  String rowNoun(int r) {
+    final label = rowLabels[r].toLowerCase();
+    return label.startsWith('grade') ? '$label $rowSubject' : label;
+  }
 }
 
 const _themes = <_TableTheme>[
@@ -117,13 +124,11 @@ GeneratedQuestion twoWayTableConstruct(Random rand) {
   final c = rand.nextInt(2);
   final correct = counts[r][c];
 
-  // Build a prompt phrasing that picks "X who [col]" or "X who [don't
-  // col]" from the column index. Reuse the theme's verb for column 0;
-  // negate for column 1.
+  // Grammatical sentence: "How many grade 6 students walk to school?"
+  // (the old "How many grade 6 who walked" dropped the noun and the verb
+  // never agreed).
   final positive = c == 0;
-  final colPhrase = positive
-      ? 'who ${theme.colVerb}'
-      : "who don't ${theme.colVerb}";
+  final colPhrase = positive ? theme.colVerb : "don't ${theme.colVerb}";
 
   // Misconception distractors: counts at other cells + row total + col
   // total + grand total.
@@ -141,7 +146,7 @@ GeneratedQuestion twoWayTableConstruct(Random rand) {
 
   return GeneratedQuestion(
     conceptId: 'two_way_table_construct',
-    prompt: 'How many ${theme.rowLabels[r].toLowerCase()} $colPhrase?',
+    prompt: 'How many ${theme.rowNoun(r)} $colPhrase?',
     diagram: TwoWayTableSpec(
       title: theme.title,
       rowLabels: theme.rowLabels,
@@ -151,7 +156,8 @@ GeneratedQuestion twoWayTableConstruct(Random rand) {
     correctAnswer: '$correct',
     distractors: _distinctIntStrings(correct, candidates),
     explanation: [
-      'Row ${theme.rowLabels[r]} × col ${theme.colLabels[c]} = $correct.',
+      'Find the ${theme.rowLabels[r]} row and ${theme.colLabels[c]} column.',
+      'That cell says $correct.',
     ],
   );
 }
@@ -198,8 +204,7 @@ GeneratedQuestion twoWayRelativeFrequency(Random rand) {
 
   String prompt;
   if (byRow) {
-    prompt =
-        'Of all ${theme.rowLabels[r].toLowerCase()}, what fraction $colPhrase?';
+    prompt = 'Of all ${theme.rowNoun(r)}, what fraction $colPhrase?';
   } else {
     final whoVerb = positive ? theme.colVerb : "don't ${theme.colVerb}";
     prompt =
@@ -219,9 +224,12 @@ GeneratedQuestion twoWayRelativeFrequency(Random rand) {
     correctAnswer: correct,
     distractors: _distinctStrings(correct, candidates),
     explanation: [
-      'Cell ${theme.rowLabels[r]} ∩ ${theme.colLabels[c]} = $numerator.',
+      'The ${theme.rowLabels[r]}–${theme.colLabels[c]} cell is $numerator.',
       'Total of the ${byRow ? "row" : "column"} = $denominator.',
-      'Fraction: $numerator/$denominator = $correct.',
+      if (correct == '$numerator/$denominator')
+        'Fraction: $correct.'
+      else
+        'Fraction: $numerator/$denominator = $correct.',
     ],
     answerFormat: AnswerFormat.fraction,
   );

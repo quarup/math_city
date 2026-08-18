@@ -159,6 +159,7 @@ GeneratedQuestion boxPlotReading(Random rand) {
       correct = s.q3 - s.q1;
       prompt = 'What is the interquartile range (IQR)?';
       explanation = [
+        'Q1 and Q3 are the box edges: ${s.q1} and ${s.q3}.',
         'IQR = Q3 − Q1 = ${s.q3} − ${s.q1} = $correct.',
       ];
       candidates = [

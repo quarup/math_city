@@ -50,7 +50,8 @@ void main() {
           expect(q.correctAnswer, 'p.m.');
           seenPm = true;
         }
-        _expectThreeDistinctDistractors(q);
+        // Binary: the only distractor is the other period.
+        expect(q.distractors, [q.correctAnswer == 'a.m.' ? 'p.m.' : 'a.m.']);
       }
       expect(seenAm && seenPm, isTrue);
     });
