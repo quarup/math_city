@@ -117,16 +117,16 @@ GeneratedQuestion partitionCircleRectHalves(Random rand) {
   final denom = denoms[rand.nextInt(denoms.length)];
   // Always shade exactly one part so the visual is unambiguous.
   final isHalves = denom == 2;
+  // Reasoned yes/no — "Only sometimes" / "Cannot tell" are never true of
+  // one specific picture and reduced the item to a coin flip.
+  const yesChoice = 'Yes — 2 equal parts';
+  final noChoice = 'No — it has $denom parts, not 2';
   return GeneratedQuestion(
     conceptId: 'partition_circle_rect_halves',
     prompt: 'Is this shape divided into halves?',
     diagram: FractionBarSpec(numerator: 1, denominator: denom),
-    correctAnswer: isHalves ? 'Yes' : 'No',
-    distractors: stringDistractorsFromPool(
-      isHalves ? 'Yes' : 'No',
-      const ['Yes', 'No', 'Only sometimes', 'Cannot tell'],
-      rand,
-    ),
+    correctAnswer: isHalves ? yesChoice : noChoice,
+    distractors: [if (isHalves) 'No — the parts are not equal' else yesChoice],
     answerFormat: AnswerFormat.string,
     explanation: [
       if (isHalves)

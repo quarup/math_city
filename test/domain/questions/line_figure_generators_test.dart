@@ -74,7 +74,10 @@ void main() {
         final spec = q.diagram! as ShapeSpec;
         expect(spec.kind.sideCount, 4, reason: 'should be a quadrilateral');
         expect(['Yes', 'No'], contains(q.correctAnswer));
-        _expectThreeDistinctDistractors(q);
+        // Reasoned binary: single opposite distractor.
+        expect(q.distractors, [
+          if (q.correctAnswer == 'Yes') 'No' else 'Yes',
+        ]);
         seen.add(q.correctAnswer);
         if (q.prompt.contains('right angles')) {
           rightAnglesFlavour++;

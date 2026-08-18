@@ -122,23 +122,22 @@ GeneratedQuestion classify2dByLinesAngles(Random rand) {
     isTrue = kind == ShapeKind.square || kind == ShapeKind.rhombus;
     prompt = 'Does this quadrilateral have all sides the same length?';
   }
+  // Reasoned yes/no about the drawn shape — the filler choices were
+  // never correct, and the explanation now talks about the shape ON
+  // SCREEN rather than "a description".
   final answer = isTrue ? 'Yes' : 'No';
   return GeneratedQuestion(
     conceptId: 'classify_2d_by_lines_angles',
     prompt: prompt,
     diagram: ShapeSpec(kind: kind),
     correctAnswer: answer,
-    distractors: stringDistractorsFromPool(
-      answer,
-      const ['Yes', 'No', 'Only sometimes', 'Cannot tell'],
-      rand,
-    ),
+    distractors: [if (isTrue) 'No' else 'Yes'],
     answerFormat: AnswerFormat.string,
     explanation: [
       if (isTrue)
-        'Yes — a ${kind.displayName} fits this description.'
+        'Yes — look at the ${kind.displayName} shown: it does.'
       else
-        'No — a ${kind.displayName} fails this description.',
+        'No — look at the ${kind.displayName} shown: it does not.',
     ],
   );
 }

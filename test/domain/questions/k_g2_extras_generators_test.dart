@@ -55,8 +55,12 @@ void main() {
         final spec = q.diagram! as FractionBarSpec;
         expect([2, 3, 4, 6], contains(spec.denominator));
         final isHalves = spec.denominator == 2;
-        expect(q.correctAnswer, isHalves ? 'Yes' : 'No');
-        _expectThreeDistinctDistractors(q);
+        expect(
+          q.correctAnswer,
+          isHalves ? 'Yes — 2 equal parts' : startsWith('No — it has'),
+        );
+        // Reasoned binary: one opposite-reason distractor.
+        expect(q.distractors, hasLength(1));
         if (isHalves) {
           yesCount++;
         } else {

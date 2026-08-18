@@ -51,7 +51,17 @@ GeneratedQuestion identifyShape2d(Random rand) {
     correctAnswer: answer,
     distractors: stringDistractorsFromPool(answer, _displayNames2d, rand),
     answerFormat: AnswerFormat.string,
-    explanation: ['This shape is a $answer.'],
+    explanation: [
+      switch (answer) {
+        'circle' => 'It is perfectly round with no corners — a circle.',
+        'triangle' => 'It has 3 sides and 3 corners — a triangle.',
+        'square' => '4 equal sides and 4 square corners — a square.',
+        'rectangle' =>
+          '4 square corners, with 2 long and 2 short sides — a rectangle.',
+        'pentagon' => 'It has 5 sides — a pentagon.',
+        _ => 'It has 6 sides — a hexagon.',
+      },
+    ],
   );
 }
 
@@ -83,7 +93,15 @@ GeneratedQuestion identifyShape3d(Random rand) {
     // so removing the correct one always leaves 3 distinct distractors.
     distractors: stringDistractorsFromPool(answer, _displayNames3d, rand),
     answerFormat: AnswerFormat.string,
-    explanation: ['This 3D shape is a $answer.'],
+    explanation: [
+      switch (answer) {
+        'cube' => 'All flat square faces — a cube.',
+        'sphere' => 'Perfectly round all over, like a ball — a sphere.',
+        'cylinder' =>
+          'Two flat circle ends with a curved side — a cylinder.',
+        _ => 'One flat circle end rising to a point — a cone.',
+      },
+    ],
   );
 }
 
@@ -247,6 +265,9 @@ const Map<ShapeKind, int> _symmetryCounts = {
 
 /// "How many lines of symmetry does this shape have?" — integer
 /// answer. Pool spans 0..8 across the supported kinds. CCSS 4.G.A.3.
+String _symmetryLine(String shape, int n) =>
+    'This $shape (as drawn) has $n line${n == 1 ? '' : 's'} of symmetry.';
+
 GeneratedQuestion lineOfSymmetry(Random rand) {
   final pool = _symmetryCounts.keys.toList();
   final kind = pool[rand.nextInt(pool.length)];
@@ -257,9 +278,7 @@ GeneratedQuestion lineOfSymmetry(Random rand) {
     diagram: ShapeSpec(kind: kind),
     correctAnswer: '$n',
     distractors: integerDistractors(n, rand),
-    explanation: [
-      'A ${kind.displayName} has $n line${n == 1 ? '' : 's'} of symmetry.',
-    ],
+    explanation: [_symmetryLine(kind.displayName, n)],
   );
 }
 
