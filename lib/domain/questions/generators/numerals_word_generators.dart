@@ -40,6 +40,9 @@ GeneratedQuestion readNumerals0to20(Random rand) {
     correctAnswer: correct,
     distractors: list.take(3).toList(),
     explanation: ['"$words" is the number $correct.'],
+    // "Which number…" presupposes the choice list; there is nothing to
+    // read the answer against on the keypad band.
+    multipleChoiceOnly: true,
   );
 }
 

@@ -311,6 +311,8 @@ GeneratedQuestion readWrite3digit(Random rand) {
     correctAnswer: correct,
     distractors: _distinctStrings(correct, candidates),
     explanation: ['$h hundreds, $t tens, $o ones → $correct.'],
+    // "Which number…" presupposes the choice list — force MC.
+    multipleChoiceOnly: true,
   );
 }
 
@@ -371,12 +373,20 @@ GeneratedQuestion readWriteMultidigit(Random rand) {
     _swapLastTwo(n),
     _insertZeroAfterThousands(n, digits),
   ];
+  final thousands = n ~/ 1000;
+  final rest = n % 1000;
   return GeneratedQuestion(
     conceptId: 'read_write_multidigit',
     prompt: 'Which number is “$words”?',
     correctAnswer: correct,
     distractors: _distinctStrings(correct, candidates),
-    explanation: ['Read the number-name straight off: $correct.'],
+    explanation: [
+      '"${numberToWords(thousands)} thousand" is ${thousands * 1000}.',
+      'The rest of the name says $rest.',
+      '${thousands * 1000} + $rest = $correct.',
+    ],
+    // "Which number…" presupposes the choice list — force MC.
+    multipleChoiceOnly: true,
   );
 }
 

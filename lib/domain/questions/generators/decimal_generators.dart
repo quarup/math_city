@@ -169,17 +169,38 @@ GeneratedQuestion decimalNotationHundredths(Random rand) {
 // ─────────────────────────────────────────────────────────────────────────
 
 /// "Which is bigger: 0.45 or 0.5?" — answer is the larger of the two
-/// strings (matches the existing `compare_fractions_*` shape, which
-/// avoids the keypad-with-`<`/`>` UX problem).
+/// strings, or "They are equal" when the operands are the same value
+/// written at different scales (0.4 vs 0.40, ~20% of items) so the
+/// equality choice is a live answer rather than a dead one.
 ///
-/// 40% of the time one operand is at tenths and the other at hundredths,
-/// to trip the classic "longer = bigger" misconception
-/// (e.g. 0.45 vs 0.5).
+/// Another ~30% put one operand at tenths and one at hundredths with
+/// different values, to trip the classic "longer = bigger" misconception
+/// (e.g. 0.45 vs 0.5). Choices come only from the pair (plus "They are
+/// equal") so nothing can be eliminated without comparing.
 GeneratedQuestion compareDecimalsHundredths(Random rand) {
   Decimal a;
   Decimal b;
-  if (rand.nextDouble() < 0.4) {
-    // Misconception bait: one tenths, one hundredths.
+  String? tieA;
+  String? tieB;
+  final roll = rand.nextDouble();
+  if (roll < 0.2) {
+    // Tie bait: same value, different surface form (0.4 vs 0.40). The
+    // Decimal constructor canonicalises trailing zeros away, so the
+    // padded string is built by hand.
+    final tenths = rand.nextInt(9) + 1; // 1..9
+    a = Decimal(tenths, 1);
+    b = a;
+    final short = a.toCanonical();
+    final padded = '${short}0';
+    if (rand.nextBool()) {
+      tieA = short;
+      tieB = padded;
+    } else {
+      tieA = padded;
+      tieB = short;
+    }
+  } else if (roll < 0.5) {
+    // Misconception bait: one tenths, one hundredths, unequal values.
     final tenths = rand.nextInt(9) + 1; // 1..9
     final hundredthsTail = rand.nextInt(9) + 1; // 1..9
     // E.g. shorter = 0.4 (4 tenths), longer = 0.4N where N != 0 with
@@ -201,29 +222,30 @@ GeneratedQuestion compareDecimalsHundredths(Random rand) {
     } while (a.compareTo(b) == 0);
   }
 
-  final aStr = a.toCanonical();
-  final bStr = b.toCanonical();
-  final correct = a.compareTo(b) > 0 ? aStr : bStr;
+  final aStr = tieA ?? a.toCanonical();
+  final bStr = tieB ?? b.toCanonical();
+  final isTie = a.compareTo(b) == 0;
+  final correct = isTie ? 'They are equal' : (a.compareTo(b) > 0 ? aStr : bStr);
   final wrong = a.compareTo(b) > 0 ? bStr : aStr;
 
   return GeneratedQuestion(
     conceptId: 'compare_decimals_hundredths',
     prompt: 'Which is bigger: $aStr or $bStr?',
     correctAnswer: correct,
-    distractors: <String>[
-      // Primary misconception: pick the visually longer one.
-      wrong,
-      'They are equal',
-      // "Both" wording, a kid sometimes picks the leftmost.
-      'Neither',
-    ],
+    distractors: isTie
+        ? <String>[aStr, bStr]
+        : <String>[wrong, 'They are equal'],
     explanation: [
       'Pad both with zeros to the same length, then compare digit by digit.',
-      '$correct is bigger.',
+      if (isTie)
+        '$aStr and $bStr are the same amount.'
+      else
+        '$correct is bigger.',
       'Tip: a "longer" decimal is not always bigger — 0.5 beats 0.45.',
     ],
-    // answerFormat: string (default) — exact string match against the
-    // two displayed values; no keypad symbol issues.
+    // The answer is one of the two decimals already on screen (or "They
+    // are equal") — only works as multiple choice.
+    multipleChoiceOnly: true,
   );
 }
 
@@ -478,7 +500,27 @@ GeneratedQuestion decimalToThousandthsRead(Random rand) {
 GeneratedQuestion compareDecimalsThousandths(Random rand) {
   Decimal a;
   Decimal b;
-  if (rand.nextDouble() < 0.5) {
+  String? tieA;
+  String? tieB;
+  final roll = rand.nextDouble();
+  if (roll < 0.2) {
+    // Tie bait: same value in two surface forms (0.45 vs 0.450) so
+    // "They are equal" is a live answer, not a dead choice. The Decimal
+    // constructor canonicalises trailing zeros away, so the padded
+    // string is built by hand.
+    final hundredths = rand.nextInt(99) + 1; // 1..99
+    a = Decimal(hundredths, 2);
+    b = a;
+    final short = a.toCanonical();
+    final padded = '${short}0';
+    if (rand.nextBool()) {
+      tieA = short;
+      tieB = padded;
+    } else {
+      tieA = padded;
+      tieB = short;
+    }
+  } else if (roll < 0.5) {
     // Misconception bait: mismatched scales. Pick the shorter at
     // tenths or hundredths and the longer at thousandths.
     final shorterScale = rand.nextBool() ? 1 : 2;
@@ -504,21 +546,30 @@ GeneratedQuestion compareDecimalsThousandths(Random rand) {
     } while (a.compareTo(b) == 0);
   }
 
-  final aStr = a.toCanonical();
-  final bStr = b.toCanonical();
-  final correct = a.compareTo(b) > 0 ? aStr : bStr;
+  final aStr = tieA ?? a.toCanonical();
+  final bStr = tieB ?? b.toCanonical();
+  final isTie = a.compareTo(b) == 0;
+  final correct = isTie ? 'They are equal' : (a.compareTo(b) > 0 ? aStr : bStr);
   final wrong = a.compareTo(b) > 0 ? bStr : aStr;
 
   return GeneratedQuestion(
     conceptId: 'compare_decimals_thousandths',
     prompt: 'Which is bigger: $aStr or $bStr?',
     correctAnswer: correct,
-    distractors: <String>[wrong, 'They are equal', 'Neither'],
+    distractors: isTie
+        ? <String>[aStr, bStr]
+        : <String>[wrong, 'They are equal'],
     explanation: [
       'Pad both with zeros to the same length, then compare digit by digit.',
-      '$correct is bigger.',
+      if (isTie)
+        '$aStr and $bStr are the same amount.'
+      else
+        '$correct is bigger.',
       'Tip: extra digits do not mean bigger — 0.4 beats 0.345.',
     ],
+    // The answer is one of the two decimals already on screen (or "They
+    // are equal") — only works as multiple choice.
+    multipleChoiceOnly: true,
   );
 }
 

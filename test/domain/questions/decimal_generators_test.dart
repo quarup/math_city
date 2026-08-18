@@ -91,10 +91,11 @@ void main() {
   });
 
   group('compare_decimals_hundredths', () {
-    test('correct answer is one of the two operands and is the larger', () {
+    test('larger operand wins; equal-value pairs answer "They are equal"', () {
       final re = RegExp(
         r'^Which is bigger: (-?\d+(?:\.\d+)?) or (-?\d+(?:\.\d+)?)\?$',
       );
+      var sawTie = false;
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'compare_decimals_hundredths', i);
         final m = re.firstMatch(q.prompt);
@@ -103,11 +104,23 @@ void main() {
         final bStr = m.group(2)!;
         final a = Decimal.tryParse(aStr)!;
         final b = Decimal.tryParse(bStr)!;
-        expect(a.compareTo(b), isNot(0), reason: 'tie not allowed');
-        final largerStr = a.compareTo(b) > 0 ? aStr : bStr;
-        expect(q.correctAnswer, largerStr);
-        _expectThreeDistinctDistractors(q);
+        if (a.compareTo(b) == 0) {
+          sawTie = true;
+          expect(aStr, isNot(bStr), reason: 'tie must differ in surface form');
+          expect(q.correctAnswer, 'They are equal');
+          expect(q.distractors, unorderedEquals([aStr, bStr]));
+        } else {
+          final largerStr = a.compareTo(b) > 0 ? aStr : bStr;
+          expect(q.correctAnswer, largerStr);
+          final smallerStr = a.compareTo(b) > 0 ? bStr : aStr;
+          expect(
+            q.distractors,
+            unorderedEquals([smallerStr, 'They are equal']),
+          );
+        }
+        expect(q.multipleChoiceOnly, isTrue);
       }
+      expect(sawTie, isTrue, reason: 'ties should appear ~20% of the time');
     });
 
     test('observed at least once: misconception-bait operand pair', () {
@@ -279,10 +292,11 @@ void main() {
   });
 
   group('compare_decimals_thousandths', () {
-    test('correct answer is the larger of the two operands; no ties', () {
+    test('larger operand wins; equal-value pairs answer "They are equal"', () {
       final re = RegExp(
         r'^Which is bigger: (-?\d+(?:\.\d+)?) or (-?\d+(?:\.\d+)?)\?$',
       );
+      var sawTie = false;
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'compare_decimals_thousandths', i);
         final m = re.firstMatch(q.prompt);
@@ -291,11 +305,23 @@ void main() {
         final bStr = m.group(2)!;
         final a = Decimal.tryParse(aStr)!;
         final b = Decimal.tryParse(bStr)!;
-        expect(a.compareTo(b), isNot(0), reason: 'tie not allowed');
-        final largerStr = a.compareTo(b) > 0 ? aStr : bStr;
-        expect(q.correctAnswer, largerStr);
-        _expectThreeDistinctDistractors(q);
+        if (a.compareTo(b) == 0) {
+          sawTie = true;
+          expect(aStr, isNot(bStr), reason: 'tie must differ in surface form');
+          expect(q.correctAnswer, 'They are equal');
+          expect(q.distractors, unorderedEquals([aStr, bStr]));
+        } else {
+          final largerStr = a.compareTo(b) > 0 ? aStr : bStr;
+          expect(q.correctAnswer, largerStr);
+          final smallerStr = a.compareTo(b) > 0 ? bStr : aStr;
+          expect(
+            q.distractors,
+            unorderedEquals([smallerStr, 'They are equal']),
+          );
+        }
+        expect(q.multipleChoiceOnly, isTrue);
       }
+      expect(sawTie, isTrue, reason: 'ties should appear ~20% of the time');
     });
   });
 

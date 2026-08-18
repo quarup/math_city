@@ -101,8 +101,11 @@ class GeneratedQuestion {
   /// be accepted depending on [answerFormat] and [answerShape].
   final String correctAnswer;
 
-  /// Exactly three wrong answers; none equals [correctAnswer] and (for
-  /// fraction/mixed answers) none is mathematically equivalent to it.
+  /// The wrong answers — usually three, but binary comparisons ("Which is
+  /// bigger: A or B?") carry two, since every choice must come from the
+  /// pair (plus "They are equal") to stop options being eliminated without
+  /// comparing. None equals [correctAnswer] and (for fraction/mixed
+  /// answers) none is mathematically equivalent to it.
   final List<String> distractors;
 
   /// 1–4 step-by-step lines shown on the result screen when the player

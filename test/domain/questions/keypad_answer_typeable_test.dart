@@ -27,7 +27,9 @@ void main() {
       // text-shaped answer on a subset of branches.
       for (var seed = 0; seed < 40; seed++) {
         final q = registry.generate(id, random: Random(seed));
-        if (!_keypadEligible(q.answerFormat)) continue;
+        // multipleChoiceOnly questions never reach the pad regardless of
+        // format — mirrors QuestionScreen's keypad gate.
+        if (q.multipleChoiceOnly || !_keypadEligible(q.answerFormat)) continue;
         final why = _untypeableReason(q.correctAnswer);
         if (why != null) {
           offenders.putIfAbsent(id, () => '${q.correctAnswer}  ($why)');

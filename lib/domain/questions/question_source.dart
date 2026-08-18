@@ -86,6 +86,16 @@ class QuestionSource {
   DatasetQuestion _pick(List<DatasetQuestion> pool, Random rand) =>
       pool[rand.nextInt(pool.length)];
 
+  /// Dataset concepts whose prompts only make sense against the displayed
+  /// choice list ("Which is the closest to −0.2?", "Which is the fourth
+  /// biggest value?") — the values being compared exist only as choices,
+  /// so the keypad band must never serve them. (`sort_rationals` is safe
+  /// without this: its commaList format already forces MC.)
+  static const _multipleChoiceOnlyConcepts = {
+    'closest_to_target',
+    'kth_value_in_list',
+  };
+
   GeneratedQuestion _datasetItemToGenerated(DatasetQuestion q) {
     final generated = GeneratedQuestion(
       conceptId: q.conceptId,
@@ -96,6 +106,7 @@ class QuestionSource {
           ? ['The correct answer is ${q.correctAnswer}.']
           : q.explanation,
       answerFormat: q.answerFormat,
+      multipleChoiceOnly: _multipleChoiceOnlyConcepts.contains(q.conceptId),
     );
     // Dataset items are plain text; their generator siblings lay the same
     // concept out in stacked columns. Convert here so a kid drilling

@@ -120,15 +120,17 @@ GeneratedQuestion compareFractionsSameDenom(Random rand) {
     distractors: <String>[
       wrong,
       'They are equal',
-      '$n1+$n2/$denominator',
+      // Added-the-tops misconception, written as the fraction it produces.
+      '${n1 + n2}/$denominator',
     ],
     explanation: [
       'Both fractions have $denominator on the bottom.',
       'So just compare the tops: ${n1 > n2 ? '$n1 > $n2' : '$n2 > $n1'}.',
       '$correct is bigger.',
     ],
-    // answerFormat: string (default) — MC of fixed strings; no equivalence
-    // checking needed because the kid picks one of two displayed fractions.
+    // The kid picks one of the two displayed fractions (or "They are
+    // equal") — the question only makes sense against the choice list.
+    multipleChoiceOnly: true,
   );
 }
 
@@ -228,9 +230,12 @@ GeneratedQuestion compareFractionsSameNum(Random rand) {
     ],
     explanation: [
       'Both fractions have $numerator on top.',
-      'Smaller bottom = bigger pieces ⇒ bigger fraction.',
+      'A smaller bottom means bigger pieces, so the fraction is bigger.',
       '${d1 < d2 ? '$d1 < $d2' : '$d2 < $d1'}, so $correct is bigger.',
     ],
+    // Picking between the two displayed fractions (or "They are equal")
+    // needs the choice list; typing one back on the keypad tests nothing.
+    multipleChoiceOnly: true,
   );
 }
 
@@ -268,9 +273,13 @@ GeneratedQuestion compareFractionsUnlike(Random rand) {
       'Cannot tell',
     ],
     explanation: [
-      'Cross-multiply to compare: $n1 × $d2 = $cross1, $n2 × $d1 = $cross2.',
+      'Multiply each top by the other bottom and compare the products:',
+      '$n1 × $d2 = $cross1 and $n2 × $d1 = $cross2.',
       '$compareSummary, so $correct is bigger.',
     ],
+    // Same as compare_fractions_same_num: the answer is one of the two
+    // fractions already on screen, so this only works as multiple choice.
+    multipleChoiceOnly: true,
   );
 }
 
