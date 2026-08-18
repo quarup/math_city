@@ -126,14 +126,15 @@ class _ClockPainter extends CustomPainter {
         ..strokeCap = StrokeCap.round,
     );
 
-    // Minute hand
+    // Minute hand — stops short of the numeral ring (numerals sit at
+    // 0.78R; a 0.78R hand printed its tip on top of them).
     final minAngle = -math.pi / 2 + spec.minute * math.pi / 30;
     canvas
       ..drawLine(
         center,
         Offset(
-          center.dx + radius * 0.78 * math.cos(minAngle),
-          center.dy + radius * 0.78 * math.sin(minAngle),
+          center.dx + radius * 0.66 * math.cos(minAngle),
+          center.dy + radius * 0.66 * math.sin(minAngle),
         ),
         Paint()
           ..color = minuteHandColor

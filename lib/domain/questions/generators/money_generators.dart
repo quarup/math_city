@@ -29,26 +29,21 @@ GeneratedQuestion coinsIdValue(Random rand) {
     MoneyDenom.quarter,
   ];
   final d = coins[rand.nextInt(coins.length)];
-  // Hide the cents label inside the figure by using a "?"-style prompt and
-  // a single-coin spec — but the renderer's labelled-circle design always
-  // shows the value, so this question is really "read the value from the
-  // labelled coin", which is the K-G1 lesson: connect the name to the
-  // value.
-  //
-  // The prompt names the coin; the diagram shows one coin marked with its
-  // value; the kid types the cent value.
+  // The coin is printed with its NAME (showValues: false) — a "1¢" label
+  // let the answer be read straight off the disc. Distractors are the
+  // other coin values, so every choice is a real coin value.
   return GeneratedQuestion(
     conceptId: 'coins_id_value',
     prompt: 'What is the value of this coin (in cents)?',
-    diagram: MoneySpec(items: [d]),
+    diagram: MoneySpec(items: [d], showValues: false),
     correctAnswer: '${d.cents}',
-    distractors: integerDistractorsWith(
-      d.cents,
-      rand,
-      // Misconception: gave the value of a neighbouring coin.
-      misconception: _neighbourCoin(d).cents,
-    ),
-    explanation: ['A ${_coinName(d)} is worth ${d.cents} cents.'],
+    distractors: [
+      for (final other in coins)
+        if (other != d) '${other.cents}',
+    ],
+    explanation: [
+      'A ${_coinName(d)} is worth ${_centsPhrase(d.cents)}.',
+    ],
   );
 }
 
@@ -60,13 +55,8 @@ String _coinName(MoneyDenom d) => switch (d) {
   _ => throw ArgumentError('not a coin: $d'),
 };
 
-MoneyDenom _neighbourCoin(MoneyDenom d) => switch (d) {
-  MoneyDenom.penny => MoneyDenom.nickel,
-  MoneyDenom.nickel => MoneyDenom.dime,
-  MoneyDenom.dime => MoneyDenom.quarter,
-  MoneyDenom.quarter => MoneyDenom.dime,
-  _ => MoneyDenom.penny,
-};
+String _centsPhrase(int cents) =>
+    cents == 1 ? '1 cent' : '$cents cents';
 
 // ─────────────────────────────────────────────────────────────────────────
 // count_coins (G2) — sum a small collection of coins

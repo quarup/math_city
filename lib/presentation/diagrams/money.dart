@@ -20,7 +20,13 @@ class Money extends StatelessWidget {
         spacing: 8,
         runSpacing: 8,
         children: spec.items
-            .map((d) => _MoneyChip(denom: d, theme: theme))
+            .map(
+              (d) => _MoneyChip(
+                denom: d,
+                theme: theme,
+                showValue: spec.showValues,
+              ),
+            )
             .toList(),
       ),
     );
@@ -28,10 +34,17 @@ class Money extends StatelessWidget {
 }
 
 class _MoneyChip extends StatelessWidget {
-  const _MoneyChip({required this.denom, required this.theme});
+  const _MoneyChip({
+    required this.denom,
+    required this.theme,
+    this.showValue = true,
+  });
 
   final MoneyDenom denom;
   final ThemeData theme;
+
+  /// When false, coins print their name instead of their cent value.
+  final bool showValue;
 
   @override
   Widget build(BuildContext context) {
@@ -44,16 +57,25 @@ class _MoneyChip extends StatelessWidget {
         );
 
     if (isCoin) {
+      // Name-labelled coins get a bigger disc so "quarter" fits.
+      final label = showValue ? denom.label : denom.coinName;
+      final size = showValue ? 44.0 : 56.0;
       return Container(
-        width: 44,
-        height: 44,
+        width: size,
+        height: size,
         decoration: BoxDecoration(
           color: coinColor,
           shape: BoxShape.circle,
           border: Border.all(color: theme.colorScheme.outline, width: 1.2),
         ),
         alignment: Alignment.center,
-        child: Text(denom.label, style: labelStyle),
+        child: Text(
+          label,
+          style: showValue
+              ? labelStyle
+              : labelStyle.copyWith(fontSize: 11),
+          textAlign: TextAlign.center,
+        ),
       );
     }
     return Container(

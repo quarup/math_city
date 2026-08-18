@@ -484,6 +484,15 @@ enum MoneyDenom {
   /// `$N` form.
   final String label;
 
+  /// Kid-facing coin name ("penny"); bills fall back to [label].
+  String get coinName => switch (this) {
+    MoneyDenom.penny => 'penny',
+    MoneyDenom.nickel => 'nickel',
+    MoneyDenom.dime => 'dime',
+    MoneyDenom.quarter => 'quarter',
+    _ => label,
+  };
+
   /// True for coins (rendered as circles), false for paper bills
   /// (rendered as rounded rectangles).
   final bool isCoin;
@@ -496,10 +505,15 @@ enum MoneyDenom {
 /// Used by `coins_id_value`, `count_coins`, `count_bills_coins`,
 /// `change_from_purchase`.
 class MoneySpec extends DiagramSpec {
-  const MoneySpec({required this.items})
+  const MoneySpec({required this.items, this.showValues = true})
     : assert(items.length >= 1, 'need at least one coin or bill');
 
   final List<MoneyDenom> items;
+
+  /// When false, coins are printed with their NAME ("penny") instead of
+  /// their cent value — for `coins_id_value`, where a "1¢" label would
+  /// hand the answer over.
+  final bool showValues;
 }
 
 /// A picture graph (a.k.a. pictograph): one row per category, with a

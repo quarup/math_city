@@ -16,7 +16,9 @@ import 'package:math_city/domain/questions/diagram_spec.dart';
 class AreaGrid extends StatelessWidget {
   const AreaGrid({
     required this.spec,
-    this.cellSize = 22,
+    // Big enough to count at arm's length — 22px grids rendered ~100px
+    // wide and read as texture, not objects.
+    this.cellSize = 30,
     super.key,
   });
 
@@ -64,7 +66,7 @@ class AreaGrid extends StatelessWidget {
                   child: Container(
                     decoration: BoxDecoration(
                       color: color,
-                      border: Border.all(color: borderColor, width: 0.8),
+                      border: Border.all(color: borderColor, width: 1.2),
                     ),
                   ),
                 );
@@ -108,12 +110,17 @@ class _CountGrid extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: List.generate(
             inThisRow,
+            // Discrete circles with a gap between them — touching solid
+            // squares with faint dividers were near-impossible for a K
+            // kid to count.
             (_) => Container(
               width: cellSize,
               height: cellSize,
+              margin: const EdgeInsets.all(2),
               decoration: BoxDecoration(
                 color: fill,
-                border: Border.all(color: borderColor, width: 0.8),
+                shape: BoxShape.circle,
+                border: Border.all(color: borderColor, width: 1.2),
               ),
             ),
           ),

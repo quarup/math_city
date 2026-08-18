@@ -78,8 +78,11 @@ class _AnglePainter extends CustomPainter {
     // Vertex dot.
     canvas.drawCircle(center, 3, Paint()..color = rayColor);
 
-    // Draw wedge labels.
-    for (final wedge in spec.wedgeLabels) {
+    // Draw wedge labels. Successive labelled wedges get different arc
+    // radii — adjacent wedges at one radius merged into a single sweep
+    // that crossed the divider ray and marked no region at all.
+    for (var w = 0; w < spec.wedgeLabels.length; w++) {
+      final wedge = spec.wedgeLabels[w];
       final i = wedge.rayIndex;
       if (i >= spec.rayAnglesDeg.length) continue;
       final aDeg = spec.rayAnglesDeg[i];
@@ -88,7 +91,7 @@ class _AnglePainter extends CustomPainter {
       var span = bDeg - aDeg;
       if (span <= 0) span += 360;
       final midDeg = aDeg + span / 2;
-      final arcRadius = radius * 0.32;
+      final arcRadius = radius * (0.28 + 0.10 * (w % 2));
       final theta = canvasRad(aDeg);
       final canvasSweep = -span * math.pi / 180; // CCW in math = CW in canvas
       final arcRect = Rect.fromCircle(center: center, radius: arcRadius);

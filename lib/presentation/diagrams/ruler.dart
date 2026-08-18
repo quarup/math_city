@@ -114,10 +114,17 @@ class _RulerPainter extends CustomPainter {
         tickPaint,
       );
       if (isWhole) {
+        // Nudge the end labels inward — centred on the edge ticks they
+        // straddled the ruler's frame line and rendered as broken glyphs.
+        final nudge = i == 0
+            ? 6.0
+            : i == totalSubdivs
+            ? -6.0
+            : 0.0;
         _drawLabel(
           canvas,
           '${v.toInt()}',
-          Offset(x, rulerTop + tickH + 8),
+          Offset(x + nudge, rulerTop + tickH + 8),
         );
       }
     }

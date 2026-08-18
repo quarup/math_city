@@ -21,7 +21,10 @@ class PictureGraph extends StatelessWidget {
         );
     final labelStyle =
         theme.textTheme.labelMedium ?? const TextStyle(fontSize: 12);
-    const iconStyle = TextStyle(fontSize: 20);
+    // letterSpacing keeps a visible gap between icons — some emoji
+    // advance widths are tighter than the glyph, so repeated icons
+    // (rain clouds, dog ears) touched and became uncountable.
+    const iconStyle = TextStyle(fontSize: 20, letterSpacing: 6);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
