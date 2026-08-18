@@ -218,11 +218,11 @@ void main() {
       );
       final time = RegExp(
         r'^A car travels (\d+) (?:miles|kilometres) at (\d+) (?:mph|km/h)\. '
-        r'How many hours',
+        'How many hours',
       );
       final rate = RegExp(
         r'^A car travels (\d+) (?:miles|kilometres) in (\d+) hours\. '
-        r'What is its speed',
+        'What is its speed',
       );
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'constant_speed', i);
