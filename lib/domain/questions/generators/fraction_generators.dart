@@ -697,7 +697,14 @@ GeneratedQuestion divUnitFractionByWhole(Random rand) {
   return GeneratedQuestion(
     conceptId: 'div_unit_fraction_by_whole',
     prompt: '1/$n ÷ $m = ?',
-    diagram: FractionBarSpec(numerator: 1, denominator: n),
+    // The shaded 1/n is itself split into m slivers (first highlighted),
+    // so the whole bar reads as n·m pieces and the answer is countable —
+    // a bar showing only the dividend said nothing about ÷ m.
+    diagram: FractionBarSpec(
+      numerator: 1,
+      denominator: n,
+      subdivideShaded: m,
+    ),
     correctAnswer: correct,
     distractors: distractors,
     explanation: [
@@ -732,7 +739,14 @@ GeneratedQuestion divWholeByUnitFraction(Random rand) {
   return GeneratedQuestion(
     conceptId: 'div_whole_by_unit_fraction',
     prompt: '$m ÷ 1/$n = ?',
-    diagram: FractionBarSpec(numerator: 1, denominator: n),
+    // m whole bars, each cut into n pieces — the kid counts m·n pieces.
+    // The old single bar showed the divisor and anchored on the wrong
+    // number entirely.
+    diagram: FractionBarSpec(
+      numerator: n,
+      denominator: n,
+      bars: m,
+    ),
     correctAnswer: correct,
     distractors: distractors,
     explanation: [

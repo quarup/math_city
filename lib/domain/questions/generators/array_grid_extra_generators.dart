@@ -365,21 +365,21 @@ GeneratedQuestion fractionDenom10_100(Random rand) {
   // dense to count). Numerator ∈ [1, 9].
   const d = 10;
   final n = rand.nextInt(d - 1) + 1; // 1..9
-  final correct = '$n/$d';
   return GeneratedQuestion(
     conceptId: 'fraction_denom_10_100',
-    prompt: 'What fraction is shaded? (Denominator = 10)',
+    // The template shows the answer's shape instead of describing it in a
+    // parenthetical — and the blank is the numerator alone, so a typed
+    // bare count grades right (same pattern as equivalent_fractions_compute).
+    prompt: 'What fraction is shaded?\n___/$d',
     diagram: FractionBarSpec(numerator: n, denominator: d),
-    correctAnswer: correct,
-    distractors: _distinctStrings(correct, [
-      '$d/$n',
-      '${d - n}/$d',
-      '${n + 1}/$d',
-      '$n/${d - 1}',
-    ]),
+    correctAnswer: '$n',
+    distractors: integerDistractorsWith(
+      n,
+      rand,
+      // Complement: counted the un-shaded cells.
+      misconception: d - n,
+    ),
     explanation: ['$n out of $d equal parts → $n/$d.'],
-    answerFormat: AnswerFormat.fraction,
-    answerShape: AnswerShape.exactString,
   );
 }
 

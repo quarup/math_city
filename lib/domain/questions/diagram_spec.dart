@@ -13,11 +13,29 @@ class FractionBarSpec extends DiagramSpec {
   const FractionBarSpec({
     required this.numerator,
     required this.denominator,
+    this.subdivideShaded,
+    this.bars = 1,
   }) : assert(denominator > 0, 'denominator must be > 0'),
-       assert(numerator >= 0, 'numerator must be >= 0');
+       assert(numerator >= 0, 'numerator must be >= 0'),
+       assert(
+         subdivideShaded == null || subdivideShaded >= 2,
+         'subdivideShaded must be >= 2 when set',
+       ),
+       assert(bars >= 1, 'bars must be >= 1');
 
   final int numerator;
   final int denominator;
+
+  /// When set, each shaded segment is split into this many equal
+  /// sub-pieces with the first one highlighted — shows "1/n ÷ m": the
+  /// bar then reads as n × m pieces and the highlighted sliver is the
+  /// answer 1/(n·m).
+  final int? subdivideShaded;
+
+  /// Number of identical bars stacked vertically. More than 1 shows
+  /// "m ÷ 1/n": m wholes each cut into n pieces, so the kid counts
+  /// m × n pieces.
+  final int bars;
 }
 
 /// A single arc-shaped hop on a number line, optionally labelled.

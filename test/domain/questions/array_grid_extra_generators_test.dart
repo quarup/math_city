@@ -211,13 +211,14 @@ void main() {
   });
 
   group('fraction_denom_10_100', () {
-    test('denom = 10; numerator ∈ [1, 9]', () {
+    test('denom = 10; answer fills the numerator blank', () {
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'fraction_denom_10_100', i);
         final spec = q.diagram! as FractionBarSpec;
         expect(spec.denominator, 10);
         expect(spec.numerator, inInclusiveRange(1, 9));
-        expect(q.correctAnswer, '${spec.numerator}/10');
+        expect(q.prompt, 'What fraction is shaded?\n___/10');
+        expect(q.correctAnswer, '${spec.numerator}');
         _expectThreeDistinctDistractors(q);
       }
     });
