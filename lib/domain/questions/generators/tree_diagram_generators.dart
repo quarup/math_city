@@ -71,6 +71,11 @@ List<String> _distinctStrings(String correct, List<String> candidates) {
 
 String _phraseFor(List<TreeDiagramStage> stages) {
   if (stages.length == 2) {
+    // "flip a coin and then flip a coin" reads like a typo — collapse
+    // identical stages into "flip a coin twice".
+    if (_verbFor(stages[0]) == _verbFor(stages[1])) {
+      return 'You ${_verbFor(stages[0])} twice.';
+    }
     return 'You ${_verbFor(stages[0])} and then ${_verbFor(stages[1])}.';
   }
   return 'You perform ${stages.length} stages.';
@@ -139,10 +144,13 @@ GeneratedQuestion compoundEventProbability(Random rand) {
   final n1 = stages[0].outcomes.length;
   final n2 = stages[1].outcomes.length;
 
-  // Pick a specific compound outcome to ask about.
+  // Pick a specific compound outcome to ask about. Order matters against
+  // the tree, so say so: "T and H" invites the unordered reading (2/4)
+  // while the tree counts ordered leaves — "T first and then H" does not.
   final i = rand.nextInt(n1);
   final j = rand.nextInt(n2);
-  final outcomeStr = '${stages[0].outcomes[i]} and ${stages[1].outcomes[j]}';
+  final outcomeStr =
+      '${stages[0].outcomes[i]} first and then ${stages[1].outcomes[j]}';
 
   final correct = Fraction(1, leaves).toCanonical();
   // Misconception distractors. Use 1/(leaves ± 1) as off-by-one fallbacks
@@ -167,7 +175,7 @@ GeneratedQuestion compoundEventProbability(Random rand) {
     explanation: [
       'Each leaf of the tree is equally likely.',
       'There are $leaves leaves and 1 matches "$outcomeStr".',
-      'So P = 1/$leaves = $correct.',
+      'So P = $correct.',
     ],
     answerFormat: AnswerFormat.fraction,
   );

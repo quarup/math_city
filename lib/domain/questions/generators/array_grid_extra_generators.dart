@@ -103,9 +103,12 @@ GeneratedQuestion arrayRepeatedAddition(Random rand) {
   final correct = List.filled(rows, '$cols').join(' + ');
   return GeneratedQuestion(
     conceptId: 'array_repeated_addition',
+    // "adds up the rows" (not "shows the total"): the transposed sum
+    // (cols copies of rows) reaches the same total, so asking for the
+    // total would make that distractor a second correct answer.
     prompt:
-        'This array has $rows rows and $cols columns. Which repeated '
-        'addition shows the total?',
+        'This array has $rows rows with $cols in each row. Which repeated '
+        'addition adds up the rows?',
     diagram: AreaGridSpec(
       rows: rows,
       cols: cols,

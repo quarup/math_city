@@ -62,7 +62,9 @@ GeneratedQuestion parallelPerpendicularLines(Random rand) {
   final answer = kind.displayName;
   return GeneratedQuestion(
     conceptId: 'parallel_perpendicular_lines',
-    prompt: 'How would you describe this pair of lines?',
+    // "best" matters: perpendicular lines are also intersecting, so a
+    // plain "describe this pair" would have two true choices.
+    prompt: 'Which word best describes this pair of lines?',
     diagram: LineFigureSpec(kind: kind),
     correctAnswer: answer,
     distractors: stringDistractorsFromPool(
@@ -78,7 +80,8 @@ GeneratedQuestion parallelPerpendicularLines(Random rand) {
         LineFigureKind.parallelLines =>
           'Parallel lines never meet and stay the same distance apart.',
         LineFigureKind.perpendicularLines =>
-          'Perpendicular lines meet at a right angle (90°).',
+          'Perpendicular lines meet at a right angle (90°) — that is the '
+              'best description, even though they do intersect.',
         LineFigureKind.intersectingLines =>
           'Intersecting lines cross at one point but not at a right angle.',
         _ => '',

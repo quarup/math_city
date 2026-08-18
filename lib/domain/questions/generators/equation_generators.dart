@@ -706,11 +706,20 @@ GeneratedQuestion inequalityOneVarIntro(Random rand) {
   final cGreater = x + rand.nextInt(5) + 1; // x+1..x+5
   // Correct: x > cLess.
   final correct = 'x > $cLess';
-  final distractors = <String>[
+  // Every choice is an inequality — an "x = 4" equation choice could be
+  // eliminated without reading the numbers at all.
+  final candidates = <String>[
     'x < $cLess', // wrong direction
     'x > $cGreater', // not satisfied
-    'x = ${x + 1}', // value-equality, wrong number
+    'x > $x', // strictness trap: x > x is false when x = x
+    'x < ${x - 1}',
   ];
+  final distractors = <String>[];
+  final seen = <String>{correct};
+  for (final c in candidates) {
+    if (distractors.length >= 3) break;
+    if (seen.add(c)) distractors.add(c);
+  }
 
   return GeneratedQuestion(
     conceptId: 'inequality_one_var_intro',
@@ -743,14 +752,25 @@ GeneratedQuestion solveTwoStepInequality(Random rand) {
   final ansOp = isGreater ? '>' : '<';
   final prompt = 'Solve for x: ${p}x + $q $op $r';
   final correct = 'x $ansOp $boundary';
-  final distractors = <String>[
+  // De-duplicated: "forgot the constant" (r ~/ p) can land on the same
+  // boundary as the off-by-one (or the correct answer itself) for small q,
+  // which used to show the same choice twice.
+  final candidates = <String>[
     // Misconception: flipped direction.
     'x ${isGreater ? '<' : '>'} $boundary',
-    // Misconception: off-by-one.
-    'x $ansOp ${boundary + 1}',
     // Misconception: forgot to undo the constant first.
     'x $ansOp ${r ~/ p}',
+    // Off-by-one fallbacks.
+    'x $ansOp ${boundary + 1}',
+    'x $ansOp ${boundary - 1}',
+    'x ${isGreater ? '<' : '>'} ${boundary + 1}',
   ];
+  final distractors = <String>[];
+  final seen = <String>{correct};
+  for (final c in candidates) {
+    if (distractors.length >= 3) break;
+    if (seen.add(c)) distractors.add(c);
+  }
 
   return GeneratedQuestion(
     conceptId: 'solve_two_step_inequality',

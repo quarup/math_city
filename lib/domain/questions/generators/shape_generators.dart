@@ -160,10 +160,15 @@ GeneratedQuestion identifyPolygons(Random rand) {
 // classify_quadrilaterals (G3)
 // ─────────────────────────────────────────────────────────────────────────
 
-/// "What kind of quadrilateral is this?" — five specific quad names
-/// (square / rectangle / parallelogram / rhombus / trapezoid). Drawn at
-/// the canonical orientation for each so kids can rely on a stable
-/// visual cue. CCSS 3.G.A.1.
+/// "What is the most specific name for this quadrilateral?" — five
+/// specific quad names (square / rectangle / parallelogram / rhombus /
+/// trapezoid). Drawn at the canonical orientation for each so kids can
+/// rely on a stable visual cue. CCSS 3.G.A.1.
+///
+/// The prompt asks for the MOST SPECIFIC name because the hierarchy makes
+/// broader names true too: a square is also a rectangle, a rhombus and a
+/// parallelogram, so "what kind is this?" would have three of the four
+/// choices correct.
 GeneratedQuestion classifyQuadrilaterals(Random rand) {
   const pool = <ShapeKind>[
     ShapeKind.square,
@@ -172,11 +177,35 @@ GeneratedQuestion classifyQuadrilaterals(Random rand) {
     ShapeKind.rhombus,
     ShapeKind.trapezoid,
   ];
+  const squareNote =
+      'That is also a rectangle, a rhombus and a parallelogram — but '
+      '"square" says the most about it.';
+  const parallelogramNote =
+      'Two pairs of parallel sides, no right angles, and the sides are '
+      'not all equal — a parallelogram.';
+  const explanations = <ShapeKind, List<String>>{
+    ShapeKind.square: [
+      'All 4 sides are equal AND all 4 angles are right angles.',
+      squareNote,
+    ],
+    ShapeKind.rectangle: [
+      '4 right angles, but the sides are not all equal.',
+      'It is also a parallelogram, but "rectangle" is more specific.',
+    ],
+    ShapeKind.parallelogram: [parallelogramNote],
+    ShapeKind.rhombus: [
+      'All 4 sides are equal but there are no right angles.',
+      'It is also a parallelogram, but "rhombus" is more specific.',
+    ],
+    ShapeKind.trapezoid: [
+      'Exactly one pair of parallel sides — a trapezoid.',
+    ],
+  };
   final kind = pool[rand.nextInt(pool.length)];
   final answer = kind.displayName;
   return GeneratedQuestion(
     conceptId: 'classify_quadrilaterals',
-    prompt: 'What kind of quadrilateral is this?',
+    prompt: 'What is the most specific name for this quadrilateral?',
     diagram: ShapeSpec(kind: kind),
     correctAnswer: answer,
     distractors: stringDistractorsFromPool(
@@ -185,7 +214,7 @@ GeneratedQuestion classifyQuadrilaterals(Random rand) {
       rand,
     ),
     answerFormat: AnswerFormat.string,
-    explanation: ['This quadrilateral is a $answer.'],
+    explanation: explanations[kind]!,
   );
 }
 
