@@ -15,11 +15,17 @@ class ScatterPlot extends StatelessWidget {
   const ScatterPlot({
     required this.spec,
     this.cellSize = 28,
+    this.maxPlotHeight = 280,
     super.key,
   });
 
   final ScatterPlotSpec spec;
   final double cellSize;
+
+  /// Cap on the plot rect's height. Y ranges here can span 50+ units
+  /// (line-of-fit data), and a square-cell plot would then be four
+  /// phone-screens tall — the y scale compresses independently instead.
+  final double maxPlotHeight;
 
   @override
   Widget build(BuildContext context) {
@@ -37,8 +43,9 @@ class ScatterPlot extends StatelessWidget {
               (constraints.maxWidth - 2 * gutter - extraLeft) / cols;
           if (perCell > 0) effective = math.min(effective, perCell);
         }
+        final effectiveY = math.min(effective, maxPlotHeight / rows);
         final width = cols * effective;
-        final height = rows * effective;
+        final height = rows * effectiveY;
         return SizedBox(
           width: width + 2 * gutter + extraLeft,
           height: height + 2 * gutter + extraBottom,
@@ -46,6 +53,7 @@ class ScatterPlot extends StatelessWidget {
             painter: _ScatterPlotPainter(
               spec: spec,
               cellSize: effective,
+              cellSizeY: effectiveY,
               gutter: gutter,
               extraLeft: extraLeft,
               extraBottom: extraBottom,
@@ -72,6 +80,7 @@ class _ScatterPlotPainter extends CustomPainter {
   _ScatterPlotPainter({
     required this.spec,
     required this.cellSize,
+    required this.cellSizeY,
     required this.gutter,
     required this.extraLeft,
     required this.extraBottom,
@@ -85,6 +94,7 @@ class _ScatterPlotPainter extends CustomPainter {
 
   final ScatterPlotSpec spec;
   final double cellSize;
+  final double cellSizeY;
   final double gutter;
   final double extraLeft;
   final double extraBottom;
@@ -97,7 +107,7 @@ class _ScatterPlotPainter extends CustomPainter {
 
   Offset _pixel(num x, num y) {
     final px = gutter + extraLeft + (x - spec.minX) * cellSize;
-    final py = gutter + (spec.maxY - y) * cellSize;
+    final py = gutter + (spec.maxY - y) * cellSizeY;
     return Offset(px, py);
   }
 
@@ -140,8 +150,11 @@ class _ScatterPlotPainter extends CustomPainter {
       canvas.drawLine(_pixel(spec.minX, 0), _pixel(spec.maxX, 0), axisPaint);
     }
 
-    final tickStep = _tickStep();
-    for (var x = spec.minX; x <= spec.maxX; x += tickStep) {
+    // Independent tick steps: a tall y range must not thin out the
+    // x labels (a 0..10 x-axis with no labels at all was the result).
+    final xStep = _tickStepFor(spec.maxX - spec.minX);
+    final yStep = _tickStepFor(spec.maxY - spec.minY);
+    for (var x = spec.minX; x <= spec.maxX; x += xStep) {
       _drawText(
         canvas,
         '$x',
@@ -149,7 +162,7 @@ class _ScatterPlotPainter extends CustomPainter {
         labelStyle,
       );
     }
-    for (var y = spec.minY; y <= spec.maxY; y += tickStep) {
+    for (var y = spec.minY; y <= spec.maxY; y += yStep) {
       _drawText(
         canvas,
         '$y',
@@ -202,10 +215,7 @@ class _ScatterPlotPainter extends CustomPainter {
     }
   }
 
-  int _tickStep() {
-    final cols = spec.maxX - spec.minX;
-    final rows = spec.maxY - spec.minY;
-    final span = math.max(cols, rows);
+  int _tickStepFor(int span) {
     if (span <= 8) return 1;
     if (span <= 16) return 2;
     return (span / 8).ceil();
@@ -287,6 +297,7 @@ class _ScatterPlotPainter extends CustomPainter {
   bool shouldRepaint(_ScatterPlotPainter old) =>
       old.spec != spec ||
       old.cellSize != cellSize ||
+      old.cellSizeY != cellSizeY ||
       old.gridColor != gridColor ||
       old.axisColor != axisColor ||
       old.pointColor != pointColor ||

@@ -319,6 +319,13 @@ GeneratedQuestion coordDistanceSameLine(Random rand) {
     '${v2.abs()}',
   ];
 
+  // Typeset minus for negatives, parenthesised after the operator so
+  // "|5 − -2|" reads as |5 − (−2)|.
+  final distanceLine =
+      'Distance = '
+      '|${v2 < 0 ? "−${-v2}" : "$v2"} − '
+      '${v1 < 0 ? "(−${-v1})" : "$v1"}| = $correct.';
+
   return GeneratedQuestion(
     conceptId: 'coord_distance_same_line',
     prompt: 'What is the distance from A to B?',
@@ -339,7 +346,7 @@ GeneratedQuestion coordDistanceSameLine(Random rand) {
         'A and B have the same x — measure the gap on the y-axis.'
       else
         'A and B have the same y — measure the gap on the x-axis.',
-      'Distance = |$v2 − $v1| = $correct.',
+      distanceLine,
     ],
   );
 }

@@ -51,15 +51,17 @@ void main() {
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'double_number_line', i);
         final spec = q.diagram! as DoubleNumberLineSpec;
-        expect(spec.topValues, hasLength(4));
-        expect(spec.bottomValues, hasLength(4));
+        expect(spec.topValues, hasLength(5));
+        expect(spec.bottomValues, hasLength(5));
         // First values are 0; subsequent values progress in steps of a/b.
+        // The 5th bottom label is blanked with '?' — it is the answer.
         expect(spec.topValues[0], 0);
         expect(spec.bottomValues[0], 0);
         final a = spec.topValues[1];
         final b = spec.bottomValues[1];
-        expect(spec.topValues, [0, a, 2 * a, 3 * a]);
-        expect(spec.bottomValues, [0, b, 2 * b, 3 * b]);
+        expect(spec.topValues, [0, a, 2 * a, 3 * a, 4 * a]);
+        expect(spec.bottomValues, [0, b, 2 * b, 3 * b, 4 * b]);
+        expect(spec.bottomBlankIndex, 4);
         expect(int.parse(q.correctAnswer), 4 * b);
         _expectThreeDistinctDistractors(q);
       }

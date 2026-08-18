@@ -171,7 +171,12 @@ void main() {
           ratios.add(ys[j] / xs[j]);
         }
         final allEqual = ratios.every((r) => r == ratios.first);
-        expect(q.correctAnswer, allEqual ? 'Yes' : 'No');
+        expect(
+          q.correctAnswer,
+          allEqual
+              ? 'Yes — y ÷ x is the same for every pair'
+              : 'No — y ÷ x changes between pairs',
+        );
       }
     });
   });

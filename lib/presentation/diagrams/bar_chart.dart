@@ -119,12 +119,15 @@ class _BarChartPainter extends CustomPainter {
     final plotTop = topGutter;
     final plotBottom = topGutter + plotHeight;
 
-    // Title centred over the plot area.
+    // Title centred over the plot area — with the full width to lay out
+    // in, not one bar's worth ("Materials at the site" was ellipsised to
+    // "Materi…" despite the card having room).
     _drawText(
       canvas,
       spec.title,
       Offset((plotLeft + plotRight) / 2, topGutter / 2),
       titleStyle,
+      maxWidth: size.width,
     );
 
     // Horizontal gridlines at every multiple of scale up to maxY, plus
@@ -174,14 +177,20 @@ class _BarChartPainter extends CustomPainter {
     }
   }
 
-  void _drawText(Canvas canvas, String text, Offset centre, TextStyle style) {
+  void _drawText(
+    Canvas canvas,
+    String text,
+    Offset centre,
+    TextStyle style, {
+    double? maxWidth,
+  }) {
     final tp = TextPainter(
       text: TextSpan(text: text, style: style),
       textDirection: TextDirection.ltr,
       textAlign: TextAlign.center,
       maxLines: 1,
       ellipsis: '…',
-    )..layout(maxWidth: math.max(barWidth + barGap, 48));
+    )..layout(maxWidth: maxWidth ?? math.max(barWidth + barGap, 48));
     tp.paint(
       canvas,
       Offset(centre.dx - tp.width / 2, centre.dy - tp.height / 2),

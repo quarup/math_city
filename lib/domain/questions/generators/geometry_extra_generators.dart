@@ -246,25 +246,23 @@ GeneratedQuestion surfaceAreaFromNet(Random rand) {
 /// "A polygon can be split into a rectangle of area A and a triangle
 /// of area B. What is the total area?" → A + B. CCSS 6.G.A.1.
 ///
-/// Text-driven decomposition: the prompt specifies the two part areas
-/// and the kid sums them. Diagram is one of the candidate result
-/// shapes for context.
+/// Text-only decomposition: the prompt specifies the two part areas and
+/// the kid sums them. No diagram — the generic unlabelled trapezoid it
+/// used to show had no split line and didn't match the described
+/// rectangle-plus-triangle decomposition, which misleads more than a
+/// blank space does.
 GeneratedQuestion areaPolygonDecompose(Random rand) {
   // Rectangle area ∈ 6..60.
   final a = (rand.nextInt(15) + 3) * 2;
   // Triangle area ∈ 3..30.
   final b = rand.nextInt(28) + 3;
   final total = a + b;
-  // Use a hexagon or trapezoid as the visual context — both are
-  // canonical decomposable polygons.
-  const visuals = [ShapeKind.hexagon, ShapeKind.trapezoid];
   return GeneratedQuestion(
     conceptId: 'area_polygon_decompose',
     prompt:
         'A polygon is split into a rectangle of area $a square units and '
         'a triangle of area $b square units. What is the total area of '
         'the polygon?',
-    diagram: ShapeSpec(kind: visuals[rand.nextInt(visuals.length)]),
     correctAnswer: '$total',
     distractors: integerDistractorsWith(
       total,

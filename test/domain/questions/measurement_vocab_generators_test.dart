@@ -37,25 +37,39 @@ void main() {
   });
 
   group('compare_two_objects', () {
-    test('LengthBars carries 2 distinct values; answer is the larger', () {
+    test('length pairs get bars; weight pairs state weights in text', () {
+      var sawLength = false;
+      var sawWeight = false;
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'compare_two_objects', i);
-        final spec = q.diagram;
-        expect(spec, isA<LengthBarsSpec>());
-        final bars = (spec! as LengthBarsSpec).bars;
-        expect(bars, hasLength(2));
-        expect(bars[0].length != bars[1].length, isTrue);
-        final compWord = q.prompt.contains('longer')
-            ? 'longer'
-            : q.prompt.contains('heavier')
-            ? 'heavier'
-            : 'bigger';
-        expect(['longer', 'heavier', 'bigger'], contains(compWord));
-        // The answer is whichever bar has the larger length.
-        final larger = bars[0].length > bars[1].length ? bars[0] : bars[1];
-        expect(q.correctAnswer, larger.label);
+        if (q.prompt.contains('longer')) {
+          sawLength = true;
+          // Length pairs render proportional bars.
+          final spec = q.diagram;
+          expect(spec, isA<LengthBarsSpec>());
+          final bars = (spec! as LengthBarsSpec).bars;
+          expect(bars, hasLength(2));
+          expect(bars[0].length != bars[1].length, isTrue);
+          final larger = bars[0].length > bars[1].length ? bars[0] : bars[1];
+          expect(q.correctAnswer, larger.label);
+        } else {
+          sawWeight = true;
+          // Weight pairs carry no diagram (a longer bar would depict
+          // weight as length); the weights live in the prompt.
+          expect(q.prompt, contains('heavier'));
+          expect(q.diagram, isNull);
+          final m = RegExp(
+            r'weighs (\d+) \w+.* weighs (\d+) ',
+          ).firstMatch(q.prompt);
+          expect(m, isNotNull, reason: q.prompt);
+          final a = int.parse(m!.group(1)!);
+          final b = int.parse(m.group(2)!);
+          expect(a != b, isTrue);
+        }
         _expectThreeDistinctDistractors(q);
       }
+      expect(sawLength, isTrue);
+      expect(sawWeight, isTrue);
     });
   });
 

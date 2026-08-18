@@ -108,8 +108,9 @@ GeneratedQuestion measureLengthUnits(Random rand) {
 /// l1·w1·h1 cubic units. Prism 2 is l2·w2·h2. What is the total
 /// volume?" → V1 + V2. CCSS 5.MD.C.5.c.
 ///
-/// Text-driven (the Shape widget doesn't render composite prisms in
-/// v1; the schematic cube is shown as context).
+/// Text-only. No diagram: the Shape widget can't render a two-prism
+/// composite, and the single schematic cube it used to show contradicted
+/// the prompt — a wrong picture is worse than none.
 GeneratedQuestion volumeComposite(Random rand) {
   final l1 = rand.nextInt(4) + 2; // 2..5
   final w1 = rand.nextInt(4) + 2;
@@ -126,7 +127,6 @@ GeneratedQuestion volumeComposite(Random rand) {
         'A composite figure is made of two rectangular prisms. The first '
         'is $l1 × $w1 × $h1 cubic units. The second is $l2 × $w2 × $h2 '
         'cubic units. What is the total volume?',
-    diagram: const ShapeSpec(kind: ShapeKind.cube),
     correctAnswer: '$total',
     distractors: integerDistractorsWith(
       total,

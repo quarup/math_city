@@ -394,30 +394,31 @@ GeneratedQuestion proportionalRelationship(Random rand) {
 
   final tableX = xs.join(', ');
   final tableY = ys.join(', ');
-  final correct = isProportional ? 'Yes' : 'No';
-  final distractors = <String>[
-    if (isProportional) 'No' else 'Yes',
-    "Can't tell",
-    'Sometimes',
-  ];
+  // Two reasoned choices instead of Yes/No plus never-correct fillers
+  // ("Can't tell" / "Sometimes") that reduced the item to a coin flip.
+  const yesChoice = 'Yes — y ÷ x is the same for every pair';
+  const noChoice = 'No — y ÷ x changes between pairs';
+  final correct = isProportional ? yesChoice : noChoice;
+  final distractors = <String>[if (isProportional) noChoice else yesChoice];
 
-  // Plot the (x, y) pairs so the kid can see whether they're
-  // collinear through the origin. Round maxY up to the nearest 5
-  // so the grid feels uniform.
+  // Plot the (x, y) pairs so the kid can see whether they're collinear
+  // through the origin. A ScatterPlot (independent y scale) rather than
+  // the CoordinatePlane: square unit cells made a y-range of 40 into a
+  // ~1000px-tall grid whose origin scrolled clean off the screen.
   final maxY = ys.reduce((a, b) => a > b ? a : b);
   final roundedMaxY = ((maxY / 5).ceil()) * 5;
 
   return GeneratedQuestion(
     conceptId: 'proportional_relationship',
     prompt: 'x: $tableX; y: $tableY. Is y proportional to x?',
-    diagram: CoordinatePlaneSpec(
+    diagram: ScatterPlotSpec(
       minX: 0,
       maxX: 4,
       minY: 0,
       maxY: roundedMaxY,
       points: [
         for (var i = 0; i < xs.length; i++)
-          CoordinatePlanePoint(x: xs[i], y: ys[i]),
+          ScatterPlotPoint(x: xs[i], y: ys[i]),
       ],
     ),
     correctAnswer: correct,

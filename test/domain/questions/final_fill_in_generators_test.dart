@@ -60,7 +60,8 @@ void main() {
     test('answer = V1 + V2 drawn from the prompt', () {
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'volume_composite', i);
-        expect((q.diagram! as ShapeSpec).kind, ShapeKind.cube);
+        // Text-only: the schematic cube contradicted the two-prism prompt.
+        expect(q.diagram, isNull);
         final nums = RegExp(
           r'\d+',
         ).allMatches(q.prompt).map((m) => int.parse(m.group(0)!)).toList();

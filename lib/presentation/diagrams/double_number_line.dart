@@ -8,7 +8,7 @@ import 'package:math_city/domain/questions/diagram_spec.dart';
 class DoubleNumberLine extends StatelessWidget {
   const DoubleNumberLine({
     required this.spec,
-    this.height = 110,
+    this.height = 140,
     this.minWidth = 240,
     super.key,
   });
@@ -72,8 +72,11 @@ class _DoubleNumberLinePainter extends CustomPainter {
     final n = spec.topValues.length;
     double xAt(int i) => padX + (i / (n - 1)) * usableW;
 
-    final topY = (spec.topLabel != null) ? 30.0 : 24.0;
-    final botY = size.height - ((spec.bottomLabel != null) ? 30.0 : 24.0);
+    // A titled line needs room for BOTH its title row and its tick
+    // labels — 30px put the title's centre 2px from the canvas edge and
+    // clipped it to the bottom halves of its glyphs.
+    final topY = (spec.topLabel != null) ? 46.0 : 24.0;
+    final botY = size.height - ((spec.bottomLabel != null) ? 46.0 : 24.0);
 
     // Axes.
     canvas
@@ -94,7 +97,7 @@ class _DoubleNumberLinePainter extends CustomPainter {
       );
       _drawText(
         canvas,
-        '${spec.bottomValues[i]}',
+        i == spec.bottomBlankIndex ? '?' : '${spec.bottomValues[i]}',
         Offset(x, botY + 14),
         labelStyle,
       );

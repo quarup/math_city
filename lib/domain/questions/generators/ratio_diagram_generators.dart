@@ -77,10 +77,10 @@ GeneratedQuestion doubleNumberLine(Random rand) {
     a = rand.nextInt(4) + 2; // 2..5
     b = rand.nextInt(4) + 2;
   } while (a == b);
-  // Show 4 tick positions: 0, a, 2a, 3a (top) and 0, b, 2b, 3b (bottom).
-  // The kid is asked for the bottom value when top = 4a (off the
-  // diagram), so they have to reason proportionally beyond what's
-  // labelled.
+  // Show 5 tick positions: 0..4a on top, 0..3b plus a '?' at the 4th
+  // step on the bottom. The asked pair is ON the diagram (asking about
+  // a value past the drawn ticks made the question unanswerable from
+  // the picture), but the answer itself is masked by the '?'.
   final ctx = _ratioContexts[rand.nextInt(_ratioContexts.length)];
   const k = 4;
   final answer = b * k;
@@ -91,10 +91,11 @@ GeneratedQuestion doubleNumberLine(Random rand) {
         '${ctx.$1} and ${ctx.$2}. How many ${ctx.$2} go with ${a * k} '
         '${ctx.$1}?',
     diagram: DoubleNumberLineSpec(
-      topValues: [0, a, 2 * a, 3 * a],
-      bottomValues: [0, b, 2 * b, 3 * b],
+      topValues: [0, a, 2 * a, 3 * a, 4 * a],
+      bottomValues: [0, b, 2 * b, 3 * b, 4 * b],
       topLabel: ctx.$1,
       bottomLabel: ctx.$2,
+      bottomBlankIndex: 4,
     ),
     correctAnswer: '$answer',
     distractors: integerDistractorsWith(

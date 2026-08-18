@@ -49,9 +49,11 @@ GeneratedQuestion describeAttribute(Random rand) {
 // compare_two_objects (K)
 // ─────────────────────────────────────────────────────────────────────────
 
-/// "Which is longer/heavier/bigger?" — the two objects' lengths are
-/// shown as proportional bars on a [LengthBarsSpec] diagram so the
-/// kid compares them visually. CCSS K.MD.A.2.
+/// "Which is longer/heavier?" — length pairs are shown as proportional
+/// bars on a [LengthBarsSpec] diagram so the kid compares them visually;
+/// weight pairs state the weights in the prompt instead (a longer BAR
+/// for a heavier CAT depicts weight as length, which misleads).
+/// CCSS K.MD.A.2.
 const List<(String, String, String, String)> _pairScenarios = [
   // (subject1, subject2, unit noun, comparison word)
   ('the pencil', 'the crayon', 'cm', 'longer'),
@@ -63,7 +65,7 @@ const List<(String, String, String, String)> _pairScenarios = [
 
 GeneratedQuestion compareTwoObjects(Random rand) {
   final p = _pairScenarios[rand.nextInt(_pairScenarios.length)];
-  // Two distinct lengths in 2..20.
+  // Two distinct values in 2..20.
   final a = rand.nextInt(19) + 2;
   var b = rand.nextInt(19) + 2;
   while (b == a) {
@@ -72,16 +74,22 @@ GeneratedQuestion compareTwoObjects(Random rand) {
   final s1Larger = a > b;
   final answer = s1Larger ? p.$1 : p.$2;
   final compWord = p.$4;
+  final isLength = compWord == 'longer';
   return GeneratedQuestion(
     conceptId: 'compare_two_objects',
-    prompt: 'Which is $compWord?',
-    diagram: LengthBarsSpec(
-      unit: p.$3,
-      bars: [
-        LengthBar(label: p.$1, length: a),
-        LengthBar(label: p.$2, length: b),
-      ],
-    ),
+    prompt: isLength
+        ? 'Which is $compWord?'
+        : '${_capitalise(p.$1)} weighs $a ${p.$3}. '
+              '${_capitalise(p.$2)} weighs $b ${p.$3}. Which is $compWord?',
+    diagram: isLength
+        ? LengthBarsSpec(
+            unit: p.$3,
+            bars: [
+              LengthBar(label: p.$1, length: a),
+              LengthBar(label: p.$2, length: b),
+            ],
+          )
+        : null,
     correctAnswer: answer,
     distractors: stringDistractorsFromPool(
       answer,
@@ -94,6 +102,9 @@ GeneratedQuestion compareTwoObjects(Random rand) {
     ],
   );
 }
+
+String _capitalise(String s) =>
+    s.isEmpty ? s : s[0].toUpperCase() + s.substring(1);
 
 // ─────────────────────────────────────────────────────────────────────────
 // order_three_objects_length (G1)

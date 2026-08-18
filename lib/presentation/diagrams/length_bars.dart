@@ -34,48 +34,78 @@ class LengthBars extends StatelessWidget {
       (m, b) => b.length > m ? b.length : m,
     );
     final maxLabelWidth = _maxLabelTextWidth(context, labelStyle);
+    final maxValueWidth = _maxValueTextWidth(context, valueStyle);
 
-    final rows = <Widget>[];
-    for (var i = 0; i < spec.bars.length; i++) {
-      final bar = spec.bars[i];
-      final width = (bar.length / maxLength) * maxBarWidth;
-      rows.add(
-        Padding(
-          padding: EdgeInsets.only(top: i == 0 ? 0 : rowGap),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(
-                width: maxLabelWidth + 8,
-                child: Text(
-                  bar.label,
-                  style: labelStyle,
-                  textAlign: TextAlign.right,
-                ),
+    // Fit inside the parent: label + longest bar + value must never
+    // exceed the available width (fixed widths overflowed narrow screens
+    // and clipped the value text to "1…s").
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        var barMax = maxBarWidth;
+        if (constraints.maxWidth.isFinite) {
+          final avail =
+              constraints.maxWidth - maxLabelWidth - 8 - 6 - maxValueWidth;
+          if (avail > 40) barMax = avail.clamp(40.0, maxBarWidth);
+        }
+        final rows = <Widget>[];
+        for (var i = 0; i < spec.bars.length; i++) {
+          final bar = spec.bars[i];
+          final width = (bar.length / maxLength) * barMax;
+          rows.add(
+            Padding(
+              padding: EdgeInsets.only(top: i == 0 ? 0 : rowGap),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                    width: maxLabelWidth + 8,
+                    child: Text(
+                      bar.label,
+                      style: labelStyle,
+                      textAlign: TextAlign.right,
+                    ),
+                  ),
+                  Container(
+                    width: width,
+                    height: barHeight,
+                    decoration: BoxDecoration(
+                      color: fill,
+                      border: Border.all(color: edge, width: 1.2),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 6),
+                    child: Text(
+                      '${bar.length} ${spec.unit}',
+                      style: valueStyle,
+                    ),
+                  ),
+                ],
               ),
-              Container(
-                width: width,
-                height: barHeight,
-                decoration: BoxDecoration(
-                  color: fill,
-                  border: Border.all(color: edge, width: 1.2),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 6),
-                child: Text('${bar.length} ${spec.unit}', style: valueStyle),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: rows,
+            ),
+          );
+        }
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: rows,
+        );
+      },
     );
+  }
+
+  double _maxValueTextWidth(BuildContext context, TextStyle style) {
+    final dir = Directionality.maybeOf(context) ?? TextDirection.ltr;
+    var maxWidth = 0.0;
+    for (final b in spec.bars) {
+      final tp = TextPainter(
+        text: TextSpan(text: '${b.length} ${spec.unit}', style: style),
+        textDirection: dir,
+        maxLines: 1,
+      )..layout();
+      if (tp.width > maxWidth) maxWidth = tp.width;
+    }
+    return maxWidth;
   }
 
   double _maxLabelTextWidth(BuildContext context, TextStyle style) {

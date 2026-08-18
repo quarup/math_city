@@ -131,9 +131,9 @@ GeneratedQuestion polygonOnCoordinatePlane(Random rand) {
 // transformations_translation (Grade 8)
 // ─────────────────────────────────────────────────────────────────────────
 
-/// Show a preimage triangle (solid) + its translation (dashed) on a
-/// `[-8, 8]` plane. Ask for the image coordinates of one labelled
-/// vertex (A or B or C).
+/// Show a preimage triangle on a `[-8, 8]` plane and ask for the image
+/// coordinates of one labelled vertex (A or B or C) under a translation
+/// rule. The image itself is NOT drawn — it would hand over the answer.
 GeneratedQuestion transformationsTranslation(Random rand) {
   // Preimage: 3 vertices on a small triangle inside [-5, 5]² so the
   // translated image fits in [-8, 8]² even for the largest translations.
@@ -199,17 +199,10 @@ GeneratedQuestion transformationsTranslation(Random rand) {
       minY: -8,
       maxY: 8,
       points: preLabelled,
+      // Only the preimage is drawn: rendering the image too let the
+      // answer be read straight off the grid instead of computed.
       polygons: [
-        CoordinatePlanePolygon(
-          vertices: preLabelled,
-        ),
-        CoordinatePlanePolygon(
-          vertices: [
-            for (var i = 0; i < 3; i++)
-              CoordinatePlanePoint(x: image[i][0], y: image[i][1]),
-          ],
-          style: CoordinatePlanePolygonStyle.dashed,
-        ),
+        CoordinatePlanePolygon(vertices: preLabelled),
       ],
     ),
     correctAnswer: correct,
@@ -247,8 +240,9 @@ bool _isNonDegenerateTriangle(List<List<int>> pts) {
 // transformations_reflection (Grade 8)
 // ─────────────────────────────────────────────────────────────────────────
 
-/// Show a preimage triangle + its reflection across the x-axis OR the
-/// y-axis (50/50). Ask for the image coordinates of one labelled vertex.
+/// Show a preimage triangle; ask for one vertex's coordinates after
+/// reflecting across the x-axis OR the y-axis (50/50). The reflected
+/// image is not drawn — it would hand over the answer.
 GeneratedQuestion transformationsReflection(Random rand) {
   // Choose axis. Constrain preimage to one side of that axis so the
   // reflection is visibly distinct (avoids the "point is on the axis,
@@ -316,15 +310,10 @@ GeneratedQuestion transformationsReflection(Random rand) {
       minY: -6,
       maxY: 6,
       points: preLabelled,
+      // Only the preimage is drawn: rendering the image too let the
+      // answer be read straight off the grid instead of computed.
       polygons: [
         CoordinatePlanePolygon(vertices: preLabelled),
-        CoordinatePlanePolygon(
-          vertices: [
-            for (var i = 0; i < 3; i++)
-              CoordinatePlanePoint(x: image[i][0], y: image[i][1]),
-          ],
-          style: CoordinatePlanePolygonStyle.dashed,
-        ),
       ],
     ),
     correctAnswer: correct,
@@ -344,9 +333,10 @@ GeneratedQuestion transformationsReflection(Random rand) {
 // transformations_rotation (Grade 8)
 // ─────────────────────────────────────────────────────────────────────────
 
-/// Show a preimage triangle + its rotation about the origin by 90°,
-/// 180°, or 270° (each CCW; equivalent CW phrasings are not used to
-/// keep the explanation single-rule).
+/// Show a preimage triangle; ask for one vertex's coordinates after a
+/// rotation about the origin by 90°, 180°, or 270° (each CCW; equivalent
+/// CW phrasings are not used to keep the explanation single-rule). The
+/// rotated image is not drawn — it would hand over the answer.
 ///
 /// Rotation rules about the origin:
 ///   - 90°  CCW: (x, y) → (−y,  x)
@@ -424,15 +414,10 @@ GeneratedQuestion transformationsRotation(Random rand) {
       minY: -6,
       maxY: 6,
       points: preLabelled,
+      // Only the preimage is drawn: rendering the image too let the
+      // answer be read straight off the grid instead of computed.
       polygons: [
         CoordinatePlanePolygon(vertices: preLabelled),
-        CoordinatePlanePolygon(
-          vertices: [
-            for (var i = 0; i < 3; i++)
-              CoordinatePlanePoint(x: image[i][0], y: image[i][1]),
-          ],
-          style: CoordinatePlanePolygonStyle.dashed,
-        ),
       ],
     ),
     correctAnswer: correct,
@@ -461,9 +446,11 @@ String _rotationRule(int degrees) {
 // transformations_dilation (Grade 8)
 // ─────────────────────────────────────────────────────────────────────────
 
-/// Show a preimage triangle + its dilation by factor k ∈ {2, 3} centred
-/// at the origin. Preimage vertices in `[-3, 3]²` so the image fits
-/// inside `[-9, 9]²` (which is rendered on a `[-9, 9]` plane).
+/// Show a preimage triangle; ask for one vertex's coordinates after a
+/// dilation by factor k ∈ {2, 3} centred at the origin. The dilated
+/// image is not drawn (it would hand over the answer), so the plane only
+/// needs to fit the preimage — a tight [-4, 4] grid keeps the triangle
+/// large instead of a speck in a [-9, 9] sea.
 GeneratedQuestion transformationsDilation(Random rand) {
   final k = rand.nextBool() ? 2 : 3;
   // Preimage box ±3 so dilated image fits inside ±9.
@@ -518,20 +505,15 @@ GeneratedQuestion transformationsDilation(Random rand) {
         'Dilate the triangle by factor $k centred at the origin. '
         "What are the coordinates of $askedLabel'?",
     diagram: CoordinatePlaneSpec(
-      minX: -9,
-      maxX: 9,
-      minY: -9,
-      maxY: 9,
+      minX: -4,
+      maxX: 4,
+      minY: -4,
+      maxY: 4,
       points: preLabelled,
+      // Only the preimage is drawn: rendering the image too let the
+      // answer be read straight off the grid instead of computed.
       polygons: [
         CoordinatePlanePolygon(vertices: preLabelled),
-        CoordinatePlanePolygon(
-          vertices: [
-            for (var i = 0; i < 3; i++)
-              CoordinatePlanePoint(x: image[i][0], y: image[i][1]),
-          ],
-          style: CoordinatePlanePolygonStyle.dashed,
-        ),
       ],
     ),
     correctAnswer: correct,
@@ -619,10 +601,10 @@ GeneratedQuestion congruenceViaTransformations(Random rand) {
     conceptId: 'congruence_via_transformations',
     prompt: 'Are these two figures congruent?',
     diagram: CoordinatePlaneSpec(
-      minX: -9,
-      maxX: 9,
-      minY: -9,
-      maxY: 9,
+      minX: -4,
+      maxX: 4,
+      minY: -4,
+      maxY: 4,
       points: preLabelled,
       polygons: [
         CoordinatePlanePolygon(vertices: preLabelled),

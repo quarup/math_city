@@ -117,12 +117,14 @@ class _HistogramPainter extends CustomPainter {
     final plotTop = topGutter;
     final plotBottom = topGutter + plotHeight;
 
-    // Title centred over the plot.
+    // Title centred over the plot — full width, not one bar's worth,
+    // so it doesn't ellipsise to "Daily hi…".
     _drawText(
       canvas,
       spec.title,
       Offset((plotLeft + plotRight) / 2, topGutter / 2),
       titleStyle,
+      maxWidth: size.width,
     );
 
     // y-axis gridlines + tick labels at every multiple of scale.
@@ -179,14 +181,20 @@ class _HistogramPainter extends CustomPainter {
     );
   }
 
-  void _drawText(Canvas canvas, String text, Offset centre, TextStyle style) {
+  void _drawText(
+    Canvas canvas,
+    String text,
+    Offset centre,
+    TextStyle style, {
+    double? maxWidth,
+  }) {
     final tp = TextPainter(
       text: TextSpan(text: text, style: style),
       textDirection: TextDirection.ltr,
       textAlign: TextAlign.center,
       maxLines: 1,
       ellipsis: '…',
-    )..layout(maxWidth: math.max(barWidth, 64));
+    )..layout(maxWidth: maxWidth ?? math.max(barWidth, 64));
     tp.paint(
       canvas,
       Offset(centre.dx - tp.width / 2, centre.dy - tp.height / 2),

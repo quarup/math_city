@@ -968,6 +968,7 @@ class DoubleNumberLineSpec extends DiagramSpec {
     required this.bottomValues,
     this.topLabel,
     this.bottomLabel,
+    this.bottomBlankIndex,
   });
 
   /// Tick values along the top line (left-to-right, including 0 at
@@ -979,6 +980,11 @@ class DoubleNumberLineSpec extends DiagramSpec {
 
   final String? topLabel;
   final String? bottomLabel;
+
+  /// When set, the bottom label at this index renders as "?" instead of
+  /// its value — the tick being asked about. Keeps the asked pair ON the
+  /// diagram (so the structure is readable) without printing the answer.
+  final int? bottomBlankIndex;
 }
 
 /// Base-ten place-value blocks: a count of hundreds (10×10 flat),

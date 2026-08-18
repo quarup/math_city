@@ -90,21 +90,21 @@ void main() {
           final q = _gen(registry, 'transformations_translation', i);
           expect(q.diagram, isA<CoordinatePlaneSpec>());
           final spec = q.diagram! as CoordinatePlaneSpec;
-          expect(spec.polygons, hasLength(2));
+          // Only the preimage is drawn — the image would give the answer.
+          expect(spec.polygons, hasLength(1));
           final pre = spec.polygons[0];
-          final img = spec.polygons[1];
           expect(pre.style, CoordinatePlanePolygonStyle.solid);
-          expect(img.style, CoordinatePlanePolygonStyle.dashed);
           expect(pre.vertices, hasLength(3));
-          expect(img.vertices, hasLength(3));
 
-          // Translation: every image vertex = preimage vertex + same delta.
-          final dx = img.vertices[0].x - pre.vertices[0].x;
-          final dy = img.vertices[0].y - pre.vertices[0].y;
-          for (var k = 1; k < 3; k++) {
-            expect(img.vertices[k].x - pre.vertices[k].x, dx);
-            expect(img.vertices[k].y - pre.vertices[k].y, dy);
-          }
+          // Recover (dx, dy) from the prompt's rule text.
+          final rule = RegExp(
+            r'\(x ([+−]) (\d+), y ([+−]) (\d+)\)',
+          ).firstMatch(q.prompt);
+          expect(rule, isNotNull, reason: q.prompt);
+          final dx =
+              int.parse(rule!.group(2)!) * (rule.group(1) == '+' ? 1 : -1);
+          final dy =
+              int.parse(rule.group(4)!) * (rule.group(3) == '+' ? 1 : -1);
           // Non-zero translation.
           expect(dx == 0 && dy == 0, isFalse);
 
@@ -133,33 +133,30 @@ void main() {
           final q = _gen(registry, 'transformations_rotation', i);
           expect(q.diagram, isA<CoordinatePlaneSpec>());
           final spec = q.diagram! as CoordinatePlaneSpec;
-          expect(spec.polygons, hasLength(2));
+          // Only the preimage is drawn — the image would give the answer.
+          expect(spec.polygons, hasLength(1));
           final pre = spec.polygons[0].vertices;
-          final img = spec.polygons[1].vertices;
           expect(pre, hasLength(3));
-          expect(img, hasLength(3));
 
           final m = RegExp(r'Rotate the triangle (\d+)°').firstMatch(q.prompt);
           expect(m, isNotNull);
           final deg = int.parse(m!.group(1)!);
           expect(deg, isIn(const [90, 180, 270]));
           degsSeen.add(deg);
-          // Each image vertex matches the rotation rule.
-          for (var k = 0; k < 3; k++) {
-            final p = pre[k];
-            final iV = img[k];
-            switch (deg) {
-              case 90:
-                expect(iV.x, -p.y);
-                expect(iV.y, p.x);
-              case 180:
-                expect(iV.x, -p.x);
-                expect(iV.y, -p.y);
-              case 270:
-                expect(iV.x, p.y);
-                expect(iV.y, -p.x);
-            }
-          }
+          // The answer matches the rotation rule applied to the asked vertex.
+          final vm = RegExp(r"coordinates of (\w)'\?").firstMatch(q.prompt);
+          expect(vm, isNotNull);
+          final idx = 'ABC'.indexOf(vm!.group(1)!);
+          final p = pre[idx];
+          final expected = switch (deg) {
+            90 => [-p.y, p.x],
+            180 => [-p.x, -p.y],
+            _ => [p.y, -p.x],
+          };
+          final ans = _parseCoord(q.correctAnswer);
+          expect(ans, isNotNull);
+          expect(ans![0], expected[0]);
+          expect(ans[1], expected[1]);
           _expectThreeDistinctDistractors(q);
         }
         expect(degsSeen, {90, 180, 270});
@@ -176,21 +173,23 @@ void main() {
           final q = _gen(registry, 'transformations_dilation', i);
           expect(q.diagram, isA<CoordinatePlaneSpec>());
           final spec = q.diagram! as CoordinatePlaneSpec;
-          expect(spec.polygons, hasLength(2));
+          // Only the preimage is drawn — the image would give the answer.
+          expect(spec.polygons, hasLength(1));
           final pre = spec.polygons[0].vertices;
-          final img = spec.polygons[1].vertices;
           expect(pre, hasLength(3));
-          expect(img, hasLength(3));
 
           final m = RegExp(r'factor (\d+)').firstMatch(q.prompt);
           expect(m, isNotNull);
           final k = int.parse(m!.group(1)!);
           expect(k, isIn(const [2, 3]));
           kSeen.add(k);
-          for (var i = 0; i < 3; i++) {
-            expect(img[i].x, k * pre[i].x);
-            expect(img[i].y, k * pre[i].y);
-          }
+          final vm = RegExp(r"coordinates of (\w)'\?").firstMatch(q.prompt);
+          expect(vm, isNotNull);
+          final idx = 'ABC'.indexOf(vm!.group(1)!);
+          final ans = _parseCoord(q.correctAnswer);
+          expect(ans, isNotNull);
+          expect(ans![0], k * pre[idx].x);
+          expect(ans[1], k * pre[idx].y);
           _expectThreeDistinctDistractors(q);
         }
         expect(kSeen, {2, 3});
@@ -333,34 +332,23 @@ void main() {
           final q = _gen(registry, 'transformations_reflection', i);
           expect(q.diagram, isA<CoordinatePlaneSpec>());
           final spec = q.diagram! as CoordinatePlaneSpec;
-          expect(spec.polygons, hasLength(2));
+          // Only the preimage is drawn — the image would give the answer.
+          expect(spec.polygons, hasLength(1));
           final pre = spec.polygons[0];
-          final img = spec.polygons[1];
           expect(pre.vertices, hasLength(3));
-          expect(img.vertices, hasLength(3));
 
           final acrossX = q.prompt.contains('x-axis');
           axesSeen.add(acrossX ? 'x' : 'y');
-          for (var k = 0; k < 3; k++) {
-            final p = pre.vertices[k];
-            final iV = img.vertices[k];
-            if (acrossX) {
-              expect(iV.x, p.x);
-              expect(iV.y, -p.y);
-            } else {
-              expect(iV.x, -p.x);
-              expect(iV.y, p.y);
-            }
-          }
 
           final m = RegExp(r"coordinates of (\w)'\?").firstMatch(q.prompt);
           expect(m, isNotNull);
           final letter = m!.group(1)!;
           final idx = 'ABC'.indexOf(letter);
+          final p = pre.vertices[idx];
           final ans = _parseCoord(q.correctAnswer);
           expect(ans, isNotNull);
-          expect(ans![0], img.vertices[idx].x);
-          expect(ans[1], img.vertices[idx].y);
+          expect(ans![0], acrossX ? p.x : -p.x);
+          expect(ans[1], acrossX ? -p.y : p.y);
           _expectThreeDistinctDistractors(q);
         }
         expect(axesSeen, {'x', 'y'});
