@@ -70,7 +70,12 @@ class _NumberLinePainter extends CustomPainter {
       return padX + t * usableW;
     }
 
-    // Ticks + labels
+    // Ticks at every division; labels only at whole-number values, thinned
+    // so neighbouring labels never overprint. Fractional ticks stay bare —
+    // rounding them ("0.3" under a mark at 1/3) prints a false value, and
+    // labelling every tick lets the answer be read off the axis instead of
+    // counted.
+    final wholeTicks = <int>[];
     for (var i = 0; i <= spec.divisions; i++) {
       final v = spec.min + (spec.max - spec.min) * i / spec.divisions;
       final x = xFor(v);
@@ -79,7 +84,33 @@ class _NumberLinePainter extends CustomPainter {
         Offset(x, lineY + 6),
         linePaint,
       );
-      _drawLabel(canvas, _formatValue(v), Offset(x, lineY + 18));
+      if ((v - v.round()).abs() < 1e-9) wholeTicks.add(i);
+    }
+    if (wholeTicks.isNotEmpty) {
+      double num2x(int i) =>
+          xFor(spec.min + (spec.max - spec.min) * i / spec.divisions);
+      // Widest label ("-10" is wider than "8") + breathing room decides
+      // how many whole-number labels fit.
+      var maxLabelW = 0.0;
+      for (final i in wholeTicks) {
+        final v = spec.min + (spec.max - spec.min) * i / spec.divisions;
+        maxLabelW = math.max(maxLabelW, _measure(_formatValue(v)).width);
+      }
+      final minGap = maxLabelW + 8;
+      final wholeSpacing = wholeTicks.length > 1
+          ? num2x(wholeTicks[1]) - num2x(wholeTicks[0])
+          : double.infinity;
+      var step = 1;
+      for (final s in const [1, 2, 5, 10, 20, 25, 50, 100]) {
+        step = s;
+        if (wholeSpacing * s >= minGap) break;
+      }
+      for (var k = 0; k < wholeTicks.length; k++) {
+        final i = wholeTicks[k];
+        final v = spec.min + (spec.max - spec.min) * i / spec.divisions;
+        if (v.round() % step != 0) continue;
+        _drawLabel(canvas, _formatValue(v), Offset(num2x(i), lineY + 18));
+      }
     }
 
     // Marked points
@@ -114,15 +145,17 @@ class _NumberLinePainter extends CustomPainter {
   }
 
   void _drawLabel(Canvas canvas, String text, Offset center) {
-    final tp = TextPainter(
-      text: TextSpan(text: text, style: textStyle),
-      textDirection: TextDirection.ltr,
-    )..layout();
+    final tp = _measure(text);
     tp.paint(
       canvas,
       Offset(center.dx - tp.width / 2, center.dy - tp.height / 2),
     );
   }
+
+  TextPainter _measure(String text) => TextPainter(
+    text: TextSpan(text: text, style: textStyle),
+    textDirection: TextDirection.ltr,
+  )..layout();
 
   static String _formatValue(num v) {
     if (v is int || v == v.toInt()) return v.toInt().toString();

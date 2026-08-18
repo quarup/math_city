@@ -32,14 +32,11 @@ class DotPlot extends StatelessWidget {
     final ticks = spec.maxX - spec.minX + 1;
     final naturalWidth = (ticks - 1) * tickSpacing;
 
-    // Tallest dot stack — determines plot height.
     final counts = <int, int>{};
     for (final v in spec.values) {
       counts[v] = (counts[v] ?? 0) + 1;
     }
     final tallestStack = counts.values.fold<int>(0, math.max);
-    final dotGap = dotRadius * 2.2;
-    final plotHeight = math.max(tallestStack * dotGap, dotGap);
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -50,6 +47,11 @@ class DotPlot extends StatelessWidget {
             ts = avail / (ticks - 1);
           }
         }
+        // Dots shrink with the tick spacing so neighbouring stacks never
+        // merge into each other on a squeezed axis.
+        final r = math.min(dotRadius, math.max(ts / 2 - 0.5, 2.5));
+        final dotGap = r * 2.2;
+        final plotHeight = math.max(tallestStack * dotGap, dotGap);
         final usableW = (ticks - 1) * ts;
         return SizedBox(
           width: usableW + leftGutter + rightGutter,
@@ -59,7 +61,7 @@ class DotPlot extends StatelessWidget {
               spec: spec,
               counts: counts,
               tickSpacing: ts,
-              dotRadius: dotRadius,
+              dotRadius: r,
               dotGap: dotGap,
               plotHeight: plotHeight,
               leftGutter: leftGutter,
@@ -143,6 +145,21 @@ class _DotPlotPainter extends CustomPainter {
     // longer tick + numeric label. Minor ticks (subdivisions) get a short
     // tick only — kids learning line plots count the subdivisions
     // themselves rather than reading every fractional label.
+    //
+    // On a squeezed axis (say 0..47 in phone width) labelling every whole
+    // number smears the labels into each other, so the labels are thinned
+    // to a "nice" step that keeps them at least a label-width apart.
+    final majorSpacing = tickSpacing * spec.denominator;
+    var widest = 0.0;
+    for (var v = spec.minX; v <= spec.maxX; v++) {
+      if (v % spec.denominator != 0) continue;
+      widest = math.max(widest, _measure('${v ~/ spec.denominator}').width);
+    }
+    var labelStep = 1;
+    for (final s in const [1, 2, 5, 10, 20, 25, 50]) {
+      labelStep = s;
+      if (majorSpacing * s >= widest + 8) break;
+    }
     for (var v = spec.minX; v <= spec.maxX; v++) {
       final x = xFor(v);
       final isMajor = v % spec.denominator == 0;
@@ -152,7 +169,7 @@ class _DotPlotPainter extends CustomPainter {
         Offset(x, axisY + tickLen),
         axisPaint,
       );
-      if (isMajor) {
+      if (isMajor && (v ~/ spec.denominator) % labelStep == 0) {
         _drawText(
           canvas,
           '${v ~/ spec.denominator}',
@@ -193,6 +210,11 @@ class _DotPlotPainter extends CustomPainter {
       Offset(centre.dx - tp.width / 2, centre.dy - tp.height / 2),
     );
   }
+
+  TextPainter _measure(String text) => TextPainter(
+    text: TextSpan(text: text, style: tickStyle),
+    textDirection: TextDirection.ltr,
+  )..layout();
 
   @override
   bool shouldRepaint(_DotPlotPainter old) =>

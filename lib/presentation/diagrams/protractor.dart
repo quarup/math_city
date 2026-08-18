@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:math_city/domain/questions/diagram_spec.dart';
 
 /// Renders a [ProtractorSpec] as a semicircular protractor (0° to 180°)
-/// with tick labels at every 10°, the fixed base ray on the right, the
-/// second ray drawn at [ProtractorSpec.angleDeg] (CCW from the 0° mark),
-/// and an arc inside the angle they form.
+/// with minor ticks every 5°, longer ticks every 10°, numeric labels every
+/// 20° (any denser and the labels overprint at this widget size), the
+/// fixed base ray on the right, the second ray drawn at
+/// [ProtractorSpec.angleDeg] (CCW from the 0° mark), and an arc inside
+/// the angle they form.
 ///
 /// The 0° mark is on the right side of the base (east of the vertex);
 /// the 180° mark is on the left (west). Mirrors how a paper protractor
@@ -14,7 +16,7 @@ import 'package:math_city/domain/questions/diagram_spec.dart';
 class Protractor extends StatelessWidget {
   const Protractor({
     required this.spec,
-    this.size = 240,
+    this.size = 300,
     super.key,
   });
 
@@ -92,21 +94,26 @@ class _ProtractorPainter extends CustomPainter {
       );
     }
 
-    // Tick marks + labels every 10°. Label only the 10°-multiples so the
-    // diagram stays readable.
+    // Minor ticks every 5° (angles are generated in 5° steps, so the ray
+    // always lands on a tick), longer ticks every 10°, labels every 20° —
+    // 10°-labels overprint into a smear around the top of the arc at this
+    // widget size.
     final tickPaint = Paint()
       ..color = edgeColor
       ..strokeWidth = 1;
-    for (var d = 0; d <= 180; d += 10) {
+    for (var d = 0; d <= 180; d += 5) {
+      final tickLen = d % 10 == 0 ? 10.0 : 6.0;
       final outer = pointAt(d, radius);
-      final inner = pointAt(d, radius - 10);
+      final inner = pointAt(d, radius - tickLen);
       canvas.drawLine(outer, inner, tickPaint);
-      _drawLabel(
-        canvas,
-        '$d',
-        pointAt(d, radius - 22),
-        labelStyle,
-      );
+      if (d % 20 == 0) {
+        _drawLabel(
+          canvas,
+          '$d',
+          pointAt(d, radius - 22),
+          labelStyle,
+        );
+      }
     }
 
     // Base ray: a thick segment along 0° from the vertex.
