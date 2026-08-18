@@ -241,7 +241,7 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen> {
               if (_useNumberPad)
                 NumberPadWidget(
                   onSubmit: _onAnswerSubmitted,
-                  extraChars: _extraCharsFor(question.correctAnswer),
+                  extraChars: _extraCharsFor(question),
                 )
               else
                 ..._shuffledChoices.map(
@@ -281,20 +281,36 @@ bool formatSupportsKeypad(AnswerFormat fmt) {
   }
 }
 
-/// Returns the non-digit characters present in [answer], in the order
-/// they appear, deduplicated. The number pad surfaces these so younger
-/// players doing pure arithmetic see only digits, while fraction (`/`)
-/// and time (`:`) answers expose the symbols they need.
-List<String> _extraCharsFor(String answer) {
-  const digits = '0123456789';
-  final seen = <String>{};
-  final out = <String>[];
-  for (final c in answer.split('')) {
-    if (digits.contains(c)) continue;
-    if (seen.add(c)) out.add(c);
+/// Symbol keys the pad shows above the digits, derived from the union of
+/// ALL four choices — never from the correct answer alone, which leaked
+/// it: a − key appeared iff the answer was negative (fatal in a concept
+/// about sign rules) and the / key vanished iff a fraction sum happened
+/// to simplify to a whole number.
+///
+/// Distractors are crafted to cover the plausible answer shapes (sign
+/// flips, un-reduced fractions), so their union is exactly "what this
+/// question type may need" without saying which shape is right. Only
+/// known pad symbols are surfaced (dataset distractors can carry commas
+/// and other untypeable notation), and the ASCII hyphen is folded into
+/// the typeset − the parsers accept.
+///
+/// Exposed for unit tests.
+List<String> extraKeypadCharsFor(GeneratedQuestion q) {
+  const order = ['−', '+', '.', '/', ' ', ':', 'R'];
+  final present = <String>{};
+  for (final choice in q.allChoices) {
+    for (final raw in choice.split('')) {
+      final c = raw == '-' ? '−' : raw;
+      if (order.contains(c)) present.add(c);
+    }
   }
-  return out;
+  return [
+    for (final c in order)
+      if (present.contains(c)) c,
+  ];
 }
+
+List<String> _extraCharsFor(GeneratedQuestion q) => extraKeypadCharsFor(q);
 
 // ---------------------------------------------------------------------------
 // Shared sub-widgets

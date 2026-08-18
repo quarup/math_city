@@ -94,6 +94,12 @@ class _ExtraCharsRow extends StatelessWidget {
                 // number separator key reads clearly to a kid.
                 label: c == ' ' ? 'and' : c,
                 onTap: () => onTap(c),
+                // Symbol glyphs (especially '.') are much smaller than
+                // digits at the default size — bump them so the decimal
+                // point key doesn't read as an empty pill.
+                textStyle: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
@@ -229,10 +235,15 @@ class _PadGrid extends StatelessWidget {
 }
 
 class _DigitButton extends StatelessWidget {
-  const _DigitButton({required this.label, required this.onTap});
+  const _DigitButton({
+    required this.label,
+    required this.onTap,
+    this.textStyle,
+  });
 
   final String label;
   final VoidCallback onTap;
+  final TextStyle? textStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -242,7 +253,7 @@ class _DigitButton extends StatelessWidget {
       child: OutlinedButton(
         onPressed: onTap,
         style: OutlinedButton.styleFrom(
-          textStyle: theme.textTheme.headlineSmall,
+          textStyle: textStyle ?? theme.textTheme.headlineSmall,
           padding: EdgeInsets.zero,
         ),
         child: Text(label),
