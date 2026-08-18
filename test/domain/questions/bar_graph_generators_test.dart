@@ -27,12 +27,16 @@ void main() {
       () {
         final themesSeen = <String>{};
         final askedSeen = <String>{};
-        final promptRe = RegExp(r'^How many \w+ like ([\w ]+)\?$');
+        // Survey themes ask "How many kids like X?"; the materials theme
+        // asks "How many X are at the site?".
+        final promptRe = RegExp(
+          r'^How many (?:kids like ([\w ]+)|([\w ]+) are at the site)\?$',
+        );
         for (var i = 0; i < _iterations; i++) {
           final q = _gen(registry, 'bar_graph_read', i);
           final m = promptRe.firstMatch(q.prompt);
           expect(m, isNotNull, reason: q.prompt);
-          final askedLabel = m!.group(1)!;
+          final askedLabel = (m!.group(1) ?? m.group(2))!;
 
           expect(q.diagram, isA<BarChartSpec>());
           final spec = q.diagram! as BarChartSpec;
@@ -70,14 +74,15 @@ void main() {
       'in the prompt; the gap is always ≥ 2',
       () {
         final promptRe = RegExp(
-          r'^How many more \w+ like ([\w ]+) than ([\w ]+)\?$',
+          r'^How many more (?:kids like ([\w ]+) than ([\w ]+)'
+          r'|([\w ]+) than ([\w ]+) are at the site)\?$',
         );
         for (var i = 0; i < _iterations; i++) {
           final q = _gen(registry, 'bar_graph_compare', i);
           final m = promptRe.firstMatch(q.prompt);
           expect(m, isNotNull, reason: q.prompt);
-          final hiLabel = m!.group(1)!;
-          final loLabel = m.group(2)!;
+          final hiLabel = (m!.group(1) ?? m.group(3))!;
+          final loLabel = (m.group(2) ?? m.group(4))!;
           expect(hiLabel, isNot(loLabel));
 
           expect(q.diagram, isA<BarChartSpec>());
@@ -108,13 +113,15 @@ void main() {
       'answer equals the bar value of the prompted category; all three '
       'scales appear across seeds',
       () {
-        final promptRe = RegExp(r'^How many \w+ like ([\w ]+)\?$');
+        final promptRe = RegExp(
+          r'^How many (?:kids like ([\w ]+)|([\w ]+) are at the site)\?$',
+        );
         final scalesSeen = <int>{};
         for (var i = 0; i < _iterations; i++) {
           final q = _gen(registry, 'scaled_bar_graph_read', i);
           final m = promptRe.firstMatch(q.prompt);
           expect(m, isNotNull, reason: q.prompt);
-          final askedLabel = m!.group(1)!;
+          final askedLabel = (m!.group(1) ?? m.group(2))!;
 
           expect(q.diagram, isA<BarChartSpec>());
           final spec = q.diagram! as BarChartSpec;

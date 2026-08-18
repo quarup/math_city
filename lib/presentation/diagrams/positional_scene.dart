@@ -72,13 +72,21 @@ class PositionalScene extends StatelessWidget {
           ],
         );
       case PositionRelation.inside:
-        return SizedBox(
-          width: referenceSize.width,
-          height: referenceSize.height,
-          child: Stack(
-            alignment: Alignment.center,
+        // The reference grows into a labelled container with the subject
+        // box inside it — stacking both centred boxes printed the two
+        // labels on top of each other.
+        return Container(
+          width: referenceSize.width + 48,
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: referenceStyle.withValues(alpha: 0.20),
+            border: Border.all(color: edge, width: 1.2),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              reference,
+              Text(spec.referenceLabel, style: labelStyle),
+              SizedBox(height: gap),
               subject,
             ],
           ),

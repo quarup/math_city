@@ -629,6 +629,7 @@ class TriangleAnglesSpec extends DiagramSpec {
     required this.labelB,
     required this.labelC,
     this.showExteriorAtC = false,
+    this.exteriorLabelC,
   }) : assert(
          angleDegA > 0 && angleDegB > 0 && angleDegC > 0,
          'all three interior angles must be positive',
@@ -654,6 +655,11 @@ class TriangleAnglesSpec extends DiagramSpec {
   /// vertex C and marks the exterior wedge — used by
   /// `exterior_angle_triangle`.
   final bool showExteriorAtC;
+
+  /// Label drawn inside the exterior wedge at C (between side CA and the
+  /// dashed extension), e.g. `"?"` when the exterior angle is the unknown.
+  /// Only rendered when [showExteriorAtC] is true.
+  final String? exteriorLabelC;
 }
 
 /// A 2-D coordinate plane spanning `[minX, maxX] × [minY, maxY]` (inclusive

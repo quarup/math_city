@@ -124,7 +124,9 @@ void main() {
         final spec = q.diagram! as TriangleAnglesSpec;
         expect(spec.angleDegA + spec.angleDegB + spec.angleDegC, 180);
         expect(spec.showExteriorAtC, isTrue);
-        expect(spec.labelC, '?');
+        // The unknown is the EXTERIOR wedge; interior C stays unlabelled.
+        expect(spec.exteriorLabelC, '?');
+        expect(spec.labelC, isEmpty);
       }
     });
 

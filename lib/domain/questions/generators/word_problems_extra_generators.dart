@@ -302,22 +302,26 @@ GeneratedQuestion areaPerimeterWord(Random rand) {
 /// "A rope is 3 m 25 cm long. How long is it in cm?" → 325. Two-step
 /// unit conversion within a system; tests CCSS 5.MD.A.1.
 GeneratedQuestion convertUnitsMultistep(Random rand) {
+  // Each row carries its own measurement verb — one "is X long / how
+  // long" template for all five pairs produced "a bag is 9 kg 786 g
+  // long", a mass described as a length.
   const conversions = [
-    ('m', 'cm', 100, 'rope'),
-    ('km', 'm', 1000, 'road'),
-    ('hr', 'min', 60, 'movie'),
-    ('min', 's', 60, 'song'),
-    ('kg', 'g', 1000, 'bag'),
+    ('m', 'cm', 100, 'A rope is', 'long', 'How long is it'),
+    ('km', 'm', 1000, 'A road is', 'long', 'How long is it'),
+    ('hr', 'min', 60, 'A movie is', 'long', 'How long is it'),
+    ('min', 's', 60, 'A song lasts', '', 'How long is it'),
+    ('kg', 'g', 1000, 'A bag weighs', '', 'How much is that'),
   ];
   final c = conversions[rand.nextInt(conversions.length)];
   final big = rand.nextInt(8) + 2; // 2..9
   final small = rand.nextInt(c.$3 - 50) + 25; // ensure < big-unit threshold
   final correct = big * c.$3 + small;
+  final tail = c.$5.isEmpty ? '' : ' ${c.$5}';
   return GeneratedQuestion(
     conceptId: 'convert_units_multistep',
     prompt:
-        'A ${c.$4} is $big ${c.$1} $small ${c.$2} long. '
-        'How long is it in ${c.$2}?',
+        '${c.$4} $big ${c.$1} $small ${c.$2}$tail. '
+        '${c.$6} in ${c.$2}?',
     correctAnswer: '$correct',
     distractors: integerDistractorsWith(
       correct,

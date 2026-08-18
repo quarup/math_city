@@ -111,12 +111,22 @@ class _TrianglePainter extends CustomPainter {
     canvas.drawPath(path, edgePaint);
 
     // Optional exterior-angle marker at C — extend side BC past C with
-    // a dashed segment.
+    // a dashed segment, and label the exterior wedge (between side CA and
+    // the extension) if a label is set. The unknown lives out here, not on
+    // the interior angle — a '?' drawn inside the triangle reads as asking
+    // for the interior measure.
     if (spec.showExteriorAtC) {
       final dir = (cPt - bPt) / (cPt - bPt).distance;
       const extLen = 48.0;
       final extEnd = cPt + dir * extLen;
       _drawDashed(canvas, cPt, extEnd, dashColor);
+      final label = spec.exteriorLabelC;
+      if (label != null) {
+        final toA = (aPt - cPt) / (aPt - cPt).distance;
+        final bisector = dir + toA;
+        final bisDir = bisector / bisector.distance;
+        _drawLabel(canvas, label, cPt + bisDir * 26);
+      }
     }
 
     // Vertex labels (corner letters).

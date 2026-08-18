@@ -22,7 +22,8 @@ class _ChartTheme {
   const _ChartTheme({
     required this.title,
     required this.categories,
-    required this.singularUnit,
+    required this.readTemplate,
+    required this.compareTemplate,
   });
 
   /// Header above the chart, e.g. "Favorite fruit".
@@ -31,36 +32,50 @@ class _ChartTheme {
   /// Four plural category labels (what each bar represents).
   final List<String> categories;
 
-  /// What a single tick of the y-axis counts — used in the prompt:
-  /// "How many *kids* like apples?" or "How many *bricks*?".
-  final String singularUnit;
+  /// Prompt for "read one bar", with `{c}` for the category. Per-theme
+  /// because "How many items like signs?" — the survey phrasing applied
+  /// to the materials chart — reads as nonsense.
+  final String readTemplate;
+
+  /// Prompt for "compare two bars", with `{a}` (bigger) and `{b}`.
+  final String compareTemplate;
+
+  String readPrompt(String c) => readTemplate.replaceAll('{c}', c);
+
+  String comparePrompt(String a, String b) =>
+      compareTemplate.replaceAll('{a}', a).replaceAll('{b}', b);
 }
 
 const _themes = <_ChartTheme>[
   _ChartTheme(
     title: 'Favorite fruit',
     categories: ['apples', 'bananas', 'grapes', 'oranges'],
-    singularUnit: 'kids',
+    readTemplate: 'How many kids like {c}?',
+    compareTemplate: 'How many more kids like {a} than {b}?',
   ),
   _ChartTheme(
     title: 'Favorite color',
     categories: ['red', 'blue', 'green', 'yellow'],
-    singularUnit: 'kids',
+    readTemplate: 'How many kids like {c}?',
+    compareTemplate: 'How many more kids like {a} than {b}?',
   ),
   _ChartTheme(
     title: 'Favorite pet',
     categories: ['dogs', 'cats', 'fish', 'birds'],
-    singularUnit: 'kids',
+    readTemplate: 'How many kids like {c}?',
+    compareTemplate: 'How many more kids like {a} than {b}?',
   ),
   _ChartTheme(
     title: 'Favorite sport',
     categories: ['soccer', 'basketball', 'swimming', 'tennis'],
-    singularUnit: 'kids',
+    readTemplate: 'How many kids like {c}?',
+    compareTemplate: 'How many more kids like {a} than {b}?',
   ),
   _ChartTheme(
     title: 'Materials at the site',
     categories: ['bricks', 'paint cans', 'cones', 'signs'],
-    singularUnit: 'items',
+    readTemplate: 'How many {c} are at the site?',
+    compareTemplate: 'How many more {a} than {b} are at the site?',
   ),
 ];
 
@@ -129,7 +144,7 @@ GeneratedQuestion barGraphRead(Random rand) {
 
   return GeneratedQuestion(
     conceptId: 'bar_graph_read',
-    prompt: 'How many ${theme.singularUnit} like $askedLabel?',
+    prompt: theme.readPrompt(askedLabel),
     diagram: BarChartSpec(
       title: theme.title,
       labels: theme.categories,
@@ -201,7 +216,7 @@ GeneratedQuestion barGraphCompare(Random rand) {
 
   return GeneratedQuestion(
     conceptId: 'bar_graph_compare',
-    prompt: 'How many more ${theme.singularUnit} like $hiLabel than $loLabel?',
+    prompt: theme.comparePrompt(hiLabel, loLabel),
     diagram: BarChartSpec(
       title: theme.title,
       labels: theme.categories,
@@ -257,7 +272,7 @@ GeneratedQuestion scaledBarGraphRead(Random rand) {
 
   return GeneratedQuestion(
     conceptId: 'scaled_bar_graph_read',
-    prompt: 'How many ${theme.singularUnit} like $askedLabel?',
+    prompt: theme.readPrompt(askedLabel),
     diagram: BarChartSpec(
       title: theme.title,
       labels: theme.categories,

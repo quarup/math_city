@@ -207,8 +207,11 @@ GeneratedQuestion exteriorAngleTriangle(Random rand) {
       angleDegC: third,
       labelA: '$a°',
       labelB: '$b°',
-      labelC: '?',
+      // Interior C stays unlabelled; the '?' marks the exterior wedge —
+      // the angle actually being asked for.
+      labelC: '',
       showExteriorAtC: true,
+      exteriorLabelC: '?',
     ),
     correctAnswer: '$correct',
     distractors: integerDistractorsWith(

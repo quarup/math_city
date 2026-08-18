@@ -30,7 +30,8 @@ class Box3D extends StatelessWidget {
           fill: theme.colorScheme.primary.withValues(alpha: 0.12),
           gridColor: theme.colorScheme.outline.withValues(alpha: 0.6),
           labelStyle:
-              theme.textTheme.labelMedium ?? const TextStyle(fontSize: 12),
+              (theme.textTheme.bodyMedium ?? const TextStyle(fontSize: 14))
+                  .copyWith(fontWeight: FontWeight.bold),
         ),
       ),
     );
@@ -71,7 +72,11 @@ class _Box3DPainter extends CustomPainter {
     final depthDx = cell * spec.width * isoDepth;
     final depthDy = -cell * spec.width * isoDepth;
     final originX = (size.width - (boxW + depthDx)) / 2;
-    final originY = (size.height - (boxH - depthDy)) / 2 + boxH;
+    // The box's visual height is boxH + |depthDy| and its TOP is the back
+    // face, |depthDy| above the front-top edge — so the front-bottom
+    // origin sits a full |depthDy| below the centred slot's top + boxH.
+    // (Without the -depthDy term the back-top corner pokes off-canvas.)
+    final originY = (size.height - (boxH - depthDy)) / 2 + boxH - depthDy;
 
     // Front-face corners (anchored at origin, going up and right).
     final fbl = Offset(originX, originY);
@@ -165,11 +170,12 @@ class _Box3DPainter extends CustomPainter {
     }
 
     if (spec.showDimensionLabels) {
-      // Bottom-front edge label = length.
+      // Bottom-front edge label = length. (+8 keeps the glyph inside the
+      // canvas now that the box bottom sits at the slot's lower edge.)
       _drawText(
         canvas,
         '${spec.length}',
-        Offset((fbl.dx + fbr.dx) / 2, fbl.dy + 10),
+        Offset((fbl.dx + fbr.dx) / 2, fbl.dy + 8),
       );
       // Front-right vertical edge = height.
       _drawText(

@@ -23,51 +23,53 @@ typedef _Scenario = ({
   PositionRelation relation,
 });
 
+// The prompt must NOT state the relation in words ("The toy is in the
+// box…" hands over the answer) — the picture is the only source.
 const List<_Scenario> _positionalScenarios = [
   (
-    prompt: 'The book is on top of the table. Where is the book?',
+    prompt: 'Look at the picture. Where is the book?',
     subject: 'book',
     reference: 'table',
     relation: PositionRelation.above,
   ),
   (
-    prompt: 'The cat is sitting under the chair. Where is the cat?',
+    prompt: 'Look at the picture. Where is the cat?',
     subject: 'cat',
     reference: 'chair',
     relation: PositionRelation.below,
   ),
   (
-    prompt: 'The toy is in the box. Where is the toy?',
+    prompt: 'Look at the picture. Where is the toy?',
     subject: 'toy',
     reference: 'box',
     relation: PositionRelation.inside,
   ),
   (
-    prompt: 'The lamp stands next to the bed. Where is the lamp?',
+    prompt: 'Look at the picture. Where is the lamp?',
     subject: 'lamp',
     reference: 'bed',
     relation: PositionRelation.beside,
   ),
   (
-    prompt: 'The bird flies over the tree. Where is the bird?',
+    prompt: 'Look at the picture. Where is the bird?',
     subject: 'bird',
     reference: 'tree',
     relation: PositionRelation.above,
   ),
   (
-    prompt: 'The dog is hiding under the sofa. Where is the dog?',
+    prompt: 'Look at the picture. Where is the dog?',
     subject: 'dog',
     reference: 'sofa',
     relation: PositionRelation.below,
   ),
   (
-    prompt: 'Anna stands next to her brother. Where is Anna?',
-    subject: 'Anna',
-    reference: 'brother',
+    prompt: 'Look at the picture. Where is the doll?',
+    subject: 'doll',
+    reference: 'teddy bear',
     relation: PositionRelation.beside,
   ),
   (
-    prompt: 'The pencil is inside the case. Where is the pencil?',
+    prompt: 'Look at the picture. Where is the pencil?',
     subject: 'pencil',
     reference: 'case',
     relation: PositionRelation.inside,
@@ -99,7 +101,7 @@ GeneratedQuestion positionalWords(Random rand) {
       rand,
     ),
     answerFormat: AnswerFormat.string,
-    explanation: ['The position word that fits this scene is $answer.'],
+    explanation: ['The ${s.subject} is $answer the ${s.reference}.'],
   );
 }
 
