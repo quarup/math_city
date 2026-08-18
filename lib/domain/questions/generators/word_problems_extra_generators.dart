@@ -28,6 +28,14 @@ GeneratedQuestion lengthWordProblems(Random rand) {
   final item = _lengthItems[rand.nextInt(_lengthItems.length)];
   final isAdd = rand.nextBool();
   final name = pickRandom(wordProblemNames, rand);
+  // Spell the unit out in prose — 'in 31 in?' doubled the abbreviation.
+  final unit = switch (item.$2) {
+    'in' => 'inches',
+    'cm' => 'centimetres',
+    'ft' => 'feet',
+    'm' => 'metres',
+    _ => item.$2,
+  };
   late int a;
   late int b;
   late int correct;
@@ -37,18 +45,18 @@ GeneratedQuestion lengthWordProblems(Random rand) {
     b = rand.nextInt(30) + 5; // 5..34
     correct = a + b;
     prompt =
-        '$name has a ${item.$1} that is $a ${item.$2} long. '
-        '$name attaches $b ${item.$2} more. '
-        'How long is the ${item.$1} now, in ${item.$2}?';
+        '$name has a ${item.$1} that is $a $unit long. '
+        '$name attaches $b $unit more. '
+        'How long is the ${item.$1} now, in $unit?';
   } else {
     a = rand.nextInt(60) + 30; // 30..89
     b = rand.nextInt(a - 5) + 3; // 3..(a-3)
     if (b > 30) b = 30;
     correct = a - b;
     prompt =
-        '$name has a ${item.$1} that is $a ${item.$2} long. '
-        '$name cuts off $b ${item.$2}. '
-        'How long is the ${item.$1} now, in ${item.$2}?';
+        '$name has a ${item.$1} that is $a $unit long. '
+        '$name cuts off $b $unit. '
+        'How long is the ${item.$1} now, in $unit?';
   }
   return GeneratedQuestion(
     conceptId: 'length_word_problems',
@@ -60,7 +68,7 @@ GeneratedQuestion lengthWordProblems(Random rand) {
       misconception: isAdd ? (a - b).abs() : a + b,
     ),
     explanation: [
-      '$a ${isAdd ? "+" : "−"} $b = $correct ${item.$2}.',
+      '$a ${isAdd ? "+" : "−"} $b = $correct $unit.',
     ],
   );
 }

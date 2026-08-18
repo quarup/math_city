@@ -192,11 +192,15 @@ GeneratedQuestion fractionWordProblems(Random rand) {
     correctAnswer: correct,
     distractors: list.take(3).toList(),
     explanation: [
+      'Same bottoms — ${isAdd ? "add" : "subtract"} the tops.',
       if (isAdd)
         '$a/$d + $b/$d = ${a + b}/$d'
       else
         '$a/$d − $b/$d = ${a - b}/$d',
     ],
+    // The answer is a fraction; the integer default graded equivalent
+    // typed forms wrong.
+    answerFormat: AnswerFormat.fraction,
   );
 }
 
@@ -291,7 +295,7 @@ GeneratedQuestion rationalsFourOpWord(Random rand) {
         // Misconception: subtracted instead of added.
         misconception: startTemp - actualDelta,
       ),
-      explanation: ['$startTemp + ${_signed(actualDelta)} = $correct.'],
+      explanation: [_tempLine(startTemp, actualDelta, correct)],
     );
   } else {
     // Elevation.
@@ -309,12 +313,15 @@ GeneratedQuestion rationalsFourOpWord(Random rand) {
         rand,
         misconception: startElev + descent, // added instead of subtracted
       ),
-      explanation: ['$startElev − $descent = $correct.'],
+      explanation: ['${_signed(startElev)} − $descent = ${_signed(correct)}.'],
     );
   }
 }
 
 String _signed(int n) => n < 0 ? '−${-n}' : '$n';
+
+String _tempLine(int start, int delta, int result) =>
+    '${_signed(start)} + ${_signed(delta)} = ${_signed(result)}.';
 
 // ─────────────────────────────────────────────────────────────────────────
 // word_problem_two_step_eq (G7) — story → solve px + q = r
@@ -330,7 +337,8 @@ GeneratedQuestion wordProblemTwoStepEq(Random rand) {
   return GeneratedQuestion(
     conceptId: 'word_problem_two_step_eq',
     prompt:
-        '$name buys some apples at \$$p each, plus a \$$q delivery fee. '
+        '$name buys some apples at \$$p each, plus '
+        '${q == 8 ? "an" : "a"} \$$q delivery fee. '
         'The total cost is \$$r. How many apples did $name buy?',
     correctAnswer: '$x',
     distractors: integerDistractorsWith(

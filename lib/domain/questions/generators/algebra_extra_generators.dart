@@ -241,8 +241,15 @@ GeneratedQuestion identifyPartsExpression(Random rand) {
     prompt: prompt,
     correctAnswer: correct,
     distractors: distractors,
+    // Answer the asked part and define the word — a dump of all three
+    // facts taught none of them.
     explanation: [
-      'Coefficient of x: $a. Constant term: $b. Number of terms: 2.',
+      switch (flavor) {
+        0 =>
+          'The coefficient is the number multiplying x — here it is $a.',
+        1 => 'The constant is the term with no x — here it is $b.',
+        _ => '${a}x and $b are the two terms (joined by +).',
+      },
     ],
   );
 }

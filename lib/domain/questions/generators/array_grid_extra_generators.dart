@@ -275,10 +275,12 @@ GeneratedQuestion timeToMinute(Random rand) {
   final hour = rand.nextInt(12) + 1; // 1..12
   final minute = rand.nextInt(60); // 0..59
   final correct = _formatClockTime(hour, minute);
+  // No ±1-minute distractors: on a ~200px face, choosing between 7:32
+  // and 7:33 is a pixel-perception test, not clock-reading. Use ±5, the
+  // hour-hand slips, and the half-hour flip instead.
   final altMinutes = <int>{
-    (minute + 1) % 60,
-    (minute - 1 + 60) % 60,
     (minute + 5) % 60,
+    (minute - 5 + 60) % 60,
     (minute + 30) % 60,
   }..remove(minute);
   final pool = <String>[
@@ -292,7 +294,11 @@ GeneratedQuestion timeToMinute(Random rand) {
     diagram: ClockSpec(hour: hour, minute: minute),
     correctAnswer: correct,
     distractors: _distinctStrings(correct, pool),
-    explanation: ['It is $correct.'],
+    explanation: [
+      'The hour hand has passed $hour, so the hour is $hour.',
+      'Count the minute marks from 12: the long hand points at $minute.',
+      'It is $correct.',
+    ],
     answerFormat: AnswerFormat.string,
   );
 }
@@ -387,9 +393,9 @@ GeneratedQuestion fractionDenom10_100(Random rand) {
 // approximate_irrational (G8) — NumberLine with marked irrational
 // ─────────────────────────────────────────────────────────────────────────
 
-/// "Between which two integers is √7?" → 2 and 3. We use the
-/// NumberLine to *also* mark the irrational's approximate position so
-/// the kid sees it. Answer is the pair of integers.
+/// "Between which two integers is √7?" → 2 and 3. Text-only: marking
+/// √n's position on a number line handed the answer over — the whole
+/// skill is estimating where it lands.
 GeneratedQuestion approximateIrrational(Random rand) {
   // Pick a non-perfect-square radicand in [2, 60].
   late int n;
@@ -398,19 +404,12 @@ GeneratedQuestion approximateIrrational(Random rand) {
     n = rand.nextInt(59) + 2; // 2..60
     floor = sqrt(n).floor();
   } while (floor * floor == n); // skip perfect squares
-  final value = sqrt(n);
   final lo = floor;
   final hi = floor + 1;
   final correct = '$lo and $hi';
   return GeneratedQuestion(
     conceptId: 'approximate_irrational',
     prompt: 'Between which two consecutive integers does √$n lie?',
-    diagram: NumberLineSpec(
-      min: lo - 1,
-      max: hi + 1,
-      divisions: 3,
-      markedPoints: [value],
-    ),
     correctAnswer: correct,
     distractors: _distinctStrings(correct, [
       '${lo - 1} and $lo',

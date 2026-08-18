@@ -32,7 +32,10 @@ GeneratedQuestion timeToHourHalf(Random rand) {
         "The minute hand points at 12 — that means o'clock."
       else
         'The minute hand points at 6 — that means half past.',
-      'The hour hand is at $hour, so the time is $correct.',
+      if (minute == 0)
+        'The hour hand points at $hour, so the time is $correct.'
+      else
+        'The hour hand sits between $hour and ${(hour % 12) + 1}: $correct.',
     ],
   );
 }
@@ -61,8 +64,14 @@ GeneratedQuestion timeTo5Min(Random rand) {
     distractors: stringDistractorsFromPool(correct, pool, rand),
     explanation: [
       'Count by 5s around the clock to find the minutes.',
-      'The minute hand is at ${minute ~/ 5} ($minute minutes).',
-      'The hour hand is past $hour, so the time is $correct.',
+      if (minute == 0)
+        'The minute hand is at 12 (0 minutes).'
+      else
+        'The minute hand is at ${minute ~/ 5} ($minute minutes).',
+      if (minute == 0)
+        'The hour hand points at $hour, so the time is $correct.'
+      else
+        'The hour hand is past $hour, so the time is $correct.',
     ],
   );
 }

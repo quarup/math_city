@@ -403,12 +403,13 @@ GeneratedQuestion multDecimalByWhole(Random rand) {
     correctAnswer: correct,
     distractors: _decimalDistractors(result, candidates, rand),
     explanation: [
+      // Keep the prompt's factor order and say "places", not a bare
+      // number with a missing noun.
       if (decFirst)
-        '${dec.toCanonical()} × $whole'
+        'Ignore the point: ${dec.scaled} × $whole = ${dec.scaled * whole}.'
       else
-        '$whole × ${dec.toCanonical()}',
-      'Ignore the point: ${dec.scaled} × $whole = ${dec.scaled * whole}.',
-      'Then put the point ${dec.scale} from the right.',
+        'Ignore the point: $whole × ${dec.scaled} = ${dec.scaled * whole}.',
+      _pointPlacesLine(dec.scale),
       'Result: $correct.',
     ],
     answerFormat: AnswerFormat.decimal,
@@ -452,10 +453,14 @@ GeneratedQuestion multDecimals(Random rand) {
     correctAnswer: correct,
     distractors: _decimalDistractors(result, candidates, rand),
     explanation: [
-      '${a.toCanonical()} × ${b.toCanonical()}',
       'Ignore the points: ${a.scaled} × ${b.scaled} = ${a.scaled * b.scaled}.',
       'Digits after points: ${a.scale} + ${b.scale} = ${a.scale + b.scale}.',
-      'Put the point that many spots from the right → $correct.',
+      if (result.scale < a.scale + b.scale)
+        'Point ${a.scale + b.scale} places from the right, then drop the '
+            'ending zero${a.scale + b.scale - result.scale > 1 ? "s" : ""}: '
+            '$correct.'
+      else
+        'Put the point ${a.scale + b.scale} places from the right: $correct.',
     ],
     answerFormat: AnswerFormat.decimal,
   );
@@ -811,6 +816,35 @@ GeneratedQuestion decimalToFraction(Random rand) {
 // repeating_decimal_recognize (Grade 8)
 // ─────────────────────────────────────────────────────────────────────────
 
+const _terminatingRule =
+    'A fraction terminates exactly when its reduced bottom has only 2s '
+    'and 5s as factors.';
+
+String _pointPlacesLine(int scale) =>
+    'Then put the point $scale ${scale == 1 ? "place" : "places"} '
+    'from the right.';
+
+/// Prime-factorisation line for the terminating/repeating rule, e.g.
+/// "8 = 2 × 2 × 2 — only 2s and 5s" or "6 = 2 × 3 — the 3 makes it
+/// repeat".
+String _factorLine(int denominator) {
+  final factors = <int>[];
+  var n = denominator;
+  for (final p in const [2, 3, 5, 7, 11, 13]) {
+    while (n % p == 0) {
+      factors.add(p);
+      n ~/= p;
+    }
+  }
+  if (n > 1) factors.add(n);
+  final bad = factors.where((f) => f != 2 && f != 5).toList();
+  final product = factors.join(' × ');
+  if (bad.isEmpty) {
+    return '$denominator = $product — only 2s and 5s.';
+  }
+  return '$denominator = $product — the ${bad.first} makes it repeat.';
+}
+
 /// "Does N/M produce a terminating or repeating decimal?" → MC.
 /// Fraction with only-2-and-5 denominator → terminating; otherwise
 /// repeating. Picks numerators and denominators from a curated mix.
@@ -842,8 +876,9 @@ GeneratedQuestion repeatingDecimalRecognize(Random rand) {
     correctAnswer: correct,
     distractors: distractors,
     explanation: [
-      'Terminates iff the reduced denominator has only 2s and 5s as factors.',
-      '$numerator/$denominator → $correct.',
+      _terminatingRule,
+      _factorLine(denominator),
+      'So $numerator/$denominator is $correct.',
     ],
     answerFormat: AnswerFormat.string,
   );
@@ -885,8 +920,8 @@ GeneratedQuestion repeatingDecimalToFraction(Random rand) {
     correctAnswer: correct,
     distractors: distractors,
     explanation: [
-      'Single-digit repeating decimals over /9 (or /3 for the 3/9 family):',
-      '${pick.$1} = $correct.',
+      'Put the repeating digit over 9, then reduce.',
+      '${pick.$1} = ${pick.$1[2]}/9 = $correct.',
     ],
     answerFormat: AnswerFormat.fraction,
     answerShape: AnswerShape.exactString,
@@ -1035,7 +1070,6 @@ GeneratedQuestion fractionToDecimal(Random rand) {
     distractors: _decimalDistractors(answer, candidates, rand),
     explanation: [
       '$numerator/$denominator means $numerator ÷ $denominator.',
-      'Long-divide (or scale to a power-of-10 denominator).',
       '$numerator ÷ $denominator = $correct.',
     ],
     answerFormat: AnswerFormat.decimal,

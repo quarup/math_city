@@ -50,7 +50,9 @@ GeneratedQuestion Function(Random rand) _multFactsRow(int n, String conceptId) {
         rand,
         misconception: correct + n, // one off in the count of n's
       ),
-      explanation: ['$n × $b = $correct'],
+      // Same factor order as the prompt — flipping it mid-explanation
+      // read as a different fact.
+      explanation: ['$lhs = $correct'],
     );
   };
 }

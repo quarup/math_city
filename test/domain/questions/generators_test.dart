@@ -205,7 +205,9 @@ void main() {
       final answerRe = RegExp(r'^(\d+)R(\d+)$');
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'div_with_remainder', i);
-        final parts = q.prompt.replaceAll(' = ?', '').split(' ÷ ');
+        // Strip the keypad-format hint line before parsing the equation.
+        final equation = q.prompt.split('\n').first;
+        final parts = equation.replaceAll(' = ?', '').split(' ÷ ');
         final dividend = int.parse(parts[0]);
         final divisor = int.parse(parts[1]);
         final m = answerRe.firstMatch(q.correctAnswer);

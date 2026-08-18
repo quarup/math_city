@@ -199,7 +199,12 @@ GeneratedQuestion countForwardFromN(Random rand) {
         'What number do you reach?',
     correctAnswer: '$correct',
     distractors: _distinctIntStrings(correct, candidates),
-    explanation: ['$start + $count = $correct.'],
+    // The listed steps catch the classic off-by-one (counting the start
+    // number as step 1).
+    explanation: [
+      'Count up: ${List.generate(count, (i) => start + i + 1).join(', ')}.',
+      '$start + $count = $correct.',
+    ],
   );
 }
 

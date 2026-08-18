@@ -569,7 +569,7 @@ GeneratedQuestion equivalentExpressionsProps(Random rand) {
     correctAnswer: correct,
     distractors: distractors,
     explanation: [
-      'Distributive property: $a(x + $b) = $a·x + $a·$b.',
+      'Distributive property: $a(x + $b) = $a × x + $a × $b.',
       '= ${a}x + ${a * b}.',
     ],
     answerFormat: AnswerFormat.string,

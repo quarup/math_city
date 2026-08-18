@@ -58,7 +58,9 @@ GeneratedQuestion divWithRemainder(Random rand) {
 
   return GeneratedQuestion(
     conceptId: 'div_with_remainder',
-    prompt: '$dividend ÷ $divisor = ?',
+    // The answer format is stated up front — on the keypad nothing else
+    // says the expected shape is "2R4".
+    prompt: '$dividend ÷ $divisor = ?\n(Type the answer like 2R4.)',
     correctAnswer: correct,
     distractors: distractors,
     explanation: [

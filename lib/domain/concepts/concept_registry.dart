@@ -895,7 +895,7 @@ const List<Concept> allConcepts = [
   ),
   Concept(
     id: 'mult_meaning_groups',
-    name: 'What does 5 × 7 mean?',
+    name: 'What multiplication means',
     shortLabel: '× meaning',
     categoryId: 'mult_div',
     primaryGrade: 3,
