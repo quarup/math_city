@@ -202,6 +202,74 @@ need a per-locale coin set.
 Good news: **every concept listed here is generator-only** (`datasetPool`
 is 0 for all of them), so this is a code change with no dataset
 re-ingestion. No Fahrenheit anywhere, and no imperial mass units.
+### 7. Remediation plan and decisions (2026-08-17)
+
+Agreed scope: **fix everything in this report** — all 58 `bug`, all 150
+`improve`, and observations §1–§6. Decisions already made, so a fresh
+session should not re-ask:
+
+| question | decision |
+|---|---|
+| §4 fraction-division diagrams | **Make them show the operation**, don't ditch. `1/2 ÷ 4`: subdivide the shaded half into 4 so the bar reads as 8. `5 ÷ 1/4`: draw 5 bars in quarters so 20 pieces are countable. The explanations already describe exactly this. |
+| §6 units | **Metric alongside imperial, per concept.** No locale/preference system — that is out of scope. `measure_with_ruler_inches` + `measure_with_ruler_cm` is the model to copy. |
+| §6 money | US coin concepts (`coins_id_value`, `count_coins`, `count_bills_coins`, `change_from_purchase`) depend on the US denomination set **and its coin art**, so they are not a string swap. Currency-symbol-only concepts can be handled; the coin set stays US for now. |
+| §2 siblings | Also force MC on `read_numerals_0_20` and `read_write_3digit`. |
+| §3 siblings | Also convert `commutative_mult`, `associative_mult`, `distributive_mult_over_add` to the stacked form. |
+| §1 siblings | Also convert the "comes right after N" concepts (`count_to_10`, `count_to_20`, `count_to_100_by_1`, `count_to_120`, `count_within_1000`) to `9, ___`. |
+| §3 titles | Replace raw-algebra app-bar titles (`a + b = b + a`, `(a·b)·c = a·(b·c)`) with plain English, and stop using `·` where the body uses `×`. |
+
+**Execution order — highest leverage first.** Roughly 50 of the 58 bugs
+fall out of the first six clusters, so do them before any wording polish.
+
+1. **Prompt card clipped/collapsed by a tall diagram** (~30 bugs). The
+   `Expanded` + `SingleChildScrollView` in
+   `lib/presentation/question/question_screen.dart:204-225` lets the
+   diagram push the card off-screen; worst cases render *no question text
+   at all* (`pythagorean_distance_coords` keypad, `scatter_plot_construct`,
+   `interpret_slope_intercept_data`, `proportional_relationship`, the
+   `transformations_*` family). Cap the diagram's height so the card is
+   always visible.
+2. **`exactString` rejects correct typed input** (~6 bugs).
+   `lib/domain/questions/answer_check.dart:44` short-circuits to `wrong`
+   before comparing values. Affects `equivalent_fractions_compute`,
+   `experimental_probability`, `theoretical_vs_experimental`,
+   `simulate_compound` (inverse: canonical is un-reduced),
+   `probability_simple_event`, `signed_quantities_context` (`+18` vs `18`).
+   Pure domain layer — unit-test it.
+3. **Diagram labels overprint into smears** (~6 bugs).
+   `lib/presentation/diagrams/dot_plot.dart` labels every integer tick and
+   only shrinks spacing, never thins labels (`median`, `range_data`, `iqr`).
+   Same class in `number_line_add_sub` (0–40) and the protractor's 60–120
+   arc, where `measure_angle_protractor`'s own answer must be read.
+4. **Keypad serving list-dependent questions** (3 bugs): force MC on
+   `closest_to_target`, `kth_value_in_list`, `compare_fractions_same_denom`.
+5. **Distractors that are also correct / duplicated** (~4):
+   `classify_quadrilaterals` (square with rectangle/rhombus/parallelogram
+   offered), `array_repeated_addition` (`2+2+2+2+2` is also valid for 2×5),
+   `solve_two_step_inequality` (`x < 4` listed twice),
+   `compound_event_probability` (ordered-vs-unordered ambiguity).
+6. **Content/template bugs** (~5): `convert_units_multistep` ("9 kg 786 g
+   **long**" — one length template for all five pairs),
+   `bar_graph_read` ("How many items like signs?"),
+   `exterior_angle_triangle` (`?` drawn on the interior angle while the
+   exterior is graded, interior value offered as a choice),
+   `pythagorean_apply_3d` (only 2 of 3 edges labelled),
+   `positional_words` (overprinted labels; prompt states the answer).
+7. **Keypad key-set leaks the answer.**
+   `_extraCharsFor(question.correctAnswer)` at
+   `question_screen.dart:274` builds the pad's non-digit keys from the
+   answer, so `−` appears iff the answer is negative and `.` only when it
+   is not a whole number — telling the child the sign in
+   `integers_multiply_divide`, a concept *about* sign rules.
+8. **Observations §1–§6**, then the remaining `improve` items.
+
+**Verification protocol.** After each cluster: `flutter analyze` and
+`flutter test`. At the end, re-run `/ux-sweep all` on the emulator to prove
+it — that writes a **new dated report directory**; do not overwrite this
+one, it is the baseline to diff against. Target: 58 bugs → 0. Before
+committing the new sweep, run
+`python3 tools/ux_sweep/shrink_shots.py <new-report-dir>` (~86 MB → ~9.7 MB)
+and confirm `build_report.py` still exits `0`.
 <!-- END OBSERVATIONS -->
 
 ## Findings
