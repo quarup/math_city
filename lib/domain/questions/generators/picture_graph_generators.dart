@@ -126,7 +126,7 @@ GeneratedQuestion threeCategoryData(Random rand) {
     final total = values.reduce((a, b) => a + b);
     return GeneratedQuestion(
       conceptId: 'three_category_data',
-      prompt: 'How many in all?',
+      prompt: 'How many ${plurals.join(', ')} are there in all?',
       diagram: PictureGraphSpec(
         title: ctx.title,
         rowLabels: labels,
@@ -248,6 +248,9 @@ GeneratedQuestion pictureGraphRead(Random rand) {
 
 /// 4 categories, scale ∈ {2, 5, 10}, drawn-icon count in [1, 7],
 /// real-value = drawnIcons × scale. CCSS 3.MD.B.3.
+String _iconTimesScaleLine(int icons, int scale, int total) =>
+    '$icons ${icons == 1 ? "icon" : "icons"} × $scale = $total.';
+
 GeneratedQuestion scaledPictureGraph(Random rand) {
   final ctx = _contexts[rand.nextInt(_contexts.length)];
   final labels = ctx.rows.map((r) => r.$1).toList();
@@ -280,7 +283,8 @@ GeneratedQuestion scaledPictureGraph(Random rand) {
       misconception: iconCounts[askIdx],
     ),
     explanation: [
-      '${iconCounts[askIdx]} icons × $scale = $correct.',
+      'Look at the ${labels[askIdx]} row.',
+      _iconTimesScaleLine(iconCounts[askIdx], scale, correct),
     ],
   );
 }

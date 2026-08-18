@@ -60,12 +60,9 @@ GeneratedQuestion identifyLinearVsNonlinear(Random rand) {
   }
 
   final correct = isLinear ? 'Linear' : 'Nonlinear';
-  // Distractors are the standard confidence-builder choices.
-  final distractors = [
-    if (isLinear) 'Nonlinear' else 'Linear',
-    'Cannot tell from a table',
-    'Only a graph can answer this',
-  ];
+  // Binary question, binary choices — 'Cannot tell from a table' is
+  // never correct (the table is exactly how you tell).
+  final distractors = [if (isLinear) 'Nonlinear' else 'Linear'];
 
   final tableStr = [
     for (var i = 0; i < 4; i++) '(${xs[i]}, ${ys[i]})',
@@ -73,7 +70,11 @@ GeneratedQuestion identifyLinearVsNonlinear(Random rand) {
 
   return GeneratedQuestion(
     conceptId: 'identify_linear_vs_nonlinear',
-    prompt: 'Table: $tableStr. Is this relationship linear or nonlinear?',
+    // "These (x, y) pairs" — the prompt used to say "Table:" and then
+    // render an inline list, which is not a table.
+    prompt:
+        'These (x, y) pairs come from one relationship: $tableStr. '
+        'Is it linear or nonlinear?',
     correctAnswer: correct,
     distractors: distractors,
     explanation: isLinear

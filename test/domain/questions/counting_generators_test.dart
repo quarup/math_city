@@ -82,7 +82,9 @@ void main() {
           final expected = dir == 'greater' ? max(a, b) : min(a, b);
           expect(int.parse(q.correctAnswer), expected);
           dirsSeen.add(dir);
-          _expectThreeDistinctDistractors(q);
+          // Binary compare: the only distractor is the pair's other number.
+          expect(q.distractors, hasLength(1));
+          expect(q.multipleChoiceOnly, isTrue);
         }
         expect(dirsSeen, {'greater', 'smaller'});
       },

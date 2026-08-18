@@ -41,11 +41,13 @@ List<String> _decimalDistractors(
   }
   // Fallback: perturb the scaled value by ±1..±9 at the answer's own
   // scale. Stays in the same scale so the distractor "looks like" the
-  // answer.
+  // answer. Never dips below zero when the answer is non-negative —
+  // '−0.3' as a choice for grade-4 tenths pre-dates negative numbers.
   for (var i = 0; i < 30 && out.length < 3; i++) {
     final delta = (rand.nextInt(9) + 1) * (rand.nextBool() ? 1 : -1);
-    final perturbed = Decimal(correct.scaled + delta, correct.scale);
-    tryAdd(perturbed.toCanonical());
+    final scaled = correct.scaled + delta;
+    if (correct.scaled >= 0 && scaled < 0) continue;
+    tryAdd(Decimal(scaled, correct.scale).toCanonical());
   }
   // Extreme fallback so the contract is never violated.
   while (out.length < 3) {

@@ -38,7 +38,9 @@ void main() {
       'both Linear and Nonlinear appear across seeds',
       () {
         final answersSeen = <String>{};
-        final tableRe = RegExp(r'^Table: (.+)\. Is this');
+        final tableRe = RegExp(
+          r'^These \(x, y\) pairs come from one relationship: (.+)\. Is it',
+        );
         for (var i = 0; i < _iterations; i++) {
           final q = _gen(registry, 'identify_linear_vs_nonlinear', i);
           final m = tableRe.firstMatch(q.prompt);
@@ -60,13 +62,11 @@ void main() {
           expect(q.correctAnswer, expectedAnswer);
           answersSeen.add(q.correctAnswer);
 
-          // Distractors are the standard confidence-builder set.
+          // Binary question, binary choices.
           expect(
             q.distractors.toSet(),
             {
               if (isArithmetic) 'Nonlinear' else 'Linear',
-              'Cannot tell from a table',
-              'Only a graph can answer this',
             },
           );
         }

@@ -104,20 +104,17 @@ GeneratedQuestion compareNumerals1to10(Random rand) {
   final isGreater = rand.nextBool();
   final correct = isGreater ? max(a, b) : min(a, b);
   final wrong = isGreater ? min(a, b) : max(a, b);
-  final candidates = <String>[
-    '$wrong',
-    '${correct + 1}',
-    '${a + b}', // gave the sum
-    '${(a - b).abs()}', // gave the difference
-  ];
   return GeneratedQuestion(
     conceptId: 'compare_numerals_1_10',
     prompt: 'Which number is ${isGreater ? "greater" : "smaller"}: $a or $b?',
     correctAnswer: '$correct',
-    distractors: _distinctIntStrings(correct, candidates),
+    // Only the other number of the pair — off-pair distractors were
+    // eliminable without comparing anything.
+    distractors: ['$wrong'],
     explanation: [
       'The ${isGreater ? "greater" : "smaller"} of $a and $b is $correct.',
     ],
+    multipleChoiceOnly: true,
   );
 }
 
