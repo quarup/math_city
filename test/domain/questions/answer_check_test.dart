@@ -29,6 +29,36 @@ void main() {
     test('whitespace tolerated', () {
       expect(checkAnswer(_q('42'), '  42 '), AnswerOutcome.canonical);
     });
+
+    test('typed 18 accepted for canonical +18 (signed-quantity prompts)', () {
+      expect(
+        checkAnswer(_q('+18'), '18'),
+        AnswerOutcome.equivalentNonCanonical,
+      );
+    });
+
+    test('typeset minus − matches ASCII -', () {
+      expect(
+        checkAnswer(_q('−18'), '-18'),
+        AnswerOutcome.equivalentNonCanonical,
+      );
+      expect(
+        checkAnswer(_q('-18'), '−18'),
+        AnswerOutcome.equivalentNonCanonical,
+      );
+    });
+
+    test('value mismatch still wrong with sign prefixes', () {
+      expect(checkAnswer(_q('+18'), '-18'), AnswerOutcome.wrong);
+      expect(checkAnswer(_q('−18'), '18'), AnswerOutcome.wrong);
+    });
+
+    test('exactString keeps integer grading strict', () {
+      expect(
+        checkAnswer(_q('+18', shape: AnswerShape.exactString), '18'),
+        AnswerOutcome.wrong,
+      );
+    });
   });
 
   group('fraction format', () {
@@ -68,6 +98,30 @@ void main() {
       // Correct canonical "1"; player types "2/2".
       expect(
         checkAnswer(_q('1', fmt: AnswerFormat.fraction), '2/2'),
+        AnswerOutcome.equivalentNonCanonical,
+      );
+    });
+
+    test('typeset minus − in fraction input matches ASCII canonical', () {
+      expect(
+        checkAnswer(_q('-1/2', fmt: AnswerFormat.fraction), '−1/2'),
+        AnswerOutcome.equivalentNonCanonical,
+      );
+      expect(
+        checkAnswer(_q('−7/15', fmt: AnswerFormat.fraction), '-7/15'),
+        AnswerOutcome.equivalentNonCanonical,
+      );
+    });
+
+    test('un-reduced typed input accepted when canonical is reduced', () {
+      // probability concepts: canonical "2/15", player computes "4/30".
+      expect(
+        checkAnswer(_q('2/15', fmt: AnswerFormat.fraction), '4/30'),
+        AnswerOutcome.equivalentNonCanonical,
+      );
+      // simulate_compound inverse: canonical un-reduced "20/50".
+      expect(
+        checkAnswer(_q('20/50', fmt: AnswerFormat.fraction), '2/5'),
         AnswerOutcome.equivalentNonCanonical,
       );
     });

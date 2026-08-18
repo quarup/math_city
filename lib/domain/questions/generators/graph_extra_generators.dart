@@ -259,6 +259,7 @@ GeneratedQuestion simulateCompound(Random rand) {
       'Experimental P = successes / trials = $happened / $trials.',
     ],
     answerFormat: AnswerFormat.fraction,
-    answerShape: AnswerShape.exactString,
+    // Shape `any`: canonical is the un-reduced successes/trials, but a
+    // reduced equivalent (2/5 for 20/50) is just as correct.
   );
 }

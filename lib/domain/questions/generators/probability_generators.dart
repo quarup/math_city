@@ -143,7 +143,9 @@ GeneratedQuestion probabilitySimpleEvent(Random rand) {
       '$a/$total reduced = $correct.',
     ],
     answerFormat: AnswerFormat.fraction,
-    answerShape: AnswerShape.exactString,
+    // Shape `any`: the prompt never demands simplest form, so a typed
+    // un-reduced 2/4 must grade correct (the result screen nudges toward
+    // the canonical reduced form).
   );
 }
 
@@ -202,7 +204,8 @@ GeneratedQuestion experimentalProbability(Random rand) {
       '$successes / $trials reduced = $correct.',
     ],
     answerFormat: AnswerFormat.fraction,
-    answerShape: AnswerShape.exactString,
+    // Shape `any`: "12 heads out of 20" typed as 12/20 is correct even
+    // though the canonical answer is the reduced 3/5.
   );
 }
 
@@ -323,7 +326,8 @@ GeneratedQuestion theoreticalVsExperimental(Random rand) {
             '$observed / $trials reduced = $experimentalStr.',
           ],
     answerFormat: AnswerFormat.fraction,
-    answerShape: AnswerShape.exactString,
+    // Shape `any`: a directly-computed 6/16 must grade the same as the
+    // reduced 3/8 — the prompt never asks for simplest form.
   );
 }
 

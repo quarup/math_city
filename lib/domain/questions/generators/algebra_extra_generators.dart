@@ -106,27 +106,28 @@ GeneratedQuestion numericalPatternRule(Random rand) {
 // signed_quantities_context (G6)
 // ─────────────────────────────────────────────────────────────────────────
 
+// `{n}` is replaced with the magnitude, so the amount lands mid-phrase
+// ("is 18 meters above sea level"), not appended after it.
 const _signedScenarios = [
-  ('owes', 'has', 'dollars'),
-  ('is below sea level', 'is above sea level', 'meters'),
-  ('lost', 'gained', 'points'),
-  ('is below zero', 'is above zero', 'degrees Celsius'),
+  ('owes {n} dollars', 'has {n} dollars'),
+  ('is {n} meters below sea level', 'is {n} meters above sea level'),
+  ('lost {n} points', 'gained {n} points'),
+  ('is {n} degrees below zero', 'is {n} degrees above zero'),
 ];
 
-/// "Maria owes \$10. What integer represents this?" → −10.
+/// "Maria owes 10 dollars. What integer represents this?" → −10.
 /// 50/50 negative/positive context.
 GeneratedQuestion signedQuantitiesContext(Random rand) {
   final scenario = _signedScenarios[rand.nextInt(_signedScenarios.length)];
   final isNegative = rand.nextBool();
   final magnitude = rand.nextInt(50) + 5; // 5..54
   final correct = isNegative ? -magnitude : magnitude;
-  final action = isNegative ? scenario.$1 : scenario.$2;
+  final template = isNegative ? scenario.$1 : scenario.$2;
+  final action = template.replaceAll('{n}', '$magnitude');
   final name = pickRandom(wordProblemNames, rand);
   return GeneratedQuestion(
     conceptId: 'signed_quantities_context',
-    prompt:
-        '$name $action $magnitude ${scenario.$3}. '
-        'Which integer represents this situation?',
+    prompt: '$name $action. Which integer represents this situation?',
     correctAnswer: _signed(correct),
     distractors: [
       _signed(-correct), // wrong sign

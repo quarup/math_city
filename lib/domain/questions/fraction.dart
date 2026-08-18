@@ -20,9 +20,10 @@ class Fraction {
 
   /// Parses a fraction-shaped string. Returns null if [s] is not
   /// recognisable as one of the supported shapes (whole / proper / improper
-  /// / mixed).
+  /// / mixed). Accepts both ASCII '-' and the typeset minus '−' (which the
+  /// keypad's − key and the generators' canonical strings use).
   static Fraction? tryParse(String s) {
-    final trimmed = s.trim();
+    final trimmed = s.trim().replaceAll('−', '-');
     if (trimmed.isEmpty) return null;
 
     // Mixed: "a b/c"  (one or more spaces between whole and fraction).

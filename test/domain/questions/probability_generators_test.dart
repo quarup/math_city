@@ -105,7 +105,7 @@ void main() {
           expect(q.correctAnswer, isNot(expectedTheoretical));
         }
         expect(q.answerFormat, AnswerFormat.fraction);
-        expect(q.answerShape, AnswerShape.exactString);
+        expect(q.answerShape, AnswerShape.any);
         _expectThreeDistinctDistractors(q);
       }
     });
@@ -150,7 +150,7 @@ void main() {
           fail('prompt matched neither framing: ${q.prompt}');
         }
         expect(q.answerFormat, AnswerFormat.fraction);
-        expect(q.answerShape, AnswerShape.exactString);
+        expect(q.answerShape, AnswerShape.any);
         _expectThreeDistinctDistractors(q);
       }
       expect(sawBag, isTrue, reason: 'should sometimes use bag framing');

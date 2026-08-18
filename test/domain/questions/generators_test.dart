@@ -342,20 +342,19 @@ void main() {
       }
     });
 
-    test('equivalent_fractions_compute: target denom equals base × mult', () {
+    test('equivalent_fractions_compute: answer fills the numerator blank', () {
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'equivalent_fractions_compute', i);
-        // Prompt: "Fill in the blank: a/b = ?/D"
-        final m = RegExp(
-          r'(\d+)/(\d+) = \?/(\d+)',
-        ).firstMatch(q.prompt)!;
+        // Prompt: "a/b = ___/D" — the blank is the numerator alone, so the
+        // answer is the bare integer that fills it.
+        final m = RegExp(r'^(\d+)/(\d+) = ___/(\d+)$').firstMatch(q.prompt)!;
         final baseN = int.parse(m.group(1)!);
         final baseD = int.parse(m.group(2)!);
         final targetD = int.parse(m.group(3)!);
         expect(targetD % baseD, 0, reason: 'target must be a multiple');
         final multiplier = targetD ~/ baseD;
-        expect(q.correctAnswer, '${baseN * multiplier}/$targetD');
-        expect(q.answerShape, AnswerShape.exactString);
+        expect(q.correctAnswer, '${baseN * multiplier}');
+        expect(q.answerFormat, AnswerFormat.integer);
         _expectThreeDistinctDistractors(q);
       }
     });

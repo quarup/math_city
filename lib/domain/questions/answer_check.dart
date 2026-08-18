@@ -54,6 +54,12 @@ AnswerOutcome checkAnswer(GeneratedQuestion question, String playerAnswer) {
 
   switch (question.answerFormat) {
     case AnswerFormat.integer:
+      final playerI = _tryParseInt(input);
+      final correctI = _tryParseInt(question.correctAnswer);
+      if (playerI == null || correctI == null) return AnswerOutcome.wrong;
+      return playerI == correctI
+          ? AnswerOutcome.equivalentNonCanonical
+          : AnswerOutcome.wrong;
     case AnswerFormat.string:
       return AnswerOutcome.wrong;
     case AnswerFormat.fraction:
@@ -115,6 +121,16 @@ int _pow10(int n) {
     r *= 10;
   }
   return r;
+}
+
+/// Parses an integer answer tolerating the surface forms the app itself
+/// produces: the typeset minus U+2212 (`−18`) and an explicit plus sign
+/// (`+18`, used by signed-quantity prompts). `+18` and `18` are the same
+/// integer and must grade the same.
+int? _tryParseInt(String s) {
+  var t = s.replaceAll('−', '-');
+  if (t.startsWith('+')) t = t.substring(1);
+  return int.tryParse(t);
 }
 
 final _mixedFormPattern = RegExp(r'^-?\d+\s+\d+/\d+$');

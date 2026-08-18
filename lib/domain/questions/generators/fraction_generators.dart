@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:math_city/domain/questions/diagram_spec.dart';
+import 'package:math_city/domain/questions/distractors.dart';
 import 'package:math_city/domain/questions/fraction.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
 import 'package:math_city/domain/questions/word_problems/word_problem_framework.dart';
@@ -175,38 +176,30 @@ GeneratedQuestion equivalentFractionsVisual(Random rand) {
 
 /// "Find an equivalent fraction with denominator D." The kid has to figure
 /// out the multiplier themselves (vs `equivalent_fractions_visual` where
-/// the multiplier is stated). Canonical-required because D fixes the
-/// answer form.
+/// the multiplier is stated). The blank is the numerator alone — the
+/// denominator is already printed in the prompt — so the answer is the
+/// plain integer that fills it, and typing it on the keypad grades right.
 GeneratedQuestion equivalentFractionsCompute(Random rand) {
   final baseDen = rand.nextInt(7) + 2; // 2..8
   final baseNum = rand.nextInt(baseDen - 1) + 1; // proper
   final multiplier = rand.nextInt(8) + 2; // 2..9
   final targetDen = baseDen * multiplier;
   final targetNum = baseNum * multiplier;
-  final correct = '$targetNum/$targetDen';
-  final distractors = _fractionDistractors(
-    Fraction(targetNum, targetDen),
-    [
-      '$baseNum/$targetDen', // forgot to scale numerator
-      '$targetNum/$baseDen', // forgot to scale denominator
-      '${targetNum + 1}/$targetDen',
-      '$targetNum/${targetDen + 1}',
-      '${baseNum + multiplier}/${baseDen + multiplier}', // added instead of multiplied
-    ],
-    rand,
-  );
   return GeneratedQuestion(
     conceptId: 'equivalent_fractions_compute',
-    prompt: 'Fill in the blank: $baseNum/$baseDen = ?/$targetDen',
-    correctAnswer: correct,
-    distractors: distractors,
+    prompt: '$baseNum/$baseDen = ___/$targetDen',
+    correctAnswer: '$targetNum',
+    distractors: integerDistractorsWith(
+      targetNum,
+      rand,
+      // Forgot to scale the numerator along with the denominator.
+      misconception: baseNum,
+    ),
     explanation: [
       'Bottoms: $baseDen × $multiplier = $targetDen.',
       'Apply the same multiplier on top: $baseNum × $multiplier = $targetNum.',
       'So $baseNum/$baseDen = $targetNum/$targetDen.',
     ],
-    answerFormat: AnswerFormat.fraction,
-    answerShape: AnswerShape.exactString,
   );
 }
 
