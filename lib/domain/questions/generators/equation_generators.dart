@@ -213,8 +213,14 @@ GeneratedQuestion nestedGrouping(Random rand) {
       _signed(withoutParens), // ignored the parens entirely
     ], rand),
     explanation: [
-      'Do what is inside the parentheses first.',
-      '$prompt → ${_signed(answer)}.',
+      'Do what is inside the parentheses first:',
+      if (parenOnLeft) ...[
+        '$a $inner $b = ${_apply(a, inner, b)}.',
+        'Then ${_apply(a, inner, b)} $outer $c = ${_signed(answer)}.',
+      ] else ...[
+        '$b $inner $c = ${_apply(b, inner, c)}.',
+        'Then $a $outer ${_apply(b, inner, c)} = ${_signed(answer)}.',
+      ],
     ],
   );
 }
@@ -490,7 +496,9 @@ GeneratedQuestion addSubtractLinearExpressions(Random rand) {
   final correct = actualB > 0
       ? '${actualA}x + $actualB'
       : '${actualA}x $_minus ${-actualB}';
-  final prompt2 = 'Simplify: ${a1}x + $b1 $op (${a2}x + $b2)';
+  // Both groups parenthesised so the two expressions read as parallel
+  // units — parens on only the second looked like a typo.
+  final prompt2 = 'Simplify: (${a1}x + $b1) $op (${a2}x + $b2)';
   // Misconception distractors. The "didn't apply sign to constant"
   // distractor is the same as correct when isPlus, so use it only in
   // the subtraction branch.
@@ -602,7 +610,7 @@ GeneratedQuestion factorLinearExpression(Random rand) {
     distractors: distractors,
     explanation: [
       'GCF of $coeff and $constant is $k.',
-      '$coeff = $k × 1, so ${coeff}x = $k × x; $constant = $k × $b.',
+      'Split each term: ${coeff}x = $k × x and $constant = $k × $b.',
       'Pull out $k: $correct.',
     ],
     answerFormat: AnswerFormat.string,
@@ -687,8 +695,12 @@ GeneratedQuestion solveLinearEqOneSolution(Random rand) {
     correctAnswer: correct,
     distractors: _intDistractors(x, candidates, rand),
     explanation: [
-      'Move x terms to one side: (${a - c})x = ${d - b}.',
-      'Divide by ${a - c}: x = ${d - b} ÷ ${a - c} = $x.',
+      if (a - c == 1)
+        'Move x terms to one side: x = ${d - b}.'
+      else ...[
+        'Move x terms to one side: ${a - c}x = ${d - b}.',
+        'Divide by ${a - c}: x = ${d - b} ÷ ${a - c} = $x.',
+      ],
     ],
   );
 }
@@ -810,12 +822,12 @@ GeneratedQuestion substituteToCheck(Random rand) {
     candidate = x + delta;
     if (candidate < 1) candidate = x + 1;
   }
-  final answer = isCorrect ? 'Yes' : 'No';
-  final distractors = <String>[
-    if (answer == 'Yes') 'No' else 'Yes',
-    "Can't tell",
-    'Maybe',
-  ];
+  // Two reasoned choices — "Maybe" / "Can't tell" are never correct for
+  // a substitution check and reduced the item to a coin flip.
+  const yesChoice = 'Yes — both sides are equal';
+  const noChoice = 'No — the sides are not equal';
+  final answer = isCorrect ? yesChoice : noChoice;
+  final distractors = <String>[if (isCorrect) noChoice else yesChoice];
 
   return GeneratedQuestion(
     conceptId: 'substitute_to_check',

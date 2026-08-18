@@ -428,16 +428,18 @@ GeneratedQuestion compareMultidigit(Random rand) {
     prompt:
         'Which number is ${isGreater ? "greater" : "smaller"}: '
         '${_withCommas(a)} or ${_withCommas(b)}?',
-    correctAnswer: '$correct',
-    distractors: _distinctStrings('$correct', [
-      '$wrong',
-      '${correct + 1}',
-      '${correct - 1}',
-    ]),
+    // Choices use the same comma grouping as the prompt, and only the
+    // two numbers being compared are offered — off-list values were
+    // eliminable without comparing, and the comma-less keypad rejected
+    // the prompt's own formatting.
+    correctAnswer: _withCommas(correct),
+    distractors: [_withCommas(wrong)],
     explanation: [
       'Compare digit by digit from the left.',
       '${_withCommas(correct)} is ${isGreater ? "greater" : "smaller"}.',
     ],
+    answerFormat: AnswerFormat.string,
+    multipleChoiceOnly: true,
   );
 }
 
@@ -460,12 +462,13 @@ String _withCommas(int n) {
 /// CCSS 5.NBT.A.1: "a digit in one place represents 10× as much as it
 /// represents in the place to its right".
 GeneratedQuestion placeValueRelationship10x(Random rand) {
-  // Bigger place → smaller place. Pairs:
-  // (hundreds → tens), (thousands → hundreds), (ten thousands → thousands).
+  // Bigger place → smaller place: (plural display, smaller place,
+  // singular display). Hyphenated "ten-thousands" so "2 ten thousands"
+  // stops reading as a typo.
   const pairs = [
-    ('hundreds', 'tens'),
-    ('thousands', 'hundreds'),
-    ('ten thousands', 'thousands'),
+    ('hundreds', 'tens', 'hundred'),
+    ('thousands', 'hundreds', 'thousand'),
+    ('ten-thousands', 'thousands', 'ten-thousand'),
   ];
   final pair = pairs[rand.nextInt(pairs.length)];
   final n = rand.nextInt(8) + 2; // 2..9
@@ -480,8 +483,8 @@ GeneratedQuestion placeValueRelationship10x(Random rand) {
       misconception: n, // gave the same digit
     ),
     explanation: [
-      'Each ${pair.$1.replaceAll(RegExp(r's\$'), '')} is 10 ${pair.$2}.',
-      '$n × 10 = $correct.',
+      '1 ${pair.$3} = 10 ${pair.$2}.',
+      'So $n ${pair.$1} = $n × 10 = $correct ${pair.$2}.',
     ],
   );
 }
@@ -499,14 +502,17 @@ GeneratedQuestion powersOf10(Random rand) {
     conceptId: 'powers_of_10',
     prompt: '10${sup(exp)} = ?',
     correctAnswer: '$correct',
-    distractors: integerDistractorsWith(
-      correct,
-      rand,
-      misconception: 10 * exp, // multiplied instead of repeated mult
-    ),
+    // Plausible slips only: one zero too few / too many, or 10 × exp —
+    // jitter like 1001 corresponds to no mistake a kid actually makes.
+    // (10 × exp collides with the answer at exp = 1, so filter.)
+    distractors: [
+      if (exp > 1) '${_pow10(exp - 1)}' else '1',
+      '${_pow10(exp + 1)}',
+      if (10 * exp != correct) '${10 * exp}' else '${_pow10(exp + 2)}',
+    ],
     explanation: [
-      '10${sup(exp)} means 10 multiplied by itself $exp times.',
-      '10${sup(exp)} = $correct.',
+      '10${sup(exp)} means 10 used as a factor $exp times.',
+      'That is a 1 followed by $exp zeros: $correct.',
     ],
   );
 }

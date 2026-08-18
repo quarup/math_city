@@ -248,8 +248,14 @@ void main() {
         expect(a, inInclusiveRange(1000, 999999));
         expect(b, inInclusiveRange(1000, 999999));
         final expected = isGreater ? max(a, b) : min(a, b);
-        expect(int.parse(q.correctAnswer), expected);
-        _expectThreeDistinctDistractors(q);
+        // Answer and lone distractor keep the prompt's comma grouping.
+        expect(int.parse(q.correctAnswer.replaceAll(',', '')), expected);
+        expect(q.distractors, hasLength(1));
+        expect(
+          int.parse(q.distractors.single.replaceAll(',', '')),
+          isGreater ? min(a, b) : max(a, b),
+        );
+        expect(q.multipleChoiceOnly, isTrue);
       }
     });
   });

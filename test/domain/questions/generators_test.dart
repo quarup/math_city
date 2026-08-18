@@ -689,7 +689,7 @@ void main() {
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'mult_as_scaling', i);
         final m = RegExp(
-          r'(\d+) × (\d+)/(\d+) is ___ than',
+          r'(\d+) × (\d+)/(\d+) is ___ compared to',
         ).firstMatch(q.prompt)!;
         final num = int.parse(m.group(2)!);
         final den = int.parse(m.group(3)!);

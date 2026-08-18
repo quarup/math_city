@@ -61,7 +61,10 @@ void main() {
           int.parse(q.correctAnswer),
           dir == 'greater' ? max(a, b) : min(a, b),
         );
-        _expectThreeDistinctDistractors(q);
+        // Binary compare: the only distractor is the other number of the
+        // pair, and the question is MC-only.
+        expect(q.distractors, ['${dir == 'greater' ? min(a, b) : max(a, b)}']);
+        expect(q.multipleChoiceOnly, isTrue);
       }
     });
   });

@@ -97,14 +97,13 @@ GeneratedQuestion compare2digit(Random rand) {
     conceptId: 'compare_2digit',
     prompt: 'Which number is ${isGreater ? "greater" : "smaller"}: $a or $b?',
     correctAnswer: '$correct',
-    distractors: _distinctIntStrings(correct, [
-      '$wrong',
-      '${a + b}', // sum
-      '${(a - b).abs()}', // difference
-    ]),
+    // Only the other number of the pair — a distractor that appears
+    // nowhere in the prompt can be eliminated without comparing.
+    distractors: ['$wrong'],
     explanation: [
       'The ${isGreater ? "greater" : "smaller"} of $a and $b is $correct.',
     ],
+    multipleChoiceOnly: true,
   );
 }
 

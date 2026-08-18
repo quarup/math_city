@@ -105,14 +105,15 @@ void main() {
         final q = _gen(registry, 'compare_order_rationals', i);
         final m = re.firstMatch(q.prompt);
         expect(m, isNotNull, reason: q.prompt);
+        // Values render with the typeset minus — normalise before parsing.
         final values = m!
             .group(1)!
             .split(',')
-            .map((s) => num.parse(s.trim()))
+            .map((s) => num.parse(s.trim().replaceAll('−', '-')))
             .toList();
         final maxV = values.reduce((a, b) => a > b ? a : b);
         // The correct answer must parse to that max.
-        final parsed = num.parse(q.correctAnswer);
+        final parsed = num.parse(q.correctAnswer.replaceAll('−', '-'));
         expect(parsed, maxV);
       }
     });

@@ -200,7 +200,7 @@ GeneratedQuestion exponentsWholeNumber(Random rand) {
     correctAnswer: correct,
     distractors: _wholeDistractors(value, candidates, rand),
     explanation: [
-      '$base${sup(exp)} means $base multiplied by itself $exp times.',
+      '$base${sup(exp)} means $base used as a factor $exp times.',
       '${List.filled(exp, '$base').join(' × ')} = $value.',
     ],
   );
@@ -253,9 +253,13 @@ GeneratedQuestion orderOfOperationsWithExp(Random rand) {
     correctAnswer: correct,
     distractors: _wholeDistractors(answer, candidates, rand),
     explanation: [
-      'Exponents bind tighter than +, −, ×, ÷.',
-      'Evaluate $b² = $bSquared first.',
-      'Then $prompt → $correct.',
+      'Do the exponent before adding, subtracting, or multiplying.',
+      '$b² = $bSquared.',
+      switch (shape) {
+        0 => 'Then $a + $bSquared = $correct.',
+        1 => 'Then $a × $bSquared = $correct.',
+        _ => 'Then $a − $bSquared = $correct.',
+      },
     ],
   );
 }

@@ -29,8 +29,23 @@ List<String> _fractionDistractors(
   final seen = <String>{correct.toCanonical()};
   bool tryAdd(String s) {
     if (seen.contains(s)) return false;
+    // Reject invalid mixed notation like "1 10/6" or "2 3/3" — forms the
+    // curriculum tells kids never to write.
+    final mixed = RegExp(r'^-?\d+\s+(\d+)/(\d+)$').firstMatch(s);
+    if (mixed != null &&
+        int.parse(mixed.group(1)!) >= int.parse(mixed.group(2)!)) {
+      return false;
+    }
     final f = Fraction.tryParse(s);
     if (f != null && f.equalsByValue(correct)) return false;
+    // No two distractors may share a VALUE (e.g. 0/3 and 0/1) — a kid
+    // with one wrong idea would get two choices for it.
+    if (f != null) {
+      for (final o in out) {
+        final of = Fraction.tryParse(o);
+        if (of != null && of.equalsByValue(f)) return false;
+      }
+    }
     seen.add(s);
     out.add(s);
     return true;
@@ -84,7 +99,9 @@ GeneratedQuestion fractionAOverB(Random rand) {
   );
   return GeneratedQuestion(
     conceptId: 'fraction_a_over_b',
-    prompt: 'What fraction is shaded?',
+    // Naming the parts count steers the keypad answer to the depicted
+    // form (4/6, not the equally-true 2/3 that exactString rejects).
+    prompt: 'The bar has $denominator equal parts. What fraction is shaded?',
     diagram: FractionBarSpec(
       numerator: numerator,
       denominator: denominator,
@@ -157,9 +174,11 @@ GeneratedQuestion equivalentFractionsVisual(Random rand) {
   );
   return GeneratedQuestion(
     conceptId: 'equivalent_fractions_visual',
+    // An instruction rather than "Which is equal to…?" — that phrasing
+    // literally admits the original fraction itself as an answer.
     prompt:
-        'Which is equal to $numerator/$denominator? '
-        '(Multiply top and bottom by $multiplier.)',
+        'Multiply top and bottom by $multiplier: '
+        '$numerator/$denominator = ?',
     diagram: FractionBarSpec(
       numerator: numerator,
       denominator: denominator,
@@ -379,8 +398,9 @@ GeneratedQuestion addFractionsLikeDenom(Random rand) {
 /// Result ≥ 0; canonical = reduced form.
 GeneratedQuestion subFractionsLikeDenom(Random rand) {
   final denominator = rand.nextInt(6) + 3; // 3..8
-  final a = rand.nextInt(denominator - 1) + 1; // 1..denom-1
-  final b = rand.nextInt(a) + 1; // 1..a, so a ≥ b
+  final a = rand.nextInt(denominator - 2) + 2; // 2..denom-1
+  final b = rand.nextInt(a - 1) + 1; // 1..a-1 — strict, so there is
+  // always something to subtract (a == b made the item trivial)
   final diffNum = a - b;
   final diffF = Fraction(diffNum, denominator);
   final correct = diffF.toCanonical();
@@ -536,7 +556,7 @@ GeneratedQuestion addFractionsUnlikeDenom(Random rand) {
   );
   return GeneratedQuestion(
     conceptId: 'add_fractions_unlike_denom',
-    prompt: '$n1/$d1 + $n2/$d2 = ?',
+    prompt: '$n1/$d1 + $n2/$d2 = ?\n(Answer in lowest terms.)',
     correctAnswer: correct,
     distractors: distractors,
     explanation: [
@@ -620,7 +640,8 @@ GeneratedQuestion multFractionByWhole(Random rand) {
   );
   return GeneratedQuestion(
     conceptId: 'mult_fraction_by_whole',
-    prompt: '$whole × $numerator/$denominator = ?',
+    prompt:
+        '$whole × $numerator/$denominator = ?\n(Answer in lowest terms.)',
     correctAnswer: correct,
     distractors: distractors,
     explanation: [
@@ -829,6 +850,10 @@ GeneratedQuestion wholeNumberAsFraction(Random rand) {
   );
 }
 
+String _carryLine(int rawSumTop, int denominator) =>
+    'The top ($rawSumTop) is at least $denominator, so one more whole '
+    'carries over.';
+
 /// Add two mixed numbers with the same denominator: combine wholes and
 /// add the proper parts (handling carry into the whole when the proper
 /// sum exceeds 1). Canonical is the reduced mixed-number form.
@@ -867,7 +892,7 @@ GeneratedQuestion addMixedLikeDenom(Random rand) {
     explanation: [
       'Add the wholes: $w1 + $w2 = ${w1 + w2}.',
       'Add the tops: $n1 + $n2 = $rawSumTop, over $denominator.',
-      if (carried) 'Top is $rawSumTop ≥ $denominator → carry 1 to the wholes.',
+      if (carried) _carryLine(rawSumTop, denominator),
       'Sum: $correct.',
     ],
     answerFormat: AnswerFormat.mixedNumber,
@@ -885,7 +910,9 @@ GeneratedQuestion subMixedLikeDenom(Random rand) {
   var n2 = 0;
   var improperA = 0;
   var improperB = 1; // forces first loop iteration
-  while (improperA <= improperB) {
+  // n1 != n2 so the item exercises fraction subtraction, not just the
+  // whole parts.
+  while (improperA <= improperB || n1 == n2) {
     w1 = rand.nextInt(4) + 2; // 2..5
     w2 = rand.nextInt(w1) + 1; // 1..w1
     n1 = rand.nextInt(denominator - 1) + 1;
@@ -1114,10 +1141,14 @@ GeneratedQuestion multAsScaling(Random rand) {
     numerator = denominator + rand.nextInt(denominator - 1) + 1;
     result = 'bigger';
   }
+  // "compared to", not "than" — 'the same than 7' was ungrammatical for
+  // the equality case.
   const pool = ['bigger', 'smaller', 'the same', "can't tell"];
   return GeneratedQuestion(
     conceptId: 'mult_as_scaling',
-    prompt: 'Without computing: $n × $numerator/$denominator is ___ than $n.',
+    prompt:
+        'Without computing: $n × $numerator/$denominator is ___ '
+        'compared to $n.',
     correctAnswer: result,
     answerFormat: AnswerFormat.string,
     distractors: pool.where((s) => s != result).toList(),
@@ -1127,7 +1158,7 @@ GeneratedQuestion multAsScaling(Random rand) {
       if (numerator == denominator)
         '$numerator/$denominator equals 1 (top = bottom).',
       '× by less than 1 shrinks; × by more than 1 grows; × by 1 keeps it.',
-      'So $n × $numerator/$denominator is $result than $n.',
+      'So $n × $numerator/$denominator is $result compared to $n.',
     ],
   );
 }

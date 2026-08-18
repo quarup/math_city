@@ -50,12 +50,22 @@ GeneratedQuestion _binaryOpQuestion({
   final line =
       '${_signedNoParens(a)} $op ${_signed(b)} = '
       '${_signedNoParens(correct)}';
+  // Lead with the sign rule the wrong answer missed, then the worked line.
+  final rule = switch (op) {
+    '+' =>
+      'Same signs: add and keep the sign. '
+          "Different signs: subtract and take the bigger number's sign.",
+    '−' => 'Subtracting a number means adding its opposite.',
+    _ =>
+      'Same signs give a positive answer; '
+          'different signs give a negative one.',
+  };
   return GeneratedQuestion(
     conceptId: conceptId,
     prompt: '${_signedNoParens(a)} $op ${_signed(b)} = ?',
     correctAnswer: _signedNoParens(correct),
     distractors: _signedDistractors(correct, rand),
-    explanation: [line],
+    explanation: [rule, line],
   );
 }
 

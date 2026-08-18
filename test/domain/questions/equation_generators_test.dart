@@ -196,7 +196,7 @@ void main() {
   group('add_subtract_linear_expressions', () {
     test('answer is (a1±a2)x + (b1±b2)', () {
       final re = RegExp(
-        r'^Simplify: (\d+)x \+ (\d+) ([+−]) \((\d+)x \+ (\d+)\)$',
+        r'^Simplify: \((\d+)x \+ (\d+)\) ([+−]) \((\d+)x \+ (\d+)\)$',
       );
       // Answer shape: NX + N or NX − N. Coefficient always positive.
       final ansRe = RegExp(r'^(\d+)x ([+−]) (\d+)$');
@@ -321,7 +321,12 @@ void main() {
         final qq = int.parse(m.group(4)!);
         final r = int.parse(m.group(5)!);
         final lhs = op == '+' ? p * cand + qq : p * cand - qq;
-        expect(q.correctAnswer, lhs == r ? 'Yes' : 'No');
+        expect(
+          q.correctAnswer,
+          lhs == r
+              ? 'Yes — both sides are equal'
+              : 'No — the sides are not equal',
+        );
       }
     });
   });

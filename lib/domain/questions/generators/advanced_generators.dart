@@ -202,12 +202,11 @@ GeneratedQuestion compareOrderRationals(Random rand) {
   final values = pool.take(4).toList();
   final maxV = values.reduce((a, b) => a > b ? a : b);
 
+  // Typeset minus (−) everywhere — the ASCII hyphen is easy for a young
+  // reader to miss in a compare-the-signs question.
   String format(num v) {
-    if (v == v.truncate()) return '${v.toInt()}';
-    final whole = v.truncate();
-    if (whole == 0 && v < 0) return '-0.5';
-    // Display half values as e.g. "1.5" or "-2.5".
-    return v.toString();
+    final s = v == v.truncate() ? '${v.toInt()}' : '$v';
+    return s.replaceAll('-', '−');
   }
 
   final strings = values.map(format).toList();
@@ -253,12 +252,10 @@ GeneratedQuestion irrationalRecognize(Random rand) {
   ];
   final pick = items[rand.nextInt(items.length)];
   final isIrrational = pick.$2;
+  // The prompt names exactly two options, so exactly two choices —
+  // "integer" / "neither" were eliminable without any maths.
   final correct = isIrrational ? 'irrational' : 'rational';
-  final distractors = <String>[
-    if (isIrrational) 'rational' else 'irrational',
-    'integer',
-    'neither',
-  ];
+  final distractors = <String>[if (isIrrational) 'rational' else 'irrational'];
 
   return GeneratedQuestion(
     conceptId: 'irrational_recognize',
