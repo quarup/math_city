@@ -201,26 +201,40 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              // The prompt card is never flexed: it always gets its full
+              // intrinsic height. A tall diagram shrinks (FittedBox) into
+              // whatever vertical space remains instead of pushing the
+              // question text off-screen.
               Expanded(
-                child: Center(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        if (question.diagram != null) ...[
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            child: Center(
-                              child: DiagramRenderer(spec: question.diagram!),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    if (question.diagram != null) ...[
+                      Flexible(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: LayoutBuilder(
+                            builder: (context, constraints) => FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: ConstrainedBox(
+                                // Bound the width so self-sizing diagram
+                                // widgets lay out at phone width; FittedBox
+                                // then scales the result down to fit the
+                                // height left over by the prompt card.
+                                constraints: BoxConstraints(
+                                  maxWidth: constraints.maxWidth,
+                                ),
+                                child: DiagramRenderer(spec: question.diagram!),
+                              ),
                             ),
                           ),
-                          const SizedBox(height: 24),
-                        ],
-                        _PromptCard(prompt: question.prompt),
-                      ],
-                    ),
-                  ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                    ],
+                    _PromptCard(prompt: question.prompt),
+                  ],
                 ),
               ),
               const SizedBox(height: 16),
@@ -322,7 +336,7 @@ class _ChoiceButton extends StatelessWidget {
     return OutlinedButton(
       onPressed: onTap,
       style: OutlinedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(vertical: 18),
+        padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
         textStyle: theme.textTheme.headlineSmall,
       ),
       child: MathText(label),
