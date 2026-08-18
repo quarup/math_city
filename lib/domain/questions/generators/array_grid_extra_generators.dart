@@ -241,12 +241,17 @@ GeneratedQuestion distributiveMultOverAdd(Random rand) {
   final correct = a * c;
   return GeneratedQuestion(
     conceptId: 'distributive_mult_over_add',
-    prompt: '$a × $c = $a × ($x + $y) = $a × $x + $a × $y = ?',
+    // One step per line with the ___ gap at the end; the single-line
+    // chain wrapped awkwardly and ended in a bare '?'.
+    prompt: '$a × $c\n= $a × ($x + $y)\n= $a × $x + $a × $y\n= ___',
+    // shadedCols = x highlights the left a×x block against the a×y rest,
+    // so the grid actually SHOWS the split the prompt describes instead
+    // of one undifferentiated block.
     diagram: AreaGridSpec(
       rows: a,
       cols: c,
       shadedRows: a,
-      shadedCols: c,
+      shadedCols: x,
     ),
     correctAnswer: '$correct',
     distractors: integerDistractorsWith(

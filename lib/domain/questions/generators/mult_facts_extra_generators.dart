@@ -124,7 +124,7 @@ GeneratedQuestion mult1digitByMultipleOf10(Random rand) {
 // commutative_mult (G3)
 // ─────────────────────────────────────────────────────────────────────────
 
-/// "If 4 × 7 = 28, then 7 × 4 = ?" — same shape as commutative_add. The
+/// "4 × 7 = 28" over "7 × 4 = ___" — same shape as commutative_add. The
 /// kid only needs to recognise the property to give the same product
 /// back; the wrong-but-tempting distractors are the operands themselves.
 GeneratedQuestion commutativeMult(Random rand) {
@@ -137,7 +137,9 @@ GeneratedQuestion commutativeMult(Random rand) {
   final correct = a * b;
   return GeneratedQuestion(
     conceptId: 'commutative_mult',
-    prompt: 'If $a × $b = $correct, then $b × $a = ?',
+    // Two stacked lines so the swap is visible at a glance; the
+    // "If …, then …" sentence buried it in prose.
+    prompt: '$a × $b = $correct\n$b × $a = ___',
     correctAnswer: '$correct',
     distractors: _distinctIntStrings(correct, [
       '${a + b}', // wrong operation
@@ -156,7 +158,7 @@ GeneratedQuestion commutativeMult(Random rand) {
 // associative_mult (G3)
 // ─────────────────────────────────────────────────────────────────────────
 
-/// "If (2 × 3) × 5 = 30, then 2 × (3 × 5) = ?" — tests recognition that
+/// "(2 × 3) × 5 = 30" over "2 × (3 × 5) = ___" — tests recognition that
 /// regrouping factors doesn't change the product. Operands restricted to
 /// small primes so the inner products stay readable (≤ 81) and the
 /// final product stays ≤ 100.
@@ -179,7 +181,7 @@ GeneratedQuestion associativeMult(Random rand) {
   final rhs = leftFirst ? '$a × ($b × $c)' : '($a × $b) × $c';
   return GeneratedQuestion(
     conceptId: 'associative_mult',
-    prompt: 'If $lhs = $product, then $rhs = ?',
+    prompt: '$lhs = $product\n$rhs = ___',
     correctAnswer: '$product',
     distractors: _distinctIntStrings(product, [
       '${a * b + c}', // forgot to multiply the last
@@ -245,7 +247,7 @@ GeneratedQuestion arithmeticPatternsInTables(Random rand) {
   final correct = t3 + step;
   return GeneratedQuestion(
     conceptId: 'arithmetic_patterns_in_tables',
-    prompt: 'What comes next? $t0, $t1, $t2, $t3, ?',
+    prompt: '$t0, $t1, $t2, $t3, ___',
     correctAnswer: '$correct',
     distractors: _distinctIntStrings(correct, [
       '${t3 + step + 1}', // off-by-one in step

@@ -23,7 +23,7 @@ void main() {
     test('answer = n + 1; n ∈ [120, 999]', () {
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'count_within_1000', i);
-        final m = RegExp(r'right after (\d+)').firstMatch(q.prompt);
+        final m = RegExp(r'^(\d+), ___$').firstMatch(q.prompt);
         expect(m, isNotNull);
         final n = int.parse(m!.group(1)!);
         expect(n, inInclusiveRange(120, 999));
@@ -121,7 +121,7 @@ void main() {
 
   group('commutative_add', () {
     test('answer equals the stated sum (no recomputation needed)', () {
-      final re = RegExp(r'^(\d+) \+ (\d+) = (\d+)\n(\d+) \+ (\d+) = \?$');
+      final re = RegExp(r'^(\d+) \+ (\d+) = (\d+)\n(\d+) \+ (\d+) = ___$');
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'commutative_add', i);
         final m = re.firstMatch(q.prompt);

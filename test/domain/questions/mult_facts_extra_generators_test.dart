@@ -82,8 +82,8 @@ void main() {
   });
 
   group('commutative_mult', () {
-    test('"if a × b = c, then b × a = ?" → c', () {
-      final re = RegExp(r'If (\d+) × (\d+) = (\d+), then (\d+) × (\d+) = \?');
+    test('"a × b = c" stacked over "b × a = ___" → c', () {
+      final re = RegExp(r'^(\d+) × (\d+) = (\d+)\n(\d+) × (\d+) = ___$');
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'commutative_mult', i);
         final m = re.firstMatch(q.prompt);
@@ -104,10 +104,8 @@ void main() {
   });
 
   group('associative_mult', () {
-    test('"if (...) = p, then (...) = ?" → p, regrouped', () {
-      final re = RegExp(
-        r'If (.+) = (\d+), then (.+) = \?',
-      );
+    test('"(...) = p" stacked over "(...) = ___" → p, regrouped', () {
+      final re = RegExp(r'^(.+) = (\d+)\n(.+) = ___$');
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'associative_mult', i);
         final m = re.firstMatch(q.prompt);
@@ -165,7 +163,7 @@ void main() {
   group('arithmetic_patterns_in_tables', () {
     test('terms differ by a constant step, answer = last + step', () {
       final re = RegExp(
-        r'What comes next\? (\d+), (\d+), (\d+), (\d+), \?',
+        r'^(\d+), (\d+), (\d+), (\d+), ___$',
       );
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'arithmetic_patterns_in_tables', i);

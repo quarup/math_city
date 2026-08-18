@@ -663,8 +663,8 @@ const List<Concept> allConcepts = [
   ),
   Concept(
     id: 'commutative_add',
-    name: 'a + b = b + a',
-    shortLabel: 'a+b=b+a',
+    name: 'Add in any order',
+    shortLabel: 'any order',
     categoryId: 'add_sub',
     primaryGrade: 1,
     prereqIds: ['add_within_20'],
@@ -674,8 +674,8 @@ const List<Concept> allConcepts = [
   ),
   Concept(
     id: 'associative_add',
-    name: '(a+b)+c = a+(b+c)',
-    shortLabel: '(a+b)+c',
+    name: 'Group addends any way',
+    shortLabel: 'regroup +',
     categoryId: 'add_sub',
     primaryGrade: 1,
     prereqIds: ['add_3_addends_within_20'],
@@ -1060,8 +1060,8 @@ const List<Concept> allConcepts = [
   ),
   Concept(
     id: 'commutative_mult',
-    name: 'a × b = b × a',
-    shortLabel: 'a·b=b·a',
+    name: 'Multiply in any order',
+    shortLabel: 'any order',
     categoryId: 'mult_div',
     primaryGrade: 3,
     prereqIds: ['mult_facts_within_100'],
@@ -1071,8 +1071,8 @@ const List<Concept> allConcepts = [
   ),
   Concept(
     id: 'associative_mult',
-    name: '(a·b)·c = a·(b·c)',
-    shortLabel: '(ab)c',
+    name: 'Group factors any way',
+    shortLabel: 'regroup ×',
     categoryId: 'mult_div',
     primaryGrade: 3,
     prereqIds: ['mult_facts_within_100'],

@@ -30,7 +30,7 @@ void main() {
         ]) {
           for (var i = 0; i < _iterations; i++) {
             final q = _gen(registry, cid, i);
-            final m = RegExp(r'right after (\d+)\?').firstMatch(q.prompt);
+            final m = RegExp(r'^(\d+), ___$').firstMatch(q.prompt);
             expect(m, isNotNull, reason: '$cid prompt: ${q.prompt}');
             final n = int.parse(m!.group(1)!);
             expect(int.parse(q.correctAnswer), n + 1);
@@ -91,7 +91,7 @@ void main() {
 
   group('count_to_100_by_10', () {
     test('answer = last shown + 10; multiples of 10', () {
-      final re = RegExp(r'10s: (\d+), (\d+), (\d+), __');
+      final re = RegExp(r'^(\d+), (\d+), (\d+), ___$');
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'count_to_100_by_10', i);
         final m = re.firstMatch(q.prompt);
@@ -108,7 +108,7 @@ void main() {
     test('predecessor ∈ [100, 119]; answer ∈ [101, 120]', () {
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'count_to_120', i);
-        final m = RegExp(r'right after (\d+)\?').firstMatch(q.prompt);
+        final m = RegExp(r'^(\d+), ___$').firstMatch(q.prompt);
         expect(m, isNotNull);
         final n = int.parse(m!.group(1)!);
         expect(n, inInclusiveRange(100, 119));
@@ -157,16 +157,14 @@ void main() {
         ('skip_count_10', 10),
         ('skip_count_100', 100),
       ]) {
-        final re = RegExp(r'(\d+)s: (\d+), (\d+), __, (\d+)');
+        final re = RegExp(r'^(\d+), (\d+), ___, (\d+)$');
         for (var i = 0; i < _iterations; i++) {
           final q = _gen(registry, cid, i);
           final m = re.firstMatch(q.prompt);
           expect(m, isNotNull, reason: '$cid: ${q.prompt}');
-          final promptStep = int.parse(m!.group(1)!);
-          expect(promptStep, step);
-          final s0 = int.parse(m.group(2)!);
-          final s1 = int.parse(m.group(3)!);
-          final s3 = int.parse(m.group(4)!);
+          final s0 = int.parse(m!.group(1)!);
+          final s1 = int.parse(m.group(2)!);
+          final s3 = int.parse(m.group(3)!);
           expect(s1, s0 + step);
           expect(s3, s0 + 3 * step);
           expect(int.parse(q.correctAnswer), s0 + 2 * step);
@@ -178,7 +176,7 @@ void main() {
 
   group('skip_count_2', () {
     test('answer = start + 4; prompt sequence matches', () {
-      final seqRe = RegExp(r'2s: (\d+), (\d+), __, (\d+)');
+      final seqRe = RegExp(r'^(\d+), (\d+), ___, (\d+)$');
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'skip_count_2', i);
         final m = seqRe.firstMatch(q.prompt);

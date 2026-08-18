@@ -162,7 +162,7 @@ void main() {
 
   group('distributive_mult_over_add', () {
     test('a × c parsed from prompt; answer = a × c', () {
-      final re = RegExp(r'^(\d+) × (\d+) = (\d+) × \((\d+) \+ (\d+)\)');
+      final re = RegExp(r'^(\d+) × (\d+)\n= (\d+) × \((\d+) \+ (\d+)\)');
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'distributive_mult_over_add', i);
         final m = re.firstMatch(q.prompt);

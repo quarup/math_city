@@ -68,7 +68,7 @@ void main() {
 
   group('associative_add', () {
     test('both groupings evaluate to the same shown sum', () {
-      final re = RegExp(r'^(.+) = (\d+)\n(.+) = \?$');
+      final re = RegExp(r'^(.+) = (\d+)\n(.+) = ___$');
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'associative_add', i);
         final m = re.firstMatch(q.prompt);

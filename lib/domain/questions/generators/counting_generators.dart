@@ -31,8 +31,10 @@ List<String> _distinctIntStrings(int correct, List<String> candidates) {
 // count_to_10 / count_to_20 / count_to_100_by_1 (K)
 // ─────────────────────────────────────────────────────────────────────────
 
-/// "What number comes right after `n`?" with the predecessor chosen so
-/// the answer stays inside the relevant range.
+/// "`n`, ___" — the next number when counting by 1, with the
+/// predecessor chosen so the answer stays inside the relevant range.
+/// A sequence with a gap is self-explanatory; the old "What number
+/// comes right after n?" said the same thing in words.
 GeneratedQuestion _counterUpTo(int max, String conceptId, Random rand) {
   // Predecessor n in [1, max - 1] so the answer n+1 in [2, max].
   final n = rand.nextInt(max - 1) + 1;
@@ -44,7 +46,7 @@ GeneratedQuestion _counterUpTo(int max, String conceptId, Random rand) {
   ];
   return GeneratedQuestion(
     conceptId: conceptId,
-    prompt: 'What number comes right after $n?',
+    prompt: '$n, ___',
     correctAnswer: '$correct',
     distractors: _distinctIntStrings(correct, candidates),
     explanation: ['Counting up by 1: $n, then ${n + 1}.'],
@@ -123,9 +125,10 @@ GeneratedQuestion compareNumerals1to10(Random rand) {
 // count_to_100_by_10 (K)
 // ─────────────────────────────────────────────────────────────────────────
 
-/// "What comes next when counting by 10s: 10, 20, 30, __?" — answer
-/// is the next multiple of 10 after the last shown. Sequence has 3
-/// terms visible, one blank at the end.
+/// "10, 20, 30, ___" — the next multiple of 10 after the last shown.
+/// Sequence has 3 terms visible, one blank at the end. No lead-in or
+/// trailing question: the gapped sequence IS the question, and "What
+/// comes next?" misread as the term after the blank.
 GeneratedQuestion countTo100By10(Random rand) {
   // Start ∈ {10, 20, ..., 70} so the answer (start + 30) ∈ [40, 100].
   final start = (rand.nextInt(7) + 1) * 10;
@@ -139,9 +142,7 @@ GeneratedQuestion countTo100By10(Random rand) {
   ];
   return GeneratedQuestion(
     conceptId: 'count_to_100_by_10',
-    prompt:
-        'Counting by 10s: ${shown.join(", ")}, __. '
-        'What comes next?',
+    prompt: '${shown.join(", ")}, ___',
     correctAnswer: '$correct',
     distractors: _distinctIntStrings(correct, candidates),
     explanation: ['Each step adds 10: ${shown.last} + 10 = $correct.'],
@@ -166,7 +167,7 @@ GeneratedQuestion countTo120(Random rand) {
   ];
   return GeneratedQuestion(
     conceptId: 'count_to_120',
-    prompt: 'What number comes right after $n?',
+    prompt: '$n, ___',
     correctAnswer: '$correct',
     distractors: _distinctIntStrings(correct, candidates),
     explanation: ['Counting up by 1: $n, then $correct.'],
@@ -245,7 +246,7 @@ GeneratedQuestion _skipCountByStep(
   final stepCount = (startMax - startMin) ~/ step + 1;
   final start = startMin + rand.nextInt(stepCount) * step;
   final correct = start + 2 * step;
-  final shown = [start, start + step, '__', start + 3 * step];
+  final shown = [start, start + step, '___', start + 3 * step];
   final candidates = <String>[
     '${start + step}',
     '${start + 3 * step}',
@@ -256,9 +257,9 @@ GeneratedQuestion _skipCountByStep(
   ];
   return GeneratedQuestion(
     conceptId: conceptId,
-    prompt:
-        'Skip count by ${step}s: ${shown.join(", ")}. '
-        'What number goes in the blank?',
+    // The gapped sequence is the whole prompt — no "Skip count by Ns:"
+    // lead-in, no "What number goes in the blank?" trailer.
+    prompt: shown.join(', '),
     correctAnswer: '$correct',
     distractors: _distinctIntStrings(correct, candidates),
     explanation: ['Each step adds $step: ${start + step} + $step = $correct.'],
@@ -293,14 +294,13 @@ GeneratedQuestion skipCount100(Random rand) => _skipCountByStep(
 // skip_count_2 (G1)
 // ─────────────────────────────────────────────────────────────────────────
 
-/// "Skip count by 2s: 4, 6, __, 10" — pick the missing term.
-/// Sequence is `[start, start+2, start+4, start+6]` with the 3rd
-/// position blanked.
+/// "4, 6, ___, 10" — pick the missing term. Sequence is
+/// `[start, start+2, start+4, start+6]` with the 3rd position blanked.
 GeneratedQuestion skipCount2(Random rand) {
   // Start ∈ {2, 4, 6, ..., 20}.
   final start = (rand.nextInt(10) + 1) * 2;
   final correct = start + 4;
-  final sequence = [start, start + 2, '__', start + 6];
+  final sequence = [start, start + 2, '___', start + 6];
   final candidates = <String>[
     '${start + 2}',
     '${start + 6}',
@@ -310,9 +310,7 @@ GeneratedQuestion skipCount2(Random rand) {
   ];
   return GeneratedQuestion(
     conceptId: 'skip_count_2',
-    prompt:
-        'Skip count by 2s: ${sequence.join(", ")}. '
-        'What number goes in the blank?',
+    prompt: sequence.join(', '),
     correctAnswer: '$correct',
     distractors: _distinctIntStrings(correct, candidates),
     explanation: ['Each step adds 2: ${start + 2} + 2 = $correct.'],

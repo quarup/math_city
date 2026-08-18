@@ -161,7 +161,7 @@ GeneratedQuestion associativeAdd(Random rand) {
   final rhs = leftFirst ? '$a + ($b + $c)' : '($a + $b) + $c';
   return GeneratedQuestion(
     conceptId: 'associative_add',
-    prompt: '$lhs = $sum\n$rhs = ?',
+    prompt: '$lhs = $sum\n$rhs = ___',
     correctAnswer: '$sum',
     distractors: integerDistractorsWith(
       sum,

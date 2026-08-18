@@ -29,8 +29,8 @@ List<String> _distinctIntStrings(int correct, List<String> candidates) {
 // count_within_1000 (G2)
 // ─────────────────────────────────────────────────────────────────────────
 
-/// "What number comes right after `n`?" for `n ∈ [120, 999]`. Same shape
-/// as `count_to_120` but extended into the 3-digit range.
+/// "`n`, ___" — the next number counting by 1, for `n ∈ [120, 999]`.
+/// Same shape as `count_to_120` but extended into the 3-digit range.
 GeneratedQuestion countWithin1000(Random rand) {
   final n = rand.nextInt(880) + 120; // 120..999
   final correct = n + 1;
@@ -42,7 +42,7 @@ GeneratedQuestion countWithin1000(Random rand) {
   ];
   return GeneratedQuestion(
     conceptId: 'count_within_1000',
-    prompt: 'What number comes right after $n?',
+    prompt: '$n, ___',
     correctAnswer: '$correct',
     distractors: _distinctIntStrings(correct, candidates),
     explanation: ['Counting up by 1: $n, then $correct.'],
@@ -214,7 +214,7 @@ GeneratedQuestion commutativeAdd(Random rand) {
   final sum = a + b;
   return GeneratedQuestion(
     conceptId: 'commutative_add',
-    prompt: '$a + $b = $sum\n$b + $a = ?',
+    prompt: '$a + $b = $sum\n$b + $a = ___',
     correctAnswer: '$sum',
     distractors: _distinctIntStrings(sum, [
       '${a + b - 1}', // off-by-one
