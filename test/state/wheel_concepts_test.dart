@@ -3,6 +3,7 @@ import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:math_city/data/database.dart';
+import 'package:math_city/domain/concepts/wheel_selection.dart';
 import 'package:math_city/state/player_provider.dart';
 import 'package:math_city/state/proficiency_provider.dart';
 
@@ -33,9 +34,9 @@ const _allCatalogIds = [
 
 Future<int> _seedFrontierPlayer(AppDatabase db) async {
   // Grade-1 player: K (1 below = comfortable) + G1 (at-grade = challenging)
-  // gives ≥4 implemented frontier concepts so the starter pack reaches its
-  // default size of 4. Tests 2 and 3 below override proficiency directly,
-  // so they don't depend on the player's grade.
+  // gives well over kActivePoolTarget implemented frontier concepts, so the
+  // starter pack reaches its full size. Tests that seed proficiency
+  // directly don't depend on the player's grade.
   final p = await db.createPlayer(
     name: 'frontier_tester',
     gradeLevel: 1,
@@ -59,7 +60,7 @@ void main() {
   });
 
   group('wheelConceptsProvider', () {
-    test('starter wheel has 4 concepts for a fresh player', () async {
+    test('a fresh player sees a full wheel from the first spin', () async {
       final db = AppDatabase(NativeDatabase.memory());
       final pid = await _seedFrontierPlayer(db);
 
@@ -67,7 +68,7 @@ void main() {
       addTearDown(container.dispose);
 
       final wheel = await container.read(wheelConceptsProvider.future);
-      expect(wheel, hasLength(4));
+      expect(wheel, hasLength(kWheelSegments));
     });
 
     test(
@@ -109,12 +110,12 @@ void main() {
         expect(
           samples.length,
           greaterThan(1),
-          reason: 'wheel should random-sample when count > kMaxWheelSegments',
+          reason: 'wheel should random-sample when count > kWheelSegments',
         );
       },
     );
 
-    test('wheel surfaces all eligible when count is between 4 and 8', () async {
+    test('wheel surfaces all eligible when fewer than 8 qualify', () async {
       final db = AppDatabase(NativeDatabase.memory());
       final pid = await _seedFrontierPlayer(db);
 
@@ -129,6 +130,66 @@ void main() {
 
       final wheel = await container.read(wheelConceptsProvider.future);
       expect(wheel, hasLength(6));
+    });
+
+    test('mastered concepts fill at most kReviewSlots review slots', () async {
+      final db = AppDatabase(NativeDatabase.memory());
+      final pid = await _seedFrontierPlayer(db);
+
+      // 10 frontier (p = 0.4) + 5 mastered (p = 0.9). None retire: the
+      // grade-1 player is at most one grade above any of them.
+      final ids = _allCatalogIds.take(15).toList();
+      for (final id in ids.take(10)) {
+        await db.introduceConcept(pid, id);
+        await db.upsertProficiency(pid, id, 0.4, correct: true);
+      }
+      for (final id in ids.skip(10)) {
+        await db.introduceConcept(pid, id);
+        await db.upsertProficiency(pid, id, 0.9, correct: true);
+      }
+
+      final container = await _setupContainer(db, pid);
+      addTearDown(container.dispose);
+
+      final mastered = ids.skip(10).toSet();
+      for (var i = 0; i < 10; i++) {
+        container.invalidate(proficiencyProvider);
+        final wheel = await container.read(wheelConceptsProvider.future);
+        expect(wheel, hasLength(kWheelSegments));
+        expect(
+          wheel.where((c) => mastered.contains(c.id)).length,
+          kReviewSlots,
+        );
+      }
+    });
+
+    test('the next wheel rotates at least kMinRotation segments', () async {
+      final db = AppDatabase(NativeDatabase.memory());
+      final pid = await _seedFrontierPlayer(db);
+      for (final id in _allCatalogIds.take(12)) {
+        await db.introduceConcept(pid, id);
+        await db.upsertProficiency(pid, id, 0.4, correct: true);
+      }
+
+      final container = await _setupContainer(db, pid);
+      addTearDown(container.dispose);
+
+      var previous = (await container.read(
+        wheelConceptsProvider.future,
+      )).map((c) => c.id).toSet();
+      for (var i = 0; i < 10; i++) {
+        container.read(lastWheelProvider.notifier).record(previous);
+        container.invalidate(proficiencyProvider);
+        final next = (await container.read(
+          wheelConceptsProvider.future,
+        )).map((c) => c.id).toSet();
+        expect(next, hasLength(kWheelSegments));
+        expect(
+          next.difference(previous).length,
+          greaterThanOrEqualTo(kMinRotation),
+        );
+        previous = next;
+      }
     });
 
     test(

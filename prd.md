@@ -48,13 +48,13 @@ Multiple player profiles can exist on one device with no login required. [Assump
 Each **round** follows this sequence:
 
 1. **Player select** — The current player can hand the device to another player at the start of any round.
-2. **Spin the wheel** — A colorful wheel displays 4–8 math concepts (selected from a larger pool, weighted toward concepts the player needs to practice; concepts far below the player's grade retire from the wheel once mastered). Player taps to spin.
+2. **Spin the wheel** — A colorful wheel displays 8 math concepts: mostly concepts the player is still learning, plus up to 2 *review* slots drawn from concepts they've already mastered (concepts far below the player's grade retire from the wheel instead). The line-up changes from one spin to the next — at least 3 segments rotate out — so the wheel never feels like the same four choices. Never-played concepts wear a "NEW" sticker, and the first time the wheel lands on one the player gets a small celebration before the questions start. Player flings to spin.
 3. **Answer a block of questions** — The landed concept yields a short block of questions (enough to add up to ~25 seconds of expected work — five quick kindergarten sums, or a single long-division problem). Questions appear at the player's current level for that concept.
 4. **Per question:**
    - **Correct answer:** earns coins (see *Cosmetics System* for the amounts — pay scales with how long the question is expected to take, boosted by the player's answer streak). A quick coin animation plays and the next question appears immediately — no interstitial screen, so fast accurate play feels fast.
    - **Wrong answer:** 0 coins and the answer streak resets. A friendly step-by-step explanation guides the player to the correct answer. No other penalty — the game stays encouraging.
    - **Band-crossing bonus:** if a correct answer pushes the concept's proficiency across a band-boundary threshold for the first time (e.g. from challenging into comfortable), the player earns a one-time coin bonus with a distinct, bigger celebration. Awarded at most once per concept per threshold — this is the "you genuinely learned something new" moment, worth more than routine practice.
-5. **Block summary** — After the block, a short celebration screen tallies the coins earned, shows the streak, and announces anything that unlocked mid-block (new concepts, new buildings). Then back to step 1.
+5. **Block summary** — After the block, a short celebration screen tallies the coins earned, shows the streak, and teases anything that unlocked mid-block ("2 new topics are on the wheel!" with an icon per topic — the wheel itself is where new concepts are celebrated). Then back to step 1.
 
 ### Answer Input
 
@@ -100,12 +100,12 @@ Based on proficiency, each sub-concept is classified into one of four bands:
 
 | Band | Condition | Action |
 |---|---|---|
-| **Mastered** | Player has demonstrated reliable correctness | Excluded from wheel; DAG children become eligible to surface |
+| **Mastered** | Player has demonstrated reliable correctness | Stays on the wheel in up to 2 *review* slots (typed input, normal pay) unless retired as outgrown; DAG children become eligible to surface |
 | **Comfortable** | At fluency, but not yet mastered | Included; typed numeric input (keypad — pays the higher free-form coin rate) |
 | **Challenging** | Newly introduced or partially understood | Included with lower probability; multiple choice |
-| **Not yet** | Prerequisites not yet mastered, OR concept is far from the player's current frontier | Excluded from wheel |
+| **Not yet** | Prerequisites not yet mastered, OR concept is far from the player's current frontier | Excluded from wheel. A concept the drip-feed *introduces* (all prereqs mastered) never starts here — it starts at the challenging floor so it is playable immediately |
 
-The band determines the **input method**, not the pay rate — coins scale with the question's expected difficulty and the answer streak (see *Cosmetics System*). The wheel at any given round contains a **mix of comfortable + challenging** concepts across whichever branches the player is currently advancing on, so the player is always being stretched somewhere but isn't overwhelmed. Concepts two or more grades below the player retire from the wheel once they reach the comfortable band.
+The band determines the **input method**, not the pay rate — coins scale with the question's expected difficulty and the answer streak (see *Cosmetics System*). The wheel at any given round contains a **mix of comfortable + challenging** concepts across whichever branches the player is currently advancing on, plus a couple of **review** slots from mastered concepts so old material stays warm, so the player is always being stretched somewhere but isn't overwhelmed. The drip-feed keeps about a dozen concepts actively in play (introducing more as soon as one is mastered or retires) so every spin can offer 8 choices and rotate several of them. Concepts two or more grades below the player retire from the wheel once they reach the comfortable band.
 
 ### Question Generation
 
@@ -265,7 +265,7 @@ All third-party content, assets, and libraries must be compatible with free non-
 
 ## Edge Cases
 
-- **Player masters all v1 content.** If every available concept drops into the "mastered" band, the wheel falls back to a celebration message ("You've mastered everything! New concepts coming soon.") and offers a free-play mode that randomly samples from mastered concepts (no coins awarded — keeps it from being a grind for trivial points).
+- **Player masters all v1 content.** If every available concept is mastered, the wheel simply fills all 8 segments from the review tier (mastered, not-outgrown concepts) and keeps paying normally — coin pay is pinned to expected difficulty, so grinding review is not lucrative. A "You've mastered everything!" celebration when the frontier first runs dry is a polish item.
 - **Mid-question abandonment.** If the player closes the app or switches profiles before answering, the question is discarded with no proficiency change, no coin award, and no streak change. It does not count as wrong.
 - **Profile deletion.** Players can delete their own profile from the profile picker (with a confirmation prompt). All local data for that profile is removed; cloud-save data for that profile is also removed on next sync if signed in.
 - **Two players want to play simultaneously.** Not supported — gameplay is turn-based on a single device. The "alternate rounds" structure is the v1 multiplayer model.

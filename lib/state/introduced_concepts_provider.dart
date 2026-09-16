@@ -35,8 +35,8 @@ final questionSourceProvider = FutureProvider<QuestionSource>((ref) async {
 /// Set of concept IDs the active player has been *introduced* to (the
 /// drip-feed has surfaced them onto the wheel).
 ///
-/// Lazily populates a 2-concept starter pack the first time it's read for
-/// a player whose introduced set is empty.
+/// Lazily populates a `kActivePoolTarget`-sized starter pack the first time
+/// it's read for a player whose introduced set is empty.
 class IntroducedConceptsNotifier extends AsyncNotifier<Set<String>> {
   @override
   Future<Set<String>> build() async {
@@ -46,7 +46,8 @@ class IntroducedConceptsNotifier extends AsyncNotifier<Set<String>> {
 
     var introduced = await db.introducedConceptIdsForPlayer(player.id);
     if (introduced.isEmpty) {
-      // Starter pack: 2 easiest implemented concepts at-or-below grade.
+      // Starter pack: the easiest implemented concepts at the player's
+      // frontier, enough to fill the wheel with rotation headroom.
       final starterPack = engine.pickStarterPack(player.gradeLevel);
       for (final c in starterPack) {
         await db.introduceConcept(player.id, c.id);
@@ -58,12 +59,18 @@ class IntroducedConceptsNotifier extends AsyncNotifier<Set<String>> {
 
   /// Adds [conceptId] to the introduced set (drip-feed unlock). Persists
   /// to DB and updates in-memory state synchronously.
-  Future<void> introduce(String conceptId) async {
+  Future<void> introduce(String conceptId) => introduceAll([conceptId]);
+
+  /// Adds every id in [conceptIds] (a drip-feed top-up) in one state update.
+  Future<void> introduceAll(Iterable<String> conceptIds) async {
     final player = await ref.read(activePlayerProvider.future);
     final db = ref.read(appDatabaseProvider);
-    await db.introduceConcept(player.id, conceptId);
+    final ids = conceptIds.toList();
+    for (final id in ids) {
+      await db.introduceConcept(player.id, id);
+    }
     final current = state.asData?.value ?? const <String>{};
-    state = AsyncData({...current, conceptId});
+    state = AsyncData({...current, ...ids});
   }
 }
 

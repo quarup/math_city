@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:math_city/domain/concepts/concept.dart';
 import 'package:math_city/domain/concepts/concept_registry.dart';
-import 'package:math_city/domain/concepts/dag_engine.dart';
 import 'package:math_city/domain/economy/question_block.dart';
 import 'package:math_city/domain/proficiency/proficiency_band.dart';
 import 'package:math_city/presentation/spin/spin_screen.dart';
 import 'package:math_city/presentation/theme/app_palette.dart';
+import 'package:math_city/presentation/theme/category_colors.dart';
 import 'package:math_city/presentation/widgets/coin_icon.dart';
 import 'package:math_city/presentation/widgets/streak_flame.dart';
 
 /// End-of-block celebration: coins earned, streak state, any band-crossing
-/// bonuses and drip-feed unlocks that fired mid-block (this took over the
-/// unlock-announcement job from the retired green screen). "Spin again"
-/// returns to the wheel.
+/// bonuses, and a one-line teaser for drip-feed unlocks that fired mid-block
+/// (the wheel itself carries the "NEW" stickers and the first-landing
+/// celebration). "Spin again" returns to the wheel.
 class BlockSummaryScreen extends StatelessWidget {
   const BlockSummaryScreen({required this.block, super.key});
 
@@ -71,9 +72,13 @@ class BlockSummaryScreen extends StatelessWidget {
                       const SizedBox(height: 12),
                       _BandBonusCard(bonus: bonus),
                     ],
-                    for (final unlock in block.unlocks) ...[
+                    if (block.unlocks.isNotEmpty) ...[
                       const SizedBox(height: 12),
-                      _UnlockCard(event: unlock),
+                      _NewTopicsCard(
+                        concepts: [
+                          for (final u in block.unlocks) u.newConcept,
+                        ],
+                      ),
                     ],
                   ],
                 ),
@@ -252,10 +257,13 @@ String bandBonusHeadline(ProficiencyBand band) => switch (band) {
   _ => 'Level up!',
 };
 
-class _UnlockCard extends StatelessWidget {
-  const _UnlockCard({required this.event});
+/// "N new topics are on the wheel!" — a teaser, not a list. The badges
+/// underneath are category-coloured placeholders for the per-concept icons
+/// the wheel will eventually carry; they name the concept on long-press.
+class _NewTopicsCard extends StatelessWidget {
+  const _NewTopicsCard({required this.concepts});
 
-  final UnlockEvent event;
+  final List<Concept> concepts;
 
   @override
   Widget build(BuildContext context) {
@@ -269,34 +277,47 @@ class _UnlockCard extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(
-              Icons.lock_open_rounded,
-              color: palette.brandTealDeep,
-              size: 36,
-            ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'New concept unlocked!',
+            Row(
+              children: [
+                Icon(
+                  Icons.auto_awesome_rounded,
+                  color: palette.brandTealDeep,
+                  size: 32,
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Text(
+                    newTopicsHeadline(concepts.length),
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: palette.brandTealDeep,
                     ),
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    event.newConcept.name,
-                    style: theme.textTheme.bodyLarge?.copyWith(
-                      fontWeight: FontWeight.w600,
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                for (final c in concepts)
+                  Tooltip(
+                    message: c.name,
+                    child: CircleAvatar(
+                      radius: 18,
+                      backgroundColor: categoryColorFor(c),
+                      child: const Icon(
+                        Icons.star_rounded,
+                        color: Colors.white,
+                        size: 22,
+                      ),
                     ),
                   ),
-                ],
-              ),
+              ],
             ),
           ],
         ),
@@ -304,3 +325,8 @@ class _UnlockCard extends StatelessWidget {
     );
   }
 }
+
+/// Kid-facing teaser for [count] newly unlocked concepts.
+String newTopicsHeadline(int count) => count == 1
+    ? 'A new topic is on the wheel!'
+    : '$count new topics are on the wheel!';

@@ -221,7 +221,7 @@ void main() {
           .recordAnswer(concept, correct: true, usesKeypad: false);
 
       expect(reward.bandBonuses.single.band, ProficiencyBand.mastered);
-      expect(reward.unlock, isNotNull);
+      expect(reward.unlocks, isNotEmpty);
       expect(await db.awardedBandIndicesFor(pid, concept), {0, 1});
     });
 

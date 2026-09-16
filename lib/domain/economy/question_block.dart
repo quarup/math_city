@@ -25,7 +25,7 @@ class AnswerReward {
     required this.coins,
     required this.streakCount,
     this.bandBonuses = const <BandCrossingBonus>[],
-    this.unlock,
+    this.unlocks = const <UnlockEvent>[],
   });
 
   final bool correct;
@@ -40,8 +40,9 @@ class AnswerReward {
   /// Band-crossing bonuses this answer triggered (normally 0 or 1).
   final List<BandCrossingBonus> bandBonuses;
 
-  /// Drip-feed concept unlock this answer triggered, if any.
-  final UnlockEvent? unlock;
+  /// Drip-feed concepts this answer introduced (the top-up after a mastery
+  /// or a retirement can add several at once; usually empty).
+  final List<UnlockEvent> unlocks;
 
   int get bonusCoins => bandBonuses.fold(0, (sum, b) => sum + b.coins);
 
@@ -93,8 +94,7 @@ class QuestionBlock {
   ];
 
   List<UnlockEvent> get unlocks => [
-    for (final r in rewards)
-      if (r.unlock != null) r.unlock!,
+    for (final r in rewards) ...r.unlocks,
   ];
 
   /// Streak count after the last answered question, or null if nothing has

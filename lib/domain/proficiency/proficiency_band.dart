@@ -61,3 +61,28 @@ double initialProficiency(int conceptGrade, int playerGrade) {
   if (offset == 0) return 0.40;
   return 0.05;
 }
+
+/// Challenging-band floor an *introduced* concept starts at when its
+/// grade-based [initialProficiency] would put it in `notYet`.
+const double kIntroducedFloorProficiency = 0.40;
+
+/// Proficiency to assume for a concept the player has never answered.
+///
+/// Same as [initialProficiency], except that a concept the drip-feed has
+/// *introduced* never starts in the `notYet` band: the drip-feed only
+/// introduces a concept once its prereqs are mastered, so an above-grade
+/// concept it hands the player starts at the challenging floor
+/// ([kIntroducedFloorProficiency]) and goes straight onto the wheel. Without
+/// this, a player who mastered everything at their grade would have the next
+/// grade introduced at p = 0.05 — off the wheel with no way to ever raise it.
+double startingProficiency({
+  required int conceptGrade,
+  required int playerGrade,
+  required bool introduced,
+}) {
+  final p = initialProficiency(conceptGrade, playerGrade);
+  if (introduced && bandForProficiency(p) == ProficiencyBand.notYet) {
+    return kIntroducedFloorProficiency;
+  }
+  return p;
+}
