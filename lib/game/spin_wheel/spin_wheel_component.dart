@@ -10,6 +10,7 @@ class WheelSegment {
     required this.label,
     required this.color,
     this.isNew = false,
+    this.isReview = false,
   });
 
   final String conceptId;
@@ -19,6 +20,10 @@ class WheelSegment {
   /// The player has never answered a question on this concept — drawn with
   /// a "NEW" sticker so a fresh unlock is visible on the wheel itself.
   final bool isNew;
+
+  /// A mastered concept back on the wheel as a review slot — drawn with a
+  /// small check sticker so the kid knows it's one they already own.
+  final bool isReview;
 }
 
 /// Spinning wheel Flame component.
@@ -160,16 +165,31 @@ class SpinWheelComponent extends PositionComponent {
         ),
         dimmed: dimmed,
       );
-      if (segments[i].isNew) {
+      if (segments[i].isNew || segments[i].isReview) {
         final stickerR = radius * 0.86;
-        _drawNewSticker(
-          canvas,
-          Offset(
-            center.dx + math.cos(midAngle) * stickerR,
-            center.dy + math.sin(midAngle) * stickerR,
-          ),
-          dimmed: dimmed,
+        final at = Offset(
+          center.dx + math.cos(midAngle) * stickerR,
+          center.dy + math.sin(midAngle) * stickerR,
         );
+        if (segments[i].isNew) {
+          _drawSticker(
+            canvas,
+            at,
+            text: 'NEW',
+            fill: Colors.amber,
+            ink: const Color(0xFF3E2723),
+            dimmed: dimmed,
+          );
+        } else {
+          _drawSticker(
+            canvas,
+            at,
+            text: '✓',
+            fill: const Color(0xFFB2DFDB),
+            ink: const Color(0xFF004D40),
+            dimmed: dimmed,
+          );
+        }
       }
     }
 
@@ -210,14 +230,21 @@ class SpinWheelComponent extends PositionComponent {
       );
   }
 
-  /// Small amber pill reading "NEW", centred on [center].
-  void _drawNewSticker(Canvas canvas, Offset center, {bool dimmed = false}) {
+  /// Small pill sticker reading [text], centred on [center].
+  void _drawSticker(
+    Canvas canvas,
+    Offset center, {
+    required String text,
+    required Color fill,
+    required Color ink,
+    bool dimmed = false,
+  }) {
     final alpha = dimmed ? 0.3 : 1.0;
     final tp = TextPainter(
       text: TextSpan(
-        text: 'NEW',
+        text: text,
         style: TextStyle(
-          color: const Color(0xFF3E2723).withValues(alpha: alpha),
+          color: ink.withValues(alpha: alpha),
           fontSize: 9,
           fontWeight: FontWeight.w900,
           letterSpacing: 0.5,
@@ -233,7 +260,7 @@ class SpinWheelComponent extends PositionComponent {
     canvas
       ..drawRRect(
         RRect.fromRectAndRadius(rect, const Radius.circular(8)),
-        Paint()..color = Colors.amber.withValues(alpha: alpha),
+        Paint()..color = fill.withValues(alpha: alpha),
       )
       ..drawRRect(
         RRect.fromRectAndRadius(rect, const Radius.circular(8)),

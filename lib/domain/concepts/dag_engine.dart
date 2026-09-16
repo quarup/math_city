@@ -82,6 +82,10 @@ class DripFeedEngine {
   /// Prereqs are ignored here on purpose — a fresh player needs *something*
   /// on the wheel from round one, even if it would normally be "downstream"
   /// in the DAG. Subsequent unlocks via [pickNext] do honor the DAG.
+  ///
+  /// The pack is drawn round-robin across the in-band grades, at-grade
+  /// first, so a grade-3 player starts with a mix of grade-3 challenges and
+  /// grade-2 fluency checks rather than twelve grade-2 concepts.
   List<Concept> pickStarterPack(
     int statedGrade, {
     int size = kActivePoolTarget,
@@ -95,7 +99,9 @@ class DripFeedEngine {
           band == ProficiencyBand.comfortable;
     }).toList()..sort(compareConceptDifficulty);
 
-    if (eligible.isNotEmpty) return eligible.take(size).toList();
+    if (eligible.isNotEmpty) {
+      return _roundRobinByGrade(eligible, size)..sort(compareConceptDifficulty);
+    }
 
     // Fallback: no in-band concepts. Surface the highest-grade implemented
     // concepts at-or-below grade so the wheel always has *something close
@@ -114,6 +120,30 @@ class DripFeedEngine {
             return a.categoryRowOrder.compareTo(b.categoryRowOrder);
           });
     return fallback.take(size).toList();
+  }
+
+  /// Takes up to [size] concepts from [sorted] (difficulty order), one per
+  /// grade in turn, highest grade first.
+  List<Concept> _roundRobinByGrade(List<Concept> sorted, int size) {
+    final byGrade = <int, List<Concept>>{};
+    for (final c in sorted) {
+      byGrade.putIfAbsent(c.primaryGrade, () => []).add(c);
+    }
+    final grades = byGrade.keys.toList()..sort((a, b) => b.compareTo(a));
+    final queues = [for (final g in grades) byGrade[g]!.iterator];
+    final picks = <Concept>[];
+    var progressed = true;
+    while (picks.length < size && progressed) {
+      progressed = false;
+      for (final q in queues) {
+        if (picks.length >= size) break;
+        if (q.moveNext()) {
+          picks.add(q.current);
+          progressed = true;
+        }
+      }
+    }
+    return picks;
   }
 
   /// Picks the next concept to introduce after a mastery event, or null
@@ -168,9 +198,37 @@ class DripFeedEngine {
 
     if (eligible.isEmpty) return null;
 
-    // Step 1: lowest grade.
-    final minGrade = eligible.map((c) => c.primaryGrade).reduce(min);
-    final tier1 = eligible.where((c) => c.primaryGrade == minGrade).toList();
+    // Step 1: grade. Stay at or below the player's grade while anything
+    // there is eligible; among those grades prefer the one with the fewest
+    // active (introduced-but-not-mastered) concepts, tiebreak higher grade —
+    // so at-grade challenges and one-below fluency checks interleave
+    // instead of every lower-grade concept coming first. Above-grade content
+    // only once nothing at-or-below is left, lowest grade first, so the
+    // player advances one grade at a time.
+    final atOrBelow = eligible
+        .where((c) => c.primaryGrade <= effectiveGrade)
+        .toList();
+    final int chosenGrade;
+    if (atOrBelow.isEmpty) {
+      chosenGrade = eligible.map((c) => c.primaryGrade).reduce(min);
+    } else {
+      int activeAtGrade(int grade) => catalog
+          .where(
+            (c) =>
+                c.primaryGrade == grade &&
+                introduced.contains(c.id) &&
+                !isMasteredId(c.id),
+          )
+          .length;
+      final grades = atOrBelow.map((c) => c.primaryGrade).toSet().toList()
+        ..sort((a, b) {
+          final byActive = activeAtGrade(a).compareTo(activeAtGrade(b));
+          if (byActive != 0) return byActive;
+          return b.compareTo(a);
+        });
+      chosenGrade = grades.first;
+    }
+    final tier1 = eligible.where((c) => c.primaryGrade == chosenGrade).toList();
 
     // Step 2: prefer the category with the fewest currently-active
     // (introduced-but-not-mastered) concepts. Tiebreak by category display

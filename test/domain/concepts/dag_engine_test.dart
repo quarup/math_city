@@ -425,6 +425,42 @@ void main() {
       );
     });
 
+    test('starter pack interleaves at-grade and one-below concepts', () {
+      final pack = engine.pickStarterPack(3);
+      expect(pack, hasLength(kActivePoolTarget));
+      expect(pack.where((c) => c.primaryGrade == 3).length, 6);
+      expect(pack.where((c) => c.primaryGrade == 2).length, 6);
+    });
+
+    test('pickNext refills the grade with fewer active concepts', () {
+      final starter = engine.pickStarterPack(3);
+      final introduced = starter.map((c) => c.id).toSet();
+      final masteredG2 = starter.firstWhere((c) => c.primaryGrade == 2);
+      final next = engine.pickNext(
+        introduced: introduced,
+        profMap: {masteredG2.id: 0.9},
+        playerGrade: 3,
+      );
+      // Grade 2 now has 5 active vs grade 3's 6, so the refill is grade 2.
+      expect(next?.primaryGrade, 2);
+    });
+
+    test('pickNext stays at or below the player grade while it can', () {
+      // A grade-6 player has plenty of grade ≤ 6 content whose prereqs are
+      // auto-mastered; grade 7+ roots must not jump the queue.
+      final introduced = engine.pickStarterPack(6).map((c) => c.id).toSet();
+      for (var i = 0; i < 20; i++) {
+        final next = engine.pickNext(
+          introduced: introduced,
+          profMap: const {},
+          playerGrade: 6,
+        );
+        expect(next, isNotNull);
+        expect(next!.primaryGrade, lessThanOrEqualTo(6));
+        introduced.add(next.id);
+      }
+    });
+
     test('an introduced above-grade concept counts as frontier', () {
       // A K player who has been handed a G1 concept by the drip-feed plays
       // it at the challenging floor rather than losing it to notYet.

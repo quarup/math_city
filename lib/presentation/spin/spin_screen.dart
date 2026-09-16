@@ -10,6 +10,7 @@ import 'package:math_city/domain/concepts/concept_registry.dart';
 import 'package:math_city/domain/economy/coin_economy.dart';
 import 'package:math_city/domain/economy/expected_seconds.dart';
 import 'package:math_city/domain/economy/question_block.dart';
+import 'package:math_city/domain/proficiency/proficiency_band.dart';
 import 'package:math_city/game/spin_wheel/spin_wheel_component.dart';
 import 'package:math_city/game/spin_wheel/spin_wheel_game.dart';
 import 'package:math_city/presentation/city/city_screen.dart';
@@ -28,6 +29,13 @@ import 'package:math_city/state/proficiency_provider.dart';
 bool _neverPlayed(String conceptId, Map<String, double> profMap) =>
     !profMap.containsKey(conceptId);
 
+/// Mastered and back on the wheel as a review slot (only recorded
+/// proficiency counts: an unplayed concept can't be a review one).
+bool _isReview(String conceptId, Map<String, double> profMap) {
+  final p = profMap[conceptId];
+  return p != null && bandForProficiency(p) == ProficiencyBand.mastered;
+}
+
 List<WheelSegment> _buildSegments(
   List<Concept> concepts,
   Map<String, double> profMap,
@@ -38,6 +46,7 @@ List<WheelSegment> _buildSegments(
         label: c.shortLabel,
         color: categoryColorFor(c),
         isNew: _neverPlayed(c.id, profMap),
+        isReview: _isReview(c.id, profMap),
       ),
     )
     .toList();
