@@ -71,9 +71,7 @@ class _MoneyChip extends StatelessWidget {
         alignment: Alignment.center,
         child: Text(
           label,
-          style: showValue
-              ? labelStyle
-              : labelStyle.copyWith(fontSize: 11),
+          style: showValue ? labelStyle : labelStyle.copyWith(fontSize: 11),
           textAlign: TextAlign.center,
         ),
       );

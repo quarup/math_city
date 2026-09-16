@@ -3,6 +3,7 @@ import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:math_city/data/database.dart';
+import 'package:math_city/domain/concepts/wheel_selection.dart';
 import 'package:math_city/state/introduced_concepts_provider.dart';
 import 'package:math_city/state/player_provider.dart';
 import 'package:math_city/state/proficiency_provider.dart';
@@ -53,7 +54,7 @@ void main() {
         // Force the proficiency provider to load the seeded value.
         await container.read(proficiencyProvider.future);
 
-        final unlock =
+        final unlocks =
             (await container
                     .read(proficiencyProvider.notifier)
                     .recordAnswer(
@@ -61,25 +62,20 @@ void main() {
                       correct: true,
                       usesKeypad: false,
                     ))
-                .unlock;
+                .unlocks;
 
-        expect(unlock, isNotNull);
-        expect(unlock!.masteredConcept?.id, 'add_within_5');
-        // After Chunk 64 the starter pack is {count_to_10,
-        // teen_numbers_as_ten_plus, add_within_5, describe_attribute} —
-        // counting, place_value, add_sub, and measurement each
-        // contribute a row-0 G0 concept. Mastering add_within_5 makes
-        // both sub_within_5 and add_within_10 eligible (each has
-        // add_within_5 as its sole prereq). The active-category
-        // tiebreak prefers add_sub (now at 0 active concepts post-
-        // mastery) over the other three (each at >=1 active); within
-        // add_sub the lowest row order wins, so the pick is
-        // sub_within_5.
-        expect(unlock.newConcept.id, 'sub_within_5');
+        // The starter pack filled the active frontier to kActivePoolTarget;
+        // mastering one concept leaves it one short, so the top-up
+        // introduces exactly one new K concept, credited to the mastery.
+        expect(unlocks, hasLength(1));
+        final unlock = unlocks.single;
+        expect(unlock.masteredConcept?.id, 'add_within_5');
+        expect(unlock.newConcept.primaryGrade, 0);
 
         // The newly-unlocked concept is now persisted as introduced.
         final introduced = await db.introducedConceptIdsForPlayer(pid);
-        expect(introduced, contains('sub_within_5'));
+        expect(introduced, contains(unlock.newConcept.id));
+        expect(introduced, hasLength(kActivePoolTarget + 1));
       },
     );
 
@@ -94,7 +90,7 @@ void main() {
         addTearDown(container.dispose);
         await container.read(proficiencyProvider.future);
 
-        final unlock =
+        final unlocks =
             (await container
                     .read(proficiencyProvider.notifier)
                     .recordAnswer(
@@ -102,14 +98,13 @@ void main() {
                       correct: false,
                       usesKeypad: false,
                     ))
-                .unlock;
+                .unlocks;
 
-        expect(unlock, isNull);
+        expect(unlocks, isEmpty);
 
-        // No new concept introduced beyond the 4-concept starter pack.
+        // No new concept introduced beyond the starter pack.
         final introduced = await db.introducedConceptIdsForPlayer(pid);
-        expect(introduced, hasLength(4));
-        expect(introduced, isNot(contains('sub_within_5')));
+        expect(introduced, hasLength(kActivePoolTarget));
       },
     );
 
@@ -125,7 +120,7 @@ void main() {
         addTearDown(container.dispose);
         await container.read(proficiencyProvider.future);
 
-        final unlock =
+        final unlocks =
             (await container
                     .read(proficiencyProvider.notifier)
                     .recordAnswer(
@@ -133,14 +128,15 @@ void main() {
                       correct: true,
                       usesKeypad: false,
                     ))
-                .unlock;
+                .unlocks;
 
-        expect(unlock, isNull);
+        expect(unlocks, isEmpty);
       },
     );
 
     test(
-      'second correct answer once already-mastered returns no event',
+      'a correct answer on an already-mastered concept refills a short pool '
+      'without crediting a mastery',
       () async {
         final db = AppDatabase(NativeDatabase.memory());
         final pid = await _seedPlayer(db);
@@ -151,7 +147,7 @@ void main() {
         addTearDown(container.dispose);
         await container.read(proficiencyProvider.future);
 
-        final unlock =
+        final unlocks =
             (await container
                     .read(proficiencyProvider.notifier)
                     .recordAnswer(
@@ -159,17 +155,20 @@ void main() {
                       correct: true,
                       usesKeypad: false,
                     ))
-                .unlock;
+                .unlocks;
 
-        // Already mastered before this answer → no unlock event fires.
-        expect(unlock, isNull);
+        // The seeded mastery left the frontier one short of the target (no
+        // top-up ran when it was seeded), so this answer refills it — but no
+        // band was crossed, so nothing is credited as "mastered".
+        expect(unlocks, hasLength(1));
+        expect(unlocks.single.masteredConcept, isNull);
       },
     );
   });
 
   group('Starter pack', () {
     test(
-      'a fresh player gets four introduced concepts on first read',
+      'a fresh player gets a full active pool on first read',
       () async {
         final db = AppDatabase(NativeDatabase.memory());
         final pid = await _seedPlayer(db);
@@ -180,16 +179,9 @@ void main() {
         final introduced = await container.read(
           introducedConceptsProvider.future,
         );
-        expect(introduced, hasLength(4));
-        // Starter pack pulls the four easiest implemented G0 concepts
-        // sorted by (grade, categoryRowOrder). After Chunk 64, six
-        // categories ship a row-0 G0 concept; the first four wins by
-        // category display order: counting (count_to_10), place_value
-        // (teen_numbers_as_ten_plus), add_sub (add_within_5),
-        // measurement (describe_attribute). The 5th and 6th K-grade
-        // roots — geometry (identify_shape_2d) and stats
-        // (classify_count_categories) — get pushed out and drip-feed
-        // later via the DAG engine.
+        expect(introduced, hasLength(kActivePoolTarget));
+        // Starter pack pulls the easiest implemented G0 concepts sorted by
+        // (grade, categoryRowOrder); the four row-0 roots below lead it.
         expect(
           introduced,
           containsAll([
@@ -202,7 +194,7 @@ void main() {
 
         // Persisted to DB.
         final persisted = await db.introducedConceptIdsForPlayer(pid);
-        expect(persisted, hasLength(4));
+        expect(persisted, hasLength(kActivePoolTarget));
       },
     );
   });
@@ -220,7 +212,10 @@ void main() {
         await container.read(introducedConceptsProvider.future);
         await db.upsertProficiency(pid, 'add_within_5', 0.92, correct: true);
 
-        expect(await db.introducedConceptIdsForPlayer(pid), hasLength(4));
+        expect(
+          await db.introducedConceptIdsForPlayer(pid),
+          hasLength(kActivePoolTarget),
+        );
         expect(
           (await db.proficiencyMapForPlayer(pid)).keys,
           contains('add_within_5'),
@@ -239,7 +234,7 @@ void main() {
         final reseeded = await container.read(
           introducedConceptsProvider.future,
         );
-        expect(reseeded, hasLength(4));
+        expect(reseeded, hasLength(kActivePoolTarget));
       },
     );
 

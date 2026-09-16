@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:math_city/domain/concepts/concept.dart';
 import 'package:math_city/domain/concepts/dag_engine.dart';
+import 'package:math_city/domain/concepts/wheel_selection.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
 import 'package:math_city/domain/questions/generator_registry.dart';
 
@@ -157,23 +158,25 @@ void main() {
       'pickNext auto-satisfies prereqs that are well below the player grade',
       () {
         // High-grade player should not have to manually master grade-K
-        // concepts before grade-1 ones unlock. add_10 has prereq add_5;
-        // for a grade-2 player, add_5 starts at p=0.95 (mastered) via
-        // initialProficiency, so add_10's prereq is satisfied without any
-        // recorded proficiency for add_5.
+        // concepts before grade-1 ones unlock. add_20 (G1) has prereq
+        // add_10 (G0); for a grade-2 player, add_10 starts at p=0.95
+        // (mastered) via initialProficiency, so add_20's prereq is satisfied
+        // without any recorded proficiency for add_10. add_10 itself is
+        // registered too, but it would *start* mastered, so it is never
+        // picked.
         //
         // frac_a_b (G3) is registered so the implemented ceiling is G3 and
         // effectiveGradeFor(2) is a no-op.
-        final reg = _registryFor(['add_10', 'frac_a_b']);
+        final reg = _registryFor(['add_10', 'add_20', 'frac_a_b']);
         final engine = DripFeedEngine(registry: reg, catalog: synthetic);
         final next = engine.pickNext(
           introduced: const {},
           profMap: const {},
           playerGrade: 2,
         );
-        // Both add_10 and frac_a_b are eligible (no prereqs / mastered
-        // prereqs). Lowest-grade wins: add_10 (G0) over frac_a_b (G3).
-        expect(next?.id, 'add_10');
+        // add_20 (comfortable, prereq auto-mastered) and frac_a_b (no
+        // prereqs) are eligible. Lowest-grade wins: add_20 (G1) over G3.
+        expect(next?.id, 'add_20');
       },
     );
 
@@ -221,24 +224,21 @@ void main() {
 
   group('DripFeedEngine — real catalog', () {
     test(
-      'starter pack on the real catalog gives 4 G0 concepts spanning '
-      'all categories with a row-0 G0 concept',
+      'starter pack on the real catalog leads with the G0 row-0 concepts '
+      'across categories',
       () {
         final engine = DripFeedEngine(
           registry: GeneratorRegistry.defaultRegistry(),
         );
         final pack = engine.pickStarterPack(0);
-        expect(pack, hasLength(4));
-        // pickStarterPack sorts by (grade, categoryRowOrder) and takes
-        // the first 4. After Chunk 64, six categories now ship a G0
-        // row-0 concept; the first four wins by category display
-        // order: counting (count_to_10), place_value
-        // (teen_numbers_as_ten_plus), add_sub (add_within_5),
-        // measurement (describe_attribute). geometry
-        // (identify_shape_2d) and stats (classify_count_categories)
-        // are pushed out.
+        expect(pack, hasLength(kActivePoolTarget));
+        expect(pack.every((c) => c.primaryGrade == 0), isTrue);
+        // pickStarterPack sorts by (grade, categoryRowOrder). The row-0 G0
+        // concepts lead, in category display order: counting
+        // (count_to_10), place_value (teen_numbers_as_ten_plus), add_sub
+        // (add_within_5), measurement (describe_attribute).
         expect(
-          pack.map((c) => c.id).toList(),
+          pack.take(4).map((c) => c.id).toList(),
           [
             'count_to_10',
             'teen_numbers_as_ten_plus',
@@ -339,6 +339,103 @@ void main() {
         ),
       );
       expect(results.map((c) => c?.id).toSet(), hasLength(1));
+    });
+  });
+  group('DripFeedEngine — active pool (real catalog)', () {
+    final engine = DripFeedEngine(
+      registry: GeneratorRegistry.defaultRegistry(),
+    );
+
+    test('starter pack fills the active pool target', () {
+      expect(engine.pickStarterPack(0), hasLength(kActivePoolTarget));
+      expect(engine.pickStarterPack(3), hasLength(kActivePoolTarget));
+    });
+
+    test('pickNext never introduces a concept that starts mastered', () {
+      // A grade-3 player has every K/G1 concept auto-mastered (p = 0.95).
+      // Before the fix the lowest-grade-first policy handed those out one
+      // per mastery, each landing straight on the retired list.
+      final introduced = engine.pickStarterPack(3).map((c) => c.id).toSet();
+      final next = engine.pickNext(
+        introduced: introduced,
+        profMap: const {},
+        playerGrade: 3,
+      );
+      expect(next, isNotNull);
+      expect(next!.primaryGrade, greaterThanOrEqualTo(2));
+    });
+
+    test('topUp is a no-op while the frontier is full', () {
+      final introduced = engine.pickStarterPack(3).map((c) => c.id).toSet();
+      expect(
+        engine.activeFrontierCount(
+          introduced: introduced,
+          profMap: const {},
+          playerGrade: 3,
+        ),
+        kActivePoolTarget,
+      );
+      expect(
+        engine.topUp(introduced: introduced, profMap: const {}, playerGrade: 3),
+        isEmpty,
+      );
+    });
+
+    test('topUp refills exactly what a mastery removed', () {
+      final starter = engine.pickStarterPack(3);
+      final introduced = starter.map((c) => c.id).toSet();
+      final profMap = {starter.first.id: 0.9};
+
+      final picks = engine.topUp(
+        introduced: introduced,
+        profMap: profMap,
+        playerGrade: 3,
+      );
+      expect(picks, hasLength(1));
+      expect(introduced, isNot(contains(picks.single.id)));
+      expect(picks.single.primaryGrade, greaterThanOrEqualTo(2));
+
+      // With the pick introduced the pool is full again.
+      expect(
+        engine.topUp(
+          introduced: {...introduced, picks.single.id},
+          profMap: profMap,
+          playerGrade: 3,
+        ),
+        isEmpty,
+      );
+    });
+
+    test('a retired concept never counts toward the frontier', () {
+      // Grade-3 player: a G1 concept (two below) is auto-mastered and
+      // retired, so introducing it changes nothing about the pool.
+      final starter = engine.pickStarterPack(3);
+      final introduced = {...starter.map((c) => c.id), 'add_within_20'};
+      expect(
+        engine.activeFrontierCount(
+          introduced: introduced,
+          profMap: const {},
+          playerGrade: 3,
+        ),
+        kActivePoolTarget,
+      );
+      expect(
+        engine.topUp(introduced: introduced, profMap: const {}, playerGrade: 3),
+        isEmpty,
+      );
+    });
+
+    test('an introduced above-grade concept counts as frontier', () {
+      // A K player who has been handed a G1 concept by the drip-feed plays
+      // it at the challenging floor rather than losing it to notYet.
+      expect(
+        engine.activeFrontierCount(
+          introduced: const {'add_within_20'},
+          profMap: const {},
+          playerGrade: 0,
+        ),
+        1,
+      );
     });
   });
 }

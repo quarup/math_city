@@ -65,7 +65,7 @@ void main() {
             correct: true,
             coins: 5,
             streakCount: 5,
-            unlock: UnlockEvent(newConcept: next),
+            unlocks: [UnlockEvent(newConcept: next)],
           ),
         )
         ..record(const AnswerReward(correct: true, coins: 5, streakCount: 5));

@@ -9,11 +9,16 @@ class WheelSegment {
     required this.conceptId,
     required this.label,
     required this.color,
+    this.isNew = false,
   });
 
   final String conceptId;
   final String label;
   final Color color;
+
+  /// The player has never answered a question on this concept — drawn with
+  /// a "NEW" sticker so a fresh unlock is visible on the wheel itself.
+  final bool isNew;
 }
 
 /// Spinning wheel Flame component.
@@ -141,7 +146,7 @@ class SpinWheelComponent extends PositionComponent {
         );
     }
 
-    // Text labels
+    // Text labels, plus a "NEW" sticker further out on unplayed segments.
     for (var i = 0; i < segments.length; i++) {
       final midAngle = _rotation + (i + 0.5) * sweep;
       final labelR = radius * 0.62;
@@ -155,6 +160,17 @@ class SpinWheelComponent extends PositionComponent {
         ),
         dimmed: dimmed,
       );
+      if (segments[i].isNew) {
+        final stickerR = radius * 0.86;
+        _drawNewSticker(
+          canvas,
+          Offset(
+            center.dx + math.cos(midAngle) * stickerR,
+            center.dy + math.sin(midAngle) * stickerR,
+          ),
+          dimmed: dimmed,
+        );
+      }
     }
 
     // Outer ring, then centre hub
@@ -192,6 +208,41 @@ class SpinWheelComponent extends PositionComponent {
           ..style = PaintingStyle.stroke
           ..strokeWidth = 1.5,
       );
+  }
+
+  /// Small amber pill reading "NEW", centred on [center].
+  void _drawNewSticker(Canvas canvas, Offset center, {bool dimmed = false}) {
+    final alpha = dimmed ? 0.3 : 1.0;
+    final tp = TextPainter(
+      text: TextSpan(
+        text: 'NEW',
+        style: TextStyle(
+          color: const Color(0xFF3E2723).withValues(alpha: alpha),
+          fontSize: 9,
+          fontWeight: FontWeight.w900,
+          letterSpacing: 0.5,
+        ),
+      ),
+      textDirection: TextDirection.ltr,
+    )..layout();
+    final rect = Rect.fromCenter(
+      center: center,
+      width: tp.width + 10,
+      height: tp.height + 4,
+    );
+    canvas
+      ..drawRRect(
+        RRect.fromRectAndRadius(rect, const Radius.circular(8)),
+        Paint()..color = Colors.amber.withValues(alpha: alpha),
+      )
+      ..drawRRect(
+        RRect.fromRectAndRadius(rect, const Radius.circular(8)),
+        Paint()
+          ..color = Colors.white.withValues(alpha: alpha)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.5,
+      );
+    tp.paint(canvas, center - Offset(tp.width / 2, tp.height / 2));
   }
 
   void _drawLabel(

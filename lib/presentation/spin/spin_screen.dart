@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_city/data/database.dart';
 import 'package:math_city/domain/avatar/adventurer_config.dart';
 import 'package:math_city/domain/concepts/concept.dart';
+import 'package:math_city/domain/concepts/concept_registry.dart';
 import 'package:math_city/domain/economy/coin_economy.dart';
 import 'package:math_city/domain/economy/expected_seconds.dart';
 import 'package:math_city/domain/economy/question_block.dart';
@@ -14,44 +15,29 @@ import 'package:math_city/game/spin_wheel/spin_wheel_game.dart';
 import 'package:math_city/presentation/city/city_screen.dart';
 import 'package:math_city/presentation/player/adventurer_avatar_widget.dart';
 import 'package:math_city/presentation/question/question_screen.dart';
+import 'package:math_city/presentation/spin/new_concept_celebration.dart';
+import 'package:math_city/presentation/theme/category_colors.dart';
 import 'package:math_city/presentation/widgets/coin_icon.dart';
 import 'package:math_city/state/game_session_provider.dart';
 import 'package:math_city/state/introduced_concepts_provider.dart';
 import 'package:math_city/state/player_provider.dart';
 import 'package:math_city/state/proficiency_provider.dart';
 
-// ---------------------------------------------------------------------------
-// Concept → wheel colour (presentation concern; not in domain layer).
-//
-// Per-category palette — same category always wins the same colour family,
-// so a kid quickly associates "orange = addition" / "purple = fractions"
-// regardless of which sub-concept the wheel currently surfaces.
-// ---------------------------------------------------------------------------
+/// A concept with no proficiency row has never been answered — the wheel
+/// stickers it "NEW" and the first landing gets a celebration.
+bool _neverPlayed(String conceptId, Map<String, double> profMap) =>
+    !profMap.containsKey(conceptId);
 
-const _categoryColors = <String, Color>{
-  'counting': Color(0xFFFFA000), // amber
-  'place_value': Color(0xFFEF6C00), // orange-deep
-  'add_sub': Color(0xFFFB8C00), // orange
-  'mult_div': Color(0xFFE53935), // red
-  'fractions': Color(0xFF8E24AA), // purple
-  'decimals_percent': Color(0xFF6A1B9A), // deep purple
-  'ratios': Color(0xFF1565C0), // blue-deep
-  'measurement': Color(0xFF1E88E5), // blue
-  'geometry': Color(0xFF00897B), // teal
-  'rationals': Color(0xFF2E7D32), // green-deep
-  'prealgebra': Color(0xFF43A047), // green
-  'stats': Color(0xFF6D4C41), // brown
-};
-
-Color _colorForConcept(Concept c) =>
-    _categoryColors[c.categoryId] ?? Colors.grey.shade600;
-
-List<WheelSegment> _buildSegments(List<Concept> concepts) => concepts
+List<WheelSegment> _buildSegments(
+  List<Concept> concepts,
+  Map<String, double> profMap,
+) => concepts
     .map(
       (c) => WheelSegment(
         conceptId: c.id,
         label: c.shortLabel,
-        color: _colorForConcept(c),
+        color: categoryColorFor(c),
+        isNew: _neverPlayed(c.id, profMap),
       ),
     )
     .toList();
@@ -83,10 +69,26 @@ class SpinScreen extends ConsumerStatefulWidget {
 class _SpinScreenState extends ConsumerState<SpinScreen> {
   SpinWheelGame? _game;
 
+  /// Concept whose first-landing celebration is on screen, if any.
+  String? _celebrating;
+
   void _onConceptSelected(String conceptId) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
+      final profMap = ref.read(proficiencyProvider).asData?.value ?? {};
+      if (_neverPlayed(conceptId, profMap)) {
+        // First time on this concept: celebrate on the wheel, then start
+        // the block when the overlay finishes.
+        setState(() => _celebrating = conceptId);
+        return;
+      }
+      _startBlock(conceptId);
+    });
+  }
 
+  void _startBlock(String conceptId) {
+    if (!mounted) return;
+    {
       final profMap = ref.read(proficiencyProvider).asData?.value ?? {};
       final statedGrade =
           ref.read(activePlayerProvider).asData?.value.gradeLevel ?? 2;
@@ -111,7 +113,7 @@ class _SpinScreenState extends ConsumerState<SpinScreen> {
           ),
         ),
       );
-    });
+    }
   }
 
   @override
@@ -125,14 +127,23 @@ class _SpinScreenState extends ConsumerState<SpinScreen> {
     final avatarConfig =
         playerAsync.asData?.value.avatar ?? const AdventurerConfig();
 
-    // Create the game once, the first build where concepts are available.
+    // Create the game once, the first build where concepts are available,
+    // and remember this wheel so the next one rotates against it.
     final concepts = wheelAsync.asData?.value;
     if (_game == null && concepts != null) {
+      final profMap = ref.read(proficiencyProvider).asData?.value ?? {};
       _game = SpinWheelGame(
         onConceptSelected: _onConceptSelected,
-        segments: _buildSegments(concepts),
+        segments: _buildSegments(concepts, profMap),
       );
+      final shown = concepts.map((c) => c.id).toList();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) ref.read(lastWheelProvider.notifier).record(shown);
+      });
     }
+    final celebrating = _celebrating == null
+        ? null
+        : findConceptById(_celebrating!);
 
     return Scaffold(
       appBar: AppBar(
@@ -166,7 +177,18 @@ class _SpinScreenState extends ConsumerState<SpinScreen> {
       body: SafeArea(
         child: _game == null
             ? const Center(child: CircularProgressIndicator())
-            : GameWidget(game: _game!),
+            : Stack(
+                fit: StackFit.expand,
+                children: [
+                  GameWidget(game: _game!),
+                  if (celebrating != null)
+                    NewConceptCelebration(
+                      key: ValueKey(celebrating.id),
+                      concept: celebrating,
+                      onDone: () => _startBlock(celebrating.id),
+                    ),
+                ],
+              ),
       ),
     );
   }
