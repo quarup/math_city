@@ -14,8 +14,8 @@ import 'package:math_city/presentation/diagrams/diagram_renderer.dart';
 import 'package:math_city/presentation/question/number_pad_widget.dart';
 import 'package:math_city/presentation/result/result_screen.dart';
 import 'package:math_city/presentation/theme/app_palette.dart';
-import 'package:math_city/presentation/widgets/coin_flight.dart';
 import 'package:math_city/presentation/widgets/coin_icon.dart';
+import 'package:math_city/presentation/widgets/coin_pop.dart';
 import 'package:math_city/presentation/widgets/math_text.dart';
 import 'package:math_city/presentation/widgets/speech_toggle_button.dart';
 import 'package:math_city/presentation/widgets/streak_flame.dart';
@@ -84,20 +84,20 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
   /// visibly leaves the choice (or keypad) the player just pressed.
   Offset? _lastPointerDown;
 
-  /// The AppBar coin counter, for the coin flight's landing spot.
-  final GlobalKey _counterKey = GlobalKey();
-
-  /// While a payout is in flight the counter shows this instead of the live
+  /// While a payout is popping the counter shows this instead of the live
   /// balance (which the notifier has already persisted), so the number only
-  /// jumps when the coin lands.
+  /// jumps at the pop's peak.
   int? _frozenCoins;
 
   /// 1-based position of this question in its block, fixed at build time so
-  /// the header doesn't tick over while the coin is still flying.
+  /// the header doesn't tick over while the coin is still popping.
   late final int _questionNumber = widget.block?.currentIndex ?? 1;
 
+  /// Counter reaction when the balance changes: a quick grow-and-settle
+  /// plus a bright flash that fades over the same beat.
   late final AnimationController _pulseCtrl;
   late final Animation<double> _pulseScale;
+  late final Animation<double> _pulseFlash;
   final List<OverlayEntry> _liveOverlays = <OverlayEntry>[];
 
   @override
@@ -112,6 +112,10 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
       TweenSequenceItem(tween: Tween(begin: 1, end: 1.5), weight: 35),
       TweenSequenceItem(tween: Tween(begin: 1.5, end: 1), weight: 65),
     ]).animate(CurvedAnimation(parent: _pulseCtrl, curve: Curves.easeOut));
+    _pulseFlash = TweenSequence<double>([
+      TweenSequenceItem(tween: Tween(begin: 0, end: 0.75), weight: 20),
+      TweenSequenceItem(tween: Tween(begin: 0.75, end: 0), weight: 80),
+    ]).animate(_pulseCtrl);
     unawaited(_loadQuestion());
   }
 
@@ -243,10 +247,10 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
   }
 
   /// Correct-answer feedback, in place of the old green screen: the coin
-  /// flies from the tapped answer into the counter (which then pulses to
-  /// the new balance), a nudge shows if the answer was equivalent but not
-  /// canonical, and a band crossing gets its own bigger card plus a second
-  /// coin flight for the bonus.
+  /// pops in place over the tapped answer while the counter flashes and
+  /// pulses to the new balance, a nudge shows if the answer was equivalent
+  /// but not canonical, and a band crossing gets its own bigger card plus a
+  /// second coin pop for the bonus.
   Future<void> _celebrate(
     AnswerReward reward,
     AnswerOutcome outcome,
@@ -256,15 +260,21 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
     final size = MediaQuery.of(context).size;
     final from = _lastPointerDown ?? Offset(size.width / 2, size.height * 0.75);
 
-    await _flyCoins(from: from, amount: reward.coins);
-    if (!mounted) return;
-    // Land: reveal the answer pay (but hold back any bonus until its card).
-    setState(
-      () => _frozenCoins = reward.bandBonuses.isEmpty
-          ? null
-          : balanceBefore + reward.coins,
+    await _popCoins(
+      at: from,
+      amount: reward.coins,
+      // At the peak: reveal the answer pay (but hold back any bonus until
+      // its card) and let the counter react.
+      onPeak: () {
+        setState(
+          () => _frozenCoins = reward.bandBonuses.isEmpty
+              ? null
+              : balanceBefore + reward.coins,
+        );
+        unawaited(_pulseCtrl.forward(from: 0));
+      },
     );
-    unawaited(_pulseCtrl.forward(from: 0));
+    if (!mounted) return;
 
     if (outcome == AnswerOutcome.equivalentNonCanonical) {
       await _showCard(
@@ -283,35 +293,36 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
         const Duration(milliseconds: 1600),
       );
       if (!mounted) return;
-      await _flyCoins(
-        from: Offset(size.width / 2, size.height / 2),
+      await _popCoins(
+        at: Offset(size.width / 2, size.height / 2),
         amount: bonus.coins,
+        onPeak: () {
+          setState(() => _frozenCoins = null);
+          unawaited(_pulseCtrl.forward(from: 0));
+        },
       );
       if (!mounted) return;
     }
-    setState(() => _frozenCoins = null);
-    if (reward.bandBonuses.isNotEmpty) unawaited(_pulseCtrl.forward(from: 0));
+    if (_frozenCoins != null) setState(() => _frozenCoins = null);
   }
 
-  Offset _counterCenter() {
-    final box = _counterKey.currentContext?.findRenderObject() as RenderBox?;
-    if (box == null) {
-      final size = MediaQuery.of(context).size;
-      return Offset(size.width - 44, 60);
-    }
-    return box.localToGlobal(Offset(box.size.width / 2, box.size.height / 2));
-  }
-
-  Future<void> _flyCoins({required Offset from, required int amount}) async {
-    const duration = Duration(milliseconds: 650);
+  /// Shows a [CoinPop] at [at] and calls [onPeak] when it is biggest, so
+  /// the counter changes while the coin is large.
+  Future<void> _popCoins({
+    required Offset at,
+    required int amount,
+    VoidCallback? onPeak,
+  }) async {
     final entry = OverlayEntry(
-      builder: (_) => CoinFlight(
-        from: from,
-        to: _counterCenter(),
-        amount: amount,
-      ),
+      builder: (_) => CoinPop(at: at, amount: amount),
     );
-    await _hold(entry, duration);
+    Overlay.of(context).insert(entry);
+    _liveOverlays.add(entry);
+    final peak = kCoinPopDuration * CoinPop.peakFraction;
+    await Future<void>.delayed(peak);
+    if (mounted) onPeak?.call();
+    await Future<void>.delayed(kCoinPopDuration - peak);
+    if (_liveOverlays.remove(entry)) entry.remove();
   }
 
   Future<void> _showCard(Widget card, Duration hold) async {
@@ -377,10 +388,18 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
         const SizedBox(width: 12),
         Padding(
           padding: const EdgeInsets.only(right: 16),
-          child: ScaleTransition(
-            scale: _pulseScale,
+          child: AnimatedBuilder(
+            animation: _pulseCtrl,
+            // A warm-white wash over icon and digits, strongest right as
+            // the number changes, gone by the end of the pulse.
+            builder: (_, child) => ColorFiltered(
+              colorFilter: ColorFilter.mode(
+                const Color(0xFFFFF3B0).withValues(alpha: _pulseFlash.value),
+                BlendMode.srcATop,
+              ),
+              child: ScaleTransition(scale: _pulseScale, child: child),
+            ),
             child: CoinAmount(
-              key: _counterKey,
               amount: _frozenCoins ?? ref.watch(totalCoinsProvider),
               iconSize: 22,
               style: theme.textTheme.titleMedium?.copyWith(
