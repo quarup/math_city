@@ -21,6 +21,7 @@ class _DotPlotTheme {
   const _DotPlotTheme({
     required this.title,
     required this.axisLabel,
+    required this.observationNoun,
     required this.exactPrompt,
     required this.atLeastPrompt,
   });
@@ -30,6 +31,10 @@ class _DotPlotTheme {
 
   /// Caption under the x-axis (the units of measurement).
   final String axisLabel;
+
+  /// Singular name for what one dot stands for, e.g. "family". Drawn as
+  /// a key under the axis so the reader never has to infer it.
+  final String observationNoun;
 
   /// Returns "How many plants are 6 inches tall?" given `v`.
   final String Function(int v) exactPrompt;
@@ -41,27 +46,31 @@ class _DotPlotTheme {
 final _themes = <_DotPlotTheme>[
   _DotPlotTheme(
     title: 'Plant heights',
-    axisLabel: 'Inches',
+    axisLabel: 'Height in inches',
+    observationNoun: 'plant',
     exactPrompt: (v) => 'How many plants are $v inches tall?',
     atLeastPrompt: (v) => 'How many plants are at least $v inches tall?',
   ),
   // Metric sibling — both systems taught side by side.
   _DotPlotTheme(
     title: 'Seedling heights',
-    axisLabel: 'Centimetres',
+    axisLabel: 'Height in centimetres',
+    observationNoun: 'seedling',
     exactPrompt: (v) => 'How many seedlings are $v centimetres tall?',
     atLeastPrompt: (v) =>
         'How many seedlings are at least $v centimetres tall?',
   ),
   _DotPlotTheme(
     title: 'Books read',
-    axisLabel: 'Books',
+    axisLabel: 'Number of books',
+    observationNoun: 'kid',
     exactPrompt: (v) => 'How many kids read $v books?',
     atLeastPrompt: (v) => 'How many kids read at least $v books?',
   ),
   _DotPlotTheme(
     title: 'Pets per family',
-    axisLabel: 'Pets',
+    axisLabel: 'Number of pets',
+    observationNoun: 'family',
     exactPrompt: (v) => 'How many families have $v pets?',
     atLeastPrompt: (v) => 'How many families have at least $v pets?',
   ),
@@ -142,6 +151,7 @@ GeneratedQuestion lineplotWhole(Random rand) {
     diagram: DotPlotSpec(
       title: theme.title,
       axisLabel: theme.axisLabel,
+      observationNoun: theme.observationNoun,
       values: values,
       minX: minX,
       maxX: maxX,
@@ -199,6 +209,7 @@ GeneratedQuestion dotPlot(Random rand) {
       diagram: DotPlotSpec(
         title: theme.title,
         axisLabel: theme.axisLabel,
+        observationNoun: theme.observationNoun,
         values: values,
         minX: minX,
         maxX: maxX,
@@ -233,26 +244,29 @@ class _FractionalTheme {
   final String itemPlural;
   final String measureNoun;
   final String measureUnit;
+
+  /// What one dot stands for — the singular of [itemPlural].
+  String get observationNoun => _singularize(itemPlural);
 }
 
 final _fractionalThemes = <_FractionalTheme>[
   const _FractionalTheme(
     title: 'Pencil lengths',
-    axisLabel: 'Inches',
+    axisLabel: 'Length in inches',
     itemPlural: 'pencils',
     measureNoun: 'length',
     measureUnit: 'inches',
   ),
   const _FractionalTheme(
     title: 'Ribbon lengths',
-    axisLabel: 'Inches',
+    axisLabel: 'Length in inches',
     itemPlural: 'ribbons',
     measureNoun: 'length',
     measureUnit: 'inches',
   ),
   const _FractionalTheme(
     title: 'Leaf lengths',
-    axisLabel: 'Inches',
+    axisLabel: 'Length in inches',
     itemPlural: 'leaves',
     measureNoun: 'length',
     measureUnit: 'inches',
@@ -260,14 +274,14 @@ final _fractionalThemes = <_FractionalTheme>[
   // Metric siblings — both systems taught side by side.
   const _FractionalTheme(
     title: 'String lengths',
-    axisLabel: 'Centimetres',
+    axisLabel: 'Length in centimetres',
     itemPlural: 'strings',
     measureNoun: 'length',
     measureUnit: 'centimetres',
   ),
   const _FractionalTheme(
     title: 'Worm lengths',
-    axisLabel: 'Centimetres',
+    axisLabel: 'Length in centimetres',
     itemPlural: 'worms',
     measureNoun: 'length',
     measureUnit: 'centimetres',
@@ -348,6 +362,7 @@ GeneratedQuestion lineplotFractional(Random rand) {
     diagram: DotPlotSpec(
       title: d.theme.title,
       axisLabel: d.theme.axisLabel,
+      observationNoun: d.theme.observationNoun,
       values: d.values,
       minX: d.minX,
       maxX: d.maxX,
@@ -422,6 +437,7 @@ GeneratedQuestion lineplotFractionWord(Random rand) {
       diagram: DotPlotSpec(
         title: d.theme.title,
         axisLabel: d.theme.axisLabel,
+        observationNoun: d.theme.observationNoun,
         values: d.values,
         minX: d.minX,
         maxX: d.maxX,
@@ -490,6 +506,7 @@ GeneratedQuestion lineplot5thGradeOps(Random rand) {
       diagram: DotPlotSpec(
         title: d.theme.title,
         axisLabel: d.theme.axisLabel,
+        observationNoun: d.theme.observationNoun,
         values: d.values,
         minX: d.minX,
         maxX: d.maxX,

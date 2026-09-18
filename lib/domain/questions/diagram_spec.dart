@@ -349,6 +349,7 @@ class DotPlotSpec extends DiagramSpec {
     required this.values,
     required this.minX,
     required this.maxX,
+    this.observationNoun,
     this.denominator = 1,
   }) : assert(maxX > minX, 'maxX must be > minX'),
        assert(values.length > 0, 'need at least one value'),
@@ -363,6 +364,12 @@ class DotPlotSpec extends DiagramSpec {
 
   /// Short caption under the axis identifying the unit, e.g. "Inches".
   final String axisLabel;
+
+  /// Singular name for what one dot stands for, e.g. "family" or
+  /// "pencil". The widget renders it as a key ("● = 1 family") under the
+  /// axis label. Without it nothing on screen says what a dot counts,
+  /// which readers have to infer — every themed plot should set it.
+  final String? observationNoun;
 
   /// The data points. Duplicates are stacked vertically above the
   /// corresponding axis tick. Every value satisfies `minX <= v <= maxX`

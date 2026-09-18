@@ -27,7 +27,8 @@ class DotPlot extends StatelessWidget {
     const leftGutter = 16.0;
     const rightGutter = 16.0;
     const topGutter = 28.0;
-    const bottomGutter = 44.0;
+    // 44 for ticks + axis label; the key line under it needs 18 more.
+    final bottomGutter = spec.observationNoun == null ? 44.0 : 62.0;
 
     final ticks = spec.maxX - spec.minX + 1;
     final naturalWidth = (ticks - 1) * tickSpacing;
@@ -78,6 +79,9 @@ class DotPlot extends StatelessWidget {
                   theme.textTheme.labelSmall ?? const TextStyle(fontSize: 11),
               axisLabelStyle:
                   theme.textTheme.labelMedium ?? const TextStyle(fontSize: 12),
+              keyStyle:
+                  (theme.textTheme.labelSmall ?? const TextStyle(fontSize: 11))
+                      .copyWith(color: theme.colorScheme.onSurfaceVariant),
             ),
           ),
         );
@@ -101,6 +105,7 @@ class _DotPlotPainter extends CustomPainter {
     required this.titleStyle,
     required this.tickStyle,
     required this.axisLabelStyle,
+    required this.keyStyle,
   });
 
   final DotPlotSpec spec;
@@ -116,6 +121,7 @@ class _DotPlotPainter extends CustomPainter {
   final TextStyle titleStyle;
   final TextStyle tickStyle;
   final TextStyle axisLabelStyle;
+  final TextStyle keyStyle;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -190,6 +196,22 @@ class _DotPlotPainter extends CustomPainter {
       axisLabelStyle,
     );
 
+    // Key below the axis label: a sample dot and what one dot means.
+    // Without it nothing on screen says a dot is a family / a pencil,
+    // and the reader is left to infer it from the prompt.
+    final noun = spec.observationNoun;
+    if (noun != null) {
+      final label = '= 1 $noun';
+      final tp = _measureWith(label, keyStyle);
+      const keyGap = 6.0;
+      final keyR = math.min<double>(dotRadius, 5);
+      final totalW = keyR * 2 + keyGap + tp.width;
+      final left = (size.width - totalW) / 2;
+      final cy = axisY + 50;
+      canvas.drawCircle(Offset(left + keyR, cy), keyR, dotPaint);
+      tp.paint(canvas, Offset(left + keyR * 2 + keyGap, cy - tp.height / 2));
+    }
+
     // Dots: stack `count` dots vertically above each integer with `count > 0`.
     counts.forEach((v, count) {
       final x = xFor(v);
@@ -214,8 +236,10 @@ class _DotPlotPainter extends CustomPainter {
     );
   }
 
-  TextPainter _measure(String text) => TextPainter(
-    text: TextSpan(text: text, style: tickStyle),
+  TextPainter _measure(String text) => _measureWith(text, tickStyle);
+
+  TextPainter _measureWith(String text, TextStyle style) => TextPainter(
+    text: TextSpan(text: text, style: style),
     textDirection: TextDirection.ltr,
   )..layout();
 
@@ -227,5 +251,6 @@ class _DotPlotPainter extends CustomPainter {
       old.dotGap != dotGap ||
       old.plotHeight != plotHeight ||
       old.axisColor != axisColor ||
-      old.dotColor != dotColor;
+      old.dotColor != dotColor ||
+      old.keyStyle != keyStyle;
 }

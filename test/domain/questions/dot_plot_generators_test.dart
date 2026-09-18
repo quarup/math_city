@@ -209,4 +209,33 @@ void main() {
       },
     );
   });
+
+  group('dot-plot key', () {
+    test(
+      'every dot-plot question names what one dot stands for, so the '
+      'reader never has to infer it from the prompt',
+      () {
+        const ids = [
+          'line_plot_whole',
+          'dot_plot',
+          'line_plot_fractional',
+          'line_plot_fraction_word',
+          'line_plot_5th_grade_ops',
+        ];
+        final nounsSeen = <String>{};
+        for (final id in ids) {
+          for (var i = 0; i < 40; i++) {
+            final spec = _gen(registry, id, i).diagram! as DotPlotSpec;
+            final noun = spec.observationNoun;
+            expect(noun, isNotNull, reason: '$id seed $i');
+            // Singular: the key reads "= 1 $noun".
+            expect(noun, isNot(endsWith('s')), reason: '$id -> $noun');
+            nounsSeen.add(noun!);
+          }
+        }
+        // The themed pools really do vary the noun, not just one theme.
+        expect(nounsSeen.length, greaterThan(4));
+      },
+    );
+  });
 }

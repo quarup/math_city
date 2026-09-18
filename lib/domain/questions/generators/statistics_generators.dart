@@ -79,6 +79,7 @@ GeneratedQuestion meanGenerator(Random rand) {
     diagram: DotPlotSpec(
       title: 'Data',
       axisLabel: 'Value',
+      observationNoun: 'value',
       values: values,
       minX: (minVal - 1).clamp(0, 1 << 30),
       maxX: maxVal + 1,
@@ -126,6 +127,7 @@ GeneratedQuestion medianGenerator(Random rand) {
     diagram: DotPlotSpec(
       title: 'Data',
       axisLabel: 'Value',
+      observationNoun: 'value',
       values: values,
       minX: (minVal - 1).clamp(0, 1 << 30),
       maxX: maxVal + 1,
@@ -178,6 +180,7 @@ GeneratedQuestion modeGenerator(Random rand) {
     diagram: DotPlotSpec(
       title: 'Data',
       axisLabel: 'Value',
+      observationNoun: 'value',
       values: values,
       minX: (minVal - 1).clamp(0, 1 << 30),
       maxX: maxVal + 1,
@@ -225,6 +228,7 @@ GeneratedQuestion iqrGenerator(Random rand) {
     diagram: DotPlotSpec(
       title: 'Data',
       axisLabel: 'Value',
+      observationNoun: 'value',
       values: values,
       minX: (sorted.first - 1).clamp(0, 1 << 30),
       maxX: sorted.last + 1,
@@ -278,6 +282,7 @@ GeneratedQuestion madGenerator(Random rand) {
     diagram: DotPlotSpec(
       title: 'Data',
       axisLabel: 'Value',
+      observationNoun: 'value',
       values: values,
       minX: (minVal - 1).clamp(0, 1 << 30),
       maxX: maxVal + 1,
@@ -321,6 +326,7 @@ GeneratedQuestion rangeDataGenerator(Random rand) {
     diagram: DotPlotSpec(
       title: 'Data',
       axisLabel: 'Value',
+      observationNoun: 'value',
       values: values,
       minX: (minV - 1).clamp(0, 1 << 30),
       maxX: maxV + 1,
