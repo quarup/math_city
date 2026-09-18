@@ -15,7 +15,6 @@ import 'package:math_city/presentation/question/number_pad_widget.dart';
 import 'package:math_city/presentation/result/result_screen.dart';
 import 'package:math_city/presentation/theme/app_palette.dart';
 import 'package:math_city/presentation/widgets/coin_icon.dart';
-import 'package:math_city/presentation/widgets/coin_pop.dart';
 import 'package:math_city/presentation/widgets/math_text.dart';
 import 'package:math_city/presentation/widgets/speech_toggle_button.dart';
 import 'package:math_city/presentation/widgets/streak_flame.dart';
@@ -80,17 +79,13 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
   /// deactivated, so `dispose` cannot look the service up itself.
   late final TtsService _tts;
 
-  /// Where the last touch landed — the coin takes off from there, so it
-  /// visibly leaves the choice (or keypad) the player just pressed.
-  Offset? _lastPointerDown;
-
-  /// While a payout is popping the counter shows this instead of the live
-  /// balance (which the notifier has already persisted), so the number only
-  /// jumps at the pop's peak.
+  /// While a payout is being celebrated the counter shows this instead of
+  /// the live balance (which the notifier has already persisted), so a bonus
+  /// only lands after its card.
   int? _frozenCoins;
 
   /// 1-based position of this question in its block, fixed at build time so
-  /// the header doesn't tick over while the coin is still popping.
+  /// the header doesn't tick over during the counter beat.
   late final int _questionNumber = widget.block?.currentIndex ?? 1;
 
   /// Counter reaction when the balance changes: a quick grow-and-settle
@@ -98,6 +93,9 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
   late final AnimationController _pulseCtrl;
   late final Animation<double> _pulseScale;
   late final Animation<double> _pulseFlash;
+
+  /// How long a correct answer lingers on screen for the counter reaction.
+  static const Duration _counterBeat = Duration(milliseconds: 600);
   final List<OverlayEntry> _liveOverlays = <OverlayEntry>[];
 
   @override
@@ -246,33 +244,20 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
     );
   }
 
-  /// Correct-answer feedback, in place of the old green screen: the coin
-  /// pops in place over the tapped answer while the counter flashes and
-  /// pulses to the new balance, a nudge shows if the answer was equivalent
-  /// but not canonical, and a band crossing gets its own bigger card plus a
-  /// second coin pop for the bonus.
+  /// Correct-answer feedback, in place of the old green screen: the AppBar
+  /// counter flashes and pulses as it changes to the new balance (the only
+  /// payout animation — nothing appears over the answer), a nudge shows if
+  /// the answer was equivalent but not canonical, and a band crossing gets
+  /// its own bigger card followed by a second counter bump for the bonus.
   Future<void> _celebrate(
     AnswerReward reward,
     AnswerOutcome outcome,
     String answer,
     int balanceBefore,
   ) async {
-    final size = MediaQuery.of(context).size;
-    final from = _lastPointerDown ?? Offset(size.width / 2, size.height * 0.75);
-
-    await _popCoins(
-      at: from,
-      amount: reward.coins,
-      // At the peak: reveal the answer pay (but hold back any bonus until
-      // its card) and let the counter react.
-      onPeak: () {
-        setState(
-          () => _frozenCoins = reward.bandBonuses.isEmpty
-              ? null
-              : balanceBefore + reward.coins,
-        );
-        unawaited(_pulseCtrl.forward(from: 0));
-      },
+    // Reveal the answer pay (but hold back any bonus until its card).
+    await _bumpCounter(
+      reward.bandBonuses.isEmpty ? null : balanceBefore + reward.coins,
     );
     if (!mounted) return;
 
@@ -293,36 +278,19 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
         const Duration(milliseconds: 1600),
       );
       if (!mounted) return;
-      await _popCoins(
-        at: Offset(size.width / 2, size.height / 2),
-        amount: bonus.coins,
-        onPeak: () {
-          setState(() => _frozenCoins = null);
-          unawaited(_pulseCtrl.forward(from: 0));
-        },
-      );
+      await _bumpCounter(null);
       if (!mounted) return;
     }
     if (_frozenCoins != null) setState(() => _frozenCoins = null);
   }
 
-  /// Shows a [CoinPop] at [at] and calls [onPeak] when it is biggest, so
-  /// the counter changes while the coin is large.
-  Future<void> _popCoins({
-    required Offset at,
-    required int amount,
-    VoidCallback? onPeak,
-  }) async {
-    final entry = OverlayEntry(
-      builder: (_) => CoinPop(at: at, amount: amount),
-    );
-    Overlay.of(context).insert(entry);
-    _liveOverlays.add(entry);
-    final peak = kCoinPopDuration * CoinPop.peakFraction;
-    await Future<void>.delayed(peak);
-    if (mounted) onPeak?.call();
-    await Future<void>.delayed(kCoinPopDuration - peak);
-    if (_liveOverlays.remove(entry)) entry.remove();
+  /// Shows [frozenAfter] on the counter (null = the live balance) with its
+  /// flash-and-pulse, and holds one beat so the reaction is seen before the
+  /// screen moves on.
+  Future<void> _bumpCounter(int? frozenAfter) async {
+    setState(() => _frozenCoins = frozenAfter);
+    unawaited(_pulseCtrl.forward(from: 0));
+    await Future<void>.delayed(_counterBeat);
   }
 
   Future<void> _showCard(Widget card, Duration hold) async {
@@ -431,92 +399,88 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
         actions: actions,
       ),
       body: SafeArea(
-        child: Listener(
-          behavior: HitTestBehavior.translucent,
-          onPointerDown: (e) => _lastPointerDown = e.position,
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // With a diagram: the diagram is measured FIRST at its
-                // natural size (capped at 45% of the space, so a long
-                // prompt can never crush it into a speck), and the prompt
-                // card gets the true remainder — a short diagram (ruler,
-                // number line) hands its unused space to the card instead
-                // of reserving a fixed slot that left the card clipped
-                // mid-glyph while empty space sat above it. The card
-                // scrolls only when the prompt genuinely exceeds what's
-                // left.
-                //
-                // Without one: the card scrolls if a long word problem
-                // exceeds the space above the keypad (an unflexed card
-                // overflowed there by design of the diagram path).
-                Expanded(
-                  child: question.diagram == null
-                      ? Center(
-                          child: SingleChildScrollView(
-                            child: _PromptCard(prompt: question.prompt),
-                          ),
-                        )
-                      : CustomMultiChildLayout(
-                          delegate: _DiagramThenCardLayout(),
-                          children: [
-                            LayoutId(
-                              id: _QuestionSlot.diagram,
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                ),
-                                child: LayoutBuilder(
-                                  builder: (context, constraints) => FittedBox(
-                                    fit: BoxFit.scaleDown,
-                                    child: ConstrainedBox(
-                                      // Bound the width so self-sizing
-                                      // diagram widgets lay out at phone
-                                      // width; FittedBox then scales the
-                                      // result down if the 45% cap binds.
-                                      constraints: BoxConstraints(
-                                        maxWidth: constraints.maxWidth,
-                                      ),
-                                      child: DiagramRenderer(
-                                        spec: question.diagram!,
-                                      ),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // With a diagram: the diagram is measured FIRST at its
+              // natural size (capped at 45% of the space, so a long
+              // prompt can never crush it into a speck), and the prompt
+              // card gets the true remainder — a short diagram (ruler,
+              // number line) hands its unused space to the card instead
+              // of reserving a fixed slot that left the card clipped
+              // mid-glyph while empty space sat above it. The card
+              // scrolls only when the prompt genuinely exceeds what's
+              // left.
+              //
+              // Without one: the card scrolls if a long word problem
+              // exceeds the space above the keypad (an unflexed card
+              // overflowed there by design of the diagram path).
+              Expanded(
+                child: question.diagram == null
+                    ? Center(
+                        child: SingleChildScrollView(
+                          child: _PromptCard(prompt: question.prompt),
+                        ),
+                      )
+                    : CustomMultiChildLayout(
+                        delegate: _DiagramThenCardLayout(),
+                        children: [
+                          LayoutId(
+                            id: _QuestionSlot.diagram,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                              ),
+                              child: LayoutBuilder(
+                                builder: (context, constraints) => FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: ConstrainedBox(
+                                    // Bound the width so self-sizing
+                                    // diagram widgets lay out at phone
+                                    // width; FittedBox then scales the
+                                    // result down if the 45% cap binds.
+                                    constraints: BoxConstraints(
+                                      maxWidth: constraints.maxWidth,
+                                    ),
+                                    child: DiagramRenderer(
+                                      spec: question.diagram!,
                                     ),
                                   ),
                                 ),
                               ),
                             ),
-                            LayoutId(
-                              id: _QuestionSlot.card,
-                              child: SingleChildScrollView(
-                                child: _PromptCard(
-                                  prompt: question.prompt,
-                                  compact: true,
-                                ),
+                          ),
+                          LayoutId(
+                            id: _QuestionSlot.card,
+                            child: SingleChildScrollView(
+                              child: _PromptCard(
+                                prompt: question.prompt,
+                                compact: true,
                               ),
                             ),
-                          ],
-                        ),
-                ),
-                const SizedBox(height: 16),
-                if (_useNumberPad)
-                  NumberPadWidget(
-                    onSubmit: _onAnswerSubmitted,
-                    extraChars: _extraCharsFor(question),
-                  )
-                else
-                  ..._shuffledChoices.map(
-                    (choice) => Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 6),
-                      child: _ChoiceButton(
-                        label: choice,
-                        onTap: () => _onAnswerSubmitted(choice),
+                          ),
+                        ],
                       ),
+              ),
+              const SizedBox(height: 16),
+              if (_useNumberPad)
+                NumberPadWidget(
+                  onSubmit: _onAnswerSubmitted,
+                  extraChars: _extraCharsFor(question),
+                )
+              else
+                ..._shuffledChoices.map(
+                  (choice) => Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 6),
+                    child: _ChoiceButton(
+                      label: choice,
+                      onTap: () => _onAnswerSubmitted(choice),
                     ),
                   ),
-              ],
-            ),
+                ),
+            ],
           ),
         ),
       ),
