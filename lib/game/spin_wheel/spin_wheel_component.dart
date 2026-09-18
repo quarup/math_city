@@ -27,7 +27,9 @@ class WheelSegment {
   /// Rung on the ladder: 0 (K–2), 1 (3–5), 2 (6–8).
   final int tier;
 
-  /// Category tint for the wedge and the icon accent.
+  /// Category tint for the icon accent and the landing reveal. Wedges
+  /// themselves take their colour from [SpinWheelComponent.wedgePalette]
+  /// by position, so neighbours always contrast.
   final Color color;
 
   /// The player has never answered a question on this concept — the wedge
@@ -73,9 +75,23 @@ class SpinWheelComponent extends PositionComponent {
   static const _newOrange = Color(0xFFF2A33A);
   static const _litAmber = Color(0xFFFFD54F);
 
+  /// Wedge colours by position: brand tints ordered warm/cool so any two
+  /// neighbours (including the wrap from last to first) contrast.
+  static const wedgePalette = [
+    Color(0xFFF2A33A), // orange
+    Color(0xFF2EB5A0), // teal
+    Color(0xFFE25A5A), // red
+    Color(0xFF5DB7E8), // sky
+    Color(0xFFF0CC30), // yellow
+    Color(0xFFA56BC2), // purple
+    Color(0xFFF07A4A), // coral
+    Color(0xFF7CC36A), // green
+  ];
+
   /// Icons sit at this fraction of the radius, clear of the wedge edges.
   static const iconRadiusFraction = 0.74;
-  static const _newArcFraction = 0.42;
+  static const _newArcFraction = 0.44;
+  static const _newFontSize = 15.0;
   static const _ghostCount = 4;
   static const _maxVelocity = 28.0;
 
@@ -426,9 +442,8 @@ class SpinWheelComponent extends PositionComponent {
     for (var i = 0; i < segments.length; i++) {
       final dim = landed != null && landed != i;
       final path = _annularSector(o, 0, radius, i * sweep, (i + 1) * sweep);
-      final color = dim
-          ? Color.lerp(segments[i].color, Colors.white, 0.72)!
-          : segments[i].color;
+      final base = wedgePalette[i % wedgePalette.length];
+      final color = dim ? Color.lerp(base, Colors.white, 0.72)! : base;
       canvas
         ..drawPath(path, Paint()..color = color)
         ..drawPath(path, wedgeStroke);
@@ -492,9 +507,9 @@ class SpinWheelComponent extends PositionComponent {
     final s = _scale;
     final r = radius * _newArcFraction;
     final style = TextStyle(
-      fontSize: 18 * s,
+      fontSize: _newFontSize * s,
       fontWeight: FontWeight.w900,
-      letterSpacing: 1.5 * s,
+      letterSpacing: 1.2 * s,
       height: 1,
     );
     const text = 'NEW!';
