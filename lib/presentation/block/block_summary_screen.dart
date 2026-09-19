@@ -5,8 +5,8 @@ import 'package:math_city/domain/economy/question_block.dart';
 import 'package:math_city/domain/proficiency/proficiency_band.dart';
 import 'package:math_city/presentation/spin/spin_screen.dart';
 import 'package:math_city/presentation/theme/app_palette.dart';
-import 'package:math_city/presentation/theme/category_colors.dart';
 import 'package:math_city/presentation/widgets/coin_icon.dart';
+import 'package:math_city/presentation/widgets/concept_icon_badge.dart';
 import 'package:math_city/presentation/widgets/streak_flame.dart';
 
 /// End-of-block celebration: coins earned, streak state, any band-crossing
@@ -257,9 +257,8 @@ String bandBonusHeadline(ProficiencyBand band) => switch (band) {
   _ => 'Level up!',
 };
 
-/// "N new topics are on the wheel!" — a teaser, not a list. The badges
-/// underneath are category-coloured placeholders for the per-concept icons
-/// the wheel will eventually carry; they name the concept on long-press.
+/// "N new topics are on the wheel!" followed by each unlocked concept,
+/// named next to the same badge the wheel carries it under.
 class _NewTopicsCard extends StatelessWidget {
   const _NewTopicsCard({required this.concepts});
 
@@ -300,25 +299,24 @@ class _NewTopicsCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 12),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                for (final c in concepts)
-                  Tooltip(
-                    message: c.name,
-                    child: CircleAvatar(
-                      radius: 18,
-                      backgroundColor: categoryColorFor(c),
-                      child: const Icon(
-                        Icons.star_rounded,
-                        color: Colors.white,
-                        size: 22,
+            for (final c in concepts)
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Row(
+                  children: [
+                    ConceptIconBadge(concept: c),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        c.name,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
-                  ),
-              ],
-            ),
+                  ],
+                ),
+              ),
           ],
         ),
       ),
