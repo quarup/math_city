@@ -1075,14 +1075,21 @@ tutorial item is folded into this.
 
 ### 8.11 Open questions (Phase 10)
 
-- **Cancel a site?** v1 default: no cancel, sites can be moved. If cancel is
-  allowed, paid-in coins have nowhere to go (no wallet) — lose them, or
-  transfer to another open site?
+- ~~**Cancel a site?**~~ **Resolved 2026-09-20: no cancel in v1**, sites can
+  be moved. Paid-in coins have nowhere to go without a wallet; losing them
+  punishes a change of mind and transferring them needs a picker plus a
+  no-other-site edge case, while the 3-site cap already supplies the
+  pressure. The `ConstructionSites` row therefore carries no status column —
+  its only exits are *moved* and *opened*.
 - **Question screens** full-screen (default) vs. drawn over the zoomed city.
 - **Stage thresholds** (0 / ⅓ / ⅔ / done is a draft) and whether a stage swap
   deserves a small animation.
 - **Landmark price cuts** on top of delta pricing.
-- **Which arcs are ladders** — confirm per arc; author the entertainment one.
+- ~~**Which arcs are ladders**~~ **Resolved 2026-09-20** in
+  `lib/domain/city/upgrade_ladders.dart`: the six §8.6 arcs as listed, plus
+  two entertainment ladders — `park → botanical_garden → zoo` and
+  `sports_field → stadium → amusement_park` (they sit on different arcs, so
+  one green and one sports ladder rather than a single chain).
 - **Estimate formula** for the commit screen (window size, cold start for a
   brand-new player).
 - **Land blocks as sites** — the select-then-confirm `_BuyLandBar` flow
