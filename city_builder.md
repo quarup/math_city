@@ -14,6 +14,7 @@
 - **Drafting mode:** *fill pass complete (first draft)*. §1 (references), §2 (categories), §3 (full building specs — 54 anchors), §4 (beat catalog), §5 (asset checklist), and §7 (open questions) are drafted. §6 (implementation status) is auto-managed by [tools/city_builder/sync_implementation_status.py](tools/city_builder/sync_implementation_status.py); as of 2026-06-14 all 54 anchors are wired and sprite-backed. Three structure decisions are locked (2026-05-31): education (`school`/`high_school`) lives under `services`; `water` is a hard-gating service; the housing spine keeps all 7 rungs. **Still expects Phase-9 iteration** — costs and service ratios are designed-coherent placeholders, finalized by playtest.
 - **Framework:** extends the Phase-7 model — four categories, the service-ratio + variety-multiplier growth model, and the typed `UnlockRule` / `TriggerRule` gates. **Currency revised 2026-09-08:** the two-currency 🧱/🔬 design this document was drafted against was replaced by a single currency, **coins** (1 coin ≈ 1 expected second of study); §3's cost columns and §3.5 were re-denominated accordingly, and the research step is gone — a building whose unlock rule passes is bought straight away. See prd.md *Cosmetics System*.
 - **Scope of this pass:** *representative breadth* — full coherent arcs across all four categories with ~54 anchor buildings individually specced; the long-tail variants (cosmetic re-skins, minor tier infills) are described as patterned templates rather than itemized. This keeps the design coherent and reviewable and gives Phase 9 a clear queue without committing to hundreds of hand-authored rows up front.
+- **Construction loop (2026-09-19):** placement is no longer a purchase — a building is placed as a *construction site* and paid down by answering questions while the camera is zoomed in on it; there is no wallet; upgrades are sites priced at the difference. Designed in **§8**, implemented in plan.md Phase 10. §3 prices are unchanged in meaning (coins ≈ seconds of study) but are now the *total* a site must be paid to open.
 - **Source of truth note:** once Phase 9 starts wiring content, the building/beat **IDs here become the source of truth**, mirrored by [building_registry.dart](lib/domain/city/building_registry.dart) and [beat_registry.dart](lib/domain/city/beat_registry.dart) — exactly as `curriculum.md` is mirrored by `generator_registry.dart`.
 
 ---
@@ -646,7 +647,7 @@ Recorded so the decision is reviewable and we don't re-litigate it next session.
 
 ### 5.3 Audio
 
-Deferred to Phase 11 per [plan.md](plan.md), listed for completeness: a
+Deferred to Phase 12 per [plan.md](plan.md), listed for completeness: a
 building-placed SFX and a bubble-pop SFX cover the whole catalog; capstones may
 get a one-off fanfare. Source CC0 from Freesound / OpenGameArt.
 
@@ -876,9 +877,216 @@ below and the per-row marks refresh idempotently.
 - **Service-ratio & cost tuning.** All §3 numbers are designed-coherent
   placeholders; final values come from Phase-9 playtest (per plan.md's standing
   Phase-9 open question on residents-per-service and variety curves).
-- **Per-tier upgrades vs. distinct types.** This design models progression as
-  *distinct building types* in an arc (place a new high-rise next to the old
-  apartment). Phase 9 also lists "building upgrade tiers" (upgrade-in-place, up to
-  3 visual tiers). Decide per arc which rungs are new-type vs. in-place upgrades;
-  the `maxTier` / `assetRefByTier` fields in the Data Model already anticipate the
-  in-place path.
+- ~~**Per-tier upgrades vs. distinct types.**~~ **Resolved 2026-09-19 (§8.6):**
+  distinct types, linked by `upgradesFrom`. An upgrade is a construction site
+  priced at the difference; the in-place `maxTier` / `assetRefByTier` path is
+  superseded. Which arcs are ladders is still confirmed per arc in Phase 10.
+
+---
+
+## 8. Construction loop (designed 2026-09-19)
+
+**Status:** designed in a brainstorm session (18 directions → 3 → 1, then
+knob-by-knob decisions); implementation is [plan.md](plan.md) **Phase 10**.
+Supersedes the "instantly buyable" placement model in prd.md *City Builder*,
+the §7 "per-tier upgrades vs. distinct types" question, and the Phase-9
+"upgrade tiers keep the footprint" task.
+
+### 8.1 The problem it solves
+
+The city screen and the question flow felt like two apps joined by a coin
+balance and a FAB. Coins are an abstraction: answer → number goes up → later,
+elsewhere, number goes down → building appears. Nothing on either screen
+*pointed* at the other. The fix is not decoration around the seam — it is
+making the question flow **the act of building**.
+
+### 8.2 The loop
+
+1. **A demand beat fires** (unchanged). The building it unlocks is
+   **highlighted** in the catalog and the expanded beat card carries a
+   *Build it* action. (Derivation is the existing inverse link: a beat
+   highlights every `BuildingType` whose `unlockRule.requiredBeatsRead`
+   contains it.)
+2. **Place the footprint.** No coins change hands. The yellow ghost fades
+   into a **construction site** (stage-0 art), the camera **zooms** to that
+   neighbourhood, the site pins to the bottom of the screen, the city dims
+   behind it, and the spin wheel appears above the site. *Zoom, never swap* —
+   the player must feel they went closer to their city, not to a different
+   screen.
+3. **Spin → block of questions**, exactly as today: 8-segment wheel, blocks
+   of 1–6 questions sized to ~25 s, MC/keypad by band, red explanation screen
+   on a miss.
+4. **Every coin earned pays into the site.** A bar reads `180 / 300 🪙`. The
+   site's sprite advances through construction stages as the bar fills —
+   **no stage text**, the art alone says how far along it is.
+5. **Block ends → summary card over the site** (coins this block, streak,
+   any unlocks). Primary action *Spin again*; secondary *Back to city*. The
+   player stays zoomed in by default.
+6. **Bar reaches the price → the building opens**: final sprite swaps in,
+   the praise beat fires (the mayor replies to the citizen who asked),
+   population ticks. Camera zooms back out.
+7. **Pause at any point** (back / zoom out). A site persists across sessions
+   with its paid-in coins — a half-built stadium is a better reason to come
+   back tomorrow than a coin balance was.
+
+### 8.3 Currency: coins stay, the wallet goes
+
+- **Coins stay** as the unit. They don't fully make sense diegetically, and
+  that's fine — Mario collects coins to rescue a princess. Kids read a coin
+  instantly. The pitch is *"this building costs 300 coins; pay it off by
+  answering questions."*
+- **No wallet.** A coin exists only inside a site. `Players.coinBalance` is
+  dropped; `lifetimeCoinsEarned` stays (it drives the `life🪙` unlock gates and
+  the progress screen's "total study time"). **Everything with a price is a
+  site** — buildings, upgrades, land blocks (600 × ring), parks — so there is
+  never a state where coins are earned into nothing, and the question flow is
+  only reachable *through* a site.
+- **Earning rules unchanged.** Streak ramp (0.2 → 1.0 over five), keypad ×1.5,
+  band-crossing bonus, wrong answer = 0 and streak reset. They move the bar by
+  different amounts per answer, which is fine for a coin — money is a unit
+  whose real-world referent is naturally variable in size. (This is exactly
+  why "shifts" and "days" were rejected as the unit: a day has a fixed expected
+  size, so a day that's worth more because you concentrated harder reads as a
+  lie. Question-count fails the same test and additionally breaks the
+  same-study-time-for-every-grade fairness that `coin_economy.dart` is built
+  on.)
+- **Migration:** schema bump, wipe-and-recreate per the pre-launch precedent.
+  Existing balances are dropped.
+
+### 8.4 Progress readout — three layers, one number
+
+| Where | What | Why |
+|---|---|---|
+| Site HUD, always | Bar + `paid / price 🪙` | The absolute, fixed total the player is working toward |
+| Site sprite | Construction stage from the paid fraction (draft thresholds 0 / ⅓ / ⅔ / done) | Position, legible to a six-year-old, no text |
+| Commit screen, once, before placing | Price + a **personalised estimate** — *"about 3 play sessions at your pace"* — from the player's recent coins-per-block | Answers "how much work is this?" honestly; because it never appears in the HUD it never has to agree with anything, and it quietly improves as the kid gets faster |
+
+Rejected readouts: percent (relative), shifts / days (see 8.3), stage labels
+("Roof · 2 of 4" — decided against; the sprite carries it), crew size as a
+progress unit (it's velocity, not position — see 8.10).
+
+### 8.5 Concurrency
+
+- **At most 3 open sites.** Enough to choose where today's work goes; few
+  enough that nothing is forgotten. Starting a fourth is blocked with a nudge
+  that names the three.
+- Tapping any site zooms into it; the shift's coins go to the site you're
+  zoomed into.
+- Sites can be **moved** freely, like buildings. **Cancelling** is an open
+  question (8.11) — v1 default is *no cancel*, mirroring "no selling".
+
+### 8.6 Upgrades — ladders paid for the difference
+
+An upgrade is a construction site placed *over or beside* an existing
+building, priced at `target.coinCost − source.coinCost`.
+
+| Housing spine | Full price | Upgrade delta | ≈ blocks at full streak |
+|---|---|---|---|
+| `single_home` (from scratch) | 60 | 60 | ~2 |
+| → `apartment` | 120 | 60 | ~2 |
+| → `mid_rise_apartment` | 720 | 600 | ~24 |
+| → `high_rise` | 1500 | 780 | ~31 |
+| → `luxury_condo` | 3000 | 1500 | ~60 |
+
+Walking the whole spine drops from 5 400 to 3 000 coins, and each plot gets a
+story — *"this was my first house and now it's a tower."* The top rungs are
+still long; cutting the two landmark tiers ~30 % on top of delta pricing is
+the draft recommendation, finalised by playtest.
+
+- **Footprints grow** (1×1 → 2×2 → 2×3 → 3×3), so an upgrade **needs free
+  tiles** — but the player may place the upgrade footprint **anywhere on
+  owned land**, including the suburbs, without rearranging the old
+  neighbourhood. Placing over the old building's own tiles is allowed when
+  the grown footprint fits and the no-boxing-in rule holds.
+- **The old building stays standing and counts** (population, services) until
+  the upgrade opens; then it is removed and its plot clears. Net population
+  change = target − source. No mid-construction dip.
+- **Data model:** the in-place `currentTier` / `maxTier` / `assetRefByTier`
+  path is superseded. An upgrade is a distinct-type placement carrying an
+  `upgradesFrom` link to the placement it replaces. This resolves the §7
+  "per-tier upgrades vs. distinct types" question in favour of distinct types.
+- **Which arcs are ladders** (to confirm per arc in Phase 10): the housing
+  spine above (`duplex`, `townhouse_row`, `farmhouse` are side rungs, not
+  ladder steps); `power_plant → power_station → solar_farm`;
+  `water_tower → water_treatment`; `clinic → hospital`;
+  `school → high_school`; `mayors_office → town_hall → city_hall`;
+  an entertainment ladder ending in `zoo` / `amusement_park` is the user's
+  ask and still needs authoring. Upgrades are **parallel to** new builds,
+  never a replacement — a town that only upgrades gets emptier, not bigger.
+
+### 8.7 Camera and wheel
+
+- `SpinScreen` stops being a pushed route and becomes an **overlay state of
+  `CityScreen`**: Flame camera tweens to the site, the site anchors to the
+  bottom of the viewport, a dim layer covers the rest, the wheel renders
+  above. The PR #112 wheel art is unchanged; its static city backdrop is
+  replaced by the live camera.
+- `ResultScreen` becomes the summary card overlay of 8.2 step 5.
+- **Question screens stay full-screen routes** pushed over the overlay
+  (default, to confirm): they are the teaching surface, diagrams need the
+  room, and a six-year-old shouldn't have a city to look at behind a
+  question. The zoom in/out is what frames the session as one place.
+- Navigation stack: *Home → City* (states: browsing / site-zoomed /
+  spinning) *→ Question*. Back from site-zoomed = zoom out, not pop.
+
+### 8.8 Construction stage art
+
+A bottom-up 2D reveal of the final sprite was considered and rejected — on a
+2:1 dimetric sprite the base isn't a horizontal line and a naive wipe shows the
+roof before the walls. The interim plan is **generic overlays that never touch
+the final sprite**:
+
+| Stage | Art on the footprint |
+|---|---|
+| 0 | cleared dirt pad + fence hoarding |
+| 1 | + foundation slab + crane |
+| 2 | + scaffold cage + the final sprite as a ~35 %-opacity ghost |
+| 3 | the final sprite |
+
+Pad and fence are flat and footprint-parameterised (procedural `CustomPainter`
+is fine); crane and scaffold are ~3 reusable sprites through the §5.1
+pipeline. **Real per-building stage art is expected eventually** for the hero
+landmarks — the user's call — but it is not a precondition for shipping the
+loop.
+
+### 8.9 First five minutes
+
+Strong guidance early, loosening later. The mayor's office is already placed
+at creation; `demand_first_home` fires at once with its card auto-expanded and
+*Build it* showing; the catalog shows only the highlighted `single_home`;
+placing it zooms and opens the wheel without a further tap. After the first
+building opens, guidance relaxes to the highlight-only affordance of 8.2
+step 1. The construction loop *is* the first-launch tutorial — the Phase-12
+tutorial item is folded into this.
+
+### 8.10 Designed, deferred (not v1)
+
+- **Festival prep** — a community site; completion brings citizens visibly
+  arriving and a party animation. The first non-building goal.
+- **Repairs** — an existing building needs a shift of work. Hard rules so a
+  big city never nags: at most 1 open repair, never more than 1 block, a
+  cooldown independent of city size, and no visual decay beyond a small
+  marker (no crumbling, no post-apocalypse).
+- **Green space** — use the existing park buildings as the short-session sink
+  before authoring new content.
+- **Crew** — the streak rendered as workers on the site (a correct answer adds
+  one, a miss sends one for coffee). Liked, but it's a *velocity* indicator
+  and the visualisation is fiddly; revisit once the loop is live.
+
+### 8.11 Open questions (Phase 10)
+
+- **Cancel a site?** v1 default: no cancel, sites can be moved. If cancel is
+  allowed, paid-in coins have nowhere to go (no wallet) — lose them, or
+  transfer to another open site?
+- **Question screens** full-screen (default) vs. drawn over the zoomed city.
+- **Stage thresholds** (0 / ⅓ / ⅔ / done is a draft) and whether a stage swap
+  deserves a small animation.
+- **Landmark price cuts** on top of delta pricing.
+- **Which arcs are ladders** — confirm per arc; author the entertainment one.
+- **Estimate formula** for the commit screen (window size, cold start for a
+  brand-new player).
+- **Land blocks as sites** — the select-then-confirm `_BuyLandBar` flow
+  becomes "start a land site"; decide whether a land site zooms to the block
+  or to the nearest owned edge.
+- **Recurring demands** (`demand_more_parks`) now point at a site to start
+  rather than a purchase — confirm the beat copy still reads.

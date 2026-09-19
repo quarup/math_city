@@ -10,7 +10,7 @@
 
 **Compliance:** Designed for ages 6–14, the app must satisfy children's-app requirements on both stores: no third-party tracking, no data collection beyond local profiles, no behavioral advertising. Privacy policy required. Apple "Made for Kids" and Google "Designed for Families" guidelines apply.
 
-**Accessibility:** Baseline a11y is in scope from the start — color-blind-safe palette (the wheel relies heavily on color, so segments must also be distinguishable by shape/icon), readable type at small sizes, audio cues for key feedback (so a 6-year-old who isn't yet reading fluently can play), respect for OS-level text-size settings. Optional dyslexia-friendly font (e.g. OpenDyslexic) toggle is a stretch goal for Phase 10 (polish).
+**Accessibility:** Baseline a11y is in scope from the start — color-blind-safe palette (the wheel relies heavily on color, so segments must also be distinguishable by shape/icon), readable type at small sizes, audio cues for key feedback (so a 6-year-old who isn't yet reading fluently can play), respect for OS-level text-size settings. Optional dyslexia-friendly font (e.g. OpenDyslexic) toggle is a stretch goal for Phase 12 (polish).
 
 **Localization:** v1 ships English-only. All user-facing strings must be externalized (no hardcoded text in widgets) so future translation is mechanical, not a rewrite.
 
@@ -48,13 +48,14 @@ Multiple player profiles can exist on one device with no login required. [Assump
 Each **round** follows this sequence:
 
 1. **Player select** — The current player can hand the device to another player at the start of any round.
-2. **Spin the wheel** — A colorful wheel displays 8 math concepts: mostly concepts the player is still learning, plus up to 2 *review* slots drawn from concepts they've already mastered (concepts far below the player's grade retire from the wheel instead). The line-up changes from one spin to the next — at least 3 segments rotate out — so the wheel never feels like the same four choices. Never-played concepts wear a "NEW" sticker, and the first time the wheel lands on one the player gets a small celebration before the questions start. Player flings to spin.
-3. **Answer a block of questions** — The landed concept yields a short block of questions (enough to add up to ~25 seconds of expected work — five quick kindergarten sums, or a single long-division problem). Questions appear at the player's current level for that concept.
-4. **Per question:**
+2. **Pick a construction site** *(revised 2026-09-19 — see City Builder › Construction)* — the player taps one of their open construction sites (or places a new one). The camera zooms in on it, the city dims, and the wheel appears above the site. Every coin earned in the steps below pays into that site.
+3. **Spin the wheel** — A colorful wheel displays 8 math concepts: mostly concepts the player is still learning, plus up to 2 *review* slots drawn from concepts they've already mastered (concepts far below the player's grade retire from the wheel instead). The line-up changes from one spin to the next — at least 3 segments rotate out — so the wheel never feels like the same four choices. Never-played concepts wear a "NEW" sticker, and the first time the wheel lands on one the player gets a small celebration before the questions start. Player flings to spin.
+4. **Answer a block of questions** — The landed concept yields a short block of questions (enough to add up to ~25 seconds of expected work — five quick kindergarten sums, or a single long-division problem). Questions appear at the player's current level for that concept.
+5. **Per question:**
    - **Correct answer:** earns coins (see *Cosmetics System* for the amounts — pay scales with how long the question is expected to take, boosted by the player's answer streak). A quick coin animation plays and the next question appears immediately — no interstitial screen, so fast accurate play feels fast.
    - **Wrong answer:** 0 coins and the answer streak resets. A friendly step-by-step explanation guides the player to the correct answer. No other penalty — the game stays encouraging.
    - **Band-crossing bonus:** if a correct answer pushes the concept's proficiency across a band-boundary threshold for the first time (e.g. from challenging into comfortable), the player earns a one-time coin bonus with a distinct, bigger celebration. Awarded at most once per concept per threshold — this is the "you genuinely learned something new" moment, worth more than routine practice.
-5. **Block summary** — After the block, a short celebration screen tallies the coins earned, shows the streak, and teases anything that unlocked mid-block ("2 new topics are on the wheel!" with an icon per topic — the wheel itself is where new concepts are celebrated). Then back to step 1.
+6. **Block summary** — After the block, a small card over the site tallies the coins earned, shows the streak, and teases anything that unlocked mid-block ("2 new topics are on the wheel!" with an icon per topic — the wheel itself is where new concepts are celebrated). The site's progress bar and construction art advance. Primary action: spin again (step 3); secondary: zoom back out to the city. When the bar reaches the building's price the building opens and the camera zooms out on its own.
 
 ### Answer Input
 
@@ -124,7 +125,7 @@ Each question carries a step-by-step explanation shown on wrong answers — algo
 
 ## Cosmetics System
 
-Players earn in-game currency by answering math questions correctly. All currency is spent on **the city builder only** — no gameplay advantage is purchasable, and the app is entirely free; currency cannot be purchased with real money.
+Players earn in-game currency by answering math questions correctly. All currency is paid into **construction sites in the city builder only** — no gameplay advantage is purchasable, and the app is entirely free; currency cannot be purchased with real money. **There is no wallet (revised 2026-09-19):** a coin exists only inside the construction site it was earned for, so a coin balance is never shown and the question flow is only reachable through a site. See *City Builder › Construction*.
 
 **One currency: coins (revised 2026-09-08 — supersedes the Phase-7 two-currency 🧱/🔬 design, which shipped through Phase 9 but proved more confusing than motivating).**
 
@@ -149,16 +150,18 @@ The design ambition is **"feels infinite"**: hundreds of building types over the
 | **Commercial** | grocery, clothing store, bike shop, restaurants, coffee shop, car dealership | Variety multiplies growth — a city with only one commercial type stalls or shrinks; introducing each new commercial subtype unlocks a small growth boost |
 | **Entertainment** | playground, park, cinema, amusement park | Same variety effect as commercial. Cities top-heavy in entertainment without supporting services or housing draw complaints rather than residents |
 
-**Unlock model — a branching DAG, instantly buyable once revealed (revised 2026-09-08: the separate research-spend step is gone).** A building type becomes *available to buy* when a combination of conditions is met (any combination of the following):
+**Unlock model — a branching DAG, instantly startable once revealed (revised 2026-09-08: the separate research-spend step is gone; 2026-09-19: buildings are paid down on site, not bought).** A building type becomes *available to start* when a combination of conditions is met (any combination of the following):
 
 - *Lifetime coins threshold* — enough lifetime coins earned to date. Since coins are study-seconds, this reads as "unlocks after ~N minutes of total study."
 - *Prerequisite buildings placed* — e.g. a hospital requires at least one clinic and apartment-tier-2 already on the map (multi-parent prereqs use AND semantics, kept narratively coherent — we don't add prereqs that would feel random).
 - *Population minimum* — e.g. the cinema only becomes available once the city passes 50 residents.
 - *Story beat opened* — the citizen request that asks for this building has not only surfaced but been **opened (tapped to read) at least once**. Merely having the bubble appear isn't enough; the player must read the ask. This is the primary gate in the Phase-7 catalog: every non-starter building is hidden until the player opens the demand bubble that asks for it.
 
-Once available, the building appears in the build menu and **can be bought immediately for its coin price** — no intermediate unlock step. Saving up for the next building the citizens are asking for IS the player's progression decision; the branching gates (not a second currency) do the pacing.
+Once available, the building appears in the build menu and **can be placed immediately as a construction site** — no intermediate unlock step, no up-front payment. Choosing which open site gets today's work IS the player's progression decision; the branching gates (not a second currency) do the pacing.
 
-Because the DAG is branching, different players will follow different paths — one player might invest heavily in commercial variety before unlocking advanced healthcare, another might push housing density first. The UI is **discovery-based, not a visible tech tree** — buildings whose gates aren't met don't appear in the build catalog at all; the next thing to save for is hinted at via citizen requests (see below), and newly available buildings appear in the catalog with their coin price alongside everything already affordable. This keeps new players from feeling overwhelmed and preserves the surprise of each reveal.
+**Construction (revised 2026-09-19 — the seam between the city and the questions).** Placing a building places a *construction site*, not a finished building. The ghost footprint fades into a site, the camera zooms in on that neighbourhood, and the spin wheel appears above the site. Every coin earned while zoomed in pays the site down; a bar shows `paid / price 🪙` and the site's art advances through construction stages as it fills (dirt pad → foundation and crane → scaffolding → the finished building), with no stage text. When the bar reaches the price the building opens, the praise beat fires, and the camera zooms back out. Sites persist across sessions with their paid-in coins; a player may have **up to 3 open sites** and chooses which to zoom into. Before placing, a commit screen shows the price and a personalised estimate ("about 3 play sessions at your pace"). Land blocks and parks are sites too — everything with a price is paid down the same way. The zoom in and out is the whole transition: the player never *switches* to a question mode, they go closer to their city. Full mechanics, art plan, and open questions in [city_builder.md §8](city_builder.md).
+
+Because the DAG is branching, different players will follow different paths — one player might invest heavily in commercial variety before unlocking advanced healthcare, another might push housing density first. The UI is **discovery-based, not a visible tech tree** — buildings whose gates aren't met don't appear in the build catalog at all; the next thing to build is hinted at via citizen requests (see below), and newly available buildings appear in the catalog with their coin price alongside everything else. This keeps new players from feeling overwhelmed and preserves the surprise of each reveal.
 
 **Citizen requests — floating emoji bubbles.** The city screen surfaces what citizens want and what they're celebrating, via cute emoji / sticker bubbles that float above the buildings:
 
@@ -179,15 +182,15 @@ Because the DAG is branching, different players will follow different paths — 
 
 **Other mechanics:**
 
-- **Land:** Players start with a small fixed beginner map. They can spend coins to expand the land symmetrically outward, and to unlock additional themed maps later (e.g. countryside, big city, futuristic). Each map has its own independent placement state.
+- **Land:** Players start with a small fixed beginner map. Expanding it outward is a construction site like any other (a block is paid down by answering, priced by ring); additional themed maps (countryside, big city, futuristic) may follow later. Each map has its own independent placement state.
 - **Placement:** Buildings snap to any free tile and may be placed directly touching other buildings — players arrange their city however they like. The one rule: **no building can be boxed in.** Every building must keep at least one of its perimeter sides open to a free tile, so the auto-road network can always reach it. A placement *or* move that would landlock a building is rejected with a gentle nudge — and the check runs both ways: it blocks both the building being placed (if it would have no open side) and any existing neighbor whose last open side the new placement would seal off.
 - **Roads:** Auto-generated to connect placed buildings — the player never manually draws roads. Avoids fiddly precision placement on a phone. Because every building is guaranteed an open perimeter side (see *Placement*), the road network can always reach every building.
-- **Moving buildings:** Free. Players can rearrange their city without spending more coins.
-- **Selling buildings:** Not supported in v1. Simplifies the economy and avoids "I bought the wrong thing, refund me" friction.
-- **Upgrade tiers:** Some buildings have visual upgrade tiers (e.g. wooden → brick → ornate). Tiers change the *style*, not the footprint, to keep cities visually balanced as they grow.
+- **Moving buildings and sites:** Free. Players can rearrange their city — including open construction sites — without spending more coins.
+- **Selling buildings / cancelling sites:** Not supported in v1. Simplifies the economy and avoids "I bought the wrong thing, refund me" friction.
+- **Upgrades (revised 2026-09-19):** Smaller buildings upgrade into bigger ones along their arc (single home → apartment → mid-rise → high-rise → luxury condo; clinic → hospital; …) for the *difference* in price. An upgrade is a construction site whose grown footprint can go anywhere on owned land — over the old building if it fits, or out in the suburbs — without rearranging the old neighbourhood. The old building keeps standing and housing its people until the upgrade opens, then its plot clears. Upgrades sit alongside new builds, never replace them.
 - **Population:** A visible counter shows the current population. Growth follows from a *mix* of buildings: monotone cities (all cinemas, or all apartments and nothing else) stall or even shrink, with citizens complaining that the city is unbalanced.
 - **Growth model:** A combination of aggregate service ratios (1 clinic per N residents, 1 power plant per N, etc.) and category-balance multipliers (variety of commercial + entertainment + services boosts growth; lopsided mixes stall it). Concrete formulas are tuned across Phase 7–9 by play-testing.
-- **Events:** Players can spend coins on temporary events (festivals, parades) that attract additional residents.
+- **Events:** Deferred past v1 (see [city_builder.md §8.10](city_builder.md)) — a festival is a community construction site whose completion brings citizens visibly arriving.
 
 **Out of v1, nice to have later:**
 - Animated city: cars driving on roads, building lights turning on at night, pedestrians on sidewalks, day/night cycle.
