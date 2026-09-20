@@ -1002,7 +1002,6 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                     Positioned.fill(
                       child: CelebrationOverlay(
                         title: _celebrationTitle(celebratingSite),
-                        streak: celebrating.streakCount ?? 0,
                         onDone: _zoomOut,
                         cardKey: _celebrationCardKey,
                       ),

@@ -2,22 +2,21 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:math_city/presentation/theme/app_palette.dart';
-import 'package:math_city/presentation/widgets/streak_flame.dart';
 
 /// The building-opened celebration drawn over the zoomed-in city
 /// (city_builder.md §8.2 step 6): confetti rains over the finished
-/// building, a card names it (with the streak, if one is running), and
-/// *Done* hands control back so the camera can zoom out. Empty regions
-/// don't absorb touches; only the card does. The block's coins are not
-/// repeated here — the site bar's full `price / price` already says the
-/// job is paid, and a "+N" next to "It's open!" read as a bonus.
+/// building, a card congratulates and names it, and *Done* hands control
+/// back so the camera can zoom out. Empty regions don't absorb touches;
+/// only the card does. The block's coins and streak are not repeated here
+/// — the site bar's full `price / price` already says the job is paid, a
+/// "+N" next to the headline read as a bonus, and the streak is beside the
+/// point at this moment.
 ///
 /// [cardKey] lets the host measure the card so it can frame the building
 /// in the space the card leaves free.
 class CelebrationOverlay extends StatelessWidget {
   const CelebrationOverlay({
     required this.title,
-    required this.streak,
     required this.onDone,
     this.cardKey,
     super.key,
@@ -25,7 +24,6 @@ class CelebrationOverlay extends StatelessWidget {
 
   /// e.g. "Single home is finished!"
   final String title;
-  final int streak;
   final VoidCallback onDone;
   final Key? cardKey;
 
@@ -52,7 +50,7 @@ class CelebrationOverlay extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      'It’s open!',
+                      'Congratulations!',
                       style: theme.textTheme.headlineMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: palette.successGreenDeep,
@@ -67,10 +65,6 @@ class CelebrationOverlay extends StatelessWidget {
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    if (streak > 0) ...[
-                      const SizedBox(height: 12),
-                      StreakBadge(count: streak),
-                    ],
                     const SizedBox(height: 14),
                     FilledButton(
                       onPressed: onDone,
