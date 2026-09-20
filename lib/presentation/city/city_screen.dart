@@ -511,6 +511,7 @@ class _CityScreenState extends ConsumerState<CityScreen> {
           maxHeight: MediaQuery.of(context).size.height * 0.85,
         ),
         builder: (_) => _CityDebugSheet(
+          siteId: _selectedSiteId,
           onReset: () => setState(() {
             _selected = null;
             _movingId = null;
@@ -789,11 +790,15 @@ class _CityScreenState extends ConsumerState<CityScreen> {
 /// the city to a brand-new-player baseline.
 /// Operates on the *real* active player so persistence is exercised too.
 class _CityDebugSheet extends ConsumerStatefulWidget {
-  const _CityDebugSheet({required this.onReset});
+  const _CityDebugSheet({required this.onReset, this.siteId});
 
   /// Called after a successful reset so the parent screen can clear its
   /// pending building selection (which may no longer be available).
   final VoidCallback onReset;
+
+  /// The site selected on the city screen, if any — the pay buttons target
+  /// it (else the oldest open site).
+  final int? siteId;
 
   @override
   ConsumerState<_CityDebugSheet> createState() => _CityDebugSheetState();
@@ -875,25 +880,28 @@ class _CityDebugSheetState extends ConsumerState<_CityDebugSheet> {
             ),
             const Divider(height: 24),
             Text(
-              'Pay into the oldest open site',
+              widget.siteId == null
+                  ? 'Pay into the oldest open site'
+                  : 'Pay into the selected site',
               style: theme.textTheme.labelLarge,
             ),
             const SizedBox(height: 8),
             Wrap(
               spacing: 8,
+              runSpacing: 8,
               children: [
-                FilledButton.tonal(
-                  onPressed: () => unawaited(actions.debugPayCoins(60)),
-                  child: const Text('+60 (1 min)'),
-                ),
-                FilledButton.tonal(
-                  onPressed: () => unawaited(actions.debugPayCoins(600)),
-                  child: const Text('+600 (10 min)'),
-                ),
-                FilledButton.tonal(
-                  onPressed: () => unawaited(actions.debugPayCoins(3600)),
-                  child: const Text('+3600 (1 h)'),
-                ),
+                for (final (amount, label) in const [
+                  (20, '+20'),
+                  (60, '+60 (1 min)'),
+                  (600, '+600 (10 min)'),
+                  (3600, '+3600 (1 h)'),
+                ])
+                  FilledButton.tonal(
+                    onPressed: () => unawaited(
+                      actions.debugPayCoins(amount, siteId: widget.siteId),
+                    ),
+                    child: Text(label),
+                  ),
               ],
             ),
             const SizedBox(height: 16),

@@ -34,27 +34,31 @@ class SiteProgressBar extends StatelessWidget {
         fontWeight: FontWeight.bold,
         fontSize: 15,
       );
+      // AppBar actions get unbounded width, and a progress bar has no
+      // intrinsic width of its own — size the pill to its text row.
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
         decoration: BoxDecoration(
           color: Colors.black.withValues(alpha: 0.32),
           borderRadius: BorderRadius.circular(20),
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const CoinIcon(size: 16),
-                const SizedBox(width: 4),
-                Text('$paid / $price', style: textStyle),
-              ],
-            ),
-            const SizedBox(height: 3),
-            _Bar(fraction: _fraction, height: 4, theme: theme),
-          ],
+        child: IntrinsicWidth(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const CoinIcon(size: 16),
+                  const SizedBox(width: 4),
+                  Text('$paid / $price', style: textStyle),
+                ],
+              ),
+              const SizedBox(height: 3),
+              _Bar(fraction: _fraction, height: 4, theme: theme),
+            ],
+          ),
         ),
       );
     }
