@@ -1,16 +1,18 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:math_city/data/construction_sites.dart';
 import 'package:math_city/data/database.dart';
 import 'package:math_city/domain/city/beat_engine.dart';
 import 'package:math_city/domain/city/beat_registry.dart';
 import 'package:math_city/domain/city/building_registry.dart';
 import 'package:math_city/domain/city/building_type.dart';
+import 'package:math_city/domain/city/construction_site.dart';
 import 'package:math_city/domain/city/dag_engine.dart';
-import 'package:math_city/domain/city/land_blocks.dart';
 import 'package:math_city/domain/city/population_model.dart';
 import 'package:math_city/domain/city/story_beat.dart';
 import 'package:math_city/domain/city/trigger_rule.dart';
 import 'package:math_city/domain/city/unlock_rule.dart';
+import 'package:math_city/domain/city/upgrade_ladders.dart';
 import 'package:math_city/state/player_provider.dart';
 
 /// The active player's beginner-map `City` row. Auto-created at player
@@ -37,10 +39,20 @@ final ownedBlocksProvider = FutureProvider<Set<(int, int)>>((ref) async {
   return db.ownedBlocksForCity(city.id);
 });
 
+/// Every open construction site in the active city (city_builder.md §8),
+/// oldest first. Sites contribute nothing to population or unlock rules
+/// until they open.
+final sitesProvider = FutureProvider<List<CitySite>>((ref) async {
+  final city = await ref.watch(activeCityProvider.future);
+  final placements = await ref.watch(placementsProvider.future);
+  final db = ref.read(appDatabaseProvider);
+  return sitesFromRows(await db.sitesForCity(city.id), placements);
+});
+
 /// The build-mode catalog: every building whose unlock rule currently passes,
-/// in registry order (stable display). Each is buyable straight away for its
-/// coin price — there is no separate unlock step. Drives the bottom catalog
-/// bar on the city screen.
+/// in registry order (stable display). Placing one starts a construction site
+/// at its coin price — there is no purchase and no affordability check.
+/// Drives the bottom catalog bar on the city screen.
 final cityCatalogProvider = FutureProvider<List<BuildingType>>((ref) async {
   final playerId = ref.watch(activePlayerIdProvider);
   if (playerId == null) throw StateError('No active player');
@@ -54,10 +66,14 @@ final cityCatalogProvider = FutureProvider<List<BuildingType>>((ref) async {
   // that asks for it (`requiredBeatsRead`), on top of any placement/population
   // gates. Population is stepped by `tickPopulation`; read beats by
   // `markBeatRead`.
+  // An opened upgrade removes its source, so a placed rung also stands in
+  // for every rung below it — a town hall is still a mayor's office.
   final ctx = UnlockContext(
     lifetimeCoinsEarned: player.lifetimeCoinsEarned,
     population: city.population,
-    placedBuildingTypeIds: placements.map((p) => p.buildingTypeId).toSet(),
+    placedBuildingTypeIds: placedWithLadderAncestors(
+      placements.map((p) => p.buildingTypeId),
+    ),
     readBeatIds: readBeats,
   );
   const engine = BuildingDagEngine();
@@ -141,11 +157,11 @@ class CityActions {
 
   final Ref _ref;
 
-  /// Spends the building's `coinCost` and records the placement at
-  /// `(col, row)`. Returns the new placement's id (so the caller can keep it
-  /// selected for repositioning), or null if there's no active player.
-  /// Invalidates the placement, player, and player-list providers so every
-  /// screen refreshes.
+  /// Records a finished building at `(col, row)` — the free path (the
+  /// mayor's office). Priced buildings go through [startSite] and are placed
+  /// by [payIntoSite] when the site fills. Returns the new placement's id (so
+  /// the caller can keep it selected for repositioning), or null if there's
+  /// no active player.
   Future<int?> placeBuilding(BuildingType type, int col, int row) async {
     final playerId = _ref.read(activePlayerIdProvider);
     if (playerId == null) return null;
@@ -157,18 +173,104 @@ class CityActions {
       buildingTypeId: type.id,
       gridX: col,
       gridY: row,
-      coinCost: type.coinCost,
     );
+    await _afterCityChange();
+    return id;
+  }
+
+  /// A building opened or land was added: refresh what depends on it, step
+  /// the population toward the new capacity so the change gives immediate
+  /// feedback, then re-evaluate beats (a placement clears a demand /
+  /// triggers praise).
+  Future<void> _afterCityChange() async {
     _ref
       ..invalidate(placementsProvider)
+      ..invalidate(ownedBlocksProvider)
+      ..invalidate(sitesProvider)
+      ..invalidate(cityCatalogProvider)
       ..invalidate(activePlayerProvider)
       ..invalidate(allPlayersProvider);
-    // A new building changes the city's capacity — step the population toward
-    // it so placing something gives immediate (if small) feedback — then
-    // re-evaluate beats (e.g. a placement clears a demand / triggers praise).
     await tickPopulation();
     await fireBeats();
-    return id;
+  }
+
+  /// Starts a construction site for [goal] (city_builder.md §8.2 step 2):
+  /// no coins change hands. Re-checks the domain rules ([checkStartSite])
+  /// against persisted state and returns the rejection if any. A free goal
+  /// (the mayor's office) opens at once, so no site row is created for it.
+  /// On success returns the new site id — or, for a free goal, the new
+  /// placement id in [SiteStart.placementId].
+  Future<SiteStart> startSite(SiteGoal goal) async {
+    final playerId = _ref.read(activePlayerIdProvider);
+    if (playerId == null) return const SiteStart.noPlayer();
+    final db = _ref.read(appDatabaseProvider);
+    final city = await db.cityForPlayer(playerId);
+    final placements = await db.placementsForCity(city.id);
+    final open = sitesFromRows(await db.sitesForCity(city.id), placements);
+    final rejection = checkStartSite(
+      goal: goal,
+      openSites: open.map((s) => s.site),
+      ownedBlocks: await db.ownedBlocksForCity(city.id),
+    );
+    if (rejection != null) return SiteStart.rejected(rejection, open);
+
+    if (goal.price == 0 && goal is BuildingGoal) {
+      final id = await placeBuilding(goal.type, goal.col, goal.row);
+      return SiteStart.opened(placementId: id);
+    }
+    final int siteId;
+    switch (goal) {
+      case BuildingGoal():
+        siteId = await db.startBuildingSite(
+          cityId: city.id,
+          playerId: playerId,
+          buildingTypeId: goal.type.id,
+          gridX: goal.col,
+          gridY: goal.row,
+          upgradesFromPlacementId: goal.upgrade?.sourcePlacementId,
+        );
+      case LandBlockGoal():
+        siteId = await db.startLandSite(
+          cityId: city.id,
+          playerId: playerId,
+          blockX: goal.blockX,
+          blockY: goal.blockY,
+        );
+    }
+    _ref.invalidate(sitesProvider);
+    return SiteStart.started(siteId: siteId);
+  }
+
+  /// Moves a building site's footprint to `(col, row)`; its coins stay.
+  Future<void> moveSite(int siteId, int col, int row) async {
+    final db = _ref.read(appDatabaseProvider);
+    await db.moveSite(siteId: siteId, gridX: col, gridY: row);
+    _ref.invalidate(sitesProvider);
+  }
+
+  /// Pays [coins] into site [siteId] and opens it if the bar reaches the
+  /// price (the building is placed / the land is owned, the site row goes).
+  /// Returns what happened, or null if the site no longer exists (it opened
+  /// earlier in the block, say) — the caller then has nowhere to put the
+  /// coins, which is the §8.11 overflow case; the lifetime counter already
+  /// counted them.
+  Future<PayInResult?> payIntoSite(int siteId, int coins) async {
+    final playerId = _ref.read(activePlayerIdProvider);
+    if (playerId == null) return null;
+    final db = _ref.read(appDatabaseProvider);
+    final row = await db.siteById(siteId);
+    if (row == null) return null;
+    final site = siteFromRow(row, await db.placementsForCity(row.cityId));
+    if (site == null) return null;
+    final result = site.payIn(coins);
+    await db.setSitePaidCoins(siteId, result.site.paidCoins);
+    if (result.site.isFull) {
+      await db.openSite(siteId, playerId: playerId);
+      await _afterCityChange();
+    } else {
+      _ref.invalidate(sitesProvider);
+    }
+    return result;
   }
 
   /// Re-evaluates every story beat against the current city + player state and
@@ -315,37 +417,6 @@ class CityActions {
     }
   }
 
-  /// Buys land block `(blockX, blockY)` for the active city: spends its
-  /// ring-priced coins and records ownership. Re-validates against persisted
-  /// state (block not already owned, on the purchasable edge frontier,
-  /// affordable),
-  /// so it's a safe no-op backstop behind the UI's own checks.
-  Future<void> buyLandBlock(int blockX, int blockY) async {
-    final playerId = _ref.read(activePlayerIdProvider);
-    if (playerId == null) return;
-    final db = _ref.read(appDatabaseProvider);
-    final player = await db.getPlayerById(playerId);
-    final city = await db.cityForPlayer(playerId);
-    final owned = await db.ownedBlocksForCity(city.id);
-    final block = (blockX, blockY);
-    if (owned.contains(block)) return; // already owned
-    if (!purchasableBlocks(owned).contains(block)) return; // off the frontier
-    final cost = blockCost(blockX, blockY);
-    if (player.coinBalance < cost) return;
-    await db.buyCityLandBlock(
-      cityId: city.id,
-      playerId: playerId,
-      blockX: blockX,
-      blockY: blockY,
-      coinCost: cost,
-    );
-    _ref
-      ..invalidate(ownedBlocksProvider)
-      ..invalidate(placementsProvider)
-      ..invalidate(activePlayerProvider)
-      ..invalidate(allPlayersProvider);
-  }
-
   /// Moves an existing placement to `(col, row)`. Used for `unique`
   /// building types so a second "place" relocates the first instance
   /// instead of stacking a duplicate.
@@ -395,14 +466,22 @@ class CityActions {
   // questions for currency. Tree-shaken out of release with the UI that calls
   // them; each also asserts it isn't reached in a non-debug build.
 
-  /// Grants [amount] coins. Lifetime coins bump too (so lifetime-gated unlock
-  /// rules also advance, exactly as earning would).
-  Future<void> debugGrantCoins(int amount) async {
+  /// Pays [amount] coins into site [siteId] (or, when null, the oldest open
+  /// site) exactly as earning would: the lifetime counter bumps too, so
+  /// lifetime-gated unlock rules advance. No-op with no open site.
+  Future<void> debugPayCoins(int amount, {int? siteId}) async {
     assert(kDebugMode, 'debug helper called in a non-debug build');
     final playerId = _ref.read(activePlayerIdProvider);
     if (playerId == null) return;
     final db = _ref.read(appDatabaseProvider);
-    await db.incrementPlayerCoins(playerId, amount);
+    final target =
+        siteId ??
+        (await db.sitesForCity(
+          (await db.cityForPlayer(playerId)).id,
+        )).firstOrNull?.id;
+    if (target == null) return;
+    await db.addLifetimeCoins(playerId, amount);
+    await payIntoSite(target, amount);
     _ref
       ..invalidate(activePlayerProvider)
       ..invalidate(allPlayersProvider)
@@ -469,10 +548,46 @@ class CityActions {
     await _ref.read(appDatabaseProvider).resetCityForPlayer(playerId);
     _ref
       ..invalidate(placementsProvider)
+      ..invalidate(ownedBlocksProvider)
+      ..invalidate(sitesProvider)
       ..invalidate(activeCityProvider)
       ..invalidate(cityCatalogProvider)
       ..invalidate(onScreenBeatsProvider)
       ..invalidate(activePlayerProvider)
       ..invalidate(allPlayersProvider);
   }
+}
+
+/// Outcome of [CityActions.startSite].
+class SiteStart {
+  const SiteStart.started({required this.siteId})
+    : placementId = null,
+      rejection = null,
+      openSites = const [];
+
+  /// A free goal opened on the spot — there is no site, just a placement.
+  const SiteStart.opened({required this.placementId})
+    : siteId = null,
+      rejection = null,
+      openSites = const [];
+
+  const SiteStart.rejected(this.rejection, this.openSites)
+    : siteId = null,
+      placementId = null;
+
+  const SiteStart.noPlayer()
+    : siteId = null,
+      placementId = null,
+      rejection = null,
+      openSites = const [];
+
+  final int? siteId;
+  final int? placementId;
+  final SiteStartRejection? rejection;
+
+  /// The sites that were open when a start was refused — the nudge names
+  /// them (city_builder.md §8.5).
+  final List<CitySite> openSites;
+
+  bool get ok => rejection == null && (siteId != null || placementId != null);
 }

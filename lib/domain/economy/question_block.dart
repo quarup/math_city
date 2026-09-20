@@ -1,3 +1,4 @@
+import 'package:math_city/domain/city/construction_site.dart';
 import 'package:math_city/domain/concepts/dag_engine.dart';
 import 'package:math_city/domain/proficiency/proficiency_band.dart';
 
@@ -26,6 +27,7 @@ class AnswerReward {
     required this.streakCount,
     this.bandBonuses = const <BandCrossingBonus>[],
     this.unlocks = const <UnlockEvent>[],
+    this.sitePayIn,
   });
 
   final bool correct;
@@ -43,6 +45,11 @@ class AnswerReward {
   /// Drip-feed concepts this answer introduced (the top-up after a mastery
   /// or a retirement can add several at once; usually empty).
   final List<UnlockEvent> unlocks;
+
+  /// Where [totalCoins] went: the construction site the player is building
+  /// (city_builder.md §8 — a coin only exists inside a site). Null when no
+  /// site was active, or on a wrong answer (nothing to pay).
+  final PayInResult? sitePayIn;
 
   int get bonusCoins => bandBonuses.fold(0, (sum, b) => sum + b.coins);
 
@@ -100,6 +107,26 @@ class QuestionBlock {
   /// Streak count after the last answered question, or null if nothing has
   /// been answered yet.
   int? get streakCount => rewards.isEmpty ? null : rewards.last.streakCount;
+
+  /// Every site payment this block made, in order.
+  List<PayInResult> get sitePayIns => [
+    for (final r in rewards) ?r.sitePayIn,
+  ];
+
+  /// The site as it stood after the block's last payment, or null if no
+  /// coins reached a site (no active site, or nothing earned).
+  ConstructionSite? get siteAfter =>
+      sitePayIns.isEmpty ? null : sitePayIns.last.site;
+
+  /// Coins the block put into the site (never more than the site could
+  /// take — the bar stops at the price).
+  int get siteCoins => sitePayIns.fold(0, (sum, p) => sum + p.accepted);
+
+  /// The site's paid-in coins before this block started.
+  int get sitePaidBefore => (siteAfter?.paidCoins ?? 0) - siteCoins;
+
+  /// The block's payments took the site from short to full — it opened.
+  bool get siteOpened => sitePayIns.any((p) => p.opened);
 
   void record(AnswerReward reward) {
     assert(!isComplete, 'block already complete');

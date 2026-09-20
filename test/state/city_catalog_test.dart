@@ -29,7 +29,6 @@ Future<(AppDatabase, Player)> _playerWithMayor() async {
     buildingTypeId: 'mayors_office',
     gridX: 5,
     gridY: 5,
-    coinCost: 0,
   );
   return (db, player);
 }
@@ -96,7 +95,6 @@ void main() {
         buildingTypeId: 'mid_rise_apartment',
         gridX: 1,
         gridY: 1,
-        coinCost: 0,
       );
       await db.setCityPopulation(city.id, 100);
       await db.recordBeatFired(player.id, 'demand_high_rise', 0);
@@ -108,7 +106,7 @@ void main() {
       var catalog = await container.read(cityCatalogProvider.future);
       expect(catalog.map((b) => b.id), isNot(contains('high_rise')));
 
-      await db.incrementPlayerCoins(player.id, 3600);
+      await db.addLifetimeCoins(player.id, 3600);
       container.invalidate(activePlayerProvider);
       catalog = await container.read(cityCatalogProvider.future);
       expect(catalog.map((b) => b.id), contains('high_rise'));

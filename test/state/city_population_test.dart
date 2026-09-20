@@ -29,7 +29,6 @@ Future<void> _placeHome(AppDatabase db, int cityId, int playerId, int x) =>
       buildingTypeId: 'single_home',
       gridX: x,
       gridY: 0,
-      coinCost: 0,
     );
 
 void main() {

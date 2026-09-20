@@ -9,7 +9,6 @@ import 'package:math_city/presentation/debug/concept_debug_screen.dart';
 import 'package:math_city/presentation/player/adventurer_avatar_widget.dart';
 import 'package:math_city/presentation/player/player_creation_screen.dart';
 import 'package:math_city/presentation/theme/app_palette.dart';
-import 'package:math_city/presentation/widgets/coin_icon.dart';
 import 'package:math_city/services/debug_harness.dart';
 import 'package:math_city/state/player_provider.dart';
 
@@ -270,17 +269,6 @@ class _PlayerChip extends StatelessWidget {
                     ),
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 2),
-                  // Scale the coin row down to fit the fixed-width card so
-                  // large balances (12,345 …) don't overflow the right edge.
-                  FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: CoinAmount(
-                      amount: player.coinBalance,
-                      iconSize: 12,
-                      style: theme.textTheme.labelSmall,
-                    ),
                   ),
                 ],
               ),

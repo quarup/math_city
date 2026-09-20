@@ -45,18 +45,6 @@ class $PlayersTable extends Players with TableInfo<$PlayersTable, Player> {
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _coinBalanceMeta = const VerificationMeta(
-    'coinBalance',
-  );
-  @override
-  late final GeneratedColumn<int> coinBalance = GeneratedColumn<int>(
-    'coin_balance',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultValue: const Constant(0),
-  );
   static const VerificationMeta _lifetimeCoinsEarnedMeta =
       const VerificationMeta('lifetimeCoinsEarned');
   @override
@@ -119,7 +107,6 @@ class $PlayersTable extends Players with TableInfo<$PlayersTable, Player> {
     id,
     name,
     gradeLevel,
-    coinBalance,
     lifetimeCoinsEarned,
     streakCount,
     roundsPlayed,
@@ -156,15 +143,6 @@ class $PlayersTable extends Players with TableInfo<$PlayersTable, Player> {
       );
     } else if (isInserting) {
       context.missing(_gradeLevelMeta);
-    }
-    if (data.containsKey('coin_balance')) {
-      context.handle(
-        _coinBalanceMeta,
-        coinBalance.isAcceptableOrUnknown(
-          data['coin_balance']!,
-          _coinBalanceMeta,
-        ),
-      );
     }
     if (data.containsKey('lifetime_coins_earned')) {
       context.handle(
@@ -231,10 +209,6 @@ class $PlayersTable extends Players with TableInfo<$PlayersTable, Player> {
         DriftSqlType.int,
         data['${effectivePrefix}grade_level'],
       )!,
-      coinBalance: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}coin_balance'],
-      )!,
       lifetimeCoinsEarned: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}lifetime_coins_earned'],
@@ -269,13 +243,10 @@ class Player extends DataClass implements Insertable<Player> {
   final String name;
   final int gradeLevel;
 
-  /// Coin spending balance — decremented on placements, land, map unlocks,
-  /// events. One coin ≈ one expected second of study (see
-  /// `lib/domain/economy/coin_economy.dart`).
-  final int coinBalance;
-
   /// Coins lifetime earned — never decreases; literally "total seconds
   /// studied". Gate input on `BuildingType.unlockRule.minLifetimeCoins`.
+  /// There is no spending balance: a coin only exists inside a construction
+  /// site (see `ConstructionSites`; city_builder.md §8.3).
   final int lifetimeCoinsEarned;
 
   /// Consecutive correct answers: +1 per correct, reset to 0 on a wrong one.
@@ -295,7 +266,6 @@ class Player extends DataClass implements Insertable<Player> {
     required this.id,
     required this.name,
     required this.gradeLevel,
-    required this.coinBalance,
     required this.lifetimeCoinsEarned,
     required this.streakCount,
     required this.roundsPlayed,
@@ -308,7 +278,6 @@ class Player extends DataClass implements Insertable<Player> {
     map['id'] = Variable<int>(id);
     map['name'] = Variable<String>(name);
     map['grade_level'] = Variable<int>(gradeLevel);
-    map['coin_balance'] = Variable<int>(coinBalance);
     map['lifetime_coins_earned'] = Variable<int>(lifetimeCoinsEarned);
     map['streak_count'] = Variable<int>(streakCount);
     map['rounds_played'] = Variable<int>(roundsPlayed);
@@ -324,7 +293,6 @@ class Player extends DataClass implements Insertable<Player> {
       id: Value(id),
       name: Value(name),
       gradeLevel: Value(gradeLevel),
-      coinBalance: Value(coinBalance),
       lifetimeCoinsEarned: Value(lifetimeCoinsEarned),
       streakCount: Value(streakCount),
       roundsPlayed: Value(roundsPlayed),
@@ -344,7 +312,6 @@ class Player extends DataClass implements Insertable<Player> {
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       gradeLevel: serializer.fromJson<int>(json['gradeLevel']),
-      coinBalance: serializer.fromJson<int>(json['coinBalance']),
       lifetimeCoinsEarned: serializer.fromJson<int>(
         json['lifetimeCoinsEarned'],
       ),
@@ -361,7 +328,6 @@ class Player extends DataClass implements Insertable<Player> {
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
       'gradeLevel': serializer.toJson<int>(gradeLevel),
-      'coinBalance': serializer.toJson<int>(coinBalance),
       'lifetimeCoinsEarned': serializer.toJson<int>(lifetimeCoinsEarned),
       'streakCount': serializer.toJson<int>(streakCount),
       'roundsPlayed': serializer.toJson<int>(roundsPlayed),
@@ -374,7 +340,6 @@ class Player extends DataClass implements Insertable<Player> {
     int? id,
     String? name,
     int? gradeLevel,
-    int? coinBalance,
     int? lifetimeCoinsEarned,
     int? streakCount,
     int? roundsPlayed,
@@ -384,7 +349,6 @@ class Player extends DataClass implements Insertable<Player> {
     id: id ?? this.id,
     name: name ?? this.name,
     gradeLevel: gradeLevel ?? this.gradeLevel,
-    coinBalance: coinBalance ?? this.coinBalance,
     lifetimeCoinsEarned: lifetimeCoinsEarned ?? this.lifetimeCoinsEarned,
     streakCount: streakCount ?? this.streakCount,
     roundsPlayed: roundsPlayed ?? this.roundsPlayed,
@@ -398,9 +362,6 @@ class Player extends DataClass implements Insertable<Player> {
       gradeLevel: data.gradeLevel.present
           ? data.gradeLevel.value
           : this.gradeLevel,
-      coinBalance: data.coinBalance.present
-          ? data.coinBalance.value
-          : this.coinBalance,
       lifetimeCoinsEarned: data.lifetimeCoinsEarned.present
           ? data.lifetimeCoinsEarned.value
           : this.lifetimeCoinsEarned,
@@ -423,7 +384,6 @@ class Player extends DataClass implements Insertable<Player> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('gradeLevel: $gradeLevel, ')
-          ..write('coinBalance: $coinBalance, ')
           ..write('lifetimeCoinsEarned: $lifetimeCoinsEarned, ')
           ..write('streakCount: $streakCount, ')
           ..write('roundsPlayed: $roundsPlayed, ')
@@ -438,7 +398,6 @@ class Player extends DataClass implements Insertable<Player> {
     id,
     name,
     gradeLevel,
-    coinBalance,
     lifetimeCoinsEarned,
     streakCount,
     roundsPlayed,
@@ -452,7 +411,6 @@ class Player extends DataClass implements Insertable<Player> {
           other.id == this.id &&
           other.name == this.name &&
           other.gradeLevel == this.gradeLevel &&
-          other.coinBalance == this.coinBalance &&
           other.lifetimeCoinsEarned == this.lifetimeCoinsEarned &&
           other.streakCount == this.streakCount &&
           other.roundsPlayed == this.roundsPlayed &&
@@ -464,7 +422,6 @@ class PlayersCompanion extends UpdateCompanion<Player> {
   final Value<int> id;
   final Value<String> name;
   final Value<int> gradeLevel;
-  final Value<int> coinBalance;
   final Value<int> lifetimeCoinsEarned;
   final Value<int> streakCount;
   final Value<int> roundsPlayed;
@@ -474,7 +431,6 @@ class PlayersCompanion extends UpdateCompanion<Player> {
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.gradeLevel = const Value.absent(),
-    this.coinBalance = const Value.absent(),
     this.lifetimeCoinsEarned = const Value.absent(),
     this.streakCount = const Value.absent(),
     this.roundsPlayed = const Value.absent(),
@@ -485,7 +441,6 @@ class PlayersCompanion extends UpdateCompanion<Player> {
     this.id = const Value.absent(),
     required String name,
     required int gradeLevel,
-    this.coinBalance = const Value.absent(),
     this.lifetimeCoinsEarned = const Value.absent(),
     this.streakCount = const Value.absent(),
     this.roundsPlayed = const Value.absent(),
@@ -498,7 +453,6 @@ class PlayersCompanion extends UpdateCompanion<Player> {
     Expression<int>? id,
     Expression<String>? name,
     Expression<int>? gradeLevel,
-    Expression<int>? coinBalance,
     Expression<int>? lifetimeCoinsEarned,
     Expression<int>? streakCount,
     Expression<int>? roundsPlayed,
@@ -509,7 +463,6 @@ class PlayersCompanion extends UpdateCompanion<Player> {
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (gradeLevel != null) 'grade_level': gradeLevel,
-      if (coinBalance != null) 'coin_balance': coinBalance,
       if (lifetimeCoinsEarned != null)
         'lifetime_coins_earned': lifetimeCoinsEarned,
       if (streakCount != null) 'streak_count': streakCount,
@@ -523,7 +476,6 @@ class PlayersCompanion extends UpdateCompanion<Player> {
     Value<int>? id,
     Value<String>? name,
     Value<int>? gradeLevel,
-    Value<int>? coinBalance,
     Value<int>? lifetimeCoinsEarned,
     Value<int>? streakCount,
     Value<int>? roundsPlayed,
@@ -534,7 +486,6 @@ class PlayersCompanion extends UpdateCompanion<Player> {
       id: id ?? this.id,
       name: name ?? this.name,
       gradeLevel: gradeLevel ?? this.gradeLevel,
-      coinBalance: coinBalance ?? this.coinBalance,
       lifetimeCoinsEarned: lifetimeCoinsEarned ?? this.lifetimeCoinsEarned,
       streakCount: streakCount ?? this.streakCount,
       roundsPlayed: roundsPlayed ?? this.roundsPlayed,
@@ -554,9 +505,6 @@ class PlayersCompanion extends UpdateCompanion<Player> {
     }
     if (gradeLevel.present) {
       map['grade_level'] = Variable<int>(gradeLevel.value);
-    }
-    if (coinBalance.present) {
-      map['coin_balance'] = Variable<int>(coinBalance.value);
     }
     if (lifetimeCoinsEarned.present) {
       map['lifetime_coins_earned'] = Variable<int>(lifetimeCoinsEarned.value);
@@ -582,7 +530,6 @@ class PlayersCompanion extends UpdateCompanion<Player> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('gradeLevel: $gradeLevel, ')
-          ..write('coinBalance: $coinBalance, ')
           ..write('lifetimeCoinsEarned: $lifetimeCoinsEarned, ')
           ..write('streakCount: $streakCount, ')
           ..write('roundsPlayed: $roundsPlayed, ')
@@ -3199,18 +3146,6 @@ class $BuildingPlacementsTable extends BuildingPlacements
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _currentTierMeta = const VerificationMeta(
-    'currentTier',
-  );
-  @override
-  late final GeneratedColumn<int> currentTier = GeneratedColumn<int>(
-    'current_tier',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultValue: const Constant(0),
-  );
   static const VerificationMeta _gridXMeta = const VerificationMeta('gridX');
   @override
   late final GeneratedColumn<int> gridX = GeneratedColumn<int>(
@@ -3245,7 +3180,6 @@ class $BuildingPlacementsTable extends BuildingPlacements
     id,
     cityId,
     buildingTypeId,
-    currentTier,
     gridX,
     gridY,
     placedAtRound,
@@ -3283,15 +3217,6 @@ class $BuildingPlacementsTable extends BuildingPlacements
       );
     } else if (isInserting) {
       context.missing(_buildingTypeIdMeta);
-    }
-    if (data.containsKey('current_tier')) {
-      context.handle(
-        _currentTierMeta,
-        currentTier.isAcceptableOrUnknown(
-          data['current_tier']!,
-          _currentTierMeta,
-        ),
-      );
     }
     if (data.containsKey('grid_x')) {
       context.handle(
@@ -3341,10 +3266,6 @@ class $BuildingPlacementsTable extends BuildingPlacements
         DriftSqlType.string,
         data['${effectivePrefix}building_type_id'],
       )!,
-      currentTier: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}current_tier'],
-      )!,
       gridX: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}grid_x'],
@@ -3371,7 +3292,6 @@ class BuildingPlacement extends DataClass
   final int id;
   final int cityId;
   final String buildingTypeId;
-  final int currentTier;
   final int gridX;
   final int gridY;
   final int placedAtRound;
@@ -3379,7 +3299,6 @@ class BuildingPlacement extends DataClass
     required this.id,
     required this.cityId,
     required this.buildingTypeId,
-    required this.currentTier,
     required this.gridX,
     required this.gridY,
     required this.placedAtRound,
@@ -3390,7 +3309,6 @@ class BuildingPlacement extends DataClass
     map['id'] = Variable<int>(id);
     map['city_id'] = Variable<int>(cityId);
     map['building_type_id'] = Variable<String>(buildingTypeId);
-    map['current_tier'] = Variable<int>(currentTier);
     map['grid_x'] = Variable<int>(gridX);
     map['grid_y'] = Variable<int>(gridY);
     map['placed_at_round'] = Variable<int>(placedAtRound);
@@ -3402,7 +3320,6 @@ class BuildingPlacement extends DataClass
       id: Value(id),
       cityId: Value(cityId),
       buildingTypeId: Value(buildingTypeId),
-      currentTier: Value(currentTier),
       gridX: Value(gridX),
       gridY: Value(gridY),
       placedAtRound: Value(placedAtRound),
@@ -3418,7 +3335,6 @@ class BuildingPlacement extends DataClass
       id: serializer.fromJson<int>(json['id']),
       cityId: serializer.fromJson<int>(json['cityId']),
       buildingTypeId: serializer.fromJson<String>(json['buildingTypeId']),
-      currentTier: serializer.fromJson<int>(json['currentTier']),
       gridX: serializer.fromJson<int>(json['gridX']),
       gridY: serializer.fromJson<int>(json['gridY']),
       placedAtRound: serializer.fromJson<int>(json['placedAtRound']),
@@ -3431,7 +3347,6 @@ class BuildingPlacement extends DataClass
       'id': serializer.toJson<int>(id),
       'cityId': serializer.toJson<int>(cityId),
       'buildingTypeId': serializer.toJson<String>(buildingTypeId),
-      'currentTier': serializer.toJson<int>(currentTier),
       'gridX': serializer.toJson<int>(gridX),
       'gridY': serializer.toJson<int>(gridY),
       'placedAtRound': serializer.toJson<int>(placedAtRound),
@@ -3442,7 +3357,6 @@ class BuildingPlacement extends DataClass
     int? id,
     int? cityId,
     String? buildingTypeId,
-    int? currentTier,
     int? gridX,
     int? gridY,
     int? placedAtRound,
@@ -3450,7 +3364,6 @@ class BuildingPlacement extends DataClass
     id: id ?? this.id,
     cityId: cityId ?? this.cityId,
     buildingTypeId: buildingTypeId ?? this.buildingTypeId,
-    currentTier: currentTier ?? this.currentTier,
     gridX: gridX ?? this.gridX,
     gridY: gridY ?? this.gridY,
     placedAtRound: placedAtRound ?? this.placedAtRound,
@@ -3462,9 +3375,6 @@ class BuildingPlacement extends DataClass
       buildingTypeId: data.buildingTypeId.present
           ? data.buildingTypeId.value
           : this.buildingTypeId,
-      currentTier: data.currentTier.present
-          ? data.currentTier.value
-          : this.currentTier,
       gridX: data.gridX.present ? data.gridX.value : this.gridX,
       gridY: data.gridY.present ? data.gridY.value : this.gridY,
       placedAtRound: data.placedAtRound.present
@@ -3479,7 +3389,6 @@ class BuildingPlacement extends DataClass
           ..write('id: $id, ')
           ..write('cityId: $cityId, ')
           ..write('buildingTypeId: $buildingTypeId, ')
-          ..write('currentTier: $currentTier, ')
           ..write('gridX: $gridX, ')
           ..write('gridY: $gridY, ')
           ..write('placedAtRound: $placedAtRound')
@@ -3488,15 +3397,8 @@ class BuildingPlacement extends DataClass
   }
 
   @override
-  int get hashCode => Object.hash(
-    id,
-    cityId,
-    buildingTypeId,
-    currentTier,
-    gridX,
-    gridY,
-    placedAtRound,
-  );
+  int get hashCode =>
+      Object.hash(id, cityId, buildingTypeId, gridX, gridY, placedAtRound);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -3504,7 +3406,6 @@ class BuildingPlacement extends DataClass
           other.id == this.id &&
           other.cityId == this.cityId &&
           other.buildingTypeId == this.buildingTypeId &&
-          other.currentTier == this.currentTier &&
           other.gridX == this.gridX &&
           other.gridY == this.gridY &&
           other.placedAtRound == this.placedAtRound);
@@ -3514,7 +3415,6 @@ class BuildingPlacementsCompanion extends UpdateCompanion<BuildingPlacement> {
   final Value<int> id;
   final Value<int> cityId;
   final Value<String> buildingTypeId;
-  final Value<int> currentTier;
   final Value<int> gridX;
   final Value<int> gridY;
   final Value<int> placedAtRound;
@@ -3522,7 +3422,6 @@ class BuildingPlacementsCompanion extends UpdateCompanion<BuildingPlacement> {
     this.id = const Value.absent(),
     this.cityId = const Value.absent(),
     this.buildingTypeId = const Value.absent(),
-    this.currentTier = const Value.absent(),
     this.gridX = const Value.absent(),
     this.gridY = const Value.absent(),
     this.placedAtRound = const Value.absent(),
@@ -3531,7 +3430,6 @@ class BuildingPlacementsCompanion extends UpdateCompanion<BuildingPlacement> {
     this.id = const Value.absent(),
     required int cityId,
     required String buildingTypeId,
-    this.currentTier = const Value.absent(),
     required int gridX,
     required int gridY,
     required int placedAtRound,
@@ -3544,7 +3442,6 @@ class BuildingPlacementsCompanion extends UpdateCompanion<BuildingPlacement> {
     Expression<int>? id,
     Expression<int>? cityId,
     Expression<String>? buildingTypeId,
-    Expression<int>? currentTier,
     Expression<int>? gridX,
     Expression<int>? gridY,
     Expression<int>? placedAtRound,
@@ -3553,7 +3450,6 @@ class BuildingPlacementsCompanion extends UpdateCompanion<BuildingPlacement> {
       if (id != null) 'id': id,
       if (cityId != null) 'city_id': cityId,
       if (buildingTypeId != null) 'building_type_id': buildingTypeId,
-      if (currentTier != null) 'current_tier': currentTier,
       if (gridX != null) 'grid_x': gridX,
       if (gridY != null) 'grid_y': gridY,
       if (placedAtRound != null) 'placed_at_round': placedAtRound,
@@ -3564,7 +3460,6 @@ class BuildingPlacementsCompanion extends UpdateCompanion<BuildingPlacement> {
     Value<int>? id,
     Value<int>? cityId,
     Value<String>? buildingTypeId,
-    Value<int>? currentTier,
     Value<int>? gridX,
     Value<int>? gridY,
     Value<int>? placedAtRound,
@@ -3573,7 +3468,6 @@ class BuildingPlacementsCompanion extends UpdateCompanion<BuildingPlacement> {
       id: id ?? this.id,
       cityId: cityId ?? this.cityId,
       buildingTypeId: buildingTypeId ?? this.buildingTypeId,
-      currentTier: currentTier ?? this.currentTier,
       gridX: gridX ?? this.gridX,
       gridY: gridY ?? this.gridY,
       placedAtRound: placedAtRound ?? this.placedAtRound,
@@ -3591,9 +3485,6 @@ class BuildingPlacementsCompanion extends UpdateCompanion<BuildingPlacement> {
     }
     if (buildingTypeId.present) {
       map['building_type_id'] = Variable<String>(buildingTypeId.value);
-    }
-    if (currentTier.present) {
-      map['current_tier'] = Variable<int>(currentTier.value);
     }
     if (gridX.present) {
       map['grid_x'] = Variable<int>(gridX.value);
@@ -3613,10 +3504,689 @@ class BuildingPlacementsCompanion extends UpdateCompanion<BuildingPlacement> {
           ..write('id: $id, ')
           ..write('cityId: $cityId, ')
           ..write('buildingTypeId: $buildingTypeId, ')
-          ..write('currentTier: $currentTier, ')
           ..write('gridX: $gridX, ')
           ..write('gridY: $gridY, ')
           ..write('placedAtRound: $placedAtRound')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ConstructionSitesTable extends ConstructionSites
+    with TableInfo<$ConstructionSitesTable, ConstructionSiteRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ConstructionSitesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _cityIdMeta = const VerificationMeta('cityId');
+  @override
+  late final GeneratedColumn<int> cityId = GeneratedColumn<int>(
+    'city_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES cities (id)',
+    ),
+  );
+  static const VerificationMeta _goalKindMeta = const VerificationMeta(
+    'goalKind',
+  );
+  @override
+  late final GeneratedColumn<String> goalKind = GeneratedColumn<String>(
+    'goal_kind',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _buildingTypeIdMeta = const VerificationMeta(
+    'buildingTypeId',
+  );
+  @override
+  late final GeneratedColumn<String> buildingTypeId = GeneratedColumn<String>(
+    'building_type_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _gridXMeta = const VerificationMeta('gridX');
+  @override
+  late final GeneratedColumn<int> gridX = GeneratedColumn<int>(
+    'grid_x',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _gridYMeta = const VerificationMeta('gridY');
+  @override
+  late final GeneratedColumn<int> gridY = GeneratedColumn<int>(
+    'grid_y',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _upgradesFromPlacementIdMeta =
+      const VerificationMeta('upgradesFromPlacementId');
+  @override
+  late final GeneratedColumn<int> upgradesFromPlacementId =
+      GeneratedColumn<int>(
+        'upgrades_from_placement_id',
+        aliasedName,
+        true,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _blockXMeta = const VerificationMeta('blockX');
+  @override
+  late final GeneratedColumn<int> blockX = GeneratedColumn<int>(
+    'block_x',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _blockYMeta = const VerificationMeta('blockY');
+  @override
+  late final GeneratedColumn<int> blockY = GeneratedColumn<int>(
+    'block_y',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _paidCoinsMeta = const VerificationMeta(
+    'paidCoins',
+  );
+  @override
+  late final GeneratedColumn<int> paidCoins = GeneratedColumn<int>(
+    'paid_coins',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _startedAtRoundMeta = const VerificationMeta(
+    'startedAtRound',
+  );
+  @override
+  late final GeneratedColumn<int> startedAtRound = GeneratedColumn<int>(
+    'started_at_round',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    cityId,
+    goalKind,
+    buildingTypeId,
+    gridX,
+    gridY,
+    upgradesFromPlacementId,
+    blockX,
+    blockY,
+    paidCoins,
+    startedAtRound,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'construction_sites';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ConstructionSiteRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('city_id')) {
+      context.handle(
+        _cityIdMeta,
+        cityId.isAcceptableOrUnknown(data['city_id']!, _cityIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_cityIdMeta);
+    }
+    if (data.containsKey('goal_kind')) {
+      context.handle(
+        _goalKindMeta,
+        goalKind.isAcceptableOrUnknown(data['goal_kind']!, _goalKindMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_goalKindMeta);
+    }
+    if (data.containsKey('building_type_id')) {
+      context.handle(
+        _buildingTypeIdMeta,
+        buildingTypeId.isAcceptableOrUnknown(
+          data['building_type_id']!,
+          _buildingTypeIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('grid_x')) {
+      context.handle(
+        _gridXMeta,
+        gridX.isAcceptableOrUnknown(data['grid_x']!, _gridXMeta),
+      );
+    }
+    if (data.containsKey('grid_y')) {
+      context.handle(
+        _gridYMeta,
+        gridY.isAcceptableOrUnknown(data['grid_y']!, _gridYMeta),
+      );
+    }
+    if (data.containsKey('upgrades_from_placement_id')) {
+      context.handle(
+        _upgradesFromPlacementIdMeta,
+        upgradesFromPlacementId.isAcceptableOrUnknown(
+          data['upgrades_from_placement_id']!,
+          _upgradesFromPlacementIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('block_x')) {
+      context.handle(
+        _blockXMeta,
+        blockX.isAcceptableOrUnknown(data['block_x']!, _blockXMeta),
+      );
+    }
+    if (data.containsKey('block_y')) {
+      context.handle(
+        _blockYMeta,
+        blockY.isAcceptableOrUnknown(data['block_y']!, _blockYMeta),
+      );
+    }
+    if (data.containsKey('paid_coins')) {
+      context.handle(
+        _paidCoinsMeta,
+        paidCoins.isAcceptableOrUnknown(data['paid_coins']!, _paidCoinsMeta),
+      );
+    }
+    if (data.containsKey('started_at_round')) {
+      context.handle(
+        _startedAtRoundMeta,
+        startedAtRound.isAcceptableOrUnknown(
+          data['started_at_round']!,
+          _startedAtRoundMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_startedAtRoundMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ConstructionSiteRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ConstructionSiteRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      cityId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}city_id'],
+      )!,
+      goalKind: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}goal_kind'],
+      )!,
+      buildingTypeId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}building_type_id'],
+      ),
+      gridX: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}grid_x'],
+      ),
+      gridY: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}grid_y'],
+      ),
+      upgradesFromPlacementId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}upgrades_from_placement_id'],
+      ),
+      blockX: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}block_x'],
+      ),
+      blockY: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}block_y'],
+      ),
+      paidCoins: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}paid_coins'],
+      )!,
+      startedAtRound: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}started_at_round'],
+      )!,
+    );
+  }
+
+  @override
+  $ConstructionSitesTable createAlias(String alias) {
+    return $ConstructionSitesTable(attachedDatabase, alias);
+  }
+}
+
+class ConstructionSiteRow extends DataClass
+    implements Insertable<ConstructionSiteRow> {
+  final int id;
+  final int cityId;
+
+  /// `'building'` or `'land'`.
+  final String goalKind;
+  final String? buildingTypeId;
+  final int? gridX;
+  final int? gridY;
+
+  /// For an upgrade: the `BuildingPlacements.id` this site replaces when it
+  /// opens (the old building keeps standing until then).
+  final int? upgradesFromPlacementId;
+  final int? blockX;
+  final int? blockY;
+  final int paidCoins;
+
+  /// The player's round clock when the site was started.
+  final int startedAtRound;
+  const ConstructionSiteRow({
+    required this.id,
+    required this.cityId,
+    required this.goalKind,
+    this.buildingTypeId,
+    this.gridX,
+    this.gridY,
+    this.upgradesFromPlacementId,
+    this.blockX,
+    this.blockY,
+    required this.paidCoins,
+    required this.startedAtRound,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['city_id'] = Variable<int>(cityId);
+    map['goal_kind'] = Variable<String>(goalKind);
+    if (!nullToAbsent || buildingTypeId != null) {
+      map['building_type_id'] = Variable<String>(buildingTypeId);
+    }
+    if (!nullToAbsent || gridX != null) {
+      map['grid_x'] = Variable<int>(gridX);
+    }
+    if (!nullToAbsent || gridY != null) {
+      map['grid_y'] = Variable<int>(gridY);
+    }
+    if (!nullToAbsent || upgradesFromPlacementId != null) {
+      map['upgrades_from_placement_id'] = Variable<int>(
+        upgradesFromPlacementId,
+      );
+    }
+    if (!nullToAbsent || blockX != null) {
+      map['block_x'] = Variable<int>(blockX);
+    }
+    if (!nullToAbsent || blockY != null) {
+      map['block_y'] = Variable<int>(blockY);
+    }
+    map['paid_coins'] = Variable<int>(paidCoins);
+    map['started_at_round'] = Variable<int>(startedAtRound);
+    return map;
+  }
+
+  ConstructionSitesCompanion toCompanion(bool nullToAbsent) {
+    return ConstructionSitesCompanion(
+      id: Value(id),
+      cityId: Value(cityId),
+      goalKind: Value(goalKind),
+      buildingTypeId: buildingTypeId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(buildingTypeId),
+      gridX: gridX == null && nullToAbsent
+          ? const Value.absent()
+          : Value(gridX),
+      gridY: gridY == null && nullToAbsent
+          ? const Value.absent()
+          : Value(gridY),
+      upgradesFromPlacementId: upgradesFromPlacementId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(upgradesFromPlacementId),
+      blockX: blockX == null && nullToAbsent
+          ? const Value.absent()
+          : Value(blockX),
+      blockY: blockY == null && nullToAbsent
+          ? const Value.absent()
+          : Value(blockY),
+      paidCoins: Value(paidCoins),
+      startedAtRound: Value(startedAtRound),
+    );
+  }
+
+  factory ConstructionSiteRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ConstructionSiteRow(
+      id: serializer.fromJson<int>(json['id']),
+      cityId: serializer.fromJson<int>(json['cityId']),
+      goalKind: serializer.fromJson<String>(json['goalKind']),
+      buildingTypeId: serializer.fromJson<String?>(json['buildingTypeId']),
+      gridX: serializer.fromJson<int?>(json['gridX']),
+      gridY: serializer.fromJson<int?>(json['gridY']),
+      upgradesFromPlacementId: serializer.fromJson<int?>(
+        json['upgradesFromPlacementId'],
+      ),
+      blockX: serializer.fromJson<int?>(json['blockX']),
+      blockY: serializer.fromJson<int?>(json['blockY']),
+      paidCoins: serializer.fromJson<int>(json['paidCoins']),
+      startedAtRound: serializer.fromJson<int>(json['startedAtRound']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'cityId': serializer.toJson<int>(cityId),
+      'goalKind': serializer.toJson<String>(goalKind),
+      'buildingTypeId': serializer.toJson<String?>(buildingTypeId),
+      'gridX': serializer.toJson<int?>(gridX),
+      'gridY': serializer.toJson<int?>(gridY),
+      'upgradesFromPlacementId': serializer.toJson<int?>(
+        upgradesFromPlacementId,
+      ),
+      'blockX': serializer.toJson<int?>(blockX),
+      'blockY': serializer.toJson<int?>(blockY),
+      'paidCoins': serializer.toJson<int>(paidCoins),
+      'startedAtRound': serializer.toJson<int>(startedAtRound),
+    };
+  }
+
+  ConstructionSiteRow copyWith({
+    int? id,
+    int? cityId,
+    String? goalKind,
+    Value<String?> buildingTypeId = const Value.absent(),
+    Value<int?> gridX = const Value.absent(),
+    Value<int?> gridY = const Value.absent(),
+    Value<int?> upgradesFromPlacementId = const Value.absent(),
+    Value<int?> blockX = const Value.absent(),
+    Value<int?> blockY = const Value.absent(),
+    int? paidCoins,
+    int? startedAtRound,
+  }) => ConstructionSiteRow(
+    id: id ?? this.id,
+    cityId: cityId ?? this.cityId,
+    goalKind: goalKind ?? this.goalKind,
+    buildingTypeId: buildingTypeId.present
+        ? buildingTypeId.value
+        : this.buildingTypeId,
+    gridX: gridX.present ? gridX.value : this.gridX,
+    gridY: gridY.present ? gridY.value : this.gridY,
+    upgradesFromPlacementId: upgradesFromPlacementId.present
+        ? upgradesFromPlacementId.value
+        : this.upgradesFromPlacementId,
+    blockX: blockX.present ? blockX.value : this.blockX,
+    blockY: blockY.present ? blockY.value : this.blockY,
+    paidCoins: paidCoins ?? this.paidCoins,
+    startedAtRound: startedAtRound ?? this.startedAtRound,
+  );
+  ConstructionSiteRow copyWithCompanion(ConstructionSitesCompanion data) {
+    return ConstructionSiteRow(
+      id: data.id.present ? data.id.value : this.id,
+      cityId: data.cityId.present ? data.cityId.value : this.cityId,
+      goalKind: data.goalKind.present ? data.goalKind.value : this.goalKind,
+      buildingTypeId: data.buildingTypeId.present
+          ? data.buildingTypeId.value
+          : this.buildingTypeId,
+      gridX: data.gridX.present ? data.gridX.value : this.gridX,
+      gridY: data.gridY.present ? data.gridY.value : this.gridY,
+      upgradesFromPlacementId: data.upgradesFromPlacementId.present
+          ? data.upgradesFromPlacementId.value
+          : this.upgradesFromPlacementId,
+      blockX: data.blockX.present ? data.blockX.value : this.blockX,
+      blockY: data.blockY.present ? data.blockY.value : this.blockY,
+      paidCoins: data.paidCoins.present ? data.paidCoins.value : this.paidCoins,
+      startedAtRound: data.startedAtRound.present
+          ? data.startedAtRound.value
+          : this.startedAtRound,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ConstructionSiteRow(')
+          ..write('id: $id, ')
+          ..write('cityId: $cityId, ')
+          ..write('goalKind: $goalKind, ')
+          ..write('buildingTypeId: $buildingTypeId, ')
+          ..write('gridX: $gridX, ')
+          ..write('gridY: $gridY, ')
+          ..write('upgradesFromPlacementId: $upgradesFromPlacementId, ')
+          ..write('blockX: $blockX, ')
+          ..write('blockY: $blockY, ')
+          ..write('paidCoins: $paidCoins, ')
+          ..write('startedAtRound: $startedAtRound')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    cityId,
+    goalKind,
+    buildingTypeId,
+    gridX,
+    gridY,
+    upgradesFromPlacementId,
+    blockX,
+    blockY,
+    paidCoins,
+    startedAtRound,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ConstructionSiteRow &&
+          other.id == this.id &&
+          other.cityId == this.cityId &&
+          other.goalKind == this.goalKind &&
+          other.buildingTypeId == this.buildingTypeId &&
+          other.gridX == this.gridX &&
+          other.gridY == this.gridY &&
+          other.upgradesFromPlacementId == this.upgradesFromPlacementId &&
+          other.blockX == this.blockX &&
+          other.blockY == this.blockY &&
+          other.paidCoins == this.paidCoins &&
+          other.startedAtRound == this.startedAtRound);
+}
+
+class ConstructionSitesCompanion extends UpdateCompanion<ConstructionSiteRow> {
+  final Value<int> id;
+  final Value<int> cityId;
+  final Value<String> goalKind;
+  final Value<String?> buildingTypeId;
+  final Value<int?> gridX;
+  final Value<int?> gridY;
+  final Value<int?> upgradesFromPlacementId;
+  final Value<int?> blockX;
+  final Value<int?> blockY;
+  final Value<int> paidCoins;
+  final Value<int> startedAtRound;
+  const ConstructionSitesCompanion({
+    this.id = const Value.absent(),
+    this.cityId = const Value.absent(),
+    this.goalKind = const Value.absent(),
+    this.buildingTypeId = const Value.absent(),
+    this.gridX = const Value.absent(),
+    this.gridY = const Value.absent(),
+    this.upgradesFromPlacementId = const Value.absent(),
+    this.blockX = const Value.absent(),
+    this.blockY = const Value.absent(),
+    this.paidCoins = const Value.absent(),
+    this.startedAtRound = const Value.absent(),
+  });
+  ConstructionSitesCompanion.insert({
+    this.id = const Value.absent(),
+    required int cityId,
+    required String goalKind,
+    this.buildingTypeId = const Value.absent(),
+    this.gridX = const Value.absent(),
+    this.gridY = const Value.absent(),
+    this.upgradesFromPlacementId = const Value.absent(),
+    this.blockX = const Value.absent(),
+    this.blockY = const Value.absent(),
+    this.paidCoins = const Value.absent(),
+    required int startedAtRound,
+  }) : cityId = Value(cityId),
+       goalKind = Value(goalKind),
+       startedAtRound = Value(startedAtRound);
+  static Insertable<ConstructionSiteRow> custom({
+    Expression<int>? id,
+    Expression<int>? cityId,
+    Expression<String>? goalKind,
+    Expression<String>? buildingTypeId,
+    Expression<int>? gridX,
+    Expression<int>? gridY,
+    Expression<int>? upgradesFromPlacementId,
+    Expression<int>? blockX,
+    Expression<int>? blockY,
+    Expression<int>? paidCoins,
+    Expression<int>? startedAtRound,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (cityId != null) 'city_id': cityId,
+      if (goalKind != null) 'goal_kind': goalKind,
+      if (buildingTypeId != null) 'building_type_id': buildingTypeId,
+      if (gridX != null) 'grid_x': gridX,
+      if (gridY != null) 'grid_y': gridY,
+      if (upgradesFromPlacementId != null)
+        'upgrades_from_placement_id': upgradesFromPlacementId,
+      if (blockX != null) 'block_x': blockX,
+      if (blockY != null) 'block_y': blockY,
+      if (paidCoins != null) 'paid_coins': paidCoins,
+      if (startedAtRound != null) 'started_at_round': startedAtRound,
+    });
+  }
+
+  ConstructionSitesCompanion copyWith({
+    Value<int>? id,
+    Value<int>? cityId,
+    Value<String>? goalKind,
+    Value<String?>? buildingTypeId,
+    Value<int?>? gridX,
+    Value<int?>? gridY,
+    Value<int?>? upgradesFromPlacementId,
+    Value<int?>? blockX,
+    Value<int?>? blockY,
+    Value<int>? paidCoins,
+    Value<int>? startedAtRound,
+  }) {
+    return ConstructionSitesCompanion(
+      id: id ?? this.id,
+      cityId: cityId ?? this.cityId,
+      goalKind: goalKind ?? this.goalKind,
+      buildingTypeId: buildingTypeId ?? this.buildingTypeId,
+      gridX: gridX ?? this.gridX,
+      gridY: gridY ?? this.gridY,
+      upgradesFromPlacementId:
+          upgradesFromPlacementId ?? this.upgradesFromPlacementId,
+      blockX: blockX ?? this.blockX,
+      blockY: blockY ?? this.blockY,
+      paidCoins: paidCoins ?? this.paidCoins,
+      startedAtRound: startedAtRound ?? this.startedAtRound,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (cityId.present) {
+      map['city_id'] = Variable<int>(cityId.value);
+    }
+    if (goalKind.present) {
+      map['goal_kind'] = Variable<String>(goalKind.value);
+    }
+    if (buildingTypeId.present) {
+      map['building_type_id'] = Variable<String>(buildingTypeId.value);
+    }
+    if (gridX.present) {
+      map['grid_x'] = Variable<int>(gridX.value);
+    }
+    if (gridY.present) {
+      map['grid_y'] = Variable<int>(gridY.value);
+    }
+    if (upgradesFromPlacementId.present) {
+      map['upgrades_from_placement_id'] = Variable<int>(
+        upgradesFromPlacementId.value,
+      );
+    }
+    if (blockX.present) {
+      map['block_x'] = Variable<int>(blockX.value);
+    }
+    if (blockY.present) {
+      map['block_y'] = Variable<int>(blockY.value);
+    }
+    if (paidCoins.present) {
+      map['paid_coins'] = Variable<int>(paidCoins.value);
+    }
+    if (startedAtRound.present) {
+      map['started_at_round'] = Variable<int>(startedAtRound.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ConstructionSitesCompanion(')
+          ..write('id: $id, ')
+          ..write('cityId: $cityId, ')
+          ..write('goalKind: $goalKind, ')
+          ..write('buildingTypeId: $buildingTypeId, ')
+          ..write('gridX: $gridX, ')
+          ..write('gridY: $gridY, ')
+          ..write('upgradesFromPlacementId: $upgradesFromPlacementId, ')
+          ..write('blockX: $blockX, ')
+          ..write('blockY: $blockY, ')
+          ..write('paidCoins: $paidCoins, ')
+          ..write('startedAtRound: $startedAtRound')
           ..write(')'))
         .toString();
   }
@@ -4744,6 +5314,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   );
   late final $BuildingPlacementsTable buildingPlacements =
       $BuildingPlacementsTable(this);
+  late final $ConstructionSitesTable constructionSites =
+      $ConstructionSitesTable(this);
   late final $ConceptBandMilestonesTable conceptBandMilestones =
       $ConceptBandMilestonesTable(this);
   late final $StoryBeatStatesTable storyBeatStates = $StoryBeatStatesTable(
@@ -4763,6 +5335,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     cities,
     ownedLandBlocks,
     buildingPlacements,
+    constructionSites,
     conceptBandMilestones,
     storyBeatStates,
     appSettings,
@@ -4774,7 +5347,6 @@ typedef $$PlayersTableCreateCompanionBuilder =
       Value<int> id,
       required String name,
       required int gradeLevel,
-      Value<int> coinBalance,
       Value<int> lifetimeCoinsEarned,
       Value<int> streakCount,
       Value<int> roundsPlayed,
@@ -4786,7 +5358,6 @@ typedef $$PlayersTableUpdateCompanionBuilder =
       Value<int> id,
       Value<String> name,
       Value<int> gradeLevel,
-      Value<int> coinBalance,
       Value<int> lifetimeCoinsEarned,
       Value<int> streakCount,
       Value<int> roundsPlayed,
@@ -4939,11 +5510,6 @@ class $$PlayersTableFilterComposer
 
   ColumnFilters<int> get gradeLevel => $composableBuilder(
     column: $table.gradeLevel,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get coinBalance => $composableBuilder(
-    column: $table.coinBalance,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -5123,11 +5689,6 @@ class $$PlayersTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get coinBalance => $composableBuilder(
-    column: $table.coinBalance,
-    builder: (column) => ColumnOrderings(column),
-  );
-
   ColumnOrderings<int> get lifetimeCoinsEarned => $composableBuilder(
     column: $table.lifetimeCoinsEarned,
     builder: (column) => ColumnOrderings(column),
@@ -5171,11 +5732,6 @@ class $$PlayersTableAnnotationComposer
 
   GeneratedColumn<int> get gradeLevel => $composableBuilder(
     column: $table.gradeLevel,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<int> get coinBalance => $composableBuilder(
-    column: $table.coinBalance,
     builder: (column) => column,
   );
 
@@ -5368,7 +5924,6 @@ class $$PlayersTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<String> name = const Value.absent(),
                 Value<int> gradeLevel = const Value.absent(),
-                Value<int> coinBalance = const Value.absent(),
                 Value<int> lifetimeCoinsEarned = const Value.absent(),
                 Value<int> streakCount = const Value.absent(),
                 Value<int> roundsPlayed = const Value.absent(),
@@ -5378,7 +5933,6 @@ class $$PlayersTableTableManager
                 id: id,
                 name: name,
                 gradeLevel: gradeLevel,
-                coinBalance: coinBalance,
                 lifetimeCoinsEarned: lifetimeCoinsEarned,
                 streakCount: streakCount,
                 roundsPlayed: roundsPlayed,
@@ -5390,7 +5944,6 @@ class $$PlayersTableTableManager
                 Value<int> id = const Value.absent(),
                 required String name,
                 required int gradeLevel,
-                Value<int> coinBalance = const Value.absent(),
                 Value<int> lifetimeCoinsEarned = const Value.absent(),
                 Value<int> streakCount = const Value.absent(),
                 Value<int> roundsPlayed = const Value.absent(),
@@ -5400,7 +5953,6 @@ class $$PlayersTableTableManager
                 id: id,
                 name: name,
                 gradeLevel: gradeLevel,
-                coinBalance: coinBalance,
                 lifetimeCoinsEarned: lifetimeCoinsEarned,
                 streakCount: streakCount,
                 roundsPlayed: roundsPlayed,
@@ -6914,6 +7466,30 @@ final class $$CitiesTableReferences
       manager.$state.copyWith(prefetchedData: cache),
     );
   }
+
+  static MultiTypedResultKey<$ConstructionSitesTable, List<ConstructionSiteRow>>
+  _constructionSitesRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.constructionSites,
+        aliasName: $_aliasNameGenerator(
+          db.cities.id,
+          db.constructionSites.cityId,
+        ),
+      );
+
+  $$ConstructionSitesTableProcessedTableManager get constructionSitesRefs {
+    final manager = $$ConstructionSitesTableTableManager(
+      $_db,
+      $_db.constructionSites,
+    ).filter((f) => f.cityId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _constructionSitesRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
 }
 
 class $$CitiesTableFilterComposer
@@ -7009,6 +7585,31 @@ class $$CitiesTableFilterComposer
           }) => $$BuildingPlacementsTableFilterComposer(
             $db: $db,
             $table: $db.buildingPlacements,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> constructionSitesRefs(
+    Expression<bool> Function($$ConstructionSitesTableFilterComposer f) f,
+  ) {
+    final $$ConstructionSitesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.constructionSites,
+      getReferencedColumn: (t) => t.cityId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ConstructionSitesTableFilterComposer(
+            $db: $db,
+            $table: $db.constructionSites,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -7168,6 +7769,32 @@ class $$CitiesTableAnnotationComposer
         );
     return f(composer);
   }
+
+  Expression<T> constructionSitesRefs<T extends Object>(
+    Expression<T> Function($$ConstructionSitesTableAnnotationComposer a) f,
+  ) {
+    final $$ConstructionSitesTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.constructionSites,
+          getReferencedColumn: (t) => t.cityId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$ConstructionSitesTableAnnotationComposer(
+                $db: $db,
+                $table: $db.constructionSites,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$CitiesTableTableManager
@@ -7187,6 +7814,7 @@ class $$CitiesTableTableManager
             bool playerId,
             bool ownedLandBlocksRefs,
             bool buildingPlacementsRefs,
+            bool constructionSitesRefs,
           })
         > {
   $$CitiesTableTableManager(_$AppDatabase db, $CitiesTable table)
@@ -7239,12 +7867,14 @@ class $$CitiesTableTableManager
                 playerId = false,
                 ownedLandBlocksRefs = false,
                 buildingPlacementsRefs = false,
+                constructionSitesRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
                   explicitlyWatchedTables: [
                     if (ownedLandBlocksRefs) db.ownedLandBlocks,
                     if (buildingPlacementsRefs) db.buildingPlacements,
+                    if (constructionSitesRefs) db.constructionSites,
                   ],
                   addJoins:
                       <
@@ -7322,6 +7952,27 @@ class $$CitiesTableTableManager
                               ),
                           typedResults: items,
                         ),
+                      if (constructionSitesRefs)
+                        await $_getPrefetchedData<
+                          City,
+                          $CitiesTable,
+                          ConstructionSiteRow
+                        >(
+                          currentTable: table,
+                          referencedTable: $$CitiesTableReferences
+                              ._constructionSitesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$CitiesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).constructionSitesRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.cityId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -7346,6 +7997,7 @@ typedef $$CitiesTableProcessedTableManager =
         bool playerId,
         bool ownedLandBlocksRefs,
         bool buildingPlacementsRefs,
+        bool constructionSitesRefs,
       })
     >;
 typedef $$OwnedLandBlocksTableCreateCompanionBuilder =
@@ -7642,7 +8294,6 @@ typedef $$BuildingPlacementsTableCreateCompanionBuilder =
       Value<int> id,
       required int cityId,
       required String buildingTypeId,
-      Value<int> currentTier,
       required int gridX,
       required int gridY,
       required int placedAtRound,
@@ -7652,7 +8303,6 @@ typedef $$BuildingPlacementsTableUpdateCompanionBuilder =
       Value<int> id,
       Value<int> cityId,
       Value<String> buildingTypeId,
-      Value<int> currentTier,
       Value<int> gridX,
       Value<int> gridY,
       Value<int> placedAtRound,
@@ -7706,11 +8356,6 @@ class $$BuildingPlacementsTableFilterComposer
 
   ColumnFilters<String> get buildingTypeId => $composableBuilder(
     column: $table.buildingTypeId,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get currentTier => $composableBuilder(
-    column: $table.currentTier,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -7772,11 +8417,6 @@ class $$BuildingPlacementsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get currentTier => $composableBuilder(
-    column: $table.currentTier,
-    builder: (column) => ColumnOrderings(column),
-  );
-
   ColumnOrderings<int> get gridX => $composableBuilder(
     column: $table.gridX,
     builder: (column) => ColumnOrderings(column),
@@ -7830,11 +8470,6 @@ class $$BuildingPlacementsTableAnnotationComposer
 
   GeneratedColumn<String> get buildingTypeId => $composableBuilder(
     column: $table.buildingTypeId,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<int> get currentTier => $composableBuilder(
-    column: $table.currentTier,
     builder: (column) => column,
   );
 
@@ -7909,7 +8544,6 @@ class $$BuildingPlacementsTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<int> cityId = const Value.absent(),
                 Value<String> buildingTypeId = const Value.absent(),
-                Value<int> currentTier = const Value.absent(),
                 Value<int> gridX = const Value.absent(),
                 Value<int> gridY = const Value.absent(),
                 Value<int> placedAtRound = const Value.absent(),
@@ -7917,7 +8551,6 @@ class $$BuildingPlacementsTableTableManager
                 id: id,
                 cityId: cityId,
                 buildingTypeId: buildingTypeId,
-                currentTier: currentTier,
                 gridX: gridX,
                 gridY: gridY,
                 placedAtRound: placedAtRound,
@@ -7927,7 +8560,6 @@ class $$BuildingPlacementsTableTableManager
                 Value<int> id = const Value.absent(),
                 required int cityId,
                 required String buildingTypeId,
-                Value<int> currentTier = const Value.absent(),
                 required int gridX,
                 required int gridY,
                 required int placedAtRound,
@@ -7935,7 +8567,6 @@ class $$BuildingPlacementsTableTableManager
                 id: id,
                 cityId: cityId,
                 buildingTypeId: buildingTypeId,
-                currentTier: currentTier,
                 gridX: gridX,
                 gridY: gridY,
                 placedAtRound: placedAtRound,
@@ -8007,6 +8638,454 @@ typedef $$BuildingPlacementsTableProcessedTableManager =
       $$BuildingPlacementsTableUpdateCompanionBuilder,
       (BuildingPlacement, $$BuildingPlacementsTableReferences),
       BuildingPlacement,
+      PrefetchHooks Function({bool cityId})
+    >;
+typedef $$ConstructionSitesTableCreateCompanionBuilder =
+    ConstructionSitesCompanion Function({
+      Value<int> id,
+      required int cityId,
+      required String goalKind,
+      Value<String?> buildingTypeId,
+      Value<int?> gridX,
+      Value<int?> gridY,
+      Value<int?> upgradesFromPlacementId,
+      Value<int?> blockX,
+      Value<int?> blockY,
+      Value<int> paidCoins,
+      required int startedAtRound,
+    });
+typedef $$ConstructionSitesTableUpdateCompanionBuilder =
+    ConstructionSitesCompanion Function({
+      Value<int> id,
+      Value<int> cityId,
+      Value<String> goalKind,
+      Value<String?> buildingTypeId,
+      Value<int?> gridX,
+      Value<int?> gridY,
+      Value<int?> upgradesFromPlacementId,
+      Value<int?> blockX,
+      Value<int?> blockY,
+      Value<int> paidCoins,
+      Value<int> startedAtRound,
+    });
+
+final class $$ConstructionSitesTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $ConstructionSitesTable,
+          ConstructionSiteRow
+        > {
+  $$ConstructionSitesTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $CitiesTable _cityIdTable(_$AppDatabase db) => db.cities.createAlias(
+    $_aliasNameGenerator(db.constructionSites.cityId, db.cities.id),
+  );
+
+  $$CitiesTableProcessedTableManager get cityId {
+    final $_column = $_itemColumn<int>('city_id')!;
+
+    final manager = $$CitiesTableTableManager(
+      $_db,
+      $_db.cities,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_cityIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$ConstructionSitesTableFilterComposer
+    extends Composer<_$AppDatabase, $ConstructionSitesTable> {
+  $$ConstructionSitesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get goalKind => $composableBuilder(
+    column: $table.goalKind,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get buildingTypeId => $composableBuilder(
+    column: $table.buildingTypeId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get gridX => $composableBuilder(
+    column: $table.gridX,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get gridY => $composableBuilder(
+    column: $table.gridY,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get upgradesFromPlacementId => $composableBuilder(
+    column: $table.upgradesFromPlacementId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get blockX => $composableBuilder(
+    column: $table.blockX,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get blockY => $composableBuilder(
+    column: $table.blockY,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get paidCoins => $composableBuilder(
+    column: $table.paidCoins,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get startedAtRound => $composableBuilder(
+    column: $table.startedAtRound,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$CitiesTableFilterComposer get cityId {
+    final $$CitiesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.cityId,
+      referencedTable: $db.cities,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CitiesTableFilterComposer(
+            $db: $db,
+            $table: $db.cities,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ConstructionSitesTableOrderingComposer
+    extends Composer<_$AppDatabase, $ConstructionSitesTable> {
+  $$ConstructionSitesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get goalKind => $composableBuilder(
+    column: $table.goalKind,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get buildingTypeId => $composableBuilder(
+    column: $table.buildingTypeId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get gridX => $composableBuilder(
+    column: $table.gridX,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get gridY => $composableBuilder(
+    column: $table.gridY,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get upgradesFromPlacementId => $composableBuilder(
+    column: $table.upgradesFromPlacementId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get blockX => $composableBuilder(
+    column: $table.blockX,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get blockY => $composableBuilder(
+    column: $table.blockY,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get paidCoins => $composableBuilder(
+    column: $table.paidCoins,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get startedAtRound => $composableBuilder(
+    column: $table.startedAtRound,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$CitiesTableOrderingComposer get cityId {
+    final $$CitiesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.cityId,
+      referencedTable: $db.cities,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CitiesTableOrderingComposer(
+            $db: $db,
+            $table: $db.cities,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ConstructionSitesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ConstructionSitesTable> {
+  $$ConstructionSitesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get goalKind =>
+      $composableBuilder(column: $table.goalKind, builder: (column) => column);
+
+  GeneratedColumn<String> get buildingTypeId => $composableBuilder(
+    column: $table.buildingTypeId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get gridX =>
+      $composableBuilder(column: $table.gridX, builder: (column) => column);
+
+  GeneratedColumn<int> get gridY =>
+      $composableBuilder(column: $table.gridY, builder: (column) => column);
+
+  GeneratedColumn<int> get upgradesFromPlacementId => $composableBuilder(
+    column: $table.upgradesFromPlacementId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get blockX =>
+      $composableBuilder(column: $table.blockX, builder: (column) => column);
+
+  GeneratedColumn<int> get blockY =>
+      $composableBuilder(column: $table.blockY, builder: (column) => column);
+
+  GeneratedColumn<int> get paidCoins =>
+      $composableBuilder(column: $table.paidCoins, builder: (column) => column);
+
+  GeneratedColumn<int> get startedAtRound => $composableBuilder(
+    column: $table.startedAtRound,
+    builder: (column) => column,
+  );
+
+  $$CitiesTableAnnotationComposer get cityId {
+    final $$CitiesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.cityId,
+      referencedTable: $db.cities,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CitiesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.cities,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ConstructionSitesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ConstructionSitesTable,
+          ConstructionSiteRow,
+          $$ConstructionSitesTableFilterComposer,
+          $$ConstructionSitesTableOrderingComposer,
+          $$ConstructionSitesTableAnnotationComposer,
+          $$ConstructionSitesTableCreateCompanionBuilder,
+          $$ConstructionSitesTableUpdateCompanionBuilder,
+          (ConstructionSiteRow, $$ConstructionSitesTableReferences),
+          ConstructionSiteRow,
+          PrefetchHooks Function({bool cityId})
+        > {
+  $$ConstructionSitesTableTableManager(
+    _$AppDatabase db,
+    $ConstructionSitesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ConstructionSitesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ConstructionSitesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ConstructionSitesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> cityId = const Value.absent(),
+                Value<String> goalKind = const Value.absent(),
+                Value<String?> buildingTypeId = const Value.absent(),
+                Value<int?> gridX = const Value.absent(),
+                Value<int?> gridY = const Value.absent(),
+                Value<int?> upgradesFromPlacementId = const Value.absent(),
+                Value<int?> blockX = const Value.absent(),
+                Value<int?> blockY = const Value.absent(),
+                Value<int> paidCoins = const Value.absent(),
+                Value<int> startedAtRound = const Value.absent(),
+              }) => ConstructionSitesCompanion(
+                id: id,
+                cityId: cityId,
+                goalKind: goalKind,
+                buildingTypeId: buildingTypeId,
+                gridX: gridX,
+                gridY: gridY,
+                upgradesFromPlacementId: upgradesFromPlacementId,
+                blockX: blockX,
+                blockY: blockY,
+                paidCoins: paidCoins,
+                startedAtRound: startedAtRound,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int cityId,
+                required String goalKind,
+                Value<String?> buildingTypeId = const Value.absent(),
+                Value<int?> gridX = const Value.absent(),
+                Value<int?> gridY = const Value.absent(),
+                Value<int?> upgradesFromPlacementId = const Value.absent(),
+                Value<int?> blockX = const Value.absent(),
+                Value<int?> blockY = const Value.absent(),
+                Value<int> paidCoins = const Value.absent(),
+                required int startedAtRound,
+              }) => ConstructionSitesCompanion.insert(
+                id: id,
+                cityId: cityId,
+                goalKind: goalKind,
+                buildingTypeId: buildingTypeId,
+                gridX: gridX,
+                gridY: gridY,
+                upgradesFromPlacementId: upgradesFromPlacementId,
+                blockX: blockX,
+                blockY: blockY,
+                paidCoins: paidCoins,
+                startedAtRound: startedAtRound,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$ConstructionSitesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({cityId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (cityId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.cityId,
+                                referencedTable:
+                                    $$ConstructionSitesTableReferences
+                                        ._cityIdTable(db),
+                                referencedColumn:
+                                    $$ConstructionSitesTableReferences
+                                        ._cityIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$ConstructionSitesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ConstructionSitesTable,
+      ConstructionSiteRow,
+      $$ConstructionSitesTableFilterComposer,
+      $$ConstructionSitesTableOrderingComposer,
+      $$ConstructionSitesTableAnnotationComposer,
+      $$ConstructionSitesTableCreateCompanionBuilder,
+      $$ConstructionSitesTableUpdateCompanionBuilder,
+      (ConstructionSiteRow, $$ConstructionSitesTableReferences),
+      ConstructionSiteRow,
       PrefetchHooks Function({bool cityId})
     >;
 typedef $$ConceptBandMilestonesTableCreateCompanionBuilder =
@@ -8883,6 +9962,8 @@ class $AppDatabaseManager {
       $$OwnedLandBlocksTableTableManager(_db, _db.ownedLandBlocks);
   $$BuildingPlacementsTableTableManager get buildingPlacements =>
       $$BuildingPlacementsTableTableManager(_db, _db.buildingPlacements);
+  $$ConstructionSitesTableTableManager get constructionSites =>
+      $$ConstructionSitesTableTableManager(_db, _db.constructionSites);
   $$ConceptBandMilestonesTableTableManager get conceptBandMilestones =>
       $$ConceptBandMilestonesTableTableManager(_db, _db.conceptBandMilestones);
   $$StoryBeatStatesTableTableManager get storyBeatStates =>

@@ -41,7 +41,6 @@ void main() {
         buildingTypeId: 'mayors_office',
         gridX: 4,
         gridY: 6,
-        coinCost: 0,
       );
 
       final rows = await db.placementsForCity(city.id);
@@ -52,10 +51,9 @@ void main() {
       expect(rows.first.placedAtRound, 0);
     });
 
-    test('spends coins, keeping lifetime monotone', () async {
+    test('placing never touches the lifetime coin counter', () async {
       final (db, player, city) = await freshCity();
-      // Give the player some coins to spend.
-      await db.incrementPlayerCoins(player.id, 25);
+      await db.addLifetimeCoins(player.id, 25);
 
       await db.placeBuilding(
         cityId: city.id,
@@ -63,29 +61,10 @@ void main() {
         buildingTypeId: 'apartment',
         gridX: 1,
         gridY: 1,
-        coinCost: 10,
       );
 
       final after = await db.getPlayerById(player.id);
-      expect(after.coinBalance, 15); // 25 - 10
-      expect(after.lifetimeCoinsEarned, 25); // unchanged by spend
-    });
-
-    test('free placements do not touch the coin balance', () async {
-      final (db, player, city) = await freshCity();
-      await db.incrementPlayerCoins(player.id, 5);
-
-      await db.placeBuilding(
-        cityId: city.id,
-        playerId: player.id,
-        buildingTypeId: 'mayors_office',
-        gridX: 0,
-        gridY: 0,
-        coinCost: 0,
-      );
-
-      final after = await db.getPlayerById(player.id);
-      expect(after.coinBalance, 5);
+      expect(after.lifetimeCoinsEarned, 25);
     });
 
     test('moveBuildingPlacement relocates an existing row in place', () async {
@@ -96,7 +75,6 @@ void main() {
         buildingTypeId: 'mayors_office',
         gridX: 2,
         gridY: 3,
-        coinCost: 0,
       );
       final original = (await db.placementsForCity(city.id)).single;
 
@@ -126,7 +104,6 @@ void main() {
           buildingTypeId: 'mayors_office',
           gridX: i,
           gridY: 0,
-          coinCost: 0,
         );
       }
       final rows = await db.placementsForCity(city.id);

@@ -4,12 +4,14 @@ import 'package:flame/game.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:math_city/data/construction_sites.dart';
 import 'package:math_city/data/database.dart';
 import 'package:math_city/domain/avatar/adventurer_config.dart';
 import 'package:math_city/domain/city/beat_registry.dart';
 import 'package:math_city/domain/city/building_registry.dart';
 import 'package:math_city/domain/city/building_type.dart';
 import 'package:math_city/domain/city/category.dart';
+import 'package:math_city/domain/city/construction_site.dart';
 import 'package:math_city/domain/city/land_blocks.dart';
 import 'package:math_city/domain/city/placement_rules.dart';
 import 'package:math_city/domain/city/road_network.dart';
@@ -21,8 +23,10 @@ import 'package:math_city/game/city/land_window.dart';
 import 'package:math_city/presentation/player/adventurer_avatar_widget.dart';
 import 'package:math_city/presentation/spin/spin_screen.dart';
 import 'package:math_city/presentation/widgets/coin_icon.dart';
+import 'package:math_city/presentation/widgets/site_progress_bar.dart';
 import 'package:math_city/presentation/widgets/speech_toggle_button.dart';
 import 'package:math_city/state/city_provider.dart';
+import 'package:math_city/state/game_session_provider.dart';
 import 'package:math_city/state/player_provider.dart';
 import 'package:math_city/state/tts_provider.dart';
 
@@ -38,8 +42,10 @@ Color _colorFor(BuildingType b) =>
     _categoryColors[b.category] ?? const Color(0xFF90A4AE);
 
 /// "My City" — the per-player hub. Players reach it by tapping their chip on
-/// the home screen, and jump to the spin wheel from here: render the grid,
-/// list the buildable catalog, tap-to-place.
+/// the home screen. Placing a catalog building starts a *construction site*
+/// (city_builder.md §8): no coins change hands, and the wheel is reached by
+/// tapping a site's *Build!* — every coin a block earns pays that site down
+/// until it opens. There is no coin balance anywhere on this screen.
 class CityScreen extends ConsumerStatefulWidget {
   const CityScreen({super.key});
 
@@ -70,10 +76,14 @@ class _CityScreenState extends ConsumerState<CityScreen> {
   /// player can nudge it into place on a small screen.
   int? _movingId;
 
-  /// The frontier block currently selected for purchase (yellow highlight +
-  /// confirm bar at the bottom), or null. Selecting is allowed even when the
-  /// player can't afford it — the bar then shows how many coins are missing.
+  /// The frontier block currently selected to start a land site on (yellow
+  /// highlight + confirm bar at the bottom), or null.
   (int, int)? _buyingBlock;
+
+  /// The construction site currently selected (yellow fence, site bar at the
+  /// bottom with its `paid / price` and *Build!*), or null. A tap on free
+  /// land while a building site is selected moves it, like a building.
+  int? _selectedSiteId;
 
   /// One tap on the board. The board reports a **window-local** tile; we map it
   /// back to world coords via the current window, then dispatch in order:
@@ -89,30 +99,41 @@ class _CityScreenState extends ConsumerState<CityScreen> {
     if (window == null || ownedBlocks == null) return;
     final col = localCol + window.minCol;
     final row = localRow + window.minRow;
+    final sites = ref.read(sitesProvider).asData?.value ?? const <CitySite>[];
 
     final ownedTiles = ownedTilesOf(ownedBlocks);
     if (!ownedTiles.contains((col, row))) {
-      // Off owned land: a tap on a pale frontier block selects it for
-      // purchase, and a second tap on the *same* block confirms the buy —
-      // mirroring how re-tapping a picked-up building drops it there. Land
-      // selection replaces any picked-up building, since the bottom bar shows
-      // one mode at a time.
+      // Off owned land: a block with a land site selects that site; a pale
+      // frontier block is selected to start a land site on, and a second
+      // tap on the *same* block confirms — mirroring how re-tapping a
+      // picked-up building drops it there. Either replaces any picked-up
+      // building, since the bottom bar shows one mode at a time.
       final block = blockOfTile(col, row);
+      final landSite = sites
+          .where(
+            (s) =>
+                s.goal is LandBlockGoal &&
+                (s.goal as LandBlockGoal).block == block,
+          )
+          .firstOrNull;
+      if (landSite != null) {
+        _selectSite(landSite.id);
+        return;
+      }
       if (!purchasableBlocks(ownedBlocks).contains(block)) return;
       if (block == _buyingBlock) {
-        // Re-tap on an unaffordable block is a no-op (like the disabled Buy
-        // button), leaving it selected so the bar keeps showing the price.
-        _buySelectedBlock();
+        _startSelectedLandSite();
         return;
       }
       setState(() {
         _buyingBlock = block;
         _movingId = null;
+        _selectedSiteId = null;
       });
       return;
     }
 
-    // A tap back on owned land while picking land to buy just cancels the
+    // A tap back on owned land while picking land just cancels the
     // selection — it shouldn't also place or pick up a building.
     if (_buyingBlock != null) {
       setState(() => _buyingBlock = null);
@@ -120,16 +141,31 @@ class _CityScreenState extends ConsumerState<CityScreen> {
     }
 
     final placements = ref.read(placementsProvider).asData?.value ?? const [];
+    final siteHere = _siteAt(sites, col, row);
+    if (siteHere != null) {
+      // Tap a site to select it (its bar shows paid / price and Build!);
+      // tap the selected one again to drop it.
+      _selectSite(siteHere.id == _selectedSiteId ? null : siteHere.id);
+      return;
+    }
     final occupant = _buildingAt(placements, col, row);
     if (occupant != null) {
       // Tap a building to pick it up; tap the held one again to drop it.
-      setState(() => _movingId = occupant.id == _movingId ? null : occupant.id);
+      setState(() {
+        _movingId = occupant.id == _movingId ? null : occupant.id;
+        _selectedSiteId = null;
+      });
       return;
     }
 
-    // A free owned tile: reposition the held building, else place the pick.
+    // A free owned tile: reposition the held site or building, else place
+    // the catalog pick (which starts a site).
+    if (_selectedSiteId != null) {
+      _tryMoveSite(_selectedSiteId!, col, row, placements, sites, ownedTiles);
+      return;
+    }
     if (_movingId != null) {
-      _tryMove(_movingId!, col, row, placements, ownedTiles);
+      _tryMove(_movingId!, col, row, placements, sites, ownedTiles);
       return;
     }
     final selected = _selected;
@@ -137,7 +173,23 @@ class _CityScreenState extends ConsumerState<CityScreen> {
       _toast('Pick a building below first');
       return;
     }
-    _tryPlace(selected, col, row, placements, ownedTiles);
+    _tryPlace(selected, col, row, placements, sites, ownedTiles);
+  }
+
+  void _selectSite(int? siteId) => setState(() {
+    _selectedSiteId = siteId;
+    _movingId = null;
+    _buyingBlock = null;
+  });
+
+  /// The building site whose footprint covers tile `(col, row)`, or null.
+  CitySite? _siteAt(List<CitySite> sites, int col, int row) {
+    for (final s in sites) {
+      if (s.goal case BuildingGoal(:final footprint)) {
+        if (footprint.tiles().contains((col, row))) return s;
+      }
+    }
+    return null;
   }
 
   /// The placement whose footprint covers tile `(col, row)`, or null if that
@@ -170,6 +222,7 @@ class _CityScreenState extends ConsumerState<CityScreen> {
     int col,
     int row,
     List<BuildingPlacement> placements,
+    List<CitySite> sites,
     Set<(int, int)> ownedTiles,
   ) {
     final picked = placements.where((p) => p.id == placementId).firstOrNull;
@@ -185,6 +238,7 @@ class _CityScreenState extends ConsumerState<CityScreen> {
       col,
       row,
       placements,
+      sites,
       ownedTiles,
       exclude: picked.id,
     );
@@ -197,15 +251,52 @@ class _CityScreenState extends ConsumerState<CityScreen> {
     );
   }
 
-  /// Places [type] so its footprint covers `(col, row)` (auto-sliding the
-  /// anchor). For unique types that already exist, moves the existing instance
-  /// instead. On success the placed/moved building is left selected so the
-  /// player can fine-tune its position.
+  /// Repositions the selected building site so its footprint covers
+  /// `(col, row)`. Its paid-in coins come along; it stays selected.
+  void _tryMoveSite(
+    int siteId,
+    int col,
+    int row,
+    List<BuildingPlacement> placements,
+    List<CitySite> sites,
+    Set<(int, int)> ownedTiles,
+  ) {
+    final picked = sites.where((s) => s.id == siteId).firstOrNull;
+    if (picked == null || picked.goal is! BuildingGoal) {
+      setState(() => _selectedSiteId = null);
+      return;
+    }
+    final type = (picked.goal as BuildingGoal).type;
+    final spot = _resolve(
+      type,
+      col,
+      row,
+      placements,
+      sites,
+      ownedTiles,
+      excludeSite: siteId,
+    );
+    if (spot == null) {
+      _toast('No room for ${type.name} there');
+      return;
+    }
+    unawaited(
+      ref.read(cityActionsProvider).moveSite(siteId, spot.col, spot.row),
+    );
+  }
+
+  /// Starts a construction site for [type] so its footprint covers
+  /// `(col, row)` (auto-sliding the anchor) — no coins change hands. A free
+  /// type (the mayor's office) opens on the spot. For unique types that
+  /// already exist, moves the existing instance instead. On success the new
+  /// site (or placed building) is left selected so the player can fine-tune
+  /// its position and, for a site, tap *Build!*.
   void _tryPlace(
     BuildingType type,
     int col,
     int row,
     List<BuildingPlacement> placements,
+    List<CitySite> sites,
     Set<(int, int)> ownedTiles,
   ) {
     // Unique types (mayor's office): relocate the existing instance rather than
@@ -216,41 +307,61 @@ class _CityScreenState extends ConsumerState<CityScreen> {
           .firstOrNull;
       if (existing != null) {
         setState(() => _movingId = existing.id);
-        _tryMove(existing.id, col, row, placements, ownedTiles);
+        _tryMove(existing.id, col, row, placements, sites, ownedTiles);
         return;
       }
     }
 
-    final spot = _resolve(type, col, row, placements, ownedTiles);
+    final spot = _resolve(type, col, row, placements, sites, ownedTiles);
     if (spot == null) {
       _toast('No room for ${type.name} there');
       return;
     }
-    final coins = ref.read(activePlayerProvider).asData?.value.coinBalance;
-    if (coins == null || type.coinCost > coins) {
-      _toast('Not enough coins for ${type.name}');
-      return;
-    }
-    unawaited(() async {
-      final id = await ref
-          .read(cityActionsProvider)
-          .placeBuilding(type, spot.col, spot.row);
-      if (!mounted) return;
-      setState(() {
-        // Keep the just-placed building selected so it can be nudged (req. #3),
-        // and drop the catalog pick if the player can't afford another.
-        _movingId = id;
-        if (coins - type.coinCost < type.coinCost) _selected = null;
-      });
-    }());
+    unawaited(
+      _startSite(BuildingGoal(type: type, col: spot.col, row: spot.row)),
+    );
   }
 
-  /// Maps placements to grid footprints via the building registry. Pass
-  /// [exclude] to drop one placement (used when moving, so the mover's old
-  /// tiles don't count as occupied).
+  /// Starts a site for [goal] via the city actions and reflects the outcome:
+  /// selects the new site (or the placed building for a free goal), or
+  /// toasts why it was refused — a fourth site names the three open ones.
+  Future<void> _startSite(SiteGoal goal) async {
+    final result = await ref.read(cityActionsProvider).startSite(goal);
+    if (!mounted) return;
+    if (result.rejection case final rejection?) {
+      _toast(_rejectionMessage(rejection, result.openSites));
+      return;
+    }
+    setState(() {
+      _buyingBlock = null;
+      _movingId = result.placementId;
+      _selectedSiteId = result.siteId;
+    });
+  }
+
+  String _rejectionMessage(SiteStartRejection rejection, List<CitySite> open) =>
+      switch (rejection) {
+        SiteStartRejection.tooManyOpenSites =>
+          'Finish one of your $kMaxOpenSites sites first: '
+              '${open.map((s) => s.name).join(', ')}',
+        SiteStartRejection.sourceAlreadyUpgrading =>
+          'That building is already being upgraded',
+        SiteStartRejection.notAnUpgradeStep => 'That upgrade is not available',
+        SiteStartRejection.blockNotPurchasable =>
+          'New land has to touch land you own',
+        SiteStartRejection.blockAlreadyStarted =>
+          'You are already building on that land',
+      };
+
+  /// Maps placements *and building sites* to grid footprints — a site
+  /// occupies its tiles from the moment it is placed. Pass [exclude] /
+  /// [excludeSite] to drop the one being moved, so its old tiles don't count
+  /// as occupied.
   List<GridFootprint> _footprintsOf(
-    List<BuildingPlacement> placements, {
+    List<BuildingPlacement> placements,
+    List<CitySite> sites, {
     int? exclude,
+    int? excludeSite,
   }) {
     final out = <GridFootprint>[];
     for (final p in placements) {
@@ -266,6 +377,10 @@ class _CityScreenState extends ConsumerState<CityScreen> {
         ),
       );
     }
+    for (final s in sites) {
+      if (s.id == excludeSite) continue;
+      if (s.goal case BuildingGoal(:final footprint)) out.add(footprint);
+    }
     return out;
   }
 
@@ -278,12 +393,19 @@ class _CityScreenState extends ConsumerState<CityScreen> {
     int col,
     int row,
     List<BuildingPlacement> placements,
+    List<CitySite> sites,
     Set<(int, int)> ownedTiles, {
     int? exclude,
+    int? excludeSite,
   }) {
     return resolvePlacement(
       ownedTiles: ownedTiles,
-      existing: _footprintsOf(placements, exclude: exclude),
+      existing: _footprintsOf(
+        placements,
+        sites,
+        exclude: exclude,
+        excludeSite: excludeSite,
+      ),
       width: type.footprint.$1,
       height: type.footprint.$2,
       tapCol: col,
@@ -295,10 +417,11 @@ class _CityScreenState extends ConsumerState<CityScreen> {
   /// [ownedTiles] (see `road_network.dart`).
   Set<(int, int)> _roadTilesFor(
     List<BuildingPlacement> placements,
+    List<CitySite> sites,
     Set<(int, int)> ownedTiles,
   ) => generateRoads(
     ownedTiles: ownedTiles,
-    buildings: _footprintsOf(placements),
+    buildings: _footprintsOf(placements, sites),
   );
 
   /// Recomputes the render window over owned land + its pale frontier and feeds
@@ -364,7 +487,10 @@ class _CityScreenState extends ConsumerState<CityScreen> {
       );
   }
 
-  void _openSpin() {
+  /// *Build!* on a site: make it the session's active site — every coin the
+  /// coming blocks earn pays it down — and open the wheel above the city.
+  void _buildSite(int siteId) {
+    ref.read(activeSiteIdProvider.notifier).selected = siteId;
     unawaited(
       Navigator.of(context).push(
         MaterialPageRoute<void>(builder: (_) => const SpinScreen()),
@@ -388,28 +514,25 @@ class _CityScreenState extends ConsumerState<CityScreen> {
           onReset: () => setState(() {
             _selected = null;
             _movingId = null;
+            _selectedSiteId = null;
           }),
         ),
       ),
     );
   }
 
-  /// Confirms the pending land selection: spends the ring-priced coins and
-  /// clears the selection. Reached from the buy bar's Buy button and from a
-  /// second tap on the selected block, so it checks affordability itself — an
-  /// unaffordable block stays selected (and priced) rather than silently
-  /// doing nothing.
-  void _buySelectedBlock() {
+  /// Confirms the pending land selection: starts a land site on that block
+  /// (paid down by playing, like any site). Reached from the bar's Start
+  /// button and from a second tap on the selected block.
+  void _startSelectedLandSite() {
     final block = _buyingBlock;
     if (block == null) return;
-    final coins = ref.read(activePlayerProvider).asData?.value.coinBalance;
-    if (coins == null || blockCost(block.$1, block.$2) > coins) return;
-    setState(() => _buyingBlock = null);
-    unawaited(ref.read(cityActionsProvider).buyLandBlock(block.$1, block.$2));
+    unawaited(_startSite(LandBlockGoal(blockX: block.$1, blockY: block.$2)));
   }
 
   List<PlacedBuildingView> _viewsFor(
     List<BuildingPlacement> placements,
+    List<CitySite> sites,
     LandWindow window,
   ) {
     // Round-robin variant assignment: order each building type's placements by
@@ -444,7 +567,39 @@ class _CityScreenState extends ConsumerState<CityScreen> {
         ),
       );
     }
+    // Building sites render on the same layer, at their construction stage.
+    // A site's ghost (stage 2) shows the type's first sprite variant.
+    for (final s in sites) {
+      if (s.goal case BuildingGoal(:final type, :final col, :final row)) {
+        out.add(
+          PlacedBuildingView(
+            col: col - window.minCol,
+            row: row - window.minRow,
+            emoji: type.emoji,
+            color: _colorFor(type),
+            footprint: type.footprint,
+            assetPath: _assetPathFor(type, 0),
+            selected: s.id == _selectedSiteId,
+            stage: s.site.stage,
+          ),
+        );
+      }
+    }
     return out;
+  }
+
+  /// Window-local tiles of every land site, and of the selected one.
+  (Set<(int, int)>, Set<(int, int)>) _landSiteTiles(List<CitySite> sites) {
+    final all = <(int, int)>{};
+    final selected = <(int, int)>{};
+    for (final s in sites) {
+      if (s.goal case LandBlockGoal(:final blockX, :final blockY)) {
+        final tiles = _localTiles(tilesOfBlock(blockX, blockY).toSet());
+        all.addAll(tiles);
+        if (s.id == _selectedSiteId) selected.addAll(tiles);
+      }
+    }
+    return (all, selected);
   }
 
   /// `<id>_v<n>.png` for the round-robin [slot] (a building's 0-based index
@@ -465,6 +620,9 @@ class _CityScreenState extends ConsumerState<CityScreen> {
     final placementsAsync = ref.watch(placementsProvider);
     final ownedBlocksAsync = ref.watch(ownedBlocksProvider);
     final catalogAsync = ref.watch(cityCatalogProvider);
+    // .value so a per-answer refresh keeps the last known sites on the board
+    // instead of blinking them out for a frame.
+    final sites = ref.watch(sitesProvider).value ?? const <CitySite>[];
 
     final player = playerAsync.asData?.value;
 
@@ -503,10 +661,21 @@ class _CityScreenState extends ConsumerState<CityScreen> {
         !placements.any((p) => p.id == _movingId)) {
       _movingId = null;
     }
-    if (_game != null && placements != null) {
-      _game!.setBuildings(_viewsFor(placements, _window!));
-      _game!.setRoads(_localTiles(_roadTilesFor(placements, ownedTiles)));
+    // Drop a stale site selection (it opened, or a reset cleared it).
+    if (_selectedSiteId != null && !sites.any((s) => s.id == _selectedSiteId)) {
+      _selectedSiteId = null;
     }
+    if (_game != null && placements != null) {
+      _game!.setBuildings(_viewsFor(placements, sites, _window!));
+      _game!.setRoads(
+        _localTiles(_roadTilesFor(placements, sites, ownedTiles)),
+      );
+      final (allSiteTiles, selectedSiteTiles) = _landSiteTiles(sites);
+      _game!.setLandSiteTiles(all: allSiteTiles, selected: selectedSiteTiles);
+    }
+    final selectedSite = _selectedSiteId == null
+        ? null
+        : sites.where((s) => s.id == _selectedSiteId).firstOrNull;
     // The building currently picked up for repositioning, if any — drives the
     // Done bar's label.
     final moving = _movingId == null
@@ -541,13 +710,6 @@ class _CityScreenState extends ConsumerState<CityScreen> {
             Text('${player?.name ?? ''}’s city'),
           ],
         ),
-        actions: [
-          if (player != null)
-            Padding(
-              padding: const EdgeInsets.only(right: 12),
-              child: _CurrencyBar(coins: player.coinBalance),
-            ),
-        ],
       ),
       body: _game == null
           ? const Center(child: CircularProgressIndicator())
@@ -574,15 +736,21 @@ class _CityScreenState extends ConsumerState<CityScreen> {
                 const Positioned.fill(child: _CitizenBubbleOverlay()),
               ],
             ),
-      // While land is selected for purchase, the catalog is swapped for the
-      // buy-confirm bar; while a building is picked up, for a Done bar (tap
-      // the building again, or Done, to drop it).
+      // While land is selected, the catalog is swapped for the start-a-site
+      // bar; while a site is selected, for its progress bar + Build!; while
+      // a building is picked up, for a Done bar (tap the building again, or
+      // Done, to drop it).
       bottomNavigationBar: _buyingBlock != null
-          ? _BuyLandBar(
+          ? _StartLandSiteBar(
               cost: blockCost(_buyingBlock!.$1, _buyingBlock!.$2),
-              coinBalance: player?.coinBalance ?? 0,
-              onBuy: _buySelectedBlock,
+              onStart: _startSelectedLandSite,
               onCancel: () => setState(() => _buyingBlock = null),
+            )
+          : selectedSite != null
+          ? _SiteBar(
+              site: selectedSite,
+              onBuild: () => _buildSite(selectedSite.id),
+              onDone: () => setState(() => _selectedSiteId = null),
             )
           : _movingId != null
           ? _MoveModeBar(
@@ -597,40 +765,28 @@ class _CityScreenState extends ConsumerState<CityScreen> {
           : _BuildCatalogBar(
               catalog: catalog,
               selected: _selected,
-              coinBalance: player?.coinBalance ?? 0,
               onSelect: (b) => setState(() => _selected = b),
             ),
-      floatingActionButton: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          if (kDebugMode) ...[
-            FloatingActionButton.small(
+      // The wheel is reached through a site's Build! — there is no
+      // free-floating "play" entry (city_builder.md §8.3).
+      floatingActionButton: kDebugMode
+          ? FloatingActionButton.small(
               heroTag: 'cityDebugFab',
               onPressed: _openDebugSheet,
               backgroundColor: Colors.deepPurple,
               foregroundColor: Colors.white,
               child: const Icon(Icons.bug_report_rounded),
-            ),
-            const SizedBox(height: 12),
-          ],
-          FloatingActionButton.extended(
-            heroTag: 'citySpinFab',
-            onPressed: _openSpin,
-            icon: const Icon(Icons.casino_rounded),
-            label: const Text('Play math'),
-          ),
-        ],
-      ),
+            )
+          : null,
     );
   }
 }
 
 /// kDebugMode-only control panel, shown in a bottom sheet from the city
 /// screen's debug FAB. Lets a developer exercise the city mechanics
-/// (placement, growth, beats) without grinding math for currency: grant
-/// coins, set the population directly, force-fire any beat, and reset the
-/// city to a brand-new-player baseline.
+/// (placement, growth, beats) without grinding math for currency: pay coins
+/// into a site, set the population directly, force-fire any beat, and reset
+/// the city to a brand-new-player baseline.
 /// Operates on the *real* active player so persistence is exercised too.
 class _CityDebugSheet extends ConsumerStatefulWidget {
   const _CityDebugSheet({required this.onReset});
@@ -662,8 +818,8 @@ class _CityDebugSheetState extends ConsumerState<_CityDebugSheet> {
       builder: (dialogContext) => AlertDialog(
         title: const Text('Reset city?'),
         content: const Text(
-          'Wipes all placements, beats, and population, and zeroes coins '
-          '(balance + lifetime) and the streak. Cannot be undone.',
+          'Wipes all placements, sites, beats, and population, and zeroes '
+          'lifetime coins and the streak. Cannot be undone.',
         ),
         actions: [
           TextButton(
@@ -711,25 +867,32 @@ class _CityDebugSheetState extends ConsumerState<_CityDebugSheet> {
                 Text('City debug', style: theme.textTheme.titleMedium),
                 const Spacer(),
                 if (player != null)
-                  CoinAmount(
-                    amount: player.coinBalance,
-                    style: theme.textTheme.titleMedium,
+                  Text(
+                    'lifetime ${player.lifetimeCoinsEarned}',
+                    style: theme.textTheme.labelMedium,
                   ),
               ],
             ),
             const Divider(height: 24),
-            Text('Currency', style: theme.textTheme.labelLarge),
+            Text(
+              'Pay into the oldest open site',
+              style: theme.textTheme.labelLarge,
+            ),
             const SizedBox(height: 8),
             Wrap(
               spacing: 8,
               children: [
                 FilledButton.tonal(
-                  onPressed: () => unawaited(actions.debugGrantCoins(600)),
-                  child: const Text('+600 coins (10 min)'),
+                  onPressed: () => unawaited(actions.debugPayCoins(60)),
+                  child: const Text('+60 (1 min)'),
                 ),
                 FilledButton.tonal(
-                  onPressed: () => unawaited(actions.debugGrantCoins(3600)),
-                  child: const Text('+3600 coins (1 h)'),
+                  onPressed: () => unawaited(actions.debugPayCoins(600)),
+                  child: const Text('+600 (10 min)'),
+                ),
+                FilledButton.tonal(
+                  onPressed: () => unawaited(actions.debugPayCoins(3600)),
+                  child: const Text('+3600 (1 h)'),
                 ),
               ],
             ),
@@ -812,31 +975,6 @@ class _CityDebugSheetState extends ConsumerState<_CityDebugSheet> {
   }
 }
 
-/// Coin balance on a shaded rounded card so it keeps contrast against the
-/// city's bright terrain background showing behind the AppBar.
-class _CurrencyBar extends StatelessWidget {
-  const _CurrencyBar({required this.coins});
-
-  final int coins;
-
-  @override
-  Widget build(BuildContext context) {
-    const textStyle = TextStyle(
-      color: Colors.white,
-      fontWeight: FontWeight.bold,
-      fontSize: 15,
-    );
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: Colors.black.withValues(alpha: 0.32),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: CoinAmount(amount: coins, iconSize: 18, style: textStyle),
-    );
-  }
-}
-
 /// Current population, shown as a shaded chip over the top-left of the city.
 /// The value is stepped by the growth model as the player builds and plays.
 class _PopulationChip extends StatelessWidget {
@@ -912,29 +1050,25 @@ class _MoveModeBar extends StatelessWidget {
   }
 }
 
-/// Bottom strip shown while a frontier block is selected for purchase. Not a
-/// dialog on purpose: the city stays visible and tappable, so the player can
-/// still move the selection to a different spot before confirming. When the
-/// player can't afford the land yet, Buy is disabled and the text says how
-/// many more coins they need.
-class _BuyLandBar extends StatelessWidget {
-  const _BuyLandBar({
+/// Bottom strip shown while a frontier block is selected. Not a dialog on
+/// purpose: the city stays visible and tappable, so the player can still
+/// move the selection to a different spot before confirming. Starting the
+/// land site costs nothing up front — the price is what the site is paid
+/// down to by playing.
+class _StartLandSiteBar extends StatelessWidget {
+  const _StartLandSiteBar({
     required this.cost,
-    required this.coinBalance,
-    required this.onBuy,
+    required this.onStart,
     required this.onCancel,
   });
 
   final int cost;
-  final int coinBalance;
-  final VoidCallback onBuy;
+  final VoidCallback onStart;
   final VoidCallback onCancel;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final missing = cost - coinBalance;
-    final affordable = missing <= 0;
     return Material(
       elevation: 8,
       color: theme.colorScheme.surfaceContainer,
@@ -949,19 +1083,11 @@ class _BuyLandBar extends StatelessWidget {
               Expanded(
                 child: Text.rich(
                   TextSpan(
-                    children: affordable
-                        ? [
-                            const TextSpan(text: 'Buy this land for '),
-                            coinSpan(),
-                            TextSpan(text: ' $cost?'),
-                          ]
-                        : [
-                            const TextSpan(text: 'This land costs '),
-                            coinSpan(),
-                            TextSpan(text: ' $cost — earn '),
-                            coinSpan(),
-                            TextSpan(text: ' $missing more to buy it!'),
-                          ],
+                    children: [
+                      const TextSpan(text: 'Build out this land for '),
+                      coinSpan(),
+                      TextSpan(text: ' $cost?'),
+                    ],
                   ),
                   style: theme.textTheme.bodyMedium,
                 ),
@@ -969,9 +1095,57 @@ class _BuyLandBar extends StatelessWidget {
               const SizedBox(width: 8),
               TextButton(onPressed: onCancel, child: const Text('Cancel')),
               const SizedBox(width: 4),
-              FilledButton(
-                onPressed: affordable ? onBuy : null,
-                child: const Text('Buy'),
+              FilledButton(onPressed: onStart, child: const Text('Start')),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Bottom strip for the selected construction site: its `paid / price` bar
+/// and *Build!*, which makes it the active site and opens the wheel. A
+/// building site can be nudged by tapping a tile while it is selected.
+class _SiteBar extends StatelessWidget {
+  const _SiteBar({
+    required this.site,
+    required this.onBuild,
+    required this.onDone,
+  });
+
+  final CitySite site;
+  final VoidCallback onBuild;
+  final VoidCallback onDone;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Material(
+      elevation: 8,
+      color: theme.colorScheme.surfaceContainer,
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Row(
+            children: [
+              const Icon(Icons.construction_rounded),
+              const SizedBox(width: 12),
+              Expanded(
+                child: SiteProgressBar(
+                  paid: site.site.paidCoins,
+                  price: site.site.price,
+                  name: site.name,
+                ),
+              ),
+              const SizedBox(width: 12),
+              TextButton(onPressed: onDone, child: const Text('Done')),
+              const SizedBox(width: 4),
+              FilledButton.icon(
+                onPressed: onBuild,
+                icon: const Icon(Icons.casino_rounded),
+                label: const Text('Build!'),
               ),
             ],
           ),
@@ -1447,19 +1621,17 @@ class _ExpandedBeatCard extends StatelessWidget {
 }
 
 /// Horizontal catalog of buildings whose unlock rule has passed. Every card
-/// is tap-to-select for placement at its coin cost; unaffordable cards are
-/// greyed and can't be selected.
+/// is tap-to-select; placing it starts a site at the shown price, so nothing
+/// is ever unaffordable.
 class _BuildCatalogBar extends StatelessWidget {
   const _BuildCatalogBar({
     required this.catalog,
     required this.selected,
-    required this.coinBalance,
     required this.onSelect,
   });
 
   final List<BuildingType> catalog;
   final BuildingType? selected;
-  final int coinBalance;
   final void Function(BuildingType) onSelect;
 
   @override
@@ -1489,13 +1661,11 @@ class _BuildCatalogBar extends StatelessWidget {
                   separatorBuilder: (_, _) => const SizedBox(width: 8),
                   itemBuilder: (context, i) {
                     final b = catalog[i];
-                    final affordable = b.coinCost <= coinBalance;
                     return _CatalogCard(
                       building: b,
                       isSelected: b.id == selected?.id,
-                      affordable: affordable,
                       color: _colorFor(b),
-                      onTap: affordable ? () => onSelect(b) : null,
+                      onTap: () => onSelect(b),
                     );
                   },
                 ),
@@ -1509,16 +1679,14 @@ class _CatalogCard extends StatelessWidget {
   const _CatalogCard({
     required this.building,
     required this.isSelected,
-    required this.affordable,
     required this.color,
     required this.onTap,
   });
 
   final BuildingType building;
   final bool isSelected;
-  final bool affordable;
   final Color color;
-  final VoidCallback? onTap;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -1563,10 +1731,7 @@ class _CatalogCard extends StatelessWidget {
       ),
     );
 
-    return Opacity(
-      opacity: affordable ? 1 : 0.4,
-      child: GestureDetector(onTap: onTap, child: card),
-    );
+    return GestureDetector(onTap: onTap, child: card);
   }
 }
 

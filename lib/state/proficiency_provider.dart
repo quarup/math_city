@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:math_city/domain/city/construction_site.dart';
 import 'package:math_city/domain/concepts/concept.dart';
 import 'package:math_city/domain/concepts/concept_registry.dart';
 import 'package:math_city/domain/concepts/dag_engine.dart';
@@ -12,6 +13,7 @@ import 'package:math_city/domain/economy/expected_seconds.dart';
 import 'package:math_city/domain/economy/question_block.dart';
 import 'package:math_city/domain/proficiency/proficiency_band.dart';
 import 'package:math_city/state/city_provider.dart';
+import 'package:math_city/state/game_session_provider.dart';
 import 'package:math_city/state/introduced_concepts_provider.dart';
 import 'package:math_city/state/player_provider.dart';
 
@@ -29,10 +31,16 @@ class ProficiencyNotifier extends AsyncNotifier<Map<String, double>> {
   }
 
   /// Records an answer: updates proficiency, advances the round clock, moves
-  /// the answer streak, pays coins (answer + any band-crossing bonus) and
-  /// runs the drip-feed. Returns everything the UI needs to animate as one
-  /// [AnswerReward]. All persistence happens here, before the caller sees
-  /// the reward, so a payout can't be lost to a mid-animation exit.
+  /// the answer streak, pays coins (answer + any band-crossing bonus) into
+  /// the active construction site and runs the drip-feed. Returns everything
+  /// the UI needs to animate as one [AnswerReward]. All persistence happens
+  /// here, before the caller sees the reward, so a payout can't be lost to a
+  /// mid-animation exit.
+  ///
+  /// Coins have no wallet to land in (city_builder.md §8.3): they go to the
+  /// site in `activeSiteIdProvider`, which opens when its bar fills. With no
+  /// active site — or one that already opened earlier in the block — the
+  /// lifetime counter still moves but the coins go nowhere.
   ///
   /// Unlock events fire only on *correct* answers: the drip-feed tops the
   /// active frontier back up to `kActivePoolTarget` after a mastery (or a
@@ -80,6 +88,8 @@ class ProficiencyNotifier extends AsyncNotifier<Map<String, double>> {
     final seconds = expectedSecondsFor(conceptId);
     var coins = 0;
     final bonuses = <BandCrossingBonus>[];
+    PayInResult? sitePayIn;
+    final cityActions = ref.read(cityActionsProvider);
     if (correct) {
       coins = coinsForCorrectAnswer(
         expectedSeconds: seconds,
@@ -107,7 +117,11 @@ class ProficiencyNotifier extends AsyncNotifier<Map<String, double>> {
         );
       }
       final total = coins + bonuses.fold<int>(0, (sum, b) => sum + b.coins);
-      await db.incrementPlayerCoins(player.id, total);
+      await db.addLifetimeCoins(player.id, total);
+      final siteId = ref.read(activeSiteIdProvider);
+      if (siteId != null) {
+        sitePayIn = await cityActions.payIntoSite(siteId, total);
+      }
     }
 
     var unlocks = const <UnlockEvent>[];
@@ -140,13 +154,12 @@ class ProficiencyNotifier extends AsyncNotifier<Map<String, double>> {
     // capacity its buildings support, then re-evaluate story beats (population
     // and coin-spacing gates can newly pass). No-op until the player has
     // placed something.
-    final cityActions = ref.read(cityActionsProvider);
     await cityActions.tickPopulation();
     await cityActions.fireBeats();
 
-    // The round clock, streak and coin balance all moved. Refetch the active
-    // player so every counter (AppBar coins, city currency bar, unlock
-    // catalog, home-screen chips) reads the balance this answer produced.
+    // The round clock, streak and lifetime coins all moved. Refetch the
+    // active player so every reader (unlock catalog, home-screen chips) sees
+    // what this answer produced.
     ref
       ..invalidate(activePlayerProvider)
       ..invalidate(allPlayersProvider)
@@ -157,6 +170,7 @@ class ProficiencyNotifier extends AsyncNotifier<Map<String, double>> {
       streakCount: streak,
       bandBonuses: bonuses,
       unlocks: unlocks,
+      sitePayIn: sitePayIn,
     );
   }
 }

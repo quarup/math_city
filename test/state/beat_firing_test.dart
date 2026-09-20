@@ -34,7 +34,6 @@ Future<void> _place(
   buildingTypeId: typeId,
   gridX: x,
   gridY: 0,
-  coinCost: 0,
 );
 
 Set<String> _onScreenIds(ProviderContainer c) =>
@@ -239,7 +238,7 @@ void main() {
 
         // Earn 700 coins (past the 600 spacing) and re-evaluate: re-fires
         // (other eligible beats are already on screen, so parks is next up).
-        await db.incrementPlayerCoins(pid, 700);
+        await db.addLifetimeCoins(pid, 700);
         await _drainUntil(db, pid, actions, 'demand_more_parks');
         states = await db.storyBeatStatesForPlayer(pid);
         expect(states['demand_more_parks']!.state, 'onScreen');

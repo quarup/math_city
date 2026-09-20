@@ -64,7 +64,6 @@ void main() {
         expect(reward.bandBonuses, isEmpty);
         final player = await db.getPlayerById(pid);
         expect(player.streakCount, 1);
-        expect(player.coinBalance, reward.coins);
         expect(player.lifetimeCoinsEarned, reward.coins);
       },
     );
@@ -101,14 +100,14 @@ void main() {
       }
       final player = await db.getPlayerById(pid);
       expect(player.streakCount, 7); // uncapped; pay capped from the 5th on
-      expect(player.coinBalance, totalAnswerCoins + bonus);
+      expect(player.lifetimeCoinsEarned, totalAnswerCoins + bonus);
     });
 
     test('a wrong answer pays nothing and resets the streak', () async {
       final db = AppDatabase(NativeDatabase.memory());
       final pid = await _seedPlayer(db);
       await db.setPlayerStreakCount(pid, 4);
-      await db.incrementPlayerCoins(pid, 100);
+      await db.addLifetimeCoins(pid, 100);
       final container = await _setupContainer(db, pid);
       addTearDown(container.dispose);
 
@@ -122,7 +121,7 @@ void main() {
       expect(reward.streakCount, 0);
       final player = await db.getPlayerById(pid);
       expect(player.streakCount, 0);
-      expect(player.coinBalance, 100);
+      expect(player.lifetimeCoinsEarned, 100);
     });
 
     test('the streak persists across sessions (containers)', () async {
@@ -169,7 +168,7 @@ void main() {
       expect(reward.totalCoins, reward.coins + bonus.coins);
 
       final player = await db.getPlayerById(pid);
-      expect(player.coinBalance, reward.totalCoins);
+      expect(player.lifetimeCoinsEarned, reward.totalCoins);
       expect(await db.awardedBandIndicesFor(pid, concept), {0});
     });
 
@@ -204,7 +203,7 @@ void main() {
 
       expect(reward.bandBonuses, isEmpty);
       final player = await db.getPlayerById(pid);
-      expect(player.coinBalance, reward.coins);
+      expect(player.lifetimeCoinsEarned, reward.coins);
     });
 
     test('crossing mastery pays the bonus AND fires the drip-feed', () async {
