@@ -100,10 +100,19 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
   /// monotonically as land is bought. Null until the first build with data.
   LandWindow? _window;
 
-  /// Catalog building type chosen for *new* placement. Independent of
-  /// [_movingId]: it stays remembered (and re-highlighted in the catalog) after
-  /// the player finishes repositioning whatever they just placed/picked up.
+  /// Catalog building type chosen for *new* placement. While set, the bottom
+  /// bar asks for a location; a tap on free land then proposes a spot
+  /// ([_pendingSpot]) for the player to confirm.
   BuildingType? _selected;
+
+  /// Where [_selected] would go, awaiting *Place here*. The board shows it
+  /// as a highlighted ghost; tapping another free tile moves it. Cleared on
+  /// confirm, on X, and whenever another mode takes over.
+  GridFootprint? _pendingSpot;
+
+  /// The only catalog entry is picked for the starter player automatically,
+  /// once — after they back out of it with X, the catalog shows instead.
+  bool _autoPicked = false;
 
   /// The placed building currently picked up for repositioning (yellow tint +
   /// footprint outline), or null when nothing is selected. Set by tapping a
@@ -164,6 +173,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
         _buyingBlock = block;
         _movingId = null;
         _selectedSiteId = null;
+        _pendingSpot = null;
       });
       return;
     }
@@ -189,6 +199,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
       setState(() {
         _movingId = occupant.id == _movingId ? null : occupant.id;
         _selectedSiteId = null;
+        _pendingSpot = null;
       });
       return;
     }
@@ -393,6 +404,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     _selectedSiteId = siteId;
     _movingId = null;
     _buyingBlock = null;
+    _pendingSpot = null;
   });
 
   /// The building site whose footprint covers tile `(col, row)`, or null.
@@ -498,12 +510,11 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     );
   }
 
-  /// Starts a construction site for [type] so its footprint covers
-  /// `(col, row)` (auto-sliding the anchor) — no coins change hands. A free
-  /// type (the mayor's office) opens on the spot. For unique types that
-  /// already exist, moves the existing instance instead. On success the new
-  /// site (or placed building) is left selected so the player can fine-tune
-  /// its position and, for a site, tap *Build!*.
+  /// Proposes a spot for [type] so its footprint covers `(col, row)`
+  /// (auto-sliding the anchor): the board shows a highlighted ghost there
+  /// and the bar offers *Place here* — [_confirmPlacement] then starts the
+  /// site. For unique types that already exist, moves the existing instance
+  /// instead.
   void _tryPlace(
     BuildingType type,
     int col,
@@ -530,6 +541,22 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
       _toast('No room for ${type.name} there');
       return;
     }
+    setState(() {
+      _pendingSpot = spot;
+      _movingId = null;
+      _selectedSiteId = null;
+    });
+  }
+
+  /// *Place here*: starts a construction site at the proposed spot — no
+  /// coins change hands; a free type (the mayor's office) opens on the spot.
+  /// On success the new site (or placed building) is left selected so the
+  /// player can still nudge it and, for a site, tap *Build!*.
+  void _confirmPlacement() {
+    final spot = _pendingSpot;
+    final type = _selected;
+    if (spot == null || type == null) return;
+    setState(() => _pendingSpot = null);
     unawaited(
       _startSite(BuildingGoal(type: type, col: spot.col, row: spot.row)),
     );
@@ -716,6 +743,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
           siteId: _selectedSiteId,
           onReset: () => setState(() {
             _selected = null;
+            _pendingSpot = null;
             _movingId = null;
             _selectedSiteId = null;
           }),
@@ -784,6 +812,24 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
             assetPath: _assetPathFor(type, 0),
             selected: s.id == _selectedSiteId,
             stage: s.site.stage,
+          ),
+        );
+      }
+    }
+    // The proposed spot for the catalog pick: the type's ghost, highlighted
+    // like a picked-up building, until *Place here* turns it into a site.
+    if (_pendingSpot case final spot?) {
+      if (_selected case final type?) {
+        out.add(
+          PlacedBuildingView(
+            col: spot.col - window.minCol,
+            row: spot.row - window.minRow,
+            emoji: type.emoji,
+            color: _colorFor(type),
+            footprint: type.footprint,
+            assetPath: _assetPathFor(type, 0),
+            selected: true,
+            stage: 2,
           ),
         );
       }
@@ -896,8 +942,12 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     // dropping to null. Otherwise the bottom bar collapses for a frame, which
     // resizes the Flame viewport and makes the camera jump (see bottomNavBar).
     final catalog = catalogAsync.value;
-    if (_selected == null && catalog != null && catalog.length == 1) {
+    if (_selected == null &&
+        !_autoPicked &&
+        catalog != null &&
+        catalog.length == 1) {
       _selected = catalog.first;
+      _autoPicked = true;
     }
 
     final zoomed = _mode != _CityMode.browsing;
@@ -1031,7 +1081,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
             ? _SiteBar(
                 site: selectedSite,
                 onBuild: () => _buildSite(selectedSite),
-                onDone: () => setState(() => _selectedSiteId = null),
+                onDeselect: () => setState(() => _selectedSiteId = null),
               )
             : _movingId != null
             ? _MoveModeBar(
@@ -1043,10 +1093,29 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
             // camera). Only the very first load — before any data — is empty.
             : catalog == null
             ? const SizedBox.shrink()
+            // A catalog pick walks through two bars: choose a location, then
+            // confirm the proposed spot. X backs out to the catalog.
+            : _selected != null && _pendingSpot != null
+            ? _PlaceHereBar(
+                type: _selected!,
+                onPlace: _confirmPlacement,
+                onCancel: () => setState(() {
+                  _pendingSpot = null;
+                  _selected = null;
+                }),
+              )
+            : _selected != null
+            ? _ChooseLocationBar(
+                type: _selected!,
+                onCancel: () => setState(() => _selected = null),
+              )
             : _BuildCatalogBar(
                 catalog: catalog,
                 selected: _selected,
-                onSelect: (b) => setState(() => _selected = b),
+                onSelect: (b) => setState(() {
+                  _selected = b;
+                  _pendingSpot = null;
+                }),
               ),
         // The wheel is reached through a site's Build! — there is no
         // free-floating "play" entry (city_builder.md §8.3).
@@ -1385,7 +1454,143 @@ class _MoveModeBar extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 8),
-              FilledButton(onPressed: onDone, child: const Text('Done')),
+              _CloseButton(onPressed: onDone, tooltip: 'Done moving'),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Small round X used by the bottom bars to back out of a mode.
+class _CloseButton extends StatelessWidget {
+  const _CloseButton({required this.onPressed, required this.tooltip});
+
+  final VoidCallback onPressed;
+  final String tooltip;
+
+  @override
+  Widget build(BuildContext context) => IconButton.filledTonal(
+    onPressed: onPressed,
+    tooltip: tooltip,
+    icon: const Icon(Icons.close_rounded),
+  );
+}
+
+/// Bottom strip after a catalog pick: names the building and asks for a
+/// tile. X drops the pick and brings the catalog back.
+class _ChooseLocationBar extends StatelessWidget {
+  const _ChooseLocationBar({required this.type, required this.onCancel});
+
+  final BuildingType type;
+  final VoidCallback onCancel;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Material(
+      elevation: 8,
+      color: theme.colorScheme.surfaceContainer,
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Row(
+            children: [
+              Text(type.emoji, style: const TextStyle(fontSize: 26)),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      type.name,
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      'Choose a location — tap a tile to place it',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              _CloseButton(onPressed: onCancel, tooltip: 'Cancel'),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Bottom strip while a spot is proposed for the catalog pick: the price
+/// it will take to build there, *Place here* to start the site, X to drop
+/// the pick. Tapping another free tile moves the proposal instead.
+class _PlaceHereBar extends StatelessWidget {
+  const _PlaceHereBar({
+    required this.type,
+    required this.onPlace,
+    required this.onCancel,
+  });
+
+  final BuildingType type;
+  final VoidCallback onPlace;
+  final VoidCallback onCancel;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Material(
+      elevation: 8,
+      color: theme.colorScheme.surfaceContainer,
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Row(
+            children: [
+              Text(type.emoji, style: const TextStyle(fontSize: 26)),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      type.name,
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text.rich(
+                      TextSpan(
+                        children: type.coinCost == 0
+                            ? const [TextSpan(text: 'Free — place it here?')]
+                            : [
+                                coinSpan(),
+                                TextSpan(
+                                  text: ' ${type.coinCost} — place it here?',
+                                ),
+                              ],
+                      ),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              _CloseButton(onPressed: onCancel, tooltip: 'Cancel'),
+              const SizedBox(width: 4),
+              FilledButton(onPressed: onPlace, child: const Text('Place here')),
             ],
           ),
         ),
@@ -1455,12 +1660,12 @@ class _SiteBar extends StatelessWidget {
   const _SiteBar({
     required this.site,
     required this.onBuild,
-    required this.onDone,
+    required this.onDeselect,
   });
 
   final CitySite site;
   final VoidCallback onBuild;
-  final VoidCallback onDone;
+  final VoidCallback onDeselect;
 
   @override
   Widget build(BuildContext context) {
@@ -1484,13 +1689,9 @@ class _SiteBar extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 12),
-              TextButton(onPressed: onDone, child: const Text('Done')),
+              _CloseButton(onPressed: onDeselect, tooltip: 'Deselect'),
               const SizedBox(width: 4),
-              FilledButton.icon(
-                onPressed: onBuild,
-                icon: const Icon(Icons.casino_rounded),
-                label: const Text('Build!'),
-              ),
+              FilledButton(onPressed: onBuild, child: const Text('Build!')),
             ],
           ),
         ),
