@@ -86,6 +86,10 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
   /// The block that opened a site, while its celebration is up.
   QuestionBlock? _celebratingBlock;
 
+  /// The block the current wheel follows, shown as a recap card above it;
+  /// null for the first wheel after *Build!*.
+  QuestionBlock? _recapBlock;
+
   /// The world-tile window the board currently renders (owned land + pale
   /// frontier bounding box). Drives the world↔local translation; grows
   /// monotonically as land is bought. Null until the first build with data.
@@ -227,6 +231,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     if (result != null && result.block.siteOpened) {
       _celebrate(result.block);
     } else if (result == null || result.spinAgain) {
+      _recapBlock = result?.block;
       _showWheel();
     } else {
       _zoomOut();
@@ -244,6 +249,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
       _mode = _CityMode.siteZoomed;
       _zoomedSite = site;
       _wheelVisible = false;
+      _recapBlock = null;
       _movingId = null;
       _buyingBlock = null;
     });
@@ -961,6 +967,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                                   ? SpinOverlay(
                                       key: ValueKey(_wheelGeneration),
                                       onBlockStart: _startBlock,
+                                      recap: _recapBlock,
                                     )
                                   : const SizedBox.expand(),
                             ),

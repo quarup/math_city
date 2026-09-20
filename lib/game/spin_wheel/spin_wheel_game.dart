@@ -30,9 +30,14 @@ class SpinWheelGame extends FlameGame with DragCallbacks {
     required this.skyTop,
     required this.skyBottom,
     this.showBackdrop = true,
+    this.onThrow,
   }) : _segments = segments;
 
   final void Function(String conceptId) onConceptSelected;
+
+  /// Fired when a throw is strong enough to select — the host can clear
+  /// anything sitting over the wheel before the spin effect kicks in.
+  final VoidCallback? onThrow;
   final List<WheelSegment> _segments;
   final Color skyTop;
   final Color skyBottom;
@@ -70,12 +75,12 @@ class SpinWheelGame extends FlameGame with DragCallbacks {
 
     // Wheel centred on the sky band (or on the canvas when floating over
     // the city). Radius: 41% of the width (the mock proportion), shrunk if
-    // needed so the pointer clears the top and the reveal pill clears the
-    // strip / the bottom edge.
+    // needed so the pointer clears the top (pointer tip sits 36/148 R above
+    // the wedges) and the reveal pill clears the strip / the bottom edge.
     final cy = backdrop == null ? size.y * 0.46 : backdrop.stripTop / 2;
     final radius = [
       size.x * 0.41,
-      (cy - 30) / 1.55,
+      (cy - 8) / 1.25,
       (size.y - cy - 16) / 1.45,
     ].reduce((a, b) => a < b ? a : b);
     final center = Vector2(size.x / 2, cy);
@@ -186,6 +191,7 @@ class SpinWheelGame extends FlameGame with DragCallbacks {
       _wheel.startSpinWithVelocity(
         rawOmega.clamp(-_maxAngularVelocity, _maxAngularVelocity),
       );
+      onThrow?.call();
     } else {
       // Weak throw: spin for feel (with boost) but do not select.
       final sign = rawOmega >= 0 ? 1.0 : -1.0;

@@ -13,6 +13,7 @@ import 'package:math_city/domain/proficiency/proficiency_band.dart';
 import 'package:math_city/game/spin_wheel/concept_icons.dart';
 import 'package:math_city/game/spin_wheel/spin_wheel_component.dart';
 import 'package:math_city/game/spin_wheel/spin_wheel_game.dart';
+import 'package:math_city/presentation/block/block_recap.dart';
 import 'package:math_city/presentation/spin/new_concept_celebration.dart';
 import 'package:math_city/presentation/theme/app_palette.dart';
 import 'package:math_city/presentation/theme/category_colors.dart';
@@ -47,9 +48,12 @@ List<WheelSegment> _buildSegments(
 /// bottom of the screen. Landing on a concept builds the block and hands it
 /// to [onBlockStart]; the host pushes the question route.
 ///
+/// When the wheel follows a finished block, [recap] is that block: its
+/// [BlockRecapCard] sits above the wheel until the next throw.
+///
 /// Give each fresh wheel a new [key] — the widget builds its game once.
 class SpinOverlay extends ConsumerStatefulWidget {
-  const SpinOverlay({required this.onBlockStart, super.key});
+  const SpinOverlay({required this.onBlockStart, this.recap, super.key});
 
   final void Function(
     String conceptId,
@@ -57,6 +61,8 @@ class SpinOverlay extends ConsumerStatefulWidget {
     QuestionBlock block,
   )
   onBlockStart;
+
+  final QuestionBlock? recap;
 
   @override
   ConsumerState<SpinOverlay> createState() => _SpinOverlayState();
@@ -67,6 +73,9 @@ class _SpinOverlayState extends ConsumerState<SpinOverlay> {
 
   /// Concept whose first-landing celebration is on screen, if any.
   String? _celebrating;
+
+  /// The recap card fades once the player throws.
+  bool _recapVisible = true;
 
   void _onConceptSelected(String conceptId) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -116,6 +125,9 @@ class _SpinOverlayState extends ConsumerState<SpinOverlay> {
         skyTop: palette.skyGradientStart,
         skyBottom: palette.skyGradientEnd,
         showBackdrop: false,
+        onThrow: () {
+          if (mounted && _recapVisible) setState(() => _recapVisible = false);
+        },
       );
       final shown = concepts.map((c) => c.id).toList();
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -136,7 +148,27 @@ class _SpinOverlayState extends ConsumerState<SpinOverlay> {
               : Stack(
                   fit: StackFit.expand,
                   children: [
-                    GameWidget(game: _game!),
+                    Column(
+                      children: [
+                        if (widget.recap != null)
+                          IgnorePointer(
+                            child: AnimatedOpacity(
+                              opacity: _recapVisible ? 1 : 0,
+                              duration: const Duration(milliseconds: 300),
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                  16,
+                                  10,
+                                  16,
+                                  2,
+                                ),
+                                child: BlockRecapCard(block: widget.recap!),
+                              ),
+                            ),
+                          ),
+                        Expanded(child: GameWidget(game: _game!)),
+                      ],
+                    ),
                     if (celebrating != null)
                       NewConceptCelebration(
                         key: ValueKey(celebrating.id),

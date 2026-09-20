@@ -7,7 +7,7 @@ import 'package:math_city/domain/questions/answer_check.dart';
 import 'package:math_city/domain/questions/diagram_spec.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
 import 'package:math_city/domain/questions/is_word_problem.dart';
-import 'package:math_city/presentation/block/block_summary_screen.dart';
+import 'package:math_city/presentation/block/block_recap.dart';
 import 'package:math_city/presentation/diagrams/diagram_renderer.dart';
 import 'package:math_city/presentation/question/question_screen.dart';
 import 'package:math_city/presentation/theme/app_palette.dart';
