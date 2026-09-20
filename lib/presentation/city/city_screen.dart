@@ -165,6 +165,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
         return;
       }
       if (!purchasableBlocks(ownedBlocks).contains(block)) return;
+      if (_atSiteCap(sites)) return;
       if (block == _buyingBlock) {
         _startSelectedLandSite();
         return;
@@ -399,6 +400,15 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     BuildingGoal(:final type) => '${type.name} is finished!',
     LandBlockGoal() => 'The new land is yours!',
   };
+
+  /// True (after toasting which sites are open) when no new site can start
+  /// — checked at the moment of picking, so the player never chooses a
+  /// location for something that would be refused on *Place here*.
+  bool _atSiteCap(List<CitySite> sites) {
+    if (sites.length < kMaxOpenSites) return false;
+    _toast(_rejectionMessage(SiteStartRejection.tooManyOpenSites, sites));
+    return true;
+  }
 
   void _selectSite(int? siteId) => setState(() {
     _selectedSiteId = siteId;
@@ -945,7 +955,8 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     if (_selected == null &&
         !_autoPicked &&
         catalog != null &&
-        catalog.length == 1) {
+        catalog.length == 1 &&
+        sites.length < kMaxOpenSites) {
       _selected = catalog.first;
       _autoPicked = true;
     }
@@ -1112,10 +1123,13 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
             : _BuildCatalogBar(
                 catalog: catalog,
                 selected: _selected,
-                onSelect: (b) => setState(() {
-                  _selected = b;
-                  _pendingSpot = null;
-                }),
+                onSelect: (b) {
+                  if (_atSiteCap(sites)) return;
+                  setState(() {
+                    _selected = b;
+                    _pendingSpot = null;
+                  });
+                },
               ),
         // The wheel is reached through a site's Build! — there is no
         // free-floating "play" entry (city_builder.md §8.3).
