@@ -4,7 +4,7 @@ import 'package:math_city/presentation/city/celebration_overlay.dart';
 import 'package:math_city/presentation/theme/app_theme.dart';
 
 void main() {
-  testWidgets('shows the title, the block stats and a Done button', (
+  testWidgets('shows the title, the streak and a Done button', (
     tester,
   ) async {
     var done = false;
@@ -14,7 +14,6 @@ void main() {
         home: Scaffold(
           body: CelebrationOverlay(
             title: 'Single home is finished!',
-            coins: 48,
             streak: 10,
             onDone: () => done = true,
           ),
@@ -24,7 +23,8 @@ void main() {
     await tester.pump();
     expect(find.text('It’s open!'), findsOneWidget);
     expect(find.text('Single home is finished!'), findsOneWidget);
-    expect(find.text('+48'), findsOneWidget);
+    expect(find.text('10'), findsOneWidget);
+    expect(find.textContaining('+'), findsNothing);
     expect(find.byType(ConfettiRain), findsOneWidget);
 
     await tester.tap(find.text('Done'));

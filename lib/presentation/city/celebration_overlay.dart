@@ -2,30 +2,32 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:math_city/presentation/theme/app_palette.dart';
-import 'package:math_city/presentation/widgets/coin_icon.dart';
 import 'package:math_city/presentation/widgets/streak_flame.dart';
 
 /// The building-opened celebration drawn over the zoomed-in city
 /// (city_builder.md §8.2 step 6): confetti rains over the finished
-/// building, a card names it with the block's coins and streak, and *Done*
-/// hands control back so the camera can zoom out. Empty regions don't
-/// absorb touches; only the card does.
+/// building, a card names it (with the streak, if one is running), and
+/// *Done* hands control back so the camera can zoom out. Empty regions
+/// don't absorb touches; only the card does. The block's coins are not
+/// repeated here — the site bar's full `price / price` already says the
+/// job is paid, and a "+N" next to "It's open!" read as a bonus.
+///
+/// [cardKey] lets the host measure the card so it can frame the building
+/// in the space the card leaves free.
 class CelebrationOverlay extends StatelessWidget {
   const CelebrationOverlay({
     required this.title,
-    required this.coins,
     required this.streak,
     required this.onDone,
+    this.cardKey,
     super.key,
   });
 
   /// e.g. "Single home is finished!"
   final String title;
-
-  /// Coins the closing block earned (0 hides the line).
-  final int coins;
   final int streak;
   final VoidCallback onDone;
+  final Key? cardKey;
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +42,7 @@ class CelebrationOverlay extends StatelessWidget {
           right: 16,
           child: SafeArea(
             child: Material(
+              key: cardKey,
               elevation: 8,
               borderRadius: BorderRadius.circular(20),
               color: theme.colorScheme.surface,
@@ -64,26 +67,9 @@ class CelebrationOverlay extends StatelessWidget {
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    if (coins > 0 || streak > 0) ...[
+                    if (streak > 0) ...[
                       const SizedBox(height: 12),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          if (coins > 0)
-                            CoinAmount(
-                              amount: coins,
-                              prefix: '+',
-                              iconSize: 22,
-                              style: theme.textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: palette.coinGoldDeep,
-                              ),
-                            ),
-                          if (coins > 0 && streak > 0)
-                            const SizedBox(width: 20),
-                          if (streak > 0) StreakBadge(count: streak),
-                        ],
-                      ),
+                      StreakBadge(count: streak),
                     ],
                     const SizedBox(height: 14),
                     FilledButton(

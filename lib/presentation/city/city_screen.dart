@@ -86,6 +86,11 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
   /// The block that opened a site, while its celebration is up.
   QuestionBlock? _celebratingBlock;
 
+  /// The celebration card and the board, measured to frame the finished
+  /// building in the map area the card leaves free.
+  final GlobalKey _celebrationCardKey = GlobalKey();
+  final GlobalKey _boardKey = GlobalKey();
+
   /// The block the current wheel follows, shown as a recap card above it;
   /// null for the first wheel after *Build!*.
   QuestionBlock? _recapBlock;
@@ -331,8 +336,9 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     );
   }
 
-  /// A block just opened its site: zoom onto the finished building, rain
-  /// confetti and show the card. *Done* zooms back out.
+  /// A block just opened its site: card and confetti go up at once, and
+  /// the camera glides onto the finished building underneath them, framed
+  /// in the map area the card leaves free. *Done* zooms back out.
   void _celebrate(QuestionBlock block) {
     final site = block.siteAfter;
     if (site == null) {
@@ -343,8 +349,9 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     setState(() {
       _mode = _CityMode.celebrating;
       _wheelVisible = false;
-      _celebratingBlock = null;
+      _celebratingBlock = block;
     });
+    // Measure the card after it has laid out, then frame around it.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted || _game == null) return;
       final (col, row, w, h) = _footprintOf(site.goal);
@@ -353,13 +360,28 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
         row: row - _window!.minRow,
         width: w,
         height: h,
-        anchorY: 0.6,
+        anchorY: _celebrationAnchorY(),
         widthFraction: 0.7,
-        onDone: () {
-          if (mounted) setState(() => _celebratingBlock = block);
-        },
       );
     });
+  }
+
+  /// Viewport fraction that centres a footprint in the map area below the
+  /// celebration card: halfway between the card's bottom edge and the
+  /// bottom of the board, nudged down a little because a building's body
+  /// rises above the ground point the camera targets.
+  double _celebrationAnchorY() {
+    final card =
+        _celebrationCardKey.currentContext?.findRenderObject() as RenderBox?;
+    final board = _boardKey.currentContext?.findRenderObject() as RenderBox?;
+    if (card == null || board == null || !card.hasSize || !board.hasSize) {
+      return 0.6;
+    }
+    final boardTop = board.localToGlobal(Offset.zero).dy;
+    final cardBottom =
+        card.localToGlobal(Offset(0, card.size.height)).dy - boardTop;
+    final free = (cardBottom / board.size.height).clamp(0.0, 0.8);
+    return (free + (1 - free) / 2 + 0.05).clamp(0.5, 0.9);
   }
 
   String _celebrationTitle(ConstructionSite site) => switch (site.goal) {
@@ -914,6 +936,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                 children: [
                   Positioned.fill(
                     child: ColoredBox(
+                      key: _boardKey,
                       color: const Color(0xFF9CCC65),
                       child: _PinchZoomWrapper(
                         game: _game!,
@@ -979,9 +1002,9 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                     Positioned.fill(
                       child: CelebrationOverlay(
                         title: _celebrationTitle(celebratingSite),
-                        coins: celebrating.coinsEarned,
                         streak: celebrating.streakCount ?? 0,
                         onDone: _zoomOut,
+                        cardKey: _celebrationCardKey,
                       ),
                     ),
                 ],
