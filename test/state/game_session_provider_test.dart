@@ -1,8 +1,11 @@
-import 'package:drift/drift.dart';
+import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:math_city/data/database.dart';
+import 'package:math_city/domain/city/building_registry.dart';
+import 'package:math_city/domain/city/construction_site.dart';
+import 'package:math_city/state/city_provider.dart';
 import 'package:math_city/state/game_session_provider.dart';
 import 'package:math_city/state/player_provider.dart';
 
@@ -13,11 +16,9 @@ AppDatabase _testDb() {
 }
 
 void main() {
-  // The coin counter mirrors the persisted balance: every screen that shows
-  // coins (spin/question AppBars, city currency bar, home chips) must agree
-  // after an earn or a spend, which is what once broke when only one
-  // provider was invalidated.
-  group('totalCoinsProvider', () {
+  // The active site is where a session's coins go; every screen that shows
+  // the `paid / price` bar (spin, question, summary) reads it from here.
+  group('activeSiteProvider', () {
     late AppDatabase db;
     late ProviderContainer container;
     late int playerId;
@@ -38,46 +39,38 @@ void main() {
     });
     tearDown(() => container.dispose());
 
-    Future<void> refresh() async {
-      container.invalidate(activePlayerProvider);
-      await container.read(activePlayerProvider.future);
-    }
-
-    test('starts at zero for a new player', () {
-      expect(container.read(totalCoinsProvider), 0);
+    test('null until a site is selected', () async {
+      expect(await container.read(activeSiteProvider.future), isNull);
     });
 
-    test('reflects an earn once the player row is refetched', () async {
-      await db.incrementPlayerCoins(playerId, 7);
-      await refresh();
-      expect(container.read(totalCoinsProvider), 7);
-      expect(container.read(activePlayerProvider).value!.coinBalance, 7);
+    test('resolves the selected site with its paid-in coins', () async {
+      final home = findBuildingTypeById('single_home')!;
+      final start = await container
+          .read(cityActionsProvider)
+          .startSite(BuildingGoal(type: home, col: 0, row: 0));
+      expect(start.ok, isTrue);
+      container.read(activeSiteIdProvider.notifier).selected = start.siteId;
+
+      final before = await container.read(activeSiteProvider.future);
+      expect(before!.id, start.siteId);
+      expect(before.site.paidCoins, 0);
+      expect(before.site.price, home.coinCost);
+
+      await container.read(cityActionsProvider).payIntoSite(start.siteId!, 20);
+      final after = await container.read(activeSiteProvider.future);
+      expect(after!.site.paidCoins, 20);
     });
 
-    test('a spend after an earn nets out; lifetime stays monotone', () async {
-      await db.incrementPlayerCoins(playerId, 10);
-      await db.incrementPlayerCoins(playerId, -6);
-      await refresh();
-
-      expect(container.read(totalCoinsProvider), 4);
-      final player = await db.getPlayerById(playerId);
-      expect(player.coinBalance, 4);
-      expect(player.lifetimeCoinsEarned, 10);
-    });
-
-    test('resets when a different player is selected', () async {
-      await db.incrementPlayerCoins(playerId, 50);
-      await refresh();
-      expect(container.read(totalCoinsProvider), 50);
-
-      final other = await db.createPlayer(
-        name: 'Kim',
-        gradeLevel: 1,
-        avatarConfigJson: '{}',
-      );
-      container.read(activePlayerIdProvider.notifier).selected = other.id;
-      await container.read(activePlayerProvider.future);
-      expect(container.read(totalCoinsProvider), 0);
+    test('null again once the site has opened', () async {
+      final home = findBuildingTypeById('single_home')!;
+      final start = await container
+          .read(cityActionsProvider)
+          .startSite(BuildingGoal(type: home, col: 0, row: 0));
+      container.read(activeSiteIdProvider.notifier).selected = start.siteId;
+      await container
+          .read(cityActionsProvider)
+          .payIntoSite(start.siteId!, home.coinCost);
+      expect(await container.read(activeSiteProvider.future), isNull);
     });
   });
 }

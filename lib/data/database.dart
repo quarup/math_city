@@ -25,13 +25,10 @@ class Players extends Table {
   TextColumn get name => text().withLength(min: 1, max: 50)();
   IntColumn get gradeLevel => integer()();
 
-  /// Coin spending balance — decremented on placements, land, map unlocks,
-  /// events. One coin ≈ one expected second of study (see
-  /// `lib/domain/economy/coin_economy.dart`).
-  IntColumn get coinBalance => integer().withDefault(const Constant(0))();
-
   /// Coins lifetime earned — never decreases; literally "total seconds
   /// studied". Gate input on `BuildingType.unlockRule.minLifetimeCoins`.
+  /// There is no spending balance: a coin only exists inside a construction
+  /// site (see `ConstructionSites`; city_builder.md §8.3).
   IntColumn get lifetimeCoinsEarned =>
       integer().withDefault(const Constant(0))();
 
@@ -174,10 +171,45 @@ class BuildingPlacements extends Table {
   IntColumn get id => integer().autoIncrement()();
   IntColumn get cityId => integer().references(Cities, #id)();
   TextColumn get buildingTypeId => text()();
-  IntColumn get currentTier => integer().withDefault(const Constant(0))();
   IntColumn get gridX => integer()();
   IntColumn get gridY => integer()();
   IntColumn get placedAtRound => integer()();
+}
+
+/// One row per open construction site (city_builder.md §8): the thing the
+/// player is paying down by answering questions. Everything with a price is
+/// a site — a building (new build or upgrade) or a land block — so
+/// [goalKind] says which columns apply. A row exists from placement until
+/// the site opens (its coins become a `BuildingPlacements` /
+/// `OwnedLandBlocks` row and this row is deleted). There is deliberately no
+/// status column: v1 has no cancel, so a site's only exits are *moved* and
+/// *opened*. Domain rules live in `lib/domain/city/construction_site.dart`;
+/// `lib/data/construction_sites.dart` maps rows to that value type.
+@DataClassName('ConstructionSiteRow')
+class ConstructionSites extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get cityId => integer().references(Cities, #id)();
+
+  /// `'building'` or `'land'`.
+  TextColumn get goalKind => text()();
+
+  // Building goals.
+  TextColumn get buildingTypeId => text().nullable()();
+  IntColumn get gridX => integer().nullable()();
+  IntColumn get gridY => integer().nullable()();
+
+  /// For an upgrade: the `BuildingPlacements.id` this site replaces when it
+  /// opens (the old building keeps standing until then).
+  IntColumn get upgradesFromPlacementId => integer().nullable()();
+
+  // Land goals.
+  IntColumn get blockX => integer().nullable()();
+  IntColumn get blockY => integer().nullable()();
+
+  IntColumn get paidCoins => integer().withDefault(const Constant(0))();
+
+  /// The player's round clock when the site was started.
+  IntColumn get startedAtRound => integer()();
 }
 
 /// Award log for the band-crossing coin bonus (see
@@ -254,6 +286,7 @@ class StoryBeatStates extends Table {
     Cities,
     OwnedLandBlocks,
     BuildingPlacements,
+    ConstructionSites,
     ConceptBandMilestones,
     StoryBeatStates,
     AppSettings,
@@ -263,7 +296,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 15;
+  int get schemaVersion => 16;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -380,6 +413,29 @@ class AppDatabase extends _$AppDatabase {
         // than a 0..5 pay level, so the column is renamed to say what it
         // holds. Pure rename — values carry over.
         await m.renameColumn(players, 'streak_level', players.streakCount);
+      }
+      if (from < 16) {
+        // v16: the construction loop (city_builder.md §8, plan.md Phase 10).
+        //   Players.coinBalance dropped — there is no wallet, a coin only
+        //   exists inside a ConstructionSites row (new table);
+        //   BuildingPlacements.currentTier retired (upgrades are distinct
+        //   placements carrying an upgradesFrom link). Dropping columns
+        //   means a rebuild, and we're pre-launch, so this wipes and
+        //   recreates everything — the v9/v11/v14 precedent. AppSettings is
+        //   kept (it holds the TTS toggle).
+        await customStatement('DROP TABLE IF EXISTS construction_sites');
+        await customStatement('DROP TABLE IF EXISTS story_beat_states');
+        await customStatement('DROP TABLE IF EXISTS concept_band_milestones');
+        await customStatement('DROP TABLE IF EXISTS building_placements');
+        await customStatement('DROP TABLE IF EXISTS owned_land_blocks');
+        await customStatement('DROP TABLE IF EXISTS cities');
+        await customStatement('DROP TABLE IF EXISTS dataset_questions');
+        await customStatement('DROP TABLE IF EXISTS introduced_concepts');
+        await customStatement('DROP TABLE IF EXISTS concepts');
+        await customStatement('DROP TABLE IF EXISTS concept_proficiencies');
+        await customStatement('DROP TABLE IF EXISTS players');
+        await m.createAll();
+        await _seedConceptCatalog();
       }
     },
   );
@@ -526,31 +582,21 @@ class AppDatabase extends _$AppDatabase {
     ),
   );
 
-  /// Sets a player's coin balances directly. For per-correct-answer
-  /// increments use [incrementPlayerCoins].
-  Future<void> updatePlayerCoins(
-    int playerId, {
-    required int coinBalance,
-    required int lifetimeCoinsEarned,
-  }) => (update(players)..where((t) => t.id.equals(playerId))).write(
-    PlayersCompanion(
-      coinBalance: Value(coinBalance),
-      lifetimeCoinsEarned: Value(lifetimeCoinsEarned),
-    ),
-  );
+  /// Sets a player's lifetime coin counter directly (tests / debug). For
+  /// per-answer payouts use [addLifetimeCoins].
+  Future<void> setLifetimeCoins(int playerId, int lifetimeCoinsEarned) =>
+      (update(players)..where((t) => t.id.equals(playerId))).write(
+        PlayersCompanion(lifetimeCoinsEarned: Value(lifetimeCoinsEarned)),
+      );
 
-  /// Adds `by` coins to the player's spending and lifetime balances. Use
-  /// this on every payout. Negative values (spends) are allowed on
-  /// `coinBalance` only; lifetime stays monotone.
-  Future<void> incrementPlayerCoins(int playerId, int by) async {
+  /// Adds [by] coins to the player's lifetime counter. Call on every
+  /// payout; the coins themselves go into a construction site
+  /// ([setSitePaidCoins]) — there is no spending balance.
+  Future<void> addLifetimeCoins(int playerId, int by) async {
+    assert(by >= 0, 'lifetime coins never decrease');
     final p = await getPlayerById(playerId);
     await (update(players)..where((t) => t.id.equals(playerId))).write(
-      PlayersCompanion(
-        coinBalance: Value(p.coinBalance + by),
-        lifetimeCoinsEarned: Value(
-          p.lifetimeCoinsEarned + (by > 0 ? by : 0),
-        ),
-      ),
+      PlayersCompanion(lifetimeCoinsEarned: Value(p.lifetimeCoinsEarned + by)),
     );
   }
 
@@ -654,34 +700,31 @@ class AppDatabase extends _$AppDatabase {
     return {for (final r in rows) (r.blockX, r.blockY)};
   }
 
-  /// Buys land block `(blockX, blockY)` for [cityId]: records the ownership row
-  /// and spends [coinCost] coins (lifetime stays monotone). The caller must
-  /// have verified the block is on the purchasable frontier and affordable.
-  /// Transactional, so a failed spend can't leave a free block behind.
-  Future<void> buyCityLandBlock({
+  /// Records ownership of land block `(blockX, blockY)` for [cityId]. Land
+  /// is paid for through a construction site ([openSite] calls this when a
+  /// land site fills); the caller has verified the block is on the frontier.
+  Future<void> addOwnedLandBlock({
     required int cityId,
-    required int playerId,
     required int blockX,
     required int blockY,
-    required int coinCost,
-  }) => transaction(() async {
-    await into(ownedLandBlocks).insert(
-      OwnedLandBlocksCompanion.insert(
-        cityId: cityId,
-        blockX: blockX,
-        blockY: blockY,
-      ),
-    );
-    if (coinCost > 0) await incrementPlayerCoins(playerId, -coinCost);
-  });
+  }) => into(ownedLandBlocks).insert(
+    OwnedLandBlocksCompanion.insert(
+      cityId: cityId,
+      blockX: blockX,
+      blockY: blockY,
+    ),
+  );
 
   /// Debug-only: wipes a player's city-builder state back to the
-  /// just-created baseline — clears placements, beat states, and
-  /// band-milestone awards; sets population to 0; and zeroes the coin
-  /// balance, its lifetime counter, and the streak. Driven by the
-  /// kDebugMode-only city debug sheet.
+  /// just-created baseline — clears placements, construction sites, beat
+  /// states, and band-milestone awards; sets population to 0; and zeroes
+  /// the lifetime coin counter and the streak. Driven by the kDebugMode-only
+  /// city debug sheet.
   Future<void> resetCityForPlayer(int playerId) => transaction(() async {
     final city = await cityForPlayer(playerId);
+    await (delete(
+      constructionSites,
+    )..where((t) => t.cityId.equals(city.id))).go();
     await (delete(
       buildingPlacements,
     )..where((t) => t.cityId.equals(city.id))).go();
@@ -698,7 +741,6 @@ class AppDatabase extends _$AppDatabase {
     await setCityPopulation(city.id, 0);
     await (update(players)..where((t) => t.id.equals(playerId))).write(
       const PlayersCompanion(
-        coinBalance: Value(0),
         lifetimeCoinsEarned: Value(0),
         streakCount: Value(0),
       ),
@@ -801,10 +843,11 @@ class AppDatabase extends _$AppDatabase {
           ))
           .write(const StoryBeatStatesCompanion(state: Value('completed')));
 
-  /// Places one building: inserts the placement row and spends [coinCost]
-  /// from the player's balance (lifetime stays monotone via
-  /// [incrementPlayerCoins]). The caller must have already verified tile
-  /// vacancy and affordability.
+  /// Places one building: inserts the placement row. No coins change hands
+  /// here — a priced building is paid for through a construction site and
+  /// placed by [openSite] when the site fills; this is the free path (the
+  /// mayor's office) and the site-opening primitive. The caller has already
+  /// verified tile vacancy.
   ///
   /// `placedAtRound` is stamped with the player's current round clock
   /// ([Players.roundsPlayed]) so the "building age" beat trigger measures age
@@ -817,10 +860,9 @@ class AppDatabase extends _$AppDatabase {
     required String buildingTypeId,
     required int gridX,
     required int gridY,
-    required int coinCost,
   }) async {
     final player = await getPlayerById(playerId);
-    final id = await into(buildingPlacements).insert(
+    return into(buildingPlacements).insert(
       BuildingPlacementsCompanion.insert(
         cityId: cityId,
         buildingTypeId: buildingTypeId,
@@ -829,8 +871,6 @@ class AppDatabase extends _$AppDatabase {
         placedAtRound: player.roundsPlayed,
       ),
     );
-    if (coinCost > 0) await incrementPlayerCoins(playerId, -coinCost);
-    return id;
   }
 
   /// Moves an existing placement to `(gridX, gridY)`. Used for unique
@@ -851,6 +891,118 @@ class AppDatabase extends _$AppDatabase {
       ),
     );
   }
+
+  // ---- Construction sites (Phase 10) ----
+
+  /// Every open site in [cityId], oldest first.
+  Future<List<ConstructionSiteRow>> sitesForCity(int cityId) =>
+      (select(constructionSites)
+            ..where((t) => t.cityId.equals(cityId))
+            ..orderBy([(t) => OrderingTerm.asc(t.id)]))
+          .get();
+
+  Future<ConstructionSiteRow?> siteById(int siteId) => (select(
+    constructionSites,
+  )..where((t) => t.id.equals(siteId))).getSingleOrNull();
+
+  /// Starts a building site at `(gridX, gridY)` — a new build, or an upgrade
+  /// of [upgradesFromPlacementId]. Returns the new row id. Stamps the
+  /// player's round clock; the site's price is derived from the building
+  /// registry, never stored.
+  Future<int> startBuildingSite({
+    required int cityId,
+    required int playerId,
+    required String buildingTypeId,
+    required int gridX,
+    required int gridY,
+    int? upgradesFromPlacementId,
+  }) async {
+    final player = await getPlayerById(playerId);
+    return into(constructionSites).insert(
+      ConstructionSitesCompanion.insert(
+        cityId: cityId,
+        goalKind: 'building',
+        buildingTypeId: Value(buildingTypeId),
+        gridX: Value(gridX),
+        gridY: Value(gridY),
+        upgradesFromPlacementId: Value(upgradesFromPlacementId),
+        startedAtRound: player.roundsPlayed,
+      ),
+    );
+  }
+
+  /// Starts a land site for block `(blockX, blockY)`. Returns the row id.
+  Future<int> startLandSite({
+    required int cityId,
+    required int playerId,
+    required int blockX,
+    required int blockY,
+  }) async {
+    final player = await getPlayerById(playerId);
+    return into(constructionSites).insert(
+      ConstructionSitesCompanion.insert(
+        cityId: cityId,
+        goalKind: 'land',
+        blockX: Value(blockX),
+        blockY: Value(blockY),
+        startedAtRound: player.roundsPlayed,
+      ),
+    );
+  }
+
+  /// Moves a building site's anchor. Paid-in coins and the upgrade link are
+  /// untouched — sites move like buildings (city_builder.md §8.5).
+  Future<void> moveSite({
+    required int siteId,
+    required int gridX,
+    required int gridY,
+  }) => (update(constructionSites)..where((t) => t.id.equals(siteId))).write(
+    ConstructionSitesCompanion(gridX: Value(gridX), gridY: Value(gridY)),
+  );
+
+  /// Persists a site's paid-in total. The caller computed it with the
+  /// domain's `ConstructionSite.payIn`, which caps it at the price.
+  Future<void> setSitePaidCoins(int siteId, int paidCoins) =>
+      (update(constructionSites)..where((t) => t.id.equals(siteId))).write(
+        ConstructionSitesCompanion(paidCoins: Value(paidCoins)),
+      );
+
+  /// Opens a full site: a building site becomes a placement (removing the
+  /// placement it upgraded, if any); a land site becomes an owned block. The
+  /// site row is deleted. Transactional. Returns the new placement's id for
+  /// a building site, null for land. The caller has checked the site is
+  /// full — the row carries no price.
+  Future<int?> openSite(int siteId, {required int playerId}) =>
+      transaction(() async {
+        final site = await siteById(siteId);
+        if (site == null) return null;
+        int? placementId;
+        if (site.goalKind == 'building') {
+          placementId = await placeBuilding(
+            cityId: site.cityId,
+            playerId: playerId,
+            buildingTypeId: site.buildingTypeId!,
+            gridX: site.gridX!,
+            gridY: site.gridY!,
+          );
+          final source = site.upgradesFromPlacementId;
+          if (source != null) {
+            await (delete(
+              buildingPlacements,
+            )..where((t) => t.id.equals(source))).go();
+          }
+        } else {
+          await addOwnedLandBlock(
+            cityId: site.cityId,
+            blockX: site.blockX!,
+            blockY: site.blockY!,
+          );
+        }
+        await (delete(
+          constructionSites,
+        )..where((t) => t.id.equals(siteId))).go();
+        return placementId;
+      });
 
   // ---- Proficiency helpers ----
 

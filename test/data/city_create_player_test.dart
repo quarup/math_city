@@ -69,14 +69,13 @@ void main() {
         gradeLevel: 3,
         avatarConfigJson: '{}',
       );
-      expect(p.coinBalance, 0);
       expect(p.lifetimeCoinsEarned, 0);
       expect(p.streakCount, 0);
     });
   });
 
-  group('incrementPlayerCoins', () {
-    test('adds to spending balance and bumps lifetime monotonically', () async {
+  group('addLifetimeCoins', () {
+    test('bumps the lifetime counter monotonically', () async {
       final db = AppDatabase(NativeDatabase.memory());
       final p = await db.createPlayer(
         name: 'R',
@@ -84,20 +83,12 @@ void main() {
         avatarConfigJson: '{}',
       );
 
-      await db.incrementPlayerCoins(p.id, 30);
+      await db.addLifetimeCoins(p.id, 30);
       var fetched = await db.getPlayerById(p.id);
-      expect(fetched.coinBalance, 30);
       expect(fetched.lifetimeCoinsEarned, 30);
 
-      await db.incrementPlayerCoins(p.id, 20);
+      await db.addLifetimeCoins(p.id, 20);
       fetched = await db.getPlayerById(p.id);
-      expect(fetched.coinBalance, 50);
-      expect(fetched.lifetimeCoinsEarned, 50);
-
-      // Spend 20 (negative delta) — balance drops; lifetime stays.
-      await db.incrementPlayerCoins(p.id, -20);
-      fetched = await db.getPlayerById(p.id);
-      expect(fetched.coinBalance, 30);
       expect(fetched.lifetimeCoinsEarned, 50);
     });
   });

@@ -41,6 +41,7 @@ void main() {
 
     expect(find.text('Robin’s city'), findsOneWidget);
     expect(find.text("Mayor's office"), findsOneWidget);
-    expect(find.widgetWithText(FloatingActionButton, 'Play math'), findsOne);
+    // The wheel is reached through a site, never a free-floating button.
+    expect(find.text('Play math'), findsNothing);
   });
 }

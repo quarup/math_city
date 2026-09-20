@@ -241,16 +241,11 @@ void main() {
     test('does not touch player bricks or avatar', () async {
       final db = AppDatabase(NativeDatabase.memory());
       final pid = await _seedPlayer(db);
-      await db.updatePlayerCoins(
-        pid,
-        coinBalance: 42,
-        lifetimeCoinsEarned: 99,
-      );
+      await db.setLifetimeCoins(pid, 99);
 
       await db.resetSkillsForPlayer(pid);
 
       final p = await db.getPlayerById(pid);
-      expect(p.coinBalance, 42);
       expect(p.lifetimeCoinsEarned, 99);
     });
   });

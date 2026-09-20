@@ -19,47 +19,28 @@ void main() {
     return (db, player, city);
   }
 
-  group('buyCityLandBlock', () {
-    test('records ownership and spends coins', () async {
+  group('addOwnedLandBlock', () {
+    test('records ownership without touching coins', () async {
       final (db, player, city) = await freshCity();
-      await db.incrementPlayerCoins(player.id, 100);
+      await db.addLifetimeCoins(player.id, 100);
 
-      await db.buyCityLandBlock(
-        cityId: city.id,
-        playerId: player.id,
-        blockX: 2,
-        blockY: 0,
-        coinCost: 80,
-      );
+      await db.addOwnedLandBlock(cityId: city.id, blockX: 2, blockY: 0);
 
       final owned = await db.ownedBlocksForCity(city.id);
       expect(owned.contains((2, 0)), isTrue);
       expect(owned, hasLength(10)); // 9 starting + 1 bought
 
       final after = await db.getPlayerById(player.id);
-      expect(after.coinBalance, 20); // 100 - 80
-      expect(after.lifetimeCoinsEarned, 100); // unchanged by a spend
+      expect(after.lifetimeCoinsEarned, 100);
     });
 
     test(
-      'double-buying the same block is rejected by the primary key',
+      'adding the same block twice is rejected by the primary key',
       () async {
-        final (db, player, city) = await freshCity();
-        await db.buyCityLandBlock(
-          cityId: city.id,
-          playerId: player.id,
-          blockX: 2,
-          blockY: 0,
-          coinCost: 0,
-        );
+        final (db, _, city) = await freshCity();
+        await db.addOwnedLandBlock(cityId: city.id, blockX: 2, blockY: 0);
         expect(
-          () => db.buyCityLandBlock(
-            cityId: city.id,
-            playerId: player.id,
-            blockX: 2,
-            blockY: 0,
-            coinCost: 0,
-          ),
+          () => db.addOwnedLandBlock(cityId: city.id, blockX: 2, blockY: 0),
           throwsA(anything),
         );
       },

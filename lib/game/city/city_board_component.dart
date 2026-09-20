@@ -23,12 +23,19 @@ class PlacedBuildingView {
     this.footprint = const (1, 1),
     this.assetPath,
     this.selected = false,
+    this.stage,
   });
 
   final int col;
   final int row;
   final String emoji;
   final Color color;
+
+  /// Construction stage for a site under construction (0, 1 or 2 — see
+  /// `stageForFraction`), or null for a finished building. Interim generic
+  /// overlays (city_builder.md §8.8): dirt pad + fence, then a slab, then
+  /// the final sprite as a ghost.
+  final int? stage;
 
   /// True for the building the player currently has picked up for placement /
   /// moving: it renders with a yellow tint and a yellow footprint outline so
@@ -90,6 +97,15 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
   /// picked-up-building tint, until the purchase is confirmed or cancelled.
   Set<(int, int)> buyingTiles = const {};
 
+  /// Tiles (window-local) of land blocks with an open construction site —
+  /// painted as a cleared dirt pad over the pale wash. Reassigned by the
+  /// host game whenever sites change.
+  Set<(int, int)> landSiteTiles = const {};
+
+  /// The subset of [landSiteTiles] belonging to the selected site, drawn
+  /// with the yellow selection wash.
+  Set<(int, int)> selectedLandSiteTiles = const {};
+
   static const _grassFill = Color(0xFF7CB342);
   static const _grassFillAlt = Color(0xFF689F38);
   static const _roadFill = Color(0xFF9E9E9E);
@@ -110,6 +126,21 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     ..color = const Color(0x33000000)
     ..style = PaintingStyle.stroke
     ..strokeWidth = 1;
+
+  /// Construction-site art: cleared dirt, the hoarding fence around the
+  /// footprint, the stage-1 slab and the stage-2 ghost sprite.
+  static const _padFill = Color(0xFFA1887F);
+  static const _padFillAlt = Color(0xFF8D6E63);
+  static const _slabFill = Color(0xFFB0BEC5);
+  final _fenceStroke = Paint()
+    ..color = const Color(0xFF5D4037)
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 3;
+  final _fenceSelectedStroke = Paint()
+    ..color = const Color(0xFFF9A825)
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 3;
+  final _ghostPaint = Paint()..color = const Color(0x59FFFFFF);
 
   /// Yellow wash laid over the selected building's sprite (its opaque pixels
   /// only) so it reads as "picked up" without hiding the artwork.
@@ -141,6 +172,12 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     }
     for (final (col, row) in buyingTiles) {
       _drawBuyingTile(canvas, col, row);
+    }
+    for (final (col, row) in landSiteTiles) {
+      _drawPadTile(canvas, col, row);
+      if (selectedLandSiteTiles.contains((col, row))) {
+        _drawBuyingTile(canvas, col, row);
+      }
     }
     // Roads draw after all terrain: the sprites carry a small overscan rim
     // (seam cover), which a later-drawn neighbouring grass diamond would
@@ -227,7 +264,76 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     }
   }
 
+  /// A cleared dirt tile — the ground of a construction site.
+  void _drawPadTile(Canvas canvas, int col, int row) {
+    final (cx, cy) = grid.centerOf(col, row);
+    final path = _diamond(cx, cy, 0);
+    final fill = (col + row).isEven ? _padFill : _padFillAlt;
+    canvas
+      ..drawPath(path, Paint()..color = fill)
+      ..drawPath(path, _tileStroke);
+  }
+
+  /// Corner points of a footprint at ground level: north, east, south, west.
+  (Offset, Offset, Offset, Offset) _footprintCorners(PlacedBuildingView b) {
+    final (w, hTiles) = b.footprint;
+    final (ncx, ncy) = grid.centerOf(b.col, b.row);
+    final (ecx, ecy) = grid.centerOf(b.col + w - 1, b.row);
+    final (scx, scy) = grid.centerOf(b.col + w - 1, b.row + hTiles - 1);
+    final (wcx, wcy) = grid.centerOf(b.col, b.row + hTiles - 1);
+    return (
+      Offset(ncx, ncy - _halfH),
+      Offset(ecx + _halfW, ecy),
+      Offset(scx, scy + _halfH),
+      Offset(wcx - _halfW, wcy),
+    );
+  }
+
+  /// A site under construction (city_builder.md §8.8, interim generic
+  /// overlays): stage 0 is a dirt pad ringed by a fence; stage 1 adds a
+  /// foundation slab; stage 2 adds the final sprite as a ~35 % ghost.
+  void _drawSite(Canvas canvas, PlacedBuildingView b, int stage) {
+    final (w, hTiles) = b.footprint;
+    for (var c = b.col; c < b.col + w; c++) {
+      for (var r = b.row; r < b.row + hTiles; r++) {
+        _drawPadTile(canvas, c, r);
+      }
+    }
+    final (north, east, south, west) = _footprintCorners(b);
+    if (stage >= 1) {
+      final lift = grid.tileWidth * 0.06;
+      final slab = Path()
+        ..moveTo(north.dx, north.dy - lift)
+        ..lineTo(east.dx, east.dy - lift)
+        ..lineTo(south.dx, south.dy - lift)
+        ..lineTo(west.dx, west.dy - lift)
+        ..close();
+      canvas
+        ..drawPath(slab, Paint()..color = _slabFill)
+        ..drawPath(slab, _tileStroke);
+    }
+    if (stage >= 2) {
+      final path = b.assetPath;
+      final sprite = path == null ? null : spriteFor(path);
+      if (sprite != null) {
+        _drawSprite(canvas, b, sprite, overridePaint: _ghostPaint);
+      }
+    }
+    final fence = Path()
+      ..moveTo(north.dx, north.dy)
+      ..lineTo(east.dx, east.dy)
+      ..lineTo(south.dx, south.dy)
+      ..lineTo(west.dx, west.dy)
+      ..close();
+    canvas.drawPath(fence, b.selected ? _fenceSelectedStroke : _fenceStroke);
+  }
+
   void _drawBuilding(Canvas canvas, PlacedBuildingView b) {
+    final stage = b.stage;
+    if (stage != null) {
+      _drawSite(canvas, b, stage);
+      return;
+    }
     final path = b.assetPath;
     if (path != null) {
       final sprite = spriteFor(path);
@@ -243,7 +349,12 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
 
   /// Draws the building sprite anchored at the south corner of its footprint,
   /// scaled from authoring resolution down to the live tile size.
-  void _drawSprite(Canvas canvas, PlacedBuildingView b, Sprite sprite) {
+  void _drawSprite(
+    Canvas canvas,
+    PlacedBuildingView b,
+    Sprite sprite, {
+    Paint? overridePaint,
+  }) {
     final (w, hTiles) = b.footprint;
     // The footprint's lowest on-screen point is the south corner of its
     // furthest (max col+row) tile.
@@ -259,7 +370,8 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
       position: south,
       size: sprite.srcSize * scale,
       anchor: Anchor(anchorX, 1),
-      overridePaint: b.selected ? _selectedSpritePaint : null,
+      overridePaint:
+          overridePaint ?? (b.selected ? _selectedSpritePaint : null),
     );
   }
 

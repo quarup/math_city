@@ -19,7 +19,7 @@ import 'package:math_city/presentation/question/question_screen.dart';
 import 'package:math_city/presentation/spin/new_concept_celebration.dart';
 import 'package:math_city/presentation/theme/app_palette.dart';
 import 'package:math_city/presentation/theme/category_colors.dart';
-import 'package:math_city/presentation/widgets/coin_icon.dart';
+import 'package:math_city/presentation/widgets/site_progress_bar.dart';
 import 'package:math_city/state/game_session_provider.dart';
 import 'package:math_city/state/introduced_concepts_provider.dart';
 import 'package:math_city/state/player_provider.dart';
@@ -122,7 +122,9 @@ class _SpinScreenState extends ConsumerState<SpinScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final coins = ref.watch(totalCoinsProvider);
+    // The site this session's coins pay into (null once it has opened, or
+    // when the wheel was reached without one — debug paths).
+    final site = ref.watch(activeSiteProvider).value;
     final wheelAsync = ref.watch(wheelConceptsProvider);
     final playerAsync = ref.watch(activePlayerProvider);
     final theme = Theme.of(context);
@@ -169,16 +171,15 @@ class _SpinScreenState extends ConsumerState<SpinScreen> {
           ],
         ),
         actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: CoinAmount(
-              amount: coins,
-              iconSize: 22,
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
+          if (site != null)
+            Padding(
+              padding: const EdgeInsets.only(right: 12),
+              child: SiteProgressBar(
+                paid: site.site.paidCoins,
+                price: site.site.price,
+                compact: true,
               ),
             ),
-          ),
         ],
       ),
       body: SafeArea(

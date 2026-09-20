@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:math_city/domain/city/construction_site.dart';
 import 'package:math_city/domain/concepts/concept_registry.dart';
 import 'package:math_city/domain/economy/question_block.dart';
 import 'package:math_city/domain/proficiency/proficiency_band.dart';
@@ -16,6 +17,7 @@ import 'package:math_city/presentation/result/result_screen.dart';
 import 'package:math_city/presentation/theme/app_palette.dart';
 import 'package:math_city/presentation/widgets/coin_icon.dart';
 import 'package:math_city/presentation/widgets/math_text.dart';
+import 'package:math_city/presentation/widgets/site_progress_bar.dart';
 import 'package:math_city/presentation/widgets/speech_toggle_button.dart';
 import 'package:math_city/presentation/widgets/streak_flame.dart';
 import 'package:math_city/services/debug_harness.dart';
@@ -27,8 +29,9 @@ import 'package:math_city/state/proficiency_provider.dart';
 import 'package:math_city/state/tts_provider.dart';
 
 /// One question. In real play it's one step of a [QuestionBlock]: a correct
-/// answer plays a coin animation into the AppBar counter and moves straight
-/// on to the next question (or the block summary) — no green screen; a wrong
+/// answer bumps the AppBar's site bar (`paid / price` of the construction
+/// site the coins pay into) and moves straight on to the next question (or
+/// the block summary) — no green screen; a wrong
 /// answer goes to the red explanation screen, which then continues the
 /// block. In debug mode (no block) it keeps the original single-question
 /// semantics — answer → [ResultScreen] → pop — which is what the UX-sweep
@@ -79,10 +82,15 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
   /// deactivated, so `dispose` cannot look the service up itself.
   late final TtsService _tts;
 
-  /// While a payout is being celebrated the counter shows this instead of
-  /// the live balance (which the notifier has already persisted), so a bonus
-  /// only lands after its card.
-  int? _frozenCoins;
+  /// While a payout is being celebrated the site bar shows this paid-in
+  /// total instead of the live one (which the notifier has already
+  /// persisted), so a bonus only lands after its card. Stays set once the
+  /// site opens (its row is gone, so there is no live value to fall back on).
+  int? _frozenPaid;
+
+  /// The site as of this question's payment — keeps the bar's price and
+  /// final state on screen after the site opened mid-block.
+  ConstructionSite? _siteSnapshot;
 
   /// 1-based position of this question in its block, fixed at build time so
   /// the header doesn't tick over during the counter beat.
@@ -195,9 +203,9 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
     }
 
     final block = widget.block!;
-    // Hold the counter at the pre-answer balance until the coin lands.
-    final balanceBefore = ref.read(totalCoinsProvider);
-    setState(() => _frozenCoins = balanceBefore);
+    // Hold the site bar at the pre-answer total until the coins land.
+    final siteBefore = ref.read(activeSiteProvider).value?.site;
+    setState(() => _frozenPaid = siteBefore?.paidCoins);
 
     final reward = await ref
         .read(proficiencyProvider.notifier)
@@ -227,7 +235,7 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
       return;
     }
 
-    await _celebrate(reward, outcome, answer, balanceBefore);
+    await _celebrate(reward, outcome, answer);
     if (!mounted) return;
     unawaited(
       Navigator.of(context).pushReplacement(
@@ -245,20 +253,24 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
   }
 
   /// Correct-answer feedback, in place of the old green screen: the AppBar
-  /// counter flashes and pulses as it changes to the new balance (the only
+  /// site bar flashes and pulses as it fills by the answer's coins (the only
   /// payout animation — nothing appears over the answer), a nudge shows if
   /// the answer was equivalent but not canonical, and a band crossing gets
-  /// its own bigger card followed by a second counter bump for the bonus.
+  /// its own bigger card followed by a second bump for the bonus.
   Future<void> _celebrate(
     AnswerReward reward,
     AnswerOutcome outcome,
     String answer,
-    int balanceBefore,
   ) async {
-    // Reveal the answer pay (but hold back any bonus until its card).
-    await _bumpCounter(
-      reward.bandBonuses.isEmpty ? null : balanceBefore + reward.coins,
-    );
+    final payIn = reward.sitePayIn;
+    if (payIn != null) _siteSnapshot = payIn.site;
+    final after = payIn?.site.paidCoins;
+    // Reveal the answer pay (but hold back any bonus until its card): the
+    // bar stops at the price, so the answer's share is whatever fits.
+    final mid = payIn == null || reward.bandBonuses.isEmpty
+        ? after
+        : min(after!, after - payIn.accepted + reward.coins);
+    await _bumpCounter(mid);
     if (!mounted) return;
 
     if (outcome == AnswerOutcome.equivalentNonCanonical) {
@@ -278,17 +290,19 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
         const Duration(milliseconds: 1600),
       );
       if (!mounted) return;
-      await _bumpCounter(null);
+      await _bumpCounter(after);
       if (!mounted) return;
     }
-    if (_frozenCoins != null) setState(() => _frozenCoins = null);
+    // Keep the full bar on screen once the site opened; otherwise go live.
+    final opened = payIn?.site.isFull ?? false;
+    if (!opened && _frozenPaid != null) setState(() => _frozenPaid = null);
   }
 
-  /// Shows [frozenAfter] on the counter (null = the live balance) with its
+  /// Shows [frozenAfter] on the site bar (null = the live total) with its
   /// flash-and-pulse, and holds one beat so the reaction is seen before the
   /// screen moves on.
   Future<void> _bumpCounter(int? frozenAfter) async {
-    setState(() => _frozenCoins = frozenAfter);
+    setState(() => _frozenPaid = frozenAfter);
     unawaited(_pulseCtrl.forward(from: 0));
     await Future<void>.delayed(_counterBeat);
   }
@@ -348,34 +362,36 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
             ],
           );
 
+    // The site the coins pay into: live while it is open, else the last
+    // payment's snapshot (the row is gone once it opened).
+    final site = ref.watch(activeSiteProvider).value?.site ?? _siteSnapshot;
     final actions = <Widget>[
       if (question != null && isWordProblem(question.prompt))
         const SpeechToggleIconButton(),
       if (block != null) ...[
         StreakBadge(count: _streakCount(block)),
         const SizedBox(width: 12),
-        Padding(
-          padding: const EdgeInsets.only(right: 16),
-          child: AnimatedBuilder(
-            animation: _pulseCtrl,
-            // A warm-white wash over icon and digits, strongest right as
-            // the number changes, gone by the end of the pulse.
-            builder: (_, child) => ColorFiltered(
-              colorFilter: ColorFilter.mode(
-                const Color(0xFFFFF3B0).withValues(alpha: _pulseFlash.value),
-                BlendMode.srcATop,
+        if (site != null)
+          Padding(
+            padding: const EdgeInsets.only(right: 12),
+            child: AnimatedBuilder(
+              animation: _pulseCtrl,
+              // A warm-white wash over icon and digits, strongest right as
+              // the number changes, gone by the end of the pulse.
+              builder: (_, child) => ColorFiltered(
+                colorFilter: ColorFilter.mode(
+                  const Color(0xFFFFF3B0).withValues(alpha: _pulseFlash.value),
+                  BlendMode.srcATop,
+                ),
+                child: ScaleTransition(scale: _pulseScale, child: child),
               ),
-              child: ScaleTransition(scale: _pulseScale, child: child),
-            ),
-            child: CoinAmount(
-              amount: _frozenCoins ?? ref.watch(totalCoinsProvider),
-              iconSize: 22,
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
+              child: SiteProgressBar(
+                paid: _frozenPaid ?? site.paidCoins,
+                price: site.price,
+                compact: true,
               ),
             ),
           ),
-        ),
       ],
     ];
 
