@@ -530,15 +530,15 @@ void _decimals1(_Pen p) {
 void _decimals2(_Pen p) {
   p
     ..shape(
-    Path()
-      ..moveTo(14, 22)
-      ..relativeLineTo(44, 0)
-      ..relativeLineTo(24, 28)
-      ..relativeLineTo(-24, 28)
-      ..relativeLineTo(-44, 0)
-      ..close(),
-    p.accent,
-  )
+      Path()
+        ..moveTo(14, 22)
+        ..relativeLineTo(44, 0)
+        ..relativeLineTo(24, 28)
+        ..relativeLineTo(-24, 28)
+        ..relativeLineTo(-44, 0)
+        ..close(),
+      p.accent,
+    )
     ..circle(26, 50, 5, p.paper)
     ..text(50, 50, '25%', size: 17, color: p.paper)
     ..line(50, 88, 80, 88)
@@ -618,12 +618,12 @@ void _measurement1(_Pen p) {
 void _measurement2(_Pen p) {
   p
     ..shape(
-    Path()
-      ..moveTo(10, 72)
-      ..arcToPoint(const Offset(90, 72), radius: const Radius.circular(40))
-      ..close(),
-    p.paper,
-  )
+      Path()
+        ..moveTo(10, 72)
+        ..arcToPoint(const Offset(90, 72), radius: const Radius.circular(40))
+        ..close(),
+      p.paper,
+    )
     ..line(50, 72, 82, 50, p.stroke(_Pen.sw * 1.4, p.accent));
   p.c.drawPath(
     Path()
@@ -702,18 +702,18 @@ void _geometry2(_Pen p) {
   _axes(p);
   p
     ..shape(
-    Path()
-      ..moveTo(33, 69)
-      ..lineTo(72, 69)
-      ..lineTo(59, 30)
-      ..close(),
-    p.accent,
-  )
+      Path()
+        ..moveTo(33, 69)
+        ..lineTo(72, 69)
+        ..lineTo(59, 30)
+        ..close(),
+      p.accent,
+    )
     ..dots(
-    const [Offset(33, 69), Offset(72, 69), Offset(59, 30)],
-    3.5,
-    p.paper,
-  );
+      const [Offset(33, 69), Offset(72, 69), Offset(59, 30)],
+      3.5,
+      p.paper,
+    );
 }
 
 // ---------------------------------------------------------------------------
