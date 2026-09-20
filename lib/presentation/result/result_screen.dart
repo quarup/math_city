@@ -98,16 +98,18 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
       return;
     }
     final block = widget.block!;
+    if (block.isComplete) {
+      finishBlock(context, ref, block);
+      return;
+    }
     unawaited(
       Navigator.of(context).pushReplacement(
         MaterialPageRoute<void>(
-          builder: (_) => block.isComplete
-              ? BlockSummaryScreen(block: block)
-              : QuestionScreen(
-                  conceptId: block.conceptId,
-                  band: block.band,
-                  block: block,
-                ),
+          builder: (_) => QuestionScreen(
+            conceptId: block.conceptId,
+            band: block.band,
+            block: block,
+          ),
         ),
       ),
     );

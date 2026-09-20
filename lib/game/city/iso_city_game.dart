@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:math' as math;
+import 'dart:ui' show VoidCallback;
 
 import 'package:flame/cache.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flame/sprite.dart';
 import 'package:math_city/domain/city/road_sprites.dart';
+import 'package:math_city/game/city/camera_focus.dart';
 import 'package:math_city/game/city/city_board_component.dart';
 import 'package:math_city/game/city/iso_grid.dart';
 
@@ -43,6 +45,145 @@ class IsoCityGame extends FlameGame with DragCallbacks {
   /// this on as soon as a second pointer goes down so the two parallel
   /// per-finger pans don't jitter the camera during a pinch.
   bool pinchActive = false;
+
+  // ---- Focus (camera tween onto one footprint) --------------------------
+  //
+  // The construction loop zooms the camera onto a site (wheel above it) or a
+  // just-opened building (celebration) and back out again — never a screen
+  // swap (city_builder.md §8.7). While focused, pan / pinch are ignored and
+  // the board clamp is lifted (the anchored framing may put the camera
+  // centre past the board edge).
+
+  late Vector2 _tweenFromPos;
+  double _tweenFromZoom = 1;
+  Vector2? _tweenToPos;
+  double _tweenToZoom = 1;
+  double _tweenElapsed = 0;
+  double _tweenDuration = 0;
+  VoidCallback? _tweenDone;
+
+  /// Camera as it stood before the first focus, restored by [releaseFocus].
+  Vector2? _restorePos;
+  double _restoreZoom = 1;
+
+  bool get isFocused => _restorePos != null;
+  bool get isTweening => _tweenToPos != null;
+
+  /// World-space centre of a footprint's ground diamond, in board coords.
+  Vector2 footprintCenter({
+    required int col,
+    required int row,
+    required int width,
+    required int height,
+  }) {
+    final (nx, ny) = grid.centerOf(col, row);
+    final (sx, sy) = grid.centerOf(col + width - 1, row + height - 1);
+    final (ex, _) = grid.centerOf(col + width - 1, row);
+    final (wx, _) = grid.centerOf(col, row + height - 1);
+    return Vector2((wx + ex) / 2, (ny + sy) / 2);
+  }
+
+  /// Tweens the camera so the footprint at `(col, row)` of `width × height`
+  /// tiles spans [widthFraction] of the viewport width and sits at viewport
+  /// fraction `(0.5, anchorY)`. The first focus remembers the camera so
+  /// [releaseFocus] can put it back.
+  void focusOnFootprint({
+    required int col,
+    required int row,
+    required int width,
+    required int height,
+    required double anchorY,
+    required double widthFraction,
+    Duration duration = const Duration(milliseconds: 650),
+    VoidCallback? onDone,
+  }) {
+    final viewport = _viewport ?? size;
+    if (!isFocused) {
+      _restorePos = camera.viewfinder.position.clone();
+      _restoreZoom = camera.viewfinder.zoom;
+    }
+    final target = footprintCenter(
+      col: col,
+      row: row,
+      width: width,
+      height: height,
+    );
+    // A w×h footprint's ground diamond is (w + h) half-tiles wide; buildings
+    // rise above it, so frame a little wider than the diamond alone.
+    final contentWidth = (width + height) * grid.tileWidth / 2 * 1.3;
+    final zoom = zoomToFit(
+      contentWidth: contentWidth,
+      viewportWidth: viewport.x,
+      fraction: widthFraction,
+      minZoom: minZoom,
+      maxZoom: maxZoom,
+    );
+    final (cx, cy) = cameraCenterFor(
+      targetX: target.x,
+      targetY: target.y,
+      zoom: zoom,
+      viewportWidth: viewport.x,
+      viewportHeight: viewport.y,
+      anchorX: 0.5,
+      anchorY: anchorY,
+    );
+    _startTween(Vector2(cx, cy), zoom, duration, onDone);
+  }
+
+  /// Tweens the camera back to where it was before [focusOnFootprint].
+  /// No-op (calls [onDone] at once) when not focused.
+  void releaseFocus({
+    Duration duration = const Duration(milliseconds: 650),
+    VoidCallback? onDone,
+  }) {
+    final restore = _restorePos;
+    if (restore == null) {
+      onDone?.call();
+      return;
+    }
+    final zoom = _restoreZoom;
+    _restorePos = null;
+    _startTween(restore, zoom, duration, () {
+      _clampCamera();
+      onDone?.call();
+    });
+  }
+
+  void _startTween(
+    Vector2 toPos,
+    double toZoom,
+    Duration duration,
+    VoidCallback? onDone,
+  ) {
+    _tweenFromPos = camera.viewfinder.position.clone();
+    _tweenFromZoom = camera.viewfinder.zoom;
+    _tweenToPos = toPos;
+    _tweenToZoom = toZoom;
+    _tweenElapsed = 0;
+    _tweenDuration = duration.inMicroseconds / 1e6;
+    _tweenDone = onDone;
+  }
+
+  @override
+  void update(double dt) {
+    super.update(dt);
+    final to = _tweenToPos;
+    if (to == null) return;
+    _tweenElapsed += dt;
+    final t = _tweenDuration <= 0
+        ? 1.0
+        : (_tweenElapsed / _tweenDuration).clamp(0.0, 1.0);
+    final k = easeInOut(t);
+    camera.viewfinder
+      ..position = _tweenFromPos + (to - _tweenFromPos) * k
+      ..zoom = _tweenFromZoom + (_tweenToZoom - _tweenFromZoom) * k;
+    if (t >= 1) {
+      _tweenToPos = null;
+      final done = _tweenDone;
+      _tweenDone = null;
+      done?.call();
+    }
+  }
 
   /// Most-recent placements pushed before [onLoad] ran. Applied to the board
   /// once it exists. Without this, the first `setBuildings` after a fresh
@@ -186,7 +327,9 @@ class IsoCityGame extends FlameGame with DragCallbacks {
   }
 
   /// Absolute zoom setter, clamped. Called from the pinch-zoom Listener.
+  /// Ignored while focused on a footprint.
   void setZoom(double zoom) {
+    if (isFocused) return;
     camera.viewfinder.zoom = zoom.clamp(minZoom, maxZoom);
   }
 
@@ -275,7 +418,7 @@ class IsoCityGame extends FlameGame with DragCallbacks {
 
   @override
   void onDragUpdate(DragUpdateEvent event) {
-    if (pinchActive) return;
+    if (pinchActive || isFocused) return;
     // localDelta is in screen pixels; divide by zoom to get world units.
     // Pan the camera opposite the finger so content follows the drag.
     final zoom = camera.viewfinder.zoom;

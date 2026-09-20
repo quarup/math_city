@@ -237,16 +237,18 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
 
     await _celebrate(reward, outcome, answer);
     if (!mounted) return;
+    if (block.isComplete) {
+      finishBlock(context, ref, block);
+      return;
+    }
     unawaited(
       Navigator.of(context).pushReplacement(
         MaterialPageRoute<void>(
-          builder: (_) => block.isComplete
-              ? BlockSummaryScreen(block: block)
-              : QuestionScreen(
-                  conceptId: widget.conceptId,
-                  band: widget.band,
-                  block: block,
-                ),
+          builder: (_) => QuestionScreen(
+            conceptId: widget.conceptId,
+            band: widget.band,
+            block: block,
+          ),
         ),
       ),
     );

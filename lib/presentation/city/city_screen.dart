@@ -16,12 +16,17 @@ import 'package:math_city/domain/city/land_blocks.dart';
 import 'package:math_city/domain/city/placement_rules.dart';
 import 'package:math_city/domain/city/road_network.dart';
 import 'package:math_city/domain/city/story_beat.dart';
+import 'package:math_city/domain/economy/question_block.dart';
+import 'package:math_city/domain/proficiency/proficiency_band.dart';
 import 'package:math_city/game/city/city_board_component.dart';
 import 'package:math_city/game/city/iso_city_game.dart';
 import 'package:math_city/game/city/iso_grid.dart';
 import 'package:math_city/game/city/land_window.dart';
+import 'package:math_city/presentation/city/celebration_overlay.dart';
+import 'package:math_city/presentation/city/spin_overlay.dart';
+import 'package:math_city/presentation/navigation/route_observer.dart';
 import 'package:math_city/presentation/player/adventurer_avatar_widget.dart';
-import 'package:math_city/presentation/spin/spin_screen.dart';
+import 'package:math_city/presentation/question/question_screen.dart';
 import 'package:math_city/presentation/widgets/coin_icon.dart';
 import 'package:math_city/presentation/widgets/site_progress_bar.dart';
 import 'package:math_city/presentation/widgets/speech_toggle_button.dart';
@@ -57,8 +62,29 @@ class CityScreen extends ConsumerStatefulWidget {
   ConsumerState<CityScreen> createState() => _CityScreenState();
 }
 
-class _CityScreenState extends ConsumerState<CityScreen> {
+/// What the city screen is doing (city_builder.md §8.7): browsing the
+/// board, zoomed onto a site with the wheel above it, or zoomed onto a
+/// just-opened building for its celebration. Back from a zoomed state zooms
+/// out; it never pops.
+enum _CityMode { browsing, siteZoomed, celebrating }
+
+class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
   IsoCityGame? _game;
+
+  _CityMode _mode = _CityMode.browsing;
+
+  /// The site the camera is on while [_mode] is `siteZoomed`.
+  CitySite? _zoomedSite;
+
+  /// Whether the wheel overlay is faded in. Off while the camera tweens and
+  /// while a question route sits on top.
+  bool _wheelVisible = false;
+
+  /// Bumped for every fresh wheel so the overlay rebuilds its game.
+  int _wheelGeneration = 0;
+
+  /// The block that opened a site, while its celebration is up.
+  QuestionBlock? _celebratingBlock;
 
   /// The world-tile window the board currently renders (owned land + pale
   /// frontier bounding box). Drives the world↔local translation; grows
@@ -175,6 +201,165 @@ class _CityScreenState extends ConsumerState<CityScreen> {
     }
     _tryPlace(selected, col, row, placements, sites, ownedTiles);
   }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route is PageRoute) routeObserver.subscribe(this, route);
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  /// The question route chain above us went away: read how the block ended
+  /// and continue the loop — re-show the wheel, celebrate an opened site,
+  /// or zoom back out. A chain that was backed out of publishes nothing, so
+  /// a zoomed site simply gets its wheel back.
+  @override
+  void didPopNext() {
+    if (!mounted) return;
+    final result = ref.read(lastBlockResultProvider.notifier).take();
+    if (_mode != _CityMode.siteZoomed) return;
+    if (result != null && result.block.siteOpened) {
+      _celebrate(result.block);
+    } else if (result == null || result.spinAgain) {
+      _showWheel();
+    } else {
+      _zoomOut();
+    }
+  }
+
+  // ---- The construction loop: zoom onto a site, wheel above it ----------
+
+  /// *Build!* on a site: make it the session's active site — every coin the
+  /// coming blocks earn pays it down — tween the camera so the site sits at
+  /// the bottom of the screen, then fade the wheel in above it.
+  void _buildSite(CitySite site) {
+    ref.read(activeSiteIdProvider.notifier).selected = site.id;
+    setState(() {
+      _mode = _CityMode.siteZoomed;
+      _zoomedSite = site;
+      _wheelVisible = false;
+      _movingId = null;
+      _buyingBlock = null;
+    });
+    // The bottom bar swaps this frame; focus after layout so the viewport
+    // the framing uses is the one the wheel will share.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || _game == null) return;
+      final (col, row, w, h) = _footprintOf(site.goal);
+      _game!.focusOnFootprint(
+        col: col - _window!.minCol,
+        row: row - _window!.minRow,
+        width: w,
+        height: h,
+        anchorY: 0.82,
+        widthFraction: 0.42,
+        onDone: () {
+          if (mounted && _mode == _CityMode.siteZoomed) _showWheel();
+        },
+      );
+    });
+  }
+
+  /// World anchor + tile size of a goal: a building's footprint, or a land
+  /// block's 4×4.
+  (int, int, int, int) _footprintOf(SiteGoal goal) => switch (goal) {
+    BuildingGoal(:final col, :final row, :final type) => (
+      col,
+      row,
+      type.footprint.$1,
+      type.footprint.$2,
+    ),
+    LandBlockGoal(:final blockX, :final blockY) => (
+      blockX * kBlockSize,
+      blockY * kBlockSize,
+      kBlockSize,
+      kBlockSize,
+    ),
+  };
+
+  void _showWheel() => setState(() {
+    _wheelGeneration++;
+    _wheelVisible = true;
+  });
+
+  /// The wheel landed: hide it and push the question route over the zoomed
+  /// city. The chain's exit comes back through [didPopNext].
+  void _startBlock(
+    String conceptId,
+    ProficiencyBand band,
+    QuestionBlock block,
+  ) {
+    setState(() => _wheelVisible = false);
+    unawaited(
+      Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) =>
+              QuestionScreen(conceptId: conceptId, band: band, block: block),
+        ),
+      ),
+    );
+  }
+
+  /// Back from a zoomed state: hide whatever is over the city and tween
+  /// the camera back to where it was.
+  void _zoomOut() {
+    ref.read(activeSiteIdProvider.notifier).selected = null;
+    setState(() {
+      _wheelVisible = false;
+      _celebratingBlock = null;
+    });
+    _game?.releaseFocus(
+      onDone: () {
+        if (!mounted) return;
+        setState(() {
+          _mode = _CityMode.browsing;
+          _zoomedSite = null;
+        });
+      },
+    );
+  }
+
+  /// A block just opened its site: zoom onto the finished building, rain
+  /// confetti and show the card. *Done* zooms back out.
+  void _celebrate(QuestionBlock block) {
+    final site = block.siteAfter;
+    if (site == null) {
+      _zoomOut();
+      return;
+    }
+    ref.read(activeSiteIdProvider.notifier).selected = null;
+    setState(() {
+      _mode = _CityMode.celebrating;
+      _wheelVisible = false;
+      _celebratingBlock = null;
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || _game == null) return;
+      final (col, row, w, h) = _footprintOf(site.goal);
+      _game!.focusOnFootprint(
+        col: col - _window!.minCol,
+        row: row - _window!.minRow,
+        width: w,
+        height: h,
+        anchorY: 0.6,
+        widthFraction: 0.7,
+        onDone: () {
+          if (mounted) setState(() => _celebratingBlock = block);
+        },
+      );
+    });
+  }
+
+  String _celebrationTitle(ConstructionSite site) => switch (site.goal) {
+    BuildingGoal(:final type) => '${type.name} is finished!',
+    LandBlockGoal() => 'The new land is yours!',
+  };
 
   void _selectSite(int? siteId) => setState(() {
     _selectedSiteId = siteId;
@@ -487,17 +672,6 @@ class _CityScreenState extends ConsumerState<CityScreen> {
       );
   }
 
-  /// *Build!* on a site: make it the session's active site — every coin the
-  /// coming blocks earn pays it down — and open the wheel above the city.
-  void _buildSite(int siteId) {
-    ref.read(activeSiteIdProvider.notifier).selected = siteId;
-    unawaited(
-      Navigator.of(context).push(
-        MaterialPageRoute<void>(builder: (_) => const SpinScreen()),
-      ),
-    );
-  }
-
   void _openDebugSheet() {
     unawaited(
       showModalBottomSheet<void>(
@@ -698,87 +872,220 @@ class _CityScreenState extends ConsumerState<CityScreen> {
       _selected = catalog.first;
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            AdventurerAvatarWidget(
-              config: player?.avatar ?? const AdventurerConfig(),
-              size: 32,
-            ),
-            const SizedBox(width: 8),
-            Text('${player?.name ?? ''}’s city'),
-          ],
+    final zoomed = _mode != _CityMode.browsing;
+    // The zoomed site as it stands now (its bar keeps filling between
+    // blocks), falling back to the snapshot taken at Build!.
+    final liveZoomed = _zoomedSite == null
+        ? null
+        : sites.where((s) => s.id == _zoomedSite!.id).firstOrNull ??
+              _zoomedSite;
+    final celebrating = _celebratingBlock;
+    final celebratingSite = celebrating?.siteAfter;
+
+    return PopScope(
+      // Back from a zoomed state zooms out; it never leaves the city.
+      canPop: !zoomed,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop && !_game!.isTweening) _zoomOut();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              AdventurerAvatarWidget(
+                config: player?.avatar ?? const AdventurerConfig(),
+                size: 32,
+              ),
+              const SizedBox(width: 8),
+              Text('${player?.name ?? ''}’s city'),
+            ],
+          ),
         ),
-      ),
-      body: _game == null
-          ? const Center(child: CircularProgressIndicator())
-          : Stack(
-              children: [
-                Positioned.fill(
-                  child: ColoredBox(
-                    color: const Color(0xFF9CCC65),
-                    child: _PinchZoomWrapper(
-                      game: _game!,
-                      child: GameWidget(game: _game!),
+        body: _game == null
+            ? const Center(child: CircularProgressIndicator())
+            : Stack(
+                children: [
+                  Positioned.fill(
+                    child: ColoredBox(
+                      color: const Color(0xFF9CCC65),
+                      child: _PinchZoomWrapper(
+                        game: _game!,
+                        child: GameWidget(game: _game!),
+                      ),
                     ),
                   ),
-                ),
-                // Population counter, top-left over the city.
-                Positioned(
-                  top: 8,
-                  left: 8,
-                  child: SafeArea(
-                    child: _PopulationChip(population: city?.population ?? 0),
-                  ),
-                ),
-                // Floating citizen bubbles (and their tap-to-expand cards).
-                const Positioned.fill(child: _CitizenBubbleOverlay()),
-              ],
-            ),
-      // While land is selected, the catalog is swapped for the start-a-site
-      // bar; while a site is selected, for its progress bar + Build!; while
-      // a building is picked up, for a Done bar (tap the building again, or
-      // Done, to drop it).
-      bottomNavigationBar: _buyingBlock != null
-          ? _StartLandSiteBar(
-              cost: blockCost(_buyingBlock!.$1, _buyingBlock!.$2),
-              onStart: _startSelectedLandSite,
-              onCancel: () => setState(() => _buyingBlock = null),
-            )
-          : selectedSite != null
-          ? _SiteBar(
-              site: selectedSite,
-              onBuild: () => _buildSite(selectedSite.id),
-              onDone: () => setState(() => _selectedSiteId = null),
-            )
-          : _movingId != null
-          ? _MoveModeBar(
-              name: movingType?.name,
-              onDone: () => setState(() => _movingId = null),
-            )
-          // Render from the retained catalog so a per-placement refresh never
-          // collapses the bar (which would resize the game and jump the
-          // camera). Only the very first load — before any data — is empty.
-          : catalog == null
-          ? const SizedBox.shrink()
-          : _BuildCatalogBar(
-              catalog: catalog,
-              selected: _selected,
-              onSelect: (b) => setState(() => _selected = b),
-            ),
-      // The wheel is reached through a site's Build! — there is no
-      // free-floating "play" entry (city_builder.md §8.3).
-      floatingActionButton: kDebugMode
-          ? FloatingActionButton.small(
-              heroTag: 'cityDebugFab',
-              onPressed: _openDebugSheet,
-              backgroundColor: Colors.deepPurple,
-              foregroundColor: Colors.white,
-              child: const Icon(Icons.bug_report_rounded),
-            )
-          : null,
+                  // Population counter, top-left over the city.
+                  if (!zoomed)
+                    Positioned(
+                      top: 8,
+                      left: 8,
+                      child: SafeArea(
+                        child: _PopulationChip(
+                          population: city?.population ?? 0,
+                        ),
+                      ),
+                    ),
+                  // Floating citizen bubbles (and their tap-to-expand cards).
+                  if (!zoomed)
+                    const Positioned.fill(child: _CitizenBubbleOverlay()),
+                  // The wheel over the blurred city, above the site pinned at
+                  // the bottom. Fades in once the camera has landed; stays in
+                  // the tree (faded out) while a question route is on top.
+                  if (_mode == _CityMode.siteZoomed)
+                    Positioned.fill(
+                      child: IgnorePointer(
+                        ignoring: !_wheelVisible,
+                        child: AnimatedOpacity(
+                          opacity: _wheelVisible ? 1 : 0,
+                          duration: const Duration(milliseconds: 450),
+                          // Feather the blur's lower edge so the sharp
+                          // site below reads as emerging from under the
+                          // wheel, not cut off by a line.
+                          child: ShaderMask(
+                            shaderCallback: (rect) => const LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Colors.white,
+                                Colors.white,
+                                Colors.transparent,
+                              ],
+                              stops: [0, 0.82, 1],
+                            ).createShader(rect),
+                            blendMode: BlendMode.dstIn,
+                            child: FractionallySizedBox(
+                              alignment: Alignment.topCenter,
+                              heightFactor: 1 - kSpinOverlayBottomFraction,
+                              child: _wheelVisible
+                                  ? SpinOverlay(
+                                      key: ValueKey(_wheelGeneration),
+                                      onBlockStart: _startBlock,
+                                    )
+                                  : const SizedBox.expand(),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  if (celebrating != null && celebratingSite != null)
+                    Positioned.fill(
+                      child: CelebrationOverlay(
+                        title: _celebrationTitle(celebratingSite),
+                        coins: celebrating.coinsEarned,
+                        streak: celebrating.streakCount ?? 0,
+                        onDone: _zoomOut,
+                      ),
+                    ),
+                ],
+              ),
+        // While zoomed the bar is pinned to the site (same height as the site
+        // bar, so the viewport never resizes mid-tween); otherwise: land
+        // selected → start-a-site bar; site selected → its progress bar +
+        // Build!; building picked up → Done bar; else the catalog.
+        bottomNavigationBar: zoomed
+            ? _ZoomedBar(
+                name: celebratingSite != null
+                    ? _celebrationTitle(celebratingSite)
+                    : liveZoomed?.name ?? '',
+                paid: celebratingSite?.paidCoins ?? liveZoomed?.site.paidCoins,
+                price: celebratingSite?.price ?? liveZoomed?.site.price,
+                onBack: _mode == _CityMode.celebrating ? null : _zoomOut,
+              )
+            : _buyingBlock != null
+            ? _StartLandSiteBar(
+                cost: blockCost(_buyingBlock!.$1, _buyingBlock!.$2),
+                onStart: _startSelectedLandSite,
+                onCancel: () => setState(() => _buyingBlock = null),
+              )
+            : selectedSite != null
+            ? _SiteBar(
+                site: selectedSite,
+                onBuild: () => _buildSite(selectedSite),
+                onDone: () => setState(() => _selectedSiteId = null),
+              )
+            : _movingId != null
+            ? _MoveModeBar(
+                name: movingType?.name,
+                onDone: () => setState(() => _movingId = null),
+              )
+            // Render from the retained catalog so a per-placement refresh never
+            // collapses the bar (which would resize the game and jump the
+            // camera). Only the very first load — before any data — is empty.
+            : catalog == null
+            ? const SizedBox.shrink()
+            : _BuildCatalogBar(
+                catalog: catalog,
+                selected: _selected,
+                onSelect: (b) => setState(() => _selected = b),
+              ),
+        // The wheel is reached through a site's Build! — there is no
+        // free-floating "play" entry (city_builder.md §8.3).
+        floatingActionButton: kDebugMode && !zoomed
+            ? FloatingActionButton.small(
+                heroTag: 'cityDebugFab',
+                onPressed: _openDebugSheet,
+                backgroundColor: Colors.deepPurple,
+                foregroundColor: Colors.white,
+                child: const Icon(Icons.bug_report_rounded),
+              )
+            : null,
+      ),
+    );
+  }
+}
+
+/// Share of the screen height, from the bottom, left clear for the zoomed
+/// site under the wheel overlay. The camera anchors the site into it.
+const double kSpinOverlayBottomFraction = 0.3;
+
+/// Bottom strip while zoomed onto a site or a finished building: the site's
+/// name and `paid / price`, plus a way back out. Same layout as [_SiteBar]
+/// so swapping between them never resizes the game viewport.
+class _ZoomedBar extends StatelessWidget {
+  const _ZoomedBar({
+    required this.name,
+    required this.paid,
+    required this.price,
+    required this.onBack,
+  });
+
+  final String name;
+  final int? paid;
+  final int? price;
+
+  /// Null while the celebration owns the exit (its Done button).
+  final VoidCallback? onBack;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Material(
+      elevation: 8,
+      color: theme.colorScheme.surfaceContainer,
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Row(
+            children: [
+              const Icon(Icons.construction_rounded),
+              const SizedBox(width: 12),
+              Expanded(
+                child: paid != null && price != null
+                    ? SiteProgressBar(paid: paid!, price: price!, name: name)
+                    : Text(name, style: theme.textTheme.titleSmall),
+              ),
+              const SizedBox(width: 12),
+              FilledButton.tonalIcon(
+                onPressed: onBack,
+                icon: const Icon(Icons.zoom_out_map_rounded),
+                label: const Text('City'),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
