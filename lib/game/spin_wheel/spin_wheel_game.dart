@@ -29,6 +29,7 @@ class SpinWheelGame extends FlameGame with DragCallbacks {
     required List<WheelSegment> segments,
     required this.skyTop,
     required this.skyBottom,
+    this.showBackdrop = true,
   }) : _segments = segments;
 
   final void Function(String conceptId) onConceptSelected;
@@ -36,8 +37,13 @@ class SpinWheelGame extends FlameGame with DragCallbacks {
   final Color skyTop;
   final Color skyBottom;
 
+  /// False when the wheel floats over the live city (the construction
+  /// loop's overlay, city_builder.md §8.7): no sky, no strip, transparent
+  /// canvas — the camera behind it is the backdrop.
+  final bool showBackdrop;
+
   late SpinWheelComponent _wheel;
-  late CityBackdrop _backdrop;
+  CityBackdrop? _backdrop;
 
   /// Position of the last drag event, in canvas coordinates.
   Vector2 _lastDragPos = Vector2.zero();
@@ -50,28 +56,35 @@ class SpinWheelGame extends FlameGame with DragCallbacks {
   static const double _maxAngularVelocity = 30;
 
   @override
-  Color backgroundColor() => skyTop;
+  Color backgroundColor() => showBackdrop ? skyTop : const Color(0x00000000);
 
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-    _backdrop = CityBackdrop(skyTop: skyTop, skyBottom: skyBottom)
-      ..size = size
-      ..position = Vector2.zero();
+    final backdrop = showBackdrop
+        ? (CityBackdrop(skyTop: skyTop, skyBottom: skyBottom)
+            ..size = size
+            ..position = Vector2.zero())
+        : null;
+    _backdrop = backdrop;
 
-    // Wheel centred on the sky band. Radius: 41% of the width (the mock
-    // proportion), shrunk if needed so the pointer clears the top and the
-    // reveal pill clears the strip.
-    final cy = _backdrop.stripTop / 2;
+    // Wheel centred on the sky band (or on the canvas when floating over
+    // the city). Radius: 41% of the width (the mock proportion), shrunk if
+    // needed so the pointer clears the top and the reveal pill clears the
+    // strip / the bottom edge.
+    final cy = backdrop == null ? size.y * 0.46 : backdrop.stripTop / 2;
     final radius = [
       size.x * 0.41,
       (cy - 30) / 1.55,
+      (size.y - cy - 16) / 1.45,
     ].reduce((a, b) => a < b ? a : b);
     final center = Vector2(size.x / 2, cy);
-    _backdrop
-      ..wheelCenter = center
-      ..wheelRadius = radius;
-    await add(_backdrop);
+    if (backdrop != null) {
+      backdrop
+        ..wheelCenter = center
+        ..wheelRadius = radius;
+      await add(backdrop);
+    }
 
     _wheel = SpinWheelComponent(
       segments: _segments,
@@ -85,13 +98,13 @@ class SpinWheelGame extends FlameGame with DragCallbacks {
   @override
   void update(double dt) {
     super.update(dt);
-    _backdrop.intensity = _wheel.willSelect || _wheel.isSpinning
+    _backdrop?.intensity = _wheel.willSelect || _wheel.isSpinning
         ? _wheel.speedFraction
         : 0;
   }
 
   Future<void> _onWheelLanded(String conceptId) async {
-    _backdrop.intensity = 0;
+    _backdrop?.intensity = 0;
     final index = _wheel.currentSelectedIndex;
     _wheel.landedIndex = index;
     final seg = _wheel.segments[index];

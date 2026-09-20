@@ -1,36 +1,68 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_city/domain/city/construction_site.dart';
 import 'package:math_city/domain/concepts/concept.dart';
 import 'package:math_city/domain/concepts/concept_registry.dart';
 import 'package:math_city/domain/economy/question_block.dart';
 import 'package:math_city/domain/proficiency/proficiency_band.dart';
 import 'package:math_city/presentation/city/city_screen.dart';
-import 'package:math_city/presentation/spin/spin_screen.dart';
 import 'package:math_city/presentation/theme/app_palette.dart';
 import 'package:math_city/presentation/widgets/coin_icon.dart';
 import 'package:math_city/presentation/widgets/concept_icon_badge.dart';
 import 'package:math_city/presentation/widgets/site_progress_bar.dart';
 import 'package:math_city/presentation/widgets/streak_flame.dart';
+import 'package:math_city/state/game_session_provider.dart';
 
-/// End-of-block celebration: the site's bar before → after, coins earned,
+/// Ends a block from wherever its last question finished: a block that
+/// opened its site skips the summary — the city celebrates over the
+/// building instead — and any other block goes to [BlockSummaryScreen].
+void finishBlock(BuildContext context, WidgetRef ref, QuestionBlock block) {
+  if (block.siteOpened) {
+    exitBlock(context, ref, block, spinAgain: false);
+    return;
+  }
+  unawaited(
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute<void>(
+        builder: (_) => BlockSummaryScreen(block: block),
+      ),
+    ),
+  );
+}
+
+/// Publishes how the block ended and pops back to the city screen, which
+/// reads the result as the route above it goes away (re-shows the wheel,
+/// celebrates, or zooms out).
+void exitBlock(
+  BuildContext context,
+  WidgetRef ref,
+  QuestionBlock block, {
+  required bool spinAgain,
+}) {
+  ref.read(lastBlockResultProvider.notifier).pending = BlockResult(
+    block: block,
+    spinAgain: spinAgain,
+  );
+  Navigator.of(context).popUntil(
+    (route) => route.settings.name == CityScreen.routeName || route.isFirst,
+  );
+}
+
+/// End-of-block summary: the site's bar before → after, coins earned,
 /// streak state, any band-crossing bonuses, and a one-line teaser for
 /// drip-feed unlocks that fired mid-block (the wheel itself carries the
 /// "NEW" stickers and the first-landing celebration). "Spin again" returns
-/// to the wheel; once the site has opened there is nothing left to pay into,
-/// so the primary action becomes "Back to city".
-class BlockSummaryScreen extends StatelessWidget {
+/// to the wheel over the site; "Back to city" zooms out. A block that
+/// opened its site never gets here — see [finishBlock].
+class BlockSummaryScreen extends ConsumerWidget {
   const BlockSummaryScreen({required this.block, super.key});
 
   final QuestionBlock block;
 
-  void _backToCity(BuildContext context) {
-    Navigator.of(context).popUntil(
-      (route) => route.settings.name == CityScreen.routeName || route.isFirst,
-    );
-  }
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final palette = theme.extension<AppPalette>()!;
     final conceptName =
@@ -109,7 +141,8 @@ class BlockSummaryScreen extends StatelessWidget {
               const SizedBox(height: 12),
               if (opened)
                 FilledButton(
-                  onPressed: () => _backToCity(context),
+                  onPressed: () =>
+                      exitBlock(context, ref, block, spinAgain: false),
                   style: FilledButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 18),
                     textStyle: theme.textTheme.titleLarge,
@@ -118,7 +151,8 @@ class BlockSummaryScreen extends StatelessWidget {
                 )
               else ...[
                 FilledButton(
-                  onPressed: () => SpinScreen.pushFresh(context),
+                  onPressed: () =>
+                      exitBlock(context, ref, block, spinAgain: true),
                   style: FilledButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 18),
                     textStyle: theme.textTheme.titleLarge,
@@ -126,7 +160,8 @@ class BlockSummaryScreen extends StatelessWidget {
                   child: const Text('Spin again'),
                 ),
                 TextButton(
-                  onPressed: () => _backToCity(context),
+                  onPressed: () =>
+                      exitBlock(context, ref, block, spinAgain: false),
                   child: const Text('Back to city'),
                 ),
               ],
