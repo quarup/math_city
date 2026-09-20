@@ -32,6 +32,12 @@ class Players extends Table {
   IntColumn get lifetimeCoinsEarned =>
       integer().withDefault(const Constant(0))();
 
+  /// Coins refunded by cancelled construction sites, waiting to be put into
+  /// another site with *Use credit* (city_builder.md §8.11, revised
+  /// 2026-09-20). Only ever filled by a refund — never by play — so it stays
+  /// at 0 for a player who never cancels, and the UI hides it then.
+  IntColumn get creditBalance => integer().withDefault(const Constant(0))();
+
   /// Consecutive correct answers: +1 per correct, reset to 0 on a wrong one.
   /// Uncapped (shown as "N in a row!"); coin pay tops out at `kStreakCap`.
   /// Global per player and persistent across sessions — the opening ramp
@@ -296,7 +302,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 16;
+  int get schemaVersion => 17;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -436,6 +442,11 @@ class AppDatabase extends _$AppDatabase {
         await customStatement('DROP TABLE IF EXISTS players');
         await m.createAll();
         await _seedConceptCatalog();
+      }
+      if (from < 17) {
+        // v17: credit from cancelled sites (city_builder.md §8.11). A new
+        // defaulted column — additive, nothing is wiped.
+        await m.addColumn(players, players.creditBalance);
       }
     },
   );
@@ -600,6 +611,17 @@ class AppDatabase extends _$AppDatabase {
     );
   }
 
+  /// Moves the player's credit by [by] (negative when credit is spent into
+  /// a site). Credit never goes below zero.
+  Future<void> addCredit(int playerId, int by) async {
+    final p = await getPlayerById(playerId);
+    final next = p.creditBalance + by;
+    assert(next >= 0, 'credit never goes negative');
+    await (update(players)..where((t) => t.id.equals(playerId))).write(
+      PlayersCompanion(creditBalance: Value(next)),
+    );
+  }
+
   /// Persists the player's consecutive-correct count (see
   /// `coin_economy.dart` `nextStreakCount`).
   Future<void> setPlayerStreakCount(int playerId, int count) =>
@@ -742,6 +764,7 @@ class AppDatabase extends _$AppDatabase {
     await (update(players)..where((t) => t.id.equals(playerId))).write(
       const PlayersCompanion(
         lifetimeCoinsEarned: Value(0),
+        creditBalance: Value(0),
         streakCount: Value(0),
       ),
     );
@@ -966,6 +989,20 @@ class AppDatabase extends _$AppDatabase {
       (update(constructionSites)..where((t) => t.id.equals(siteId))).write(
         ConstructionSitesCompanion(paidCoins: Value(paidCoins)),
       );
+
+  /// Cancels a site: the row goes and every coin paid into it comes back to
+  /// the player as credit, in full. Transactional. Returns the refund, or
+  /// null if the site no longer exists.
+  Future<int?> cancelSite(int siteId, {required int playerId}) =>
+      transaction(() async {
+        final site = await siteById(siteId);
+        if (site == null) return null;
+        await (delete(
+          constructionSites,
+        )..where((t) => t.id.equals(siteId))).go();
+        if (site.paidCoins > 0) await addCredit(playerId, site.paidCoins);
+        return site.paidCoins;
+      });
 
   /// Opens a full site: a building site becomes a placement (removing the
   /// placement it upgraded, if any); a land site becomes an owned block. The

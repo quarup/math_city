@@ -56,6 +56,18 @@ class $PlayersTable extends Players with TableInfo<$PlayersTable, Player> {
     requiredDuringInsert: false,
     defaultValue: const Constant(0),
   );
+  static const VerificationMeta _creditBalanceMeta = const VerificationMeta(
+    'creditBalance',
+  );
+  @override
+  late final GeneratedColumn<int> creditBalance = GeneratedColumn<int>(
+    'credit_balance',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
   static const VerificationMeta _streakCountMeta = const VerificationMeta(
     'streakCount',
   );
@@ -108,6 +120,7 @@ class $PlayersTable extends Players with TableInfo<$PlayersTable, Player> {
     name,
     gradeLevel,
     lifetimeCoinsEarned,
+    creditBalance,
     streakCount,
     roundsPlayed,
     createdAt,
@@ -150,6 +163,15 @@ class $PlayersTable extends Players with TableInfo<$PlayersTable, Player> {
         lifetimeCoinsEarned.isAcceptableOrUnknown(
           data['lifetime_coins_earned']!,
           _lifetimeCoinsEarnedMeta,
+        ),
+      );
+    }
+    if (data.containsKey('credit_balance')) {
+      context.handle(
+        _creditBalanceMeta,
+        creditBalance.isAcceptableOrUnknown(
+          data['credit_balance']!,
+          _creditBalanceMeta,
         ),
       );
     }
@@ -213,6 +235,10 @@ class $PlayersTable extends Players with TableInfo<$PlayersTable, Player> {
         DriftSqlType.int,
         data['${effectivePrefix}lifetime_coins_earned'],
       )!,
+      creditBalance: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}credit_balance'],
+      )!,
       streakCount: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}streak_count'],
@@ -249,6 +275,12 @@ class Player extends DataClass implements Insertable<Player> {
   /// site (see `ConstructionSites`; city_builder.md §8.3).
   final int lifetimeCoinsEarned;
 
+  /// Coins refunded by cancelled construction sites, waiting to be put into
+  /// another site with *Use credit* (city_builder.md §8.11, revised
+  /// 2026-09-20). Only ever filled by a refund — never by play — so it stays
+  /// at 0 for a player who never cancels, and the UI hides it then.
+  final int creditBalance;
+
   /// Consecutive correct answers: +1 per correct, reset to 0 on a wrong one.
   /// Uncapped (shown as "N in a row!"); coin pay tops out at `kStreakCap`.
   /// Global per player and persistent across sessions — the opening ramp
@@ -267,6 +299,7 @@ class Player extends DataClass implements Insertable<Player> {
     required this.name,
     required this.gradeLevel,
     required this.lifetimeCoinsEarned,
+    required this.creditBalance,
     required this.streakCount,
     required this.roundsPlayed,
     required this.createdAt,
@@ -279,6 +312,7 @@ class Player extends DataClass implements Insertable<Player> {
     map['name'] = Variable<String>(name);
     map['grade_level'] = Variable<int>(gradeLevel);
     map['lifetime_coins_earned'] = Variable<int>(lifetimeCoinsEarned);
+    map['credit_balance'] = Variable<int>(creditBalance);
     map['streak_count'] = Variable<int>(streakCount);
     map['rounds_played'] = Variable<int>(roundsPlayed);
     map['created_at'] = Variable<DateTime>(createdAt);
@@ -294,6 +328,7 @@ class Player extends DataClass implements Insertable<Player> {
       name: Value(name),
       gradeLevel: Value(gradeLevel),
       lifetimeCoinsEarned: Value(lifetimeCoinsEarned),
+      creditBalance: Value(creditBalance),
       streakCount: Value(streakCount),
       roundsPlayed: Value(roundsPlayed),
       createdAt: Value(createdAt),
@@ -315,6 +350,7 @@ class Player extends DataClass implements Insertable<Player> {
       lifetimeCoinsEarned: serializer.fromJson<int>(
         json['lifetimeCoinsEarned'],
       ),
+      creditBalance: serializer.fromJson<int>(json['creditBalance']),
       streakCount: serializer.fromJson<int>(json['streakCount']),
       roundsPlayed: serializer.fromJson<int>(json['roundsPlayed']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
@@ -329,6 +365,7 @@ class Player extends DataClass implements Insertable<Player> {
       'name': serializer.toJson<String>(name),
       'gradeLevel': serializer.toJson<int>(gradeLevel),
       'lifetimeCoinsEarned': serializer.toJson<int>(lifetimeCoinsEarned),
+      'creditBalance': serializer.toJson<int>(creditBalance),
       'streakCount': serializer.toJson<int>(streakCount),
       'roundsPlayed': serializer.toJson<int>(roundsPlayed),
       'createdAt': serializer.toJson<DateTime>(createdAt),
@@ -341,6 +378,7 @@ class Player extends DataClass implements Insertable<Player> {
     String? name,
     int? gradeLevel,
     int? lifetimeCoinsEarned,
+    int? creditBalance,
     int? streakCount,
     int? roundsPlayed,
     DateTime? createdAt,
@@ -350,6 +388,7 @@ class Player extends DataClass implements Insertable<Player> {
     name: name ?? this.name,
     gradeLevel: gradeLevel ?? this.gradeLevel,
     lifetimeCoinsEarned: lifetimeCoinsEarned ?? this.lifetimeCoinsEarned,
+    creditBalance: creditBalance ?? this.creditBalance,
     streakCount: streakCount ?? this.streakCount,
     roundsPlayed: roundsPlayed ?? this.roundsPlayed,
     createdAt: createdAt ?? this.createdAt,
@@ -365,6 +404,9 @@ class Player extends DataClass implements Insertable<Player> {
       lifetimeCoinsEarned: data.lifetimeCoinsEarned.present
           ? data.lifetimeCoinsEarned.value
           : this.lifetimeCoinsEarned,
+      creditBalance: data.creditBalance.present
+          ? data.creditBalance.value
+          : this.creditBalance,
       streakCount: data.streakCount.present
           ? data.streakCount.value
           : this.streakCount,
@@ -385,6 +427,7 @@ class Player extends DataClass implements Insertable<Player> {
           ..write('name: $name, ')
           ..write('gradeLevel: $gradeLevel, ')
           ..write('lifetimeCoinsEarned: $lifetimeCoinsEarned, ')
+          ..write('creditBalance: $creditBalance, ')
           ..write('streakCount: $streakCount, ')
           ..write('roundsPlayed: $roundsPlayed, ')
           ..write('createdAt: $createdAt, ')
@@ -399,6 +442,7 @@ class Player extends DataClass implements Insertable<Player> {
     name,
     gradeLevel,
     lifetimeCoinsEarned,
+    creditBalance,
     streakCount,
     roundsPlayed,
     createdAt,
@@ -412,6 +456,7 @@ class Player extends DataClass implements Insertable<Player> {
           other.name == this.name &&
           other.gradeLevel == this.gradeLevel &&
           other.lifetimeCoinsEarned == this.lifetimeCoinsEarned &&
+          other.creditBalance == this.creditBalance &&
           other.streakCount == this.streakCount &&
           other.roundsPlayed == this.roundsPlayed &&
           other.createdAt == this.createdAt &&
@@ -423,6 +468,7 @@ class PlayersCompanion extends UpdateCompanion<Player> {
   final Value<String> name;
   final Value<int> gradeLevel;
   final Value<int> lifetimeCoinsEarned;
+  final Value<int> creditBalance;
   final Value<int> streakCount;
   final Value<int> roundsPlayed;
   final Value<DateTime> createdAt;
@@ -432,6 +478,7 @@ class PlayersCompanion extends UpdateCompanion<Player> {
     this.name = const Value.absent(),
     this.gradeLevel = const Value.absent(),
     this.lifetimeCoinsEarned = const Value.absent(),
+    this.creditBalance = const Value.absent(),
     this.streakCount = const Value.absent(),
     this.roundsPlayed = const Value.absent(),
     this.createdAt = const Value.absent(),
@@ -442,6 +489,7 @@ class PlayersCompanion extends UpdateCompanion<Player> {
     required String name,
     required int gradeLevel,
     this.lifetimeCoinsEarned = const Value.absent(),
+    this.creditBalance = const Value.absent(),
     this.streakCount = const Value.absent(),
     this.roundsPlayed = const Value.absent(),
     required DateTime createdAt,
@@ -454,6 +502,7 @@ class PlayersCompanion extends UpdateCompanion<Player> {
     Expression<String>? name,
     Expression<int>? gradeLevel,
     Expression<int>? lifetimeCoinsEarned,
+    Expression<int>? creditBalance,
     Expression<int>? streakCount,
     Expression<int>? roundsPlayed,
     Expression<DateTime>? createdAt,
@@ -465,6 +514,7 @@ class PlayersCompanion extends UpdateCompanion<Player> {
       if (gradeLevel != null) 'grade_level': gradeLevel,
       if (lifetimeCoinsEarned != null)
         'lifetime_coins_earned': lifetimeCoinsEarned,
+      if (creditBalance != null) 'credit_balance': creditBalance,
       if (streakCount != null) 'streak_count': streakCount,
       if (roundsPlayed != null) 'rounds_played': roundsPlayed,
       if (createdAt != null) 'created_at': createdAt,
@@ -477,6 +527,7 @@ class PlayersCompanion extends UpdateCompanion<Player> {
     Value<String>? name,
     Value<int>? gradeLevel,
     Value<int>? lifetimeCoinsEarned,
+    Value<int>? creditBalance,
     Value<int>? streakCount,
     Value<int>? roundsPlayed,
     Value<DateTime>? createdAt,
@@ -487,6 +538,7 @@ class PlayersCompanion extends UpdateCompanion<Player> {
       name: name ?? this.name,
       gradeLevel: gradeLevel ?? this.gradeLevel,
       lifetimeCoinsEarned: lifetimeCoinsEarned ?? this.lifetimeCoinsEarned,
+      creditBalance: creditBalance ?? this.creditBalance,
       streakCount: streakCount ?? this.streakCount,
       roundsPlayed: roundsPlayed ?? this.roundsPlayed,
       createdAt: createdAt ?? this.createdAt,
@@ -508,6 +560,9 @@ class PlayersCompanion extends UpdateCompanion<Player> {
     }
     if (lifetimeCoinsEarned.present) {
       map['lifetime_coins_earned'] = Variable<int>(lifetimeCoinsEarned.value);
+    }
+    if (creditBalance.present) {
+      map['credit_balance'] = Variable<int>(creditBalance.value);
     }
     if (streakCount.present) {
       map['streak_count'] = Variable<int>(streakCount.value);
@@ -531,6 +586,7 @@ class PlayersCompanion extends UpdateCompanion<Player> {
           ..write('name: $name, ')
           ..write('gradeLevel: $gradeLevel, ')
           ..write('lifetimeCoinsEarned: $lifetimeCoinsEarned, ')
+          ..write('creditBalance: $creditBalance, ')
           ..write('streakCount: $streakCount, ')
           ..write('roundsPlayed: $roundsPlayed, ')
           ..write('createdAt: $createdAt, ')
@@ -5348,6 +5404,7 @@ typedef $$PlayersTableCreateCompanionBuilder =
       required String name,
       required int gradeLevel,
       Value<int> lifetimeCoinsEarned,
+      Value<int> creditBalance,
       Value<int> streakCount,
       Value<int> roundsPlayed,
       required DateTime createdAt,
@@ -5359,6 +5416,7 @@ typedef $$PlayersTableUpdateCompanionBuilder =
       Value<String> name,
       Value<int> gradeLevel,
       Value<int> lifetimeCoinsEarned,
+      Value<int> creditBalance,
       Value<int> streakCount,
       Value<int> roundsPlayed,
       Value<DateTime> createdAt,
@@ -5515,6 +5573,11 @@ class $$PlayersTableFilterComposer
 
   ColumnFilters<int> get lifetimeCoinsEarned => $composableBuilder(
     column: $table.lifetimeCoinsEarned,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get creditBalance => $composableBuilder(
+    column: $table.creditBalance,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -5694,6 +5757,11 @@ class $$PlayersTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get creditBalance => $composableBuilder(
+    column: $table.creditBalance,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get streakCount => $composableBuilder(
     column: $table.streakCount,
     builder: (column) => ColumnOrderings(column),
@@ -5737,6 +5805,11 @@ class $$PlayersTableAnnotationComposer
 
   GeneratedColumn<int> get lifetimeCoinsEarned => $composableBuilder(
     column: $table.lifetimeCoinsEarned,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get creditBalance => $composableBuilder(
+    column: $table.creditBalance,
     builder: (column) => column,
   );
 
@@ -5925,6 +5998,7 @@ class $$PlayersTableTableManager
                 Value<String> name = const Value.absent(),
                 Value<int> gradeLevel = const Value.absent(),
                 Value<int> lifetimeCoinsEarned = const Value.absent(),
+                Value<int> creditBalance = const Value.absent(),
                 Value<int> streakCount = const Value.absent(),
                 Value<int> roundsPlayed = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
@@ -5934,6 +6008,7 @@ class $$PlayersTableTableManager
                 name: name,
                 gradeLevel: gradeLevel,
                 lifetimeCoinsEarned: lifetimeCoinsEarned,
+                creditBalance: creditBalance,
                 streakCount: streakCount,
                 roundsPlayed: roundsPlayed,
                 createdAt: createdAt,
@@ -5945,6 +6020,7 @@ class $$PlayersTableTableManager
                 required String name,
                 required int gradeLevel,
                 Value<int> lifetimeCoinsEarned = const Value.absent(),
+                Value<int> creditBalance = const Value.absent(),
                 Value<int> streakCount = const Value.absent(),
                 Value<int> roundsPlayed = const Value.absent(),
                 required DateTime createdAt,
@@ -5954,6 +6030,7 @@ class $$PlayersTableTableManager
                 name: name,
                 gradeLevel: gradeLevel,
                 lifetimeCoinsEarned: lifetimeCoinsEarned,
+                creditBalance: creditBalance,
                 streakCount: streakCount,
                 roundsPlayed: roundsPlayed,
                 createdAt: createdAt,

@@ -1075,12 +1075,21 @@ tutorial item is folded into this.
 
 ### 8.11 Open questions (Phase 10)
 
-- ~~**Cancel a site?**~~ **Resolved 2026-09-20: no cancel in v1**, sites can
-  be moved. Paid-in coins have nowhere to go without a wallet; losing them
-  punishes a change of mind and transferring them needs a picker plus a
-  no-other-site edge case, while the 3-site cap already supplies the
-  pressure. The `ConstructionSites` row therefore carries no status column —
-  its only exits are *moved* and *opened*.
+- ~~**Cancel a site?**~~ **Revised 2026-09-20 (later the same day): cancel
+  is in, with a full refund as credit.** Playtesting showed a placed-by-
+  mistake site is a dead end once the 3-site cap is hit. A red *Cancel* on
+  the site bar deletes the site; every coin paid into it comes back as
+  `Players.creditBalance` (schema v17), shown as a pill in the city AppBar
+  only while above zero. A green *Use N* on any site's bar pays credit in
+  (as much as the site still needs; leftover stays), opening it — with the
+  celebration — when that fills the bar. 100 % refund, no haircut: coins
+  only come from answering questions, so moving them between sites can't be
+  gamed, and a haircut would only punish a change of mind. No confirm
+  dialog on *Use N* (it's fully reversible via cancel); one on cancelling a
+  site with coins in it. **Finished buildings can't be sold** — they have
+  already paid out population, unlocks and beats. The `ConstructionSites`
+  row still carries no status column — its exits are *moved*, *opened* and
+  now *cancelled* (deleted).
 - **Question screens** full-screen (default) vs. drawn over the zoomed city.
 - **Stage thresholds** (0 / ⅓ / ⅔ / done is a draft) and whether a stage swap
   deserves a small animation.

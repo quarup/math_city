@@ -13,6 +13,7 @@ import 'package:math_city/domain/city/story_beat.dart';
 import 'package:math_city/domain/city/trigger_rule.dart';
 import 'package:math_city/domain/city/unlock_rule.dart';
 import 'package:math_city/domain/city/upgrade_ladders.dart';
+import 'package:math_city/state/game_session_provider.dart';
 import 'package:math_city/state/player_provider.dart';
 
 /// The active player's beginner-map `City` row. Auto-created at player
@@ -269,6 +270,57 @@ class CityActions {
       await _afterCityChange();
     } else {
       _ref.invalidate(sitesProvider);
+    }
+    return result;
+  }
+
+  /// Cancels site [siteId] (city_builder.md §8.11, revised 2026-09-20): the
+  /// row goes and every coin paid into it comes back as credit, in full —
+  /// a change of mind costs nothing, the coins just move. Returns the
+  /// refund, or null if the site no longer exists.
+  Future<int?> cancelSite(int siteId) async {
+    final playerId = _ref.read(activePlayerIdProvider);
+    if (playerId == null) return null;
+    final db = _ref.read(appDatabaseProvider);
+    final refund = await db.cancelSite(siteId, playerId: playerId);
+    if (refund == null) return null;
+    if (_ref.read(activeSiteIdProvider) == siteId) {
+      _ref.read(activeSiteIdProvider.notifier).selected = null;
+    }
+    _ref
+      ..invalidate(sitesProvider)
+      ..invalidate(activePlayerProvider)
+      ..invalidate(allPlayersProvider);
+    return refund;
+  }
+
+  /// Puts as much of the player's credit as site [siteId] still needs into
+  /// it, opening it when that fills the bar (the same path a block's coins
+  /// take). Leftover credit stays. Returns what happened, or null when
+  /// there was no credit, nothing left to pay, or no such site.
+  Future<PayInResult?> applyCredit(int siteId) async {
+    final playerId = _ref.read(activePlayerIdProvider);
+    if (playerId == null) return null;
+    final db = _ref.read(appDatabaseProvider);
+    final credit = (await db.getPlayerById(playerId)).creditBalance;
+    if (credit <= 0) return null;
+    final row = await db.siteById(siteId);
+    if (row == null) return null;
+    final site = siteFromRow(row, await db.placementsForCity(row.cityId));
+    if (site == null) return null;
+    final amount = credit < site.remaining ? credit : site.remaining;
+    if (amount <= 0) return null;
+    final result = site.payIn(amount);
+    await db.setSitePaidCoins(siteId, result.site.paidCoins);
+    await db.addCredit(playerId, -amount);
+    if (result.site.isFull) {
+      await db.openSite(siteId, playerId: playerId);
+      await _afterCityChange();
+    } else {
+      _ref
+        ..invalidate(sitesProvider)
+        ..invalidate(activePlayerProvider)
+        ..invalidate(allPlayersProvider);
     }
     return result;
   }

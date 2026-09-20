@@ -27,6 +27,7 @@ import 'package:math_city/presentation/city/spin_overlay.dart';
 import 'package:math_city/presentation/navigation/route_observer.dart';
 import 'package:math_city/presentation/player/adventurer_avatar_widget.dart';
 import 'package:math_city/presentation/question/question_screen.dart';
+import 'package:math_city/presentation/theme/app_palette.dart';
 import 'package:math_city/presentation/widgets/coin_icon.dart';
 import 'package:math_city/presentation/widgets/site_progress_bar.dart';
 import 'package:math_city/presentation/widgets/speech_toggle_button.dart';
@@ -83,8 +84,8 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
   /// Bumped for every fresh wheel so the overlay rebuilds its game.
   int _wheelGeneration = 0;
 
-  /// The block that opened a site, while its celebration is up.
-  QuestionBlock? _celebratingBlock;
+  /// The site that just opened, while its celebration is up.
+  ConstructionSite? _celebratingSite;
 
   /// The celebration card and the board, measured to frame the finished
   /// building in the map area the card leaves free.
@@ -246,7 +247,12 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     final result = ref.read(lastBlockResultProvider.notifier).take();
     if (_mode != _CityMode.siteZoomed) return;
     if (result != null && result.block.siteOpened) {
-      _celebrate(result.block);
+      final site = result.block.siteAfter;
+      if (site == null) {
+        _zoomOut();
+      } else {
+        _celebrate(site);
+      }
     } else if (result == null || result.spinAgain) {
       _recapBlock = result?.block;
       _showWheel();
@@ -335,7 +341,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     ref.read(activeSiteIdProvider.notifier).selected = null;
     setState(() {
       _wheelVisible = false;
-      _celebratingBlock = null;
+      _celebratingSite = null;
     });
     _game?.releaseFocus(
       onDone: () {
@@ -348,20 +354,17 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     );
   }
 
-  /// A block just opened its site: card and confetti go up at once, and
-  /// the camera glides onto the finished building underneath them, framed
-  /// in the map area the card leaves free. *Done* zooms back out.
-  void _celebrate(QuestionBlock block) {
-    final site = block.siteAfter;
-    if (site == null) {
-      _zoomOut();
-      return;
-    }
+  /// A site just opened (a block filled it, or credit did): card and
+  /// confetti go up at once, and the camera glides onto the finished
+  /// building underneath them, framed in the map area the card leaves free.
+  /// *Done* zooms back out. Works from the zoomed loop and from browsing.
+  void _celebrate(ConstructionSite site) {
     ref.read(activeSiteIdProvider.notifier).selected = null;
     setState(() {
       _mode = _CityMode.celebrating;
       _wheelVisible = false;
-      _celebratingBlock = block;
+      _selectedSiteId = null;
+      _celebratingSite = site;
     });
     // Measure the card after it has laid out, then frame around it.
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -408,6 +411,59 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     if (sites.length < kMaxOpenSites) return false;
     _toast(_rejectionMessage(SiteStartRejection.tooManyOpenSites, sites));
     return true;
+  }
+
+  /// Cancel on the site bar. A site nobody has paid into just goes; one
+  /// with coins in it asks first, then refunds every coin as credit.
+  Future<void> _cancelSite(CitySite site) async {
+    final paid = site.site.paidCoins;
+    if (paid > 0) {
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (ctx) {
+          final palette = Theme.of(ctx).extension<AppPalette>()!;
+          return AlertDialog(
+            title: Text('Cancel ${site.name}?'),
+            content: Text(
+              'The $paid coins paid in so far come back as credit, '
+              'to use on any site.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(false),
+                child: const Text('Keep building'),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.of(ctx).pop(true),
+                style: FilledButton.styleFrom(
+                  backgroundColor: palette.errorRedDeep,
+                  foregroundColor: Colors.white,
+                ),
+                child: const Text('Cancel site'),
+              ),
+            ],
+          );
+        },
+      );
+      if (confirmed != true || !mounted) return;
+    }
+    final refund = await ref.read(cityActionsProvider).cancelSite(site.id);
+    if (!mounted || refund == null) return;
+    setState(() => _selectedSiteId = null);
+    _toast(
+      refund > 0
+          ? '${site.name} cancelled — $refund coins back as credit'
+          : '${site.name} cancelled',
+    );
+  }
+
+  /// Use credit on the site bar: pays what the site still needs (or all
+  /// the credit, if that's less). Filling the bar opens the site and
+  /// celebrates like a block would.
+  Future<void> _useCredit(CitySite site) async {
+    final result = await ref.read(cityActionsProvider).applyCredit(site.id);
+    if (!mounted || result == null) return;
+    if (result.opened) _celebrate(result.site);
   }
 
   void _selectSite(int? siteId) => setState(() {
@@ -968,8 +1024,8 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
         ? null
         : sites.where((s) => s.id == _zoomedSite!.id).firstOrNull ??
               _zoomedSite;
-    final celebrating = _celebratingBlock;
-    final celebratingSite = celebrating?.siteAfter;
+    final celebratingSite = _celebratingSite;
+    final credit = player?.creditBalance ?? 0;
 
     return PopScope(
       // Back from a zoomed state zooms out; it never leaves the city.
@@ -990,6 +1046,14 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
               Text('${player?.name ?? ''}’s city'),
             ],
           ),
+          // Credit from cancelled sites, only while there is any.
+          actions: [
+            if (credit > 0)
+              Padding(
+                padding: const EdgeInsets.only(right: 12),
+                child: _CreditChip(amount: credit),
+              ),
+          ],
         ),
         body: _game == null
             ? const Center(child: CircularProgressIndicator())
@@ -1059,7 +1123,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                         ),
                       ),
                     ),
-                  if (celebrating != null && celebratingSite != null)
+                  if (celebratingSite != null)
                     Positioned.fill(
                       child: CelebrationOverlay(
                         title: _celebrationTitle(celebratingSite),
@@ -1091,7 +1155,10 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
             : selectedSite != null
             ? _SiteBar(
                 site: selectedSite,
+                credit: credit,
                 onBuild: () => _buildSite(selectedSite),
+                onCancel: () => unawaited(_cancelSite(selectedSite)),
+                onUseCredit: () => unawaited(_useCredit(selectedSite)),
                 onDeselect: () => setState(() => _selectedSiteId = null),
               )
             : _movingId != null
@@ -1667,46 +1734,124 @@ class _StartLandSiteBar extends StatelessWidget {
   }
 }
 
-/// Bottom strip for the selected construction site: its `paid / price` bar
-/// and *Build!*, which makes it the active site and opens the wheel. A
-/// building site can be nudged by tapping a tile while it is selected.
+/// Bottom strip for the selected construction site. Top row: its
+/// `paid / price` bar and an X to deselect. Bottom row: red *Cancel*
+/// (refunds every paid coin as credit), green *Use N* while the player
+/// holds credit the site can take, and *Build!*, which makes it the active
+/// site and opens the wheel. A building site can be nudged by tapping a
+/// tile while it is selected.
 class _SiteBar extends StatelessWidget {
   const _SiteBar({
     required this.site,
+    required this.credit,
     required this.onBuild,
+    required this.onCancel,
+    required this.onUseCredit,
     required this.onDeselect,
   });
 
   final CitySite site;
+  final int credit;
   final VoidCallback onBuild;
+  final VoidCallback onCancel;
+  final VoidCallback onUseCredit;
   final VoidCallback onDeselect;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final palette = theme.extension<AppPalette>()!;
+    final usable = credit < site.site.remaining ? credit : site.site.remaining;
     return Material(
       elevation: 8,
       color: theme.colorScheme.surfaceContainer,
       child: SafeArea(
         top: false,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: Row(
+          padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.construction_rounded),
-              const SizedBox(width: 12),
-              Expanded(
-                child: SiteProgressBar(
-                  paid: site.site.paidCoins,
-                  price: site.site.price,
-                  name: site.name,
-                ),
+              Row(
+                children: [
+                  const Icon(Icons.construction_rounded),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: SiteProgressBar(
+                      paid: site.site.paidCoins,
+                      price: site.site.price,
+                      name: site.name,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  _CloseButton(onPressed: onDeselect, tooltip: 'Deselect'),
+                ],
               ),
-              const SizedBox(width: 12),
-              _CloseButton(onPressed: onDeselect, tooltip: 'Deselect'),
-              const SizedBox(width: 4),
-              FilledButton(onPressed: onBuild, child: const Text('Build!')),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  FilledButton(
+                    onPressed: onCancel,
+                    style: FilledButton.styleFrom(
+                      backgroundColor: palette.errorRedDeep,
+                      foregroundColor: Colors.white,
+                    ),
+                    child: const Text('Cancel'),
+                  ),
+                  if (usable > 0) ...[
+                    const SizedBox(width: 8),
+                    FilledButton(
+                      onPressed: onUseCredit,
+                      style: FilledButton.styleFrom(
+                        backgroundColor: palette.successGreenDeep,
+                        foregroundColor: Colors.white,
+                      ),
+                      child: Text.rich(
+                        TextSpan(
+                          children: [
+                            coinSpan(),
+                            TextSpan(text: ' Use $usable'),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                  const Spacer(),
+                  FilledButton(onPressed: onBuild, child: const Text('Build!')),
+                ],
+              ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// AppBar pill showing credit from cancelled sites — coins with no site
+/// yet. Only shown while the balance is above zero.
+class _CreditChip extends StatelessWidget {
+  const _CreditChip({required this.amount});
+
+  final int amount;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final palette = theme.extension<AppPalette>()!;
+    return Tooltip(
+      message: 'Credit — use it on any site',
+      child: Material(
+        color: Colors.white,
+        shape: const StadiumBorder(),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          child: CoinAmount(
+            amount: amount,
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: palette.successGreenDeep,
+            ),
           ),
         ),
       ),
