@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:math_city/domain/questions/diagram_spec.dart';
 import 'package:math_city/domain/questions/distractors.dart';
+import 'package:math_city/domain/questions/fraction.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
 
 /// G4 angle generators built on the new Angle widget:
@@ -143,7 +144,7 @@ GeneratedQuestion fractionOnNumberLine(Random rand) {
       markedPoints: [value],
     ),
     correctAnswer: correct,
-    distractors: _distinctStringDistractors(correct, [
+    distractors: fractionDistractors(Fraction(n, d), [
       // Misconception: swapped numerator and denominator (only when n != d-n
       // so it doesn't collide with correct).
       if (n != d - n) '$d/$n',
@@ -161,13 +162,16 @@ GeneratedQuestion fractionOnNumberLine(Random rand) {
       '${n + 2}/$d',
       '${n + 1}/${d + 1}',
       if (n - 1 >= 1) '${n - 1}/${d - 1}',
-    ]),
+    ], rand),
     explanation: [
       'The line 0 to 1 is divided into $d equal parts.',
       'The mark is at the ${_ordinal(n)} tick → $n/$d.',
     ],
     answerFormat: AnswerFormat.fraction,
-    answerShape: AnswerShape.exactString,
+    // Graded by value: the 2nd tick of 4 is 2/4 and 1/2 alike, so a kid
+    // naming the simpler fraction has read the line right. fractionDistractors
+    // keeps every choice a distinct value, so no distractor grades correct.
+    // (Default answerShape.any does the value comparison.)
   );
 }
 

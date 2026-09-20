@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:math_city/domain/questions/diagram_spec.dart';
 import 'package:math_city/domain/questions/distractors.dart';
+import 'package:math_city/domain/questions/fraction.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
 // AnswerFormat / AnswerShape live in generated_question.dart.
 
@@ -31,15 +32,18 @@ GeneratedQuestion partitionHalvesFourths(Random rand) {
     prompt: 'What fraction of the bar is shaded?',
     diagram: FractionBarSpec(numerator: n, denominator: d),
     correctAnswer: correct,
-    distractors: _distinctStrings(correct, [
+    distractors: fractionDistractors(Fraction(n, d), [
       '$d/$n',
       '${d - n}/$d',
       '${n + 1}/$d',
       '$n/${d + 1}',
-    ]),
+    ], rand),
     explanation: ['$n out of $d equal parts → $n/$d.'],
     answerFormat: AnswerFormat.fraction,
-    answerShape: AnswerShape.exactString,
+    // Graded by value: a bar shaded 2/4 really is shaded 1/2, so a kid who
+    // names the simpler fraction has read the picture right. The result
+    // screen nudges them toward the depicted form. (Default
+    // answerShape.any does the value comparison.)
   );
 }
 
@@ -56,15 +60,16 @@ GeneratedQuestion partitionThirds(Random rand) {
     prompt: 'What fraction of the bar is shaded?',
     diagram: FractionBarSpec(numerator: n, denominator: d),
     correctAnswer: correct,
-    distractors: _distinctStrings(correct, [
+    distractors: fractionDistractors(Fraction(n, d), [
       '$d/$n',
       '${d - n}/$d',
       '$n/2',
       '$n/${d + 1}',
-    ]),
+    ], rand),
     explanation: ['$n out of $d equal parts → $n/$d.'],
     answerFormat: AnswerFormat.fraction,
-    answerShape: AnswerShape.exactString,
+    // Graded by value (see partition_halves_fourths): 2/6 is as true a
+    // reading of a thirds bar as 1/3.
   );
 }
 
@@ -81,15 +86,17 @@ GeneratedQuestion unitFractionIntro(Random rand) {
     prompt: 'What unit fraction is shaded?',
     diagram: FractionBarSpec(numerator: n, denominator: d),
     correctAnswer: correct,
-    distractors: _distinctStrings(correct, [
+    distractors: fractionDistractors(Fraction(n, d), [
       '$d/$n', // "d out of 1"
       '${d - 1}/$d',
       '$n/${d - 1}',
       '$n/${d + 1}',
-    ]),
+    ], rand),
     explanation: ['1 out of $d equal parts → 1/$d.'],
     answerFormat: AnswerFormat.fraction,
-    answerShape: AnswerShape.exactString,
+    // Graded by value (see partition_halves_fourths). The prompt asks for
+    // the unit fraction, but a kid who types an equal non-unit form (2/8
+    // for 1/4) has still read the bar correctly — accept and nudge.
   );
 }
 

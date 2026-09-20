@@ -7,80 +7,15 @@ import 'package:math_city/domain/questions/generated_question.dart';
 import 'package:math_city/domain/questions/word_problems/word_problem_framework.dart';
 
 // ---------------------------------------------------------------------------
-// Shared helpers
-// ---------------------------------------------------------------------------
-
-/// Picks three fraction-string distractors for [correct], skipping any
-/// candidate that is mathematically equivalent to it. Candidates are tried
-/// in order, then random ±1 numerator/denominator perturbations of
-/// [correct] are appended as fallbacks until three unique non-equivalent
-/// strings have been collected.
-///
-/// The strings returned are the candidates' *original* surface forms
-/// (typically un-reduced) — generators emit a canonical reduced answer
-/// while their distractors stay in the "computational" un-reduced shape
-/// that kids actually write down before simplifying.
-List<String> _fractionDistractors(
-  Fraction correct,
-  List<String> candidates,
-  Random rand,
-) {
-  final out = <String>[];
-  final seen = <String>{correct.toCanonical()};
-  bool tryAdd(String s) {
-    if (seen.contains(s)) return false;
-    // Reject invalid mixed notation like "1 10/6" or "2 3/3" — forms the
-    // curriculum tells kids never to write.
-    final mixed = RegExp(r'^-?\d+\s+(\d+)/(\d+)$').firstMatch(s);
-    if (mixed != null &&
-        int.parse(mixed.group(1)!) >= int.parse(mixed.group(2)!)) {
-      return false;
-    }
-    final f = Fraction.tryParse(s);
-    if (f != null && f.equalsByValue(correct)) return false;
-    // No two distractors may share a VALUE (e.g. 0/3 and 0/1) — a kid
-    // with one wrong idea would get two choices for it.
-    if (f != null) {
-      for (final o in out) {
-        final of = Fraction.tryParse(o);
-        if (of != null && of.equalsByValue(f)) return false;
-      }
-    }
-    seen.add(s);
-    out.add(s);
-    return true;
-  }
-
-  for (final c in candidates) {
-    if (out.length >= 3) break;
-    tryAdd(c);
-  }
-  // Fallback perturbations: keep the correct denominator and drift the
-  // top — an off-by-one top is at least a believable slip, while a
-  // drifted denominator (2/13, x/1) read as filler no kid would write.
-  for (var i = 0; i < 40 && out.length < 3; i++) {
-    final dn = rand.nextInt(5) - 2; // -2..2
-    final n2 = correct.numerator + dn;
-    if (n2 <= 0) continue;
-    tryAdd('$n2/${correct.denominator}');
-  }
-  while (out.length < 3) {
-    // Extreme fallback: just emit unique tiny fractions.
-    out.add('${out.length + 1}/${out.length + 2}');
-  }
-  return out.take(3).toList();
-}
-
-// ---------------------------------------------------------------------------
 // Generators
 // ---------------------------------------------------------------------------
 
 /// "What fraction is shaded?" — shows a fraction bar and asks for a/b.
 ///
 /// The canonical answer is the *visible* form on the bar (kid counts what
-/// they see). Shape: exactString because this concept's lesson IS "count
-/// what's depicted" — simplification is a separate concept
-/// (`simplify_fraction`).
+/// they see); the blank-numerator template pins the depicted denominator
+/// so the answer is just that count — simplification is a separate
+/// concept (`simplify_fraction`).
 GeneratedQuestion fractionAOverB(Random rand) {
   final denominator = rand.nextInt(7) + 2; // 2..8
   final numerator = rand.nextInt(denominator - 1) + 1; // 1..denom-1 (proper)
@@ -154,7 +89,7 @@ GeneratedQuestion equivalentFractionsVisual(Random rand) {
   final equivN = numerator * multiplier;
   final equivD = denominator * multiplier;
   final correct = '$equivN/$equivD';
-  final distractors = _fractionDistractors(
+  final distractors = fractionDistractors(
     Fraction(equivN, equivD),
     [
       '${numerator * multiplier}/$denominator', // only-num scaled
@@ -316,7 +251,7 @@ GeneratedQuestion simplifyFraction(Random rand) {
   }
   final correctF = Fraction(baseN, baseD);
   final correct = correctF.toCanonical();
-  final distractors = _fractionDistractors(
+  final distractors = fractionDistractors(
     correctF,
     [
       // "divided only numerator" / "divided only denominator" misconceptions.
@@ -365,7 +300,7 @@ GeneratedQuestion addFractionsLikeDenom(Random rand) {
   final sumNum = a + b;
   final sumF = Fraction(sumNum, denominator);
   final correct = sumF.toCanonical();
-  final distractors = _fractionDistractors(
+  final distractors = fractionDistractors(
     sumF,
     [
       '$sumNum/${denominator * 2}', // misconception: added denoms
@@ -400,7 +335,7 @@ GeneratedQuestion subFractionsLikeDenom(Random rand) {
   final diffNum = a - b;
   final diffF = Fraction(diffNum, denominator);
   final correct = diffF.toCanonical();
-  final distractors = _fractionDistractors(
+  final distractors = fractionDistractors(
     diffF,
     [
       '${a + b}/$denominator', // added instead of subtracted
@@ -505,7 +440,7 @@ GeneratedQuestion mixedToImproper(Random rand) {
     '${improperNum + denominator}/$denominator', // off-by-whole
     '${improperNum - 1}/$denominator', // off-by-one
   ];
-  final distractors = _fractionDistractors(correctF, candidates, rand);
+  final distractors = fractionDistractors(correctF, candidates, rand);
   return GeneratedQuestion(
     conceptId: 'mixed_to_improper',
     prompt: 'Write $whole and $properNum/$denominator as an improper fraction.',
@@ -539,7 +474,7 @@ GeneratedQuestion addFractionsUnlikeDenom(Random rand) {
   final sumNum = scaled1 + scaled2;
   final sumF = Fraction(sumNum, common);
   final correct = sumF.toCanonical();
-  final distractors = _fractionDistractors(
+  final distractors = fractionDistractors(
     sumF,
     [
       '${n1 + n2}/${d1 + d2}', // tops+tops, bottoms+bottoms misconception
@@ -589,7 +524,7 @@ GeneratedQuestion subFractionsUnlikeDenom(Random rand) {
   final diffNum = scaled1 - scaled2;
   final diffF = Fraction(diffNum, common);
   final correct = diffF.toCanonical();
-  final distractors = _fractionDistractors(
+  final distractors = fractionDistractors(
     diffF,
     [
       // Subtracted tops and bottoms separately (0 when tops match — a
@@ -638,7 +573,7 @@ GeneratedQuestion multFractionByWhole(Random rand) {
     '${whole * numerator + 1}/$denominator', // off-by-one num
     '${whole * numerator}/${denominator + 1}', // off-by-one denom
   ];
-  final distractors = _fractionDistractors(
+  final distractors = fractionDistractors(
     productF.reduce(),
     [
       for (final c in rawCandidates) Fraction.tryParse(c)?.toCanonical() ?? c,
@@ -671,7 +606,7 @@ GeneratedQuestion multFractionsProper(Random rand) {
   final c = rand.nextInt(d - 1) + 1; // 1..d-1
   final productF = Fraction(a * c, b * d);
   final correct = productF.toCanonical();
-  final distractors = _fractionDistractors(
+  final distractors = fractionDistractors(
     productF,
     [
       '${a + c}/${b + d}', // added everything
@@ -710,7 +645,7 @@ GeneratedQuestion divUnitFractionByWhole(Random rand) {
   final m = rand.nextInt(5) + 2; // 2..6
   final productF = Fraction(1, n * m);
   final correct = productF.toCanonical();
-  final distractors = _fractionDistractors(
+  final distractors = fractionDistractors(
     productF,
     [
       '$m/$n', // inverted (kid divided by 1/m instead)
@@ -752,7 +687,7 @@ GeneratedQuestion divWholeByUnitFraction(Random rand) {
   final product = m * n;
   final productF = Fraction(product, 1);
   final correct = productF.toCanonical(); // bare integer string
-  final distractors = _fractionDistractors(
+  final distractors = fractionDistractors(
     productF,
     [
       '$m/$n', // forgot to invert
@@ -794,7 +729,7 @@ GeneratedQuestion divFractionByFraction(Random rand) {
   final c = rand.nextInt(d - 1) + 1; // proper
   final productF = Fraction(a * d, b * c);
   final correct = productF.toCanonical();
-  final distractors = _fractionDistractors(
+  final distractors = fractionDistractors(
     productF,
     [
       '${a * c}/${b * d}', // forgot to flip — multiplied directly
@@ -829,7 +764,7 @@ GeneratedQuestion wholeNumberAsFraction(Random rand) {
   final correctNum = n * d;
   final correct = '$correctNum/$d';
   final correctF = Fraction(correctNum, d);
-  final distractors = _fractionDistractors(
+  final distractors = fractionDistractors(
     correctF,
     [
       '$n/$d', // forgot to multiply
@@ -876,7 +811,7 @@ GeneratedQuestion addMixedLikeDenom(Random rand) {
   final correct = sumF.toMixed();
   final rawSumTop = n1 + n2; // ones-place sum before carry
   final carried = rawSumTop >= denominator;
-  final distractors = _fractionDistractors(
+  final distractors = fractionDistractors(
     sumF,
     [
       // Forgot to carry: kept top sum even when ≥ denominator.
@@ -937,7 +872,7 @@ GeneratedQuestion subMixedLikeDenom(Random rand) {
   final rawMixed = rawWholes == 0
       ? '$rawTop/$denominator'
       : '$rawWholes $rawTop/$denominator';
-  final distractors = _fractionDistractors(
+  final distractors = fractionDistractors(
     diffF,
     [
       // Forgot to borrow: subtracted tops anyway, getting a negative top.
@@ -999,7 +934,7 @@ GeneratedQuestion addMixedUnlikeDenom(Random rand) {
   final sumNum = scaledA + scaledB;
   final sumF = Fraction(sumNum, common);
   final correct = sumF.toMixed();
-  final distractors = _fractionDistractors(
+  final distractors = fractionDistractors(
     sumF,
     [
       // Added wholes; tops+tops, bottoms+bottoms misconception.
@@ -1058,7 +993,7 @@ GeneratedQuestion subMixedUnlikeDenom(Random rand) {
   final diffF = Fraction(diffNum, common);
   final correct = diffF.toMixed();
   final fractionalDiffAbs = (n1 * d2 - n2 * d1).abs();
-  final distractors = _fractionDistractors(
+  final distractors = fractionDistractors(
     diffF,
     [
       // Subtracted wholes; tops−tops, bottoms−bottoms misconception.
@@ -1107,7 +1042,7 @@ GeneratedQuestion multMixedNumbers(Random rand) {
   final improperB = w2 * d2 + n2;
   final productF = Fraction(improperA * improperB, d1 * d2);
   final correct = productF.toMixed();
-  final distractors = _fractionDistractors(
+  final distractors = fractionDistractors(
     productF,
     [
       // Distributed naively: multiplied wholes, multiplied fractions,
@@ -1195,7 +1130,7 @@ GeneratedQuestion fractionAsDivision(Random rand) {
   final item = pickRandom(edibleWordProblemItems, rand);
   final correctF = Fraction(cookies, kids);
   final correct = correctF.toCanonical();
-  final distractors = _fractionDistractors(
+  final distractors = fractionDistractors(
     correctF,
     [
       '$kids/$cookies', // swapped — sharing is kids ÷ cookies misconception

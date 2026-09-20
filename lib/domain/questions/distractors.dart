@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:math_city/domain/questions/fraction.dart';
+
 /// Universal distractor strategies for integer answers (curriculum.md §5.3).
 ///
 /// Returns exactly three distinct, non-negative distractors that differ
@@ -76,4 +78,69 @@ List<String> stringDistractorsFromPool(
     );
   }
   return unique.take(3).toList();
+}
+
+/// Picks three fraction-string distractors for [correct], skipping any
+/// candidate that is mathematically equivalent to it. Candidates are tried
+/// in order, then random ±1 numerator/denominator perturbations of
+/// [correct] are appended as fallbacks until three unique non-equivalent
+/// strings have been collected.
+///
+/// The strings returned are the candidates' *original* surface forms
+/// (typically un-reduced) — generators emit a canonical reduced answer
+/// while their distractors stay in the "computational" un-reduced shape
+/// that kids actually write down before simplifying.
+///
+/// Value-distinctness matters beyond aesthetics: questions graded by
+/// value (`AnswerShape.any`) would accept an equivalent distractor as a
+/// second right answer.
+List<String> fractionDistractors(
+  Fraction correct,
+  List<String> candidates,
+  Random rand,
+) {
+  final out = <String>[];
+  final seen = <String>{correct.toCanonical()};
+  bool tryAdd(String s) {
+    if (seen.contains(s)) return false;
+    // Reject invalid mixed notation like "1 10/6" or "2 3/3" — forms the
+    // curriculum tells kids never to write.
+    final mixed = RegExp(r'^-?\d+\s+(\d+)/(\d+)$').firstMatch(s);
+    if (mixed != null &&
+        int.parse(mixed.group(1)!) >= int.parse(mixed.group(2)!)) {
+      return false;
+    }
+    final f = Fraction.tryParse(s);
+    if (f != null && f.equalsByValue(correct)) return false;
+    // No two distractors may share a VALUE (e.g. 0/3 and 0/1) — a kid
+    // with one wrong idea would get two choices for it.
+    if (f != null) {
+      for (final o in out) {
+        final of = Fraction.tryParse(o);
+        if (of != null && of.equalsByValue(f)) return false;
+      }
+    }
+    seen.add(s);
+    out.add(s);
+    return true;
+  }
+
+  for (final c in candidates) {
+    if (out.length >= 3) break;
+    tryAdd(c);
+  }
+  // Fallback perturbations: keep the correct denominator and drift the
+  // top — an off-by-one top is at least a believable slip, while a
+  // drifted denominator (2/13, x/1) read as filler no kid would write.
+  for (var i = 0; i < 40 && out.length < 3; i++) {
+    final dn = rand.nextInt(5) - 2; // -2..2
+    final n2 = correct.numerator + dn;
+    if (n2 <= 0) continue;
+    tryAdd('$n2/${correct.denominator}');
+  }
+  while (out.length < 3) {
+    // Extreme fallback: just emit unique tiny fractions.
+    out.add('${out.length + 1}/${out.length + 2}');
+  }
+  return out.take(3).toList();
 }

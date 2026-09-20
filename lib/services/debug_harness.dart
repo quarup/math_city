@@ -356,11 +356,17 @@ class DebugHarness {
       return <String, Object?>{'ok': false, 'error': 'no question open'};
     }
 
-    // Distractors are guaranteed non-equivalent to the canonical answer,
-    // so the first one is a safe "wrong" for both input modes.
-    final answer = wantCorrect
-        ? attached.question.correctAnswer
-        : attached.question.distractors.first;
+    // An explicit `answer` submits that exact string — the only way to
+    // exercise grading of a form the generator never emits (typing 1/2 for
+    // a bar shaded 2/4). Otherwise: the canonical answer, or the first
+    // distractor, which is guaranteed non-equivalent to it and so is a
+    // safe "wrong" for both input modes.
+    final override = body['answer'] as String?;
+    final answer =
+        override ??
+        (wantCorrect
+            ? attached.question.correctAnswer
+            : attached.question.distractors.first);
 
     _result = null;
     _errors.clear();
