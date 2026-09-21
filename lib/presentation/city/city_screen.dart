@@ -424,9 +424,14 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
           final palette = Theme.of(ctx).extension<AppPalette>()!;
           return AlertDialog(
             title: Text('Cancel ${site.name}?'),
-            content: Text(
-              'The $paid coins paid in so far come back as credit, '
-              'to use on any site.',
+            content: Text.rich(
+              TextSpan(
+                children: [
+                  const TextSpan(text: 'Get '),
+                  coinSpan(),
+                  TextSpan(text: ' $paid back to use anywhere else.'),
+                ],
+              ),
             ),
             actions: [
               TextButton(
