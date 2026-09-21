@@ -147,6 +147,10 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
   /// button): the next free-tile tap moves it, its coins along with it.
   int? _movingSiteId;
 
+  /// Where the picked-up building or site stood when it was picked up, so
+  /// the move bar's X can put it back. Null once dropped.
+  (int, int)? _moveOrigin;
+
   /// One tap on the board. The board reports a **window-local** tile; we map it
   /// back to world coords via the current window, then dispatch in order:
   /// a tap on the pale buyable frontier selects that block for purchase
@@ -201,6 +205,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
         _buyingBlock = block;
         _movingId = null;
         _movingSiteId = null;
+        _moveOrigin = null;
         _selectedSiteId = null;
         _selectedBuildingId = null;
         _pendingSpot = null;
@@ -228,7 +233,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
       // Tapping the building being moved drops it where it is. Any other
       // building opens its info card (tap the open one again to close it).
       if (occupant.id == _movingId) {
-        setState(() => _movingId = null);
+        _dropMoved();
         return;
       }
       setState(() {
@@ -237,6 +242,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
             : occupant.id;
         _movingId = null;
         _movingSiteId = null;
+        _moveOrigin = null;
         _selectedSiteId = null;
         _pendingSpot = null;
       });
@@ -319,6 +325,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
       _recapBlock = null;
       _movingId = null;
       _movingSiteId = null;
+      _moveOrigin = null;
       _selectedBuildingId = null;
       _buyingBlock = null;
     });
@@ -520,11 +527,35 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     if (result.opened) _celebrate(result.site);
   }
 
+  /// *Place here* on the move bar (or a tap on the moved building itself):
+  /// every tile tap already moved it, so this just ends the mode.
+  void _dropMoved() => setState(() {
+    _movingId = null;
+    _movingSiteId = null;
+    _moveOrigin = null;
+  });
+
+  /// X on the move bar: put the building or site back where it was picked
+  /// up, then end the mode.
+  void _cancelMove() {
+    final origin = _moveOrigin;
+    final actions = ref.read(cityActionsProvider);
+    if (origin != null) {
+      if (_movingId case final id?) {
+        unawaited(actions.moveBuilding(id, origin.$1, origin.$2));
+      } else if (_movingSiteId case final id?) {
+        unawaited(actions.moveSite(id, origin.$1, origin.$2));
+      }
+    }
+    _dropMoved();
+  }
+
   void _selectSite(int? siteId) => setState(() {
     _selectedSiteId = siteId;
     _selectedBuildingId = null;
     _movingId = null;
     _movingSiteId = null;
+    _moveOrigin = null;
     _buyingBlock = null;
     _pendingSpot = null;
   });
@@ -667,6 +698,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
       _pendingSpot = spot;
       _movingId = null;
       _movingSiteId = null;
+      _moveOrigin = null;
       _selectedSiteId = null;
       _selectedBuildingId = null;
     });
@@ -880,6 +912,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
             _pendingSpot = null;
             _movingId = null;
             _movingSiteId = null;
+            _moveOrigin = null;
             _selectedSiteId = null;
             _selectedBuildingId = null;
           }),
@@ -1141,7 +1174,9 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
             onUseCredit: () => unawaited(_useCredit(selectedSite)),
             onMove: selectedSite.goal is BuildingGoal
                 ? () => setState(() {
+                    final goal = selectedSite.goal as BuildingGoal;
                     _movingSiteId = selectedSite.id;
+                    _moveOrigin = (goal.col, goal.row);
                     _selectedSiteId = null;
                   })
                 : null,
@@ -1150,18 +1185,21 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
         : movingSite != null
         ? _MoveModeBar(
             name: movingSite.name,
-            onDone: () => setState(() => _movingSiteId = null),
+            onPlace: _dropMoved,
+            onCancel: _cancelMove,
           )
         : _movingId != null
         ? _MoveModeBar(
             name: movingType?.name,
-            onDone: () => setState(() => _movingId = null),
+            onPlace: _dropMoved,
+            onCancel: _cancelMove,
           )
         : selectedBuildingType != null
         ? _BuildingBar(
             type: selectedBuildingType,
             onMove: () => setState(() {
               _movingId = _selectedBuildingId;
+              _moveOrigin = (selectedBuilding!.gridX, selectedBuilding.gridY);
               _selectedBuildingId = null;
             }),
             onDeselect: () => setState(() => _selectedBuildingId = null),
@@ -1712,15 +1750,20 @@ class _BuildingBar extends StatelessWidget {
 }
 
 /// Bottom strip shown while a building (or site) is picked up for
-/// repositioning. Each tile tap moves it there at once, so *Place here*
-/// and X both simply drop it where it stands and bring the catalog back —
-/// the button mirrors the placement bar so the two flows read the same.
+/// repositioning. Each tile tap moves it there at once; *Place here* keeps
+/// it where it stands and X snaps it back to where it was picked up. The
+/// layout mirrors the placement bar so the two flows read the same.
 class _MoveModeBar extends StatelessWidget {
-  const _MoveModeBar({required this.onDone, this.name});
+  const _MoveModeBar({
+    required this.onPlace,
+    required this.onCancel,
+    this.name,
+  });
 
   /// Name of the picked-up building.
   final String? name;
-  final VoidCallback onDone;
+  final VoidCallback onPlace;
+  final VoidCallback onCancel;
 
   @override
   Widget build(BuildContext context) {
@@ -1746,9 +1789,9 @@ class _MoveModeBar extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 8),
-              _CloseButton(onPressed: onDone, tooltip: 'Done moving'),
+              _CloseButton(onPressed: onCancel, tooltip: 'Put it back'),
               const SizedBox(width: 4),
-              FilledButton(onPressed: onDone, child: const Text('Place here')),
+              FilledButton(onPressed: onPlace, child: const Text('Place here')),
             ],
           ),
         ),
