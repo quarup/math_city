@@ -266,11 +266,9 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
       });
       return;
     }
+    // A tap on bare grass or road with nothing picked is just a tap.
     final selected = _selected;
-    if (selected == null) {
-      _toast('Pick a building below first');
-      return;
-    }
+    if (selected == null) return;
     _tryPlace(selected, col, row, placements, sites, ownedTiles);
   }
 
