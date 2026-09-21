@@ -147,6 +147,17 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
       body: SafeArea(
         child: Stack(
           children: [
+            // Stop answering: pops the chain back to the wheel over the
+            // site (a debug question just returns to the concept list).
+            Positioned(
+              top: 4,
+              left: 4,
+              child: IconButton(
+                icon: const Icon(Icons.close_rounded),
+                tooltip: 'Stop',
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ),
             if (speakable != null)
               const Positioned(
                 top: 4,

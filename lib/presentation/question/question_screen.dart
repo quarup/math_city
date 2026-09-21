@@ -397,11 +397,20 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
       ],
     ];
 
+    // Stop answering: pop the chain, which lands back on the wheel over
+    // the site (answers already given stay paid in). Debug questions were
+    // pushed from the concept list, so back just returns there.
+    final leading = IconButton(
+      icon: const Icon(Icons.close_rounded),
+      tooltip: 'Stop',
+      onPressed: () => Navigator.of(context).pop(),
+    );
+
     if (question == null) {
       return Scaffold(
         appBar: AppBar(
           title: title,
-          automaticallyImplyLeading: false,
+          leading: leading,
           actions: actions,
         ),
         body: const SafeArea(
@@ -413,7 +422,7 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
     return Scaffold(
       appBar: AppBar(
         title: title,
-        automaticallyImplyLeading: false,
+        leading: leading,
         actions: actions,
       ),
       body: SafeArea(

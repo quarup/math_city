@@ -139,6 +139,15 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
   /// catalog pick (auto-fitting the footprint to cover the tapped tile). A tap
   /// on bare background (neither owned nor buyable) does nothing.
   void _onTileTapped(int localCol, int localRow) {
+    // While the wheel is up, the only tappable map is the sharp strip
+    // below it: a tap there leaves the loop — hide the wheel and zoom back
+    // out to the city — rather than nudging the site. During the
+    // celebration the card owns the exit, so taps on the map do nothing.
+    if (_mode == _CityMode.siteZoomed) {
+      if (_wheelVisible) _zoomOut();
+      return;
+    }
+    if (_mode == _CityMode.celebrating) return;
     final window = _window;
     final ownedBlocks = ref.read(ownedBlocksProvider).asData?.value;
     if (window == null || ownedBlocks == null) return;
