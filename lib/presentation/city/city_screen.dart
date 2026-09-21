@@ -126,9 +126,19 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
   (int, int)? _buyingBlock;
 
   /// The construction site currently selected (yellow fence, site bar at the
-  /// bottom with its `paid / price` and *Build!*), or null. A tap on free
-  /// land while a building site is selected moves it, like a building.
+  /// bottom with its `paid / price` and *Build!*), or null. A tap on the map
+  /// while a site is selected just deselects it; its bar's move button
+  /// enters [_movingSiteId].
   int? _selectedSiteId;
+
+  /// The placed building whose info card is open at the bottom (name, what
+  /// it does, *Move*, X), or null. A tap on the map deselects it; *Move*
+  /// hands it to [_movingId].
+  int? _selectedBuildingId;
+
+  /// The building site picked up for repositioning (from its bar's move
+  /// button): the next free-tile tap moves it, its coins along with it.
+  int? _movingSiteId;
 
   /// One tap on the board. The board reports a **window-local** tile; we map it
   /// back to world coords via the current window, then dispatch in order:
@@ -183,7 +193,9 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
       setState(() {
         _buyingBlock = block;
         _movingId = null;
+        _movingSiteId = null;
         _selectedSiteId = null;
+        _selectedBuildingId = null;
         _pendingSpot = null;
       });
       return;
@@ -206,23 +218,39 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     }
     final occupant = _buildingAt(placements, col, row);
     if (occupant != null) {
-      // Tap a building to pick it up; tap the held one again to drop it.
+      // Tapping the building being moved drops it where it is. Any other
+      // building opens its info card (tap the open one again to close it).
+      if (occupant.id == _movingId) {
+        setState(() => _movingId = null);
+        return;
+      }
       setState(() {
-        _movingId = occupant.id == _movingId ? null : occupant.id;
+        _selectedBuildingId = occupant.id == _selectedBuildingId
+            ? null
+            : occupant.id;
+        _movingId = null;
+        _movingSiteId = null;
         _selectedSiteId = null;
         _pendingSpot = null;
       });
       return;
     }
 
-    // A free owned tile: reposition the held site or building, else place
-    // the catalog pick (which starts a site).
-    if (_selectedSiteId != null) {
-      _tryMoveSite(_selectedSiteId!, col, row, placements, sites, ownedTiles);
+    // A free owned tile: reposition whatever is picked up; else close an
+    // open info card; else place the catalog pick (which starts a site).
+    if (_movingSiteId != null) {
+      _tryMoveSite(_movingSiteId!, col, row, placements, sites, ownedTiles);
       return;
     }
     if (_movingId != null) {
       _tryMove(_movingId!, col, row, placements, sites, ownedTiles);
+      return;
+    }
+    if (_selectedSiteId != null || _selectedBuildingId != null) {
+      setState(() {
+        _selectedSiteId = null;
+        _selectedBuildingId = null;
+      });
       return;
     }
     final selected = _selected;
@@ -283,6 +311,8 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
       _wheelVisible = false;
       _recapBlock = null;
       _movingId = null;
+      _movingSiteId = null;
+      _selectedBuildingId = null;
       _buyingBlock = null;
     });
     // The bottom bar swaps this frame; focus after layout so the viewport
@@ -482,7 +512,9 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
 
   void _selectSite(int? siteId) => setState(() {
     _selectedSiteId = siteId;
+    _selectedBuildingId = null;
     _movingId = null;
+    _movingSiteId = null;
     _buyingBlock = null;
     _pendingSpot = null;
   });
@@ -556,8 +588,8 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     );
   }
 
-  /// Repositions the selected building site so its footprint covers
-  /// `(col, row)`. Its paid-in coins come along; it stays selected.
+  /// Repositions the picked-up building site so its footprint covers
+  /// `(col, row)`. Its paid-in coins come along; it stays picked up.
   void _tryMoveSite(
     int siteId,
     int col,
@@ -568,7 +600,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
   ) {
     final picked = sites.where((s) => s.id == siteId).firstOrNull;
     if (picked == null || picked.goal is! BuildingGoal) {
-      setState(() => _selectedSiteId = null);
+      setState(() => _movingSiteId = null);
       return;
     }
     final type = (picked.goal as BuildingGoal).type;
@@ -591,10 +623,10 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
   }
 
   /// Proposes a spot for [type] so its footprint covers `(col, row)`
-  /// (auto-sliding the anchor): the board shows a highlighted ghost there
-  /// and the bar offers *Place here* — [_confirmPlacement] then starts the
-  /// site. For unique types that already exist, moves the existing instance
-  /// instead.
+  /// (auto-sliding the anchor): the board shows the building there, yellow
+  /// like a picked-up one, with the roads it would get, and the bar offers
+  /// *Place here* — [_confirmPlacement] then starts the site. For unique
+  /// types that already exist, moves the existing instance instead.
   void _tryPlace(
     BuildingType type,
     int col,
@@ -624,7 +656,9 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     setState(() {
       _pendingSpot = spot;
       _movingId = null;
+      _movingSiteId = null;
       _selectedSiteId = null;
+      _selectedBuildingId = null;
     });
   }
 
@@ -643,7 +677,8 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
   }
 
   /// Starts a site for [goal] via the city actions and reflects the outcome:
-  /// selects the new site (or the placed building for a free goal), or
+  /// selects the new site (or opens the placed building's card, for a free
+  /// goal), or
   /// toasts why it was refused — a fourth site names the three open ones.
   Future<void> _startSite(SiteGoal goal) async {
     final result = await ref.read(cityActionsProvider).startSite(goal);
@@ -654,7 +689,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     }
     setState(() {
       _buyingBlock = null;
-      _movingId = result.placementId;
+      _selectedBuildingId = result.placementId;
       _selectedSiteId = result.siteId;
     });
   }
@@ -734,14 +769,18 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
   }
 
   /// The auto-generated road tiles for the current placements, confined to
-  /// [ownedTiles] (see `road_network.dart`).
+  /// [ownedTiles] (see `road_network.dart`). A proposed placement counts
+  /// too, so the player sees the roads it would get before confirming.
   Set<(int, int)> _roadTilesFor(
     List<BuildingPlacement> placements,
     List<CitySite> sites,
     Set<(int, int)> ownedTiles,
   ) => generateRoads(
     ownedTiles: ownedTiles,
-    buildings: _footprintsOf(placements, sites),
+    buildings: [
+      ..._footprintsOf(placements, sites),
+      ?_pendingSpot,
+    ],
   );
 
   /// Recomputes the render window over owned land + its pale frontier and feeds
@@ -825,7 +864,9 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
             _selected = null;
             _pendingSpot = null;
             _movingId = null;
+            _movingSiteId = null;
             _selectedSiteId = null;
+            _selectedBuildingId = null;
           }),
         ),
       ),
@@ -874,7 +915,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
           color: _colorFor(type),
           footprint: type.footprint,
           assetPath: _assetPathFor(type, slotById[p.id] ?? 0),
-          selected: p.id == _movingId,
+          selected: p.id == _movingId || p.id == _selectedBuildingId,
         ),
       );
     }
@@ -890,14 +931,14 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
             color: _colorFor(type),
             footprint: type.footprint,
             assetPath: _assetPathFor(type, 0),
-            selected: s.id == _selectedSiteId,
+            selected: s.id == _selectedSiteId || s.id == _movingSiteId,
             stage: s.site.stage,
           ),
         );
       }
     }
-    // The proposed spot for the catalog pick: the type's ghost, highlighted
-    // like a picked-up building, until *Place here* turns it into a site.
+    // The proposed spot for the catalog pick: the building itself, yellow
+    // like a picked-up one, until *Place here* turns it into a site.
     if (_pendingSpot case final spot?) {
       if (_selected case final type?) {
         out.add(
@@ -909,7 +950,6 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
             footprint: type.footprint,
             assetPath: _assetPathFor(type, 0),
             selected: true,
-            stage: 2,
           ),
         );
       }
@@ -985,14 +1025,21 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     final placements = placementsAsync.asData?.value;
     // Drop a stale selection (e.g. the building was removed by a reset) so the
     // Done bar doesn't linger over nothing.
-    if (_movingId != null &&
-        placements != null &&
-        !placements.any((p) => p.id == _movingId)) {
-      _movingId = null;
+    if (placements != null) {
+      if (_movingId != null && !placements.any((p) => p.id == _movingId)) {
+        _movingId = null;
+      }
+      if (_selectedBuildingId != null &&
+          !placements.any((p) => p.id == _selectedBuildingId)) {
+        _selectedBuildingId = null;
+      }
     }
     // Drop a stale site selection (it opened, or a reset cleared it).
     if (_selectedSiteId != null && !sites.any((s) => s.id == _selectedSiteId)) {
       _selectedSiteId = null;
+    }
+    if (_movingSiteId != null && !sites.any((s) => s.id == _movingSiteId)) {
+      _movingSiteId = null;
     }
     if (_game != null && placements != null) {
       _game!.setBuildings(_viewsFor(placements, sites, _window!));
@@ -1005,14 +1052,24 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     final selectedSite = _selectedSiteId == null
         ? null
         : sites.where((s) => s.id == _selectedSiteId).firstOrNull;
+    final movingSite = _movingSiteId == null
+        ? null
+        : sites.where((s) => s.id == _movingSiteId).firstOrNull;
     // The building currently picked up for repositioning, if any — drives the
-    // Done bar's label.
+    // move bar's label.
     final moving = _movingId == null
         ? null
         : placements?.where((p) => p.id == _movingId).firstOrNull;
     final movingType = moving == null
         ? null
         : findBuildingTypeById(moving.buildingTypeId);
+    // The building whose info card is open, if any.
+    final selectedBuilding = _selectedBuildingId == null
+        ? null
+        : placements?.where((p) => p.id == _selectedBuildingId).firstOrNull;
+    final selectedBuildingType = selectedBuilding == null
+        ? null
+        : findBuildingTypeById(selectedBuilding.buildingTypeId);
 
     // Auto-select the only buildable building so the starter player doesn't
     // have to click the mayor's office before placing it. Once the catalog
@@ -1173,12 +1230,32 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                 onBuild: () => _buildSite(selectedSite),
                 onCancel: () => unawaited(_cancelSite(selectedSite)),
                 onUseCredit: () => unawaited(_useCredit(selectedSite)),
+                onMove: selectedSite.goal is BuildingGoal
+                    ? () => setState(() {
+                        _movingSiteId = selectedSite.id;
+                        _selectedSiteId = null;
+                      })
+                    : null,
                 onDeselect: () => setState(() => _selectedSiteId = null),
+              )
+            : movingSite != null
+            ? _MoveModeBar(
+                name: movingSite.name,
+                onDone: () => setState(() => _movingSiteId = null),
               )
             : _movingId != null
             ? _MoveModeBar(
                 name: movingType?.name,
                 onDone: () => setState(() => _movingId = null),
+              )
+            : selectedBuildingType != null
+            ? _BuildingBar(
+                type: selectedBuildingType,
+                onMove: () => setState(() {
+                  _movingId = _selectedBuildingId;
+                  _selectedBuildingId = null;
+                }),
+                onDeselect: () => setState(() => _selectedBuildingId = null),
               )
             // Render from the retained catalog so a per-placement refresh never
             // collapses the bar (which would resize the game and jump the
@@ -1517,6 +1594,74 @@ class _PopulationChip extends StatelessWidget {
   }
 }
 
+/// Bottom strip for a tapped building — its info card: emoji, name, what it
+/// does for the city, *Move* (picks it up; see [_MoveModeBar]) and X. The
+/// place for upgrade options later (house → bigger house, park → zoo).
+class _BuildingBar extends StatelessWidget {
+  const _BuildingBar({
+    required this.type,
+    required this.onMove,
+    required this.onDeselect,
+  });
+
+  final BuildingType type;
+  final VoidCallback onMove;
+  final VoidCallback onDeselect;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final pop = type.populationContribution;
+    final detail = pop > 0
+        ? 'Room for $pop ${pop == 1 ? 'person' : 'people'}'
+        : type.category.displayName;
+    return Material(
+      elevation: 8,
+      color: theme.colorScheme.surfaceContainer,
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Row(
+            children: [
+              Text(type.emoji, style: const TextStyle(fontSize: 26)),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      type.name,
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      detail,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              FilledButton.tonalIcon(
+                onPressed: onMove,
+                icon: const Icon(Icons.open_with_rounded),
+                label: const Text('Move'),
+              ),
+              const SizedBox(width: 4),
+              _CloseButton(onPressed: onDeselect, tooltip: 'Close'),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 /// Bottom strip shown while a building is picked up for repositioning: a hint
 /// to tap a tile to move it, plus a Done button to drop it and bring the build
 /// catalog back.
@@ -1749,7 +1894,8 @@ class _StartLandSiteBar extends StatelessWidget {
 }
 
 /// Bottom strip for the selected construction site. Top row: its
-/// `paid / price` bar and an X to deselect. Bottom row: red *Cancel*
+/// `paid / price` bar, a move button (building sites only) and an X to
+/// deselect. Bottom row: red *Cancel*
 /// (refunds every paid coin as credit), green *Use N* while the player
 /// holds credit the site can take, and *Build!*, which makes it the active
 /// site and opens the wheel. A building site can be nudged by tapping a
@@ -1761,6 +1907,7 @@ class _SiteBar extends StatelessWidget {
     required this.onBuild,
     required this.onCancel,
     required this.onUseCredit,
+    required this.onMove,
     required this.onDeselect,
   });
 
@@ -1769,6 +1916,9 @@ class _SiteBar extends StatelessWidget {
   final VoidCallback onBuild;
   final VoidCallback onCancel;
   final VoidCallback onUseCredit;
+
+  /// Null for a land site, which can't move.
+  final VoidCallback? onMove;
   final VoidCallback onDeselect;
 
   @override
@@ -1798,6 +1948,14 @@ class _SiteBar extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 12),
+                  if (onMove != null) ...[
+                    IconButton.filledTonal(
+                      onPressed: onMove,
+                      tooltip: 'Move',
+                      icon: const Icon(Icons.open_with_rounded),
+                    ),
+                    const SizedBox(width: 4),
+                  ],
                   _CloseButton(onPressed: onDeselect, tooltip: 'Deselect'),
                 ],
               ),
