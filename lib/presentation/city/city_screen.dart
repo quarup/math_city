@@ -1662,20 +1662,20 @@ class _BuildingBar extends StatelessWidget {
   }
 }
 
-/// Bottom strip shown while a building is picked up for repositioning: a hint
-/// to tap a tile to move it, plus a Done button to drop it and bring the build
-/// catalog back.
+/// Bottom strip shown while a building (or site) is picked up for
+/// repositioning. Each tile tap moves it there at once, so *Place here*
+/// and X both simply drop it where it stands and bring the catalog back —
+/// the button mirrors the placement bar so the two flows read the same.
 class _MoveModeBar extends StatelessWidget {
   const _MoveModeBar({required this.onDone, this.name});
 
-  /// Name of the picked-up building, for the hint text.
+  /// Name of the picked-up building.
   final String? name;
   final VoidCallback onDone;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final what = name ?? 'building';
     return Material(
       elevation: 8,
       color: theme.colorScheme.surfaceContainer,
@@ -1689,12 +1689,17 @@ class _MoveModeBar extends StatelessWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  'Moving $what — tap a tile to place it',
-                  style: theme.textTheme.bodyMedium,
+                  'Moving ${name ?? 'building'}',
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
               const SizedBox(width: 8),
               _CloseButton(onPressed: onDone, tooltip: 'Done moving'),
+              const SizedBox(width: 4),
+              FilledButton(onPressed: onDone, child: const Text('Place here')),
             ],
           ),
         ),
@@ -1894,8 +1899,8 @@ class _StartLandSiteBar extends StatelessWidget {
 }
 
 /// Bottom strip for the selected construction site. Top row: its
-/// `paid / price` bar, a move button (building sites only) and an X to
-/// deselect. Bottom row: red *Cancel*
+/// `paid / price` bar and an X to deselect. Bottom row: red *Cancel*,
+/// *Move* (building sites only),
 /// (refunds every paid coin as credit), green *Use N* while the player
 /// holds credit the site can take, and *Build!*, which makes it the active
 /// site and opens the wheel. A building site can be nudged by tapping a
@@ -1948,14 +1953,6 @@ class _SiteBar extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 12),
-                  if (onMove != null) ...[
-                    IconButton.filledTonal(
-                      onPressed: onMove,
-                      tooltip: 'Move',
-                      icon: const Icon(Icons.open_with_rounded),
-                    ),
-                    const SizedBox(width: 4),
-                  ],
                   _CloseButton(onPressed: onDeselect, tooltip: 'Deselect'),
                 ],
               ),
@@ -1970,6 +1967,14 @@ class _SiteBar extends StatelessWidget {
                     ),
                     child: const Text('Cancel'),
                   ),
+                  if (onMove != null) ...[
+                    const SizedBox(width: 8),
+                    FilledButton.tonalIcon(
+                      onPressed: onMove,
+                      icon: const Icon(Icons.open_with_rounded),
+                      label: const Text('Move'),
+                    ),
+                  ],
                   if (usable > 0) ...[
                     const SizedBox(width: 8),
                     FilledButton(
