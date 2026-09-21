@@ -83,6 +83,12 @@ class IsoCityGame extends FlameGame with DragCallbacks {
     return Vector2((wx + ex) / 2, (ny + sy) / 2);
   }
 
+  /// Viewport pixels covered by the bottom bar the screen draws over the
+  /// game. The game widget keeps one size whatever the bar does (so the
+  /// camera never jumps when the bar changes height); framing and the
+  /// scroll clamp treat the area above the bar as the screen.
+  double bottomInset = 0;
+
   /// Tweens the camera so the footprint at `(col, row)` of `width × height`
   /// tiles spans [widthFraction] of the viewport width and sits at viewport
   /// fraction `(0.5, anchorY)`. The first focus remembers the camera so
@@ -126,6 +132,7 @@ class IsoCityGame extends FlameGame with DragCallbacks {
       viewportHeight: viewport.y,
       anchorX: 0.5,
       anchorY: anchorY,
+      bottomInset: bottomInset,
     );
     _startTween(Vector2(cx, cy), zoom, duration, onDone);
   }
@@ -287,7 +294,10 @@ class IsoCityGame extends FlameGame with DragCallbacks {
   /// zoom, back off just enough to frame them all (never farther than the
   /// whole-board fit). A fresh, empty city has nothing to frame, so it uses the
   /// board centre at the zoomed-in distance.
-  void _fitCamera(Vector2 viewport) {
+  void _fitCamera(Vector2 fullViewport) {
+    // Fit into the part of the viewport the bottom bar leaves visible, then
+    // shift the centre down so the framing is centred in that part.
+    final viewport = Vector2(fullViewport.x, fullViewport.y - bottomInset);
     final boardFitZoom = math.min(
       viewport.x / (grid.boardWidth + grid.tileWidth),
       viewport.y / (grid.boardHeight + grid.tileWidth),
@@ -321,9 +331,10 @@ class IsoCityGame extends FlameGame with DragCallbacks {
       zoom = math.min(closeZoom, contentFitZoom);
       center = Vector2((minX + maxX) / 2, (minY + maxY) / 2);
     }
+    final z = zoom.clamp(minZoom, maxZoom);
     camera.viewfinder
-      ..zoom = zoom.clamp(minZoom, maxZoom)
-      ..position = center;
+      ..zoom = z
+      ..position = center + Vector2(0, bottomInset / 2 / z);
   }
 
   /// Absolute zoom setter, clamped. Called from the pinch-zoom Listener.
@@ -430,9 +441,12 @@ class IsoCityGame extends FlameGame with DragCallbacks {
   void _clampCamera() {
     final p = camera.viewfinder.position;
     final margin = grid.tileWidth;
+    // The bar covers the bottom of the viewport, so let the camera go that
+    // much further down and the board's bottom edge can still be reached.
+    final under = bottomInset / camera.viewfinder.zoom;
     camera.viewfinder.position = Vector2(
       p.x.clamp(-margin, grid.boardWidth + margin),
-      p.y.clamp(-margin, grid.boardHeight + margin),
+      p.y.clamp(-margin, grid.boardHeight + margin + under),
     );
   }
 }

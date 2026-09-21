@@ -92,6 +92,13 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
   final GlobalKey _celebrationCardKey = GlobalKey();
   final GlobalKey _boardKey = GlobalKey();
 
+  /// The bottom bar, measured after each layout: it is drawn *over* the
+  /// game rather than beside it, so the game widget never resizes (and the
+  /// camera never jumps) when a bar of a different height comes up. Its
+  /// height is handed to the game as [IsoCityGame.bottomInset].
+  final GlobalKey _barKey = GlobalKey();
+  double _barHeight = 0;
+
   /// The block the current wheel follows, shown as a recap card above it;
   /// null for the first wheel after *Build!*.
   QuestionBlock? _recapBlock;
@@ -434,7 +441,10 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     final boardTop = board.localToGlobal(Offset.zero).dy;
     final cardBottom =
         card.localToGlobal(Offset(0, card.size.height)).dy - boardTop;
-    final free = (cardBottom / board.size.height).clamp(0.0, 0.8);
+    // Fractions of the height above the bottom bar, which is what the
+    // game's framing treats as the screen.
+    final visible = board.size.height - _barHeight;
+    final free = (cardBottom / visible).clamp(0.0, 0.8);
     return (free + (1 - free) / 2 + 0.05).clamp(0.5, 0.9);
   }
 
@@ -795,7 +805,12 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     final buyableLocal = _localTilesIn(buyableTiles, window);
 
     if (_game == null) {
-      _game = IsoCityGame(grid: grid, onTileTapped: _onTileTapped);
+      _game = IsoCityGame(grid: grid, onTileTapped: _onTileTapped)
+        // The catalog bar is up for the first fit, before it has been
+        // measured: seed its height so the fit centres above it.
+        ..bottomInset = _barHeight > 0
+            ? _barHeight
+            : _kCatalogBarHeight + MediaQuery.paddingOf(context).bottom;
       _game!.updateLand(
         newGrid: grid,
         ownedLocalTiles: ownedLocal,
@@ -1098,6 +1113,103 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     final celebratingSite = _celebratingSite;
     final credit = player?.creditBalance ?? 0;
 
+    // While zoomed the bar is pinned to the site; otherwise: land selected
+    // → start-a-site bar; site selected → its bar; something picked up →
+    // move bar; building tapped → its info card; catalog pick → choose /
+    // confirm a location; else the catalog.
+    final bar = zoomed
+        ? _ZoomedBar(
+            name: celebratingSite != null
+                ? _celebrationTitle(celebratingSite)
+                : liveZoomed?.name ?? '',
+            paid: celebratingSite?.paidCoins ?? liveZoomed?.site.paidCoins,
+            price: celebratingSite?.price ?? liveZoomed?.site.price,
+            onBack: _mode == _CityMode.celebrating ? null : _zoomOut,
+          )
+        : _buyingBlock != null
+        ? _StartLandSiteBar(
+            cost: blockCost(_buyingBlock!.$1, _buyingBlock!.$2),
+            onStart: _startSelectedLandSite,
+            onCancel: () => setState(() => _buyingBlock = null),
+          )
+        : selectedSite != null
+        ? _SiteBar(
+            site: selectedSite,
+            credit: credit,
+            onBuild: () => _buildSite(selectedSite),
+            onCancel: () => unawaited(_cancelSite(selectedSite)),
+            onUseCredit: () => unawaited(_useCredit(selectedSite)),
+            onMove: selectedSite.goal is BuildingGoal
+                ? () => setState(() {
+                    _movingSiteId = selectedSite.id;
+                    _selectedSiteId = null;
+                  })
+                : null,
+            onDeselect: () => setState(() => _selectedSiteId = null),
+          )
+        : movingSite != null
+        ? _MoveModeBar(
+            name: movingSite.name,
+            onDone: () => setState(() => _movingSiteId = null),
+          )
+        : _movingId != null
+        ? _MoveModeBar(
+            name: movingType?.name,
+            onDone: () => setState(() => _movingId = null),
+          )
+        : selectedBuildingType != null
+        ? _BuildingBar(
+            type: selectedBuildingType,
+            onMove: () => setState(() {
+              _movingId = _selectedBuildingId;
+              _selectedBuildingId = null;
+            }),
+            onDeselect: () => setState(() => _selectedBuildingId = null),
+          )
+        // Render from the retained catalog so a per-placement refresh never
+        // blanks the bar for a frame. Only the very first load — before
+        // any data — is empty.
+        : catalog == null
+        ? const SizedBox.shrink()
+        // A catalog pick walks through two bars: choose a location, then
+        // confirm the proposed spot. X backs out to the catalog.
+        : _selected != null && _pendingSpot != null
+        ? _PlaceHereBar(
+            type: _selected!,
+            onPlace: _confirmPlacement,
+            onCancel: () => setState(() {
+              _pendingSpot = null;
+              _selected = null;
+            }),
+          )
+        : _selected != null
+        ? _ChooseLocationBar(
+            type: _selected!,
+            onCancel: () => setState(() => _selected = null),
+          )
+        : _BuildCatalogBar(
+            catalog: catalog,
+            selected: _selected,
+            onSelect: (b) {
+              if (_atSiteCap(sites)) return;
+              setState(() {
+                _selected = b;
+                _pendingSpot = null;
+              });
+            },
+          );
+
+    // Measure the bar once it has laid out; a height change re-renders the
+    // overlays that sit above it and tells the game how much it covers.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final box = _barKey.currentContext?.findRenderObject() as RenderBox?;
+      final h = box != null && box.hasSize ? box.size.height : 0.0;
+      if ((h - _barHeight).abs() < 0.5) return;
+      _game?.bottomInset = h;
+      setState(() => _barHeight = h);
+    });
+
     return PopScope(
       // Back from a zoomed state zooms out; it never leaves the city.
       canPop: !zoomed,
@@ -1128,60 +1240,65 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
         ),
         body: _game == null
             ? const Center(child: CircularProgressIndicator())
-            : Stack(
-                children: [
-                  Positioned.fill(
-                    child: ColoredBox(
-                      key: _boardKey,
-                      color: const Color(0xFF9CCC65),
-                      child: _PinchZoomWrapper(
-                        game: _game!,
-                        child: GameWidget(game: _game!),
-                      ),
-                    ),
-                  ),
-                  // Population counter, top-left over the city.
-                  if (!zoomed)
-                    Positioned(
-                      top: 8,
-                      left: 8,
-                      child: SafeArea(
-                        child: _PopulationChip(
-                          population: city?.population ?? 0,
+            : LayoutBuilder(
+                builder: (context, constraints) => Stack(
+                  children: [
+                    Positioned.fill(
+                      child: ColoredBox(
+                        key: _boardKey,
+                        color: const Color(0xFF9CCC65),
+                        child: _PinchZoomWrapper(
+                          game: _game!,
+                          child: GameWidget(game: _game!),
                         ),
                       ),
                     ),
-                  // Floating citizen bubbles (and their tap-to-expand cards).
-                  if (!zoomed)
-                    const Positioned.fill(child: _CitizenBubbleOverlay()),
-                  // The wheel over the blurred city, above the site pinned at
-                  // the bottom. Fades in once the camera has landed; stays in
-                  // the tree (faded out) while a question route is on top.
-                  if (_mode == _CityMode.siteZoomed)
-                    Positioned.fill(
-                      child: IgnorePointer(
-                        ignoring: !_wheelVisible,
-                        child: AnimatedOpacity(
-                          opacity: _wheelVisible ? 1 : 0,
-                          duration: const Duration(milliseconds: 450),
-                          // Feather the blur's lower edge so the sharp
-                          // site below reads as emerging from under the
-                          // wheel, not cut off by a line.
-                          child: ShaderMask(
-                            shaderCallback: (rect) => const LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                Colors.white,
-                                Colors.white,
-                                Colors.transparent,
-                              ],
-                              stops: [0, 0.82, 1],
-                            ).createShader(rect),
-                            blendMode: BlendMode.dstIn,
-                            child: FractionallySizedBox(
-                              alignment: Alignment.topCenter,
-                              heightFactor: 1 - kSpinOverlayBottomFraction,
+                    // Population counter, top-left over the city.
+                    if (!zoomed)
+                      Positioned(
+                        top: 8,
+                        left: 8,
+                        child: SafeArea(
+                          child: _PopulationChip(
+                            population: city?.population ?? 0,
+                          ),
+                        ),
+                      ),
+                    // Floating citizen bubbles (and their tap-to-expand cards).
+                    if (!zoomed)
+                      const Positioned.fill(child: _CitizenBubbleOverlay()),
+                    // The wheel over the blurred city, above the site pinned at
+                    // the bottom (of the area the bar leaves visible). Fades in
+                    // once the camera has landed; stays in the tree (faded
+                    // out) while a question route is on top.
+                    if (_mode == _CityMode.siteZoomed)
+                      Positioned(
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        height:
+                            (constraints.maxHeight - _barHeight) *
+                            (1 - kSpinOverlayBottomFraction),
+                        child: IgnorePointer(
+                          ignoring: !_wheelVisible,
+                          child: AnimatedOpacity(
+                            opacity: _wheelVisible ? 1 : 0,
+                            duration: const Duration(milliseconds: 450),
+                            // Feather the blur's lower edge so the sharp
+                            // site below reads as emerging from under the
+                            // wheel, not cut off by a line.
+                            child: ShaderMask(
+                              shaderCallback: (rect) => const LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Colors.white,
+                                  Colors.white,
+                                  Colors.transparent,
+                                ],
+                                stops: [0, 0.82, 1],
+                              ).createShader(rect),
+                              blendMode: BlendMode.dstIn,
                               child: _wheelVisible
                                   ? SpinOverlay(
                                       key: ValueKey(_wheelGeneration),
@@ -1193,125 +1310,57 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                           ),
                         ),
                       ),
-                    ),
-                  if (celebratingSite != null)
-                    Positioned.fill(
-                      child: CelebrationOverlay(
-                        title: _celebrationTitle(celebratingSite),
-                        onDone: _zoomOut,
-                        cardKey: _celebrationCardKey,
+                    if (celebratingSite != null)
+                      Positioned.fill(
+                        child: CelebrationOverlay(
+                          title: _celebrationTitle(celebratingSite),
+                          onDone: _zoomOut,
+                          cardKey: _celebrationCardKey,
+                        ),
                       ),
+                    // The wheel is reached through a site's Build! — there is
+                    // no free-floating "play" entry (city_builder.md §8.3).
+                    // Parked above the tallest bar so no bar ever covers it.
+                    if (kDebugMode && !zoomed)
+                      Positioned(
+                        right: 16,
+                        bottom: _kDebugFabBottom,
+                        child: FloatingActionButton.small(
+                          heroTag: 'cityDebugFab',
+                          onPressed: _openDebugSheet,
+                          backgroundColor: Colors.deepPurple,
+                          foregroundColor: Colors.white,
+                          child: const Icon(Icons.bug_report_rounded),
+                        ),
+                      ),
+                    // The bottom bar, over the game rather than beside it.
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      child: SizedBox(key: _barKey, child: bar),
                     ),
-                ],
+                  ],
+                ),
               ),
-        // While zoomed the bar is pinned to the site (same height as the site
-        // bar, so the viewport never resizes mid-tween); otherwise: land
-        // selected → start-a-site bar; site selected → its progress bar +
-        // Build!; building picked up → Done bar; else the catalog.
-        bottomNavigationBar: zoomed
-            ? _ZoomedBar(
-                name: celebratingSite != null
-                    ? _celebrationTitle(celebratingSite)
-                    : liveZoomed?.name ?? '',
-                paid: celebratingSite?.paidCoins ?? liveZoomed?.site.paidCoins,
-                price: celebratingSite?.price ?? liveZoomed?.site.price,
-                onBack: _mode == _CityMode.celebrating ? null : _zoomOut,
-              )
-            : _buyingBlock != null
-            ? _StartLandSiteBar(
-                cost: blockCost(_buyingBlock!.$1, _buyingBlock!.$2),
-                onStart: _startSelectedLandSite,
-                onCancel: () => setState(() => _buyingBlock = null),
-              )
-            : selectedSite != null
-            ? _SiteBar(
-                site: selectedSite,
-                credit: credit,
-                onBuild: () => _buildSite(selectedSite),
-                onCancel: () => unawaited(_cancelSite(selectedSite)),
-                onUseCredit: () => unawaited(_useCredit(selectedSite)),
-                onMove: selectedSite.goal is BuildingGoal
-                    ? () => setState(() {
-                        _movingSiteId = selectedSite.id;
-                        _selectedSiteId = null;
-                      })
-                    : null,
-                onDeselect: () => setState(() => _selectedSiteId = null),
-              )
-            : movingSite != null
-            ? _MoveModeBar(
-                name: movingSite.name,
-                onDone: () => setState(() => _movingSiteId = null),
-              )
-            : _movingId != null
-            ? _MoveModeBar(
-                name: movingType?.name,
-                onDone: () => setState(() => _movingId = null),
-              )
-            : selectedBuildingType != null
-            ? _BuildingBar(
-                type: selectedBuildingType,
-                onMove: () => setState(() {
-                  _movingId = _selectedBuildingId;
-                  _selectedBuildingId = null;
-                }),
-                onDeselect: () => setState(() => _selectedBuildingId = null),
-              )
-            // Render from the retained catalog so a per-placement refresh never
-            // collapses the bar (which would resize the game and jump the
-            // camera). Only the very first load — before any data — is empty.
-            : catalog == null
-            ? const SizedBox.shrink()
-            // A catalog pick walks through two bars: choose a location, then
-            // confirm the proposed spot. X backs out to the catalog.
-            : _selected != null && _pendingSpot != null
-            ? _PlaceHereBar(
-                type: _selected!,
-                onPlace: _confirmPlacement,
-                onCancel: () => setState(() {
-                  _pendingSpot = null;
-                  _selected = null;
-                }),
-              )
-            : _selected != null
-            ? _ChooseLocationBar(
-                type: _selected!,
-                onCancel: () => setState(() => _selected = null),
-              )
-            : _BuildCatalogBar(
-                catalog: catalog,
-                selected: _selected,
-                onSelect: (b) {
-                  if (_atSiteCap(sites)) return;
-                  setState(() {
-                    _selected = b;
-                    _pendingSpot = null;
-                  });
-                },
-              ),
-        // The wheel is reached through a site's Build! — there is no
-        // free-floating "play" entry (city_builder.md §8.3).
-        floatingActionButton: kDebugMode && !zoomed
-            ? FloatingActionButton.small(
-                heroTag: 'cityDebugFab',
-                onPressed: _openDebugSheet,
-                backgroundColor: Colors.deepPurple,
-                foregroundColor: Colors.white,
-                child: const Icon(Icons.bug_report_rounded),
-              )
-            : null,
       ),
     );
   }
 }
+
+/// Height of the catalog bar's content (its cards), used to seed the
+/// game's bottom inset before the bar has been measured.
+const double _kCatalogBarHeight = 120;
+
+/// Where the debug FAB sits: clear of the tallest bottom bar.
+const double _kDebugFabBottom = 176;
 
 /// Share of the screen height, from the bottom, left clear for the zoomed
 /// site under the wheel overlay. The camera anchors the site into it.
 const double kSpinOverlayBottomFraction = 0.3;
 
 /// Bottom strip while zoomed onto a site or a finished building: the site's
-/// name and `paid / price`, plus a way back out. Same layout as [_SiteBar]
-/// so swapping between them never resizes the game viewport.
+/// name and `paid / price`, plus a way back out.
 class _ZoomedBar extends StatelessWidget {
   const _ZoomedBar({
     required this.name,
@@ -2524,7 +2573,7 @@ class _BuildCatalogBar extends StatelessWidget {
       child: SafeArea(
         top: false,
         child: SizedBox(
-          height: 120,
+          height: _kCatalogBarHeight,
           child: catalog.isEmpty
               ? Center(
                   child: Text(

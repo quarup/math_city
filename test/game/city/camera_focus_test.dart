@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:math_city/game/city/camera_focus.dart';
 
 void main() {
+  _bottomInsetTests();
   group('zoomToFit', () {
     test('makes the content span the requested fraction', () {
       // 200 world units should fill 40% of a 1000 px viewport → zoom 2.
@@ -84,5 +85,54 @@ void main() {
       expect(v, greaterThanOrEqualTo(prev));
       prev = v;
     }
+  });
+}
+
+void _bottomInsetTests() {
+  group('cameraCenterFor with a bottom inset', () {
+    test('anchors within the visible height above the bar', () {
+      // 1000-px viewport, 200-px bar → anchor 1.0 is the bar's top edge
+      // (y = 800), i.e. 300 px below the viewport centre.
+      final (_, cy) = cameraCenterFor(
+        targetX: 0,
+        targetY: 0,
+        zoom: 1,
+        viewportWidth: 500,
+        viewportHeight: 1000,
+        anchorX: 0.5,
+        anchorY: 1,
+        bottomInset: 200,
+      );
+      expect(cy, closeTo(-300, 1e-9));
+    });
+
+    test('anchor 0.5 centres in the visible part, not the whole viewport', () {
+      final (_, cy) = cameraCenterFor(
+        targetX: 0,
+        targetY: 0,
+        zoom: 2,
+        viewportWidth: 500,
+        viewportHeight: 1000,
+        anchorX: 0.5,
+        anchorY: 0.5,
+        bottomInset: 200,
+      );
+      // Visible centre is y = 400, 100 px above the viewport centre; in
+      // world units at zoom 2 that is 50.
+      expect(cy, closeTo(50, 1e-9));
+    });
+
+    test('no inset reproduces the plain formula', () {
+      final (_, cy) = cameraCenterFor(
+        targetX: 0,
+        targetY: 0,
+        zoom: 1,
+        viewportWidth: 500,
+        viewportHeight: 1000,
+        anchorX: 0.5,
+        anchorY: 0.8,
+      );
+      expect(cy, closeTo(-300, 1e-9));
+    });
   });
 }
