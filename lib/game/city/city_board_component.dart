@@ -6,6 +6,7 @@ import 'package:flame/text.dart';
 import 'package:math_city/domain/city/road_sprites.dart';
 import 'package:math_city/game/city/iso_grid.dart';
 import 'package:math_city/game/city/pedestrian_system.dart';
+import 'package:math_city/game/city/traffic_system.dart';
 
 /// Sprites are authored at this many pixels per tile (see
 /// `tools/sprite_pipeline/process.py` `TILE_W`). The renderer scales them down
@@ -62,6 +63,7 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     required this.grid,
     required this.onTileTapped,
     required this.spriteFor,
+    required this.vehicleSpriteFor,
   });
 
   /// The board's tile↔screen geometry for the current window. Reassigned by the
@@ -74,6 +76,10 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
   /// isn't loaded yet (the host game loads them asynchronously and caches).
   final Sprite? Function(String assetPath) spriteFor;
 
+  /// Resolves a `<kind>_h<heading>.png` file under `assets/vehicles/` to a
+  /// loaded sprite, or null if it isn't loaded yet.
+  final Sprite? Function(String file) vehicleSpriteFor;
+
   /// Current placement render set. Reassigned (cheaply) by the host game
   /// whenever placements change.
   List<PlacedBuildingView> buildings = const [];
@@ -85,6 +91,7 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
   set roads(Set<(int, int)> value) {
     _roads = value;
     pedestrians.setRoads(value);
+    traffic.setRoads(value);
   }
 
   Set<(int, int)> _roads = const {};
@@ -93,6 +100,10 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
   /// [update] — also under the wheel and the celebration, so the city keeps
   /// living behind them — and painted in the building pass.
   final PedestrianSystem pedestrians = PedestrianSystem();
+
+  /// The cars on the roads (city_builder.md §9, ideas A1/A2). Stepped and
+  /// painted alongside the pedestrians.
+  final TrafficSystem traffic = TrafficSystem();
 
   /// Owned (purchased) land tiles in **window-local** coords — painted as the
   /// two-tone grass the city sits on. Reassigned by the host game as land is
@@ -176,6 +187,7 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
   void update(double dt) {
     super.update(dt);
     pedestrians.update(dt);
+    traffic.update(dt);
   }
 
   @override
@@ -210,11 +222,14 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     // Selected (picked-up) buildings render with a yellow tint (see
     // `_drawSprite` / `_drawBox`) — that alone signals what a tap repositions.
     final citizenScale = grid.tileWidth / 64;
+    final spriteScale = grid.tileWidth / kSpriteAuthoringTilePx;
     final items = <(double, void Function())>[
       for (final b in buildings)
         ((b.col + b.row).toDouble(), () => _drawBuilding(canvas, b)),
       for (final v in pedestrians.views(grid))
         (v.depth, () => v.paint(canvas, citizenScale)),
+      for (final v in traffic.views(grid))
+        (v.depth, () => v.paint(canvas, spriteScale, vehicleSpriteFor)),
     ]..sort((a, b) => a.$1.compareTo(b.$1));
     for (final (_, draw) in items) {
       draw();

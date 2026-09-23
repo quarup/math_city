@@ -1123,9 +1123,17 @@ once, then open the pages in a browser. Published copies (private):
 
 - **Art for moving things:** both routes stay open per idea. Code-drawn
   (Flame canvas) is the default; a Nano Banana sheet is only worth it for
-  cars (A2: 4 headings × ~6 vehicles, one image per heading, 192 px tile
-  canvas, green backdrop). Do **not** ask NB for people or walk frames — it
-  cannot keep a sheet consistent.
+  cars. **Cars (A2, shipped 2026-09-24):** one NB image per vehicle — a
+  *turnaround sheet*, the same car drawn eight times in a ring on green,
+  one per 45° screen heading, no shadows (the game draws the shadow). One
+  vehicle per image is what keeps the car identical across headings; NB
+  ignores per-cell heading instructions, so the heading of each ring
+  position is typed into `process_vehicles.py` after a glance at the sheet
+  (recipe + prompt in the [sprite pipeline README](tools/sprite_pipeline/README.md)).
+  Eight headings rather than four because a 90° snap at a bend read as a
+  flick; the two diagonal views are not mirrors (the lit side would flip).
+  Do **not** ask NB for people or walk frames — it cannot keep a sheet
+  consistent.
 - **Day/night driver:** undecided between device clock (D1), ambient loop
   (D2, ~8 min day) and play-driven (D3, each block advances the hour, one
   persisted number). The rendering is identical; pick by feel.
@@ -1148,8 +1156,8 @@ offline `process.py` step. Effort: S < ½ day, M 1–2 sessions, L several.
 
 | # | Idea | Art | Effort | Perf | Tier |
 |---|---|---|---|---|---|
-| A1 | Cars on the auto-roads, flat iso boxes; graph walk, right-hand lane 6.5 | code | M | light | ship first |
-| A2 | Same movers with painterly car sprites | NB | M | light | ship first (after A1) |
+| A1 | Cars on the auto-roads, flat iso boxes; graph walk, right-hand lane 6.5 | code | M | light | **shipped 2026-09-24** (as A2 directly) |
+| A2 | Same movers with painterly car sprites | NB | M | light | **shipped 2026-09-24** (`hatchback`; more kinds are one image each) |
 | A3 | Fire-truck call-outs from the fire station, a bus that pauses at corners | code | M | free | nice |
 | A4 | Traffic lights on cross/tee tiles, queueing behind the car ahead | code | M | light | nice |
 | A5 | Headlight cones + tail lights at night (needs D) | code | S | light | nice |
