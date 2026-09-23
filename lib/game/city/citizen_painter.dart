@@ -36,7 +36,7 @@ void paintCitizen(
   final nearSide = sv.dx * sv.dy > 0 ? 1.0 : -1.0;
   final farSide = -nearSide;
 
-  final k = scale * look.scale;
+  final k = scale * look.scale * kCitizenSize;
   final h = _height * k;
   final headR = h * _headRatio * look.headScale;
   final legL = h * _legRatio;
@@ -180,6 +180,11 @@ void paintCitizen(
       ..drawCircle(Offset(x + headR * 0.35 + shift, eyeY), eyeR, fill);
   }
 }
+
+/// Overall citizen size against the mock's 15 px figure. Trimmed to 0.72
+/// (≈11 px at zoom 1, about a quarter of a car length) once cars were on the
+/// roads and the full-size chibi read as taller than a car.
+const double kCitizenSize = 0.72;
 
 // P02 proportions (city_builder.md §9.3), as fractions of the height.
 const double _height = 15;

@@ -21,8 +21,8 @@ import 'package:math_city/domain/city/pedestrian_walk.dart'
 
 /// Driving-lane offset from the road's centre line, in tile units along the
 /// car's right-hand axis. The asphalt spans ±0.3 about the centre line; a
-/// 0.26-wide car centred at 0.12 sits between the dashes and the kerb.
-const double kDrivingLane = 0.12;
+/// 0.22-wide car centred at 0.15 sits mid-lane, clear of dashes and kerb.
+const double kDrivingLane = 0.15;
 
 /// How far past the tile centre a car drives before swinging round at a
 /// dead end (the road's cap ends ~0.2 past the centre).
