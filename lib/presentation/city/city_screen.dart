@@ -1320,29 +1320,13 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                           child: AnimatedOpacity(
                             opacity: _wheelVisible ? 1 : 0,
                             duration: const Duration(milliseconds: 450),
-                            // Feather the blur's lower edge so the sharp
-                            // site below reads as emerging from under the
-                            // wheel, not cut off by a line.
-                            child: ShaderMask(
-                              shaderCallback: (rect) => const LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  Colors.white,
-                                  Colors.white,
-                                  Colors.transparent,
-                                ],
-                                stops: [0, 0.82, 1],
-                              ).createShader(rect),
-                              blendMode: BlendMode.dstIn,
-                              child: _wheelVisible
-                                  ? SpinOverlay(
-                                      key: ValueKey(_wheelGeneration),
-                                      onBlockStart: _startBlock,
-                                      recap: _recapBlock,
-                                    )
-                                  : const SizedBox.expand(),
-                            ),
+                            child: _wheelVisible
+                                ? SpinOverlay(
+                                    key: ValueKey(_wheelGeneration),
+                                    onBlockStart: _startBlock,
+                                    recap: _recapBlock,
+                                  )
+                                : const SizedBox.expand(),
                           ),
                         ),
                       ),

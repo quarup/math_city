@@ -108,7 +108,6 @@ class IsoCityGame extends FlameGame with DragCallbacks {
       _restorePos = camera.viewfinder.position.clone();
       _restoreZoom = camera.viewfinder.zoom;
     }
-    board.animationsPaused = true;
     final target = footprintCenter(
       col: col,
       row: row,
@@ -153,7 +152,6 @@ class IsoCityGame extends FlameGame with DragCallbacks {
     _restorePos = null;
     _startTween(restore, zoom, duration, () {
       _clampCamera();
-      board.animationsPaused = false;
       onDone?.call();
     });
   }
