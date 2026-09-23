@@ -31,7 +31,11 @@ class IsoGrid {
   double get boardHeight => (cols + rows) * _halfH;
 
   /// Center of tile `(col, row)` in local board space.
-  (double, double) centerOf(int col, int row) =>
+  (double, double) centerOf(int col, int row) => pointAt(col, row);
+
+  /// Local board point of fractional tile coordinates: `(col, row)` at
+  /// integers is a tile centre, `(col + 0.5, row)` its east edge midpoint.
+  (double, double) pointAt(num col, num row) =>
       (_originX + (col - row) * _halfW, _originY + (col + row) * _halfH);
 
   /// The grid tile containing local point `(x, y)`, or null if the point is

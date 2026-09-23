@@ -69,7 +69,7 @@ void main() {
   });
 
   group('stepPedestrian', () {
-    test('advances t, crosses tile centres and stays on road', () {
+    test('advances t, crosses tiles and stays on road', () {
       final p = Pedestrian(
         col: 0,
         row: 0,
@@ -133,19 +133,104 @@ void main() {
       expect(p.wait, inInclusiveRange(1.5, 3.5));
     });
 
-    test('depth interpolates col + row along the step', () {
-      final p = Pedestrian(
-        col: 2,
-        row: 1,
-        dir: 1,
-        speed: 1,
-        lane: 0,
-        look: look,
-        t: 0.25,
-      );
-      expect(p.depth, closeTo(3.25, 1e-9));
-      p.dir = 3; // north: depth decreases along the step
-      expect(p.depth, closeTo(2.75, 1e-9));
+    test(
+      'crossing the exit edge lands on the next tile, entering straight',
+      () {
+        final p = Pedestrian(
+          col: 0,
+          row: 0,
+          dir: 0,
+          speed: 1,
+          lane: 0.4,
+          look: look,
+          t: 0.9,
+        );
+        stepPedestrian(
+          p,
+          0.2,
+          isRoad: isRoad,
+          random: math.Random(1),
+          pauseChancePerSecond: 0,
+        );
+        expect((p.col, p.row), (1, 0));
+        expect(p.dirIn, 0);
+        expect(p.t, greaterThan(0));
+        expect(p.t, lessThan(0.2));
+      },
+    );
+  });
+
+  group('pedestrianPath', () {
+    Pedestrian at(int dirIn, int dir, {double lane = 0.4, double t = 0}) =>
+        Pedestrian(
+          col: 5,
+          row: 5,
+          dir: dir,
+          dirIn: dirIn,
+          speed: 1,
+          lane: lane,
+          look: look,
+          t: t,
+        );
+
+    test('straight: one leg from entry edge to exit edge on the lane', () {
+      final pts = pedestrianPath(at(0, 0));
+      expect(pts, [(-0.5, 0.4), (0.5, 0.4)]);
+      expect(pedestrianPathLength(at(0, 0)), closeTo(1, 1e-9));
+    });
+
+    test('turn toward the lane side hugs the inner kerb', () {
+      // Enter heading east (from the west edge), leave south: the road is
+      // west + south, its inner corner the tile's south-west corner
+      // (-0.5, 0.5). Lane is on the walker's right (south), so the corner
+      // point sits 0.1 in from that corner — inside the sidewalk triangle.
+      final pts = pedestrianPath(at(0, 1));
+      expect(pts.length, 3);
+      final (cc, cr) = pts[1];
+      expect(cc, closeTo(-0.4, 1e-9));
+      expect(cr, closeTo(0.4, 1e-9));
+      expect(pedestrianPathLength(at(0, 1)), closeTo(0.2, 1e-9));
+    });
+
+    test('turn away from the lane side sweeps the outer sidewalk', () {
+      // Enter heading east, leave north: road west + north, inner corner
+      // (-0.5, -0.5). Lane on the right (south) is the outer side.
+      final pts = pedestrianPath(at(0, 3));
+      final (cc, cr) = pts[1];
+      expect(cc, closeTo(0.4, 1e-9));
+      expect(cr, closeTo(0.4, 1e-9));
+      expect(pedestrianPathLength(at(0, 3)), closeTo(1.8, 1e-9));
+      // The whole path stays outside the asphalt arc (radius < 0.8 about
+      // the inner corner).
+      for (final (c, r) in pts) {
+        final d = math.sqrt(math.pow(c + 0.5, 2) + math.pow(r + 0.5, 2));
+        expect(d, greaterThan(0.8));
+      }
+    });
+
+    test('dead end: goes past the centre and around the cap', () {
+      // Enter heading east, leave west. Cap centre ~(-0.15, 0), radius 0.3.
+      final pts = pedestrianPath(at(0, 2));
+      expect(pts.length, 4);
+      expect(pts[1], (-0.38, 0.4));
+      expect(pts[2], (-0.38, -0.4));
+      for (final (c, r) in pts.sublist(1, 3)) {
+        final d = math.sqrt(math.pow(c + 0.15, 2) + r * r);
+        expect(d, greaterThan(0.3));
+      }
+    });
+
+    test("position walks the legs in order with each leg's heading", () {
+      final p = at(0, 1);
+      var pos = pedestrianPosition(p..t = 0.25);
+      expect(pos.heading, 0);
+      expect(pos.col, closeTo(4.55, 1e-9));
+      expect(pos.row, closeTo(5.4, 1e-9));
+      pos = pedestrianPosition(p..t = 0.75);
+      expect(pos.heading, 1);
+      expect(pos.col, closeTo(4.6, 1e-9));
+      expect(pos.row, closeTo(5.45, 1e-9));
+      expect(pedestrianDepth(p), closeTo(4.6 + 5.45, 1e-9));
     });
   });
 
