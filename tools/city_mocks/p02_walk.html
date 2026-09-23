@@ -1,0 +1,108 @@
+<title>P02 Shoes</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Nunito:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+:root { --bg: #EEF3F1; --surface: #FFFFFF; --ink: #16302B; --muted: #587169; --line: #D3DEDA; --accent: #0E6E62; --chip: #E4ECE9; --canvas-bg: #101c2f; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #0F1917; --surface: #172220; --ink: #E6EEEB; --muted: #93A8A2; --line: #263834; --accent: #5CC9B5; --chip: #22302D; } }
+:root[data-theme="dark"] { --bg: #0F1917; --surface: #172220; --ink: #E6EEEB; --muted: #93A8A2; --line: #263834; --accent: #5CC9B5; --chip: #22302D; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 "Nunito", "Segoe UI", system-ui, sans-serif; }
+code { font: 0.85em "JetBrains Mono", ui-monospace, Menlo, monospace; background: var(--chip); padding: 1px 5px; border-radius: 4px; }
+.wrap { max-width: 1180px; margin: 0 auto; padding: 40px 24px 80px; }
+h1 { font: 700 clamp(36px, 5vw, 56px)/0.95 "Bricolage Grotesque", "Nunito", sans-serif; letter-spacing: -0.02em; margin: 0 0 12px; }
+h1 em { font-style: normal; color: var(--accent); }
+.lede { font-size: 17px; max-width: 40em; margin: 0 0 32px; color: var(--muted); }
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+article h2 { font: 700 24px/1.1 "Bricolage Grotesque", "Nunito", sans-serif; margin: 12px 0 6px; }
+article p { margin: 0; font-size: 14.5px; max-width: 40em; }
+canvas { display: block; width: 100%; border-radius: 10px; background: var(--canvas-bg); }
+.street { aspect-ratio: 16 / 10; }
+.close { margin-top: 36px; }
+.close h2 { font: 700 24px/1.1 "Bricolage Grotesque", "Nunito", sans-serif; margin: 0 0 6px; }
+.close p { margin: 0 0 12px; color: var(--muted); font-size: 14.5px; }
+.controls { display: flex; gap: 8px; margin: 10px 0 0; }
+.controls button { font: 700 13px "Nunito", sans-serif; color: var(--ink); background: var(--surface); border: 1.5px solid var(--line); border-radius: 999px; padding: 6px 14px; cursor: pointer; }
+.controls button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+.controls button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (max-width: 800px) { .pair { grid-template-columns: 1fr; } }
+</style>
+<div class="wrap">
+  <h1>P02, <em>knees and shoes</em></h1>
+  <p class="lede">The chosen body and walk (P02, saturated shirts, dark ink, knees and heel lift) with the arm fix: the arm and leg on the side facing away from the camera now draw behind the torso, the near ones in front. Walkers now sit on the centre of the sidewalk band (the lane offset runs along the other iso axis, not perpendicular to the road, so the old value put their feet on the kerb). Left keeps the current shoes; right makes them about 40 % bigger. Below, both at 6× with a speed control.</p>
+  <div class="pair">
+    <article>
+      <canvas class="street" id="c-pend" aria-label="Current shoes"></canvas>
+      <h2>Current shoes</h2>
+      <p>Feet as on the walkers page: a small dark ellipse under each leg, a little wider than the leg itself.</p>
+    </article>
+    <article>
+      <canvas class="street" id="c-knee" aria-label="Bigger shoes"></canvas>
+      <h2>Bigger shoes</h2>
+      <p>Same figure with the shoes scaled 1.4×, so the heel lift shows more clearly and the toy proportions get a cartoon anchor at the ground.</p>
+    </article>
+  </div>
+  <section class="close">
+    <h2>Side by side at 6×</h2>
+    <p>Top row current shoes, bottom row bigger shoes. The four headings walk on the spot so the cycle can be read frame by frame; the pair on the right walk across.</p>
+    <canvas id="c-close" height="420"></canvas>
+    <div class="controls" id="speed"><button data-k="0.5">Slow</button><button data-k="1" aria-pressed="true">Normal</button><button data-k="1.6">Brisk</button></div>
+  </section>
+</div>
+<script src="sprites.js"></script>
+<script src="engine.js"></script>
+<script src="ped.js"></script>
+<script>
+(function () {
+  const P02 = PEDS.find((p) => p.id === 'P02').S;
+  const PEND = { ...P02, walk: 'full', legs: 'doll', legW: 3.1, feet: true };
+  const KNEE = { ...PEND, feetScale: 1.4 };
+  const SAT = PAL.saturated;
+  const look = () => { const c = citizen(); c.shirt = pick(SAT); return c; };
+  function range(a, b) { const o = []; for (let i = a; i <= b; i++) o.push(i); return o; }
+  const STREET = () => ({ cols: 9, rows: 5, roads: range(0, 8).map((c) => [c, 2]), buildings: [
+    { id: 'duplex_v1', col: 0, row: 1 }, { id: 'coffee_shop_v1', col: 2, row: 1 }, { id: 'bakery_v1', col: 3, row: 0 }, { id: 'park_v1', col: 5, row: 0 }, { id: 'apartment_v1', col: 7, row: 0 },
+    { id: 'playground_v1', col: 1, row: 3 }, { id: 'duplex_v1', col: 4, row: 3 }, { id: 'coffee_shop_v1', col: 7, row: 3 },
+  ] });
+  let speedK = 1;
+  // Shared crowd so both streets show the same people in the same places.
+  const seedCrowd = (sc) => { const tiles = [...sc.roads].map((k) => k.split(',').map(Number)); const out = []; for (let i = 0; i < 9; i++) { const [c, r] = tiles[Math.floor(Math.random() * tiles.length)]; const m = new Mover(sc, c, r, pick(sc.roadNeighbours(c, r)), 0.16, Math.random() < 0.5 ? 14.5 : -14.5); m.t = Math.random(); m.ph = Math.random() * 6; m.look = look(); out.push(m); } return out; };
+  const sc = new Scene(STREET()); const crowd = seedCrowd(sc);
+  function stepCrowd(dt) { for (const m of crowd) { if (m.wait <= 0 && Math.random() < dt * 0.06) m.wait = 1.4 + Math.random() * 2; m.step(dt * speedK); if (m.wait <= 0) m.ph += dt * 9 * speedK; } }
+  function renderStreet(ctx, S, zoom, cx, cy, W, H) {
+    ctx.save(); ctx.beginPath(); ctx.rect(0, 0, W, H); ctx.clip(); const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#5DB7E8'); g.addColorStop(1, '#A4DDC9'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    ctx.translate(W / 2, H / 2); ctx.scale(zoom, zoom); ctx.translate(-cx, -cy); drawTerrain(ctx, sc);
+    const items = sc.buildings.map((b) => { const [, my] = sc.grid.center(b.col + b.w - 1, b.row + b.h - 1); return { depth: my + HALF_H, draw: () => drawBuilding(ctx, sc, b, 0) }; });
+    for (const m of crowd) { const [x, y] = m.pos(); items.push({ depth: y, draw: () => drawPed(ctx, x, y, m.dir, m.ph, m.look, S, { idle: m.wait > 0 }) }); }
+    items.sort((a, b) => a.depth - b.depth); for (const it of items) it.draw(); ctx.restore();
+  }
+  function badge(ctx, text, x, y) { ctx.font = '600 10px "JetBrains Mono", monospace'; const w = ctx.measureText(text).width + 12; ctx.fillStyle = 'rgba(16,25,23,.72)'; roundRect(ctx, x, y, w, 18, 5); ctx.fill(); ctx.fillStyle = '#fff'; ctx.textBaseline = 'middle'; ctx.textAlign = 'left'; ctx.fillText(text, x + 6, y + 9); ctx.textBaseline = 'alphabetic'; }
+  function mountStreet(canvas, S, name) {
+    const W = canvas.clientWidth, H = canvas.clientHeight, dpr = Math.min(2, devicePixelRatio || 1); canvas.width = W * dpr; canvas.height = H * dpr; const ctx = canvas.getContext('2d');
+    const [cx, cy] = sc.grid.center(4, 2); const stripH = Math.round(H * 0.24), mainH = H - stripH;
+    return (t) => { ctx.setTransform(dpr, 0, 0, dpr, 0, 0); renderStreet(ctx, S, 2.4, cx, cy - 6, W, mainH); ctx.save(); ctx.translate(0, mainH); renderStreet(ctx, S, 1, cx, cy - 20, W, stripH); ctx.restore(); badge(ctx, name + ' · 2.4×', 10, 10); badge(ctx, '1×', 10, mainH + 8); };
+  }
+  function mountClose(canvas) {
+    const W = canvas.clientWidth, H = 420, dpr = Math.min(2, devicePixelRatio || 1); canvas.width = W * dpr; canvas.height = H * dpr; const ctx = canvas.getContext('2d');
+    const looks = [look(), look(), look(), look(), look(), look()]; let ph = 0, walkX = 0;
+    return (t, dt) => {
+      ph += dt * 9 * speedK; walkX = (walkX + dt * 10 * speedK) % 60;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0); const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#5DB7E8'); g.addColorStop(1, '#A4DDC9'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+      const rows = [[PEND, 'Current shoes', 0], [KNEE, 'Shoes 1.4×', 1]]; const z = 6; const rowH = H / 2;
+      for (const [S, name, r] of rows) {
+        const base = r * rowH + rowH * 0.78; ctx.fillStyle = 'rgba(255,255,255,.25)'; ctx.fillRect(0, base - 2, W, 4); ctx.fillStyle = r ? '#7CB342' : '#8a8a8a';
+        ctx.fillStyle = 'rgba(0,0,0,.08)'; ctx.fillRect(0, base, W, rowH * 0.22);
+        badge(ctx, name + ' · 6×', 10, r * rowH + 10);
+        ['E', 'S', 'W', 'N'].forEach((d, i) => { const x = W * (0.1 + i * 0.13); ctx.save(); ctx.translate(x, base); ctx.scale(z, z); drawPed(ctx, 0, 0, i, ph, looks[i], S, {}); ctx.restore(); ctx.font = '600 11px "JetBrains Mono", monospace'; ctx.fillStyle = '#16302B'; ctx.textAlign = 'center'; ctx.fillText(d, x, base + rowH * 0.18); });
+        const x1 = W * 0.66 + walkX * z * 0.5; ctx.save(); ctx.translate(x1, base); ctx.scale(z, z); drawPed(ctx, 0, 0, 0, ph + 2, looks[4], S, {}); ctx.restore();
+        const x2 = W * 0.94 - walkX * z * 0.5; ctx.save(); ctx.translate(x2, base + 8); ctx.scale(z, z); drawPed(ctx, 0, 0, 2, ph + 4, looks[5], S, {}); ctx.restore();
+      }
+      ctx.fillStyle = 'rgba(16,25,23,.18)'; ctx.fillRect(0, rowH - 1, W, 2);
+    };
+  }
+  document.querySelectorAll('#speed button').forEach((b) => b.addEventListener('click', () => { speedK = +b.dataset.k; document.querySelectorAll('#speed button').forEach((o) => o.setAttribute('aria-pressed', o === b)); }));
+  loadSprites(() => {
+    const draws = [mountStreet(document.getElementById('c-pend'), PEND, 'Current shoes'), mountStreet(document.getElementById('c-knee'), KNEE, 'Shoes 1.4×'), mountClose(document.getElementById('c-close'))];
+    let last = performance.now(), t = 0;
+    (function frame(now) { const dt = Math.min(0.05, (now - last) / 1000); last = now; t += dt; stepCrowd(dt); for (const d of draws) d(t, dt); requestAnimationFrame(frame); })(last);
+  });
+})();
+</script>

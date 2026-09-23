@@ -1,0 +1,141 @@
+<title>Math City Alive</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Nunito:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+:root {
+  --bg: #EEF3F1; --surface: #FFFFFF; --ink: #16302B; --muted: #587169; --line: #D3DEDA;
+  --accent: #0E6E62; --accent-ink: #FFFFFF; --gold: #B8860B; --gold-soft: #FBF1C7; --sky: #5DB7E8;
+  --chip: #E4ECE9; --good: #2E7D32; --warn: #B26A00; --hot: #C62828; --canvas-bg: #101c2f;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0F1917; --surface: #172220; --ink: #E6EEEB; --muted: #93A8A2; --line: #263834;
+  --accent: #5CC9B5; --accent-ink: #0F1917; --gold: #F0CC30; --gold-soft: #3A3210; --chip: #22302D; --good: #6FCF7A; --warn: #F2B134; --hot: #FF7A70;
+} }
+:root[data-theme="dark"] {
+  --bg: #0F1917; --surface: #172220; --ink: #E6EEEB; --muted: #93A8A2; --line: #263834;
+  --accent: #5CC9B5; --accent-ink: #0F1917; --gold: #F0CC30; --gold-soft: #3A3210; --chip: #22302D; --good: #6FCF7A; --warn: #F2B134; --hot: #FF7A70;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 "Nunito", "Segoe UI", system-ui, sans-serif; }
+a { color: var(--accent); }
+code { font: 0.85em "JetBrains Mono", ui-monospace, Menlo, monospace; background: var(--chip); padding: 1px 5px; border-radius: 4px; }
+.wrap { max-width: 1180px; margin: 0 auto; padding: 40px 24px 80px; }
+header { display: grid; grid-template-columns: 1.3fr 1fr; gap: 40px; align-items: end; padding-bottom: 28px; border-bottom: 2px solid var(--ink); margin-bottom: 8px; }
+h1 { font: 700 clamp(40px, 6vw, 68px)/0.95 "Bricolage Grotesque", "Nunito", sans-serif; letter-spacing: -0.02em; margin: 0 0 14px; text-wrap: balance; }
+h1 em { font-style: normal; color: var(--accent); }
+.lede { font-size: 18px; max-width: 34em; margin: 0; color: var(--ink); }
+.legend { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font-size: 14px; color: var(--muted); align-content: end; }
+.legend b { color: var(--ink); font-weight: 700; white-space: nowrap; }
+nav.toc { display: flex; flex-wrap: wrap; gap: 8px 18px; padding: 16px 0 8px; font-size: 14px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+nav.toc a { text-decoration: none; color: var(--muted); }
+nav.toc a:hover, nav.toc a:focus-visible { color: var(--accent); outline: none; }
+h2 { font: 700 30px/1.1 "Bricolage Grotesque", "Nunito", sans-serif; letter-spacing: -0.01em; margin: 56px 0 6px; display: flex; align-items: baseline; gap: 14px; }
+h2 .count { font: 600 14px "JetBrains Mono", monospace; color: var(--muted); letter-spacing: 0.06em; }
+.section-note { margin: 0 0 22px; color: var(--muted); max-width: 60em; }
+article.mock { display: grid; grid-template-columns: minmax(0, 620px) minmax(280px, 1fr); gap: 0 32px; padding: 26px 0; border-top: 1px solid var(--line); }
+article.mock:first-of-type { border-top: 0; }
+.stage { position: relative; }
+.stage canvas { display: block; width: 100%; aspect-ratio: 16 / 10; border-radius: 10px; background: var(--canvas-bg); touch-action: manipulation; cursor: pointer; }
+.stage .code { position: absolute; left: 10px; bottom: 10px; font: 600 12px "JetBrains Mono", monospace; letter-spacing: 0.08em; color: #fff; background: rgba(16,25,23,.72); padding: 3px 8px; border-radius: 6px; }
+.controls { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.controls button { font: 700 13px "Nunito", sans-serif; color: var(--ink); background: var(--surface); border: 1.5px solid var(--line); border-radius: 999px; padding: 6px 14px; cursor: pointer; }
+.controls button:hover { border-color: var(--accent); color: var(--accent); }
+.controls button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.notes h3 { font: 700 22px/1.2 "Bricolage Grotesque", "Nunito", sans-serif; margin: 0 0 10px; text-wrap: balance; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 14px; }
+.chip { font: 700 11.5px/1 "Nunito", sans-serif; letter-spacing: 0.05em; text-transform: uppercase; padding: 6px 9px; border-radius: 6px; background: var(--chip); color: var(--ink); }
+.chip.tier-ship { background: var(--accent); color: var(--accent-ink); }
+.chip.tier-decide { background: var(--gold-soft); color: var(--gold); }
+.chip.eff-S { color: var(--good); } .chip.eff-M { color: var(--warn); } .chip.eff-L { color: var(--hot); }
+.chip.art { border: 1px solid var(--line); background: transparent; color: var(--muted); }
+.notes p { margin: 0; font-size: 15.5px; max-width: 46em; }
+.spec { margin-top: 12px; padding: 10px 12px; border-left: 3px solid var(--gold); background: var(--surface); font-size: 13.5px; color: var(--muted); border-radius: 0 8px 8px 0; }
+.spec b { color: var(--gold); font: 700 11px "JetBrains Mono", monospace; letter-spacing: 0.08em; display: block; margin-bottom: 4px; }
+table.summary { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 18px; }
+table.summary th { text-align: left; font: 700 11.5px "Nunito", sans-serif; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); padding: 8px 10px; border-bottom: 2px solid var(--ink); }
+table.summary td { padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.summary td.id { font: 600 12px "JetBrains Mono", monospace; color: var(--muted); }
+table.summary tr.ship td { background: color-mix(in srgb, var(--accent) 8%, transparent); }
+.tablewrap { overflow-x: auto; }
+.plan { margin-top: 48px; padding: 24px 28px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; }
+.plan h2 { margin-top: 0; }
+.plan ol { padding-left: 22px; margin: 0; } .plan li { margin: 6px 0; } .plan li b { color: var(--accent); }
+footer { margin-top: 48px; color: var(--muted); font-size: 13.5px; }
+@media (max-width: 880px) { header { grid-template-columns: 1fr; } article.mock { grid-template-columns: 1fr; gap: 18px; } }
+@media (prefers-reduced-motion: reduce) { .stage canvas { cursor: default; } }
+</style>
+<div class="wrap">
+<header>
+  <div>
+    <h1>Math City <em>Alive</em></h1>
+    <p class="lede">Twenty-nine ways to make the isometric city move, each running live on the real building and road sprites at the game's own 64 px tile, with an honest note on what it costs and who makes the art.</p>
+  </div>
+  <div class="legend">
+    <b>Art</b><span>who supplies the pixels: <em>I draw it</em> in Flame canvas code, a <em>NB sheet</em> you generate in Nano Banana, or <em>anchors</em> I place once on an existing sprite.</span>
+    <b>Effort</b><span>S under half a day · M one or two sessions · L several sessions.</span>
+    <b>Perf</b><span>Free is a few draw calls · Light is per-entity work at tens of entities · Watch means measure on a low-end phone.</span>
+    <b>Tier</b><span>my recommendation: <em>Ship first</em>, <em>Nice</em>, <em>Later</em>, or <em>Decide</em> where it is a design call for you.</span>
+  </div>
+</header>
+<nav class="toc" id="toc"></nav>
+<div id="sections"></div>
+
+<section class="plan">
+  <h2>What I would build, in order</h2>
+  <ol>
+    <li><b>D4 + D2 or D3</b> — night windows with a day cycle. One pipeline step, one tint pass, and the whole existing catalogue changes character. Pick the clock driver; the render is identical.</li>
+    <li><b>C1 + C3 + B4</b> — birds, cloud shadows, citizen bubbles. Under a day total, no art, and the city stops looking like a diagram.</li>
+    <li><b>A1</b> — flat cars on the road graph. This is the mover system everything else rides on; swapping in A2 sprites later is a drawing change only.</li>
+    <li><b>F1</b> — the working construction site. Ties motion to answering questions.</li>
+    <li><b>B1</b> then <b>A5, D5, G1, G2</b> — pedestrians, night driving, lamps, tap reactions, idle drift, each reusing the movers and the tint.</li>
+    <li><b>E1 to E5</b> — landmark touches as time allows, one anchor session each.</li>
+  </ol>
+  <p style="margin:14px 0 0;color:var(--muted);font-size:14px">Everything above sits in <code>lib/game/city/</code> behind the existing <code>CityBoardComponent</code> render pass; nothing touches the domain layer or the schema except D3's single persisted hour. Motion pauses during the construction zoom and the wheel, so nothing competes with placement or the question.</p>
+  <div class="tablewrap"><table class="summary" id="summary"></table></div>
+</section>
+<footer>Sprites are the shipped <code>assets/buildings/*.png</code>; road autotiling and the sprite anchor rule are ports of <code>road_sprites.dart</code> and <code>CityBoardComponent._drawSprite</code>. Canvases pause when scrolled out of view.</footer>
+</div>
+<script src="sprites.js"></script>
+<script src="engine.js"></script>
+<script src="mocks.js"></script>
+<script src="mocks2.js"></script>
+<script>
+(function () {
+  const SECTION_NOTES = {
+    'Streets': 'Vehicles run on the auto-generated road tiles as a graph. No pathfinding and nothing persisted: cars are decoration that respawn on every screen.',
+    'People': 'Citizens are the strongest "lived-in" cue and the hardest thing to get right in generated art, so both styles are shown.',
+    'Sky': 'Screen-space effects above the board. Cheapest category on the page.',
+    'Time & light': 'The three D1–D3 mocks render identically and differ only in what moves the clock. D4–D6 dress the night.',
+    'Landmarks': 'Bespoke touches on specific sprites. Each needs one or two anchor points I read off the artwork, per variant.',
+    'Construction': 'Motion in the part of the city the player is actually paying into.',
+    'Touch & idle': 'Reactions and the camera. Neither changes game state.',
+  };
+  const order = ['Streets', 'People', 'Sky', 'Time & light', 'Landmarks', 'Construction', 'Touch & idle'];
+  const root = document.getElementById('sections'), toc = document.getElementById('toc');
+  const tierClass = (t) => t === 'Ship first' ? 'tier-ship' : t === 'Decide' ? 'tier-decide' : '';
+  for (const sec of order) {
+    const items = MOCKS.filter((m) => m.section === sec); if (!items.length) continue;
+    const sid = 'sec-' + sec.replace(/\W+/g, '-').toLowerCase();
+    const h = document.createElement('h2'); h.id = sid; h.innerHTML = `${sec} <span class="count">${items.length} mock${items.length > 1 ? 's' : ''}</span>`; root.appendChild(h);
+    const p = document.createElement('p'); p.className = 'section-note'; p.textContent = SECTION_NOTES[sec]; root.appendChild(p);
+    const a = document.createElement('a'); a.href = '#' + sid; a.textContent = sec; toc.appendChild(a);
+    for (const m of items) {
+      const art = document.createElement('article'); art.className = 'mock'; art.id = m.id;
+      art.innerHTML = `<div class="stage"><canvas aria-label="${m.title}"></canvas><span class="code">${m.id.toUpperCase()}</span><div class="controls"></div></div>
+        <div class="notes"><h3>${m.id.toUpperCase()} · ${m.title}</h3>
+        <div class="chips"><span class="chip ${tierClass(m.tier)}">${m.tier}</span><span class="chip eff-${m.effort}">Effort ${m.effort}</span><span class="chip">Perf ${m.perf}</span><span class="chip art">${m.art}</span></div>
+        <p>${m.notes}</p>${m.spec ? `<div class="spec"><b>NANO BANANA SHEET</b>${m.spec}</div>` : ''}</div>`;
+      root.appendChild(art);
+      m._el = art;
+    }
+  }
+  const tbody = document.getElementById('summary');
+  tbody.innerHTML = '<tr><th>#</th><th>Idea</th><th>Art</th><th>Effort</th><th>Perf</th><th>Tier</th></tr>' + MOCKS.map((m) => `<tr class="${m.tier === 'Ship first' ? 'ship' : ''}"><td class="id"><a href="#${m.id}">${m.id.toUpperCase()}</a></td><td>${m.title}</td><td>${m.art}</td><td>${m.effort}</td><td>${m.perf}</td><td>${m.tier}</td></tr>`).join('');
+  loadSprites(() => {
+    for (const m of MOCKS) {
+      const canvas = m._el.querySelector('canvas'); const st = mountMock(m, canvas);
+      const ctr = m._el.querySelector('.controls');
+      for (const c of (m.controls || [])) { const b = document.createElement('button'); b.textContent = c.label; b.addEventListener('click', () => c.run(st)); ctr.appendChild(b); }
+    }
+  });
+})();
+</script>

@@ -1,0 +1,193 @@
+<title>Math City Walkers</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Nunito:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+:root {
+  --bg: #EEF3F1; --surface: #FFFFFF; --ink: #16302B; --muted: #587169; --line: #D3DEDA;
+  --accent: #0E6E62; --accent-ink: #FFFFFF; --gold: #B8860B; --gold-soft: #FBF1C7; --chip: #E4ECE9; --canvas-bg: #101c2f;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0F1917; --surface: #172220; --ink: #E6EEEB; --muted: #93A8A2; --line: #263834;
+  --accent: #5CC9B5; --accent-ink: #0F1917; --gold: #F0CC30; --gold-soft: #3A3210; --chip: #22302D;
+} }
+:root[data-theme="dark"] {
+  --bg: #0F1917; --surface: #172220; --ink: #E6EEEB; --muted: #93A8A2; --line: #263834;
+  --accent: #5CC9B5; --accent-ink: #0F1917; --gold: #F0CC30; --gold-soft: #3A3210; --chip: #22302D;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 "Nunito", "Segoe UI", system-ui, sans-serif; }
+a { color: var(--accent); }
+code { font: 0.85em "JetBrains Mono", ui-monospace, Menlo, monospace; background: var(--chip); padding: 1px 5px; border-radius: 4px; }
+.wrap { max-width: 1180px; margin: 0 auto; padding: 40px 24px 80px; }
+header { display: grid; grid-template-columns: 1.3fr 1fr; gap: 40px; align-items: end; padding-bottom: 28px; border-bottom: 2px solid var(--ink); }
+h1 { font: 700 clamp(40px, 6vw, 68px)/0.95 "Bricolage Grotesque", "Nunito", sans-serif; letter-spacing: -0.02em; margin: 0 0 14px; text-wrap: balance; }
+h1 em { font-style: normal; color: var(--accent); }
+.lede { font-size: 18px; max-width: 34em; margin: 0; }
+.legend { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font-size: 14px; color: var(--muted); align-content: end; }
+.legend b { color: var(--ink); white-space: nowrap; }
+nav.toc { display: flex; flex-wrap: wrap; gap: 8px 18px; padding: 16px 0 8px; font-size: 14px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+nav.toc a { text-decoration: none; color: var(--muted); }
+nav.toc a:hover, nav.toc a:focus-visible { color: var(--accent); outline: none; }
+h2 { font: 700 30px/1.1 "Bricolage Grotesque", "Nunito", sans-serif; margin: 56px 0 6px; display: flex; align-items: baseline; gap: 14px; }
+h2 .count { font: 600 14px "JetBrains Mono", monospace; color: var(--muted); letter-spacing: 0.06em; }
+.section-note { margin: 0 0 18px; color: var(--muted); max-width: 60em; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); gap: 26px 28px; }
+article.mock { display: flex; flex-direction: column; gap: 10px; }
+.stage { position: relative; }
+.stage canvas { display: block; width: 100%; aspect-ratio: 16 / 10; border-radius: 10px; background: var(--canvas-bg); }
+.stage .code { position: absolute; left: 10px; top: 10px; font: 600 12px "JetBrains Mono", monospace; letter-spacing: 0.08em; color: #fff; background: rgba(16,25,23,.72); padding: 3px 8px; border-radius: 6px; }
+.notes h3 { font: 700 19px/1.2 "Bricolage Grotesque", "Nunito", sans-serif; margin: 0 0 6px; text-wrap: balance; }
+.notes p { margin: 0; font-size: 14.5px; color: var(--ink); }
+.lineup { margin-top: 40px; }
+.lineup canvas { display: block; width: 100%; border-radius: 10px; background: var(--canvas-bg); }
+.pick { margin-top: 48px; padding: 24px 28px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; }
+.pick h2 { margin-top: 0; }
+.pick p { margin: 8px 0; max-width: 60em; }
+.pick b { color: var(--accent); }
+footer { margin-top: 48px; color: var(--muted); font-size: 13.5px; }
+@media (max-width: 880px) { header { grid-template-columns: 1fr; } .grid { grid-template-columns: 1fr; } }
+</style>
+<div class="wrap">
+<header>
+  <div>
+    <h1>Math City <em>Walkers</em></h1>
+    <p class="lede">Thirty-one takes on the code-drawn citizen, each walking the real sidewalk in front of the real sprites. The big view is 2.4× the city zoom; the strip along the bottom is 1×, what a kid sees at the default camera; the corner is a 4× turnaround of the four headings plus standing still.</p>
+  </div>
+  <div class="legend">
+    <b>Groups</b><span>Proportions, then how the body is built, then the walk cycle, then size, then who is in the crowd, then colour. Mix and match: any body takes any walk.</span>
+    <b>Sidewalk</b><span>Walkers now sit 12 world px off the road's centre line, on the beige band the road sprites already carry, not on the grass as on the first page.</span>
+    <b>Cost</b><span>Every option here is under a hundred lines of Flame canvas code and needs no art from you.</span>
+  </div>
+</header>
+<nav class="toc" id="toc"></nav>
+<div id="sections"></div>
+
+<section class="lineup">
+  <h2>All of them on one street <span class="count">2.4× and 1×</span></h2>
+  <p class="section-note">One citizen per style, in order, so heights, weights and readability can be compared directly. The bottom band is the same street at 1×.</p>
+  <canvas id="lineup" height="300"></canvas>
+</section>
+
+<section class="pick">
+  <h2>Where I would land</h2>
+  <p><b>Body:</b> P03 proportions (four heads, tapered legs, feet) with P10's jointed limbs, at 16 to 17 px. It fixes all three complaints at once: the head is an eighth of the height, the torso is narrower than the shoulders, and the legs are thicker than the arms.</p>
+  <p><b>Walk:</b> P17 knees and heel lift for the close zoom, since the construction zoom brings the camera to about 2.5× where straight legs look like scissors. At 1× it degrades gracefully into P15's pendulum.</p>
+  <p><b>Line and colour:</b> a thin darker-of-fill outline (P31's treatment) rather than black ink, so the figures stay crisp at 1× without the cartoon contrast of P12 against the painterly buildings. Shirts from the saturated set, with a few muted ones mixed in.</p>
+  <p><b>Crowd:</b> P25's three ages and P28's pairs from the start, P26 props and P27 dogs as a second pass. Gait variety is what stops a sidewalk looking like a conveyor belt.</p>
+</section>
+<footer>Renderer is one function, <code>drawPed(ctx, x, y, dir, phase, look, style)</code>; every mock is a style object. Porting to Dart is a straight translation of canvas calls to <code>Canvas</code>/<code>Path</code>.</footer>
+</div>
+<script src="sprites.js"></script>
+<script src="engine.js"></script>
+<script src="ped.js"></script>
+<script>
+(function () {
+  const STREET = () => ({ cols: 9, rows: 5, roads: range(0, 8).map((c) => [c, 2]), buildings: [
+    { id: 'duplex_v1', col: 0, row: 1 }, { id: 'coffee_shop_v1', col: 2, row: 1 }, { id: 'bakery_v1', col: 3, row: 0 }, { id: 'park_v1', col: 5, row: 0 }, { id: 'apartment_v1', col: 7, row: 0 },
+    { id: 'playground_v1', col: 1, row: 3 }, { id: 'duplex_v1', col: 4, row: 3 }, { id: 'coffee_shop_v1', col: 7, row: 3 },
+  ] });
+  function range(a, b) { const o = []; for (let i = a; i <= b; i++) o.push(i); return o; }
+  const roadTiles = (sc) => [...sc.roads].map((k) => k.split(',').map(Number));
+  const GROUP_NOTES = {
+    'Proportions': 'Same construction, different ratios of head to body to leg. This is the axis your complaint lives on.',
+    'Construction': 'How the figure is built from shapes. Each changes the whole character of the crowd.',
+    'Walk cycles': 'All on the P03 body so only the motion differs.',
+    'Scale': 'The P03 body at four heights, against the duplex and the sidewalk.',
+    'Crowd': 'What a street needs beyond a single figure repeated: ages, props, pets, pairs.',
+    'Palette': 'The same P10 body under three colour treatments.',
+  };
+
+  function makeCrowd(preset, sc) {
+    const tiles = roadTiles(sc); const people = []; const kind = preset.crowd;
+    const n = kind ? 9 : 8;
+    for (let i = 0; i < n; i++) {
+      const [c, r] = tiles[Math.floor(Math.random() * tiles.length)]; const dirs = sc.roadNeighbours(c, r);
+      const m = new Mover(sc, c, r, pick(dirs), 0.16, Math.random() < 0.5 ? 12 : -12); m.t = Math.random(); m.ph = Math.random() * 6; m.look = lookFor(preset); m.scale = 1; m.pace = 1;
+      if (kind === 'ages') { const k = i % 3; if (k === 0) { m.scale = 0.62; m.pace = 1.4; m.headBoost = 1.35; } else if (k === 2) { m.scale = 0.9; m.pace = 0.55; m.look.acc = 'cane'; m.look.hair = '#d0d0d0'; } }
+      if (kind === 'props') m.look.acc = ['hat', 'cap', 'bag', 'balloon', 'umbrella', 'phone', 'hardhat', 'bag', 'balloon'][i];
+      if (kind === 'dogs') { if (i % 3 === 0) m.dog = pick(['#8d5a3a', '#d9c7a5', '#2b2b2b', '#c8c8c8']); else if (i % 3 === 1) { m.pace = 2.1; m.look.acc = 'cap'; m.look.shirt = pick(['#f2b134', '#26c6da', '#ff8c42']); } }
+      if (kind === 'pairs') { if (i % 2 === 0) { m.child = { look: lookFor(preset), ph: Math.random() * 6 }; m.pace = 0.8; } else if (i % 4 === 1) { m.partner = { look: lookFor(preset) }; } }
+      m.speed = 0.16 * m.pace; if (preset.S.walk === 'glide') m.speed *= 0.9;
+      people.push(m);
+    }
+    return people;
+  }
+  function stepCrowd(people, dt) { for (const m of people) { if (m.wait <= 0 && Math.random() < dt * 0.06) m.wait = 1.4 + Math.random() * 2; m.step(dt); if (m.wait <= 0) m.ph += dt * 9 * Math.sqrt(m.pace); if (m.child) m.child.ph += dt * 12; } }
+  function drawCrowd(ctx, people, preset) {
+    const S = preset.S; const items = [];
+    for (const m of people) {
+      const [x, y] = m.pos(); const u = UNIT[m.dir]; const s = UNIT[(m.dir + 1) % 4];
+      items.push({ depth: y, draw: () => {
+        const St = m.headBoost ? { ...S, head: S.head * m.headBoost } : S;
+        if (m.partner) drawPed(ctx, x - s[0] * 5, y - s[1] * 5, m.dir, m.ph + 1, m.partner.look, S, { idle: m.wait > 0 });
+        drawPed(ctx, x, y, m.dir, m.ph, m.look, St, { idle: m.wait > 0, scale: m.scale });
+        if (m.child) drawPed(ctx, x + s[0] * 5 - u[0] * 3, y + s[1] * 5 - u[1] * 3, m.dir, m.child.ph, m.child.look, { ...S, head: S.head * 1.3 }, { idle: m.wait > 0, scale: 0.6 });
+        if (m.dog) drawDog(ctx, x + s[0] * 6 + u[0] * 6, y + s[1] * 6 + u[1] * 6, m.dir, m.ph, m.dog);
+      } });
+    }
+    return items;
+  }
+  function renderScene(ctx, sc, people, preset, zoom, cx, cy, W, H) {
+    ctx.save(); ctx.beginPath(); ctx.rect(0, 0, W, H); ctx.clip();
+    const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#5DB7E8'); g.addColorStop(1, '#A4DDC9'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    ctx.translate(W / 2, H / 2); ctx.scale(zoom, zoom); ctx.translate(-cx, -cy);
+    drawTerrain(ctx, sc);
+    const items = sc.buildings.map((b) => ({ depth: sc.spriteBox(b).y + sc.spriteBox(b).H - 0.01 + (b.h + b.w) * 0, draw: () => drawBuilding(ctx, sc, b, 0) }));
+    // depth by the south corner's screen y so walkers in front of a facade draw over it
+    for (const it of items) { const b = sc.buildings[items.indexOf(it)]; const [mx, my] = sc.grid.center(b.col + b.w - 1, b.row + b.h - 1); it.depth = my + HALF_H; }
+    for (const e of drawCrowd(ctx, people, preset)) items.push(e);
+    items.sort((a, b) => a.depth - b.depth); for (const it of items) it.draw();
+    ctx.restore();
+  }
+  function turnaround(ctx, preset, x0, y0, w, h, t) {
+    ctx.save(); ctx.fillStyle = 'rgba(16,25,23,.78)'; roundRect(ctx, x0, y0, w, h, 8); ctx.fill();
+    ctx.font = '600 10px "JetBrains Mono", monospace'; ctx.fillStyle = '#c9d6d1'; ctx.textAlign = 'left'; ctx.fillText('4× · E S W N · idle', x0 + 8, y0 + 13);
+    ctx.beginPath(); ctx.rect(x0, y0, w, h); ctx.clip();
+    const z = 4; const look = preset._look; const hpx = preset.S.h * z; const base = y0 + 24 + hpx + 10;
+    ctx.translate(0, 0);
+    for (let i = 0; i < 5; i++) { const x = x0 + 30 + i * ((w - 60) / 4); ctx.save(); ctx.translate(x, base); ctx.scale(z, z); drawPed(ctx, 0, 0, i < 4 ? i : 0, t * 9, look, preset.S, { idle: i === 4, acc: preset.crowd === 'props' ? 'hat' : undefined }); ctx.restore(); }
+    ctx.restore();
+  }
+  function mount(preset, canvas) {
+    const W = canvas.clientWidth, H = canvas.clientHeight, dpr = Math.min(2, devicePixelRatio || 1); canvas.width = W * dpr; canvas.height = H * dpr; const ctx = canvas.getContext('2d');
+    const sc = new Scene(STREET()); const people = makeCrowd(preset, sc); preset._look = lookFor(preset); if (preset.crowd === 'props') preset._look.acc = 'bag';
+    const [cx, cy] = sc.grid.center(4, 2); let last = performance.now(), t = 0, running = false;
+    const stripH = Math.round(H * 0.24), mainH = H - stripH;
+    function frame(now) {
+      const dt = Math.min(0.05, (now - last) / 1000); last = now; t += dt; stepCrowd(people, dt);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      renderScene(ctx, sc, people, preset, 2.4, cx, cy - 6, W, mainH);
+      ctx.save(); ctx.translate(0, mainH); renderScene(ctx, sc, people, preset, 1, cx, cy - 20, W, stripH); ctx.restore();
+      ctx.fillStyle = 'rgba(16,25,23,.72)'; roundRect(ctx, 10, mainH + 8, 26, 18, 5); ctx.fill(); ctx.font = '600 10px "JetBrains Mono", monospace'; ctx.fillStyle = '#fff'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText('1×', 16, mainH + 17);
+      ctx.fillStyle = 'rgba(16,25,23,.72)'; roundRect(ctx, 44, 10, 36, 18, 5); ctx.fill(); ctx.fillStyle = '#fff'; ctx.fillText('2.4×', 50, 19);
+      ctx.textBaseline = 'alphabetic'; turnaround(ctx, preset, W - 262, 10, 252, 24 + preset.S.h * 4 + 20, t);
+      if (running) requestAnimationFrame(frame);
+    }
+    new IntersectionObserver((es) => { for (const e of es) { if (e.isIntersecting && !running) { running = true; last = performance.now(); requestAnimationFrame(frame); } else if (!e.isIntersecting) running = false; } }, { rootMargin: '150px' }).observe(canvas);
+  }
+  function mountLineup(canvas) {
+    const W = canvas.clientWidth, H = 300, dpr = Math.min(2, devicePixelRatio || 1); canvas.width = W * dpr; canvas.height = H * dpr; const ctx = canvas.getContext('2d');
+    const sc = new Scene({ cols: 40, rows: 3, roads: range(0, 39).map((c) => [c, 1]), buildings: range(0, 12).map((i) => ({ id: ['duplex_v1', 'coffee_shop_v1', 'bakery_v1'][i % 3], col: i * 3, row: 0 })) });
+    const looks = PEDS.map((p) => lookFor(p)); let last = performance.now(), t = 0, running = false, scroll = 0;
+    function drawLine(zoom, cx, cy, W, H, labels) {
+      ctx.save(); ctx.beginPath(); ctx.rect(0, 0, W, H); ctx.clip(); const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#5DB7E8'); g.addColorStop(1, '#A4DDC9'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+      ctx.translate(W / 2, H / 2); ctx.scale(zoom, zoom); ctx.translate(-cx, -cy); drawTerrain(ctx, sc); for (const b of sc.buildings) drawBuilding(ctx, sc, b, 0);
+      PEDS.forEach((p, i) => { const [x0, y0] = sc.grid.center(0, 1); const x = x0 + 26 + i * 33.5 + 0, y = y0 + 10 + 9; const S = p.S; drawPed(ctx, x, y, 0, t * 9 + i, looks[i], S, {}); if (labels) { ctx.font = '600 4.2px "JetBrains Mono", monospace'; ctx.fillStyle = '#16302B'; ctx.textAlign = 'center'; ctx.fillText(p.id, x, y + 7); } });
+      ctx.restore();
+    }
+    function frame(now) { const dt = Math.min(0.05, (now - last) / 1000); last = now; t += dt; scroll = (scroll + dt * 12) % 700; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); const [cx, cy] = sc.grid.center(0, 1); drawLine(2.4, cx + 140 + scroll, cy + 6, W, 210, true); ctx.save(); ctx.translate(0, 210); drawLine(1, cx + 330, cy - 8, W, 90, false); ctx.restore(); if (running) requestAnimationFrame(frame); }
+    new IntersectionObserver((es) => { for (const e of es) { if (e.isIntersecting && !running) { running = true; last = performance.now(); requestAnimationFrame(frame); } else if (!e.isIntersecting) running = false; } }).observe(canvas);
+  }
+
+  const root = document.getElementById('sections'), toc = document.getElementById('toc');
+  const groups = [...new Set(PEDS.map((p) => p.group))];
+  for (const gname of groups) {
+    const items = PEDS.filter((p) => p.group === gname); const sid = 'g-' + gname.replace(/\W+/g, '-').toLowerCase();
+    const h = document.createElement('h2'); h.id = sid; h.innerHTML = `${gname} <span class="count">${items[0].id}–${items[items.length - 1].id}</span>`; root.appendChild(h);
+    const p = document.createElement('p'); p.className = 'section-note'; p.textContent = GROUP_NOTES[gname]; root.appendChild(p);
+    const a = document.createElement('a'); a.href = '#' + sid; a.textContent = gname; toc.appendChild(a);
+    const grid = document.createElement('div'); grid.className = 'grid'; root.appendChild(grid);
+    for (const m of items) { const art = document.createElement('article'); art.className = 'mock'; art.id = m.id; art.innerHTML = `<div class="stage"><canvas aria-label="${m.title}"></canvas><span class="code">${m.id}</span></div><div class="notes"><h3>${m.title}</h3><p>${m.notes}</p></div>`; grid.appendChild(art); m._el = art; }
+  }
+  loadSprites(() => { for (const m of PEDS) mount(m, m._el.querySelector('canvas')); mountLineup(document.getElementById('lineup')); });
+})();
+</script>

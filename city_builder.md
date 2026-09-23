@@ -1106,3 +1106,130 @@ tutorial item is folded into this.
   or to the nearest owned edge.
 - **Recurring demands** (`demand_more_parks`) now point at a site to start
   rather than a purchase — confirm the beat copy still reads.
+
+## 9. Animated city (mocked 2026-09-22 / 23)
+
+The board is static. The PRD lists cars, lights, pedestrians and a day/night
+cycle as Phase 12 extra credit; this section records the mock round that
+scoped them so a later session can pick any idea up without re-deriving it.
+Three live mock pages (HTML + JS on real sprites) live in
+[tools/city_mocks/](tools/city_mocks/) — `python3 tools/city_mocks/build_sprites.py`
+once, then open the pages in a browser. Published copies (private):
+[29 animation ideas](https://claude.ai/code/artifact/01d2ac9b-bf6b-4d50-b324-a90ef8bc9b11),
+[31 walker styles](https://claude.ai/code/artifact/267d9ac8-0a3e-4815-885c-2e2bb0a1102f),
+[chosen citizen, walk + shoes](https://claude.ai/code/artifact/524f2d6f-eecf-4460-ae8a-bbf0f8b23c23).
+
+### 9.1 Decisions
+
+- **Art for moving things:** both routes stay open per idea. Code-drawn
+  (Flame canvas) is the default; a Nano Banana sheet is only worth it for
+  cars (A2: 4 headings × ~6 vehicles, one image per heading, 192 px tile
+  canvas, green backdrop). Do **not** ask NB for people or walk frames — it
+  cannot keep a sheet consistent.
+- **Day/night driver:** undecided between device clock (D1), ambient loop
+  (D2, ~8 min day) and play-driven (D3, each block advances the hour, one
+  persisted number). The rendering is identical; pick by feel.
+- **Bespoke per-building animation:** a few landmarks only (§9.4).
+- **Tap reactions:** yes, but the board hit-tests moving things **only when
+  nothing is picked up and no site is selected**; otherwise the tap goes to
+  placement as today.
+- **Motion pauses** during the construction zoom and under the wheel so
+  nothing competes with placement or a question.
+- Everything lives in `lib/game/city/` behind the existing
+  `CityBoardComponent` render pass; entities are merged into the
+  depth-sorted building list. No domain or schema change except D3's hour.
+
+### 9.2 The 29 ideas
+
+Art: *code* = I draw it in Flame; *NB* = a sheet the user generates;
+*anchors* = points I read off an existing sprite once; *pipeline* = an
+offline `process.py` step. Effort: S < ½ day, M 1–2 sessions, L several.
+
+| # | Idea | Art | Effort | Perf | Tier |
+|---|---|---|---|---|---|
+| A1 | Cars on the auto-roads, flat iso boxes; graph walk, right-hand lane 6.5 | code | M | light | ship first |
+| A2 | Same movers with painterly car sprites | NB | M | light | ship first (after A1) |
+| A3 | Fire-truck call-outs from the fire station, a bus that pauses at corners | code | M | free | nice |
+| A4 | Traffic lights on cross/tee tiles, queueing behind the car ahead | code | M | light | nice |
+| A5 | Headlight cones + tail lights at night (needs D) | code | S | light | nice |
+| B1 | Pedestrians on the sidewalk band, code-drawn (§9.3) | code | M | light | **ship first — in progress** |
+| B2 | Painterly pedestrian sprites | NB | L | light | later (skip) |
+| B3 | Park life: wander inside park footprint, swing on playground, runaway balloon | code + anchors | M | free | **ship first — in progress** |
+| B4 | Citizen thought bubbles (emoji) over random buildings, tap to pop | code | S | free | ship first |
+| C1 | Birds in a loose V, screen-space, tap to scatter | code | S | free | ship first |
+| C2 | Hot-air balloon drifting; occasional plane with contrail | code (NB optional plane) | S | free | nice |
+| C3 | Cloud shadows drifting over ground and rooftops (multiply blend) | code | S | light | ship first |
+| C4 | Rain shower / snow, short and rare | code | M | light | later |
+| D1 | Day/night from the device clock | code | M | light | decide |
+| D2 | Day/night as a slow ambient loop | code | M | light | decide |
+| D3 | Day/night advanced by answered blocks | code | M | light | decide |
+| D4 | Windows stay lit at night: emissive mask `<id>_v<n>_lit.png` (warm-bright pixels: r>205, g>150, b<175, r−b>55; cool-white threshold for offices TBD) drawn over the tinted sprite; per-building flicker | pipeline | M | light | ship first |
+| D5 | Street lamps on every other road tile, switch on at dusk, light pools | code | S | light | nice |
+| D6 | Stars, moon tracking the hour, fireflies over parks | code | S | free | nice |
+| E1 | Amusement park: gondolas orbit the painted wheel, drop tower drops | anchors | M | free | nice |
+| E2 | Fountain plaza: spray particles + ripples | anchors | S | light | nice |
+| E3 | Power plant: cooling-tower steam, pulsing core glow | anchors | S | light | nice |
+| E4 | Coffee shop: steam from the roof cup, sign glow at night | anchors | S | free | nice |
+| E5 | Observation tower: red beacon, night searchlight sweep | anchors | S | free | nice |
+| E6 | Flag waving on civic buildings | anchors | S | free | later |
+| F1 | Working construction site: crane, hard-hats, dust, sparkle per stage | code | M | free | ship first |
+| F2 | Opening day: sprite bounces in, neighbours gather, balloons | code | M | free | nice |
+| G1 | Tap reactions: honk, wave, window blink + heart, scatter birds | code | M | free | nice |
+| G2 | Idle camera drift after a few seconds, any touch stops it | code | S | free | nice |
+
+**Build order:** B1 + B3 → D4 with a D driver → C1 + C3 + B4 → A1 → F1 →
+A5, D5, G1, G2 → E1–E5.
+
+### 9.3 Citizen spec (settled 2026-09-23)
+
+Chosen from 31 styles: **P02 "toy chibi"** in **saturated shirts with dark
+ink**, **knees-and-heel-lift** walk, **current shoe size**. Renderer of
+record: `drawPed(ctx, x, y, dir, phase, look, style)` in
+[tools/city_mocks/ped.js](tools/city_mocks/ped.js); the Dart port is a
+straight translation of its canvas calls.
+
+- **Proportions** (world px at the 64 px tile): height 15; head radius
+  0.20 h; leg length 0.30 h; torso width 0.42 h; stride 0.20 h; jointed
+  legs (`legW` 3.1) with a knee that bends on the swinging leg and a heel
+  lift of 0.10 h; feet as dark ellipses 2.2 × 1.1; arms two-segment with
+  round hands; outline ink `#2b2b3a` at 0.9 px; dot eyes; a hair cap when
+  walking toward the camera, a full hair dome from behind; ground shadow
+  ellipse at 25 % black.
+- **Colours:** shirts from `#e0523f #3a7bd5 #f2b134 #3DA85F #8e5bd1 #ff8c42
+  #f06292 #26c6da`; pants `#3a3f5c #4a4a4a #6b4b3a #2f5d8a`; five skins,
+  six hairs (see `citizen()` in engine.js).
+- **Draw order** (the user's two fixes): far arm → far leg → near leg →
+  torso → near arm → head. "Near" is the side of the body facing the
+  camera: with `sv = UNIT[(dir+1) % 4]` (the figure's right-hand side in
+  screen space), the near screen side is `sign(sv.x · sv.y)`.
+- **Sidewalk position.** The straight road sprite's beige band spans rows
+  2–20 and 80–98 of its 100 px canvas, i.e. perpendicular distance
+  8.9–14.3 world px from the road centre line (the tile edge is at 14.3).
+  Movers offset along the *cross iso axis* `UNIT[(dir+1) % 4]`, which is
+  not perpendicular to the road (|cross| = 0.8), so the lane offset must be
+  **±14.5** to land on the band centre. 12 puts the feet on the kerb.
+  Cars use ±6.5.
+- **Movement:** same `Mover` as cars — at each tile centre pick a road
+  neighbour (straight preferred, no U-turn unless dead end), speed ~0.16
+  tiles/s, random 1.5–3.5 s pauses. Park wanderers pick random points in
+  the park's footprint diamond instead.
+- **Crowd (first pass):** three ages (kids 60 % with 1.35× head, faster;
+  elders 90 % with cane, slower) and parent-and-child pairs; props and dogs
+  as a second pass.
+
+### 9.4 Landmark anchors (authoring px on the `_v1` sprite, 192 px/tile)
+
+| Sprite | Anchor | Use |
+|---|---|---|
+| `amusement_park_v1` | wheel centre (690, 1005), radius 82 | E1 gondolas orbit (ellipse, y × 0.96) |
+| `amusement_park_v1` | tower (580, 900) → (580, 775) | E1 drop ring climbs 4 s, holds 1 s, drops 0.5 s |
+| `fountain_plaza_v1` | spout (192, 296); basin ellipse ~30 wide, 26 below | E2 |
+| `power_plant_v1` | cooling tower (268, 330); core (200, 292) | E3 |
+| `coffee_shop_v1` | cup (100, 84); sign glow (100, 96) | E4 |
+| `observation_tower_v1` | beacon (200, 38); deck (200, 120) | E5 |
+| `police_station_v1` | flag pole top (163, 226) | E6 |
+| `playground_v1` | swing pivot (75, 300); balloon release (200, 250) | B3 |
+
+Anchors convert to world space via the sprite box: `x = box.x + ax·(64/192)`
+(see `Scene.anchor` in engine.js and `_drawSprite` in
+`city_board_component.dart`). Other variants need their own row.
