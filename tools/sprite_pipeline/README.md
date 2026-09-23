@@ -94,7 +94,9 @@ eight headings**, and `process_vehicles.py` cuts it up. Same green backdrop,
 same reference images as the buildings (`raw/bus_depot_v1.jpeg` and
 `raw/fire_station_v1.jpeg` already show vehicles in the house style), 1:1,
 1024 px, thinking high, default temperature. The prompt that produced
-`raw_sheets/car.jpg`:
+`raw_sheets/car.jpg` is checked in as one copy-pasteable line at
+[raw_sheets/vehicle_prompt.txt](raw_sheets/vehicle_prompt.txt) (swap the
+noun and colour per vehicle):
 
 > Turnaround sheet of one isometric blue hatchback, shown eight times on a
 > single solid bright green background, matching the style, lighting
@@ -116,14 +118,16 @@ headings by where the nose points on screen — `dr d dl l ul u ur r`:
 ```sh
 tools/sprite_pipeline/.venv/bin/python tools/sprite_pipeline/process_vehicles.py \
     tools/sprite_pipeline/raw_sheets/car.jpg --id hatchback \
-    --headings d,dr,l,ur,u,ul,r,dl --length 0.5
+    --headings d,dr,l,ur,u,ul,r,dl --length 0.42
 ```
 
-`--length` is the car's length in tiles (10 m); a bus would be ~1.0. The
-script chroma-keys the green (no rembg — a car has no green in it), splits
-the ring into components, scales each heading to the width the 2:1
-projection predicts for that view (the report prints how far NB's drawing
-was off; ±25 % is normal), and pads the top so the car's ground-contact
+`--length` is the car's length in tiles (10 m): 0.42 for a hatchback keeps
+it inside one 0.3-wide lane; a bus would be ~0.9. The script chroma-keys
+the green (no rembg — a car has no green in it), splits the ring into
+components, scales all eight uniformly from the side views (the report
+prints how far each view strays from a true 2:1 projection; NB draws the
+diagonal views ~20 % narrow, which is left alone because correcting it
+made the car swell on bends), and pads the top so the car's ground-contact
 centre is the exact centre of the PNG — the renderer anchors every heading
 with `Anchor.center`. Output: `assets/vehicles/<id>_h0..7.png` (h0 = nose
 down-right = grid east, then every 45° clockwise) plus a QA sheet at

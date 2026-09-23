@@ -34,7 +34,7 @@ every heading with Anchor.center at the car's position on the road.
 Usage:
   .venv/bin/python tools/sprite_pipeline/process_vehicles.py \
       tools/sprite_pipeline/raw_sheets/car.jpg --id hatchback \
-      --headings d,dr,l,ur,u,ul,r,dl --length 0.5
+      --headings d,dr,l,ur,u,ul,r,dl --length 0.42
 
 Outputs assets/vehicles/<id>_h<k>.png for k in 0..7 and a QA sheet at
 tools/sprite_pipeline/debug/vehicle_<id>.png showing each heading on a
@@ -133,7 +133,9 @@ def ground_offset(heading: str, length: float, width: float) -> float:
 
     The car's ground rectangle is length × width in tile units. Its lowest
     screen point is the corner nearest the camera; how far the rectangle's
-    centre sits above that depends on which axes the car spans.
+    centre sits above that depends on which axes the car spans. Each case
+    equals a quarter of a projected width (see expected_width), which is
+    what main() uses with the *measured* widths.
     """
     if heading in ("dr", "dl", "ul", "ur"):  # both grid axes contribute
         return (length + width) / 2 * GRID_AXIS_Y
@@ -201,34 +203,43 @@ def main() -> None:
     keyed = key_green(raw)
     by_heading = {headings[RING.index(pos)]: crop for pos, crop in split_ring(keyed)}
 
-    # The side views show the full length along screen x, which fixes the
-    # base scale; the front/rear views then give the drawn width. Each
-    # heading is scaled to the width the 2:1 projection predicts for it, so
-    # a car that NB drew a little small in some views does not pulse in size
-    # as it turns (the report shows how far each view was off).
+    # One uniform scale for all eight cuts, fixed by the side views (they
+    # show the full length along screen x). NB draws the diagonal views
+    # from a slightly different azimuth than a true 2:1 projection (about
+    # 20 % narrower), but rescaling them to the projection made the car
+    # visibly swell on every bend, so the artist's proportions are kept and
+    # the deviation is only reported.
     side_px = (by_heading["l"].width + by_heading["r"].width) / 2
-    base = args.length * DIAG_X / side_px
     front_px = (by_heading["u"].width + by_heading["d"].width) / 2
-    width = front_px * base / DIAG_X
-    print(f"{args.id}: length {args.length:.2f} tiles, drawn width {width:.2f} tiles (base scale {base:.3f})")
+    scale = args.length * DIAG_X / side_px
+    width = front_px * scale / DIAG_X
+    print(f"{args.id}: length {args.length:.2f} tiles, drawn width {width:.2f} tiles (scale {scale:.3f})")
 
     ASSETS_DIR.mkdir(parents=True, exist_ok=True)
     finals: dict[str, Image.Image] = {}
     for k, heading in enumerate(HEADINGS):
         crop = by_heading[heading]
-        exp = expected_width(heading, args.length, width)
-        scale = exp / crop.width
         w = max(1, round(crop.width * scale))
         h = max(1, round(crop.height * scale))
         small = crop.resize((w, h), Image.LANCZOS)
-        lift = round(ground_offset(heading, args.length, width))
-        # Ground centre is `lift` px above the bottom: pad the top so it is
-        # the canvas centre (the car is always taller than 2 * lift).
+        # Ground-contact centre sits `lift` px above the lowest tyre. For
+        # every view that is a quarter of some measured width (see
+        # ground_offset): the view's own width for the diagonal headings,
+        # the front view's for the side views, the side view's for the
+        # front/rear views. Using measured widths keeps the anchor right
+        # even where NB's proportions stray from the projection.
+        if heading in ("dr", "dl", "ul", "ur"):
+            lift = round(w / 4)
+        elif heading in ("l", "r"):
+            lift = round(front_px * scale / 4)
+        else:
+            lift = round(side_px * scale / 4)
         canvas_h = 2 * (h - lift)
         canvas = Image.new("RGBA", (w, canvas_h), (0, 0, 0, 0))
         canvas.alpha_composite(small, (0, canvas_h - h))
-        off = scale / base - 1
-        flag = "" if abs(off) < 0.3 else "   <-- far off the 2:1 projection; re-roll the sheet"
+        exp = expected_width(heading, args.length, width)
+        off = w / exp - 1
+        flag = "" if abs(off) < 0.35 else "   <-- far off the 2:1 projection; re-roll the sheet"
         print(f"  h{k} {heading:>2}: {w}x{h} on {w}x{canvas_h} (NB drew it {off:+.0%} vs projection){flag}")
         out = ASSETS_DIR / f"{args.id}_h{k}.png"
         canvas.save(out)
