@@ -7,9 +7,11 @@ import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flame/sprite.dart';
 import 'package:math_city/domain/city/road_sprites.dart';
+import 'package:math_city/domain/city/traffic.dart' show vehicleHeadings;
 import 'package:math_city/game/city/camera_focus.dart';
 import 'package:math_city/game/city/city_board_component.dart';
 import 'package:math_city/game/city/iso_grid.dart';
+import 'package:math_city/game/city/traffic_system.dart';
 
 /// Hosts the isometric [CityBoardComponent] inside Flame's camera/world so the
 /// board can be panned and pinch-zoomed. Tap-to-place is handled by the board
@@ -221,6 +223,22 @@ class IsoCityGame extends FlameGame with DragCallbacks {
   /// Read synchronously by the board during render.
   Sprite? spriteFor(String assetPath) => _sprites[assetPath];
 
+  /// Vehicle sprites (`assets/vehicles/<kind>_h<heading>.png`), loaded once
+  /// at [onLoad] for every kind the traffic system can spawn.
+  final Images _vehicleImages = Images(prefix: 'assets/vehicles/');
+  final Map<String, Sprite> _vehicleSprites = <String, Sprite>{};
+
+  Sprite? vehicleSpriteFor(String file) => _vehicleSprites[file];
+
+  Future<void> _loadVehicleSprites() async {
+    for (final kind in TrafficSystem.kinds) {
+      for (var h = 0; h < vehicleHeadings; h++) {
+        final file = vehicleSpriteFile(kind, h);
+        _vehicleSprites[file] = await Sprite.load(file, images: _vehicleImages);
+      }
+    }
+  }
+
   /// Kicks off async loads for any referenced sprite we don't have cached.
   /// Each completed load lands in [_sprites]; Flame re-renders every frame, so
   /// the building swaps from box placeholder to sprite as soon as it arrives.
@@ -248,7 +266,9 @@ class IsoCityGame extends FlameGame with DragCallbacks {
       grid: grid,
       onTileTapped: onTileTapped,
       spriteFor: spriteFor,
+      vehicleSpriteFor: vehicleSpriteFor,
     );
+    unawaited(_loadVehicleSprites());
     if (_pendingBuildings != null) board.buildings = _pendingBuildings!;
     if (_pendingRoads != null) board.roads = _pendingRoads!;
     if (_pendingOwned != null) board.ownedTiles = _pendingOwned!;
@@ -399,7 +419,10 @@ class IsoCityGame extends FlameGame with DragCallbacks {
         final hh = newGrid.tileWidth / 4;
         final a = cameraOffsetDeltaPx.x / hw;
         final b = cameraOffsetDeltaPx.y / hh;
-        board.pedestrians.shift(((a + b) / 2).round(), ((b - a) / 2).round());
+        final dCol = ((a + b) / 2).round();
+        final dRow = ((b - a) / 2).round();
+        board.pedestrians.shift(dCol, dRow);
+        board.traffic.shift(dCol, dRow);
       }
     } else {
       _pendingOwned = ownedLocalTiles;

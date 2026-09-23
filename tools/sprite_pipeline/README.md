@@ -87,6 +87,49 @@ Outputs:
   scan for cases where the sprite's south corner clearly doesn't sit on
   the diamond's south corner, and re-roll (or hand-nudge) those.
 
+## Vehicles (city_builder.md §9, A2)
+
+Cars are not buildings: one Nano Banana image gives **one vehicle in all
+eight headings**, and `process_vehicles.py` cuts it up. Same green backdrop,
+same reference images as the buildings (`raw/bus_depot_v1.jpeg` and
+`raw/fire_station_v1.jpeg` already show vehicles in the house style), 1:1,
+1024 px, thinking high, default temperature. The prompt that produced
+`raw_sheets/car.jpg`:
+
+> Turnaround sheet of one isometric blue hatchback, shown eight times on a
+> single solid bright green background, matching the style, lighting
+> direction and 2:1 dimetric projection of the reference images. The eight
+> cars are arranged in a ring around an empty centre like a compass rose,
+> one at each of the eight compass points (N, NE, E, SE, S, SW, W, NW), and
+> each car's nose points directly away from the centre of the image, so the
+> eight views are 45 degree rotations of the same car. Every car is
+> identical in colour, shape, size and details, and lit identically from the
+> upper left. The cars do not overlap and are evenly spaced. No shadow of any
+> kind: no cast shadow, no contact shadow, no ground plane, no reflection.
+> No text, no arrows, no labels, no grid lines.
+
+NB does **not** obey the "nose away from the centre" rule, but it does give
+eight distinct headings, so look at the sheet and list the heading of each
+ring position clockwise from the top (`N,NE,E,SE,S,SW,W,NW`), naming
+headings by where the nose points on screen — `dr d dl l ul u ur r`:
+
+```sh
+tools/sprite_pipeline/.venv/bin/python tools/sprite_pipeline/process_vehicles.py \
+    tools/sprite_pipeline/raw_sheets/car.jpg --id hatchback \
+    --headings d,dr,l,ur,u,ul,r,dl --length 0.5
+```
+
+`--length` is the car's length in tiles (10 m); a bus would be ~1.0. The
+script chroma-keys the green (no rembg — a car has no green in it), splits
+the ring into components, scales each heading to the width the 2:1
+projection predicts for that view (the report prints how far NB's drawing
+was off; ±25 % is normal), and pads the top so the car's ground-contact
+centre is the exact centre of the PNG — the renderer anchors every heading
+with `Anchor.center`. Output: `assets/vehicles/<id>_h0..7.png` (h0 = nose
+down-right = grid east, then every 45° clockwise) plus a QA sheet at
+`debug/vehicle_<id>.png` with each heading on a road tile. Add the new
+`<id>` to `TrafficSystem.kinds` and it spawns.
+
 ## Constants worth knowing
 
 - `TILE_W = 192px` in `process.py` matches the Flame iso renderer
