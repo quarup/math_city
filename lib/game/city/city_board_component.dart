@@ -90,12 +90,9 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
   Set<(int, int)> _roads = const {};
 
   /// The walkers on the sidewalks (city_builder.md §9, idea B1). Stepped in
-  /// [update] unless [animationsPaused]; painted in the building pass.
+  /// [update] — also under the wheel and the celebration, so the city keeps
+  /// living behind them — and painted in the building pass.
   final PedestrianSystem pedestrians = PedestrianSystem();
-
-  /// True while the camera is focused on a site (wheel / celebration): the
-  /// city holds still so nothing competes with placement or a question.
-  bool animationsPaused = false;
 
   /// Owned (purchased) land tiles in **window-local** coords — painted as the
   /// two-tone grass the city sits on. Reassigned by the host game as land is
@@ -178,7 +175,7 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
   @override
   void update(double dt) {
     super.update(dt);
-    if (!animationsPaused) pedestrians.update(dt);
+    pedestrians.update(dt);
   }
 
   @override

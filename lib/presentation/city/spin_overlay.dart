@@ -138,47 +138,56 @@ class _SpinOverlayState extends ConsumerState<SpinOverlay> {
         ? null
         : findConceptById(_celebrating!);
 
-    return ClipRect(
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
-        child: ColoredBox(
-          color: Colors.black.withValues(alpha: 0.28),
-          child: _game == null
-              ? const SizedBox.expand()
-              : Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    Column(
-                      children: [
-                        if (widget.recap != null)
-                          IgnorePointer(
-                            child: AnimatedOpacity(
-                              opacity: _recapVisible ? 1 : 0,
-                              duration: const Duration(milliseconds: 300),
-                              child: Padding(
-                                padding: const EdgeInsets.fromLTRB(
-                                  16,
-                                  10,
-                                  16,
-                                  2,
-                                ),
-                                child: BlockRecapCard(block: widget.recap!),
-                              ),
-                            ),
-                          ),
-                        Expanded(child: GameWidget(game: _game!)),
-                      ],
-                    ),
-                    if (celebrating != null)
-                      NewConceptCelebration(
-                        key: ValueKey(celebrating.id),
-                        concept: celebrating,
-                        onDone: () => _startBlock(celebrating.id),
-                      ),
-                  ],
-                ),
+    // The blur + dim over the city is feathered along its lower edge so the
+    // sharp site below reads as emerging from under the wheel rather than
+    // cut off by a line. Only that layer is feathered: the wheel, its reveal
+    // pill and the recap card sit above it at full opacity (the pill lands
+    // in the feather band and used to fade with it).
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        ShaderMask(
+          shaderCallback: (rect) => const LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Colors.white, Colors.white, Colors.transparent],
+            stops: [0, 0.82, 1],
+          ).createShader(rect),
+          blendMode: BlendMode.dstIn,
+          child: ClipRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+              child: ColoredBox(
+                color: Colors.black.withValues(alpha: 0.28),
+                child: const SizedBox.expand(),
+              ),
+            ),
+          ),
         ),
-      ),
+        if (_game != null)
+          Column(
+            children: [
+              if (widget.recap != null)
+                IgnorePointer(
+                  child: AnimatedOpacity(
+                    opacity: _recapVisible ? 1 : 0,
+                    duration: const Duration(milliseconds: 300),
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 10, 16, 2),
+                      child: BlockRecapCard(block: widget.recap!),
+                    ),
+                  ),
+                ),
+              Expanded(child: GameWidget(game: _game!)),
+            ],
+          ),
+        if (_game != null && celebrating != null)
+          NewConceptCelebration(
+            key: ValueKey(celebrating.id),
+            concept: celebrating,
+            onDone: () => _startBlock(celebrating.id),
+          ),
+      ],
     );
   }
 }

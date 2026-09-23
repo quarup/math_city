@@ -1133,8 +1133,9 @@ once, then open the pages in a browser. Published copies (private):
 - **Tap reactions:** yes, but the board hit-tests moving things **only when
   nothing is picked up and no site is selected**; otherwise the tap goes to
   placement as today.
-- **Motion pauses** during the construction zoom and under the wheel so
-  nothing competes with placement or a question.
+- **Motion keeps going** under the wheel and the celebration (decided
+  2026-09-23 after seeing it paused: a frozen city behind the wheel looked
+  dead). Only the question screens, which cover the city, stop it.
 - Everything lives in `lib/game/city/` behind the existing
   `CityBoardComponent` render pass; entities are merged into the
   depth-sorted building list. No domain or schema change except D3's hour.
