@@ -108,6 +108,7 @@ class IsoCityGame extends FlameGame with DragCallbacks {
       _restorePos = camera.viewfinder.position.clone();
       _restoreZoom = camera.viewfinder.zoom;
     }
+    board.animationsPaused = true;
     final target = footprintCenter(
       col: col,
       row: row,
@@ -152,6 +153,7 @@ class IsoCityGame extends FlameGame with DragCallbacks {
     _restorePos = null;
     _startTween(restore, zoom, duration, () {
       _clampCamera();
+      board.animationsPaused = false;
       onDone?.call();
     });
   }
@@ -392,6 +394,14 @@ class IsoCityGame extends FlameGame with DragCallbacks {
       if (!cameraOffsetDeltaPx.isZero()) {
         camera.viewfinder.position += cameraOffsetDeltaPx;
         _clampCamera();
+        // The same shift in tiles keeps the crowd where it was on screen:
+        // a local-origin move of (dCol, dRow) shows up on screen as
+        // ((dCol - dRow)·halfW, (dCol + dRow)·halfH).
+        final hw = newGrid.tileWidth / 2;
+        final hh = newGrid.tileWidth / 4;
+        final a = cameraOffsetDeltaPx.x / hw;
+        final b = cameraOffsetDeltaPx.y / hh;
+        board.pedestrians.shift(((a + b) / 2).round(), ((b - a) / 2).round());
       }
     } else {
       _pendingOwned = ownedLocalTiles;

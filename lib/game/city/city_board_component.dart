@@ -5,6 +5,7 @@ import 'package:flame/events.dart';
 import 'package:flame/text.dart';
 import 'package:math_city/domain/city/road_sprites.dart';
 import 'package:math_city/game/city/iso_grid.dart';
+import 'package:math_city/game/city/pedestrian_system.dart';
 
 /// Sprites are authored at this many pixels per tile (see
 /// `tools/sprite_pipeline/process.py` `TILE_W`). The renderer scales them down
@@ -79,8 +80,22 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
 
   /// Tiles painted as road (auto-generated; see `road_network.dart`). Drawn in
   /// the terrain pass, so buildings always sit on top. Reassigned by the host
-  /// game whenever placements change.
-  Set<(int, int)> roads = const {};
+  /// game whenever placements change; the pedestrians follow the new network.
+  Set<(int, int)> get roads => _roads;
+  set roads(Set<(int, int)> value) {
+    _roads = value;
+    pedestrians.setRoads(value);
+  }
+
+  Set<(int, int)> _roads = const {};
+
+  /// The walkers on the sidewalks (city_builder.md §9, idea B1). Stepped in
+  /// [update] unless [animationsPaused]; painted in the building pass.
+  final PedestrianSystem pedestrians = PedestrianSystem();
+
+  /// True while the camera is focused on a site (wheel / celebration): the
+  /// city holds still so nothing competes with placement or a question.
+  bool animationsPaused = false;
 
   /// Owned (purchased) land tiles in **window-local** coords — painted as the
   /// two-tone grass the city sits on. Reassigned by the host game as land is
@@ -161,6 +176,12 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
   }
 
   @override
+  void update(double dt) {
+    super.update(dt);
+    if (!animationsPaused) pedestrians.update(dt);
+  }
+
+  @override
   void render(Canvas canvas) {
     // Owned land first (two-tone grass), then the pale purchasable frontier.
     // Both are explicit tile sets — the owned region is no longer a rectangle.
@@ -186,13 +207,20 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
       _drawRoadTile(canvas, col, row);
     }
     // Painter's order: tiles further back (smaller col+row) draw first so
-    // nearer buildings overlap them correctly.
+    // nearer buildings overlap them correctly. Pedestrians slot into the same
+    // sort by their interpolated col+row, so a walker passes behind a
+    // building's facade and in front of its road.
     // Selected (picked-up) buildings render with a yellow tint (see
     // `_drawSprite` / `_drawBox`) — that alone signals what a tap repositions.
-    final sorted = [...buildings]
-      ..sort((a, b) => (a.col + a.row).compareTo(b.col + b.row));
-    for (final b in sorted) {
-      _drawBuilding(canvas, b);
+    final citizenScale = grid.tileWidth / 64;
+    final items = <(double, void Function())>[
+      for (final b in buildings)
+        ((b.col + b.row).toDouble(), () => _drawBuilding(canvas, b)),
+      for (final v in pedestrians.views(grid))
+        (v.depth, () => v.paint(canvas, citizenScale)),
+    ]..sort((a, b) => a.$1.compareTo(b.$1));
+    for (final (_, draw) in items) {
+      draw();
     }
   }
 
