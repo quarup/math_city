@@ -1,14 +1,15 @@
 /// Pedestrians walking the auto-road graph (city_builder.md §9.3, idea B1).
 ///
-/// A pedestrian lives on a road tile, heading in one of four grid directions,
-/// `t ∈ [0, 1)` of the way from that tile's centre to the next. At each tile
-/// centre it picks a road neighbour: straight ahead by preference, never a
-/// U-turn unless the tile is a dead end. Now and then it stops for a moment.
-/// Nothing here is persisted — citizens are decoration that respawn on every
-/// screen.
+/// A pedestrian lives on a road tile, having entered it heading [Pedestrian
+/// .dirIn] and about to leave it heading [Pedestrian.dir], `t ∈ [0, 1)` of
+/// the way along the tile's **sidewalk path** (see [pedestrianPath]). At the
+/// exit edge it steps onto the next tile and picks a new heading: straight
+/// ahead by preference, never a U-turn unless the tile is a dead end. Now
+/// and then it stops for a moment. Nothing here is persisted — citizens are
+/// decoration that respawn on every screen.
 ///
-/// Pure Dart — no Flutter / Flame. Screen placement (sidewalk lane offset,
-/// depth sorting) is the game layer's job.
+/// Pure Dart — no Flutter / Flame. Positions are fractional tile
+/// coordinates; the game layer maps them to the screen and depth-sorts.
 library;
 
 import 'dart:math' as math;
@@ -16,6 +17,16 @@ import 'dart:math' as math;
 /// Grid direction deltas `(dCol, dRow)`: 0 east, 1 south, 2 west, 3 north.
 /// Matches `road_sprites.dart` (east exits the lower-right diamond edge).
 const pedestrianDirDeltas = <(int, int)>[(1, 0), (0, 1), (-1, 0), (0, -1)];
+
+/// Sidewalk offset from the road's centre line, in tile units along the
+/// walker's right-hand axis. The road sprites' asphalt spans ±0.3 of the
+/// tile about the centre line and the beige band the remaining 0.3–0.5, so
+/// 0.4 is the band's centre (see city_builder.md §9.3).
+const double kSidewalkLane = 0.405;
+
+/// How far past the tile centre a walker goes to round the cap of a
+/// dead-end road (the cap's asphalt ends ~0.2 past the centre, radius 0.3).
+const double _deadEndBack = 0.38;
 
 /// What a citizen looks like: ARGB colours (kept as ints so the domain layer
 /// stays free of `dart:ui`) plus an overall scale (kids are smaller) and a
@@ -47,26 +58,30 @@ class Pedestrian {
     required this.speed,
     required this.lane,
     required this.look,
+    int? dirIn,
     this.t = 0,
     this.phase = 0,
     this.wait = 0,
-  });
+  }) : dirIn = dirIn ?? dir;
 
   int col;
   int row;
 
-  /// Index into [pedestrianDirDeltas].
+  /// Heading the walker entered this tile with (index into
+  /// [pedestrianDirDeltas]); the first leg of the tile path runs this way.
+  int dirIn;
+
+  /// Heading the walker will leave this tile with.
   int dir;
 
-  /// Progress from this tile's centre to the next, in `[0, 1)`.
+  /// Progress along this tile's sidewalk path, in `[0, 1)`.
   double t;
 
-  /// Tiles per second while walking.
+  /// Tiles per second while walking (measured along the path).
   final double speed;
 
-  /// Sidewalk offset in world px at a 64 px tile, signed: `+` is the walker's
-  /// right-hand side. Constant for the walker's life so it never crosses the
-  /// road mid-tile.
+  /// Sidewalk offset in tile units, signed: `+` is the walker's right-hand
+  /// side. Constant for the walker's life so it never crosses the road.
   final double lane;
 
   /// Walk-cycle phase in radians; advances only while moving.
@@ -78,12 +93,90 @@ class Pedestrian {
   final CitizenLook look;
 
   bool get isWaiting => wait > 0;
+}
 
-  /// Painter's-order key: `col + row` interpolated along the current step.
-  double get depth {
-    final (dc, dr) = pedestrianDirDeltas[dir];
-    return col + row + (dc + dr) * t;
+/// Where a walker is: fractional tile coordinates and the heading of the
+/// path leg it is on (what the painter faces it toward).
+typedef PedestrianPosition = ({double col, double row, int heading});
+
+/// The polyline a walker follows across its current tile, as offsets from
+/// the tile centre in tile units.
+///
+/// Every leg is axis-aligned. Entry and exit points sit on the edge
+/// midpoints shifted by the lane; going straight they join directly. On a
+/// bend the two offset lines meet at a single corner point: for a turn
+/// toward the lane side that point hugs the inner kerb (well inside the
+/// small sidewalk triangle the curve sprite leaves there), for a turn away
+/// it sweeps the outer sidewalk. At a dead end (exit is the reverse of
+/// entry) the walker goes past the centre, crosses behind the road's cap,
+/// and comes back along the other sidewalk.
+List<(double, double)> pedestrianPath(Pedestrian p) {
+  final (ic, ir) = pedestrianDirDeltas[p.dirIn];
+  final (oc, or) = pedestrianDirDeltas[p.dir];
+  final (cic, cir) = pedestrianDirDeltas[(p.dirIn + 1) % 4];
+  final (coc, cor) = pedestrianDirDeltas[(p.dir + 1) % 4];
+  final l = p.lane;
+  final entry = (-0.5 * ic + l * cic, -0.5 * ir + l * cir);
+  final exit = (0.5 * oc + l * coc, 0.5 * or + l * cor);
+  if (p.dir == p.dirIn) return [entry, exit];
+  if (p.dir == (p.dirIn + 2) % 4) {
+    return [
+      entry,
+      (-_deadEndBack * ic + l * cic, -_deadEndBack * ir + l * cir),
+      (-_deadEndBack * ic + l * coc, -_deadEndBack * ir + l * cor),
+      exit,
+    ];
   }
+  return [entry, (l * cic + l * coc, l * cir + l * cor), exit];
+}
+
+/// Length of [pedestrianPath] in tile units.
+double pedestrianPathLength(Pedestrian p) {
+  final pts = pedestrianPath(p);
+  var len = 0.0;
+  for (var i = 1; i < pts.length; i++) {
+    len += _legLength(pts[i - 1], pts[i]);
+  }
+  return len;
+}
+
+double _legLength((double, double) a, (double, double) b) =>
+    (b.$1 - a.$1).abs() + (b.$2 - a.$2).abs(); // legs are axis-aligned
+
+int _legHeading((double, double) a, (double, double) b) {
+  final dc = b.$1 - a.$1;
+  final dr = b.$2 - a.$2;
+  if (dc.abs() >= dr.abs()) return dc >= 0 ? 0 : 2;
+  return dr >= 0 ? 1 : 3;
+}
+
+/// The walker's position along its tile path at [Pedestrian.t].
+PedestrianPosition pedestrianPosition(Pedestrian p) {
+  final pts = pedestrianPath(p);
+  final total = pedestrianPathLength(p);
+  var remaining = p.t.clamp(0.0, 1.0) * total;
+  for (var i = 1; i < pts.length; i++) {
+    final a = pts[i - 1];
+    final b = pts[i];
+    final len = _legLength(a, b);
+    if (remaining <= len || i == pts.length - 1) {
+      final k = len == 0 ? 0.0 : (remaining / len).clamp(0.0, 1.0);
+      return (
+        col: p.col + a.$1 + (b.$1 - a.$1) * k,
+        row: p.row + a.$2 + (b.$2 - a.$2) * k,
+        heading: _legHeading(a, b),
+      );
+    }
+    remaining -= len;
+  }
+  throw StateError('unreachable');
+}
+
+/// Painter's-order key for the board's depth sort: `col + row` of the
+/// walker's actual position.
+double pedestrianDepth(Pedestrian p) {
+  final pos = pedestrianPosition(p);
+  return pos.col + pos.row;
 }
 
 /// Road neighbours of `(col, row)` as direction indices.
@@ -124,12 +217,13 @@ int pickDirection({
 }
 
 /// Advances [p] by [dt] seconds. While waiting, only the wait timer runs.
-/// Walking advances [Pedestrian.t]; crossing a tile centre moves the walker
-/// to the next tile and picks a new heading. A walking pedestrian starts a
-/// pause with probability [pauseChancePerSecond] per second, lasting
-/// [pauseMin] to [pauseMax] seconds; the walk-cycle [Pedestrian.phase] runs
-/// at [phaseRate] radians per second (scaled by the walker's speed relative
-/// to [referenceSpeed], so kids' legs move faster).
+/// Walking advances [Pedestrian.t] at the walker's speed over the path's
+/// length; reaching the exit edge moves the walker to the next tile and
+/// picks a new heading. A walking pedestrian starts a pause with
+/// probability [pauseChancePerSecond] per second, lasting [pauseMin] to
+/// [pauseMax] seconds; the walk-cycle [Pedestrian.phase] runs at
+/// [phaseRate] radians per second (scaled by the walker's speed relative to
+/// [referenceSpeed], so kids' legs move faster).
 void stepPedestrian(
   Pedestrian p,
   double dt, {
@@ -149,27 +243,36 @@ void stepPedestrian(
     p.wait = pauseMin + random.nextDouble() * (pauseMax - pauseMin);
     return;
   }
-  p.t += dt * p.speed;
-  while (p.t >= 1) {
-    p.t -= 1;
+  var distance = dt * p.speed;
+  while (distance > 0) {
+    final total = pedestrianPathLength(p);
+    final left = (1 - p.t) * total;
+    if (distance < left) {
+      p.t += distance / total;
+      break;
+    }
+    distance -= left;
     final (dc, dr) = pedestrianDirDeltas[p.dir];
+    final next = pickDirection(
+      isRoad: isRoad,
+      col: p.col + dc,
+      row: p.row + dr,
+      dir: p.dir,
+      random: random,
+    );
     p
       ..col += dc
       ..row += dr
-      ..dir = pickDirection(
-        isRoad: isRoad,
-        col: p.col,
-        row: p.row,
-        dir: p.dir,
-        random: random,
-      );
+      ..t = 0
+      ..dirIn = p.dir
+      ..dir = next;
   }
   p.phase += dt * phaseRate * math.sqrt(p.speed / referenceSpeed);
 }
 
 /// A fresh walker on a random tile of [roadTiles] (must be non-empty),
-/// heading along a random road neighbour (or east on an isolated tile),
-/// part-way along its step so a batch doesn't spawn in lock-step.
+/// heading straight along a random road neighbour (or east on an isolated
+/// tile), part-way along its path so a batch doesn't spawn in lock-step.
 Pedestrian spawnPedestrian({
   required List<(int, int)> roadTiles,
   required bool Function(int col, int row) isRoad,

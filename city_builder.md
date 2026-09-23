@@ -1202,13 +1202,20 @@ straight translation of its canvas calls.
   torso → near arm → head. "Near" is the side of the body facing the
   camera: with `sv = UNIT[(dir+1) % 4]` (the figure's right-hand side in
   screen space), the near screen side is `sign(sv.x · sv.y)`.
-- **Sidewalk position.** The straight road sprite's beige band spans rows
-  2–20 and 80–98 of its 100 px canvas, i.e. perpendicular distance
-  8.9–14.3 world px from the road centre line (the tile edge is at 14.3).
-  Movers offset along the *cross iso axis* `UNIT[(dir+1) % 4]`, which is
-  not perpendicular to the road (|cross| = 0.8), so the lane offset must be
-  **±14.5** to land on the band centre. 12 puts the feet on the kerb.
-  Cars use ±6.5.
+- **Sidewalk position.** In tile units the road sprites' asphalt spans
+  ±0.3 about the centre line and the beige band 0.3–0.5, so walkers keep a
+  lane of **±0.405 tile** along their right-hand axis (`kSidewalkLane`;
+  14.5 screen px at the 64 px tile — 12 put the feet on the kerb). Walking
+  tile-centre to tile-centre with that offset puts the corner of every bend
+  in the asphalt, so [pedestrian_walk.dart](lib/domain/city/pedestrian_walk.dart)
+  walks a **per-tile sidewalk path** instead: entry-edge point → corner →
+  exit-edge point, where the corner is where the two offset lines meet
+  (inside the inner-kerb triangle for a turn toward the lane, sweeping the
+  outer sidewalk for a turn away), and at a dead end a detour 0.38 past the
+  centre and around the cap. Walkers still cross a side street's mouth at a
+  junction, on the sidewalk line — that is the "crossing" cars will have to
+  respect (A4). The JS mock's `Mover` predates this and still cuts corners;
+  the Dart is the reference. Cars use ±0.18 tile (6.5 px).
 - **Movement:** same `Mover` as cars — at each tile centre pick a road
   neighbour (straight preferred, no U-turn unless dead end), speed ~0.16
   tiles/s, random 1.5–3.5 s pauses. Park wanderers pick random points in

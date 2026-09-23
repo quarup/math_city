@@ -5,13 +5,6 @@ import 'package:math_city/domain/city/pedestrian_walk.dart';
 import 'package:math_city/game/city/citizen_painter.dart';
 import 'package:math_city/game/city/iso_grid.dart';
 
-/// Sidewalk offset from the road centre line, in world px at the 64 px tile,
-/// measured along the cross iso axis (city_builder.md §9.3): the straight
-/// road sprite's beige band spans 8.9–14.3 px perpendicular to the road, and
-/// the cross axis is not perpendicular (|cross| = 0.8), so 14.5 along it puts
-/// the feet on the band's centre. 12 put them on the kerb.
-const double kSidewalkLane = 14.5;
-
 /// Owns the walkers on the city's auto-roads (idea B1): spawns a crowd sized
 /// to the road network, steps them each frame, and hands the board what to
 /// paint, depth-keyed so a walker slots into the building sort.
@@ -117,27 +110,16 @@ class PedestrianSystem {
   int _pick(List<int> from) => from[_random.nextInt(from.length)];
 
   /// Where each walker's feet are on the board, in [grid] local space, with
-  /// the painter's-order key the board sorts on.
+  /// the painter's-order key the board sorts on and the heading to face.
   Iterable<PedestrianView> views(IsoGrid grid) sync* {
-    final hw = grid.tileWidth / 2;
-    final hh = grid.tileWidth / 4;
-    final laneScale = grid.tileWidth / 64;
     for (final p in people) {
-      final (cx, cy) = grid.centerOf(p.col, p.row);
-      final (dc, dr) = pedestrianDirDeltas[p.dir];
-      final (sc, sr) = pedestrianDirDeltas[(p.dir + 1) % 4];
-      // Cross iso axis (the walker's right-hand side), unit length.
-      final sx = (sc - sr) * hw;
-      final sy = (sc + sr) * hh;
-      final sl = math.sqrt(sx * sx + sy * sy);
-      final lane = p.lane * laneScale;
+      final pos = pedestrianPosition(p);
+      final (x, y) = grid.pointAt(pos.col, pos.row);
       yield PedestrianView(
         pedestrian: p,
-        feet: Offset(
-          cx + (dc - dr) * hw * p.t + sx / sl * lane,
-          cy + (dc + dr) * hh * p.t + sy / sl * lane,
-        ),
-        depth: p.depth,
+        feet: Offset(x, y),
+        depth: pos.col + pos.row,
+        heading: pos.heading,
       );
     }
   }
@@ -149,16 +131,18 @@ class PedestrianView {
     required this.pedestrian,
     required this.feet,
     required this.depth,
+    required this.heading,
   });
 
   final Pedestrian pedestrian;
   final Offset feet;
   final double depth;
+  final int heading;
 
   void paint(Canvas canvas, double scale) => paintCitizen(
     canvas,
     feet: feet,
-    dir: pedestrian.dir,
+    dir: heading,
     phase: pedestrian.phase,
     look: pedestrian.look,
     idle: pedestrian.isWaiting,
