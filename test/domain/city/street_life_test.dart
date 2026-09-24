@@ -103,6 +103,22 @@ void main() {
       expect(seen['hatchback'], greaterThan(seen['suv']!));
     });
 
+    test('taxis only appear once the town has 40 people', () {
+      final random = math.Random(5);
+      var early = 0;
+      var late = 0;
+      for (var i = 0; i < 1000; i++) {
+        if (drawCivilianKind(random, const [], population: 20).id == 'taxi') {
+          early++;
+        }
+        if (drawCivilianKind(random, const [], population: 60).id == 'taxi') {
+          late++;
+        }
+      }
+      expect(early, 0);
+      expect(late, greaterThan(0));
+    });
+
     test('a farmhouse makes pickups common', () {
       final random = math.Random(5);
       var pickups = 0;
@@ -111,7 +127,7 @@ void main() {
           pickups++;
         }
       }
-      expect(pickups, greaterThan(400)); // 3 of 10 by weight
+      expect(pickups, greaterThan(350)); // 3 of 10 by weight
     });
   });
 

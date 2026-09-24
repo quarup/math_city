@@ -24,6 +24,7 @@ class VehicleKind {
     this.speed = 1,
     this.bonusGate,
     this.bonusWeight = 0,
+    this.minPopulation = 0,
   });
 
   final String id;
@@ -47,6 +48,9 @@ class VehicleKind {
   /// A building that raises the pool weight to [bonusWeight] when placed.
   final String? bonusGate;
   final int bonusWeight;
+
+  /// Civilian kinds below this population stay out of the pool.
+  final int minPopulation;
 
   bool get isGated => gates.isNotEmpty;
 }
@@ -113,7 +117,31 @@ const List<VehicleKind> vehicleKinds = [
     gates: ['farmhouse', 'farmers_market'],
     speed: 0.55,
   ),
+  VehicleKind(
+    id: 'garbage_truck',
+    length: 0.7,
+    width: 0.3,
+    gates: ['waste_management', 'recycling_center'],
+    speed: 0.7,
+  ),
+  VehicleKind(
+    id: 'ice_cream_truck',
+    length: 0.5,
+    width: 0.28,
+    gates: ['park', 'playground', 'amusement_park'],
+    speed: 0.7,
+  ),
   VehicleKind(id: 'hatchback', length: 0.42, width: 0.22, weight: 4),
+  VehicleKind(id: 'sedan', length: 0.46, width: 0.24, weight: 3),
+  VehicleKind(
+    id: 'taxi',
+    length: 0.46,
+    width: 0.21,
+    weight: 1,
+    minPopulation: 40,
+    bonusGate: 'restaurant',
+    bonusWeight: 2,
+  ),
   VehicleKind(id: 'suv', length: 0.48, width: 0.24, weight: 2),
   VehicleKind(id: 'van', length: 0.5, width: 0.25, weight: 1, speed: 0.9),
   VehicleKind(
@@ -195,12 +223,16 @@ StreetLifePlan planStreetLife({
 }
 
 /// A civilian kind drawn from the weighted pool for this city.
-VehicleKind drawCivilianKind(math.Random random, Iterable<String> buildingIds) {
+VehicleKind drawCivilianKind(
+  math.Random random,
+  Iterable<String> buildingIds, {
+  int population = 0,
+}) {
   final placed = buildingIds.toSet();
   final pool = <(VehicleKind, int)>[];
   var total = 0;
   for (final kind in vehicleKinds) {
-    if (kind.isGated) continue;
+    if (kind.isGated || population < kind.minPopulation) continue;
     final w = kind.bonusGate != null && placed.contains(kind.bonusGate)
         ? kind.bonusWeight
         : kind.weight;

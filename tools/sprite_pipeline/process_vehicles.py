@@ -212,27 +212,38 @@ def main() -> None:
         help="fill a heading NB left out from the horizontal flip of its twin, "
         "e.g. ur=ul or r=l (comma list). The lit side flips, so re-roll when you can.",
     )
+    ap.add_argument(
+        "--copy",
+        default="",
+        help="fill a missing straight-up/down view (u, d — they have no mirror twin) with a "
+        "neighbouring heading as-is, e.g. d=dr,u=ul. The bend then shows two sprites instead "
+        "of three for this vehicle; re-roll when you can.",
+    )
     args = ap.parse_args()
 
     headings = args.headings.split(",")
     if len(headings) != 8 or any(h not in HEADINGS for h in headings):
         sys.exit(f"error: --headings needs 8 entries from {','.join(HEADINGS)}")
     mirrors = dict(m.split("=") for m in args.mirror.split(",") if m)
-    if set(headings) | set(mirrors) != set(HEADINGS):
-        missing = sorted(set(HEADINGS) - set(headings) - set(mirrors))
-        sys.exit(f"error: headings missing from the sheet and not mirrored: {missing}")
+    copies = dict(m.split("=") for m in args.copy.split(",") if m)
+    if set(headings) | set(mirrors) | set(copies) != set(HEADINGS):
+        missing = sorted(set(HEADINGS) - set(headings) - set(mirrors) - set(copies))
+        sys.exit(f"error: headings missing from the sheet and not mirrored/copied: {missing}")
 
     raw = Image.open(args.sheet)
     keyed = key_green(raw, args.bg)
     by_heading: dict[str, Image.Image] = {}
     for pos, crop in split_ring(keyed):
         h = headings[RING.index(pos)]
-        if h in by_heading and h in mirrors.values():
-            continue  # the duplicate view; its twin is mirrored instead
+        if h in by_heading:
+            continue  # NB drew this heading twice; keep the first
         by_heading[h] = crop
     for dst, src in mirrors.items():
         by_heading[dst] = by_heading[src].transpose(Image.FLIP_LEFT_RIGHT)
         print(f"warning: {dst} is a mirror of {src} (lit side flipped) — re-roll the sheet when you can")
+    for dst, src in copies.items():
+        by_heading[dst] = by_heading[src].copy()
+        print(f"warning: {dst} reuses {src} as-is — re-roll the sheet when you can")
 
     # One uniform scale for all eight cuts, fixed by the side views (they
     # show the full length along screen x). NB draws the diagonal views

@@ -128,7 +128,10 @@ tools/sprite_pipeline/.venv/bin/python tools/sprite_pipeline/process_vehicles.py
 
 If exactly one heading is missing, `--mirror ur=ul` (or `r=l`, `dl=dr`)
 fills it with the horizontal flip of its twin; the lit side flips, so
-treat it as a stopgap and re-roll. Two or more missing: re-roll.
+treat it as a stopgap and re-roll. The straight up/down views (`u`, `d`)
+have no twin: `--copy d=dr,u=ul` reuses a neighbour as-is, and that
+vehicle then shows two sprites through a bend instead of three. More
+missing than that: re-roll.
 
 `--length` is the car's length in tiles (10 m): 0.42 for a hatchback keeps
 it inside one 0.3-wide lane; a bus would be ~0.9. The script chroma-keys
