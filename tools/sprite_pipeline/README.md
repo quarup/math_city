@@ -94,9 +94,10 @@ eight headings**, and `process_vehicles.py` cuts it up. Same green backdrop,
 same reference images as the buildings (`raw/bus_depot_v1.jpeg` and
 `raw/fire_station_v1.jpeg` already show vehicles in the house style), 1:1,
 1024 px, thinking high, default temperature. The prompt that produced
-`raw_sheets/car.jpg` is checked in as one copy-pasteable line at
-[raw_sheets/vehicle_prompt.txt](raw_sheets/vehicle_prompt.txt) (swap the
-noun and colour per vehicle):
+`raw_sheets/car.jpg` is below; every planned vehicle's prompt (same body,
+different noun / colour / `--length`, plus the building that unlocks it —
+see city_builder.md §9.5) is one copy-pasteable line in
+[raw_sheets/vehicle_prompts.txt](raw_sheets/vehicle_prompts.txt):
 
 > Turnaround sheet of one isometric blue hatchback, shown eight times on a
 > single solid bright green background, matching the style, lighting
