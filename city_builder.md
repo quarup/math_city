@@ -1249,3 +1249,52 @@ straight translation of its canvas calls.
 Anchors convert to world space via the sprite box: `x = box.x + ax·(64/192)`
 (see `Scene.anchor` in engine.js and `_drawSprite` in
 `city_board_component.dart`). Other variants need their own row.
+
+### 9.5 Street life: which vehicles, and how many movers
+
+**Vehicle kinds.** Each is one NB turnaround sheet
+([tools/sprite_pipeline/raw_sheets/vehicle_prompts.txt](tools/sprite_pipeline/raw_sheets/vehicle_prompts.txt)).
+Civilian kinds are always in the pool; the rest appear only while the
+gating building is placed (one per building, capped), so the streets tell
+the player what the city has.
+
+| Kind | `--length` | Appears when | Count |
+|---|---|---|---|
+| `hatchback` ✅, `sedan`, `suv`, `van`, `pickup` | 0.42–0.5 | always | weighted pool (4 / 3 / 2 / 1 / 1; pickup 3 with a `farmhouse`) |
+| `taxi` | 0.46 | population ≥ 40 | pool weight 1, 2 with a `restaurant` or `movie_theater` |
+| `bus` | 0.9 | `bus_depot` | 1 per depot, max 2 |
+| `school_bus` | 0.8 | `school` / `high_school` | 1 per school, max 2 |
+| `police_car` | 0.46 | `police_station` | 1 |
+| `ambulance` | 0.55 | `clinic` / `hospital` | 1 (2 with both) |
+| `fire_truck` | 0.8 | `fire_station` | 1, only during an A3 call-out |
+| `garbage_truck` | 0.7 | `waste_management` / `recycling_center` | 1 |
+| `mail_van` | 0.45 | `post_office` | 1 |
+| `delivery_truck` | 0.6 | `supermarket` / `grocery` / `shopping_mall` | 1 |
+| `tractor` | 0.4 | `farmhouse` / `farmers_market` | 1 |
+| `ice_cream_truck` | 0.5 | `park` / `playground` / `amusement_park` | 1 |
+
+**Budget (proposed 2026-09-24, not yet implemented).** Inputs: live
+population `P`, road-tile count `R`, placed building types.
+
+1. **Movers on the streets** `M = min(P, ⌊0.45 · R⌋)` — never more people
+   out than live in the city, and never more than one per ~2 road tiles.
+   Before the first home nothing moves; the city comes alive as people
+   move in.
+2. **Cars** `C = min(⌊M / 3⌋, ⌊0.15 · R⌋, 12)`. Gated kinds fill the car
+   slots first (emergency → bus → service), one per gating building per
+   the table; the remainder are civilians drawn from the weighted pool.
+3. **Pedestrians** `= min(M − C, ⌊0.3 · R⌋, 24)`; ages as today.
+4. Recompute on every placement and population tick; keep existing
+   movers, trim from the end, spawn the shortfall — counts drift, never
+   pop.
+
+Worked: starter ring `R = 8, P = 0` → empty streets; first `single_home`
+(`P = 4`) → 1 car, 2 walkers; the 2026-09 sample city (`R ≈ 26, P = 20`)
+→ 3 cars, 8 walkers; a big town (`R = 120, P = 400`) → 12 cars, 24
+walkers. Today's fixed densities (0.12 cars and 0.25 walkers per road
+tile) are what step 1 replaces.
+
+**Cheap colour variants.** A civilian sheet can be recoloured in the
+pipeline (hue-rotate the saturated body colour, leave glass / tyres / chrome)
+instead of asking NB for a red and a green hatchback — same silhouette,
+zero consistency risk. Not built yet.
