@@ -110,7 +110,8 @@ class PedestrianSystem {
   int _pick(List<int> from) => from[_random.nextInt(from.length)];
 
   /// Where each walker's feet are on the board, in [grid] local space, with
-  /// the painter's-order key the board sorts on and the heading to face.
+  /// the fractional tile position (the board derives the sort key from it,
+  /// see `mover_depth.dart`) and the heading to face.
   Iterable<PedestrianView> views(IsoGrid grid) sync* {
     for (final p in people) {
       final pos = pedestrianPosition(p);
@@ -118,7 +119,8 @@ class PedestrianSystem {
       yield PedestrianView(
         pedestrian: p,
         feet: Offset(x, y),
-        depth: pos.col + pos.row,
+        col: pos.col,
+        row: pos.row,
         heading: pos.heading,
       );
     }
@@ -130,13 +132,15 @@ class PedestrianView {
   const PedestrianView({
     required this.pedestrian,
     required this.feet,
-    required this.depth,
+    required this.col,
+    required this.row,
     required this.heading,
   });
 
   final Pedestrian pedestrian;
   final Offset feet;
-  final double depth;
+  final double col;
+  final double row;
   final int heading;
 
   void paint(Canvas canvas, double scale) => paintCitizen(

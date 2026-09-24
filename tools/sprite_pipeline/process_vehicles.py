@@ -234,9 +234,11 @@ def main() -> None:
             lift = round(front_px * scale / 4)
         else:
             lift = round(side_px * scale / 4)
+        # With the car at the top of the canvas its ground centre is at
+        # y = h - lift, so a canvas twice that tall puts it dead centre.
         canvas_h = 2 * (h - lift)
         canvas = Image.new("RGBA", (w, canvas_h), (0, 0, 0, 0))
-        canvas.alpha_composite(small, (0, canvas_h - h))
+        canvas.alpha_composite(small, (0, 0))
         exp = expected_width(heading, args.length, width)
         off = w / exp - 1
         flag = "" if abs(off) < 0.35 else "   <-- far off the 2:1 projection; re-roll the sheet"

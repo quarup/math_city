@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/text.dart';
+import 'package:math_city/domain/city/mover_depth.dart';
 import 'package:math_city/domain/city/road_sprites.dart';
 import 'package:math_city/game/city/iso_grid.dart';
 import 'package:math_city/game/city/pedestrian_system.dart';
@@ -216,20 +217,31 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
       _drawRoadTile(canvas, col, row);
     }
     // Painter's order: tiles further back (smaller col+row) draw first so
-    // nearer buildings overlap them correctly. Pedestrians slot into the same
-    // sort by their interpolated col+row, so a walker passes behind a
+    // nearer buildings overlap them correctly. Movers slot into the same
+    // sort by their interpolated col+row, pulled behind any wide building
+    // they are north or west of (`moverDepth`), so a walker passes behind a
     // building's facade and in front of its road.
     // Selected (picked-up) buildings render with a yellow tint (see
     // `_drawSprite` / `_drawBox`) — that alone signals what a tap repositions.
     final citizenScale = grid.tileWidth / 64;
     final spriteScale = grid.tileWidth / kSpriteAuthoringTilePx;
+    final footprints = <Footprint>[
+      for (final b in buildings)
+        (col: b.col, row: b.row, w: b.footprint.$1, h: b.footprint.$2),
+    ];
     final items = <(double, void Function())>[
       for (final b in buildings)
         ((b.col + b.row).toDouble(), () => _drawBuilding(canvas, b)),
       for (final v in pedestrians.views(grid))
-        (v.depth, () => v.paint(canvas, citizenScale)),
+        (
+          moverDepth(v.col, v.row, footprints),
+          () => v.paint(canvas, citizenScale),
+        ),
       for (final v in traffic.views(grid))
-        (v.depth, () => v.paint(canvas, spriteScale, vehicleSpriteFor)),
+        (
+          moverDepth(v.col, v.row, footprints),
+          () => v.paint(canvas, spriteScale, vehicleSpriteFor),
+        ),
     ]..sort((a, b) => a.$1.compareTo(b.$1));
     for (final (_, draw) in items) {
       draw();
