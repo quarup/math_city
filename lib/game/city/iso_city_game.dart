@@ -7,6 +7,7 @@ import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flame/sprite.dart';
 import 'package:math_city/domain/city/road_sprites.dart';
+import 'package:math_city/domain/city/street_life.dart';
 import 'package:math_city/domain/city/traffic.dart' show vehicleHeadings;
 import 'package:math_city/game/city/camera_focus.dart';
 import 'package:math_city/game/city/city_board_component.dart';
@@ -231,9 +232,9 @@ class IsoCityGame extends FlameGame with DragCallbacks {
   Sprite? vehicleSpriteFor(String file) => _vehicleSprites[file];
 
   Future<void> _loadVehicleSprites() async {
-    for (final kind in TrafficSystem.kinds) {
+    for (final kind in vehicleKinds) {
       for (var h = 0; h < vehicleHeadings; h++) {
-        final file = vehicleSpriteFile(kind, h);
+        final file = vehicleSpriteFile(kind.id, h);
         _vehicleSprites[file] = await Sprite.load(file, images: _vehicleImages);
       }
     }
@@ -271,6 +272,9 @@ class IsoCityGame extends FlameGame with DragCallbacks {
     unawaited(_loadVehicleSprites());
     if (_pendingBuildings != null) board.buildings = _pendingBuildings!;
     if (_pendingRoads != null) board.roads = _pendingRoads!;
+    if (_pendingStreetLife case (final population, final buildingIds)) {
+      board.setStreetLife(population: population, buildingIds: buildingIds);
+    }
     if (_pendingOwned != null) board.ownedTiles = _pendingOwned!;
     if (_pendingBuyable != null) board.buyableTiles = _pendingBuyable!;
     if (_pendingBuying != null) board.buyingTiles = _pendingBuying!;
@@ -376,6 +380,22 @@ class IsoCityGame extends FlameGame with DragCallbacks {
       _pendingBuildings = buildings;
     }
   }
+
+  /// Pushes the street-life inputs (population, placed building ids) into
+  /// the board — see `CityBoardComponent.setStreetLife`. Buffered before
+  /// [onLoad].
+  void setStreetLife({
+    required int population,
+    required List<String> buildingIds,
+  }) {
+    if (isLoaded) {
+      board.setStreetLife(population: population, buildingIds: buildingIds);
+    } else {
+      _pendingStreetLife = (population, buildingIds);
+    }
+  }
+
+  (int, List<String>)? _pendingStreetLife;
 
   /// Pushes the latest auto-generated road tiles into the board. Buffered if
   /// called before [onLoad] finishes — see [_pendingRoads].

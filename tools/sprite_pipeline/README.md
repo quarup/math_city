@@ -92,8 +92,11 @@ Outputs:
 Cars are not buildings: one Nano Banana image gives **one vehicle in all
 eight headings**, and `process_vehicles.py` cuts it up. Same green backdrop,
 same reference images as the buildings (`raw/bus_depot_v1.jpeg` and
-`raw/fire_station_v1.jpeg` already show vehicles in the house style), 1:1,
-1024 px, thinking high, default temperature. The prompt that produced
+`raw/fire_station_v1.jpeg` already show vehicles in the house style, plus
+`raw/single_home_v1.jpeg` for scale). **Model: Nano Banana 2
+(`gemini-3.1-flash-image`)**, aspect 1:1, 1024 px, thinking high, default
+temperature — the settings every checked-in sheet was made with. Never ask
+for a green vehicle: the backdrop is keyed on greenness. The prompt that produced
 `raw_sheets/car.jpg` is below; every planned vehicle's prompt (same body,
 different noun / colour / `--length`, plus the building that unlocks it —
 see city_builder.md §9.5) is one copy-pasteable line in
@@ -111,8 +114,9 @@ see city_builder.md §9.5) is one copy-pasteable line in
 > kind: no cast shadow, no contact shadow, no ground plane, no reflection.
 > No text, no arrows, no labels, no grid lines.
 
-NB does **not** obey the "nose away from the centre" rule, but it does give
-eight distinct headings, so look at the sheet and list the heading of each
+NB does **not** obey the "nose away from the centre" rule, and about one
+sheet in three comes back with a heading drawn twice and another missing
+(it likes fronts). Look at the sheet and list the heading of each
 ring position clockwise from the top (`N,NE,E,SE,S,SW,W,NW`), naming
 headings by where the nose points on screen — `dr d dl l ul u ur r`:
 
@@ -121,6 +125,10 @@ tools/sprite_pipeline/.venv/bin/python tools/sprite_pipeline/process_vehicles.py
     tools/sprite_pipeline/raw_sheets/car.jpg --id hatchback \
     --headings d,dr,l,ur,u,ul,r,dl --length 0.42
 ```
+
+If exactly one heading is missing, `--mirror ur=ul` (or `r=l`, `dl=dr`)
+fills it with the horizontal flip of its twin; the lit side flips, so
+treat it as a stopgap and re-roll. Two or more missing: re-roll.
 
 `--length` is the car's length in tiles (10 m): 0.42 for a hatchback keeps
 it inside one 0.3-wide lane; a bus would be ~0.9. The script chroma-keys

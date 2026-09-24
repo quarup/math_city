@@ -80,19 +80,31 @@ MIN_COMPONENT_FRACTION = 0.05
 EDGE_SOFTNESS = 25
 
 
-def key_green(raw: Image.Image) -> Image.Image:
-    """Chroma-key the green backdrop with a soft edge and green despill.
+def key_green(raw: Image.Image, bg: str = "green") -> Image.Image:
+    """Chroma-key the backdrop with a soft edge and despill.
 
     Vehicles never contain backdrop-green, so no ML matte is needed; a plain
     key with a short alpha ramp gives clean anti-aliased edges. Edge pixels
-    get their green channel clamped so the JPEG fringe does not glow.
+    get the backdrop channel clamped so the JPEG fringe does not glow. A
+    green vehicle is generated on a **magenta** backdrop instead (`bg`), keyed
+    on how much red and blue exceed green.
     """
     rgb = np.asarray(raw.convert("RGB")).astype(np.int16)
-    greenness = rgb[..., 1] - np.maximum(rgb[..., 0], rgb[..., 2])
-    alpha = np.clip((GREEN_MARGIN + EDGE_SOFTNESS - greenness) / EDGE_SOFTNESS, 0, 1)
+    if bg == "green":
+        keyness = rgb[..., 1] - np.maximum(rgb[..., 0], rgb[..., 2])
+    elif bg == "magenta":
+        keyness = np.minimum(rgb[..., 0], rgb[..., 2]) - rgb[..., 1]
+    else:
+        sys.exit(f"error: unknown --bg {bg}")
+    alpha = np.clip((GREEN_MARGIN + EDGE_SOFTNESS - keyness) / EDGE_SOFTNESS, 0, 1)
     edge = (alpha > 0) & (alpha < 1)
     out = rgb.copy()
-    out[..., 1][edge] = np.minimum(out[..., 1][edge], np.maximum(out[..., 0], out[..., 2])[edge])
+    if bg == "green":
+        out[..., 1][edge] = np.minimum(out[..., 1][edge], np.maximum(out[..., 0], out[..., 2])[edge])
+    else:
+        cap = out[..., 1][edge]
+        out[..., 0][edge] = np.minimum(out[..., 0][edge], cap)
+        out[..., 2][edge] = np.minimum(out[..., 2][edge], cap)
     a8 = (alpha * 255).astype(np.uint8)
     return Image.fromarray(np.dstack([out.astype(np.uint8), a8]))
 
@@ -193,15 +205,34 @@ def main() -> None:
         help="comma list of 8 headings for ring positions N,NE,E,SE,S,SW,W,NW",
     )
     ap.add_argument("--length", type=float, default=0.5, help="car length in tiles")
+    ap.add_argument("--bg", default="green", help="backdrop colour: green (default) or magenta")
+    ap.add_argument(
+        "--mirror",
+        default="",
+        help="fill a heading NB left out from the horizontal flip of its twin, "
+        "e.g. ur=ul or r=l (comma list). The lit side flips, so re-roll when you can.",
+    )
     args = ap.parse_args()
 
     headings = args.headings.split(",")
-    if sorted(headings) != sorted(HEADINGS):
-        sys.exit(f"error: --headings must be a permutation of {','.join(HEADINGS)}")
+    if len(headings) != 8 or any(h not in HEADINGS for h in headings):
+        sys.exit(f"error: --headings needs 8 entries from {','.join(HEADINGS)}")
+    mirrors = dict(m.split("=") for m in args.mirror.split(",") if m)
+    if set(headings) | set(mirrors) != set(HEADINGS):
+        missing = sorted(set(HEADINGS) - set(headings) - set(mirrors))
+        sys.exit(f"error: headings missing from the sheet and not mirrored: {missing}")
 
     raw = Image.open(args.sheet)
-    keyed = key_green(raw)
-    by_heading = {headings[RING.index(pos)]: crop for pos, crop in split_ring(keyed)}
+    keyed = key_green(raw, args.bg)
+    by_heading: dict[str, Image.Image] = {}
+    for pos, crop in split_ring(keyed):
+        h = headings[RING.index(pos)]
+        if h in by_heading and h in mirrors.values():
+            continue  # the duplicate view; its twin is mirrored instead
+        by_heading[h] = crop
+    for dst, src in mirrors.items():
+        by_heading[dst] = by_heading[src].transpose(Image.FLIP_LEFT_RIGHT)
+        print(f"warning: {dst} is a mirror of {src} (lit side flipped) — re-roll the sheet when you can")
 
     # One uniform scale for all eight cuts, fixed by the side views (they
     # show the full length along screen x). NB draws the diagonal views
