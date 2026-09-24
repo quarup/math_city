@@ -5,9 +5,9 @@ import 'package:math_city/domain/city/pedestrian_walk.dart';
 import 'package:math_city/game/city/citizen_painter.dart';
 import 'package:math_city/game/city/iso_grid.dart';
 
-/// Owns the walkers on the city's auto-roads (idea B1): spawns a crowd sized
-/// to the road network, steps them each frame, and hands the board what to
-/// paint, depth-keyed so a walker slots into the building sort.
+/// Owns the walkers on the city's auto-roads (idea B1): keeps the crowd the
+/// street-life plan asks for (`street_life.dart`), steps them each frame,
+/// and hands the board what to paint.
 ///
 /// Roads live in **window-local** tile coords (see `LandWindow`); when the
 /// window grows the board calls [shift] with the local-origin delta so the
@@ -20,15 +20,9 @@ class PedestrianSystem {
   Set<(int, int)> _roads = const {};
   List<(int, int)> _roadList = const [];
 
-  /// Walkers per road tile; a fresh 8-tile ring gets two, a 60-tile city
-  /// fifteen, capped so a sprawling town never becomes a parade.
-  static const double perRoadTile = 0.25;
-  static const int maxPeople = 24;
-
   bool _isRoad(int col, int row) => _roads.contains((col, row));
 
-  /// Replaces the road set: walkers whose tile is no longer road respawn,
-  /// and the crowd grows or shrinks to the new target size.
+  /// Replaces the road set: walkers whose tile is no longer road respawn.
   void setRoads(Set<(int, int)> roads) {
     _roads = roads;
     _roadList = roads.toList(growable: false);
@@ -40,10 +34,15 @@ class PedestrianSystem {
       final p = people[i];
       if (!_isRoad(p.col, p.row)) people[i] = _spawn();
     }
-    final target = math.min(
-      maxPeople,
-      (_roadList.length * perRoadTile).round(),
-    );
+  }
+
+  /// Grows or trims the crowd to [target] walkers, keeping the ones already
+  /// out so a replan never makes the street jump.
+  void setCrowd(int target) {
+    if (_roadList.isEmpty) {
+      people.clear();
+      return;
+    }
     while (people.length > target) {
       people.removeLast();
     }

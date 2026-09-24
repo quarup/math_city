@@ -1252,28 +1252,30 @@ Anchors convert to world space via the sprite box: `x = box.x + ax·(64/192)`
 
 ### 9.5 Street life: which vehicles, and how many movers
 
-**Vehicle kinds.** Each is one NB turnaround sheet
-([tools/sprite_pipeline/raw_sheets/vehicle_prompts.txt](tools/sprite_pipeline/raw_sheets/vehicle_prompts.txt)).
+**Vehicle kinds.** Each is one NB 2 turnaround sheet
+([tools/sprite_pipeline/raw_sheets/vehicle_prompts.txt](tools/sprite_pipeline/raw_sheets/vehicle_prompts.txt);
+✅ cut and registered in `street_life.dart`, ⏳ sheet still to re-roll —
+NB gave it duplicate headings, or drew it green).
 Civilian kinds are always in the pool; the rest appear only while the
 gating building is placed (one per building, capped), so the streets tell
 the player what the city has.
 
 | Kind | `--length` | Appears when | Count |
 |---|---|---|---|
-| `hatchback` ✅, `sedan`, `suv`, `van`, `pickup` | 0.42–0.5 | always | weighted pool (4 / 3 / 2 / 1 / 1; pickup 3 with a `farmhouse`) |
-| `taxi` | 0.46 | population ≥ 40 | pool weight 1, 2 with a `restaurant` or `movie_theater` |
-| `bus` | 0.9 | `bus_depot` | 1 per depot, max 2 |
-| `school_bus` | 0.8 | `school` / `high_school` | 1 per school, max 2 |
-| `police_car` | 0.46 | `police_station` | 1 |
-| `ambulance` | 0.55 | `clinic` / `hospital` | 1 (2 with both) |
-| `fire_truck` | 0.8 | `fire_station` | 1, only during an A3 call-out |
-| `garbage_truck` | 0.7 | `waste_management` / `recycling_center` | 1 |
-| `mail_van` | 0.45 | `post_office` | 1 |
-| `delivery_truck` | 0.6 | `supermarket` / `grocery` / `shopping_mall` | 1 |
-| `tractor` | 0.4 | `farmhouse` / `farmers_market` | 1 |
-| `ice_cream_truck` | 0.5 | `park` / `playground` / `amusement_park` | 1 |
+| `hatchback` ✅, `suv` ✅, `van` ✅, `pickup` ✅, `sedan` ⏳ | 0.42–0.5 | always | weighted pool (4 / 2 / 1 / 1 / 3; pickup 3 with a `farmhouse`) |
+| `taxi` ⏳ | 0.46 | population ≥ 40 | pool weight 1, 2 with a `restaurant` or `movie_theater` |
+| `bus` ✅ | 0.9 | `bus_depot` | 1 per depot, max 2 |
+| `school_bus` ✅ | 0.8 | `school` / `high_school` | 1 per school, max 2 |
+| `police_car` ✅ (one view mirrored) | 0.46 | `police_station` | 1 |
+| `ambulance` ✅ | 0.55 | `clinic` / `hospital` | 1 (2 with both) |
+| `fire_truck` ✅ (one view mirrored) | 0.8 | `fire_station` | 1 (drives around until A3 call-outs exist) |
+| `garbage_truck` ⏳ (re-roll on magenta) | 0.7 | `waste_management` / `recycling_center` | 1 |
+| `mail_van` ✅ | 0.45 | `post_office` | 1 |
+| `delivery_truck` ✅ (one view mirrored) | 0.6 | `supermarket` / `grocery` / `shopping_mall` | 1 |
+| `tractor` ✅ | 0.4 | `farmhouse` / `farmers_market` | 1 |
+| `ice_cream_truck` ⏳ | 0.5 | `park` / `playground` / `amusement_park` | 1 |
 
-**Budget (proposed 2026-09-24, not yet implemented).** Inputs: live
+**Budget (implemented 2026-09-24 in [street_life.dart](lib/domain/city/street_life.dart); the board replans on every placement, road change and population tick).** Inputs: live
 population `P`, road-tile count `R`, placed building types. No absolute
 caps anywhere — the map expands without limit, so every count is a
 *density* that scales with the road network, bounded by population:
@@ -1307,7 +1309,7 @@ counts, is what the old caps were guarding):
 
 Worked: starter ring `R = 8, P = 0` → empty streets; first `single_home`
 (`P = 4`) → 1 car, 2 walkers; the 2026-09 sample city (`R ≈ 26, P = 20`)
-→ 3 cars, 8 walkers; a town with `R = 120, P = 400` → 18 cars, 36
+→ 3 cars, 7 walkers; a town with `R = 120, P = 400` → 18 cars, 36
 walkers; `R = 1 000, P = 5 000` → 150 cars, 300 walkers, of which a
 phone screen shows perhaps a tenth at a time. Today's fixed densities
 (0.12 cars and 0.25 walkers per road tile, capped at 12 and 24) are what

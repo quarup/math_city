@@ -5,6 +5,7 @@ import 'package:flame/events.dart';
 import 'package:flame/text.dart';
 import 'package:math_city/domain/city/mover_depth.dart';
 import 'package:math_city/domain/city/road_sprites.dart';
+import 'package:math_city/domain/city/street_life.dart';
 import 'package:math_city/game/city/iso_grid.dart';
 import 'package:math_city/game/city/pedestrian_system.dart';
 import 'package:math_city/game/city/traffic_system.dart';
@@ -93,6 +94,33 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     _roads = value;
     pedestrians.setRoads(value);
     traffic.setRoads(value);
+    _replanStreetLife();
+  }
+
+  int _population = 0;
+  List<String> _buildingIds = const [];
+
+  /// The inputs of the street-life budget (city_builder.md §9.5): the live
+  /// population bounds how many movers are out, and the placed building ids
+  /// unlock the gated vehicles. Reassigned by the host game whenever either
+  /// changes.
+  void setStreetLife({
+    required int population,
+    required List<String> buildingIds,
+  }) {
+    _population = population;
+    _buildingIds = buildingIds;
+    _replanStreetLife();
+  }
+
+  void _replanStreetLife() {
+    final plan = planStreetLife(
+      population: _population,
+      roadTiles: _roads.length,
+      buildingIds: _buildingIds,
+    );
+    traffic.setFleet(plan, _buildingIds);
+    pedestrians.setCrowd(plan.pedestrians);
   }
 
   Set<(int, int)> _roads = const {};

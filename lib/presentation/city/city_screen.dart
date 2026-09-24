@@ -1092,6 +1092,10 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
       _game!.setRoads(
         _localTiles(_roadTilesFor(placements, sites, ownedTiles)),
       );
+      _game!.setStreetLife(
+        population: city?.population ?? 0,
+        buildingIds: [for (final p in placements) p.buildingTypeId],
+      );
       final (allSiteTiles, selectedSiteTiles) = _landSiteTiles(sites);
       _game!.setLandSiteTiles(all: allSiteTiles, selected: selectedSiteTiles);
     }

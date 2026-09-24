@@ -2,12 +2,13 @@ import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:flame/components.dart';
+import 'package:math_city/domain/city/street_life.dart';
 import 'package:math_city/domain/city/traffic.dart';
 import 'package:math_city/game/city/iso_grid.dart';
 
-/// Owns the cars on the city's auto-roads (ideas A1/A2): spawns a fleet
-/// sized to the road network, steps them each frame, and hands the board
-/// what to paint, depth-keyed so a car slots into the building sort.
+/// Owns the cars on the city's auto-roads (ideas A1/A2): keeps the fleet the
+/// street-life plan asks for, steps it each frame, and hands the board what
+/// to paint.
 ///
 /// Roads live in **window-local** tile coords (see `LandWindow`); when the
 /// window grows the board calls [shift] with the local-origin delta so the
@@ -19,20 +20,11 @@ class TrafficSystem {
   final List<Vehicle> cars = [];
   Set<(int, int)> _roads = const {};
   List<(int, int)> _roadList = const [];
-
-  /// Cars per road tile: the 8-tile starter ring gets one, a 60-tile city
-  /// seven, capped so traffic never becomes a jam.
-  static const double perRoadTile = 0.12;
-  static const int maxCars = 12;
-
-  /// Sprite sets available; each is eight `<kind>_h<0..7>.png` files under
-  /// `assets/vehicles/`.
-  static const List<String> kinds = ['hatchback'];
+  List<String> _buildingIds = const [];
 
   bool _isRoad(int col, int row) => _roads.contains((col, row));
 
-  /// Replaces the road set: cars whose tile is no longer road respawn, and
-  /// the fleet grows or shrinks to the new target size.
+  /// Replaces the road set: cars whose tile is no longer road respawn.
   void setRoads(Set<(int, int)> roads) {
     _roads = roads;
     _roadList = roads.toList(growable: false);
@@ -42,17 +34,41 @@ class TrafficSystem {
     }
     for (var i = 0; i < cars.length; i++) {
       final v = cars[i];
-      if (!_isRoad(v.col, v.row)) cars[i] = _spawn();
+      if (!_isRoad(v.col, v.row)) cars[i] = _spawn(v.kind);
     }
-    final target = math.min(
-      maxCars,
-      math.max(1, (_roadList.length * perRoadTile).round()),
-    );
-    while (cars.length > target) {
-      cars.removeLast();
+  }
+
+  /// Brings the fleet to [plan]: gated kinds exactly as planned, civilian
+  /// slots filled from the pool. Existing cars are kept where they still fit
+  /// so a replan never makes traffic jump.
+  void setFleet(StreetLifePlan plan, List<String> buildingIds) {
+    _buildingIds = buildingIds;
+    if (_roadList.isEmpty) {
+      cars.clear();
+      return;
     }
-    while (cars.length < target) {
-      cars.add(_spawn());
+    // Drop gated cars over their count, then civilians over their slots.
+    final keptGated = <String, int>{};
+    var keptCivilians = 0;
+    cars.retainWhere((v) {
+      final kind = vehicleKindById(v.kind);
+      if (kind.isGated) {
+        final n = keptGated[v.kind] ?? 0;
+        if (n >= (plan.gated[v.kind] ?? 0)) return false;
+        keptGated[v.kind] = n + 1;
+        return true;
+      }
+      if (keptCivilians >= plan.civilians) return false;
+      keptCivilians++;
+      return true;
+    });
+    for (final entry in plan.gated.entries) {
+      for (var n = keptGated[entry.key] ?? 0; n < entry.value; n++) {
+        cars.add(_spawn(entry.key));
+      }
+    }
+    for (var n = keptCivilians; n < plan.civilians; n++) {
+      cars.add(_spawn(drawCivilianKind(_random, _buildingIds).id));
     }
   }
 
@@ -80,18 +96,13 @@ class TrafficSystem {
     }
   }
 
-  Vehicle _spawn() => spawnVehicle(
+  Vehicle _spawn(String kind) => spawnVehicle(
     roadTiles: _roadList,
     isRoad: _isRoad,
     random: _random,
-    kind: kinds[_random.nextInt(kinds.length)],
-    speed: 0.45 + _random.nextDouble() * 0.2,
+    kind: kind,
+    speed: (0.45 + _random.nextDouble() * 0.2) * vehicleKindById(kind).speed,
   );
-
-  /// Ground footprint of a car in tiles, matching the hatchback sheet's
-  /// `--length 0.42` (drawn width 0.22). The shadow is this quad.
-  static const double carLength = 0.42;
-  static const double carWidth = 0.22;
 
   /// Where each car's ground centre is on the board, in [grid] local space,
   /// with its fractional tile position (the board derives the sort key from
@@ -100,8 +111,9 @@ class TrafficSystem {
     for (final v in cars) {
       final pos = vehiclePosition(v);
       final (x, y) = grid.pointAt(pos.col, pos.row);
+      final kind = vehicleKindById(v.kind);
       final shadow = Path();
-      final quad = vehicleFootprint(v.heading, carLength, carWidth);
+      final quad = vehicleFootprint(v.heading, kind.length, kind.width);
       for (var i = 0; i < quad.length; i++) {
         final (qx, qy) = grid.pointAt(
           pos.col + quad[i].$1,
