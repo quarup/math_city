@@ -181,10 +181,10 @@ void paintCitizen(
   }
 }
 
-/// Overall citizen size against the mock's 15 px figure. Trimmed to 0.72
-/// (≈11 px at zoom 1, about a quarter of a car length) once cars were on the
+/// Overall citizen size against the mock's 15 px figure. Trimmed to 0.55
+/// (≈8 px at zoom 1, cabin height of a car) once cars were on the
 /// roads and the full-size chibi read as taller than a car.
-const double kCitizenSize = 0.72;
+const double kCitizenSize = 0.55;
 
 // P02 proportions (city_builder.md §9.3), as fractions of the height.
 const double _height = 15;
