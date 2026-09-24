@@ -1274,25 +1274,44 @@ the player what the city has.
 | `ice_cream_truck` | 0.5 | `park` / `playground` / `amusement_park` | 1 |
 
 **Budget (proposed 2026-09-24, not yet implemented).** Inputs: live
-population `P`, road-tile count `R`, placed building types.
+population `P`, road-tile count `R`, placed building types. No absolute
+caps anywhere — the map expands without limit, so every count is a
+*density* that scales with the road network, bounded by population:
 
 1. **Movers on the streets** `M = min(P, ⌊0.45 · R⌋)` — never more people
-   out than live in the city, and never more than one per ~2 road tiles.
+   out than live in the city, never more than one per ~2 road tiles.
    Before the first home nothing moves; the city comes alive as people
-   move in.
-2. **Cars** `C = min(⌊M / 3⌋, ⌊0.15 · R⌋, 12)`. Gated kinds fill the car
-   slots first (emergency → bus → service), one per gating building per
-   the table; the remainder are civilians drawn from the weighted pool.
-3. **Pedestrians** `= min(M − C, ⌊0.3 · R⌋, 24)`; ages as today.
+   move in. Constant density means a big city looks as busy per block as
+   a small one, not busier.
+2. **Cars** `C = min(⌊M / 3⌋, ⌊0.15 · R⌋)`. Gated kinds fill the car slots
+   first (emergency → bus → service), one per gating building per the
+   table; the remainder are civilians drawn from the weighted pool.
+3. **Pedestrians** `= min(M − C, ⌊0.3 · R⌋)`; ages as today.
 4. Recompute on every placement and population tick; keep existing
    movers, trim from the end, spawn the shortfall — counts drift, never
    pop.
 
+What keeps an unbounded city cheap (the render/update cost, not the
+counts, is what the old caps were guarding):
+
+- **Stepping** is O(movers) and trivial: a 1 000-tile road network holds
+  ~450 movers, a few µs each.
+- **Car following** is the one quadratic piece (`vehicleBlocked` scans
+  every other car). Bucket cars by tile and scan only the car's own tile
+  and the next one along its heading — O(cars).
+- **Painting** must cull to the viewport: the board already knows the
+  camera's visible rect; skip movers whose position is outside it (plus a
+  tile of margin). Off-screen movers still step, so they are in the right
+  place when the camera pans back. Buildings would benefit from the same
+  cull; today everything is painted every frame.
+
 Worked: starter ring `R = 8, P = 0` → empty streets; first `single_home`
 (`P = 4`) → 1 car, 2 walkers; the 2026-09 sample city (`R ≈ 26, P = 20`)
-→ 3 cars, 8 walkers; a big town (`R = 120, P = 400`) → 12 cars, 24
-walkers. Today's fixed densities (0.12 cars and 0.25 walkers per road
-tile) are what step 1 replaces.
+→ 3 cars, 8 walkers; a town with `R = 120, P = 400` → 18 cars, 36
+walkers; `R = 1 000, P = 5 000` → 150 cars, 300 walkers, of which a
+phone screen shows perhaps a tenth at a time. Today's fixed densities
+(0.12 cars and 0.25 walkers per road tile, capped at 12 and 24) are what
+this replaces.
 
 **Cheap colour variants.** A civilian sheet can be recoloured in the
 pipeline (hue-rotate the saturated body colour, leave glass / tyres / chrome)
