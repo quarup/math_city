@@ -88,16 +88,38 @@ class TrafficSystem {
     speed: 0.45 + _random.nextDouble() * 0.2,
   );
 
+  /// Ground footprint of a car in tiles, matching the hatchback sheet's
+  /// `--length 0.42` (drawn width 0.22). The shadow is this quad.
+  static const double carLength = 0.42;
+  static const double carWidth = 0.22;
+
   /// Where each car's ground centre is on the board, in [grid] local space,
-  /// with the painter's-order key the board sorts on.
+  /// with its fractional tile position (the board derives the sort key from
+  /// it, see `mover_depth.dart`) and its ground footprint for the shadow.
   Iterable<VehicleView> views(IsoGrid grid) sync* {
     for (final v in cars) {
       final pos = vehiclePosition(v);
       final (x, y) = grid.pointAt(pos.col, pos.row);
+      final shadow = Path();
+      final quad = vehicleFootprint(v.heading, carLength, carWidth);
+      for (var i = 0; i < quad.length; i++) {
+        final (qx, qy) = grid.pointAt(
+          pos.col + quad[i].$1,
+          pos.row + quad[i].$2,
+        );
+        if (i == 0) {
+          shadow.moveTo(qx, qy);
+        } else {
+          shadow.lineTo(qx, qy);
+        }
+      }
+      shadow.close();
       yield VehicleView(
         vehicle: v,
         centre: Offset(x, y),
-        depth: pos.col + pos.row,
+        col: pos.col,
+        row: pos.row,
+        shadow: shadow,
       );
     }
   }
@@ -112,14 +134,20 @@ class VehicleView {
   const VehicleView({
     required this.vehicle,
     required this.centre,
-    required this.depth,
+    required this.col,
+    required this.row,
+    required this.shadow,
   });
 
   final Vehicle vehicle;
   final Offset centre;
-  final double depth;
+  final double col;
+  final double row;
 
-  static final Paint _shadow = Paint()..color = const Color(0x40000000);
+  /// The car's ground footprint on the board, drawn as its contact shadow.
+  final Path shadow;
+
+  static final Paint _shadowPaint = Paint()..color = const Color(0x38000000);
 
   /// Draws the ground shadow and the heading sprite (cross-fading from the
   /// previous heading just after a change). [spriteFor] resolves a file
@@ -130,15 +158,7 @@ class VehicleView {
     double scale,
     Sprite? Function(String file) spriteFor,
   ) {
-    final tile = scale * 192;
-    canvas.drawOval(
-      Rect.fromCenter(
-        center: centre.translate(tile * 0.015, tile * 0.03),
-        width: tile * 0.42,
-        height: tile * 0.21,
-      ),
-      _shadow,
-    );
+    canvas.drawPath(shadow, _shadowPaint);
     final v = vehicle;
     final k = (v.fade / kHeadingFade).clamp(0.0, 1.0);
     if (k < 1 && v.prevHeading != null) {

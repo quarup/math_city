@@ -114,6 +114,30 @@ final List<double> _headingAngles = List.generate(vehicleHeadings, (h) {
   return (ac + bc, ar + br);
 }
 
+/// Unit vector in tile space that heading [h] drives along.
+(double, double) vehicleHeadingVector(int h) {
+  final (dc, dr) = _headingTileVector(h);
+  final len = math.sqrt((dc * dc + dr * dr).toDouble());
+  return (dc / len, dr / len);
+}
+
+/// The car's ground footprint for heading [h] as four tile-space offsets
+/// from its centre (front-right, front-left, rear-left, rear-right), for a
+/// car [length] long and [width] wide in tiles.
+List<(double, double)> vehicleFootprint(int h, double length, double width) {
+  final (uc, ur) = vehicleHeadingVector(h);
+  // Right-hand perpendicular: east (1, 0) → south (0, 1).
+  final (sc, sr) = (-ur, uc);
+  final l = length / 2;
+  final w = width / 2;
+  return [
+    (l * uc + w * sc, l * ur + w * sr),
+    (l * uc - w * sc, l * ur - w * sr),
+    (-l * uc - w * sc, -l * ur - w * sr),
+    (-l * uc + w * sc, -l * ur + w * sr),
+  ];
+}
+
 /// The heading whose screen angle is nearest the tile-space tangent
 /// `(dCol, dRow)`.
 int vehicleHeading(double dCol, double dRow) {
