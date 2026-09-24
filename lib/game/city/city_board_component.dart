@@ -119,7 +119,11 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
       roadTiles: _roads.length,
       buildingIds: _buildingIds,
     );
-    traffic.setFleet(plan, _buildingIds);
+    traffic.setFleet(
+      plan,
+      buildingIds: _buildingIds,
+      population: _population,
+    );
     pedestrians.setCrowd(plan.pedestrians);
   }
 

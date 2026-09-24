@@ -21,6 +21,7 @@ class TrafficSystem {
   Set<(int, int)> _roads = const {};
   List<(int, int)> _roadList = const [];
   List<String> _buildingIds = const [];
+  int _population = 0;
 
   bool _isRoad(int col, int row) => _roads.contains((col, row));
 
@@ -41,8 +42,13 @@ class TrafficSystem {
   /// Brings the fleet to [plan]: gated kinds exactly as planned, civilian
   /// slots filled from the pool. Existing cars are kept where they still fit
   /// so a replan never makes traffic jump.
-  void setFleet(StreetLifePlan plan, List<String> buildingIds) {
+  void setFleet(
+    StreetLifePlan plan, {
+    required List<String> buildingIds,
+    required int population,
+  }) {
     _buildingIds = buildingIds;
+    _population = population;
     if (_roadList.isEmpty) {
       cars.clear();
       return;
@@ -68,7 +74,15 @@ class TrafficSystem {
       }
     }
     for (var n = keptCivilians; n < plan.civilians; n++) {
-      cars.add(_spawn(drawCivilianKind(_random, _buildingIds).id));
+      cars.add(
+        _spawn(
+          drawCivilianKind(
+            _random,
+            _buildingIds,
+            population: _population,
+          ).id,
+        ),
+      );
     }
   }
 
