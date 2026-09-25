@@ -207,6 +207,13 @@ def main() -> None:
     ap.add_argument("--length", type=float, default=0.5, help="car length in tiles")
     ap.add_argument("--bg", default="green", help="backdrop colour: green (default) or magenta")
     ap.add_argument(
+        "--squash",
+        type=float,
+        default=1.0,
+        help="vertical scale applied to every cut before sizing, to pull a sheet NB drew from "
+        "too high a camera down to the 2:1 ground angle (slope 0.5): use 0.5 / measured slope.",
+    )
+    ap.add_argument(
         "--mirror",
         default="",
         help="fill a heading NB left out from the horizontal flip of its twin, "
@@ -237,6 +244,8 @@ def main() -> None:
         h = headings[RING.index(pos)]
         if h in by_heading:
             continue  # NB drew this heading twice; keep the first
+        if args.squash != 1.0:
+            crop = crop.resize((crop.width, max(1, round(crop.height * args.squash))), Image.LANCZOS)
         by_heading[h] = crop
     for dst, src in mirrors.items():
         by_heading[dst] = by_heading[src].transpose(Image.FLIP_LEFT_RIGHT)

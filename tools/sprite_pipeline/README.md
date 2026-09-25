@@ -133,6 +133,14 @@ have no twin: `--copy d=dr,u=ul` reuses a neighbour as-is, and that
 vehicle then shows two sprites through a bend instead of three. More
 missing than that: re-roll.
 
+NB sometimes draws a sheet from too high a camera, so the ground edges
+rise steeper than the road's 2:1 (slope 0.5 — the school bus came back at
+0.65 and looked wrong on the tarmac). `--squash 0.77` (0.5 / measured
+slope) scales every cut vertically before sizing, the same correction the
+building pipeline applies; the vehicle gets a little squat, which reads
+fine at road scale. Measure with the bottom-edge fit in the git history
+of this README's commit, or eyeball the QA sheet against the road tile.
+
 `--length` is the car's length in tiles (10 m): 0.42 for a hatchback keeps
 it inside one 0.3-wide lane; a bus would be ~0.9. The script chroma-keys
 the green (no rembg — a car has no green in it), splits the ring into
