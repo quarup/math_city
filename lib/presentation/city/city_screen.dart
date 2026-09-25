@@ -1596,6 +1596,19 @@ class _CityDebugSheetState extends ConsumerState<_CityDebugSheet> {
               ],
             ),
             const SizedBox(height: 16),
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: const Text('Unlock all buildings'),
+              subtitle: const Text(
+                'Whole catalog, ignoring unlock rules. This session only.',
+              ),
+              value: ref.watch(debugUnlockAllProvider),
+              onChanged: (v) {
+                ref.read(debugUnlockAllProvider.notifier).set(on: v);
+                _snack(v ? 'All buildings unlocked' : 'Unlock rules back on');
+              },
+            ),
+            const SizedBox(height: 8),
             Text('Force-fire beat', style: theme.textTheme.labelLarge),
             const SizedBox(height: 8),
             Wrap(

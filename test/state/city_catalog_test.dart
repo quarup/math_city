@@ -3,6 +3,7 @@ import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:math_city/data/database.dart';
+import 'package:math_city/domain/city/building_registry.dart';
 import 'package:math_city/state/city_provider.dart';
 import 'package:math_city/state/player_provider.dart';
 
@@ -51,6 +52,25 @@ void main() {
 
       final catalog = await container.read(cityCatalogProvider.future);
       expect(catalog.map((b) => b.id), ['mayors_office']);
+    });
+
+    test('the debug unlock-all switch shows the whole registry', () async {
+      final db = AppDatabase(NativeDatabase.memory());
+      final player = await db.createPlayer(
+        name: 'Sam',
+        gradeLevel: 2,
+        avatarConfigJson: '{}',
+      );
+      final container = await _container(db, player.id);
+      addTearDown(container.dispose);
+
+      container.read(debugUnlockAllProvider.notifier).set(on: true);
+      final all = await container.read(cityCatalogProvider.future);
+      expect(all.length, buildingRegistry.length);
+
+      container.read(debugUnlockAllProvider.notifier).set(on: false);
+      final back = await container.read(cityCatalogProvider.future);
+      expect(back.map((b) => b.id), ['mayors_office']);
     });
 
     test(

@@ -50,6 +50,23 @@ final sitesProvider = FutureProvider<List<CitySite>>((ref) async {
   return sitesFromRows(await db.sitesForCity(city.id), placements);
 });
 
+/// kDebugMode-only: when true the catalog shows every building regardless of
+/// its unlock rule, so late-game content (and the vehicles its buildings
+/// unlock) can be exercised without playing up to it. Session-only — never
+/// persisted, off again on the next launch.
+final NotifierProvider<DebugUnlockAll, bool> debugUnlockAllProvider =
+    NotifierProvider<DebugUnlockAll, bool>(DebugUnlockAll.new);
+
+class DebugUnlockAll extends Notifier<bool> {
+  @override
+  bool build() => false;
+
+  void set({required bool on}) {
+    assert(kDebugMode, 'debug helper called in a non-debug build');
+    state = on;
+  }
+}
+
 /// The build-mode catalog: every building whose unlock rule currently passes,
 /// in registry order (stable display). Placing one starts a construction site
 /// at its coin price — there is no purchase and no affordability check.
@@ -57,6 +74,9 @@ final sitesProvider = FutureProvider<List<CitySite>>((ref) async {
 final cityCatalogProvider = FutureProvider<List<BuildingType>>((ref) async {
   final playerId = ref.watch(activePlayerIdProvider);
   if (playerId == null) throw StateError('No active player');
+  if (kDebugMode && ref.watch(debugUnlockAllProvider)) {
+    return buildingRegistry.toList();
+  }
   final db = ref.read(appDatabaseProvider);
   final player = await ref.watch(activePlayerProvider.future);
   final city = await ref.watch(activeCityProvider.future);
