@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flame/game.dart';
 import 'package:flutter/foundation.dart';
@@ -131,6 +132,14 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
   /// Fulfilled beats whose retirement has been dispatched, so each is
   /// retired once per completion.
   final Set<String> _retiring = <String>{};
+
+  /// The folder open in the bar's third zone (city_builder.md §10.5), or
+  /// null for the four folder cards.
+  BuildingCategory? _openFolder;
+
+  /// Catalog cards seen so far this session; a card that arrives later
+  /// sparkles until its folder is opened. Null until the first catalog.
+  Set<String>? _seenCardIds;
 
   /// The placed building currently picked up for repositioning (yellow tint +
   /// footprint outline), or null when nothing is selected. Set by tapping a
@@ -1151,6 +1160,15 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     // dropping to null. Otherwise the bottom bar collapses for a frame, which
     // resizes the Flame viewport and makes the camera jump (see bottomNavBar).
     final catalog = catalogAsync.value;
+    // Cards that arrived since the bar was last looked at sparkle.
+    if (catalog != null) {
+      _seenCardIds ??= catalog.map((b) => b.id).toSet();
+    }
+    final newCardIds = <String>{
+      if (catalog != null && _seenCardIds != null)
+        for (final b in catalog)
+          if (!_seenCardIds!.contains(b.id)) b.id,
+    };
 
     final zoomed = _mode != _CityMode.browsing;
     // The zoomed site as it stands now (its bar keeps filling between
@@ -1291,10 +1309,21 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
             type: _selected!,
             onCancel: () => setState(() => _selected = null),
           )
-        : _BuildCatalogBar(
+        : _BuildBar(
             catalog: catalog,
-            selected: _selected,
+            sites: sites,
             requested: requested,
+            openFolder: _openFolder,
+            newCardIds: newCardIds,
+            onOpenFolder: (c) => setState(() {
+              _openFolder = c;
+              if (c != null) {
+                _seenCardIds?.addAll(
+                  catalog.where((b) => b.category == c).map((b) => b.id),
+                );
+              }
+            }),
+            onSelectSite: (site) => setState(() => _selectedSiteId = site.id),
             onOpenLetter: (b) => setState(() {
               _letterId = b.beat.id;
               // Re-opened on purpose: read it out again.
@@ -2221,35 +2250,94 @@ class _CreditChip extends StatelessWidget {
   }
 }
 
-/// Horizontal catalog of buildings whose unlock rule has passed. Every card
-/// is tap-to-select; placing it starts a site at the shown price, so nothing
-/// is ever unaffordable.
-class _BuildCatalogBar extends StatelessWidget {
-  const _BuildCatalogBar({
+/// Kid-facing folder names for the four categories (city_builder.md §10.5).
+const _folderNames = <BuildingCategory, String>{
+  BuildingCategory.civicHousing: 'Homes',
+  BuildingCategory.services: 'Services',
+  BuildingCategory.commercial: 'Shops',
+  BuildingCategory.entertainment: 'Fun',
+};
+
+const _folderEmoji = <BuildingCategory, String>{
+  BuildingCategory.civicHousing: '🏠',
+  BuildingCategory.services: '🚒',
+  BuildingCategory.commercial: '🛒',
+  BuildingCategory.entertainment: '🎡',
+};
+
+/// The bottom bar at rest, in three zones (city_builder.md §10.5): open
+/// construction sites with a progress ring, then buildings a letter has
+/// asked for (envelope badge, tap re-opens the letter), then four folders —
+/// or, with one open, its cards behind a back chevron. Never a third level.
+class _BuildBar extends StatelessWidget {
+  const _BuildBar({
     required this.catalog,
-    required this.selected,
+    required this.sites,
     required this.requested,
+    required this.openFolder,
+    required this.newCardIds,
+    required this.onOpenFolder,
+    required this.onSelectSite,
     required this.onOpenLetter,
     required this.onSelect,
   });
 
   final List<BuildingType> catalog;
-  final BuildingType? selected;
+  final List<CitySite> sites;
 
-  /// Buildings a citizen's letter has asked for, by building id. Their cards
-  /// wear an envelope badge, sit first, and re-open the letter on tap.
+  /// Buildings a citizen's letter has asked for, by building id.
   final Map<String, OpenBeat> requested;
+  final BuildingCategory? openFolder;
+
+  /// Cards that arrived since the bar was last looked at.
+  final Set<String> newCardIds;
+  final void Function(BuildingCategory?) onOpenFolder;
+  final void Function(CitySite) onSelectSite;
   final void Function(OpenBeat) onOpenLetter;
   final void Function(BuildingType) onSelect;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    // Asked-for buildings first, then the rest in unlock order.
-    final ordered = [
-      ...catalog.where((b) => requested.containsKey(b.id)),
-      ...catalog.where((b) => !requested.containsKey(b.id)),
+    final asked = catalog.where((b) => requested.containsKey(b.id)).toList();
+    final rest = catalog.where((b) => !requested.containsKey(b.id)).toList();
+    final folder = openFolder;
+
+    final cards = <Widget>[
+      for (final site in sites)
+        _SiteCard(site: site, onTap: () => onSelectSite(site)),
+      if (sites.isNotEmpty && (asked.isNotEmpty || rest.isNotEmpty))
+        const _ZoneDivider(),
+      for (final b in asked)
+        _CatalogCard(
+          building: b,
+          color: _colorFor(b),
+          requestedBy: citizenForBeat(requested[b.id]!.beat),
+          onTap: () => onOpenLetter(requested[b.id]!),
+        ),
+      if (asked.isNotEmpty && rest.isNotEmpty) const _ZoneDivider(),
+      if (folder == null)
+        for (final c in BuildingCategory.values)
+          _FolderCard(
+            category: c,
+            count: rest.where((b) => b.category == c).length,
+            hasNew: rest.any(
+              (b) => b.category == c && newCardIds.contains(b.id),
+            ),
+            onTap: () => onOpenFolder(c),
+          )
+      else ...[
+        _BackCard(category: folder, onTap: () => onOpenFolder(null)),
+        for (final b in rest.where((b) => b.category == folder))
+          _CatalogCard(
+            building: b,
+            color: _colorFor(b),
+            isNew: newCardIds.contains(b.id),
+            onTap: () => onSelect(b),
+          ),
+      ],
     ];
+
     return Material(
       elevation: 8,
       color: theme.colorScheme.surfaceContainer,
@@ -2257,7 +2345,7 @@ class _BuildCatalogBar extends StatelessWidget {
         top: false,
         child: SizedBox(
           height: _kCatalogBarHeight,
-          child: catalog.isEmpty
+          child: cards.isEmpty
               ? Center(
                   child: Text(
                     'No buildings yet — keep playing math!',
@@ -2270,23 +2358,9 @@ class _BuildCatalogBar extends StatelessWidget {
                     horizontal: 12,
                     vertical: 12,
                   ),
-                  itemCount: ordered.length,
+                  itemCount: cards.length,
                   separatorBuilder: (_, _) => const SizedBox(width: 8),
-                  itemBuilder: (context, i) {
-                    final b = ordered[i];
-                    final req = requested[b.id];
-                    return _CatalogCard(
-                      building: b,
-                      isSelected: b.id == selected?.id,
-                      color: _colorFor(b),
-                      requestedBy: req == null
-                          ? null
-                          : citizenForBeat(req.beat),
-                      onTap: req == null
-                          ? () => onSelect(b)
-                          : () => onOpenLetter(req),
-                    );
-                  },
+                  itemBuilder: (context, i) => cards[i],
                 ),
         ),
       ),
@@ -2294,23 +2368,290 @@ class _BuildCatalogBar extends StatelessWidget {
   }
 }
 
+/// A thin vertical rule between the bar's zones.
+class _ZoneDivider extends StatelessWidget {
+  const _ZoneDivider();
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 2),
+    child: VerticalDivider(
+      width: 1,
+      thickness: 1,
+      color: Theme.of(context).colorScheme.outlineVariant,
+    ),
+  );
+}
+
+/// The shared card frame: fixed width, tinted, optional selected border.
+class _BarCard extends StatelessWidget {
+  const _BarCard({
+    required this.color,
+    required this.onTap,
+    required this.child,
+    this.dashed = false,
+  });
+
+  final Color color;
+  final VoidCallback onTap;
+  final Widget child;
+  final bool dashed;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 88,
+        padding: const EdgeInsets.all(6),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: dashed ? 0.10 : 0.25),
+          borderRadius: BorderRadius.circular(12),
+          border: dashed
+              ? Border.all(color: theme.colorScheme.outlineVariant, width: 1.5)
+              : null,
+        ),
+        child: child,
+      ),
+    );
+  }
+}
+
+/// Zone 1: an open construction site with its progress ring. Tap selects
+/// the site so its bar (paid / price, Build!) comes up.
+class _SiteCard extends StatelessWidget {
+  const _SiteCard({required this.site, required this.onTap});
+
+  final CitySite site;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final goal = site.goal;
+    final emoji = switch (goal) {
+      BuildingGoal(:final type) => type.emoji,
+      LandBlockGoal() => '🟫',
+    };
+    final color = switch (goal) {
+      BuildingGoal(:final type) => _colorFor(type),
+      LandBlockGoal() => const Color(0xFF8D6E63),
+    };
+    final fraction = site.site.price == 0
+        ? 1.0
+        : (site.site.paidCoins / site.site.price).clamp(0.0, 1.0);
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        _BarCard(
+          color: color,
+          onTap: onTap,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(emoji, style: const TextStyle(fontSize: 24)),
+              const SizedBox(height: 2),
+              Flexible(
+                child: Text(
+                  site.name,
+                  style: theme.textTheme.labelSmall,
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              Text(
+                '🚧 ${site.site.paidCoins} / ${site.site.price}',
+                style: theme.textTheme.labelSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ),
+        Positioned(
+          top: -6,
+          right: -6,
+          child: _ProgressRing(fraction: fraction),
+        ),
+      ],
+    );
+  }
+}
+
+/// A small ring showing how much of a site is paid.
+class _ProgressRing extends StatelessWidget {
+  const _ProgressRing({required this.fraction});
+
+  final double fraction;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Container(
+      width: 26,
+      height: 26,
+      decoration: BoxDecoration(color: scheme.surface, shape: BoxShape.circle),
+      padding: const EdgeInsets.all(3),
+      child: CustomPaint(
+        painter: _RingPainter(
+          fraction: fraction,
+          color: const Color(0xFF2F6FA8),
+          track: scheme.outlineVariant,
+        ),
+      ),
+    );
+  }
+}
+
+class _RingPainter extends CustomPainter {
+  const _RingPainter({
+    required this.fraction,
+    required this.color,
+    required this.track,
+  });
+
+  final double fraction;
+  final Color color;
+  final Color track;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final rect = (Offset.zero & size).deflate(2);
+    Paint stroke(Color c) => Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 4
+      ..strokeCap = StrokeCap.round
+      ..color = c;
+    canvas
+      ..drawArc(rect, 0, 2 * math.pi, false, stroke(track))
+      ..drawArc(
+        rect,
+        -math.pi / 2,
+        2 * math.pi * fraction,
+        false,
+        stroke(color),
+      );
+  }
+
+  @override
+  bool shouldRepaint(_RingPainter old) =>
+      old.fraction != fraction || old.color != color || old.track != track;
+}
+
+/// Zone 3 closed: one of the four folders.
+class _FolderCard extends StatelessWidget {
+  const _FolderCard({
+    required this.category,
+    required this.count,
+    required this.hasNew,
+    required this.onTap,
+  });
+
+  final BuildingCategory category;
+  final int count;
+  final bool hasNew;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final color = _categoryColors[category] ?? const Color(0xFF90A4AE);
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Opacity(
+          opacity: count == 0 ? 0.45 : 1,
+          child: _BarCard(
+            color: color,
+            dashed: true,
+            onTap: onTap,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    _folderEmoji[category]!,
+                    style: const TextStyle(fontSize: 24),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    _folderNames[category]!,
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text('$count', style: theme.textTheme.labelSmall),
+                ],
+              ),
+            ),
+          ),
+        ),
+        if (hasNew)
+          const Positioned(
+            top: -4,
+            right: -4,
+            child: Text('✨', style: TextStyle(fontSize: 16)),
+          ),
+      ],
+    );
+  }
+}
+
+/// Zone 3 open: the back chevron that closes the folder.
+class _BackCard extends StatelessWidget {
+  const _BackCard({required this.category, required this.onTap});
+
+  final BuildingCategory category;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 56,
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surfaceContainerHighest,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.chevron_left_rounded, size: 28),
+            Text(
+              _folderNames[category]!,
+              style: theme.textTheme.labelSmall,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// A building card: emoji, name, price. Wears an envelope badge with the
+/// requesting citizen's face when a letter asked for it, or a sparkle when
+/// it arrived since the bar was last looked at.
 class _CatalogCard extends StatelessWidget {
   const _CatalogCard({
     required this.building,
-    required this.isSelected,
     required this.color,
     required this.onTap,
     this.requestedBy,
+    this.isNew = false,
   });
 
   final BuildingType building;
-  final bool isSelected;
   final Color color;
   final VoidCallback onTap;
 
-  /// The citizen whose open letter asks for this building, if any: drawn as
-  /// an envelope badge with their face in the card's corner.
+  /// The citizen whose open letter asks for this building, if any.
   final Citizen? requestedBy;
+  final bool isNew;
 
   @override
   Widget build(BuildContext context) {
@@ -2319,19 +2660,9 @@ class _CatalogCard extends StatelessWidget {
     final costStyle = theme.textTheme.labelSmall?.copyWith(
       fontWeight: FontWeight.bold,
     );
-
-    final card = AnimatedContainer(
-      duration: const Duration(milliseconds: 150),
-      width: 88,
-      padding: const EdgeInsets.all(6),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.25),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: isSelected ? theme.colorScheme.primary : Colors.transparent,
-          width: 2,
-        ),
-      ),
+    final card = _BarCard(
+      color: color,
+      onTap: onTap,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -2354,23 +2685,20 @@ class _CatalogCard extends StatelessWidget {
         ],
       ),
     );
-
     final badge = requestedBy;
-    return GestureDetector(
-      onTap: onTap,
-      child: badge == null
-          ? card
-          : Stack(
-              clipBehavior: Clip.none,
-              children: [
-                card,
-                Positioned(
-                  top: -6,
-                  right: -6,
-                  child: _EnvelopeBadge(citizen: badge),
-                ),
-              ],
-            ),
+    if (badge == null && !isNew) return card;
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        card,
+        Positioned(
+          top: -6,
+          right: -6,
+          child: badge != null
+              ? _EnvelopeBadge(citizen: badge)
+              : const Text('✨', style: TextStyle(fontSize: 16)),
+        ),
+      ],
     );
   }
 }
