@@ -218,6 +218,10 @@ class ConstructionSites extends Table {
   /// opens (the old building keeps standing until then).
   IntColumn get upgradesFromPlacementId => integer().nullable()();
 
+  // Event goals (city_builder.md §10.7): which event, at which public space.
+  TextColumn get eventId => text().nullable()();
+  IntColumn get venuePlacementId => integer().nullable()();
+
   // Land goals.
   IntColumn get blockX => integer().nullable()();
   IntColumn get blockY => integer().nullable()();
@@ -312,7 +316,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 18;
+  int get schemaVersion => 19;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -465,6 +469,15 @@ class AppDatabase extends _$AppDatabase {
         await m.addColumn(players, players.guideStep);
         await m.addColumn(players, players.guideHints);
         await customStatement('UPDATE players SET guide_step = 4');
+      }
+      if (from < 19) {
+        // v19: event sites (the block party, city_builder.md §10.7). Two
+        // nullable columns on ConstructionSites; additive.
+        await m.addColumn(constructionSites, constructionSites.eventId);
+        await m.addColumn(
+          constructionSites,
+          constructionSites.venuePlacementId,
+        );
       }
     },
   );
@@ -1041,6 +1054,25 @@ class AppDatabase extends _$AppDatabase {
     );
   }
 
+  /// Starts an event site at [venuePlacementId] (city_builder.md §10.7).
+  Future<int> startEventSite({
+    required int cityId,
+    required int playerId,
+    required String eventId,
+    required int venuePlacementId,
+  }) async {
+    final player = await getPlayerById(playerId);
+    return into(constructionSites).insert(
+      ConstructionSitesCompanion.insert(
+        cityId: cityId,
+        goalKind: 'event',
+        eventId: Value(eventId),
+        venuePlacementId: Value(venuePlacementId),
+        startedAtRound: player.roundsPlayed,
+      ),
+    );
+  }
+
   /// Moves a building site's anchor. Paid-in coins and the upgrade link are
   /// untouched — sites move like buildings (city_builder.md §8.5).
   Future<void> moveSite({
@@ -1096,13 +1128,15 @@ class AppDatabase extends _$AppDatabase {
               buildingPlacements,
             )..where((t) => t.id.equals(source))).go();
           }
-        } else {
+        } else if (site.goalKind == 'land') {
           await addOwnedLandBlock(
             cityId: site.cityId,
             blockX: site.blockX!,
             blockY: site.blockY!,
           );
         }
+        // An event site leaves nothing behind but its row going away; the
+        // party itself (population burst, reply) is the state layer's.
         await (delete(
           constructionSites,
         )..where((t) => t.id.equals(siteId))).go();

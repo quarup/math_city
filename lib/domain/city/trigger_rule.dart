@@ -10,7 +10,12 @@ class TriggerRule {
     this.minCoinsEarnedSinceLastBeat,
     this.requiresLopsided = false,
     this.requiresGrowthStalled = false,
+    this.requiresPartyGap = false,
   });
+
+  /// Fires only while new housing sits half-empty and there is a public
+  /// space to party at (`TriggerContext.partyGap`, city_builder.md §10.7).
+  final bool requiresPartyGap;
 
   static const open = TriggerRule();
 
@@ -58,6 +63,7 @@ class TriggerRule {
     if (!ctx.firedBeatIds.containsAll(requiredBeatsFired)) return false;
     if (requiresLopsided && !ctx.lopsided) return false;
     if (requiresGrowthStalled && !ctx.growthStalled) return false;
+    if (requiresPartyGap && !ctx.partyGap) return false;
     if (minCoinsEarnedSinceLastBeat != null) {
       final since = ctx.coinsEarnedSinceBeatLastFired;
       // First-fire (no prior fire => null) is always allowed.
@@ -79,7 +85,12 @@ class TriggerContext {
     this.underConstructionTypeIds = const <String>{},
     this.lopsided = false,
     this.growthStalled = false,
+    this.partyGap = false,
   });
+
+  /// Capacity minus population is at least max(8, a quarter of capacity)
+  /// and the town has a public space: a block party would fill homes.
+  final bool partyGap;
 
   /// Amenities outnumber homes past the growth model's ratio.
   final bool lopsided;

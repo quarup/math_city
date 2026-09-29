@@ -29,6 +29,7 @@ class StoryBeat {
     this.scripted = false,
     this.delivery,
     this.oneShot = false,
+    this.event,
   });
 
   final String id;
@@ -67,6 +68,11 @@ class StoryBeat {
   /// Fires at most once per player, ever (milestones): the engine skips it
   /// once it has fired, whatever its trigger says afterwards.
   final bool oneShot;
+
+  /// The event this beat asks for (a demand) or celebrates (its reply),
+  /// e.g. `kBlockPartyId`. Build it! starts the event site at the town's
+  /// public space instead of placing a building.
+  final String? event;
 
   /// The static delivery: [delivery] if set, else warnings go to the Times
   /// and everything else is a letter. The engine turns a praise letter

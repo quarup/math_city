@@ -113,6 +113,53 @@ final class BuildingGoal extends SiteGoal {
 }
 
 /// A land block (`land_blocks.dart`), priced on the ladder `600 × ring`.
+/// The one v1 event (city_builder.md §10.7): a block party prepared at a
+/// public space the town already has. Cheap — about one question block —
+/// and when it opens the population jumps to capacity.
+const kBlockPartyId = 'block_party';
+const kBlockPartyPrice = 90;
+
+/// Building types a block party can be held at.
+const kPublicSpaceTypes = <String>{
+  'park',
+  'playground',
+  'community_garden',
+  'fountain_plaza',
+  'botanical_garden',
+  'sports_field',
+};
+
+/// An event site: nothing new is built; the party is prepared on the
+/// venue's own footprint (bunting while paying, the party when it opens).
+final class EventGoal extends SiteGoal {
+  const EventGoal({
+    required this.eventId,
+    required this.venuePlacementId,
+    required this.venueType,
+    required this.col,
+    required this.row,
+  });
+
+  final String eventId;
+
+  /// The public space hosting it (a `BuildingPlacements` row id, opaque to
+  /// the domain) and its type / anchor, for the footprint.
+  final int venuePlacementId;
+  final BuildingType venueType;
+  final int col;
+  final int row;
+
+  GridFootprint get footprint => GridFootprint(
+    col: col,
+    row: row,
+    width: venueType.footprint.$1,
+    height: venueType.footprint.$2,
+  );
+
+  @override
+  int get price => kBlockPartyPrice;
+}
+
 final class LandBlockGoal extends SiteGoal {
   const LandBlockGoal({required this.blockX, required this.blockY});
 
@@ -233,6 +280,12 @@ enum SiteStartRejection {
 
   /// A site is already paying for that land block.
   blockAlreadyStarted,
+
+  /// One party at a time (city_builder.md §10.7).
+  eventAlreadyOpen,
+
+  /// The venue is not a public space.
+  venueNotPublic,
 }
 
 /// Whether [goal] may be started alongside [openSites] on a city that owns
@@ -263,6 +316,13 @@ SiteStartRejection? checkStartSite({
       }
     case BuildingGoal():
       break;
+    case EventGoal():
+      if (!kPublicSpaceTypes.contains(goal.venueType.id)) {
+        return SiteStartRejection.venueNotPublic;
+      }
+      for (final s in open) {
+        if (s.goal is EventGoal) return SiteStartRejection.eventAlreadyOpen;
+      }
     case LandBlockGoal():
       if (!purchasableBlocks(ownedBlocks).contains(goal.block)) {
         return SiteStartRejection.blockNotPurchasable;

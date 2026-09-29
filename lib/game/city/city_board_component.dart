@@ -27,7 +27,11 @@ class PlacedBuildingView {
     this.assetPath,
     this.selected = false,
     this.stage,
+    this.party = false,
   });
+
+  /// An event site on this footprint (city_builder.md §10.7): drawn as
+  /// bunting around the venue instead of a building.
 
   final int col;
   final int row;
@@ -39,6 +43,8 @@ class PlacedBuildingView {
   /// overlays (city_builder.md §8.8): dirt pad + fence, then a slab, then
   /// the final sprite as a ghost.
   final int? stage;
+
+  final bool party;
 
   /// True for the building the player currently has picked up for placement /
   /// moving: it renders with a yellow tint and a yellow footprint outline so
@@ -467,7 +473,65 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     canvas.drawPath(fence, b.selected ? _fenceSelectedStroke : _fenceStroke);
   }
 
+  /// Bunting strung around a venue while a party is being prepared: a line
+  /// along each footprint edge with little pennants hanging from it.
+  void _drawParty(Canvas canvas, PlacedBuildingView b) {
+    final (north, east, south, west) = _footprintCorners(b);
+    final lift = grid.tileWidth * 0.28;
+    final corners = [
+      north,
+      east,
+      south,
+      west,
+    ].map((c) => Offset(c.dx, c.dy - lift)).toList();
+    final line = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2
+      ..color = const Color(0xFF5D4037);
+    const colors = [
+      Color(0xFFEF5350),
+      Color(0xFFFFCA28),
+      Color(0xFF42A5F5),
+      Color(0xFF66BB6A),
+      Color(0xFFAB47BC),
+    ];
+    var k = 0;
+    for (var i = 0; i < 4; i++) {
+      final a = corners[i];
+      final c = corners[(i + 1) % 4];
+      canvas.drawLine(a, c, line);
+      final n = ((a - c).distance / (grid.tileWidth * 0.22)).round().clamp(
+        2,
+        12,
+      );
+      for (var j = 1; j < n; j++) {
+        final t = j / n;
+        final p = Offset.lerp(a, c, t)!;
+        final size = grid.tileWidth * 0.09;
+        final flag = Path()
+          ..moveTo(p.dx - size / 2, p.dy)
+          ..lineTo(p.dx + size / 2, p.dy)
+          ..lineTo(p.dx, p.dy + size * 1.3)
+          ..close();
+        canvas.drawPath(flag, Paint()..color = colors[k++ % colors.length]);
+      }
+    }
+    if (b.selected) {
+      final outline = Path()
+        ..moveTo(north.dx, north.dy)
+        ..lineTo(east.dx, east.dy)
+        ..lineTo(south.dx, south.dy)
+        ..lineTo(west.dx, west.dy)
+        ..close();
+      canvas.drawPath(outline, _fenceSelectedStroke);
+    }
+  }
+
   void _drawBuilding(Canvas canvas, PlacedBuildingView b) {
+    if (b.party) {
+      _drawParty(canvas, b);
+      return;
+    }
     final stage = b.stage;
     if (stage != null) {
       _drawSite(canvas, b, stage);
