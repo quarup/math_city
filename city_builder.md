@@ -1645,6 +1645,14 @@ the emulator). Where the code differs from the text above:
 - The block party ask is its own card in the bar's requested zone and
   completes the moment its site starts; the party's reply is a scripted
   beat fired by the opening. The venue is the *oldest* public space.
+- After the first playtest (2026-09-29, evening): the thank-you reply is a
+  note *on the celebration card* (face, name, sentence; the button reads
+  *Thanks!*) rather than a letter after it — a reply only falls back to a
+  letter when the opening had no celebration (a debug pay-in). The answer
+  hand on the question screen was dropped (a hand over one choice read as
+  the answer); the two remaining hands point *down* at their target
+  (*Place here*, the wheel fling). The placement bar says "Tap the map to
+  move it" instead of "place it here?".
 - Not built: the mailbox (deferred), the album, the requester at the
   opening, themed events, drag-from-card — all still in the deferred list.
 

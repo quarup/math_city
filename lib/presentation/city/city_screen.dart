@@ -1485,6 +1485,31 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     }
     final letterBeat = _letterId == null ? null : findBeatById(_letterId!);
     final letterIsTimes = letterBeat?.staticDelivery == BeatDelivery.times;
+
+    // The thank-you reply for the building that just opened rides on the
+    // celebration card itself rather than interrupting afterwards.
+    final celebrationReply = celebratingSite == null
+        ? null
+        : openBeats.where((b) {
+            if (b.shown || b.completed) return false;
+            if (b.beat.kind != BeatKind.praise) return false;
+            if (b.delivery != BeatDelivery.letter) return false;
+            return switch (celebratingSite.goal) {
+              BuildingGoal(:final type) =>
+                beatTargetBuilding(b.beat)?.id == type.id,
+              EventGoal(:final eventId) => b.beat.event == eventId,
+              LandBlockGoal() => false,
+            };
+          }).firstOrNull;
+    if (celebrationReply != null &&
+        _announcedLetterId != celebrationReply.beat.id) {
+      _announcedLetterId = celebrationReply.beat.id;
+      final spoken =
+          'Dear Mayor ${player?.name ?? ''}, ${celebrationReply.beat.longText}';
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) unawaited(speakIfEnabled(ref, spoken));
+      });
+    }
     final letterTarget = letterBeat == null
         ? null
         : beatTargetBuilding(letterBeat);
@@ -1846,7 +1871,22 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                       Positioned.fill(
                         child: CelebrationOverlay(
                           title: _celebrationTitle(celebratingSite),
-                          onDone: _zoomOut,
+                          reply: celebrationReply?.beat,
+                          replyFrom: celebrationReply == null
+                              ? null
+                              : citizenForBeat(celebrationReply.beat),
+                          playerName: player?.name ?? '',
+                          onDone: () {
+                            unawaited(ref.read(ttsServiceProvider).stop());
+                            if (celebrationReply != null) {
+                              unawaited(
+                                ref
+                                    .read(cityActionsProvider)
+                                    .markBeatRead(celebrationReply.beat.id),
+                              );
+                            }
+                            _zoomOut();
+                          },
                           cardKey: _celebrationCardKey,
                         ),
                       ),
@@ -2551,12 +2591,11 @@ class _PlaceHereBar extends StatelessWidget {
                     Text.rich(
                       TextSpan(
                         children: type.coinCost == 0
-                            ? const [TextSpan(text: 'Free — place it here?')]
+                            ? const [TextSpan(text: 'Tap the map to move it')]
                             : [
                                 coinSpan(),
-                                TextSpan(
-                                  text: ' ${type.coinCost} — place it here?',
-                                ),
+                                TextSpan(text: ' ${type.coinCost} · '),
+                                const TextSpan(text: 'Tap the map to move it'),
                               ],
                       ),
                       style: theme.textTheme.bodySmall?.copyWith(
@@ -2578,9 +2617,10 @@ class _PlaceHereBar extends StatelessWidget {
                   ),
                   if (showHint)
                     const Positioned(
-                      right: 8,
-                      top: -40,
-                      child: CoachHand(mode: CoachHandMode.tap),
+                      left: 0,
+                      right: 0,
+                      top: -62,
+                      child: Center(child: CoachHand(mode: CoachHandMode.tap)),
                     ),
                 ],
               ),
