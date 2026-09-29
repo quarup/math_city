@@ -6,6 +6,8 @@ import 'package:math_city/domain/city/beat_engine.dart';
 import 'package:math_city/domain/city/beat_registry.dart';
 import 'package:math_city/domain/city/building_registry.dart';
 import 'package:math_city/domain/city/building_type.dart';
+import 'package:math_city/domain/city/chapter_one.dart';
+import 'package:math_city/domain/city/citizen.dart';
 import 'package:math_city/domain/city/construction_site.dart';
 import 'package:math_city/domain/city/dag_engine.dart';
 import 'package:math_city/domain/city/population_model.dart';
@@ -385,7 +387,10 @@ class CityActions {
         if (row.buildingTypeId != null) row.buildingTypeId!,
     };
 
-    TriggerContext contextFor(StoryBeat beat) {
+    // [ignoreSpacing] evaluates the rule as if the beat had never fired:
+    // the fulfilment check below must not count a beat's own coin-spacing
+    // clause (which fails right after it fires) as "no longer wanted".
+    TriggerContext contextFor(StoryBeat beat, {bool ignoreSpacing = false}) {
       final st = states[beat.id];
       final lastBricks = st?.lifetimeCoinsAtLastFire;
       return TriggerContext(
@@ -394,7 +399,7 @@ class CityActions {
         population: city.population,
         maxBuildingAgeByTypeId: ageByType,
         firedBeatIds: firedIds,
-        coinsEarnedSinceBeatLastFired: lastBricks == null
+        coinsEarnedSinceBeatLastFired: lastBricks == null || ignoreSpacing
             ? null
             : player.lifetimeCoinsEarned - lastBricks,
       );
@@ -413,11 +418,36 @@ class CityActions {
       if (beat.kind != BeatKind.demand && beat.kind != BeatKind.warning) {
         continue;
       }
-      if (beat.triggerRule.evaluate(contextFor(beat))) continue;
+      if (beat.triggerRule.evaluate(contextFor(beat, ignoreSpacing: true)) &&
+          !_askAnswered(beat, st, placements, underConstruction)) {
+        continue;
+      }
       await db.markBeatCompleted(playerId, beat.id);
       completed = true;
     }
     if (completed) states = await db.storyBeatStatesForPlayer(playerId);
+
+    // Chapter one (city_builder.md §10.4): the script sends the letters,
+    // not the engine, and each arrives the moment the previous building
+    // opens — no spacing.
+    if (player.guideStep < kChapterOneDone) {
+      await _runChapterOne(
+        db: db,
+        playerId: playerId,
+        guideStep: player.guideStep,
+        placedIds: placedIds,
+        underConstruction: underConstruction,
+        states: states,
+        lifetimeCoins: player.lifetimeCoinsEarned,
+        roundsPlayed: player.roundsPlayed,
+      );
+      _ref
+        ..invalidate(cityCatalogProvider)
+        ..invalidate(openBeatsProvider)
+        ..invalidate(activePlayerProvider)
+        ..invalidate(allPlayersProvider);
+      return;
+    }
 
     // New beats trickle out a few rounds apart instead of bursting all at once
     // when a single build makes several eligible. Gate against the most recent
@@ -454,6 +484,94 @@ class CityActions {
     // A letter's arrival is what reveals its building's card.
     if (fired) _ref.invalidate(cityCatalogProvider);
     _ref.invalidate(openBeatsProvider);
+  }
+
+  /// Whether a demand whose trigger still passes has nevertheless been
+  /// answered: its building was started, or placed since the letter fired.
+  /// Covers recurring asks (more parks) whose trigger never turns false.
+  bool _askAnswered(
+    StoryBeat beat,
+    StoryBeatState st,
+    List<BuildingPlacement> placements,
+    Set<String> underConstruction,
+  ) {
+    if (beat.kind != BeatKind.demand) return false;
+    final target = beatTargetBuilding(beat);
+    if (target == null) return false;
+    if (underConstruction.contains(target.id)) return true;
+    final firedAt = st.lastFiredAtRound ?? 0;
+    return placements.any(
+      (p) => p.buildingTypeId == target.id && p.placedAtRound >= firedAt,
+    );
+  }
+
+  /// The chapter-one script (city_builder.md §10.4). Advances the step past
+  /// every scripted building already standing, fires the step's letter if it
+  /// hasn't arrived (or arrived, was fulfilled, and the building then went
+  /// away — a cancelled site), and at the end sends the hand-over letter and
+  /// marks the chapter done.
+  Future<void> _runChapterOne({
+    required AppDatabase db,
+    required int playerId,
+    required int guideStep,
+    required Set<String> placedIds,
+    required Set<String> underConstruction,
+    required Map<String, StoryBeatState> states,
+    required int lifetimeCoins,
+    required int roundsPlayed,
+  }) async {
+    var step = chapterOneStepFor(guideStep, placedIds);
+    if (step < kHandoverStep) {
+      final beatId = chapterOneLetters[step];
+      final building = chapterOneBuildings[step];
+      final st = states[beatId];
+      // (The step only lands here while the building is absent, so a
+      // fulfilled-then-cancelled site re-sends the letter.)
+      final needsLetter =
+          st == null ||
+          (st.state != 'onScreen' && !underConstruction.contains(building));
+      if (needsLetter) {
+        await db.recordBeatFired(playerId, beatId, lifetimeCoins, roundsPlayed);
+      }
+    } else if (states[kHandoverBeatId] == null) {
+      await db.recordBeatFired(
+        playerId,
+        kHandoverBeatId,
+        lifetimeCoins,
+        roundsPlayed,
+      );
+      step = kChapterOneDone;
+    } else {
+      step = kChapterOneDone;
+    }
+    if (step != guideStep) await db.setGuideStep(playerId, step);
+  }
+
+  /// Ends chapter one early (the parent-facing *Skip the guide*): marks it
+  /// done and lets the engine take over at once.
+  Future<void> skipGuide() async {
+    final playerId = _ref.read(activePlayerIdProvider);
+    if (playerId == null) return;
+    final db = _ref.read(appDatabaseProvider);
+    await db.setGuideStep(playerId, kChapterOneDone);
+    _ref
+      ..invalidate(activePlayerProvider)
+      ..invalidate(allPlayersProvider);
+    await fireBeats();
+  }
+
+  /// Records that a one-time gesture hint (the animated hand) has been
+  /// shown, so it never plays again for this player.
+  Future<void> markHintSeen(GuideHint hint) async {
+    final playerId = _ref.read(activePlayerIdProvider);
+    if (playerId == null) return;
+    final db = _ref.read(appDatabaseProvider);
+    final player = await db.getPlayerById(playerId);
+    if (hint.seenIn(player.guideHints)) return;
+    await db.setGuideHints(playerId, player.guideHints | hint.bit);
+    _ref
+      ..invalidate(activePlayerProvider)
+      ..invalidate(allPlayersProvider);
   }
 
   /// Advances the active city's population one tick toward the capacity its

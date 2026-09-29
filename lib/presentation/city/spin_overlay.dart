@@ -4,6 +4,7 @@ import 'dart:ui' show ImageFilter;
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:math_city/domain/city/chapter_one.dart';
 import 'package:math_city/domain/concepts/concept.dart';
 import 'package:math_city/domain/concepts/concept_registry.dart';
 import 'package:math_city/domain/economy/coin_economy.dart';
@@ -17,6 +18,8 @@ import 'package:math_city/presentation/block/block_recap.dart';
 import 'package:math_city/presentation/spin/new_concept_celebration.dart';
 import 'package:math_city/presentation/theme/app_palette.dart';
 import 'package:math_city/presentation/theme/category_colors.dart';
+import 'package:math_city/presentation/widgets/coach_hand.dart';
+import 'package:math_city/state/city_provider.dart';
 import 'package:math_city/state/introduced_concepts_provider.dart';
 import 'package:math_city/state/player_provider.dart';
 import 'package:math_city/state/proficiency_provider.dart';
@@ -112,6 +115,9 @@ class _SpinOverlayState extends ConsumerState<SpinOverlay> {
   Widget build(BuildContext context) {
     final wheelAsync = ref.watch(wheelConceptsProvider);
     final theme = Theme.of(context);
+    // The animated hand shows the fling once, until the first real throw.
+    final hints = ref.watch(activePlayerProvider).asData?.value.guideHints;
+    final showFlingHint = hints != null && !GuideHint.fling.seenIn(hints);
 
     // Create the game once, the first build where concepts are available,
     // and remember this wheel so the next one rotates against it.
@@ -127,6 +133,10 @@ class _SpinOverlayState extends ConsumerState<SpinOverlay> {
         showBackdrop: false,
         onThrow: () {
           if (mounted && _recapVisible) setState(() => _recapVisible = false);
+          // The first real fling retires the hand for good.
+          unawaited(
+            ref.read(cityActionsProvider).markHintSeen(GuideHint.fling),
+          );
         },
       );
       final shown = concepts.map((c) => c.id).toList();
@@ -180,6 +190,11 @@ class _SpinOverlayState extends ConsumerState<SpinOverlay> {
                 ),
               Expanded(child: GameWidget(game: _game!)),
             ],
+          ),
+        if (_game != null && showFlingHint && celebrating == null)
+          const Align(
+            alignment: Alignment(0, -0.45),
+            child: CoachHand(mode: CoachHandMode.fling, size: 60),
           ),
         if (_game != null && celebrating != null)
           NewConceptCelebration(

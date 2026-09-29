@@ -12,6 +12,20 @@ import 'package:math_city/domain/city/trigger_rule.dart';
 /// catalog card only appears once the player has opened (read) that ask. See
 /// `building_registry.dart`.
 const beatRegistry = <StoryBeat>[
+  // -- Chapter one (scripted, city_builder.md §10.4) ------------------------
+  StoryBeat(
+    id: 'letter_handover',
+    kind: BeatKind.praise,
+    tone: BeatTone.civic,
+    emoji: '🎉',
+    shortLabel: 'you did it!',
+    longText:
+        'Math City is on the map! From now on you can build whatever you '
+        'like — look in the folders below.',
+    triggerRule: TriggerRule.open,
+    citizen: 'town',
+    scripted: true,
+  ),
   // -- Housing --------------------------------------------------------------
   StoryBeat(
     id: 'demand_first_home',

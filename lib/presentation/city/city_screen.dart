@@ -12,6 +12,7 @@ import 'package:math_city/domain/city/beat_registry.dart';
 import 'package:math_city/domain/city/building_registry.dart';
 import 'package:math_city/domain/city/building_type.dart';
 import 'package:math_city/domain/city/category.dart';
+import 'package:math_city/domain/city/chapter_one.dart';
 import 'package:math_city/domain/city/citizen.dart';
 import 'package:math_city/domain/city/construction_site.dart';
 import 'package:math_city/domain/city/land_blocks.dart';
@@ -31,6 +32,7 @@ import 'package:math_city/presentation/navigation/route_observer.dart';
 import 'package:math_city/presentation/player/adventurer_avatar_widget.dart';
 import 'package:math_city/presentation/question/question_screen.dart';
 import 'package:math_city/presentation/theme/app_palette.dart';
+import 'package:math_city/presentation/widgets/coach_hand.dart';
 import 'package:math_city/presentation/widgets/coin_icon.dart';
 import 'package:math_city/presentation/widgets/site_progress_bar.dart';
 import 'package:math_city/state/city_provider.dart';
@@ -141,6 +143,18 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
   /// sparkles until its folder is opened. Null until the first catalog.
   Set<String>? _seenCardIds;
 
+  /// The idle nudge (city_builder.md §10.4): with no site open and a letter
+  /// waiting on its card, the card bounces every few seconds of inactivity.
+  Timer? _nudgeTimer;
+  bool _nudge = false;
+
+  /// Whether chapter one is still running for the active player: no
+  /// folders, no info cards, no land purchases, no moves.
+  bool get _chapterOne =>
+      (ref.read(activePlayerProvider).asData?.value.guideStep ??
+          kChapterOneDone) <
+      kChapterOneDone;
+
   /// The placed building currently picked up for repositioning (yellow tint +
   /// footprint outline), or null when nothing is selected. Set by tapping a
   /// building, or automatically right after one is bought + placed so the
@@ -215,6 +229,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
         return;
       }
       if (!purchasableBlocks(ownedBlocks).contains(block)) return;
+      if (_chapterOne) return; // land comes after the guide
       if (_atSiteCap(sites)) return;
       if (block == _buyingBlock) {
         _startSelectedLandSite();
@@ -248,6 +263,8 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
       return;
     }
     final occupant = _buildingAt(placements, col, row);
+    // No info card during chapter one — the letters carry the flow.
+    if (occupant != null && _chapterOne && _movingId == null) return;
     if (occupant != null) {
       // Tapping the building being moved drops it where it is. Any other
       // building opens its info card (tap the open one again to close it).
@@ -315,8 +332,48 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
 
   @override
   void dispose() {
+    _nudgeTimer?.cancel();
     routeObserver.unsubscribe(this);
     super.dispose();
+  }
+
+  /// Keeps the idle-nudge timer running exactly while [wanted]: every 8 s
+  /// of inactivity the first requested card bounces once.
+  void _scheduleNudge({required bool wanted}) {
+    if (!wanted) {
+      _nudgeTimer?.cancel();
+      _nudgeTimer = null;
+      return;
+    }
+    _nudgeTimer ??= Timer.periodic(const Duration(seconds: 8), (_) {
+      if (!mounted) return;
+      setState(() => _nudge = true);
+      Timer(const Duration(milliseconds: 700), () {
+        if (mounted) setState(() => _nudge = false);
+      });
+    });
+  }
+
+  /// Where a letter's *Build it!* proposes [type]: the legal footprint
+  /// nearest the mayor's office with room for a road around it.
+  GridFootprint? _proposeFor(
+    BuildingType type,
+    List<BuildingPlacement> placements,
+    List<CitySite> sites,
+    Set<(int, int)> ownedTiles,
+  ) {
+    final office = placements
+        .where((p) => p.buildingTypeId == 'mayors_office')
+        .firstOrNull;
+    return proposePlacement(
+      ownedTiles: ownedTiles,
+      existing: _footprintsOf(placements, sites),
+      width: type.footprint.$1,
+      height: type.footprint.$2,
+      anchor: office == null
+          ? AppDatabase.kMayorsOfficeTile
+          : (office.gridX, office.gridY),
+    );
   }
 
   /// The question route chain above us went away: read how the block ended
@@ -744,7 +801,13 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     final spot = _pendingSpot;
     final type = _selected;
     if (spot == null || type == null) return;
-    setState(() => _pendingSpot = null);
+    setState(() {
+      _pendingSpot = null;
+      _selected = null;
+    });
+    unawaited(
+      ref.read(cityActionsProvider).markHintSeen(GuideHint.placeHere),
+    );
     unawaited(
       _startSite(BuildingGoal(type: type, col: spot.col, row: spot.row)),
     );
@@ -766,6 +829,14 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
       _selectedBuildingId = result.placementId;
       _selectedSiteId = result.siteId;
     });
+    // Chapter one: placing it zooms and opens the wheel without a further
+    // tap (city_builder.md §10.4).
+    final siteId = result.siteId;
+    if (siteId != null && _chapterOne) {
+      final sites = await ref.read(sitesProvider.future);
+      final site = sites.where((s) => s.id == siteId).firstOrNull;
+      if (site != null && mounted) _buildSite(site);
+    }
   }
 
   String _rejectionMessage(SiteStartRejection rejection, List<CitySite> open) =>
@@ -1179,6 +1250,9 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
               _zoomedSite;
     final celebratingSite = _celebratingSite;
     final credit = player?.creditBalance ?? 0;
+    // A selected site that has since opened (or was cancelled) is no
+    // selection: drop the stale id so the city counts as at rest.
+    if (_selectedSiteId != null && selectedSite == null) _selectedSiteId = null;
 
     // Letters (city_builder.md §10.2). A fired beat whose letter hasn't been
     // shown interrupts when the city is at rest; a shown one stays open on
@@ -1220,6 +1294,14 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
         letterBeat?.kind == BeatKind.demand &&
         letterTarget != null &&
         (catalog?.any((b) => b.id == letterTarget.id) ?? false);
+    final guideStep = player?.guideStep ?? kChapterOneDone;
+    final chapterOne = guideStep < kChapterOneDone;
+    final hints = player?.guideHints;
+    final showPlaceHint = hints != null && !GuideHint.placeHere.seenIn(hints);
+    _scheduleNudge(
+      wanted:
+          atRest && letterBeat == null && sites.isEmpty && requested.isNotEmpty,
+    );
     if (letterBeat != null && _announcedLetterId != letterBeat.id) {
       _announcedLetterId = letterBeat.id;
       final spoken = 'Dear Mayor ${player?.name ?? ''}, ${letterBeat.longText}';
@@ -1298,6 +1380,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
         : _selected != null && _pendingSpot != null
         ? _PlaceHereBar(
             type: _selected!,
+            showHint: showPlaceHint,
             onPlace: _confirmPlacement,
             onCancel: () => setState(() {
               _pendingSpot = null;
@@ -1313,6 +1396,8 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
             catalog: catalog,
             sites: sites,
             requested: requested,
+            chapterOne: chapterOne,
+            nudge: _nudge,
             openFolder: _openFolder,
             newCardIds: newCardIds,
             onOpenFolder: (c) => setState(() {
@@ -1368,12 +1453,24 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
               Text('${player?.name ?? ''}’s city'),
             ],
           ),
-          // Credit from cancelled sites, only while there is any.
+          // Credit from cancelled sites, only while there is any; the
+          // parent-facing guide skip only while chapter one runs.
           actions: [
             if (credit > 0)
               Padding(
                 padding: const EdgeInsets.only(right: 12),
                 child: _CreditChip(amount: credit),
+              ),
+            if (chapterOne)
+              PopupMenuButton<String>(
+                onSelected: (_) =>
+                    unawaited(ref.read(cityActionsProvider).skipGuide()),
+                itemBuilder: (_) => const [
+                  PopupMenuItem(
+                    value: 'skip',
+                    child: Text('Skip the guide (for grown-ups)'),
+                  ),
+                ],
               ),
           ],
         ),
@@ -1417,10 +1514,16 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                                   unawaited(
                                     ref.read(ttsServiceProvider).stop(),
                                   );
+                                  final spot = _proposeFor(
+                                    letterTarget,
+                                    placements ?? const [],
+                                    sites,
+                                    ownedTiles,
+                                  );
                                   setState(() {
                                     _letterId = null;
                                     _selected = letterTarget;
-                                    _pendingSpot = null;
+                                    _pendingSpot = spot;
                                   });
                                 }
                               : null,
@@ -1997,11 +2100,15 @@ class _PlaceHereBar extends StatelessWidget {
     required this.type,
     required this.onPlace,
     required this.onCancel,
+    this.showHint = false,
   });
 
   final BuildingType type;
   final VoidCallback onPlace;
   final VoidCallback onCancel;
+
+  /// The one-time animated hand over *Place here* (city_builder.md §10.4).
+  final bool showHint;
 
   @override
   Widget build(BuildContext context) {
@@ -2049,7 +2156,21 @@ class _PlaceHereBar extends StatelessWidget {
               const SizedBox(width: 8),
               _CloseButton(onPressed: onCancel, tooltip: 'Cancel'),
               const SizedBox(width: 4),
-              FilledButton(onPressed: onPlace, child: const Text('Place here')),
+              Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  FilledButton(
+                    onPressed: onPlace,
+                    child: const Text('Place here'),
+                  ),
+                  if (showHint)
+                    const Positioned(
+                      right: 8,
+                      top: -40,
+                      child: CoachHand(mode: CoachHandMode.tap),
+                    ),
+                ],
+              ),
             ],
           ),
         ),
@@ -2274,6 +2395,8 @@ class _BuildBar extends StatelessWidget {
     required this.catalog,
     required this.sites,
     required this.requested,
+    required this.chapterOne,
+    required this.nudge,
     required this.openFolder,
     required this.newCardIds,
     required this.onOpenFolder,
@@ -2287,6 +2410,13 @@ class _BuildBar extends StatelessWidget {
 
   /// Buildings a citizen's letter has asked for, by building id.
   final Map<String, OpenBeat> requested;
+
+  /// While chapter one runs there is no third zone: the letters carry the
+  /// flow and the folders arrive with the hand-over (city_builder.md §10.4).
+  final bool chapterOne;
+
+  /// A one-shot bounce of the first requested card (the idle nudge).
+  final bool nudge;
   final BuildingCategory? openFolder;
 
   /// Cards that arrived since the bar was last looked at.
@@ -2308,15 +2438,23 @@ class _BuildBar extends StatelessWidget {
         _SiteCard(site: site, onTap: () => onSelectSite(site)),
       if (sites.isNotEmpty && (asked.isNotEmpty || rest.isNotEmpty))
         const _ZoneDivider(),
-      for (final b in asked)
-        _CatalogCard(
-          building: b,
-          color: _colorFor(b),
-          requestedBy: citizenForBeat(requested[b.id]!.beat),
-          onTap: () => onOpenLetter(requested[b.id]!),
+      for (final (i, b) in asked.indexed)
+        _Nudge(
+          active: nudge && i == 0,
+          child: _CatalogCard(
+            building: b,
+            color: _colorFor(b),
+            requestedBy: citizenForBeat(requested[b.id]!.beat),
+            onTap: () => onOpenLetter(requested[b.id]!),
+          ),
         ),
-      if (asked.isNotEmpty && rest.isNotEmpty) const _ZoneDivider(),
-      if (folder == null)
+      if (chapterOne)
+        const SizedBox.shrink()
+      else if (asked.isNotEmpty && rest.isNotEmpty)
+        const _ZoneDivider(),
+      if (chapterOne)
+        const SizedBox.shrink()
+      else if (folder == null)
         for (final c in BuildingCategory.values)
           _FolderCard(
             category: c,
@@ -2366,6 +2504,48 @@ class _BuildBar extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Plays one scale bounce each time [active] flips to true.
+class _Nudge extends StatefulWidget {
+  const _Nudge({required this.active, required this.child});
+
+  final bool active;
+  final Widget child;
+
+  @override
+  State<_Nudge> createState() => _NudgeState();
+}
+
+class _NudgeState extends State<_Nudge> with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 600),
+  );
+  late final Animation<double> _scale = TweenSequence<double>([
+    TweenSequenceItem(tween: Tween(begin: 1, end: 1.18), weight: 1),
+    TweenSequenceItem(tween: Tween(begin: 1.18, end: 0.96), weight: 1),
+    TweenSequenceItem(tween: Tween(begin: 0.96, end: 1.08), weight: 1),
+    TweenSequenceItem(tween: Tween(begin: 1.08, end: 1), weight: 1),
+  ]).animate(_controller);
+
+  @override
+  void didUpdateWidget(_Nudge old) {
+    super.didUpdateWidget(old);
+    if (widget.active && !old.active) {
+      unawaited(_controller.forward(from: 0));
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) =>
+      ScaleTransition(scale: _scale, child: widget.child);
 }
 
 /// A thin vertical rule between the bar's zones.

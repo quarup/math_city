@@ -45,6 +45,15 @@ AdventurerConfig _face(int seed) =>
 /// one face when it sees this id.
 const kTownCitizenId = 'town';
 
+/// Everyone in Math City, as one signer. Not in [castRegistry] (nothing is
+/// "owned" by the town); resolved by [findCitizenById].
+final townCitizen = Citizen(
+  id: kTownCitizenId,
+  name: 'The whole town',
+  role: 'everyone in Math City',
+  face: _face(0),
+);
+
 final castRegistry = <Citizen>[
   Citizen(
     id: 'pomeroy',
@@ -109,6 +118,7 @@ final castRegistry = <Citizen>[
 ];
 
 Citizen? findCitizenById(String id) {
+  if (id == kTownCitizenId) return townCitizen;
   for (final c in castRegistry) {
     if (c.id == id) return c;
   }

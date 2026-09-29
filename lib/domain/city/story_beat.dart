@@ -19,6 +19,7 @@ class StoryBeat {
     required this.triggerRule,
     this.cooldownAfterAckCoins = 600,
     this.citizen,
+    this.scripted = false,
   });
 
   final String id;
@@ -44,4 +45,8 @@ class StoryBeat {
   /// §10.8), or null to let `citizenForBeat` pick the citizen who owns the
   /// building the beat is about.
   final String? citizen;
+
+  /// A beat the engine never fires on its own — the chapter-one script
+  /// (city_builder.md §10.4) fires it at the right moment.
+  final bool scripted;
 }
