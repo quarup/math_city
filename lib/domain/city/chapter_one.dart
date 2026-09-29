@@ -40,11 +40,12 @@ int chapterOneStepFor(int step, Set<String> placedTypeIds) {
   return s;
 }
 
-/// One-time gesture hints, stored as bits in `Players.guideHints`.
+/// One-time gesture hints, stored as bits in `Players.guideHints`. (Bit 4
+/// was a hand over the first answer, dropped 2026-09-29: a hand over one
+/// choice read as the answer.)
 enum GuideHint {
   placeHere(1),
-  fling(2),
-  answer(4)
+  fling(2)
   ;
 
   const GuideHint(this.bit);

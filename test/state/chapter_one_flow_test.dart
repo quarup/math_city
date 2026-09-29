@@ -134,10 +134,8 @@ void main() {
     final actions = container.read(cityActionsProvider);
     await actions.markHintSeen(GuideHint.fling);
     await actions.markHintSeen(GuideHint.fling);
-    await actions.markHintSeen(GuideHint.answer);
     final hints = (await db.getPlayerById(pid)).guideHints;
     expect(GuideHint.fling.seenIn(hints), isTrue);
-    expect(GuideHint.answer.seenIn(hints), isTrue);
     expect(GuideHint.placeHere.seenIn(hints), isFalse);
   });
 

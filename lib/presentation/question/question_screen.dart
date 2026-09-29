@@ -3,7 +3,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:math_city/domain/city/chapter_one.dart';
 import 'package:math_city/domain/city/construction_site.dart';
 import 'package:math_city/domain/concepts/concept_registry.dart';
 import 'package:math_city/domain/economy/question_block.dart';
@@ -16,7 +15,6 @@ import 'package:math_city/presentation/diagrams/diagram_renderer.dart';
 import 'package:math_city/presentation/question/number_pad_widget.dart';
 import 'package:math_city/presentation/result/result_screen.dart';
 import 'package:math_city/presentation/theme/app_palette.dart';
-import 'package:math_city/presentation/widgets/coach_hand.dart';
 import 'package:math_city/presentation/widgets/coin_icon.dart';
 import 'package:math_city/presentation/widgets/math_text.dart';
 import 'package:math_city/presentation/widgets/site_progress_bar.dart';
@@ -24,7 +22,6 @@ import 'package:math_city/presentation/widgets/speech_toggle_button.dart';
 import 'package:math_city/presentation/widgets/streak_flame.dart';
 import 'package:math_city/services/debug_harness.dart';
 import 'package:math_city/services/tts_service.dart';
-import 'package:math_city/state/city_provider.dart';
 import 'package:math_city/state/game_session_provider.dart';
 import 'package:math_city/state/introduced_concepts_provider.dart';
 import 'package:math_city/state/player_provider.dart';
@@ -182,10 +179,6 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
     final question = _question;
     if (question == null) return;
     _answered = true;
-    // The first real answer retires the hand for good.
-    if (!widget.debugMode) {
-      unawaited(ref.read(cityActionsProvider).markHintSeen(GuideHint.answer));
-    }
 
     final outcome = checkAnswer(question, answer);
     final isCorrect = outcome != AnswerOutcome.wrong;
@@ -426,14 +419,6 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
       );
     }
 
-    // The animated hand over the first answer, once, in real play only.
-    final hints = ref.watch(activePlayerProvider).asData?.value.guideHints;
-    final showAnswerHint =
-        !widget.debugMode &&
-        widget.block != null &&
-        hints != null &&
-        !GuideHint.answer.seenIn(hints);
-
     return Scaffold(
       appBar: AppBar(
         title: title,
@@ -508,26 +493,20 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
               ),
               const SizedBox(height: 16),
               if (_useNumberPad)
-                _HintedTap(
-                  show: showAnswerHint,
-                  overPad: true,
-                  child: NumberPadWidget(
-                    onSubmit: _onAnswerSubmitted,
-                    extraChars: _extraCharsFor(question),
-                  ),
+                NumberPadWidget(
+                  onSubmit: _onAnswerSubmitted,
+                  extraChars: _extraCharsFor(question),
                 )
               else
-                for (var i = 0; i < _shuffledChoices.length; i++)
-                  Padding(
+                ..._shuffledChoices.map(
+                  (choice) => Padding(
                     padding: const EdgeInsets.symmetric(vertical: 6),
-                    child: _HintedTap(
-                      show: showAnswerHint && i == 0,
-                      child: _ChoiceButton(
-                        label: _shuffledChoices[i],
-                        onTap: () => _onAnswerSubmitted(_shuffledChoices[i]),
-                      ),
+                    child: _ChoiceButton(
+                      label: choice,
+                      onTap: () => _onAnswerSubmitted(choice),
                     ),
                   ),
+                ),
             ],
           ),
         ),
@@ -783,43 +762,6 @@ class _PromptCard extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
       ),
-    );
-  }
-}
-
-/// Wraps a tappable control with the one-time animated hand (city_builder.md
-/// §10.4) hovering over its right edge while [show] is true.
-class _HintedTap extends StatelessWidget {
-  const _HintedTap({
-    required this.show,
-    required this.child,
-    this.overPad = false,
-  });
-
-  final bool show;
-  final Widget child;
-
-  /// The child is the number pad (hand over its digits) rather than a
-  /// single button.
-  final bool overPad;
-
-  @override
-  Widget build(BuildContext context) {
-    if (!show) return child;
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        child,
-        // Over a button's right end; over the first digit row of a pad.
-        Positioned.fill(
-          child: Align(
-            alignment: overPad
-                ? const Alignment(-0.55, -0.25)
-                : const Alignment(0.75, -0.6),
-            child: const CoachHand(mode: CoachHandMode.tap),
-          ),
-        ),
-      ],
     );
   }
 }
