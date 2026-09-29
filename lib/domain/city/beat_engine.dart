@@ -24,6 +24,11 @@ class BeatEngine {
       if (b.scripted) return false;
       final ctx = contextFor(b);
       if (b.oneShot && ctx.firedBeatIds.contains(b.id)) return false;
+      // A beat that has fired before waits out its own cooldown (coins
+      // earned since that fire) so ambient praise never repeats every few
+      // rounds. Rules with their own spacing clause are stricter still.
+      final since = ctx.coinsEarnedSinceBeatLastFired;
+      if (since != null && since < b.cooldownAfterAckCoins) return false;
       return b.triggerRule.evaluate(ctx);
     }).toList();
   }

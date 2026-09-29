@@ -91,18 +91,21 @@ final cityCatalogProvider = FutureProvider<List<BuildingType>>((ref) async {
   // by `tickPopulation`; letters arrive through `fireBeats`.
   // An opened upgrade removes its source, so a placed rung also stands in
   // for every rung below it — a town hall is still a mayor's office.
-  final placedIds = placements.map((p) => p.buildingTypeId).toSet();
+  final placedIds = placedWithLadderAncestors(
+    placements.map((p) => p.buildingTypeId),
+  );
   final ctx = UnlockContext(
     lifetimeCoinsEarned: player.lifetimeCoinsEarned,
     population: city.population,
-    placedBuildingTypeIds: placedWithLadderAncestors(placedIds),
+    placedBuildingTypeIds: placedIds,
     readBeatIds: arrivedBeats,
   );
   const engine = BuildingDagEngine();
   // A placed unique building (the mayor's office) has no card: there is
-  // nothing more to place, and Move lives on its info card. Upgrade-only
-  // rungs (town hall, city hall) come from letters and the office's info
-  // card, never a card of their own.
+  // nothing more to place, and Move lives on its info card. That holds once
+  // it has grown into the town hall too (ladder ancestors count as placed).
+  // Upgrade-only rungs (town hall, city hall) come from letters and the
+  // office's info card, never a card of their own.
   return engine
       .availableToBuy(ctx)
       .where((b) => !(b.unique && placedIds.contains(b.id)))
@@ -200,6 +203,20 @@ List<BuildingPlacement> upgradeSourcesFor(
     });
 }
 
+/// Where the town holds its block party (city_builder.md §10.7): the oldest
+/// public space, or null when there is none yet.
+BuildingPlacement? partyVenueFor(List<BuildingPlacement> placements) {
+  final venues =
+      placements
+          .where((p) => kPublicSpaceTypes.contains(p.buildingTypeId))
+          .toList()
+        ..sort((a, b) {
+          final byAge = a.placedAtRound.compareTo(b.placedAtRound);
+          return byAge != 0 ? byAge : a.id.compareTo(b.id);
+        });
+  return venues.firstOrNull;
+}
+
 /// Side-effecting city operations. Kept off the widget so the placement
 /// orchestration (spend coins → insert row → invalidate) lives in one place.
 final cityActionsProvider = Provider<CityActions>(CityActions.new);
@@ -254,6 +271,7 @@ class CityActions {
       ..invalidate(cityCatalogProvider)
       ..invalidate(activePlayerProvider)
       ..invalidate(allPlayersProvider);
+    if (justOpened == kBlockPartyId) await _fillToCapacity();
     await tickPopulation();
     await fireBeats(justOpened: justOpened);
   }
@@ -299,6 +317,13 @@ class CityActions {
           playerId: playerId,
           blockX: goal.blockX,
           blockY: goal.blockY,
+        );
+      case EventGoal():
+        siteId = await db.startEventSite(
+          cityId: city.id,
+          playerId: playerId,
+          eventId: goal.eventId,
+          venuePlacementId: goal.venuePlacementId,
         );
     }
     _ref.invalidate(sitesProvider);
@@ -427,10 +452,24 @@ class CityActions {
 
     // Buildings with an open site count as present for demands
     // (city_builder.md §10.3): no letter asks for what is already on the way.
+    final siteRows = await db.sitesForCity(city.id);
     final underConstruction = <String>{
-      for (final row in await db.sitesForCity(city.id))
+      for (final row in siteRows) ...[
         if (row.buildingTypeId != null) row.buildingTypeId!,
+        if (row.eventId != null) row.eventId!,
+      ],
     };
+    // A block party is worth throwing while new homes sit half-empty and
+    // there is somewhere to hold it (city_builder.md §10.7).
+    final placedTypes = [
+      for (final p in placements) ?findBuildingTypeById(p.buildingTypeId),
+    ];
+    final capacity = populationCapacity(placedTypes);
+    final gap = capacity - city.population;
+    final partyGap =
+        placedIds.any(kPublicSpaceTypes.contains) &&
+        gap >= 8 &&
+        gap * 4 >= capacity;
 
     // [ignoreSpacing] evaluates the rule as if the beat had never fired:
     // the fulfilment check below must not count a beat's own coin-spacing
@@ -446,6 +485,7 @@ class CityActions {
         firedBeatIds: firedIds,
         lopsided: balance.lopsided,
         growthStalled: balance.growthStalled,
+        partyGap: partyGap,
         coinsEarnedSinceBeatLastFired: lastBricks == null || ignoreSpacing
             ? null
             : player.lifetimeCoinsEarned - lastBricks,
@@ -479,12 +519,15 @@ class CityActions {
     // first opening only, no spacing — so it follows the celebration.
     if (justOpened != null) {
       for (final beat in beatRegistry) {
-        if (beat.kind != BeatKind.praise || beat.scripted) continue;
+        if (beat.kind != BeatKind.praise) continue;
         if (beat.staticDelivery != BeatDelivery.letter) continue;
         final rule = beat.triggerRule;
-        if (rule.buildingsPresent.length != 1 ||
-            !rule.buildingsPresent.contains(justOpened) ||
-            rule.minBuildingAgeForId != null) {
+        final answersEvent = beat.event != null && beat.event == justOpened;
+        if (!answersEvent &&
+            (beat.scripted ||
+                rule.buildingsPresent.length != 1 ||
+                !rule.buildingsPresent.contains(justOpened) ||
+                rule.minBuildingAgeForId != null)) {
           continue;
         }
         if ((states[beat.id]?.fireCount ?? 0) > 0) continue;
@@ -570,7 +613,22 @@ class CityActions {
   String? _openedTypeOf(SiteGoal goal) => switch (goal) {
     BuildingGoal(:final type) => type.id,
     LandBlockGoal() => null,
+    EventGoal(:final eventId) => eventId,
   };
+
+  /// The party's payoff (city_builder.md §10.7): every home fills at once.
+  Future<void> _fillToCapacity() async {
+    final playerId = _ref.read(activePlayerIdProvider);
+    if (playerId == null) return;
+    final db = _ref.read(appDatabaseProvider);
+    final city = await db.cityForPlayer(playerId);
+    final placed = [
+      for (final p in await db.placementsForCity(city.id))
+        ?findBuildingTypeById(p.buildingTypeId),
+    ];
+    await db.setCityPopulation(city.id, populationCapacity(placed));
+    _ref.invalidate(activeCityProvider);
+  }
 
   /// Whether a demand whose trigger still passes has nevertheless been
   /// answered: its building was started, or placed since the letter fired.
@@ -582,6 +640,8 @@ class CityActions {
     Set<String> underConstruction,
   ) {
     if (beat.kind != BeatKind.demand) return false;
+    // An event ask is answered the moment its site starts.
+    if (beat.event case final event?) return underConstruction.contains(event);
     final target = beatTargetBuilding(beat);
     if (target == null) return false;
     if (underConstruction.contains(target.id)) return true;

@@ -3752,6 +3752,28 @@ class $ConstructionSitesTable extends ConstructionSites
         type: DriftSqlType.int,
         requiredDuringInsert: false,
       );
+  static const VerificationMeta _eventIdMeta = const VerificationMeta(
+    'eventId',
+  );
+  @override
+  late final GeneratedColumn<String> eventId = GeneratedColumn<String>(
+    'event_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _venuePlacementIdMeta = const VerificationMeta(
+    'venuePlacementId',
+  );
+  @override
+  late final GeneratedColumn<int> venuePlacementId = GeneratedColumn<int>(
+    'venue_placement_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _blockXMeta = const VerificationMeta('blockX');
   @override
   late final GeneratedColumn<int> blockX = GeneratedColumn<int>(
@@ -3802,6 +3824,8 @@ class $ConstructionSitesTable extends ConstructionSites
     gridX,
     gridY,
     upgradesFromPlacementId,
+    eventId,
+    venuePlacementId,
     blockX,
     blockY,
     paidCoins,
@@ -3865,6 +3889,21 @@ class $ConstructionSitesTable extends ConstructionSites
         upgradesFromPlacementId.isAcceptableOrUnknown(
           data['upgrades_from_placement_id']!,
           _upgradesFromPlacementIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('event_id')) {
+      context.handle(
+        _eventIdMeta,
+        eventId.isAcceptableOrUnknown(data['event_id']!, _eventIdMeta),
+      );
+    }
+    if (data.containsKey('venue_placement_id')) {
+      context.handle(
+        _venuePlacementIdMeta,
+        venuePlacementId.isAcceptableOrUnknown(
+          data['venue_placement_id']!,
+          _venuePlacementIdMeta,
         ),
       );
     }
@@ -3934,6 +3973,14 @@ class $ConstructionSitesTable extends ConstructionSites
         DriftSqlType.int,
         data['${effectivePrefix}upgrades_from_placement_id'],
       ),
+      eventId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}event_id'],
+      ),
+      venuePlacementId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}venue_placement_id'],
+      ),
       blockX: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}block_x'],
@@ -3973,6 +4020,8 @@ class ConstructionSiteRow extends DataClass
   /// For an upgrade: the `BuildingPlacements.id` this site replaces when it
   /// opens (the old building keeps standing until then).
   final int? upgradesFromPlacementId;
+  final String? eventId;
+  final int? venuePlacementId;
   final int? blockX;
   final int? blockY;
   final int paidCoins;
@@ -3987,6 +4036,8 @@ class ConstructionSiteRow extends DataClass
     this.gridX,
     this.gridY,
     this.upgradesFromPlacementId,
+    this.eventId,
+    this.venuePlacementId,
     this.blockX,
     this.blockY,
     required this.paidCoins,
@@ -4011,6 +4062,12 @@ class ConstructionSiteRow extends DataClass
       map['upgrades_from_placement_id'] = Variable<int>(
         upgradesFromPlacementId,
       );
+    }
+    if (!nullToAbsent || eventId != null) {
+      map['event_id'] = Variable<String>(eventId);
+    }
+    if (!nullToAbsent || venuePlacementId != null) {
+      map['venue_placement_id'] = Variable<int>(venuePlacementId);
     }
     if (!nullToAbsent || blockX != null) {
       map['block_x'] = Variable<int>(blockX);
@@ -4040,6 +4097,12 @@ class ConstructionSiteRow extends DataClass
       upgradesFromPlacementId: upgradesFromPlacementId == null && nullToAbsent
           ? const Value.absent()
           : Value(upgradesFromPlacementId),
+      eventId: eventId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(eventId),
+      venuePlacementId: venuePlacementId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(venuePlacementId),
       blockX: blockX == null && nullToAbsent
           ? const Value.absent()
           : Value(blockX),
@@ -4066,6 +4129,8 @@ class ConstructionSiteRow extends DataClass
       upgradesFromPlacementId: serializer.fromJson<int?>(
         json['upgradesFromPlacementId'],
       ),
+      eventId: serializer.fromJson<String?>(json['eventId']),
+      venuePlacementId: serializer.fromJson<int?>(json['venuePlacementId']),
       blockX: serializer.fromJson<int?>(json['blockX']),
       blockY: serializer.fromJson<int?>(json['blockY']),
       paidCoins: serializer.fromJson<int>(json['paidCoins']),
@@ -4085,6 +4150,8 @@ class ConstructionSiteRow extends DataClass
       'upgradesFromPlacementId': serializer.toJson<int?>(
         upgradesFromPlacementId,
       ),
+      'eventId': serializer.toJson<String?>(eventId),
+      'venuePlacementId': serializer.toJson<int?>(venuePlacementId),
       'blockX': serializer.toJson<int?>(blockX),
       'blockY': serializer.toJson<int?>(blockY),
       'paidCoins': serializer.toJson<int>(paidCoins),
@@ -4100,6 +4167,8 @@ class ConstructionSiteRow extends DataClass
     Value<int?> gridX = const Value.absent(),
     Value<int?> gridY = const Value.absent(),
     Value<int?> upgradesFromPlacementId = const Value.absent(),
+    Value<String?> eventId = const Value.absent(),
+    Value<int?> venuePlacementId = const Value.absent(),
     Value<int?> blockX = const Value.absent(),
     Value<int?> blockY = const Value.absent(),
     int? paidCoins,
@@ -4116,6 +4185,10 @@ class ConstructionSiteRow extends DataClass
     upgradesFromPlacementId: upgradesFromPlacementId.present
         ? upgradesFromPlacementId.value
         : this.upgradesFromPlacementId,
+    eventId: eventId.present ? eventId.value : this.eventId,
+    venuePlacementId: venuePlacementId.present
+        ? venuePlacementId.value
+        : this.venuePlacementId,
     blockX: blockX.present ? blockX.value : this.blockX,
     blockY: blockY.present ? blockY.value : this.blockY,
     paidCoins: paidCoins ?? this.paidCoins,
@@ -4134,6 +4207,10 @@ class ConstructionSiteRow extends DataClass
       upgradesFromPlacementId: data.upgradesFromPlacementId.present
           ? data.upgradesFromPlacementId.value
           : this.upgradesFromPlacementId,
+      eventId: data.eventId.present ? data.eventId.value : this.eventId,
+      venuePlacementId: data.venuePlacementId.present
+          ? data.venuePlacementId.value
+          : this.venuePlacementId,
       blockX: data.blockX.present ? data.blockX.value : this.blockX,
       blockY: data.blockY.present ? data.blockY.value : this.blockY,
       paidCoins: data.paidCoins.present ? data.paidCoins.value : this.paidCoins,
@@ -4153,6 +4230,8 @@ class ConstructionSiteRow extends DataClass
           ..write('gridX: $gridX, ')
           ..write('gridY: $gridY, ')
           ..write('upgradesFromPlacementId: $upgradesFromPlacementId, ')
+          ..write('eventId: $eventId, ')
+          ..write('venuePlacementId: $venuePlacementId, ')
           ..write('blockX: $blockX, ')
           ..write('blockY: $blockY, ')
           ..write('paidCoins: $paidCoins, ')
@@ -4170,6 +4249,8 @@ class ConstructionSiteRow extends DataClass
     gridX,
     gridY,
     upgradesFromPlacementId,
+    eventId,
+    venuePlacementId,
     blockX,
     blockY,
     paidCoins,
@@ -4186,6 +4267,8 @@ class ConstructionSiteRow extends DataClass
           other.gridX == this.gridX &&
           other.gridY == this.gridY &&
           other.upgradesFromPlacementId == this.upgradesFromPlacementId &&
+          other.eventId == this.eventId &&
+          other.venuePlacementId == this.venuePlacementId &&
           other.blockX == this.blockX &&
           other.blockY == this.blockY &&
           other.paidCoins == this.paidCoins &&
@@ -4200,6 +4283,8 @@ class ConstructionSitesCompanion extends UpdateCompanion<ConstructionSiteRow> {
   final Value<int?> gridX;
   final Value<int?> gridY;
   final Value<int?> upgradesFromPlacementId;
+  final Value<String?> eventId;
+  final Value<int?> venuePlacementId;
   final Value<int?> blockX;
   final Value<int?> blockY;
   final Value<int> paidCoins;
@@ -4212,6 +4297,8 @@ class ConstructionSitesCompanion extends UpdateCompanion<ConstructionSiteRow> {
     this.gridX = const Value.absent(),
     this.gridY = const Value.absent(),
     this.upgradesFromPlacementId = const Value.absent(),
+    this.eventId = const Value.absent(),
+    this.venuePlacementId = const Value.absent(),
     this.blockX = const Value.absent(),
     this.blockY = const Value.absent(),
     this.paidCoins = const Value.absent(),
@@ -4225,6 +4312,8 @@ class ConstructionSitesCompanion extends UpdateCompanion<ConstructionSiteRow> {
     this.gridX = const Value.absent(),
     this.gridY = const Value.absent(),
     this.upgradesFromPlacementId = const Value.absent(),
+    this.eventId = const Value.absent(),
+    this.venuePlacementId = const Value.absent(),
     this.blockX = const Value.absent(),
     this.blockY = const Value.absent(),
     this.paidCoins = const Value.absent(),
@@ -4240,6 +4329,8 @@ class ConstructionSitesCompanion extends UpdateCompanion<ConstructionSiteRow> {
     Expression<int>? gridX,
     Expression<int>? gridY,
     Expression<int>? upgradesFromPlacementId,
+    Expression<String>? eventId,
+    Expression<int>? venuePlacementId,
     Expression<int>? blockX,
     Expression<int>? blockY,
     Expression<int>? paidCoins,
@@ -4254,6 +4345,8 @@ class ConstructionSitesCompanion extends UpdateCompanion<ConstructionSiteRow> {
       if (gridY != null) 'grid_y': gridY,
       if (upgradesFromPlacementId != null)
         'upgrades_from_placement_id': upgradesFromPlacementId,
+      if (eventId != null) 'event_id': eventId,
+      if (venuePlacementId != null) 'venue_placement_id': venuePlacementId,
       if (blockX != null) 'block_x': blockX,
       if (blockY != null) 'block_y': blockY,
       if (paidCoins != null) 'paid_coins': paidCoins,
@@ -4269,6 +4362,8 @@ class ConstructionSitesCompanion extends UpdateCompanion<ConstructionSiteRow> {
     Value<int?>? gridX,
     Value<int?>? gridY,
     Value<int?>? upgradesFromPlacementId,
+    Value<String?>? eventId,
+    Value<int?>? venuePlacementId,
     Value<int?>? blockX,
     Value<int?>? blockY,
     Value<int>? paidCoins,
@@ -4283,6 +4378,8 @@ class ConstructionSitesCompanion extends UpdateCompanion<ConstructionSiteRow> {
       gridY: gridY ?? this.gridY,
       upgradesFromPlacementId:
           upgradesFromPlacementId ?? this.upgradesFromPlacementId,
+      eventId: eventId ?? this.eventId,
+      venuePlacementId: venuePlacementId ?? this.venuePlacementId,
       blockX: blockX ?? this.blockX,
       blockY: blockY ?? this.blockY,
       paidCoins: paidCoins ?? this.paidCoins,
@@ -4316,6 +4413,12 @@ class ConstructionSitesCompanion extends UpdateCompanion<ConstructionSiteRow> {
         upgradesFromPlacementId.value,
       );
     }
+    if (eventId.present) {
+      map['event_id'] = Variable<String>(eventId.value);
+    }
+    if (venuePlacementId.present) {
+      map['venue_placement_id'] = Variable<int>(venuePlacementId.value);
+    }
     if (blockX.present) {
       map['block_x'] = Variable<int>(blockX.value);
     }
@@ -4341,6 +4444,8 @@ class ConstructionSitesCompanion extends UpdateCompanion<ConstructionSiteRow> {
           ..write('gridX: $gridX, ')
           ..write('gridY: $gridY, ')
           ..write('upgradesFromPlacementId: $upgradesFromPlacementId, ')
+          ..write('eventId: $eventId, ')
+          ..write('venuePlacementId: $venuePlacementId, ')
           ..write('blockX: $blockX, ')
           ..write('blockY: $blockY, ')
           ..write('paidCoins: $paidCoins, ')
@@ -8868,6 +8973,8 @@ typedef $$ConstructionSitesTableCreateCompanionBuilder =
       Value<int?> gridX,
       Value<int?> gridY,
       Value<int?> upgradesFromPlacementId,
+      Value<String?> eventId,
+      Value<int?> venuePlacementId,
       Value<int?> blockX,
       Value<int?> blockY,
       Value<int> paidCoins,
@@ -8882,6 +8989,8 @@ typedef $$ConstructionSitesTableUpdateCompanionBuilder =
       Value<int?> gridX,
       Value<int?> gridY,
       Value<int?> upgradesFromPlacementId,
+      Value<String?> eventId,
+      Value<int?> venuePlacementId,
       Value<int?> blockX,
       Value<int?> blockY,
       Value<int> paidCoins,
@@ -8956,6 +9065,16 @@ class $$ConstructionSitesTableFilterComposer
 
   ColumnFilters<int> get upgradesFromPlacementId => $composableBuilder(
     column: $table.upgradesFromPlacementId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get eventId => $composableBuilder(
+    column: $table.eventId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get venuePlacementId => $composableBuilder(
+    column: $table.venuePlacementId,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -9042,6 +9161,16 @@ class $$ConstructionSitesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get eventId => $composableBuilder(
+    column: $table.eventId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get venuePlacementId => $composableBuilder(
+    column: $table.venuePlacementId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get blockX => $composableBuilder(
     column: $table.blockX,
     builder: (column) => ColumnOrderings(column),
@@ -9114,6 +9243,14 @@ class $$ConstructionSitesTableAnnotationComposer
 
   GeneratedColumn<int> get upgradesFromPlacementId => $composableBuilder(
     column: $table.upgradesFromPlacementId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get eventId =>
+      $composableBuilder(column: $table.eventId, builder: (column) => column);
+
+  GeneratedColumn<int> get venuePlacementId => $composableBuilder(
+    column: $table.venuePlacementId,
     builder: (column) => column,
   );
 
@@ -9195,6 +9332,8 @@ class $$ConstructionSitesTableTableManager
                 Value<int?> gridX = const Value.absent(),
                 Value<int?> gridY = const Value.absent(),
                 Value<int?> upgradesFromPlacementId = const Value.absent(),
+                Value<String?> eventId = const Value.absent(),
+                Value<int?> venuePlacementId = const Value.absent(),
                 Value<int?> blockX = const Value.absent(),
                 Value<int?> blockY = const Value.absent(),
                 Value<int> paidCoins = const Value.absent(),
@@ -9207,6 +9346,8 @@ class $$ConstructionSitesTableTableManager
                 gridX: gridX,
                 gridY: gridY,
                 upgradesFromPlacementId: upgradesFromPlacementId,
+                eventId: eventId,
+                venuePlacementId: venuePlacementId,
                 blockX: blockX,
                 blockY: blockY,
                 paidCoins: paidCoins,
@@ -9221,6 +9362,8 @@ class $$ConstructionSitesTableTableManager
                 Value<int?> gridX = const Value.absent(),
                 Value<int?> gridY = const Value.absent(),
                 Value<int?> upgradesFromPlacementId = const Value.absent(),
+                Value<String?> eventId = const Value.absent(),
+                Value<int?> venuePlacementId = const Value.absent(),
                 Value<int?> blockX = const Value.absent(),
                 Value<int?> blockY = const Value.absent(),
                 Value<int> paidCoins = const Value.absent(),
@@ -9233,6 +9376,8 @@ class $$ConstructionSitesTableTableManager
                 gridX: gridX,
                 gridY: gridY,
                 upgradesFromPlacementId: upgradesFromPlacementId,
+                eventId: eventId,
+                venuePlacementId: venuePlacementId,
                 blockX: blockX,
                 blockY: blockY,
                 paidCoins: paidCoins,

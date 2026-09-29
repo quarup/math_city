@@ -379,6 +379,34 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     });
   }
 
+  /// Starts an event site at [venue] and zooms straight onto it: a party
+  /// needs no placement (city_builder.md §10.7).
+  Future<void> _startEvent(String eventId, BuildingPlacement venue) async {
+    final venueType = findBuildingTypeById(venue.buildingTypeId);
+    if (venueType == null) return;
+    final result = await ref
+        .read(cityActionsProvider)
+        .startSite(
+          EventGoal(
+            eventId: eventId,
+            venuePlacementId: venue.id,
+            venueType: venueType,
+            col: venue.gridX,
+            row: venue.gridY,
+          ),
+        );
+    if (!mounted) return;
+    if (result.rejection case final rejection?) {
+      _toast(_rejectionMessage(rejection, result.openSites));
+      return;
+    }
+    final siteId = result.siteId;
+    if (siteId == null) return;
+    final sites = await ref.read(sitesProvider.future);
+    final site = sites.where((s) => s.id == siteId).firstOrNull;
+    if (site != null && mounted) _buildSite(site);
+  }
+
   /// Enters grow mode for [target] with [candidates] to pick from.
   void _enterGrow(BuildingType target, List<BuildingPlacement> candidates) {
     unawaited(ref.read(ttsServiceProvider).stop());
@@ -543,6 +571,12 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
       kBlockSize,
       kBlockSize,
     ),
+    EventGoal(:final footprint) => (
+      footprint.col,
+      footprint.row,
+      footprint.width,
+      footprint.height,
+    ),
   };
 
   void _showWheel() => setState(() {
@@ -638,6 +672,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
   String _celebrationTitle(ConstructionSite site) => switch (site.goal) {
     BuildingGoal(:final type) => '${type.name} is finished!',
     LandBlockGoal() => 'The new land is yours!',
+    EventGoal() => 'The block party is on!',
   };
 
   /// True (after toasting which sites are open) when no new site can start
@@ -743,8 +778,11 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
   /// The building site whose footprint covers tile `(col, row)`, or null.
   CitySite? _siteAt(List<CitySite> sites, int col, int row) {
     for (final s in sites) {
-      if (s.goal case BuildingGoal(:final footprint)) {
-        if (footprint.tiles().contains((col, row))) return s;
+      switch (s.goal) {
+        case BuildingGoal(:final footprint) || EventGoal(:final footprint):
+          if (footprint.tiles().contains((col, row))) return s;
+        case LandBlockGoal():
+          break;
       }
     }
     return null;
@@ -959,6 +997,8 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
           'New land has to touch land you own',
         SiteStartRejection.blockAlreadyStarted =>
           'You are already building on that land',
+        SiteStartRejection.eventAlreadyOpen => 'One party at a time!',
+        SiteStartRejection.venueNotPublic => 'A party needs a park or a plaza',
       };
 
   /// Maps placements *and building sites* to grid footprints — a site
@@ -1186,6 +1226,19 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     // Building sites render on the same layer, at their construction stage.
     // A site's ghost (stage 2) shows the type's first sprite variant.
     for (final s in sites) {
+      if (s.goal case EventGoal(:final venueType, :final col, :final row)) {
+        out.add(
+          PlacedBuildingView(
+            col: col - window.minCol,
+            row: row - window.minRow,
+            emoji: '🎈',
+            color: _colorFor(venueType),
+            footprint: venueType.footprint,
+            selected: s.id == _selectedSiteId,
+            party: true,
+          ),
+        );
+      }
       if (s.goal case BuildingGoal(:final type, :final col, :final row)) {
         out.add(
           PlacedBuildingView(
@@ -1402,8 +1455,13 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
       unawaited(ref.read(cityActionsProvider).retireCompletedBeat(b.beat.id));
     }
     final requested = <String, OpenBeat>{};
+    final eventAsks = <OpenBeat>[];
     for (final b in openBeats) {
       if (b.completed || b.beat.kind != BeatKind.demand) continue;
+      if (b.beat.event != null) {
+        eventAsks.add(b);
+        continue;
+      }
       final target = beatTargetBuilding(b.beat);
       if (target != null) requested.putIfAbsent(target.id, () => b);
     }
@@ -1435,18 +1493,26 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     final letterGrowSources = letterTarget == null
         ? const <BuildingPlacement>[]
         : upgradeSourcesFor(letterTarget.id, placements ?? const [], sites);
+    // An event letter starts its site at the town's public space.
+    final letterVenue = letterBeat?.event == null
+        ? null
+        : partyVenueFor(placements ?? const []);
     final letterCanBuild =
         letterBeat?.kind == BeatKind.demand &&
-        letterTarget != null &&
-        (letterGrowSources.isNotEmpty ||
-            (catalog?.any((b) => b.id == letterTarget.id) ?? false));
+        ((letterBeat?.event != null && letterVenue != null) ||
+            (letterTarget != null &&
+                (letterGrowSources.isNotEmpty ||
+                    (catalog?.any((b) => b.id == letterTarget.id) ?? false))));
     final guideStep = player?.guideStep ?? kChapterOneDone;
     final chapterOne = guideStep < kChapterOneDone;
     final hints = player?.guideHints;
     final showPlaceHint = hints != null && !GuideHint.placeHere.seenIn(hints);
     _scheduleNudge(
       wanted:
-          atRest && letterBeat == null && sites.isEmpty && requested.isNotEmpty,
+          atRest &&
+          letterBeat == null &&
+          sites.isEmpty &&
+          (requested.isNotEmpty || eventAsks.isNotEmpty),
     );
     if (letterBeat != null && _announcedLetterId != letterBeat.id) {
       _announcedLetterId = letterBeat.id;
@@ -1580,6 +1646,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
             catalog: catalog,
             sites: sites,
             requested: requested,
+            eventAsks: eventAsks,
             chapterOne: chapterOne,
             nudge: _nudge,
             openFolder: _openFolder,
@@ -1707,6 +1774,21 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                           onBuild: letterCanBuild
                               ? () {
                                   if (_atSiteCap(sites)) return;
+                                  if (letterBeat.event != null &&
+                                      letterVenue != null) {
+                                    unawaited(
+                                      ref.read(ttsServiceProvider).stop(),
+                                    );
+                                    setState(() => _letterId = null);
+                                    unawaited(
+                                      _startEvent(
+                                        letterBeat.event!,
+                                        letterVenue,
+                                      ),
+                                    );
+                                    return;
+                                  }
+                                  if (letterTarget == null) return;
                                   if (letterGrowSources.isNotEmpty) {
                                     _enterGrow(letterTarget, letterGrowSources);
                                     return;
@@ -2726,6 +2808,7 @@ class _BuildBar extends StatelessWidget {
     required this.catalog,
     required this.sites,
     required this.requested,
+    required this.eventAsks,
     required this.chapterOne,
     required this.nudge,
     required this.openFolder,
@@ -2741,6 +2824,10 @@ class _BuildBar extends StatelessWidget {
 
   /// Buildings a citizen's letter has asked for, by building id.
   final Map<String, OpenBeat> requested;
+
+  /// Open event letters (the block party): a card each in the requested
+  /// zone, since an event has no building card to come back from.
+  final List<OpenBeat> eventAsks;
 
   /// While chapter one runs there is no third zone: the letters carry the
   /// flow and the folders arrive with the hand-over (city_builder.md §10.4).
@@ -2767,7 +2854,8 @@ class _BuildBar extends StatelessWidget {
     final cards = <Widget>[
       for (final site in sites)
         _SiteCard(site: site, onTap: () => onSelectSite(site)),
-      if (sites.isNotEmpty && (asked.isNotEmpty || rest.isNotEmpty))
+      if (sites.isNotEmpty &&
+          (asked.isNotEmpty || eventAsks.isNotEmpty || rest.isNotEmpty))
         const _ZoneDivider(),
       for (final (i, b) in asked.indexed)
         _Nudge(
@@ -2779,9 +2867,18 @@ class _BuildBar extends StatelessWidget {
             onTap: () => onOpenLetter(requested[b.id]!),
           ),
         ),
+      for (final (i, b) in eventAsks.indexed)
+        _Nudge(
+          active: nudge && asked.isEmpty && i == 0,
+          child: _EventCard(
+            beat: b.beat,
+            requestedBy: citizenForBeat(b.beat),
+            onTap: () => onOpenLetter(b),
+          ),
+        ),
       if (chapterOne)
         const SizedBox.shrink()
-      else if (asked.isNotEmpty && rest.isNotEmpty)
+      else if ((asked.isNotEmpty || eventAsks.isNotEmpty) && rest.isNotEmpty)
         const _ZoneDivider(),
       if (chapterOne)
         const SizedBox.shrink()
@@ -2944,10 +3041,12 @@ class _SiteCard extends StatelessWidget {
     final emoji = switch (goal) {
       BuildingGoal(:final type) => type.emoji,
       LandBlockGoal() => '🟫',
+      EventGoal() => '🎈',
     };
     final color = switch (goal) {
       BuildingGoal(:final type) => _colorFor(type),
       LandBlockGoal() => const Color(0xFF8D6E63),
+      EventGoal() => const Color(0xFFEF5350),
     };
     final fraction = site.site.price == 0
         ? 1.0
@@ -3208,6 +3307,64 @@ class _CatalogCard extends StatelessWidget {
           child: badge != null
               ? _EnvelopeBadge(citizen: badge)
               : const Text('✨', style: TextStyle(fontSize: 16)),
+        ),
+      ],
+    );
+  }
+}
+
+/// Zone 2 for an event letter: the party the organiser asked for, with the
+/// envelope badge; tap re-opens the letter.
+class _EventCard extends StatelessWidget {
+  const _EventCard({
+    required this.beat,
+    required this.requestedBy,
+    required this.onTap,
+  });
+
+  final StoryBeat beat;
+  final Citizen requestedBy;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final card = _BarCard(
+      color: const Color(0xFFEF5350),
+      onTap: onTap,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(beat.emoji, style: const TextStyle(fontSize: 24)),
+          const SizedBox(height: 2),
+          Flexible(
+            child: Text(
+              'Block party',
+              style: theme.textTheme.labelSmall,
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          const SizedBox(height: 2),
+          CoinAmount(
+            amount: kBlockPartyPrice,
+            iconSize: 12,
+            style: theme.textTheme.labelSmall?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        card,
+        Positioned(
+          top: -6,
+          right: -6,
+          child: _EnvelopeBadge(citizen: requestedBy),
         ),
       ],
     );

@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:math_city/domain/city/beat_registry.dart';
 import 'package:math_city/domain/city/building_registry.dart';
+import 'package:math_city/domain/city/construction_site.dart';
 
 void main() {
   test('beat ids are unique', () {
@@ -20,6 +21,9 @@ void main() {
             rule.minBuildingAgeForId!.buildingTypeId,
         };
         for (final id in refs) {
+          // An event id stands in for a building while its site is open
+          // (city_builder.md §10.7).
+          if (id == kBlockPartyId) continue;
           expect(
             findBuildingTypeById(id),
             isNotNull,

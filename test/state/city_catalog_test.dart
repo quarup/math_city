@@ -138,6 +138,29 @@ void main() {
   });
 
   group('upgrades (city_builder.md §10.6)', () {
+    test('an office grown into a town hall gets no office card back', () async {
+      final (db, player) = await _playerWithMayor();
+      final city = await db.cityForPlayer(player.id);
+      // Opening a town-hall upgrade removes the office; mimic that.
+      final officeIds = (await db.placementsForCity(city.id))
+          .where((p) => p.buildingTypeId == 'mayors_office')
+          .map((p) => p.id)
+          .toList();
+      final siteId = await db.startBuildingSite(
+        cityId: city.id,
+        playerId: player.id,
+        buildingTypeId: 'town_hall',
+        gridX: 5,
+        gridY: 5,
+        upgradesFromPlacementId: officeIds.first,
+      );
+      await db.openSite(siteId, playerId: player.id);
+      final container = await _container(db, player.id);
+      addTearDown(container.dispose);
+      final catalog = await container.read(cityCatalogProvider.future);
+      expect(catalog.map((b) => b.id), isNot(contains('mayors_office')));
+    });
+
     test('upgrade-only rungs never get a card', () async {
       final (db, player) = await _playerWithMayor();
       final city = await db.cityForPlayer(player.id);

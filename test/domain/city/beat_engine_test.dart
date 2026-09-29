@@ -139,4 +139,21 @@ void main() {
       );
     },
   );
+
+  test('a fired beat waits out its cooldown before re-firing', () {
+    const engine = BeatEngine();
+    TriggerContext ctx(int? since) => TriggerContext(
+      placedBuildingTypeIds: const {'mayors_office', 'single_home'},
+      population: 0,
+      maxBuildingAgeByTypeId: const {},
+      firedBeatIds: const {'praise_first_home'},
+      coinsEarnedSinceBeatLastFired: since,
+    );
+    bool eligible(int? since) => engine
+        .eligibleBeats(contextFor: (_) => ctx(since))
+        .any((b) => b.id == 'praise_first_home');
+    expect(eligible(null), isTrue);
+    expect(eligible(100), isFalse);
+    expect(eligible(600), isTrue);
+  });
 }

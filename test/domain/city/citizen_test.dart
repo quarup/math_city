@@ -34,9 +34,13 @@ void main() {
 
   group('beatTargetBuilding', () {
     test('every demand beat names the building it asks for', () {
-      for (final beat in beatRegistry.where((b) => b.kind == BeatKind.demand)) {
+      for (final beat in beatRegistry.where(
+        (b) => b.kind == BeatKind.demand && b.event == null,
+      )) {
         expect(beatTargetBuilding(beat), isNotNull, reason: beat.id);
       }
+      // An event letter is about a party, not a building.
+      expect(beatTargetBuilding(findBeatById('event_block_party')!), isNull);
     });
 
     test('the first-home letter is about the single home', () {

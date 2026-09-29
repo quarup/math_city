@@ -83,6 +83,39 @@ const beatRegistry = <StoryBeat>[
     delivery: BeatDelivery.times,
     oneShot: true,
   ),
+  // -- The block party (city_builder.md §10.7) -------------------------------
+  StoryBeat(
+    id: 'event_block_party',
+    kind: BeatKind.demand,
+    tone: BeatTone.silly,
+    emoji: '🎈',
+    shortLabel: 'a block party!',
+    longText:
+        "The new homes are ready but half the town hasn't heard! A block "
+        'party at the park would bring everyone out — and new neighbours in.',
+    triggerRule: TriggerRule(
+      buildingsPresent: <String>{'single_home'},
+      buildingsAbsent: <String>{'block_party'},
+      requiresPartyGap: true,
+      minCoinsEarnedSinceLastBeat: 900,
+    ),
+    citizen: 'pip',
+    event: 'block_party',
+  ),
+  StoryBeat(
+    id: 'praise_block_party',
+    kind: BeatKind.praise,
+    tone: BeatTone.silly,
+    emoji: '🎉',
+    shortLabel: 'what a party!',
+    longText:
+        'What a party! Half the town danced till dark and the other half '
+        'moved in. Same time next month?',
+    triggerRule: TriggerRule.open,
+    citizen: 'pip',
+    event: 'block_party',
+    scripted: true,
+  ),
   // -- Chapter one (scripted, city_builder.md §10.4) ------------------------
   StoryBeat(
     id: 'letter_handover',
