@@ -9,7 +9,7 @@
 
 ## Status
 
-- **Last updated:** 2026-09-29 (§10 *Letters from Math City* — story delivery, chapter one, folders, housing ladders, block party). Previously 2026-06-14 (Phase-9 catalog completed — all 54 anchors wired + sprite-backed; `train_station` dropped, the rail can't be drawn coherently in 2:1 dimetric)
+- **Last updated:** 2026-09-29 (§10 *Letters from Math City* designed and **implemented** the same day — see the note under §10.9). Previously 2026-06-14 (Phase-9 catalog completed — all 54 anchors wired + sprite-backed; `train_station` dropped, the rail can't be drawn coherently in 2:1 dimetric)
 - **Phase:** Phase 8 — City Builder: Research & Rich Design. Content-authoring only, **no code changes**. Deliverable is this document; Phase 9 implements it.
 - **Drafting mode:** *fill pass complete (first draft)*. §1 (references), §2 (categories), §3 (full building specs — 54 anchors), §4 (beat catalog), §5 (asset checklist), and §7 (open questions) are drafted. §6 (implementation status) is auto-managed by [tools/city_builder/sync_implementation_status.py](tools/city_builder/sync_implementation_status.py); as of 2026-06-14 all 54 anchors are wired and sprite-backed. Three structure decisions are locked (2026-05-31): education (`school`/`high_school`) lives under `services`; `water` is a hard-gating service; the housing spine keeps all 7 rungs. **Still expects Phase-9 iteration** — costs and service ratios are designed-coherent placeholders, finalized by playtest.
 - **Framework:** extends the Phase-7 model — four categories, the service-ratio + variety-multiplier growth model, and the typed `UnlockRule` / `TriggerRule` gates. **Currency revised 2026-09-08:** the two-currency 🧱/🔬 design this document was drafted against was replaced by a single currency, **coins** (1 coin ≈ 1 expected second of study); §3's cost columns and §3.5 were re-denominated accordingly, and the research step is gone — a building whose unlock rule passes is bought straight away. See prd.md *Cosmetics System*.
@@ -1627,6 +1627,26 @@ on the "To:" line of every letter and cutting the ribbon at openings.
 | 4 | Thank-you replies after openings; pedestrian praise bubbles; the Times for milestones and the two ratio warnings (needs the §7 `TriggerRule` ratio extension) | domain, game, presentation |
 | 5 | Ladder changes (housing split, town hall upgrade-only, four additions, area invariant); the grow bar with ◀ ▶; info-card grow option | domain, presentation |
 | 6 | Block party: `EventGoal` site on a public space, stage art, population burst, guardrails, organiser letters | all four layers, schema bump |
+
+**Implemented 2026-09-29** (PRs #121–#126, every step device-verified on
+the emulator). Where the code differs from the text above:
+
+- The letter's picture panel shows the building sprite alone (round-2
+  decision); the hand-over letter is signed *The whole town* with five cast
+  faces in the header. In chapter one, *Place here* zooms straight onto the
+  wheel with no further tap.
+- Schema **v18** carries `Players.guideStep` / `guideHints` (players from
+  before the guide migrate straight to free play); **v19** carries
+  `ConstructionSites.eventId` / `venuePlacementId`.
+- Beats gained `citizen`, `scripted`, `delivery`, `oneShot`, `event`. The
+  engine skips scripted beats, one-shot beats that have fired, and any beat
+  still inside its own `cooldownAfterAckCoins` (praise used to repeat every
+  five rounds). Debug force-fire of praise fires it as a bubble.
+- The block party ask is its own card in the bar's requested zone and
+  completes the moment its site starts; the party's reply is a scripted
+  beat fired by the opening. The venue is the *oldest* public space.
+- Not built: the mailbox (deferred), the album, the requester at the
+  opening, themed events, drag-from-card — all still in the deferred list.
 
 ### 10.10 Decisions log
 
