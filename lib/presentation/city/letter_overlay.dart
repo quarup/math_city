@@ -75,7 +75,7 @@ class LetterOverlay extends ConsumerWidget {
                       Row(
                         children: [
                           if (isTown)
-                            _CastRow(size: 40)
+                            const _CastRow(size: 40)
                           else
                             AdventurerAvatarWidget(
                               config: citizen.face,
