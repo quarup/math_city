@@ -208,6 +208,11 @@ BuildingType? beatTargetBuilding(StoryBeat beat) {
     // asks for is the one whose card it reveals — handled above — so only
     // the multi-absent first-home beat lands here: it asks for a home.
     if (absent.isNotEmpty) return findBuildingTypeById(absent.first);
+    // A scripted ask about a building that already stands (move it).
+    final present = beat.triggerRule.buildingsPresent;
+    if (beat.scripted && present.length == 1) {
+      return findBuildingTypeById(present.first);
+    }
     return null;
   }
   if (beat.kind == BeatKind.praise) {

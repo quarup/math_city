@@ -316,7 +316,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 19;
+  int get schemaVersion => 20;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -477,6 +477,15 @@ class AppDatabase extends _$AppDatabase {
         await m.addColumn(
           constructionSites,
           constructionSites.venuePlacementId,
+        );
+      }
+      if (from < 20) {
+        // v20: chapter one gained a "move your house" step at index 1, so
+        // every step past the first shifts up by one (done: 4 → 5). No
+        // schema change.
+        await customStatement(
+          'UPDATE players SET guide_step = guide_step + 1 '
+          'WHERE guide_step >= 1',
         );
       }
     },

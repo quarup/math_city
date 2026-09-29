@@ -8,10 +8,15 @@ void main() {
   group('chapterOneStepFor', () {
     test('advances past every scripted building already standing', () {
       expect(chapterOneStepFor(0, const {'mayors_office'}), 0);
-      expect(chapterOneStepFor(0, const {'single_home'}), 1);
-      expect(chapterOneStepFor(0, const {'single_home', 'school'}), 2);
+      expect(chapterOneStepFor(0, const {'single_home'}), kMoveStep);
+      // The move step waits for an actual move, whatever else stands.
+      expect(chapterOneStepFor(0, const {'single_home', 'school'}), kMoveStep);
       expect(
-        chapterOneStepFor(0, const {'single_home', 'school', 'park'}),
+        chapterOneStepFor(kMoveStep + 1, const {
+          'single_home',
+          'school',
+          'park',
+        }),
         kHandoverStep,
       );
     });

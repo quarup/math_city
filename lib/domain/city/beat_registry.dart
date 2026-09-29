@@ -118,6 +118,32 @@ const beatRegistry = <StoryBeat>[
   ),
   // -- Chapter one (scripted, city_builder.md §10.4) ------------------------
   StoryBeat(
+    id: 'tutorial_move_home',
+    kind: BeatKind.demand,
+    tone: BeatTone.cozy,
+    emoji: '🚚',
+    shortLabel: 'move my house?',
+    longText:
+        'Thank you for the house! But Biscuit wants a sunnier spot. Could '
+        'you tap the house, press Move, and tap where it should go?',
+    triggerRule: TriggerRule(buildingsPresent: <String>{'single_home'}),
+    citizen: 'pomeroy',
+    scripted: true,
+  ),
+  StoryBeat(
+    id: 'tutorial_moved_thanks',
+    kind: BeatKind.praise,
+    tone: BeatTone.cozy,
+    emoji: '☀️',
+    shortLabel: 'perfect spot',
+    longText:
+        'Perfect spot! The morning sun comes right into the kitchen now. '
+        'Thank you, Mayor!',
+    triggerRule: TriggerRule(buildingsPresent: <String>{'single_home'}),
+    citizen: 'pomeroy',
+    scripted: true,
+  ),
+  StoryBeat(
     id: 'letter_handover',
     kind: BeatKind.praise,
     tone: BeatTone.civic,

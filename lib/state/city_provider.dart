@@ -511,6 +511,8 @@ class CityActions {
       if (beat.kind != BeatKind.demand && beat.kind != BeatKind.warning) {
         continue;
       }
+      // Scripted asks (move your house) are completed by the script.
+      if (beat.scripted) continue;
       if (beat.triggerRule.evaluate(contextFor(beat, ignoreSpacing: true)) &&
           !_askAnswered(beat, st, placements, underConstruction)) {
         continue;
@@ -677,11 +679,22 @@ class CityActions {
       final beatId = chapterOneLetters[step];
       final building = chapterOneBuildings[step];
       final st = states[beatId];
-      // (The step only lands here while the building is absent, so a
-      // fulfilled-then-cancelled site re-sends the letter.)
+      // The step after the move waits until Mrs. Pomeroy's thanks has been
+      // shown, so the two letters never race.
+      final thanks = states[kMovedThanksBeatId];
+      final waitingOnThanks =
+          step == kMoveStep + 1 &&
+          thanks != null &&
+          thanks.ackedAtRound == null;
+      // (A building step only lands here while the building is absent, so
+      // a fulfilled-then-cancelled site re-sends the letter; the move step
+      // sends its letter once.)
       final needsLetter =
-          st == null ||
-          (st.state != 'onScreen' && !underConstruction.contains(building));
+          !waitingOnThanks &&
+          (st == null ||
+              (building != null &&
+                  st.state != 'onScreen' &&
+                  !underConstruction.contains(building)));
       if (needsLetter) {
         await db.recordBeatFired(playerId, beatId, lifetimeCoins, roundsPlayed);
       }
@@ -697,6 +710,35 @@ class CityActions {
       step = kChapterOneDone;
     }
     if (step != guideStep) await db.setGuideStep(playerId, step);
+  }
+
+  /// The home moved during chapter one's move step (city_builder.md §10.4):
+  /// the ask is done, Mrs. Pomeroy says thanks, and the script moves on.
+  /// No-op outside that step or for any other building.
+  Future<void> noteBuildingMoved(int placementId) async {
+    final playerId = _ref.read(activePlayerIdProvider);
+    if (playerId == null) return;
+    final db = _ref.read(appDatabaseProvider);
+    final player = await db.getPlayerById(playerId);
+    if (player.guideStep != kMoveStep) return;
+    final city = await db.cityForPlayer(playerId);
+    final moved = (await db.placementsForCity(
+      city.id,
+    )).where((p) => p.id == placementId).firstOrNull;
+    if (moved == null || moved.buildingTypeId != 'single_home') return;
+    await db.setBeatState(playerId, chapterOneLetters[kMoveStep], 'acked');
+    await db.setGuideStep(playerId, kMoveStep + 1);
+    await db.recordBeatFired(
+      playerId,
+      kMovedThanksBeatId,
+      player.lifetimeCoinsEarned,
+      player.roundsPlayed,
+    );
+    _ref
+      ..invalidate(openBeatsProvider)
+      ..invalidate(activePlayerProvider)
+      ..invalidate(allPlayersProvider);
+    await fireBeats();
   }
 
   /// Ends chapter one early (the parent-facing *Skip the guide*): marks it
@@ -775,6 +817,8 @@ class CityActions {
     final player = await db.getPlayerById(playerId);
     await db.markBeatRead(playerId, beatId, player.roundsPlayed);
     _ref.invalidate(openBeatsProvider);
+    // Chapter one gates a step's letter on the previous one being shown.
+    if (player.guideStep < kChapterOneDone) await fireBeats();
   }
 
   /// Retires a beat whose request has been fulfilled ('completed' → 'acked')

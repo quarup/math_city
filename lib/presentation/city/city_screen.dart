@@ -163,6 +163,13 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
   /// Clears the red "no room" footprint after its moment.
   Timer? _rejectedTimer;
 
+  /// A letter waits [kLetterDelay] after the city comes to rest before it
+  /// interrupts, so the kid gets a moment with the city first. The timer
+  /// arms [_letterArmed] for the beat it was started for.
+  Timer? _letterDelay;
+  String? _letterPending;
+  String? _letterArmed;
+
   /// The idle nudge (city_builder.md §10.4): with no site open and a letter
   /// waiting on its card, the card bounces every few seconds of inactivity.
   Timer? _nudgeTimer;
@@ -291,8 +298,6 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
       if (i >= 0) setState(() => _growIndex = i);
       return;
     }
-    // No info card during chapter one — the letters carry the flow.
-    if (occupant != null && _chapterOne && _movingId == null) return;
     if (occupant != null) {
       // Tapping the building being moved drops it where it is. Any other
       // building opens its info card (tap the open one again to close it).
@@ -360,6 +365,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
 
   @override
   void dispose() {
+    _letterDelay?.cancel();
     _rejectedTimer?.cancel();
     _nudgeTimer?.cancel();
     routeObserver.unsubscribe(this);
@@ -409,6 +415,13 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     final sites = await ref.read(sitesProvider.future);
     final site = sites.where((s) => s.id == siteId).firstOrNull;
     if (site != null && mounted) _buildSite(site);
+  }
+
+  void _cancelLetterDelay() {
+    _letterDelay?.cancel();
+    _letterDelay = null;
+    _letterPending = null;
+    _letterArmed = null;
   }
 
   /// Paints [type]'s footprint in red at the tapped tile for a moment, so
@@ -766,11 +779,28 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
 
   /// *Place here* on the move bar (or a tap on the moved building itself):
   /// every tile tap already moved it, so this just ends the mode.
-  void _dropMoved() => setState(() {
-    _movingId = null;
-    _movingSiteId = null;
-    _moveOrigin = null;
-  });
+  void _dropMoved() {
+    // A building that ended up somewhere else counts as moved (chapter
+    // one's move step listens for the home).
+    final id = _movingId;
+    final origin = _moveOrigin;
+    if (id != null && origin != null) {
+      final moved = ref
+          .read(placementsProvider)
+          .asData
+          ?.value
+          .where((p) => p.id == id)
+          .firstOrNull;
+      if (moved != null && (moved.gridX, moved.gridY) != origin) {
+        unawaited(ref.read(cityActionsProvider).noteBuildingMoved(id));
+      }
+    }
+    setState(() {
+      _movingId = null;
+      _movingSiteId = null;
+      _moveOrigin = null;
+    });
+  }
 
   /// X on the move bar: put the building or site back where it was picked
   /// up, then end the mode.
@@ -1481,7 +1511,9 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     final eventAsks = <OpenBeat>[];
     for (final b in openBeats) {
       if (b.completed || b.beat.kind != BeatKind.demand) continue;
-      if (b.beat.event != null) {
+      // Asks that are not "build X" — a party, or chapter one's "move
+      // your house" — get a card of their own rather than a building's.
+      if (b.beat.event != null || b.beat.scripted) {
         eventAsks.add(b);
         continue;
       }
@@ -1504,7 +1536,24 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                 !b.shown && !b.completed && b.delivery != BeatDelivery.bubble,
           )
           .firstOrNull;
-      if (next != null) _letterId = next.beat.id;
+      if (next == null) {
+        _cancelLetterDelay();
+      } else if (_letterArmed == next.beat.id) {
+        _letterId = next.beat.id;
+        _letterArmed = null;
+      } else if (_letterPending != next.beat.id) {
+        _cancelLetterDelay();
+        _letterPending = next.beat.id;
+        _letterDelay = Timer(kLetterDelay, () {
+          if (!mounted) return;
+          setState(() {
+            _letterArmed = _letterPending;
+            _letterDelay = null;
+          });
+        });
+      }
+    } else {
+      _cancelLetterDelay();
     }
     final letterBeat = _letterId == null ? null : findBeatById(_letterId!);
     final letterIsTimes = letterBeat?.staticDelivery == BeatDelivery.times;
@@ -1547,7 +1596,8 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
         : partyVenueFor(placements ?? const []);
     final letterCanBuild =
         letterBeat?.kind == BeatKind.demand &&
-        ((letterBeat?.event != null && letterVenue != null) ||
+        !(letterBeat!.scripted && letterBeat.event == null) &&
+        ((letterBeat.event != null && letterVenue != null) ||
             (letterTarget != null &&
                 (letterGrowSources.isNotEmpty ||
                     (catalog?.any((b) => b.id == letterTarget.id) ?? false))));
@@ -1645,7 +1695,11 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
         : selectedBuildingType != null
         ? _BuildingBar(
             type: selectedBuildingType,
-            growInto: nextRung(selectedBuildingType.id),
+            showMoveHint:
+                guideStep == kMoveStep &&
+                selectedBuildingType.id == 'single_home',
+            // No upgrades until the guide is over: the letters carry it.
+            growInto: chapterOne ? null : nextRung(selectedBuildingType.id),
             onGrow: () {
               final next = nextRung(selectedBuildingType.id);
               if (next == null) return;
@@ -1950,6 +2004,10 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     );
   }
 }
+
+/// How long a letter waits after the city comes to rest before it
+/// interrupts (city_builder.md §10.3): a moment to take the city in.
+const kLetterDelay = Duration(milliseconds: 2500);
 
 /// Height of the catalog bar's content (its cards), used to seed the
 /// game's bottom inset before the bar has been measured.
@@ -2269,11 +2327,15 @@ class _BuildingBar extends StatelessWidget {
     required this.onDeselect,
     this.growInto,
     this.onGrow,
+    this.showMoveHint = false,
   });
 
   final BuildingType type;
   final VoidCallback onMove;
   final VoidCallback onDeselect;
+
+  /// The animated hand over *Move* during chapter one's move step.
+  final bool showMoveHint;
 
   /// The rung this building can grow into, if any: shown as *Grow into …*
   /// at the delta price (city_builder.md §10.6).
@@ -2327,7 +2389,7 @@ class _BuildingBar extends StatelessWidget {
                           TextSpan(
                             children: [
                               TextSpan(
-                                text: 'Grow into a ${growInto!.name} · ',
+                                text: 'Upgrade to a ${growInto!.name} · ',
                               ),
                               coinSpan(),
                               TextSpan(text: ' $growPrice'),
@@ -2340,10 +2402,22 @@ class _BuildingBar extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 8),
-              FilledButton.tonalIcon(
-                onPressed: onMove,
-                icon: const Icon(Icons.open_with_rounded),
-                label: const Text('Move'),
+              Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  FilledButton.tonalIcon(
+                    onPressed: onMove,
+                    icon: const Icon(Icons.open_with_rounded),
+                    label: const Text('Move'),
+                  ),
+                  if (showMoveHint)
+                    const Positioned(
+                      left: 0,
+                      right: 0,
+                      top: -62,
+                      child: Center(child: CoachHand(mode: CoachHandMode.tap)),
+                    ),
+                ],
               ),
               const SizedBox(width: 4),
               _CloseButton(onPressed: onDeselect, tooltip: 'Close'),
@@ -2406,7 +2480,7 @@ class _GrowBar extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Grow this one?',
+                          'Upgrade this one?',
                           style: theme.textTheme.titleSmall?.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
@@ -2446,7 +2520,7 @@ class _GrowBar extends StatelessWidget {
                   const Spacer(),
                   FilledButton(
                     onPressed: onGrow,
-                    child: const Text('Yes, grow it'),
+                    child: const Text('Yes, upgrade it'),
                   ),
                 ],
               ),
@@ -3407,8 +3481,9 @@ class _EventCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isEvent = beat.event != null;
     final card = _BarCard(
-      color: const Color(0xFFEF5350),
+      color: isEvent ? const Color(0xFFEF5350) : const Color(0xFFFFA726),
       onTap: onTap,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -3417,21 +3492,23 @@ class _EventCard extends StatelessWidget {
           const SizedBox(height: 2),
           Flexible(
             child: Text(
-              'Block party',
+              isEvent ? 'Block party' : beat.shortLabel,
               style: theme.textTheme.labelSmall,
               textAlign: TextAlign.center,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          const SizedBox(height: 2),
-          CoinAmount(
-            amount: kBlockPartyPrice,
-            iconSize: 12,
-            style: theme.textTheme.labelSmall?.copyWith(
-              fontWeight: FontWeight.bold,
+          if (isEvent) ...[
+            const SizedBox(height: 2),
+            CoinAmount(
+              amount: kBlockPartyPrice,
+              iconSize: 12,
+              style: theme.textTheme.labelSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
+          ],
         ],
       ),
     );

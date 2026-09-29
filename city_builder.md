@@ -1659,6 +1659,15 @@ the emulator). Where the code differs from the text above:
   footprint translucent red at the tapped tile for ~1.6 s so the kid can
   see how much room it needs; the debug *Unlock all* list obeys the same
   card filters as the real catalog.
+- Third round (2026-09-29, evening): chapter one gained a **move step** —
+  after the home opens Mrs. Pomeroy asks for it to be moved (the info card
+  and *Move* are open during chapter one, with the hand over *Move*), the
+  actual drop advances the step and sends her thanks, and the school
+  letter waits until that thanks has been shown (`guideStep` renumbered,
+  v20 migration shifts existing players). A letter now waits 2.5 s after
+  the city comes to rest before interrupting. "Grow into" became
+  "Upgrade to" everywhere (the bar reads *Upgrade this one?* / *Yes,
+  upgrade it*).
 - Not built: the mailbox (deferred), the album, the requester at the
   opening, themed events, drag-from-card — all still in the deferred list.
 

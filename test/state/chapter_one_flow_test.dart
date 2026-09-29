@@ -44,7 +44,7 @@ void main() {
     expect((await db.getPlayerById(pid)).guideHints, 0);
   });
 
-  test('the script sends home, school, park, then the hand-over', () async {
+  test('the script: home, move it, school, park, then the hand-over', () async {
     final (db, pid, container) = await _setup();
     addTearDown(container.dispose);
     final actions = container.read(cityActionsProvider);
@@ -55,14 +55,14 @@ void main() {
     expect((await db.getPlayerById(pid)).guideStep, 0);
 
     // Starting the home's site fulfils the ask (under construction counts
-    // as present); opening it advances the step and the school letter
+    // as present); opening it advances to the move step, whose letter
     // arrives at once — no spacing, no other engine beats.
     await actions.startSite(
       BuildingGoal(type: findBuildingTypeById('single_home')!, col: 5, row: 5),
     );
     await actions.fireBeats();
     expect(await _open(db, pid), isEmpty);
-    await db.placeBuilding(
+    final homeId = await db.placeBuilding(
       cityId: city.id,
       playerId: pid,
       buildingTypeId: 'single_home',
@@ -70,8 +70,25 @@ void main() {
       gridY: 5,
     );
     await actions.fireBeats();
-    expect(await _open(db, pid), {'demand_school'});
-    expect((await db.getPlayerById(pid)).guideStep, 1);
+    expect(await _open(db, pid), {'tutorial_move_home'});
+    expect((await db.getPlayerById(pid)).guideStep, kMoveStep);
+
+    // The move letter is never "answered" by the engine: it stays open
+    // through more rounds until the home actually moves.
+    await db.incrementRoundsPlayed(pid);
+    await actions.fireBeats();
+    expect(await _open(db, pid), {'tutorial_move_home'});
+
+    // Moving some other building does nothing; moving the home ends the
+    // step: the ask retires, the thanks arrives, and the school letter
+    // waits until the thanks has been shown.
+    await actions.noteBuildingMoved(-1);
+    expect((await db.getPlayerById(pid)).guideStep, kMoveStep);
+    await actions.noteBuildingMoved(homeId);
+    expect((await db.getPlayerById(pid)).guideStep, kMoveStep + 1);
+    expect(await _open(db, pid), {kMovedThanksBeatId});
+    await actions.markBeatRead(kMovedThanksBeatId);
+    expect(await _open(db, pid), {kMovedThanksBeatId, 'demand_school'});
 
     await db.placeBuilding(
       cityId: city.id,
@@ -82,8 +99,8 @@ void main() {
     );
     await actions.fireBeats();
     // The school ask is fulfilled (completed), the park ask is open.
-    expect(await _open(db, pid), {'demand_more_parks'});
-    expect((await db.getPlayerById(pid)).guideStep, 2);
+    expect(await _open(db, pid), {kMovedThanksBeatId, 'demand_more_parks'});
+    expect((await db.getPlayerById(pid)).guideStep, kMoveStep + 2);
 
     await db.placeBuilding(
       cityId: city.id,

@@ -44,7 +44,13 @@ void main() {
     expect(find.text('Play math'), findsNothing);
 
     // The office being there is enough for Mrs. Pomeroy to write: her
-    // letter interrupts the city at rest with the kid's name and Build it!.
+    // letter interrupts the city at rest with the kid's name and Build it!,
+    // after the settle-in delay.
+    for (var i = 0; i < 10 && find.text('Build it!').evaluate().isEmpty; i++) {
+      await tester.pump(const Duration(milliseconds: 100));
+    }
+    expect(find.text('Build it!'), findsNothing);
+    await tester.pump(kLetterDelay + const Duration(milliseconds: 100));
     for (var i = 0; i < 10 && find.text('Build it!').evaluate().isEmpty; i++) {
       await tester.pump(const Duration(milliseconds: 100));
     }
