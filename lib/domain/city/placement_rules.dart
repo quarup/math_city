@@ -198,3 +198,73 @@ GridFootprint? resolvePlacement({
   }
   return best;
 }
+
+/// Where a letter's *Build it!* proposes a [width]×[height] building
+/// (city_builder.md §10.4): the legal footprint nearest [anchor] (the
+/// mayor's office) that leaves at least one free tile between itself and
+/// every existing footprint, so the auto-road can run between them. Falls
+/// back to the nearest legal footprint of any kind, or null when nothing
+/// fits on owned land. Deterministic: ties break on the smaller column,
+/// then row.
+GridFootprint? proposePlacement({
+  required Set<(int, int)> ownedTiles,
+  required List<GridFootprint> existing,
+  required int width,
+  required int height,
+  required (int, int) anchor,
+}) {
+  final occupied = <(int, int)>{};
+  for (final f in existing) {
+    occupied.addAll(f.tiles());
+  }
+  // Tiles touching an existing footprint (8-neighbourhood): a candidate
+  // that avoids these keeps a road-wide gap.
+  final fringe = <(int, int)>{};
+  for (final (c, r) in occupied) {
+    for (var dc = -1; dc <= 1; dc++) {
+      for (var dr = -1; dr <= 1; dr++) {
+        fringe.add((c + dc, r + dr));
+      }
+    }
+  }
+
+  GridFootprint? best;
+  GridFootprint? fallback;
+  var bestCost = double.infinity;
+  var fallbackCost = double.infinity;
+  final cols = ownedTiles.map((t) => t.$1).toList()..sort();
+  final rows = ownedTiles.map((t) => t.$2).toList()..sort();
+  if (cols.isEmpty) return null;
+  for (var col = cols.first; col <= cols.last; col++) {
+    for (var row = rows.first; row <= rows.last; row++) {
+      final candidate = GridFootprint(
+        col: col,
+        row: row,
+        width: width,
+        height: height,
+      );
+      final check = checkPlacement(
+        ownedTiles: ownedTiles,
+        existing: existing,
+        candidate: candidate,
+      );
+      if (!check.isLegal) continue;
+      final cx = col + (width - 1) / 2;
+      final cy = row + (height - 1) / 2;
+      final dx = cx - anchor.$1;
+      final dy = cy - anchor.$2;
+      final cost = dx * dx + dy * dy;
+      final spaced = candidate.tiles().every((t) => !fringe.contains(t));
+      if (spaced) {
+        if (cost < bestCost) {
+          best = candidate;
+          bestCost = cost;
+        }
+      } else if (cost < fallbackCost) {
+        fallback = candidate;
+        fallbackCost = cost;
+      }
+    }
+  }
+  return best ?? fallback;
+}

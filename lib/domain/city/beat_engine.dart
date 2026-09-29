@@ -21,7 +21,7 @@ class BeatEngine {
     required TriggerContext Function(StoryBeat beat) contextFor,
   }) {
     return beatRegistry
-        .where((b) => b.triggerRule.evaluate(contextFor(b)))
+        .where((b) => !b.scripted && b.triggerRule.evaluate(contextFor(b)))
         .toList();
   }
 }

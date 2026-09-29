@@ -50,6 +50,16 @@ class Players extends Table {
   /// current value − that stamp) and round-based bubble rotation.
   IntColumn get roundsPlayed => integer().withDefault(const Constant(0))();
 
+  /// Chapter one progress (city_builder.md §10.4): 0–2 = the scripted
+  /// letter the player is on (home, school, park), 3 = the hand-over letter
+  /// is due, `kChapterOneDone` (4) = free play. Players from before the
+  /// guide existed are migrated straight to done.
+  IntColumn get guideStep => integer().withDefault(const Constant(0))();
+
+  /// Bitmask of one-time gesture hints already shown (`GuideHint` bits):
+  /// the animated hand for Place here, the wheel fling, and the answer.
+  IntColumn get guideHints => integer().withDefault(const Constant(0))();
+
   DateTimeColumn get createdAt => dateTime()();
   // Stored as JSON string; null = default avatar.
   TextColumn get avatarConfig => text().nullable()();
@@ -302,7 +312,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 17;
+  int get schemaVersion => 18;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -447,6 +457,14 @@ class AppDatabase extends _$AppDatabase {
         // v17: credit from cancelled sites (city_builder.md §8.11). A new
         // defaulted column — additive, nothing is wiped.
         await m.addColumn(players, players.creditBalance);
+      }
+      if (from < 18) {
+        // v18: chapter-one guide progress + one-time hint flags
+        // (city_builder.md §10.4). Additive; existing players have cities
+        // already and skip straight to free play.
+        await m.addColumn(players, players.guideStep);
+        await m.addColumn(players, players.guideHints);
+        await customStatement('UPDATE players SET guide_step = 4');
       }
     },
   );
@@ -796,9 +814,24 @@ class AppDatabase extends _$AppDatabase {
         lifetimeCoinsEarned: Value(0),
         creditBalance: Value(0),
         streakCount: Value(0),
+        guideStep: Value(0),
+        guideHints: Value(0),
       ),
     );
   });
+
+  /// Chapter-one progress (see [Players.guideStep]).
+  Future<void> setGuideStep(int playerId, int step) =>
+      (update(players)..where((t) => t.id.equals(playerId))).write(
+        PlayersCompanion(guideStep: Value(step)),
+      );
+
+  /// Records that a one-time gesture hint has been shown (see
+  /// [Players.guideHints]).
+  Future<void> setGuideHints(int playerId, int hints) =>
+      (update(players)..where((t) => t.id.equals(playerId))).write(
+        PlayersCompanion(guideHints: Value(hints)),
+      );
 
   // ---- Story-beat state helpers ----
 

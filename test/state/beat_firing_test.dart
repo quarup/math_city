@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:math_city/data/database.dart';
 import 'package:math_city/domain/city/building_registry.dart';
+import 'package:math_city/domain/city/chapter_one.dart';
 import 'package:math_city/state/city_provider.dart';
 import 'package:math_city/state/player_provider.dart';
 
@@ -18,6 +19,9 @@ Future<(AppDatabase, int, ProviderContainer)> _setup() async {
     overrides: [appDatabaseProvider.overrideWithValue(db)],
   );
   container.read(activePlayerIdProvider.notifier).selected = player.id;
+  // These are engine tests: skip the chapter-one script, which would
+  // otherwise send only its three letters (see chapter_one_flow_test).
+  await db.setGuideStep(player.id, kChapterOneDone);
   await container.read(activePlayerProvider.future);
   return (db, player.id, container);
 }
@@ -375,6 +379,25 @@ void main() {
         );
       },
     );
+
+    test('a recurring ask completes once its building is placed', () async {
+      final (db, pid, container) = await _setup();
+      addTearDown(container.dispose);
+      final city = await db.cityForPlayer(pid);
+      final actions = container.read(cityActionsProvider);
+      await _place(db, city.id, pid, 'single_home', 5);
+      // The park ask has no "park absent" clause (it recurs), so only a
+      // park placed after it fired can answer it.
+      await actions.debugFireBeat('demand_more_parks');
+      await actions.fireBeats();
+      var states = await db.storyBeatStatesForPlayer(pid);
+      expect(states['demand_more_parks']!.state, 'onScreen');
+
+      await _place(db, city.id, pid, 'park', 8);
+      await actions.fireBeats();
+      states = await db.storyBeatStatesForPlayer(pid);
+      expect(states['demand_more_parks']!.state, 'completed');
+    });
 
     test('the mayors office is seeded at creation and on reset', () async {
       final (db, pid, container) = await _setup();

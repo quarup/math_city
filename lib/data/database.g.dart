@@ -92,6 +92,30 @@ class $PlayersTable extends Players with TableInfo<$PlayersTable, Player> {
     requiredDuringInsert: false,
     defaultValue: const Constant(0),
   );
+  static const VerificationMeta _guideStepMeta = const VerificationMeta(
+    'guideStep',
+  );
+  @override
+  late final GeneratedColumn<int> guideStep = GeneratedColumn<int>(
+    'guide_step',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _guideHintsMeta = const VerificationMeta(
+    'guideHints',
+  );
+  @override
+  late final GeneratedColumn<int> guideHints = GeneratedColumn<int>(
+    'guide_hints',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -123,6 +147,8 @@ class $PlayersTable extends Players with TableInfo<$PlayersTable, Player> {
     creditBalance,
     streakCount,
     roundsPlayed,
+    guideStep,
+    guideHints,
     createdAt,
     avatarConfig,
   ];
@@ -193,6 +219,18 @@ class $PlayersTable extends Players with TableInfo<$PlayersTable, Player> {
         ),
       );
     }
+    if (data.containsKey('guide_step')) {
+      context.handle(
+        _guideStepMeta,
+        guideStep.isAcceptableOrUnknown(data['guide_step']!, _guideStepMeta),
+      );
+    }
+    if (data.containsKey('guide_hints')) {
+      context.handle(
+        _guideHintsMeta,
+        guideHints.isAcceptableOrUnknown(data['guide_hints']!, _guideHintsMeta),
+      );
+    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
@@ -247,6 +285,14 @@ class $PlayersTable extends Players with TableInfo<$PlayersTable, Player> {
         DriftSqlType.int,
         data['${effectivePrefix}rounds_played'],
       )!,
+      guideStep: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}guide_step'],
+      )!,
+      guideHints: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}guide_hints'],
+      )!,
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -292,6 +338,16 @@ class Player extends DataClass implements Insertable<Player> {
   /// age (a placement stamps the current value into `placedAtRound`, and age =
   /// current value − that stamp) and round-based bubble rotation.
   final int roundsPlayed;
+
+  /// Chapter one progress (city_builder.md §10.4): 0–2 = the scripted
+  /// letter the player is on (home, school, park), 3 = the hand-over letter
+  /// is due, `kChapterOneDone` (4) = free play. Players from before the
+  /// guide existed are migrated straight to done.
+  final int guideStep;
+
+  /// Bitmask of one-time gesture hints already shown (`GuideHint` bits):
+  /// the animated hand for Place here, the wheel fling, and the answer.
+  final int guideHints;
   final DateTime createdAt;
   final String? avatarConfig;
   const Player({
@@ -302,6 +358,8 @@ class Player extends DataClass implements Insertable<Player> {
     required this.creditBalance,
     required this.streakCount,
     required this.roundsPlayed,
+    required this.guideStep,
+    required this.guideHints,
     required this.createdAt,
     this.avatarConfig,
   });
@@ -315,6 +373,8 @@ class Player extends DataClass implements Insertable<Player> {
     map['credit_balance'] = Variable<int>(creditBalance);
     map['streak_count'] = Variable<int>(streakCount);
     map['rounds_played'] = Variable<int>(roundsPlayed);
+    map['guide_step'] = Variable<int>(guideStep);
+    map['guide_hints'] = Variable<int>(guideHints);
     map['created_at'] = Variable<DateTime>(createdAt);
     if (!nullToAbsent || avatarConfig != null) {
       map['avatar_config'] = Variable<String>(avatarConfig);
@@ -331,6 +391,8 @@ class Player extends DataClass implements Insertable<Player> {
       creditBalance: Value(creditBalance),
       streakCount: Value(streakCount),
       roundsPlayed: Value(roundsPlayed),
+      guideStep: Value(guideStep),
+      guideHints: Value(guideHints),
       createdAt: Value(createdAt),
       avatarConfig: avatarConfig == null && nullToAbsent
           ? const Value.absent()
@@ -353,6 +415,8 @@ class Player extends DataClass implements Insertable<Player> {
       creditBalance: serializer.fromJson<int>(json['creditBalance']),
       streakCount: serializer.fromJson<int>(json['streakCount']),
       roundsPlayed: serializer.fromJson<int>(json['roundsPlayed']),
+      guideStep: serializer.fromJson<int>(json['guideStep']),
+      guideHints: serializer.fromJson<int>(json['guideHints']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       avatarConfig: serializer.fromJson<String?>(json['avatarConfig']),
     );
@@ -368,6 +432,8 @@ class Player extends DataClass implements Insertable<Player> {
       'creditBalance': serializer.toJson<int>(creditBalance),
       'streakCount': serializer.toJson<int>(streakCount),
       'roundsPlayed': serializer.toJson<int>(roundsPlayed),
+      'guideStep': serializer.toJson<int>(guideStep),
+      'guideHints': serializer.toJson<int>(guideHints),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'avatarConfig': serializer.toJson<String?>(avatarConfig),
     };
@@ -381,6 +447,8 @@ class Player extends DataClass implements Insertable<Player> {
     int? creditBalance,
     int? streakCount,
     int? roundsPlayed,
+    int? guideStep,
+    int? guideHints,
     DateTime? createdAt,
     Value<String?> avatarConfig = const Value.absent(),
   }) => Player(
@@ -391,6 +459,8 @@ class Player extends DataClass implements Insertable<Player> {
     creditBalance: creditBalance ?? this.creditBalance,
     streakCount: streakCount ?? this.streakCount,
     roundsPlayed: roundsPlayed ?? this.roundsPlayed,
+    guideStep: guideStep ?? this.guideStep,
+    guideHints: guideHints ?? this.guideHints,
     createdAt: createdAt ?? this.createdAt,
     avatarConfig: avatarConfig.present ? avatarConfig.value : this.avatarConfig,
   );
@@ -413,6 +483,10 @@ class Player extends DataClass implements Insertable<Player> {
       roundsPlayed: data.roundsPlayed.present
           ? data.roundsPlayed.value
           : this.roundsPlayed,
+      guideStep: data.guideStep.present ? data.guideStep.value : this.guideStep,
+      guideHints: data.guideHints.present
+          ? data.guideHints.value
+          : this.guideHints,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       avatarConfig: data.avatarConfig.present
           ? data.avatarConfig.value
@@ -430,6 +504,8 @@ class Player extends DataClass implements Insertable<Player> {
           ..write('creditBalance: $creditBalance, ')
           ..write('streakCount: $streakCount, ')
           ..write('roundsPlayed: $roundsPlayed, ')
+          ..write('guideStep: $guideStep, ')
+          ..write('guideHints: $guideHints, ')
           ..write('createdAt: $createdAt, ')
           ..write('avatarConfig: $avatarConfig')
           ..write(')'))
@@ -445,6 +521,8 @@ class Player extends DataClass implements Insertable<Player> {
     creditBalance,
     streakCount,
     roundsPlayed,
+    guideStep,
+    guideHints,
     createdAt,
     avatarConfig,
   );
@@ -459,6 +537,8 @@ class Player extends DataClass implements Insertable<Player> {
           other.creditBalance == this.creditBalance &&
           other.streakCount == this.streakCount &&
           other.roundsPlayed == this.roundsPlayed &&
+          other.guideStep == this.guideStep &&
+          other.guideHints == this.guideHints &&
           other.createdAt == this.createdAt &&
           other.avatarConfig == this.avatarConfig);
 }
@@ -471,6 +551,8 @@ class PlayersCompanion extends UpdateCompanion<Player> {
   final Value<int> creditBalance;
   final Value<int> streakCount;
   final Value<int> roundsPlayed;
+  final Value<int> guideStep;
+  final Value<int> guideHints;
   final Value<DateTime> createdAt;
   final Value<String?> avatarConfig;
   const PlayersCompanion({
@@ -481,6 +563,8 @@ class PlayersCompanion extends UpdateCompanion<Player> {
     this.creditBalance = const Value.absent(),
     this.streakCount = const Value.absent(),
     this.roundsPlayed = const Value.absent(),
+    this.guideStep = const Value.absent(),
+    this.guideHints = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.avatarConfig = const Value.absent(),
   });
@@ -492,6 +576,8 @@ class PlayersCompanion extends UpdateCompanion<Player> {
     this.creditBalance = const Value.absent(),
     this.streakCount = const Value.absent(),
     this.roundsPlayed = const Value.absent(),
+    this.guideStep = const Value.absent(),
+    this.guideHints = const Value.absent(),
     required DateTime createdAt,
     this.avatarConfig = const Value.absent(),
   }) : name = Value(name),
@@ -505,6 +591,8 @@ class PlayersCompanion extends UpdateCompanion<Player> {
     Expression<int>? creditBalance,
     Expression<int>? streakCount,
     Expression<int>? roundsPlayed,
+    Expression<int>? guideStep,
+    Expression<int>? guideHints,
     Expression<DateTime>? createdAt,
     Expression<String>? avatarConfig,
   }) {
@@ -517,6 +605,8 @@ class PlayersCompanion extends UpdateCompanion<Player> {
       if (creditBalance != null) 'credit_balance': creditBalance,
       if (streakCount != null) 'streak_count': streakCount,
       if (roundsPlayed != null) 'rounds_played': roundsPlayed,
+      if (guideStep != null) 'guide_step': guideStep,
+      if (guideHints != null) 'guide_hints': guideHints,
       if (createdAt != null) 'created_at': createdAt,
       if (avatarConfig != null) 'avatar_config': avatarConfig,
     });
@@ -530,6 +620,8 @@ class PlayersCompanion extends UpdateCompanion<Player> {
     Value<int>? creditBalance,
     Value<int>? streakCount,
     Value<int>? roundsPlayed,
+    Value<int>? guideStep,
+    Value<int>? guideHints,
     Value<DateTime>? createdAt,
     Value<String?>? avatarConfig,
   }) {
@@ -541,6 +633,8 @@ class PlayersCompanion extends UpdateCompanion<Player> {
       creditBalance: creditBalance ?? this.creditBalance,
       streakCount: streakCount ?? this.streakCount,
       roundsPlayed: roundsPlayed ?? this.roundsPlayed,
+      guideStep: guideStep ?? this.guideStep,
+      guideHints: guideHints ?? this.guideHints,
       createdAt: createdAt ?? this.createdAt,
       avatarConfig: avatarConfig ?? this.avatarConfig,
     );
@@ -570,6 +664,12 @@ class PlayersCompanion extends UpdateCompanion<Player> {
     if (roundsPlayed.present) {
       map['rounds_played'] = Variable<int>(roundsPlayed.value);
     }
+    if (guideStep.present) {
+      map['guide_step'] = Variable<int>(guideStep.value);
+    }
+    if (guideHints.present) {
+      map['guide_hints'] = Variable<int>(guideHints.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -589,6 +689,8 @@ class PlayersCompanion extends UpdateCompanion<Player> {
           ..write('creditBalance: $creditBalance, ')
           ..write('streakCount: $streakCount, ')
           ..write('roundsPlayed: $roundsPlayed, ')
+          ..write('guideStep: $guideStep, ')
+          ..write('guideHints: $guideHints, ')
           ..write('createdAt: $createdAt, ')
           ..write('avatarConfig: $avatarConfig')
           ..write(')'))
@@ -5407,6 +5509,8 @@ typedef $$PlayersTableCreateCompanionBuilder =
       Value<int> creditBalance,
       Value<int> streakCount,
       Value<int> roundsPlayed,
+      Value<int> guideStep,
+      Value<int> guideHints,
       required DateTime createdAt,
       Value<String?> avatarConfig,
     });
@@ -5419,6 +5523,8 @@ typedef $$PlayersTableUpdateCompanionBuilder =
       Value<int> creditBalance,
       Value<int> streakCount,
       Value<int> roundsPlayed,
+      Value<int> guideStep,
+      Value<int> guideHints,
       Value<DateTime> createdAt,
       Value<String?> avatarConfig,
     });
@@ -5588,6 +5694,16 @@ class $$PlayersTableFilterComposer
 
   ColumnFilters<int> get roundsPlayed => $composableBuilder(
     column: $table.roundsPlayed,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get guideStep => $composableBuilder(
+    column: $table.guideStep,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get guideHints => $composableBuilder(
+    column: $table.guideHints,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -5772,6 +5888,16 @@ class $$PlayersTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get guideStep => $composableBuilder(
+    column: $table.guideStep,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get guideHints => $composableBuilder(
+    column: $table.guideHints,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -5820,6 +5946,14 @@ class $$PlayersTableAnnotationComposer
 
   GeneratedColumn<int> get roundsPlayed => $composableBuilder(
     column: $table.roundsPlayed,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get guideStep =>
+      $composableBuilder(column: $table.guideStep, builder: (column) => column);
+
+  GeneratedColumn<int> get guideHints => $composableBuilder(
+    column: $table.guideHints,
     builder: (column) => column,
   );
 
@@ -6001,6 +6135,8 @@ class $$PlayersTableTableManager
                 Value<int> creditBalance = const Value.absent(),
                 Value<int> streakCount = const Value.absent(),
                 Value<int> roundsPlayed = const Value.absent(),
+                Value<int> guideStep = const Value.absent(),
+                Value<int> guideHints = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<String?> avatarConfig = const Value.absent(),
               }) => PlayersCompanion(
@@ -6011,6 +6147,8 @@ class $$PlayersTableTableManager
                 creditBalance: creditBalance,
                 streakCount: streakCount,
                 roundsPlayed: roundsPlayed,
+                guideStep: guideStep,
+                guideHints: guideHints,
                 createdAt: createdAt,
                 avatarConfig: avatarConfig,
               ),
@@ -6023,6 +6161,8 @@ class $$PlayersTableTableManager
                 Value<int> creditBalance = const Value.absent(),
                 Value<int> streakCount = const Value.absent(),
                 Value<int> roundsPlayed = const Value.absent(),
+                Value<int> guideStep = const Value.absent(),
+                Value<int> guideHints = const Value.absent(),
                 required DateTime createdAt,
                 Value<String?> avatarConfig = const Value.absent(),
               }) => PlayersCompanion.insert(
@@ -6033,6 +6173,8 @@ class $$PlayersTableTableManager
                 creditBalance: creditBalance,
                 streakCount: streakCount,
                 roundsPlayed: roundsPlayed,
+                guideStep: guideStep,
+                guideHints: guideHints,
                 createdAt: createdAt,
                 avatarConfig: avatarConfig,
               ),
