@@ -288,11 +288,13 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     // A city always has its mayor's office (seeded at creation since
     // 2026-09-29; repaired here for older cities), and the first letter is
     // due the moment the office stands.
-    Future<void>.microtask(() async {
-      final actions = ref.read(cityActionsProvider);
-      await actions.ensureMayorsOffice();
-      await actions.fireBeats();
-    });
+    unawaited(
+      Future<void>.microtask(() async {
+        final actions = ref.read(cityActionsProvider);
+        await actions.ensureMayorsOffice();
+        await actions.fireBeats();
+      }),
+    );
   }
 
   @override
