@@ -12,6 +12,77 @@ import 'package:math_city/domain/city/trigger_rule.dart';
 /// catalog card only appears once the player has opened (read) that ask. See
 /// `building_registry.dart`.
 const beatRegistry = <StoryBeat>[
+  // -- The Math City Times: ratio warnings (§4.3) and milestones ----------
+  StoryBeat(
+    id: 'warn_lopsided',
+    kind: BeatKind.warning,
+    tone: BeatTone.civic,
+    emoji: '🏚️',
+    shortLabel: 'no homes!',
+    longText:
+        'So many shops and not enough homes — folks love to visit, but '
+        "nobody can stay! Let's build some housing.",
+    triggerRule: TriggerRule(
+      buildingsPresent: <String>{'single_home'},
+      requiresLopsided: true,
+      minCoinsEarnedSinceLastBeat: 900,
+    ),
+    citizen: 'grumbold',
+  ),
+  StoryBeat(
+    id: 'warn_growth_stalled',
+    kind: BeatKind.warning,
+    tone: BeatTone.civic,
+    emoji: '🐌',
+    shortLabel: 'stuck',
+    longText:
+        "The city's stopped growing — something's holding it back. Check "
+        'your power, water, clinics, and trash.',
+    triggerRule: TriggerRule(
+      buildingsPresent: <String>{'single_home'},
+      minPopulation: 12,
+      requiresGrowthStalled: true,
+      minCoinsEarnedSinceLastBeat: 900,
+    ),
+    citizen: 'grumbold',
+  ),
+  StoryBeat(
+    id: 'milestone_pop_50',
+    kind: BeatKind.praise,
+    tone: BeatTone.civic,
+    emoji: '🎊',
+    shortLabel: 'fifty folks',
+    longText: 'Fifty people now call Math City home. The town is a town!',
+    triggerRule: TriggerRule(minPopulation: 50),
+    delivery: BeatDelivery.times,
+    oneShot: true,
+  ),
+  StoryBeat(
+    id: 'milestone_pop_100',
+    kind: BeatKind.praise,
+    tone: BeatTone.civic,
+    emoji: '💯',
+    shortLabel: 'one hundred',
+    longText:
+        'One hundred residents! Math City is officially a city, says the '
+        'mayor. That is you.',
+    triggerRule: TriggerRule(minPopulation: 100),
+    delivery: BeatDelivery.times,
+    oneShot: true,
+  ),
+  StoryBeat(
+    id: 'milestone_pop_200',
+    kind: BeatKind.praise,
+    tone: BeatTone.civic,
+    emoji: '🏙️',
+    shortLabel: 'two hundred',
+    longText:
+        'Two hundred people, and the skyline shows it. Neighbouring towns '
+        'are starting to talk.',
+    triggerRule: TriggerRule(minPopulation: 200),
+    delivery: BeatDelivery.times,
+    oneShot: true,
+  ),
   // -- Chapter one (scripted, city_builder.md §10.4) ------------------------
   StoryBeat(
     id: 'letter_handover',
@@ -221,6 +292,8 @@ const beatRegistry = <StoryBeat>[
       minBuildingAgeForId: (buildingTypeId: 'mayors_office', minRounds: 10),
       requiredBeatsFired: <String>{'praise_first_home'},
     ),
+    delivery: BeatDelivery.times,
+    oneShot: true,
   ),
 
   // ==========================================================================
@@ -1047,6 +1120,8 @@ const beatRegistry = <StoryBeat>[
       minBuildingAgeForId: (buildingTypeId: 'mayors_office', minRounds: 40),
       requiredBeatsFired: <String>{'praise_established_town'},
     ),
+    delivery: BeatDelivery.times,
+    oneShot: true,
   ),
 ];
 

@@ -17,6 +17,29 @@ class PedestrianSystem {
 
   final math.Random _random;
   final List<Pedestrian> people = [];
+
+  /// Ambient praise riding on walkers (city_builder.md §10.2): each bubble
+  /// follows one pedestrian for a few seconds, then goes.
+  final List<SpeechBubble> bubbles = [];
+
+  /// Puts [text] over the walker nearest tile `(col, row)` — the building
+  /// the praise is about — for [seconds]. No walkers: nothing to say it.
+  void showBubble(int col, int row, String text, {double seconds = 6}) {
+    if (people.isEmpty) return;
+    Pedestrian? best;
+    var bestDist = double.infinity;
+    for (final p in people) {
+      if (bubbles.any((b) => b.pedestrian == p)) continue;
+      final d = math.max((p.col - col).abs(), (p.row - row).abs()).toDouble();
+      if (d < bestDist) {
+        best = p;
+        bestDist = d;
+      }
+    }
+    if (best == null) return;
+    bubbles.add(SpeechBubble(pedestrian: best, text: text, remaining: seconds));
+  }
+
   Set<(int, int)> _roads = const {};
   List<(int, int)> _roadList = const [];
 
@@ -64,6 +87,12 @@ class PedestrianSystem {
   }
 
   void update(double dt) {
+    for (final b in bubbles) {
+      b.remaining -= dt;
+    }
+    bubbles.removeWhere(
+      (b) => b.remaining <= 0 || !people.contains(b.pedestrian),
+    );
     if (_roadList.isEmpty) return;
     for (final p in people) {
       stepPedestrian(p, dt, isRoad: _isRoad, random: _random);
@@ -124,6 +153,19 @@ class PedestrianSystem {
       );
     }
   }
+}
+
+/// A praise bubble over one walker, counting down.
+class SpeechBubble {
+  SpeechBubble({
+    required this.pedestrian,
+    required this.text,
+    required this.remaining,
+  });
+
+  final Pedestrian pedestrian;
+  final String text;
+  double remaining;
 }
 
 /// One walker resolved to board space for painting.

@@ -397,6 +397,18 @@ class IsoCityGame extends FlameGame with DragCallbacks {
 
   (int, List<String>)? _pendingStreetLife;
 
+  /// Ambient praise: a speech bubble over the walker nearest the given
+  /// **window-local** tile (city_builder.md §10.2). Dropped if the board
+  /// isn't up yet — it is a passing remark, not state.
+  void showBubble({
+    required int localCol,
+    required int localRow,
+    required String text,
+  }) {
+    if (!isLoaded) return;
+    board.pedestrians.showBubble(localCol, localRow, text);
+  }
+
   /// Pushes the latest auto-generated road tiles into the board. Buffered if
   /// called before [onLoad] finishes — see [_pendingRoads].
   void setRoads(Set<(int, int)> roads) {

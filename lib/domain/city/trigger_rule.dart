@@ -8,9 +8,20 @@ class TriggerRule {
     this.minBuildingAgeForId,
     this.requiredBeatsFired = const <String>{},
     this.minCoinsEarnedSinceLastBeat,
+    this.requiresLopsided = false,
+    this.requiresGrowthStalled = false,
   });
 
   static const open = TriggerRule();
+
+  /// Fires only while amenities dwarf housing (`TriggerContext.lopsided`) —
+  /// the §4.3 "so many shops and not enough homes" warning.
+  final bool requiresLopsided;
+
+  /// Fires only while the population sits at a capacity that is below what
+  /// the homes alone could hold (`TriggerContext.growthStalled`) — a gating
+  /// service is the bottleneck.
+  final bool requiresGrowthStalled;
 
   final Set<String> buildingsPresent;
   final Set<String> buildingsAbsent;
@@ -45,6 +56,8 @@ class TriggerRule {
       if (age < required.minRounds) return false;
     }
     if (!ctx.firedBeatIds.containsAll(requiredBeatsFired)) return false;
+    if (requiresLopsided && !ctx.lopsided) return false;
+    if (requiresGrowthStalled && !ctx.growthStalled) return false;
     if (minCoinsEarnedSinceLastBeat != null) {
       final since = ctx.coinsEarnedSinceBeatLastFired;
       // First-fire (no prior fire => null) is always allowed.
@@ -64,7 +77,16 @@ class TriggerContext {
     required this.firedBeatIds,
     required this.coinsEarnedSinceBeatLastFired,
     this.underConstructionTypeIds = const <String>{},
+    this.lopsided = false,
+    this.growthStalled = false,
   });
+
+  /// Amenities outnumber homes past the growth model's ratio.
+  final bool lopsided;
+
+  /// Population has reached a capacity that a gating service, not housing,
+  /// is holding down.
+  final bool growthStalled;
 
   final Set<String> placedBuildingTypeIds;
 

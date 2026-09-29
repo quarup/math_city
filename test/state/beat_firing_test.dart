@@ -64,7 +64,8 @@ Future<void> _drainUntil(
   for (var i = 0; i < maxRounds; i++) {
     await actions.fireBeats();
     final states = await db.storyBeatStatesForPlayer(pid);
-    if (states[beatId]?.state == 'onScreen') return;
+    final st = states[beatId]?.state;
+    if (st == 'onScreen' || st == 'bubble') return;
     await db.incrementRoundsPlayed(pid);
   }
   fail('beat "$beatId" never fired within $maxRounds rounds');
