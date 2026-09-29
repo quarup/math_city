@@ -67,18 +67,30 @@ void main() {
       }
     });
 
-    test('the housing spine matches city_builder.md §8.6', () {
+    test('housing is two ladders and a landmark (city_builder.md §10.6)', () {
       expect(ladderOf('single_home'), [
         'single_home',
+        'duplex',
+        'townhouse_row',
+      ]);
+      expect(ladderOf('apartment'), [
         'apartment',
         'mid_rise_apartment',
         'high_rise',
-        'luxury_condo',
       ]);
-      // Side rungs are not ladder steps.
-      expect(ladderOf('duplex'), isNull);
-      expect(ladderOf('townhouse_row'), isNull);
+      expect(ladderOf('luxury_condo'), isNull);
       expect(ladderOf('farmhouse'), isNull);
+    });
+
+    test('the civic chain is upgrade-only; roots and others are not', () {
+      expect(isUpgradeOnly('town_hall'), isTrue);
+      expect(isUpgradeOnly('city_hall'), isTrue);
+      expect(isUpgradeOnly('mayors_office'), isFalse);
+      expect(isUpgradeOnly('high_rise'), isFalse);
+      expect(isUpgradeOnly('bakery'), isFalse);
+      expect(rungBelow('high_rise'), 'mid_rise_apartment');
+      expect(rungBelow('apartment'), isNull);
+      expect(rungBelow('zoo'), 'botanical_garden');
     });
 
     test('the entertainment ladders end in the zoo and the amusement park', () {
@@ -89,25 +101,27 @@ void main() {
 
   group('nextRung / isUpgradeStep', () {
     test('walks one rung up', () {
-      expect(nextRung('single_home')!.id, 'apartment');
+      expect(nextRung('single_home')!.id, 'duplex');
       expect(nextRung('apartment')!.id, 'mid_rise_apartment');
       expect(nextRung('mayors_office')!.id, 'town_hall');
+      expect(nextRung('park')!.id, 'community_garden');
     });
 
     test('null at the top and off-ladder', () {
+      expect(nextRung('high_rise'), isNull);
       expect(nextRung('luxury_condo'), isNull);
       expect(nextRung('bakery'), isNull);
       expect(nextRung('no_such_building'), isNull);
     });
 
     test('only the adjacent rung is a step', () {
-      expect(isUpgradeStep(source: 'single_home', target: 'apartment'), isTrue);
+      expect(isUpgradeStep(source: 'single_home', target: 'duplex'), isTrue);
       expect(
-        isUpgradeStep(source: 'single_home', target: 'mid_rise_apartment'),
+        isUpgradeStep(source: 'single_home', target: 'townhouse_row'),
         isFalse,
       );
       expect(
-        isUpgradeStep(source: 'apartment', target: 'single_home'),
+        isUpgradeStep(source: 'single_home', target: 'apartment'),
         isFalse,
       );
       expect(isUpgradeStep(source: 'bakery', target: 'restaurant'), isFalse);
@@ -115,26 +129,26 @@ void main() {
   });
 
   group('upgradeDeltaPrice', () {
-    test('matches the §8.6 housing table', () {
+    test('matches the §10.6 housing tables', () {
       int delta(String s, String t) =>
           upgradeDeltaPrice(source: _type(s), target: _type(t));
-      expect(delta('single_home', 'apartment'), 60);
+      expect(delta('single_home', 'duplex'), 60);
+      expect(delta('duplex', 'townhouse_row'), 180);
       expect(delta('apartment', 'mid_rise_apartment'), 600);
       expect(delta('mid_rise_apartment', 'high_rise'), 780);
-      expect(delta('high_rise', 'luxury_condo'), 1500);
     });
 
-    test('walking the whole spine costs the top rung, not the sum', () {
-      final ladder = ladderOf('single_home')!;
-      var total = _type(ladder.first).coinCost;
-      for (var i = 0; i + 1 < ladder.length; i++) {
-        total += upgradeDeltaPrice(
-          source: _type(ladder[i]),
-          target: _type(ladder[i + 1]),
-        );
+    test('walking a whole ladder costs the top rung, not the sum', () {
+      for (final ladder in upgradeLadders) {
+        var total = _type(ladder.first).coinCost;
+        for (var i = 0; i + 1 < ladder.length; i++) {
+          total += upgradeDeltaPrice(
+            source: _type(ladder[i]),
+            target: _type(ladder[i + 1]),
+          );
+        }
+        expect(total, _type(ladder.last).coinCost, reason: ladder.join(' → '));
       }
-      expect(total, _type('luxury_condo').coinCost);
-      expect(total, 3000);
     });
   });
 

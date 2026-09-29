@@ -10,33 +10,53 @@ library;
 import 'package:math_city/domain/city/building_registry.dart';
 import 'package:math_city/domain/city/building_type.dart';
 
-/// Every ladder, bottom rung first. A building appears in at most one ladder
-/// and every consecutive pair is a strictly price-monotonic step with a
-/// footprint that never shrinks (both enforced by `upgrade_ladders_test`).
+/// Every ladder, bottom rung first (city_builder.md §10.6). A building
+/// appears in at most one ladder and every consecutive pair is a strictly
+/// price-monotonic step whose footprint area never shrinks (both enforced by
+/// `upgrade_ladders_test`). Every ladder is a linked list, so no branch ever
+/// has to be hidden after the player picks another.
 ///
-/// - Housing spine (§8.6): `duplex`, `townhouse_row`, `farmhouse` are side
-///   rungs — buildable from scratch, never upgrade targets.
-/// - Two entertainment ladders end in the two landmark parks (§8.6 asked for
-///   one "ending in `zoo` / `amusement_park`"; they sit on different arcs, so
-///   one green ladder and one sports ladder): parks grow into a botanical
-///   garden and then a zoo; a sports field grows into a stadium and then an
-///   amusement park.
+/// - Housing is two short ladders: the low-rise family street (`single_home
+///   → duplex → townhouse_row`) and the towers (`apartment →
+///   mid_rise_apartment → high_rise`). `luxury_condo` is a standalone
+///   landmark (it houses fewer people than a high-rise, so it is no upgrade);
+///   `farmhouse` a side rung.
+/// - The civic chain is upgrade-only (see [isUpgradeOnly]): all three are
+///   unique, so a town hall can only grow out of the mayor's office.
+/// - `community_garden` sits inside the park ladder because the botanical
+///   garden's unlock rule and letter already depend on it.
 const upgradeLadders = <List<String>>[
-  [
-    'single_home',
-    'apartment',
-    'mid_rise_apartment',
-    'high_rise',
-    'luxury_condo',
-  ],
+  ['single_home', 'duplex', 'townhouse_row'],
+  ['apartment', 'mid_rise_apartment', 'high_rise'],
+  ['mayors_office', 'town_hall', 'city_hall'],
   ['power_plant', 'power_station', 'solar_farm'],
   ['water_tower', 'water_treatment'],
+  ['waste_management', 'recycling_center'],
   ['clinic', 'hospital'],
   ['school', 'high_school'],
-  ['mayors_office', 'town_hall', 'city_hall'],
-  ['park', 'botanical_garden', 'zoo'],
+  ['grocery', 'supermarket'],
+  ['office_building', 'business_tower'],
+  ['park', 'community_garden', 'botanical_garden', 'zoo'],
   ['sports_field', 'stadium', 'amusement_park'],
 ];
+
+/// A rung that can only be reached by growing the rung below it, never
+/// built from scratch: a unique building above a ladder's root (the town
+/// hall and city hall). Such types have no catalog card.
+bool isUpgradeOnly(String typeId) {
+  final ladder = ladderOf(typeId);
+  if (ladder == null || ladder.first == typeId) return false;
+  return findBuildingTypeById(typeId)?.unique ?? false;
+}
+
+/// The rung below [typeId] — the building an upgrade to [typeId] grows out
+/// of — or null for a root / off-ladder type.
+String? rungBelow(String typeId) {
+  final ladder = ladderOf(typeId);
+  if (ladder == null) return null;
+  final i = ladder.indexOf(typeId);
+  return i <= 0 ? null : ladder[i - 1];
+}
 
 /// The ladder containing [typeId], or null if it is not a ladder rung.
 List<String>? ladderOf(String typeId) {

@@ -100,10 +100,13 @@ final cityCatalogProvider = FutureProvider<List<BuildingType>>((ref) async {
   );
   const engine = BuildingDagEngine();
   // A placed unique building (the mayor's office) has no card: there is
-  // nothing more to place, and Move lives on its info card.
+  // nothing more to place, and Move lives on its info card. Upgrade-only
+  // rungs (town hall, city hall) come from letters and the office's info
+  // card, never a card of their own.
   return engine
       .availableToBuy(ctx)
       .where((b) => !(b.unique && placedIds.contains(b.id)))
+      .where((b) => !isUpgradeOnly(b.id))
       .toList();
 });
 
@@ -172,6 +175,30 @@ final openBeatsProvider = FutureProvider<List<OpenBeat>>((ref) async {
   beats.sort((a, b) => a.firedAtRound.compareTo(b.firedAtRound));
   return beats;
 });
+
+/// The buildings an upgrade to [targetTypeId] could grow out of
+/// (city_builder.md §10.6): every placement of the rung below without an
+/// open growth site, oldest first — the letter names the first. Empty for
+/// a root or off-ladder target.
+List<BuildingPlacement> upgradeSourcesFor(
+  String targetTypeId,
+  List<BuildingPlacement> placements,
+  List<CitySite> sites,
+) {
+  final below = rungBelow(targetTypeId);
+  if (below == null) return const [];
+  final growing = <int>{
+    for (final s in sites)
+      if (s.goal case BuildingGoal(:final upgrade?)) upgrade.sourcePlacementId,
+  };
+  return placements
+      .where((p) => p.buildingTypeId == below && !growing.contains(p.id))
+      .toList()
+    ..sort((a, b) {
+      final byAge = a.placedAtRound.compareTo(b.placedAtRound);
+      return byAge != 0 ? byAge : a.id.compareTo(b.id);
+    });
+}
 
 /// Side-effecting city operations. Kept off the widget so the placement
 /// orchestration (spend coins → insert row → invalidate) lives in one place.
