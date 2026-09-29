@@ -155,7 +155,7 @@ The design ambition is **"feels infinite"**: hundreds of building types over the
 - *Lifetime coins threshold* — enough lifetime coins earned to date. Since coins are study-seconds, this reads as "unlocks after ~N minutes of total study."
 - *Prerequisite buildings placed* — e.g. a hospital requires at least one clinic and apartment-tier-2 already on the map (multi-parent prereqs use AND semantics, kept narratively coherent — we don't add prereqs that would feel random).
 - *Population minimum* — e.g. the cinema only becomes available once the city passes 50 residents.
-- *Story beat opened* — the citizen request that asks for this building has not only surfaced but been **opened (tapped to read) at least once**. Merely having the bubble appear isn't enough; the player must read the ask. This is the primary gate in the Phase-7 catalog: every non-starter building is hidden until the player opens the demand bubble that asks for it.
+- *Story beat arrived* (revised 2026-09-28) — the citizen **letter** that asks for this building has arrived. Letters interrupt on arrival and never expire, so arrival is the gate; reading is no longer a separate step. This is the primary gate: every non-starter building is hidden until a citizen has asked for it.
 
 Once available, the building appears in the build menu and **can be placed immediately as a construction site** — no intermediate unlock step, no up-front payment. Choosing which open site gets today's work IS the player's progression decision; the branching gates (not a second currency) do the pacing.
 
@@ -163,13 +163,14 @@ Once available, the building appears in the build menu and **can be placed immed
 
 Because the DAG is branching, different players will follow different paths — one player might invest heavily in commercial variety before unlocking advanced healthcare, another might push housing density first. The UI is **discovery-based, not a visible tech tree** — buildings whose gates aren't met don't appear in the build catalog at all; the next thing to build is hinted at via citizen requests (see below), and newly available buildings appear in the catalog with their coin price alongside everything else. This keeps new players from feeling overwhelmed and preserves the surprise of each reveal.
 
-**Citizen requests — floating emoji bubbles.** The city screen surfaces what citizens want and what they're celebrating, via cute emoji / sticker bubbles that float above the buildings:
+**Citizen requests — letters (revised 2026-09-28; supersedes the floating emoji bubbles — design in [city_builder.md §10](city_builder.md)).** The story reaches the player through three channels, each with one job:
 
-- Bubbles use simple visual language — a 🏥 over a head for "we need healthcare", a 🎉 over a coffee shop after it opens, a 🚮 over a pile for "the trash situation is getting out of hand". Tapping a bubble expands it into a full sentence explaining the citizen's request or feeling. **Tapping open a demand bubble is also what reveals the matching building's card in the build catalog** — the citizen has to ask (and the player has to read the ask) before the building shows up to buy.
-- Tone is mixed — kid-friendly silly ("Mrs. Pomeroy's cat ate a sock — we need a vet!") sits alongside slightly less cutesy civic notes ("The neighborhood is tired of stepping over garbage — we need a Waste Management facility!"). The mix keeps it interesting for the older end of the 6–14 range.
-- **Both demands and praise.** Bubbles show needs ("we want a park") but also positive feedback ("citizens love the new bakery", "the garbage gets collected on time now"). Praise bubbles validate recent placements; demand bubbles hint at what's available or about to unlock.
-- **Max ~5 bubbles on screen at once.** Unacknowledged bubbles rotate — if the player doesn't act on one, it disappears for a while and may resurface later. Bubble state persists across sessions (a request the player ignored last night can still be there tomorrow, or come back in a different form).
-- **Story beats can recur even after a building is unlocked or built** — e.g. "we want more parks" can fire repeatedly as the city grows, even when a park already exists. Each beat has its own pacing rules to avoid spamming.
+- **Letters** carry every request. A letter is a card from a named citizen: their face and name, a two-word *"wants a 🏠"* line, one spoken sentence addressed to the player by name ("Dear Mayor Sam, …"), a picture of the building, and two big buttons — **Build it!** and **Later**. One template for every age: pre-readers get the face, the picture and the voice; readers also get the sentence. *Build it!* proposes a spot beside the road so placement is one tap; *Later* leaves the request on a badged card in the build bar, where tapping it re-opens the letter. Letters interrupt only when the city is at rest (no site selected, nothing being placed, not during the wheel, a question or a celebration), are spaced by play (one per few answered rounds, so nothing piles up while the app is closed), and never expire. A request is never made for something already under construction.
+- **Thank-you replies.** When the requested building opens, the celebration is followed by a reply from the citizen who asked, with a snapshot of the building. Request → build → reply is one thread.
+- **Pedestrian bubbles** carry every other bit of praise ("the coffee shop smells amazing"): a small speech bubble over a walker passing the building, gone in a few seconds, tap to hear it. Nothing to dismiss.
+- **The Math City Times** — a front page for milestones ("From a single office to a whole skyline") and the two balance warnings (too many shops for the homes; growth stalled). Rare by design; past editions are kept.
+- **A cast of ten named citizens** (Mrs. Pomeroy and her cat, Mr. Alvarez and his avocados, a doctor, a coach, a kid who wants a playground, the events organiser, …), each with a face from the same avatar system the player uses. The player's own avatar is the mayor: on every letter's "To:" line and cutting the ribbon at openings.
+- Tone stays mixed — kid-friendly silly alongside slightly less cutesy civic notes — and beats can still recur ("we want more parks") with their own pacing rules.
 
 **Beat trigger conditions** combine several inputs (all optional per beat):
 
@@ -187,15 +188,15 @@ Because the DAG is branching, different players will follow different paths — 
 - **Roads:** Auto-generated to connect placed buildings — the player never manually draws roads. Avoids fiddly precision placement on a phone. Because every building is guaranteed an open perimeter side (see *Placement*), the road network can always reach every building.
 - **Moving buildings and sites:** Free. Players can rearrange their city — including open construction sites — without spending more coins.
 - **Selling buildings / cancelling sites:** Not supported in v1. Simplifies the economy and avoids "I bought the wrong thing, refund me" friction.
-- **Upgrades (revised 2026-09-19):** Smaller buildings upgrade into bigger ones along their arc (single home → apartment → mid-rise → high-rise → luxury condo; clinic → hospital; …) for the *difference* in price. An upgrade is a construction site whose grown footprint can go anywhere on owned land — over the old building if it fits, or out in the suburbs — without rearranging the old neighbourhood. The old building keeps standing and housing its people until the upgrade opens, then its plot clears. Upgrades sit alongside new builds, never replace them.
+- **Upgrades (revised 2026-09-19; ladders revised 2026-09-29):** Smaller buildings upgrade into bigger ones along short linear ladders (single home → duplex → townhouse row; apartment → mid-rise → high-rise; clinic → hospital; park → community garden → botanical garden → zoo; …) for the *difference* in price. An upgrade is asked for by letter like anything else: the letter names a specific building (the oldest eligible one), *Build it!* pans to it, and ◀ ▶ let the player pick another before confirming; a building's info card offers the same "Grow into…" any time. An upgrade is a construction site whose grown footprint can go anywhere on owned land — over the old building if it fits, or out in the suburbs — without rearranging the old neighbourhood. The old building keeps standing and housing its people until the upgrade opens, then its plot clears. Upgrades sit alongside new builds, never replace them.
 - **Population:** A visible counter shows the current population. Growth follows from a *mix* of buildings: monotone cities (all cinemas, or all apartments and nothing else) stall or even shrink, with citizens complaining that the city is unbalanced.
 - **Growth model:** A combination of aggregate service ratios (1 clinic per N residents, 1 power plant per N, etc.) and category-balance multipliers (variety of commercial + entertainment + services boosts growth; lopsided mixes stall it). Concrete formulas are tuned across Phase 7–9 by play-testing.
-- **Events:** Deferred past v1 (see [city_builder.md §8.10](city_builder.md)) — a festival is a community construction site whose completion brings citizens visibly arriving.
+- **Events — the block party (designed 2026-09-29, [city_builder.md §10.7](city_builder.md)):** the one v1 event. Population fills new housing gradually; when a real gap opens (typically after an apartment or tower opens) the events organiser writes, offering a block party at a park or plaza the town already has. It is a cheap construction site — about one question block of maths — and when it is ready the party plays there and the new residents move in at once, filling the town to capacity. Offered only by letter, with a cooldown, never from the build menu. Themed and seasonal events are the same mechanic later.
 
 **Out of v1, nice to have later:**
 - Animated city: cars driving on roads, building lights turning on at night, pedestrians on sidewalks, day/night cycle.
 - Sharing screenshots of cities with friends.
-- A player-facing "city journal" archiving past citizen requests and the player's response.
+- A player-facing "city journal" — the album of letter threads (request → build → reply) and past Times front pages.
 
 (Detailed coin prices, DAG unlock conditions, beat scripts, and growth formulas are tuned across Phases 7–9 — see [plan.md](plan.md). Phase 7 ships a small proof of the system with ~10 buildings and ~5 beats; Phase 8 designs the full DAG + hundreds of beats in a future `city_builder.md`; Phase 9 implements the full content and generates the building art.)
 
@@ -238,7 +239,7 @@ No PIN, no adult-only section. The data is the player's own, presented in a way 
 
 First-time experience:
 1. "Create your player" screen (name, grade, basic avatar)
-2. Brief animated tutorial showing the spin wheel and how to answer (1–2 screens, skippable)
+2. **Chapter one** (revised 2026-09-29, [city_builder.md §10.4](city_builder.md)): the mayor's office is already on the map; three scripted letters (a home, the school, a park) walk the player through place → spin → answer → open, with an animated hand showing each gesture the first time and no build menu until the third building opens; a hand-over letter from the whole town then unlocks free building. A parent-facing skip lives in settings.
 3. First question is intentionally easy to create an early win
 
 ---

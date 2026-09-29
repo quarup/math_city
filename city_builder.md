@@ -9,12 +9,13 @@
 
 ## Status
 
-- **Last updated:** 2026-06-14 (Phase-9 catalog completed — all 54 anchors wired + sprite-backed; `train_station` dropped, the rail can't be drawn coherently in 2:1 dimetric)
+- **Last updated:** 2026-09-29 (§10 *Letters from Math City* — story delivery, chapter one, folders, housing ladders, block party). Previously 2026-06-14 (Phase-9 catalog completed — all 54 anchors wired + sprite-backed; `train_station` dropped, the rail can't be drawn coherently in 2:1 dimetric)
 - **Phase:** Phase 8 — City Builder: Research & Rich Design. Content-authoring only, **no code changes**. Deliverable is this document; Phase 9 implements it.
 - **Drafting mode:** *fill pass complete (first draft)*. §1 (references), §2 (categories), §3 (full building specs — 54 anchors), §4 (beat catalog), §5 (asset checklist), and §7 (open questions) are drafted. §6 (implementation status) is auto-managed by [tools/city_builder/sync_implementation_status.py](tools/city_builder/sync_implementation_status.py); as of 2026-06-14 all 54 anchors are wired and sprite-backed. Three structure decisions are locked (2026-05-31): education (`school`/`high_school`) lives under `services`; `water` is a hard-gating service; the housing spine keeps all 7 rungs. **Still expects Phase-9 iteration** — costs and service ratios are designed-coherent placeholders, finalized by playtest.
 - **Framework:** extends the Phase-7 model — four categories, the service-ratio + variety-multiplier growth model, and the typed `UnlockRule` / `TriggerRule` gates. **Currency revised 2026-09-08:** the two-currency 🧱/🔬 design this document was drafted against was replaced by a single currency, **coins** (1 coin ≈ 1 expected second of study); §3's cost columns and §3.5 were re-denominated accordingly, and the research step is gone — a building whose unlock rule passes is bought straight away. See prd.md *Cosmetics System*.
 - **Scope of this pass:** *representative breadth* — full coherent arcs across all four categories with ~54 anchor buildings individually specced; the long-tail variants (cosmetic re-skins, minor tier infills) are described as patterned templates rather than itemized. This keeps the design coherent and reviewable and gives Phase 9 a clear queue without committing to hundreds of hand-authored rows up front.
 - **Construction loop (2026-09-19):** placement is no longer a purchase — a building is placed as a *construction site* and paid down by answering questions while the camera is zoomed in on it; there is no wallet; upgrades are sites priced at the difference. Designed in **§8**, implemented in plan.md Phase 10. §3 prices are unchanged in meaning (coins ≈ seconds of study) but are now the *total* a site must be paid to open.
+- **Letters (2026-09-28 / 29):** the sticker-bubble beat delivery is replaced by citizen *letters* (interrupting, spoken, never expiring), pedestrian bubbles for ambient praise, and a *Math City Times* front page for milestones and warnings; chapter one is a scripted home → school → park; the bottom bar becomes sites → requested → four folders; housing splits into two ladders; the one v1 event is a beat-triggered *block party*. Designed in **§10**, implemented as plan.md Phase 10 steps 1–6. §4's beat catalog is unchanged in content — only its delivery moved.
 - **Source of truth note:** once Phase 9 starts wiring content, the building/beat **IDs here become the source of truth**, mirrored by [building_registry.dart](lib/domain/city/building_registry.dart) and [beat_registry.dart](lib/domain/city/beat_registry.dart) — exactly as `curriculum.md` is mirrored by `generator_registry.dart`.
 
 ---
@@ -428,6 +429,14 @@ cozy. Each beat below is `id` · tone · emoji `shortLabel` · longText · trigg
 summary. Trigger shorthand: `+B` present, `−B` absent, `pop≥N`, `age(B)≥N`
 (building age in rounds), `fired:X` (`requiredBeatsFired`), `🪙since≥N`
 (`minCoinsEarnedSinceLastBeat`, coins ≈ seconds of study). The exact `TriggerRule` encodes in Phase 9.
+
+> **Delivery revised 2026-09-28 — see §10.** Demand beats now arrive as *letters*
+> from a named citizen (interrupting, spoken, never expiring; arrival is the
+> discovery gate, not reading). Praise beats triggered by the building that just
+> opened are *thank-you replies* to the letter that asked; every other praise
+> beat is a bubble over a pedestrian near the building. Warnings and milestones
+> are *Math City Times* front pages. A demand treats a building with an open
+> site as present. The tables below are unchanged.
 
 > **Authoring convention.** A demand beat fires when its prereq is present and its
 > target building is still absent (`+prereq −self`, plus any pop gate matching the
@@ -977,6 +986,14 @@ progress unit (it's velocity, not position — see 8.10).
 
 ### 8.6 Upgrades — ladders paid for the difference
 
+> **Housing revised 2026-09-29 — see §10.6.** The single spine below ended
+> `high_rise → luxury_condo`, an upgrade that houses fewer people. It is now
+> two ladders (`single_home → duplex → townhouse_row` and `apartment →
+> mid_rise_apartment → high_rise`) with `luxury_condo` standalone, four more
+> ladders added, the town-hall ladder upgrade-only, and the footprint
+> invariant relaxed to *area never shrinks*. Delta pricing, relocation and
+> the old-building-stands rule are unchanged.
+
 An upgrade is a construction site placed *over or beside* an existing
 building, priced at `target.coinCost − source.coinCost`.
 
@@ -1051,6 +1068,10 @@ loop.
 
 ### 8.9 First five minutes
 
+> **Superseded 2026-09-29 by §10.4** (chapter one: office auto-placed, three
+> scripted letters home → school → park, hand-over letter, hand animations,
+> progressive disclosure). The paragraph below is the original sketch.
+
 Strong guidance early, loosening later. The mayor's office is already placed
 at creation; `demand_first_home` fires at once with its card auto-expanded and
 *Build it* showing; the catalog shows only the highlighted `single_home`;
@@ -1061,8 +1082,10 @@ tutorial item is folded into this.
 
 ### 8.10 Designed, deferred (not v1)
 
-- **Festival prep** — a community site; completion brings citizens visibly
-  arriving and a party animation. The first non-building goal.
+- ~~**Festival prep** — a community site; completion brings citizens visibly
+  arriving and a party animation. The first non-building goal.~~ **Designed
+  2026-09-29 as the block party — §10.7** (a cheap event site on an existing
+  public space, beat-triggered by a housing gap, fills the town to capacity).
 - **Repairs** — an existing building needs a shift of work. Hard rules so a
   big city never nags: at most 1 open repair, never more than 1 block, a
   cooldown independent of city size, and no visual decay beyond a small
@@ -1098,7 +1121,10 @@ tutorial item is folded into this.
   `lib/domain/city/upgrade_ladders.dart`: the six §8.6 arcs as listed, plus
   two entertainment ladders — `park → botanical_garden → zoo` and
   `sports_field → stadium → amusement_park` (they sit on different arcs, so
-  one green and one sports ladder rather than a single chain).
+  one green and one sports ladder rather than a single chain). **Revised
+  again 2026-09-29 — §10.6:** housing split into two ladders, `luxury_condo`
+  standalone, `community_garden` inserted into the green ladder, waste /
+  grocery / office ladders added, town hall upgrade-only.
 - **Estimate formula** for the commit screen (window size, cold start for a
   brand-new player).
 - **Land blocks as sites** — the select-then-confirm `_BuyLandBar` flow
@@ -1320,3 +1346,309 @@ this replaces.
 pipeline (hue-rotate the saturated body colour, leave glass / tyres / chrome)
 instead of asking NB for a red and a green hatchback — same silhouette,
 zero consistency risk. Not built yet.
+
+---
+
+## 10. Letters from Math City (designed 2026-09-28 / 29)
+
+The story-delivery and guidance redesign. Brainstormed as ~50 ideas across
+six areas, then narrowed over two decision rounds; the visual mocks (letter,
+grow bar, bottom bar) live in the "Letters from Math City" artifact
+(<https://claude.ai/code/artifact/26f2beb6-a935-4bc2-aace-7c4cf0276904>).
+This section is the record; the artifact is the picture. Implemented in
+plan.md Phase 10 (steps 1–6 in §10.9).
+
+### 10.1 What was wrong with the bubbles
+
+The Phase-7 sticker row (up to five emoji along the top of the city, tap to
+expand, "Got it") fails a six-year-old in seven ways:
+
+- **It is the discovery gate, yet it expires.** An untapped demand bubble
+  rotates off after `kBubbleRotationRounds` (8) and its building stays hidden
+  until the beat re-fires. A distracted kid loses whole branches.
+- **Reading is the action.** The only payoff is "Got it", so bubbles read as
+  noise to clear.
+- **Text first, voice second.** Speech only plays after a tap; the sticker
+  label ("share a yard") is unreadable at K–1.
+- **Nobody is asking.** Mrs. Pomeroy and Mr. Alvarez exist in the copy, never
+  on screen.
+- **Demand, praise and warning look the same.** One row for three jobs.
+- **The reply never arrives.** The citizen who asked never says thanks.
+- **It asks for what is already being built.** `TriggerRule` checks placed
+  buildings only, so a demand can fire while that building's site is half
+  paid.
+
+### 10.2 Three channels, one job each
+
+| Channel | Carries | Interrupts? |
+|---|---|---|
+| **Letter** | every *demand* beat (incl. upgrade and block-party asks), the chapter-one script, the hand-over, and *thank-you replies* | yes, at rest |
+| **Pedestrian bubble** | every other *praise* beat (age-based, recurring, "the town's taking shape") | no |
+| **The Math City Times** | milestones (`praise_established_town`, `milestone_big_city`, population 50 / 100 / 200) and the two ratio *warnings* (§4.3) | yes, at rest, rare |
+
+**The letter.** One template for every age — no grade switch, no second
+modality. Anatomy, top to bottom:
+
+1. The citizen's face (a DiceBear Adventurer config from the cast, §10.8),
+   name, and a two-word *"wants a 🏠"* line — the ask is legible before any
+   sentence.
+2. One spoken sentence, addressed to the kid by name ("Dear Mayor Sam, …").
+   Text-to-speech plays on open, with a replay button; the existing
+   `ttsEnabledProvider` toggle still mutes it.
+3. A picture panel holding **the building sprite alone** (the face is already
+   in the header). A thank-you reply shows a snapshot of the opened building;
+   the celebration's confetti already carries the festivity, so the reply
+   panel needs at most a light garland.
+4. Two buttons, the primary one always the action: **Build it!** and
+   **Later**. *Later* leaves the request on its badged catalog card (§10.5);
+   the building is unlocked either way — arrival is the gate, not reading.
+
+**Pedestrian bubbles.** The pedestrian system picks a walker whose path
+passes within two tiles of the relevant building (or reroutes the nearest
+one) and the bubble — emoji plus the beat's `shortLabel` — rides with them
+for ~6 s. Tap to hear the sentence. Nothing persists, nothing to dismiss.
+This is Phase-12's *B4 citizen bubbles* given a purpose.
+
+**The Times.** A front page: masthead, headline, a photo of the city, one
+spoken line. Past editions stack in a drawer on the profile. Rare by design.
+
+**Thank-you replies.** A praise beat whose trigger is the building that just
+opened (`praise_first_home`, `praise_school`, … — the `+self` rows of §4.2)
+becomes a reply from the citizen who asked, shown right after the opening
+celebration, with a snapshot. Demand → build → reply is one thread; the
+album of threads is the PRD's "city journal" (later).
+
+### 10.3 Cadence and triggers
+
+- **Interrupt on arrival, but only at rest:** on the city screen with no site
+  selected, no placement or move in progress, not during the wheel, a
+  question, or a celebration. Otherwise the letter waits for the next rest.
+- **Spacing is unchanged:** one new beat per `kNewBeatSpacingRounds` (5)
+  answered rounds, per-beat `minCoinsEarnedSinceLastBeat` /
+  `cooldownAfterAckCoins`. Spacing counts rounds *played*, so nothing accrues
+  while the app is closed — reopening after a week shows at most one letter.
+- **Under construction counts as present.** `TriggerContext` gains the set
+  of building types with an open site; `buildingsAbsent` treats those as
+  present. The same rule skips upgrade sources that already have a growth
+  site (§10.6).
+- **Letters never expire.** `kBubbleRotationRounds` / `kReadHideRounds`
+  retire with the sticker row. A fired demand stays on its badged card until
+  the building opens.
+- **No mailbox for now** (deferred, §10.10). The envelope badge on the
+  catalog card *is* where a postponed letter lives; if badges get ignored in
+  playtest, a mailbox is the fallback.
+
+### 10.4 Chapter one — a directed first ten minutes
+
+Supersedes §8.9. Strong guidance early, loosening after the third building.
+
+1. **The mayor's office is placed for the kid** at the centre of the map when
+   the city is created. (§8.9 assumed this; the code still auto-picks it from
+   a one-card catalog and has the kid place it.) A placed **unique** building
+   has no catalog card; *Move* stays on its info card.
+2. **Three letters in a fixed order, no catalog bar at all:** a home
+   (Mrs. Pomeroy), then the **school** (from the cast's kid — the maths
+   building), then a **park** (the same kid, somewhere to play). The park is
+   both the happiest beat and the venue the block party needs (§10.7). Power
+   is not needed yet: `serviceFreeAllowance` (20) covers the first home and
+   apartment, so the engine asks for it later.
+3. **Auto-proposed placement, always:** *Build it!* drops the ghost on a
+   sensible free tile beside the road and shows the existing *Place here*
+   bar. Dragging still works; the default is one tap.
+4. **An animated hand for three gestures** — fling the wheel, tap an answer,
+   tap *Place here* — each on first encounter, never again. The wheel waits
+   for the kid (a self-spinning first wheel was considered and dropped: it
+   would teach the wrong thing).
+5. **The hand-over letter.** When the park opens, a letter signed by everyone
+   (the cast's faces in a row): *"Thank you, Mayor Sam! Math City is on the
+   map. From now on you can build whatever you like — look in the folders
+   below."* The folder bar slides in under it while it is up, so the words
+   and the thing they describe arrive together. Citizens only — no narrator
+   or companion character.
+6. **Progressive disclosure:** *Move* and the info card after the fourth
+   building; land expansion the first time a site cannot fit; *Cancel* the
+   first time a fourth site is refused.
+7. **Idle nudge:** no site open and no tap for ~8 s → the requested card
+   bounces once.
+8. A parent-facing *Skip the guide* in settings marks chapter one done.
+
+Chapter-one progress is a small integer on the player row; the engine is
+suppressed until the hand-over fires. The Phase-12 "first-launch tutorial"
+item is this.
+
+### 10.5 The bottom bar — three zones, four folders
+
+Replaces the flat unlock-order list.
+
+```
+🚧 Building        ✉️ Asked for          Everything else
+[🏫 ◔][🌳 ◔]   |  [⚡ ✉][🏢 ✉ Grow]  |  [🏠 Homes][🚒 Services][🛒 Shops][🎡 Fun]
+```
+
+- **Zone 1 — open sites** (≤ 3), each with a progress ring for
+  `paid / price`; tap selects the site and shows its bar.
+- **Zone 2 — requested** buildings whose demand letter has arrived, wearing
+  an envelope badge with the citizen's face. **Tapping re-opens the letter**
+  (Build it / Later), so the story is one tap from the card that fulfils it.
+  An upgrade request's card reads *Grow a …* and enters §10.6's flow.
+- **Zone 3 — four folders** mapping one-to-one onto the `BuildingCategory`
+  enum with kid-facing names: **Homes** (`civicHousing`), **Services**,
+  **Shops** (`commercial`), **Fun** (`entertainment`). Tapping a folder swaps
+  zone 3 for its cards with a back chevron. Never a third level; if a folder
+  outgrows a screen, split by tier (small / big) rather than adding a scroll.
+- Placed unique buildings have no card. A card new since the last visit
+  shimmers once; its folder shows a dot until opened.
+- **Upgrades are not in the folders** — they come from letters and from the
+  building's info card.
+- Alternatives kept for a later mock: a single *Build* button opening a
+  sheet; drag-from-card placement.
+
+### 10.6 Upgrades — the housing split, the taxonomy, and the grow flow
+
+**Housing (supersedes the §8.6 spine).** The spine ended
+`high_rise → luxury_condo`, and the condo houses *fewer* people (50 vs 60):
+an upgrade that shrinks the town. Fix — two short ladders and a landmark on
+the side, every ladder still a linked list (so no branch is ever hidden
+after the kid picks another):
+
+| Ladder | Footprints | Price | Residents |
+|---|---|---|---|
+| **Homes:** `single_home → duplex → townhouse_row` | 1×1 → 2×1 → 1×3 | 60 → 120 → 300 | 4 → 8 → 12 |
+| **Towers:** `apartment → mid_rise_apartment → high_rise` | 2×2 → 2×3 → 3×3 | 120 → 720 → 1500 | 16 → 30 → 60 |
+| `luxury_condo` — **standalone** landmark, unlocked by `high_rise`, built from scratch | 3×3 | 3000 | 50 |
+| `farmhouse` — side rung off `single_home` | 2×2 | 90 | 3 |
+
+The `duplex → townhouse_row` step rotates (2×1 → 1×3), which fails the ladder
+test's *footprint never shrinks in either dimension* rule. **Relax it to
+"area never shrinks"** — safe because an upgrade may already be placed
+anywhere on owned land, and placing over the old tiles is only allowed when
+the grown footprint fits. (The one-chain alternative, home → duplex →
+townhouse → apartment → mid-rise → high-rise, has monotonic area 1 2 3 4 6 9
+but needs the apartment repriced above 300 and makes every early letter an
+upgrade letter; rejected.)
+
+**Full taxonomy.** Every building is one of: **rung** (on a ladder; buildable
+from scratch *and* as an upgrade), **side rung** (needs a ladder building as
+prerequisite, never an upgrade target), **unique civic** (upgrade-only, one
+per city), or **standalone**.
+
+| Ladder | Footprints | Price | Decision |
+|---|---|---|---|
+| `mayors_office → town_hall → city_hall` | 2×2 → 3×2 → 3×3 | 0 → 720 → 2400 | **upgrade-only** — all three are unique; from-scratch would allow an office and a town hall side by side |
+| `power_plant → power_station → solar_farm` | 2×2 → 3×3 → 4×4 | 120 → 900 → 1800 | keep |
+| `water_tower → water_treatment` | 1×1 → 3×3 | 120 → 900 | keep |
+| `waste_management → recycling_center` | 2×2 → 2×3 | 120 → 900 | **add** — the only gating service without a ladder |
+| `clinic → hospital` | 2×1 → 3×3 | 120 → 1500 | keep |
+| `school → high_school` | 2×3 → 3×3 | 120 → 900 | keep |
+| `grocery → supermarket` | 1×2 → 2×3 | 120 → 720 | **add** — variety counts distinct *types* and the swap is atomic at opening, so it is neutral |
+| `office_building → business_tower` | 2×2 → 2×2 | 900 → 3000 | **add** — height carries the upgrade |
+| `park → community_garden → botanical_garden → zoo` | 2×2 → 2×2 → 3×3 → 5×5 | 120 → 180 → 1200 → 3600 | **insert `community_garden`** — the botanical garden's unlock rule and letter already depend on it |
+| `sports_field → stadium → amusement_park` | 3×2 → 4×4 → 6×6 | 600 → 2700 → 5400 | keep |
+| `market_stall → grocery`, `coffee_shop → restaurant` | | | left out for now |
+| `museum → aquarium` | | | no — the story has them coexisting |
+
+**How an upgrade letter plays.** A rung above a root fires its demand only
+while the source exists (already the trigger), so a rung's letter is always
+a *growth* letter; roots keep from-scratch letters.
+
+1. **The letter names a building.** The engine picks the **oldest source
+   placement without a growth site** and the letter comes from one of its
+   residents, with the *target* sprite in the picture panel: *"Our building
+   is full to the roof — could it grow into a high-rise?"* No eligible source
+   → the beat does not fire (§10.3's under-construction rule).
+2. ***Build it!* pans to that building**, which pulses, and the bottom bar
+   becomes the **grow bar**: `◀  Grow this one? · Mid-rise · 2 of 3 ·
+   780 🪙 to a high-rise  ▶` with *✕ not now* and *Yes, grow it*. ◀ ▶ step
+   through candidates oldest-first and pan the camera to each; tapping
+   another eligible source on the map selects it too; sources already
+   growing are skipped; a single candidate shows no arrows.
+3. ***Yes, grow it*** proposes the grown footprint **over the old tiles**
+   when it fits and the no-boxing-in rule holds, else on the nearest free
+   spot; draggable like a move; *Place here* starts the site with its
+   `UpgradeLink`, then zoom and wheel as always. The old building stands
+   until the new one opens (§8.6 unchanged).
+4. **Also from the building itself:** any rung's info card offers *Grow into
+   a high-rise · 780 🪙*, jumping to step 3 with that building chosen — how a
+   kid grows a second mid-rise once the letter's ask is done.
+
+### 10.7 The block party
+
+One event, one mechanic, supersedes the §8.10 *festival prep* sketch (the
+"festival site" and "welcome festival" ideas were the same thing split into
+mechanic and trigger). **What it is for:** population closes only
+`defaultGrowthRate` (25 %) of the gap to capacity per tick, so a fresh
+apartment or tower sits half-empty for a while; the party is the burst that
+fills it.
+
+- **Held at a public space the town already has** — park, playground,
+  fountain plaza or sports field. Nothing new is built. While the party is
+  being prepared, bunting and a small stage appear on that space (its stage
+  art); when it is ready, the party plays there.
+- **Prepared by answering questions.** It is a site (`EventGoal`, the third
+  `SiteGoal` after building and land) priced at about one question block —
+  **~90 coins, ≈ 1.5 min of maths** — paid down the same way, just cheap.
+  Never free and instant: §8.3's rule that a coin only exists inside a site
+  holds, and the maths builds everything.
+- **What the kid gets:** new residents. On completion the population **jumps
+  to capacity in one step** (the counter rolls up) with a crowd of walkers
+  converging on the space, balloons and confetti; the organiser's thank-you
+  reply follows with a snapshot; a sticker for the album later.
+- **Only when a letter offers it** — never in a folder. The organiser writes
+  when: a public space exists; `capacity − population ≥ max(8, 0.25 ·
+  capacity)`; no other event is open; and ≥ 900 coins (~15 min) have been
+  earned since the last party. The first one arrives naturally soon after
+  chapter one, when the first apartment opens (capacity 20, population 4).
+- The same rule and letter carry a bigger town; only the name, the price and
+  the crowd scale later (street fair, city festival). Themed and seasonal
+  events (harvest fair, sports day, parade, fireworks night, math fair at
+  the school, winter market by device date) are the same mechanic with
+  different venues and overlays — after the package.
+- Guardrails match the §8.10 repair rules: at most one open event, a
+  cooldown independent of city size, never more than ~3 blocks.
+
+### 10.8 The cast
+
+Ten named citizens, each a DiceBear Adventurer config composed by the
+existing `composeAdventurer` (no new art): one per arc — Mrs. Pomeroy and her
+cat (homes), Mr. Alvarez and his avocados (shops), a doctor, a coach, a
+librarian, the kid who wants a playground (and a school), a farmer — plus
+the over-enthusiastic **events organiser** (every party letter, so the face
+alone means "party") and a grumpy neighbour who writes the Times' warnings.
+Every `StoryBeat` gains a `citizen` id; the kid's own avatar is the mayor —
+on the "To:" line of every letter and cutting the ribbon at openings.
+
+### 10.9 Build order (plan.md Phase 10)
+
+| Step | Lands | Layers |
+|---|---|---|
+| 1 | Letter card replaces the sticker row (interrupt at rest, one template, voice on open, name in the salutation); envelope badge on requested cards; under-construction counts as present; `citizen` on beats + cast registry; mayor's office auto-placed and card-less; rotation/hide constants retired | domain, state, presentation |
+| 2 | Bar in three zones with four folders; site rings; new-card shimmer | presentation, one provider |
+| 3 | Chapter one script (home, school, park), hand-over letter, progressive disclosure, auto-proposed placement, hand animations, idle nudge, parent skip | state (guide progress on the player row), presentation |
+| 4 | Thank-you replies after openings; pedestrian praise bubbles; the Times for milestones and the two ratio warnings (needs the §7 `TriggerRule` ratio extension) | domain, game, presentation |
+| 5 | Ladder changes (housing split, town hall upgrade-only, four additions, area invariant); the grow bar with ◀ ▶; info-card grow option | domain, presentation |
+| 6 | Block party: `EventGoal` site on a public space, stage art, population burst, guardrails, organiser letters | all four layers, schema bump |
+
+### 10.10 Decisions log
+
+Round 1 (2026-09-28): one letter template for every age · letters interrupt
+on arrival · mailbox deferred · chapter one scripted, then a hand-over
+letter · auto-proposed placement always · folders Homes / Services / Shops /
+Fun · ladder changes accepted · block party as the one event, beat-triggered
+· cast of ten with DiceBear faces · citizens only, no companion · ambient
+praise on pedestrians · the Times is in.
+
+Round 2 (2026-09-29): chapter one = home, school, park · the ladder
+invariant relaxes to area · block party draft numbers (90 coins; gap ≥ 8 and
+≥ 25 %; 900 coins between parties) · the party fills to capacity in one step
+· the letter's picture panel shows the building sprite only (the face is in
+the header); the reply gets at most a light garland over the confetti.
+
+**Dropped:** a self-spinning first wheel (teaches the wrong thing); a
+persistent "next" pill (the requested cards already say it); a K–2 postcard
+variant (one template instead); a companion / narrator character.
+
+**Deferred (still liked):** mailbox; notice board by the town hall; petitions
+with signed avatars for stadium-sized asks; sticker album of completed
+threads; the requester attending the opening as a walker; population shown
+as faces for the youngest; day/night; mayor's badges; the citizen walking up
+to knock; drag-from-card placement; a single *Build* button + sheet.
