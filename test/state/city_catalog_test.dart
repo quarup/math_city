@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:math_city/data/construction_sites.dart';
 import 'package:math_city/data/database.dart';
 import 'package:math_city/domain/city/building_registry.dart';
 import 'package:math_city/state/city_provider.dart';
@@ -134,5 +135,68 @@ void main() {
       catalog = await container.read(cityCatalogProvider.future);
       expect(catalog.map((b) => b.id), contains('high_rise'));
     });
+  });
+
+  group('upgrades (city_builder.md §10.6)', () {
+    test('upgrade-only rungs never get a card', () async {
+      final (db, player) = await _playerWithMayor();
+      final city = await db.cityForPlayer(player.id);
+      await db.placeBuilding(
+        cityId: city.id,
+        playerId: player.id,
+        buildingTypeId: 'single_home',
+        gridX: 5,
+        gridY: 5,
+      );
+      await db.setCityPopulation(city.id, 50);
+      await db.recordBeatFired(player.id, 'demand_town_hall', 0);
+      final container = await _container(db, player.id);
+      addTearDown(container.dispose);
+      final catalog = await container.read(cityCatalogProvider.future);
+      expect(catalog.map((b) => b.id), isNot(contains('town_hall')));
+    });
+
+    test(
+      'upgradeSourcesFor lists the rung below, oldest first, not growing',
+      () async {
+        final (db, player) = await _playerWithMayor();
+        final city = await db.cityForPlayer(player.id);
+        Future<int> home(int x) async {
+          final id = await db.placeBuilding(
+            cityId: city.id,
+            playerId: player.id,
+            buildingTypeId: 'single_home',
+            gridX: x,
+            gridY: 5,
+          );
+          await db.incrementRoundsPlayed(player.id);
+          return id;
+        }
+
+        final first = await home(4);
+        final second = await home(6);
+        final third = await home(8);
+        // The second home is already growing into a duplex.
+        await db.startBuildingSite(
+          cityId: city.id,
+          playerId: player.id,
+          buildingTypeId: 'duplex',
+          gridX: 6,
+          gridY: 8,
+          upgradesFromPlacementId: second,
+        );
+        final placements = await db.placementsForCity(city.id);
+        final sites = sitesFromRows(await db.sitesForCity(city.id), placements);
+        final sources = upgradeSourcesFor('duplex', placements, sites);
+        expect(sources.map((p) => p.id), [first, third]);
+        expect(upgradeSourcesFor('apartment', placements, sites), isEmpty);
+        final offices = upgradeSourcesFor('town_hall', placements, sites);
+        expect(offices, isNotEmpty);
+        expect(
+          offices.every((p) => p.buildingTypeId == 'mayors_office'),
+          isTrue,
+        );
+      },
+    );
   });
 }

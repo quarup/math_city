@@ -116,7 +116,7 @@ void main() {
         final siteId = await db.startBuildingSite(
           cityId: city.id,
           playerId: player.id,
-          buildingTypeId: 'apartment',
+          buildingTypeId: 'duplex',
           gridX: 4,
           gridY: 4,
           upgradesFromPlacementId: homeId,
@@ -129,9 +129,9 @@ void main() {
         expect(site.price, 60);
         final goal = site.goal as BuildingGoal;
         expect(goal.upgrade!.sourcePlacementId, homeId);
-        expect(goal.netPopulationOnOpen, 12);
+        expect(goal.netPopulationOnOpen, 4);
 
-        // The home stands until the apartment opens.
+        // The home stands until the duplex opens.
         expect(
           placements.map((p) => p.buildingTypeId),
           contains('single_home'),
@@ -140,7 +140,7 @@ void main() {
         final after = await db.placementsForCity(city.id);
         expect(
           after.map((p) => p.buildingTypeId).toSet(),
-          {'mayors_office', 'apartment'},
+          {'mayors_office', 'duplex'},
         );
       },
     );

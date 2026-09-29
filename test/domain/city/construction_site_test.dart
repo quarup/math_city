@@ -154,9 +154,9 @@ void main() {
 
   group('upgrade sites', () {
     final home = _type('single_home');
-    final apartment = _type('apartment');
+    final duplex = _type('duplex');
     final upgradeGoal = BuildingGoal(
-      type: apartment,
+      type: duplex,
       col: 0,
       row: 0,
       upgrade: UpgradeLink(sourcePlacementId: 42, sourceType: home),
@@ -164,19 +164,19 @@ void main() {
 
     test('priced at target − source', () {
       expect(upgradeGoal.isUpgrade, isTrue);
-      expect(upgradeGoal.price, apartment.coinCost - home.coinCost);
+      expect(upgradeGoal.price, duplex.coinCost - home.coinCost);
       expect(upgradeGoal.price, 60);
     });
 
     test('a new build of the same type is full price', () {
-      expect(BuildingGoal(type: apartment, col: 0, row: 0).price, 120);
+      expect(BuildingGoal(type: duplex, col: 0, row: 0).price, 120);
     });
 
     test('net population on open is target − source', () {
-      expect(upgradeGoal.netPopulationOnOpen, 16 - 4);
+      expect(upgradeGoal.netPopulationOnOpen, 8 - 4);
       expect(
-        BuildingGoal(type: apartment, col: 0, row: 0).netPopulationOnOpen,
-        16,
+        BuildingGoal(type: duplex, col: 0, row: 0).netPopulationOnOpen,
+        8,
       );
     });
 
@@ -188,7 +188,7 @@ void main() {
       final before = populationCapacity(placedBefore);
       expect(before, home.populationContribution);
 
-      final placedAfter = [_type('mayors_office'), apartment];
+      final placedAfter = [_type('mayors_office'), duplex];
       final after = populationCapacity(placedAfter);
       expect(after - before, upgradeGoal.netPopulationOnOpen);
     });
@@ -237,7 +237,7 @@ void main() {
   group('checkStartSite', () {
     final owned = startingOwnedBlocks();
     final home = _type('single_home');
-    final apartment = _type('apartment');
+    final duplex = _type('duplex');
 
     ConstructionSite site(SiteGoal g) =>
         ConstructionSite(goal: g, startedAtRound: 0);
@@ -304,7 +304,7 @@ void main() {
         SiteStartRejection.notAnUpgradeStep,
       );
       final step = BuildingGoal(
-        type: apartment,
+        type: duplex,
         col: 0,
         row: 0,
         upgrade: UpgradeLink(sourcePlacementId: 1, sourceType: home),
@@ -317,7 +317,7 @@ void main() {
 
     test('a building can be the source of only one open upgrade', () {
       final first = BuildingGoal(
-        type: apartment,
+        type: duplex,
         col: 0,
         row: 0,
         upgrade: UpgradeLink(sourcePlacementId: 7, sourceType: home),
@@ -332,7 +332,7 @@ void main() {
         SiteStartRejection.sourceAlreadyUpgrading,
       );
       final other = BuildingGoal(
-        type: apartment,
+        type: duplex,
         col: 4,
         row: 4,
         upgrade: UpgradeLink(sourcePlacementId: 8, sourceType: home),

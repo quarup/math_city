@@ -19,6 +19,7 @@ import 'package:math_city/domain/city/land_blocks.dart';
 import 'package:math_city/domain/city/placement_rules.dart';
 import 'package:math_city/domain/city/road_network.dart';
 import 'package:math_city/domain/city/story_beat.dart';
+import 'package:math_city/domain/city/upgrade_ladders.dart';
 import 'package:math_city/domain/economy/question_block.dart';
 import 'package:math_city/domain/proficiency/proficiency_band.dart';
 import 'package:math_city/game/city/city_board_component.dart';
@@ -138,6 +139,18 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
 
   /// Bubble beats already handed to a walker, so each fire bubbles once.
   final Set<String> _bubbled = <String>{};
+
+  /// Grow mode (city_builder.md §10.6): the rung being grown into, the
+  /// buildings it could grow out of (oldest first) and which is picked.
+  /// The picked one is tinted on the map; ◀ ▶ on the grow bar or a tap on
+  /// another candidate changes the pick.
+  BuildingType? _growTarget;
+  List<BuildingPlacement> _growCandidates = const [];
+  int _growIndex = 0;
+
+  /// The building an upgrade site will replace, carried from *Yes, grow
+  /// it* into *Place here*.
+  BuildingPlacement? _growSource;
 
   /// The folder open in the bar's third zone (city_builder.md §10.5), or
   /// null for the four folder cards.
@@ -267,6 +280,14 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
       return;
     }
     final occupant = _buildingAt(placements, col, row);
+    // In grow mode a tap on another candidate picks it.
+    if (_growTarget != null) {
+      final i = occupant == null
+          ? -1
+          : _growCandidates.indexWhere((c) => c.id == occupant.id);
+      if (i >= 0) setState(() => _growIndex = i);
+      return;
+    }
     // No info card during chapter one — the letters carry the flow.
     if (occupant != null && _chapterOne && _movingId == null) return;
     if (occupant != null) {
@@ -355,6 +376,72 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
       Timer(const Duration(milliseconds: 700), () {
         if (mounted) setState(() => _nudge = false);
       });
+    });
+  }
+
+  /// Enters grow mode for [target] with [candidates] to pick from.
+  void _enterGrow(BuildingType target, List<BuildingPlacement> candidates) {
+    unawaited(ref.read(ttsServiceProvider).stop());
+    setState(() {
+      _growTarget = target;
+      _growCandidates = candidates;
+      _growIndex = 0;
+      _growSource = null;
+      _letterId = null;
+      _selected = null;
+      _pendingSpot = null;
+      _selectedBuildingId = null;
+      _selectedSiteId = null;
+      _movingId = null;
+      _movingSiteId = null;
+      _moveOrigin = null;
+    });
+  }
+
+  void _cancelGrow() => setState(() {
+    _growTarget = null;
+    _growCandidates = const [];
+    _growSource = null;
+  });
+
+  /// *Yes, grow it*: proposes the grown footprint over the old tiles when
+  /// it fits (the source's own tiles count as free), else on the nearest
+  /// spot with room around it; then the usual *Place here* confirms.
+  void _confirmGrow(
+    List<BuildingPlacement> placements,
+    List<CitySite> sites,
+    Set<(int, int)> ownedTiles,
+  ) {
+    final target = _growTarget;
+    if (target == null || _growCandidates.isEmpty) return;
+    final source = _growCandidates[_growIndex];
+    final existing = _footprintsOf(placements, sites, exclude: source.id);
+    final over = GridFootprint(
+      col: source.gridX,
+      row: source.gridY,
+      width: target.footprint.$1,
+      height: target.footprint.$2,
+    );
+    final fits = checkPlacement(
+      ownedTiles: ownedTiles,
+      existing: existing,
+      candidate: over,
+    ).isLegal;
+    final spot = fits
+        ? over
+        : proposePlacement(
+            ownedTiles: ownedTiles,
+            existing: existing,
+            width: target.footprint.$1,
+            height: target.footprint.$2,
+            anchor: (source.gridX, source.gridY),
+          );
+    setState(() {
+      _growSource = source;
+      _growTarget = null;
+      _growCandidates = const [];
+      _selected = target;
+      _pendingSpot = spot;
     });
   }
 
@@ -805,15 +892,32 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     final spot = _pendingSpot;
     final type = _selected;
     if (spot == null || type == null) return;
+    final source = _growSource;
+    final sourceType = source == null
+        ? null
+        : findBuildingTypeById(source.buildingTypeId);
     setState(() {
       _pendingSpot = null;
       _selected = null;
+      _growSource = null;
     });
     unawaited(
       ref.read(cityActionsProvider).markHintSeen(GuideHint.placeHere),
     );
     unawaited(
-      _startSite(BuildingGoal(type: type, col: spot.col, row: spot.row)),
+      _startSite(
+        BuildingGoal(
+          type: type,
+          col: spot.col,
+          row: spot.row,
+          upgrade: source == null || sourceType == null
+              ? null
+              : UpgradeLink(
+                  sourcePlacementId: source.id,
+                  sourceType: sourceType,
+                ),
+        ),
+      ),
     );
   }
 
@@ -1070,7 +1174,12 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
           color: _colorFor(type),
           footprint: type.footprint,
           assetPath: _assetPathFor(type, slotById[p.id] ?? 0),
-          selected: p.id == _movingId || p.id == _selectedBuildingId,
+          selected:
+              p.id == _movingId ||
+              p.id == _selectedBuildingId ||
+              (_growTarget != null &&
+                  _growCandidates.isNotEmpty &&
+                  p.id == _growCandidates[_growIndex].id),
         ),
       );
     }
@@ -1305,6 +1414,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
         _movingSiteId == null &&
         _selectedSiteId == null &&
         _selectedBuildingId == null &&
+        _growTarget == null &&
         _buyingBlock == null;
     if (_letterId == null && atRest) {
       final next = openBeats
@@ -1320,10 +1430,16 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     final letterTarget = letterBeat == null
         ? null
         : beatTargetBuilding(letterBeat);
+    // A letter for a rung above a root grows an existing building
+    // (city_builder.md §10.6): the oldest eligible one is named first.
+    final letterGrowSources = letterTarget == null
+        ? const <BuildingPlacement>[]
+        : upgradeSourcesFor(letterTarget.id, placements ?? const [], sites);
     final letterCanBuild =
         letterBeat?.kind == BeatKind.demand &&
         letterTarget != null &&
-        (catalog?.any((b) => b.id == letterTarget.id) ?? false);
+        (letterGrowSources.isNotEmpty ||
+            (catalog?.any((b) => b.id == letterTarget.id) ?? false));
     final guideStep = player?.guideStep ?? kChapterOneDone;
     final chapterOne = guideStep < kChapterOneDone;
     final hints = player?.guideHints;
@@ -1392,9 +1508,45 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
             onPlace: _dropMoved,
             onCancel: _cancelMove,
           )
+        : _growTarget != null && _growCandidates.isNotEmpty
+        ? _GrowBar(
+            target: _growTarget!,
+            source: findBuildingTypeById(
+              _growCandidates[_growIndex].buildingTypeId,
+            )!,
+            index: _growIndex,
+            count: _growCandidates.length,
+            onPrev: () => setState(
+              () => _growIndex =
+                  (_growIndex - 1 + _growCandidates.length) %
+                  _growCandidates.length,
+            ),
+            onNext: () => setState(
+              () => _growIndex = (_growIndex + 1) % _growCandidates.length,
+            ),
+            onCancel: _cancelGrow,
+            onGrow: () =>
+                _confirmGrow(placements ?? const [], sites, ownedTiles),
+          )
         : selectedBuildingType != null
         ? _BuildingBar(
             type: selectedBuildingType,
+            growInto: nextRung(selectedBuildingType.id),
+            onGrow: () {
+              final next = nextRung(selectedBuildingType.id);
+              if (next == null) return;
+              final sources = upgradeSourcesFor(
+                next.id,
+                placements ?? const [],
+                sites,
+              ).where((p) => p.id == selectedBuilding!.id).toList();
+              if (sources.isEmpty) {
+                _toast('That building is already being upgraded');
+                return;
+              }
+              if (_atSiteCap(sites)) return;
+              _enterGrow(next, sources);
+            },
             onMove: () => setState(() {
               _movingId = _selectedBuildingId;
               _moveOrigin = (selectedBuilding!.gridX, selectedBuilding.gridY);
@@ -1555,6 +1707,10 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                           onBuild: letterCanBuild
                               ? () {
                                   if (_atSiteCap(sites)) return;
+                                  if (letterGrowSources.isNotEmpty) {
+                                    _enterGrow(letterTarget, letterGrowSources);
+                                    return;
+                                  }
                                   unawaited(
                                     ref.read(ttsServiceProvider).stop(),
                                   );
@@ -1958,16 +2114,26 @@ class _BuildingBar extends StatelessWidget {
     required this.type,
     required this.onMove,
     required this.onDeselect,
+    this.growInto,
+    this.onGrow,
   });
 
   final BuildingType type;
   final VoidCallback onMove;
   final VoidCallback onDeselect;
 
+  /// The rung this building can grow into, if any: shown as *Grow into …*
+  /// at the delta price (city_builder.md §10.6).
+  final BuildingType? growInto;
+  final VoidCallback? onGrow;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final pop = type.populationContribution;
+    final growPrice = growInto == null
+        ? 0
+        : upgradeDeltaPrice(source: type, target: growInto!);
     final detail = pop > 0
         ? 'Room for $pop ${pop == 1 ? 'person' : 'people'}'
         : type.category.displayName;
@@ -1999,6 +2165,24 @@ class _BuildingBar extends StatelessWidget {
                         color: theme.colorScheme.onSurfaceVariant,
                       ),
                     ),
+                    if (growInto != null && onGrow != null) ...[
+                      const SizedBox(height: 6),
+                      FilledButton.tonalIcon(
+                        onPressed: onGrow,
+                        icon: const Icon(Icons.trending_up_rounded),
+                        label: Text.rich(
+                          TextSpan(
+                            children: [
+                              TextSpan(
+                                text: 'Grow into a ${growInto!.name} · ',
+                              ),
+                              coinSpan(),
+                              TextSpan(text: ' $growPrice'),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ),
@@ -2010,6 +2194,109 @@ class _BuildingBar extends StatelessWidget {
               ),
               const SizedBox(width: 4),
               _CloseButton(onPressed: onDeselect, tooltip: 'Close'),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// The grow bar (city_builder.md §10.6): which building grows into the
+/// rung a letter asked for. ◀ ▶ step through the candidates (the picked one
+/// is tinted on the map; a tap on another candidate picks it too); *Yes,
+/// grow it* proposes the bigger footprint.
+class _GrowBar extends StatelessWidget {
+  const _GrowBar({
+    required this.target,
+    required this.source,
+    required this.index,
+    required this.count,
+    required this.onPrev,
+    required this.onNext,
+    required this.onCancel,
+    required this.onGrow,
+  });
+
+  final BuildingType target;
+  final BuildingType source;
+  final int index;
+  final int count;
+  final VoidCallback onPrev;
+  final VoidCallback onNext;
+  final VoidCallback onCancel;
+  final VoidCallback onGrow;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final price = upgradeDeltaPrice(source: source, target: target);
+    return Material(
+      elevation: 8,
+      color: theme.colorScheme.surfaceContainer,
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(8, 10, 16, 12),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                children: [
+                  IconButton(
+                    onPressed: count > 1 ? onPrev : null,
+                    tooltip: 'Previous',
+                    icon: const Icon(Icons.chevron_left_rounded, size: 32),
+                  ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Grow this one?',
+                          style: theme.textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text.rich(
+                          TextSpan(
+                            children: [
+                              TextSpan(text: '${source.emoji} ${source.name}'),
+                              TextSpan(text: ' · ${index + 1} of $count · '),
+                              coinSpan(),
+                              TextSpan(text: ' $price to a ${target.name}'),
+                            ],
+                          ),
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: count > 1 ? onNext : null,
+                    tooltip: 'Next',
+                    icon: const Icon(Icons.chevron_right_rounded, size: 32),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Row(
+                children: [
+                  const SizedBox(width: 8),
+                  TextButton.icon(
+                    onPressed: onCancel,
+                    icon: const Icon(Icons.close_rounded),
+                    label: const Text('Not now'),
+                  ),
+                  const Spacer(),
+                  FilledButton(
+                    onPressed: onGrow,
+                    child: const Text('Yes, grow it'),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
