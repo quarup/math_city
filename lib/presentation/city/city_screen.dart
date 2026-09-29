@@ -2613,22 +2613,30 @@ class _PlaceHereBar extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      type.name,
+                    // Name and price on one line, the hint alone on the
+                    // next so it never wraps mid-sentence.
+                    Text.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(text: type.name),
+                          if (type.coinCost > 0) ...[
+                            const TextSpan(text: '  '),
+                            coinSpan(),
+                            TextSpan(
+                              text: ' ${type.coinCost}',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
                       style: theme.textTheme.titleSmall?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Text.rich(
-                      TextSpan(
-                        children: type.coinCost == 0
-                            ? const [TextSpan(text: 'Tap the map to move it')]
-                            : [
-                                coinSpan(),
-                                TextSpan(text: ' ${type.coinCost} · '),
-                                const TextSpan(text: 'Tap the map to move it'),
-                              ],
-                      ),
+                    Text(
+                      'Tap the map to move it',
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: theme.colorScheme.onSurfaceVariant,
                       ),
