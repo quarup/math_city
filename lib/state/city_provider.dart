@@ -81,91 +81,81 @@ final cityCatalogProvider = FutureProvider<List<BuildingType>>((ref) async {
   final player = await ref.watch(activePlayerProvider.future);
   final city = await ref.watch(activeCityProvider.future);
   final placements = await ref.watch(placementsProvider.future);
-  final readBeats = await db.readBeatIds(playerId);
+  final arrivedBeats = await db.firedBeatIds(playerId);
 
-  // A building's card only appears once the player has opened the demand beat
-  // that asks for it (`requiredBeatsRead`), on top of any placement/population
-  // gates. Population is stepped by `tickPopulation`; read beats by
-  // `markBeatRead`.
+  // A building's card only appears once the demand letter that asks for it
+  // has arrived (`requiredBeatsRead` — arrival is the gate, city_builder.md
+  // §10.2), on top of any placement/population gates. Population is stepped
+  // by `tickPopulation`; letters arrive through `fireBeats`.
   // An opened upgrade removes its source, so a placed rung also stands in
   // for every rung below it — a town hall is still a mayor's office.
+  final placedIds = placements.map((p) => p.buildingTypeId).toSet();
   final ctx = UnlockContext(
     lifetimeCoinsEarned: player.lifetimeCoinsEarned,
     population: city.population,
-    placedBuildingTypeIds: placedWithLadderAncestors(
-      placements.map((p) => p.buildingTypeId),
-    ),
-    readBeatIds: readBeats,
+    placedBuildingTypeIds: placedWithLadderAncestors(placedIds),
+    readBeatIds: arrivedBeats,
   );
   const engine = BuildingDagEngine();
-  return engine.availableToBuy(ctx);
+  // A placed unique building (the mayor's office) has no card: there is
+  // nothing more to place, and Move lives on its info card.
+  return engine
+      .availableToBuy(ctx)
+      .where((b) => !(b.unique && placedIds.contains(b.id)))
+      .toList();
 });
-
-/// Number of rounds (answered questions) an *un-read* bubble stays on screen
-/// before it rotates off. Keeps stale bubbles from piling up; the beat row
-/// stays `onScreen` (so it won't re-fire) but drops out of this list once it's
-/// older than the window. Phase-7 placeholder — tuned in Phase 8/9.
-const kBubbleRotationRounds = 8;
-
-/// Number of rounds of math play a bubble the player has *read* lingers on
-/// screen before it retires. Reading no longer dismisses a bubble instantly —
-/// it hangs around a few rounds so it doesn't blink out the moment the card
-/// closes — see [CityActions.fireBeats].
-const kReadHideRounds = 3;
 
 /// Minimum rounds between two *new* beats appearing. When a single build makes
 /// several beats eligible at once, they trickle out one every
 /// [kNewBeatSpacingRounds] rounds instead of bursting all at once. The
-/// first-ever fire is always allowed. Phase-7 placeholder — tuned in 8/9.
+/// first-ever fire is always allowed. Counts rounds *played*, so nothing
+/// accrues while the app is closed (city_builder.md §10.3).
 const kNewBeatSpacingRounds = 5;
 
-/// A beat currently on screen, plus whether it's in its post-completion ✓
-/// flash. Completed bubbles render differently (praise-green ring + ✓ badge)
-/// and the overlay auto-retires them after a short wall-clock delay.
-class OnScreenBeat {
-  const OnScreenBeat({required this.beat, required this.completed});
+/// A fired beat that has not retired: its letter is either waiting to be
+/// shown ([shown] false — the city screen interrupts with it at rest), or has
+/// been shown and stays open on its badged catalog card until the request
+/// is fulfilled. [completed] marks a demand/warning whose request has just
+/// been satisfied; the screen retires those (a thank-you reply follows in
+/// §10.2 step 4).
+class OpenBeat {
+  const OpenBeat({
+    required this.beat,
+    required this.shown,
+    required this.completed,
+    required this.firedAtRound,
+  });
 
   final StoryBeat beat;
+  final bool shown;
   final bool completed;
+  final int firedAtRound;
 }
 
-/// Story beats currently showing as bubbles in the active city, newest fires
-/// included. The UI caps how many it draws (~5) and handles tap-to-expand.
-/// A beat shows while it's in the `onScreen` state and either: hasn't been read
-/// and fired within the last [kBubbleRotationRounds] rounds, or was read within
-/// the last [kReadHideRounds] rounds. Older bubbles drop out of this list.
-/// `'completed'` beats are always surfaced — the overlay retires them on a
-/// short timer.
-final onScreenBeatsProvider = FutureProvider<List<OnScreenBeat>>((ref) async {
+/// Every open beat for the active player, oldest fire first. Letters never
+/// expire (city_builder.md §10.3): a beat stays here from the round it fires
+/// until its request is fulfilled and it retires.
+final openBeatsProvider = FutureProvider<List<OpenBeat>>((ref) async {
   final playerId = ref.watch(activePlayerIdProvider);
-  if (playerId == null) return const <OnScreenBeat>[];
+  if (playerId == null) return const <OpenBeat>[];
   final db = ref.read(appDatabaseProvider);
-  final player = await db.getPlayerById(playerId);
   final states = await db.storyBeatStatesForPlayer(playerId);
-  final beats = <OnScreenBeat>[];
+  final beats = <OpenBeat>[];
   for (final entry in states.entries) {
     final st = entry.value;
-    if (st.state == 'completed') {
-      final beat = findBeatById(entry.key);
-      if (beat != null) beats.add(OnScreenBeat(beat: beat, completed: true));
-      continue;
-    }
-    if (st.state != 'onScreen') continue;
-    final ackedAt = st.ackedAtRound;
-    if (ackedAt != null) {
-      // Read by the player: keep it up for a few rounds of math play, then let
-      // it slip off (fireBeats retires it to 'acked' around the same time).
-      if (player.roundsPlayed - ackedAt >= kReadHideRounds) continue;
-    } else {
-      final firedAt = st.lastFiredAtRound;
-      if (firedAt != null &&
-          player.roundsPlayed - firedAt >= kBubbleRotationRounds) {
-        continue; // rotated off after sitting un-read too long
-      }
-    }
+    if (st.state != 'onScreen' && st.state != 'completed') continue;
     final beat = findBeatById(entry.key);
-    if (beat != null) beats.add(OnScreenBeat(beat: beat, completed: false));
+    if (beat == null) continue;
+    beats.add(
+      OpenBeat(
+        beat: beat,
+        shown: st.ackedAtRound != null,
+        completed: st.state == 'completed',
+        firedAtRound: st.lastFiredAtRound ?? 0,
+      ),
+    );
   }
+  beats.sort((a, b) => a.firedAtRound.compareTo(b.firedAtRound));
   return beats;
 });
 
@@ -188,6 +178,18 @@ class CityActions {
     if (playerId == null) return null;
     final db = _ref.read(appDatabaseProvider);
     final city = await _ref.read(activeCityProvider.future);
+    // A unique type already standing (the seeded mayor's office) moves
+    // rather than doubling.
+    if (type.unique) {
+      final existing = (await db.placementsForCity(
+        city.id,
+      )).where((p) => p.buildingTypeId == type.id).firstOrNull;
+      if (existing != null) {
+        await moveBuilding(existing.id, col, row);
+        await _afterCityChange();
+        return existing.id;
+      }
+    }
     final id = await db.placeBuilding(
       cityId: city.id,
       playerId: playerId,
@@ -362,22 +364,6 @@ class CityActions {
     final placements = await db.placementsForCity(city.id);
     var states = await db.storyBeatStatesForPlayer(playerId);
 
-    // Retire bubbles the player read more than [kReadHideRounds] rounds ago:
-    // flip them out of `onScreen` so they stop showing and can re-fire later if
-    // their trigger comes back around. Reload state if anything changed.
-    var retired = false;
-    for (final entry in states.entries) {
-      final st = entry.value;
-      final ackedAt = st.ackedAtRound;
-      if (st.state == 'onScreen' &&
-          ackedAt != null &&
-          player.roundsPlayed - ackedAt >= kReadHideRounds) {
-        await db.setBeatState(playerId, entry.key, 'acked');
-        retired = true;
-      }
-    }
-    if (retired) states = await db.storyBeatStatesForPlayer(playerId);
-
     final placedIds = placements.map((p) => p.buildingTypeId).toSet();
     final firedIds = <String>{
       for (final e in states.entries)
@@ -392,11 +378,19 @@ class CityActions {
       if (prev == null || age > prev) ageByType[p.buildingTypeId] = age;
     }
 
+    // Buildings with an open site count as present for demands
+    // (city_builder.md §10.3): no letter asks for what is already on the way.
+    final underConstruction = <String>{
+      for (final row in await db.sitesForCity(city.id))
+        if (row.buildingTypeId != null) row.buildingTypeId!,
+    };
+
     TriggerContext contextFor(StoryBeat beat) {
       final st = states[beat.id];
       final lastBricks = st?.lifetimeCoinsAtLastFire;
       return TriggerContext(
         placedBuildingTypeIds: placedIds,
+        underConstructionTypeIds: underConstruction,
         population: city.population,
         maxBuildingAgeByTypeId: ageByType,
         firedBeatIds: firedIds,
@@ -457,11 +451,9 @@ class CityActions {
         break;
       }
     }
-    // Firing a beat changes the fired-beat set some unlock rules gate on.
+    // A letter's arrival is what reveals its building's card.
     if (fired) _ref.invalidate(cityCatalogProvider);
-    // The round clock may have advanced (rotating a stale bubble off) or a
-    // read bubble retired even when nothing newly fired — always refresh it.
-    _ref.invalidate(onScreenBeatsProvider);
+    _ref.invalidate(openBeatsProvider);
   }
 
   /// Advances the active city's population one tick toward the capacity its
@@ -502,12 +494,9 @@ class CityActions {
     _ref.invalidate(placementsProvider);
   }
 
-  /// Marks an on-screen citizen bubble as read (opened) by the player. The
-  /// bubble does NOT vanish immediately — it lingers for [kReadHideRounds] more
-  /// rounds of math play before [fireBeats] retires it off screen (after which
-  /// it can re-fire once its trigger passes again, subject to its coin-spacing
-  /// cooldown). Opening a demand beat is also what unlocks the building it asks
-  /// for, so this refreshes the catalog too. No-op when there's no active
+  /// Records that [beatId]'s letter has been shown to the player, so the
+  /// city screen never interrupts with it again; the beat stays open on its
+  /// badged catalog card until fulfilled. No-op when there's no active
   /// player.
   Future<void> markBeatRead(String beatId) async {
     final playerId = _ref.read(activePlayerIdProvider);
@@ -515,22 +504,32 @@ class CityActions {
     final db = _ref.read(appDatabaseProvider);
     final player = await db.getPlayerById(playerId);
     await db.markBeatRead(playerId, beatId, player.roundsPlayed);
-    _ref
-      ..invalidate(onScreenBeatsProvider)
-      ..invalidate(cityCatalogProvider);
+    _ref.invalidate(openBeatsProvider);
   }
 
-  /// Retires a beat that's been showing in its post-completion ✓ flash —
-  /// called by the overlay after the wall-clock hold elapses (or the player
-  /// taps the ✓ sticker). Transitions 'completed' → 'acked' so it stops
-  /// showing and the trigger may re-fire later if it ever becomes eligible
-  /// again. No-op when there's no active player.
+  /// Retires a beat whose request has been fulfilled ('completed' → 'acked')
+  /// so it leaves the open set; the trigger may re-fire later if it ever
+  /// becomes eligible again. No-op when there's no active player.
   Future<void> retireCompletedBeat(String beatId) async {
     final playerId = _ref.read(activePlayerIdProvider);
     if (playerId == null) return;
     final db = _ref.read(appDatabaseProvider);
     await db.setBeatState(playerId, beatId, 'acked');
-    _ref.invalidate(onScreenBeatsProvider);
+    _ref.invalidate(openBeatsProvider);
+  }
+
+  /// Repairs a city created before the mayor's office was seeded at
+  /// creation (city_builder.md §10.4): places it at the centre if missing.
+  /// Idempotent; the city screen calls it once on load.
+  Future<void> ensureMayorsOffice() async {
+    final playerId = _ref.read(activePlayerIdProvider);
+    if (playerId == null) return;
+    final db = _ref.read(appDatabaseProvider);
+    final city = await db.cityForPlayer(playerId);
+    final before = await db.placementsForCity(city.id);
+    if (before.any((p) => p.buildingTypeId == 'mayors_office')) return;
+    await db.placeMayorsOffice(cityId: city.id, playerId: playerId);
+    await _afterCityChange();
   }
 
   // ---- Debug-only helpers (kDebugMode; driven by the city debug sheet) ----
@@ -576,9 +575,9 @@ class CityActions {
 
   /// Advances the round clock by [by] (normally one answered question adds 1)
   /// without grinding math, then re-evaluates beats — so age-gated beats (e.g.
-  /// the aged-mayor milestone at 10 rounds) and bubble rotation (off after
-  /// [kBubbleRotationRounds]) can be exercised directly. Population is left to
-  /// its own slider so the two controls stay independent.
+  /// the aged-mayor milestone at 10 rounds) and beat spacing can be exercised
+  /// directly. Population is left to its own slider so the two controls stay
+  /// independent.
   Future<void> debugAdvanceRounds(int by) async {
     assert(kDebugMode, 'debug helper called in a non-debug build');
     final playerId = _ref.read(activePlayerIdProvider);
@@ -591,8 +590,8 @@ class CityActions {
     await fireBeats();
   }
 
-  /// Force-fires [beatId] (puts its bubble on screen) regardless of whether
-  /// its trigger currently passes.
+  /// Force-fires [beatId] (its letter arrives) regardless of whether its
+  /// trigger currently passes.
   Future<void> debugFireBeat(String beatId) async {
     assert(kDebugMode, 'debug helper called in a non-debug build');
     final playerId = _ref.read(activePlayerIdProvider);
@@ -606,7 +605,7 @@ class CityActions {
       player.roundsPlayed,
     );
     _ref
-      ..invalidate(onScreenBeatsProvider)
+      ..invalidate(openBeatsProvider)
       ..invalidate(cityCatalogProvider);
   }
 
@@ -624,7 +623,7 @@ class CityActions {
       ..invalidate(sitesProvider)
       ..invalidate(activeCityProvider)
       ..invalidate(cityCatalogProvider)
-      ..invalidate(onScreenBeatsProvider)
+      ..invalidate(openBeatsProvider)
       ..invalidate(activePlayerProvider)
       ..invalidate(allPlayersProvider);
   }

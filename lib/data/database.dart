@@ -564,9 +564,9 @@ class AppDatabase extends _$AppDatabase {
 
   /// Seeds a player's city-builder baseline: one City row tied to the
   /// beginner map (more maps unlock later and each gets its own City row),
-  /// with its starting 3×3 owned land. The build catalog needs no seeding —
-  /// the mayor's office has an open unlock rule, so it's buyable from turn
-  /// one. Used both at player creation and by the v11 migration.
+  /// with its starting 3×3 owned land and the mayor's office already standing
+  /// at the centre (city_builder.md §10.4 — the kid never places it). Used
+  /// both at player creation and by the v11 migration.
   Future<void> _seedCityBuilderState(int playerId) async {
     final cityId = await into(cities).insert(
       CitiesCompanion.insert(
@@ -576,6 +576,35 @@ class AppDatabase extends _$AppDatabase {
       ),
     );
     await _seedStartingLand(cityId);
+    await placeMayorsOffice(cityId: cityId, playerId: playerId);
+  }
+
+  /// Where the mayor's office stands in a fresh city: the 2×2 at the centre
+  /// of block (0,0), which is the centre of the starting 3×3 blocks.
+  static const kMayorsOfficeTile = (1, 1);
+
+  /// Places the mayor's office at [kMayorsOfficeTile] unless the city already
+  /// has one. Idempotent, so it also repairs a city created before the
+  /// office was seeded at creation.
+  Future<void> placeMayorsOffice({
+    required int cityId,
+    required int playerId,
+  }) async {
+    final existing =
+        await (select(buildingPlacements)..where(
+              (t) =>
+                  t.cityId.equals(cityId) &
+                  t.buildingTypeId.equals('mayors_office'),
+            ))
+            .get();
+    if (existing.isNotEmpty) return;
+    await placeBuilding(
+      cityId: cityId,
+      playerId: playerId,
+      buildingTypeId: 'mayors_office',
+      gridX: kMayorsOfficeTile.$1,
+      gridY: kMayorsOfficeTile.$2,
+    );
   }
 
   Future<void> updatePlayer(
@@ -754,6 +783,7 @@ class AppDatabase extends _$AppDatabase {
       ownedLandBlocks,
     )..where((t) => t.cityId.equals(city.id))).go();
     await _seedStartingLand(city.id);
+    await placeMayorsOffice(cityId: city.id, playerId: playerId);
     await (delete(
       storyBeatStates,
     )..where((t) => t.playerId.equals(playerId))).go();
@@ -796,10 +826,10 @@ class AppDatabase extends _$AppDatabase {
     return rows.map((r) => r.beatId).toSet();
   }
 
-  /// IDs of beats the player has opened (read) at least once — i.e. rows with
-  /// a non-null `ackedAtRound`. Feeds the `requiredBeatsRead` gate on building
-  /// unlock rules, so a building's card only appears after the player reads the
-  /// demand beat that asks for it.
+  /// IDs of beats whose letter the player has seen at least once — i.e. rows
+  /// with a non-null `ackedAtRound`. Since 2026-09-29 the catalog gates on
+  /// [firedBeatIds] (arrival) instead; this remains for the letter overlay,
+  /// which shows each fired letter exactly once.
   Future<Set<String>> readBeatIds(int playerId) async {
     final rows =
         await (select(storyBeatStates)..where(
@@ -847,9 +877,10 @@ class AppDatabase extends _$AppDatabase {
           ))
           .write(StoryBeatStatesCompanion(state: Value(state)));
 
-  /// Stamps the round at which the player read [beatId]'s bubble, without
-  /// taking it off screen. The bubble lingers for the city provider's
-  /// read-hide window before it retires. No-op if the beat has never fired.
+  /// Stamps the round at which [beatId]'s letter was shown to the player. A
+  /// fired beat whose stamp is null is a letter waiting to interrupt; once
+  /// stamped it stays open (on its badged catalog card) until the request is
+  /// fulfilled. No-op if the beat has never fired.
   Future<void> markBeatRead(int playerId, String beatId, int atRound) =>
       (update(storyBeatStates)..where(
             (t) => t.playerId.equals(playerId) & t.beatId.equals(beatId),

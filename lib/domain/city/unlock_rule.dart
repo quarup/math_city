@@ -21,10 +21,12 @@ class UnlockRule {
   final Set<String> requiredBuildingsPlaced;
   final int? minPopulation;
 
-  /// Story beats the player must have *opened* (tapped to read) before this
-  /// building shows in the catalog. This is how a "we want a clinic!"
-  /// demand bubble gates the clinic card: the building stays hidden until the
-  /// citizen actually asks for it and the player reads the ask.
+  /// Story beats whose letter must have *arrived* before this building shows
+  /// in the catalog. This is how a "we want a clinic!" demand letter gates
+  /// the clinic card: the building stays hidden until the citizen actually
+  /// asks for it. (Arrival is the gate — letters interrupt on arrival and
+  /// never expire, so reading is no longer a separate step; city_builder.md
+  /// §10.2. The field name predates that change.)
   final Set<String> requiredBeatsRead;
 
   bool evaluate(UnlockContext ctx) {

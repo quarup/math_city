@@ -37,7 +37,11 @@ void main() {
       expect(rows.single.goalKind, 'building');
       expect(rows.single.paidCoins, 0);
       expect(rows.single.startedAtRound, 1);
-      expect(await db.placementsForCity(city.id), isEmpty);
+      // Nothing placed beyond the seeded mayor's office.
+      expect(
+        (await db.placementsForCity(city.id)).map((p) => p.buildingTypeId),
+        ['mayors_office'],
+      );
     });
 
     test('maps to the domain value with the registry price', () async {
@@ -88,7 +92,9 @@ void main() {
       );
       await db.incrementRoundsPlayed(player.id);
       final placementId = await db.openSite(id, playerId: player.id);
-      final placed = (await db.placementsForCity(city.id)).single;
+      final placed = (await db.placementsForCity(
+        city.id,
+      )).singleWhere((p) => p.buildingTypeId == 'single_home');
       expect(placed.id, placementId);
       expect(placed.buildingTypeId, 'single_home');
       expect((placed.gridX, placed.gridY), (2, 3));
@@ -126,10 +132,16 @@ void main() {
         expect(goal.netPopulationOnOpen, 12);
 
         // The home stands until the apartment opens.
-        expect(placements.single.buildingTypeId, 'single_home');
+        expect(
+          placements.map((p) => p.buildingTypeId),
+          contains('single_home'),
+        );
         await db.openSite(siteId, playerId: player.id);
         final after = await db.placementsForCity(city.id);
-        expect(after.map((p) => p.buildingTypeId), ['apartment']);
+        expect(
+          after.map((p) => p.buildingTypeId).toSet(),
+          {'mayors_office', 'apartment'},
+        );
       },
     );
 
