@@ -473,6 +473,12 @@ class IsoCityGame extends FlameGame with DragCallbacks {
     }
   }
 
+  /// Shows (or, with an empty set, clears) the footprint a building would
+  /// have needed where placement was just refused.
+  void setRejectedTiles(Set<(int, int)> tiles) {
+    if (isLoaded) board.rejectedTiles = tiles;
+  }
+
   /// Pushes the tiles (window-local) of every land block with an open
   /// construction site, and the subset belonging to the selected site.
   /// Buffered before [onLoad] like the rest of the land sets.

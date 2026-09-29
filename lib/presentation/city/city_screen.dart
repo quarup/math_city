@@ -160,6 +160,9 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
   /// sparkles until its folder is opened. Null until the first catalog.
   Set<String>? _seenCardIds;
 
+  /// Clears the red "no room" footprint after its moment.
+  Timer? _rejectedTimer;
+
   /// The idle nudge (city_builder.md §10.4): with no site open and a letter
   /// waiting on its card, the card bounces every few seconds of inactivity.
   Timer? _nudgeTimer;
@@ -357,6 +360,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
 
   @override
   void dispose() {
+    _rejectedTimer?.cancel();
     _nudgeTimer?.cancel();
     routeObserver.unsubscribe(this);
     super.dispose();
@@ -405,6 +409,24 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     final sites = await ref.read(sitesProvider.future);
     final site = sites.where((s) => s.id == siteId).firstOrNull;
     if (site != null && mounted) _buildSite(site);
+  }
+
+  /// Paints [type]'s footprint in red at the tapped tile for a moment, so
+  /// the player can see how much space it needs.
+  void _flashRejected(BuildingType type, int col, int row) {
+    final window = _window;
+    if (window == null) return;
+    final (w, h) = type.footprint;
+    final tiles = <(int, int)>{
+      for (var c = col; c < col + w; c++)
+        for (var r = row; r < row + h; r++)
+          (c - window.minCol, r - window.minRow),
+    };
+    _game?.setRejectedTiles(tiles);
+    _rejectedTimer?.cancel();
+    _rejectedTimer = Timer(const Duration(milliseconds: 1600), () {
+      _game?.setRejectedTiles(const {});
+    });
   }
 
   /// Enters grow mode for [target] with [candidates] to pick from.
@@ -910,6 +932,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     final spot = _resolve(type, col, row, placements, sites, ownedTiles);
     if (spot == null) {
       _toast('No room for ${type.name} there');
+      _flashRejected(type, col, row);
       return;
     }
     setState(() {
@@ -1692,9 +1715,17 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
             }),
             onSelect: (b) {
               if (_atSiteCap(sites)) return;
+              // A spot is proposed at once, like a letter's Build it!; a
+              // tap on the map moves it.
+              final spot = _proposeFor(
+                b,
+                placements ?? const [],
+                sites,
+                ownedTiles,
+              );
               setState(() {
                 _selected = b;
-                _pendingSpot = null;
+                _pendingSpot = spot;
               });
             },
           );
@@ -2922,17 +2953,19 @@ class _BuildBar extends StatelessWidget {
         const _ZoneDivider(),
       if (chapterOne)
         const SizedBox.shrink()
-      else if (folder == null)
+      else if (folder == null) ...[
+        // Only folders with something in them; an empty one is noise.
         for (final c in BuildingCategory.values)
-          _FolderCard(
-            category: c,
-            count: rest.where((b) => b.category == c).length,
-            hasNew: rest.any(
-              (b) => b.category == c && newCardIds.contains(b.id),
+          if (rest.any((b) => b.category == c))
+            _FolderCard(
+              category: c,
+              count: rest.where((b) => b.category == c).length,
+              hasNew: rest.any(
+                (b) => b.category == c && newCardIds.contains(b.id),
+              ),
+              onTap: () => onOpenFolder(c),
             ),
-            onTap: () => onOpenFolder(c),
-          )
-      else ...[
+      ] else ...[
         _BackCard(category: folder, onTap: () => onOpenFolder(null)),
         for (final b in rest.where((b) => b.category == folder))
           _CatalogCard(
@@ -3211,31 +3244,28 @@ class _FolderCard extends StatelessWidget {
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        Opacity(
-          opacity: count == 0 ? 0.45 : 1,
-          child: _BarCard(
-            color: color,
-            dashed: true,
-            onTap: onTap,
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    _folderEmoji[category]!,
-                    style: const TextStyle(fontSize: 24),
+        _BarCard(
+          color: color,
+          dashed: true,
+          onTap: onTap,
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  _folderEmoji[category]!,
+                  style: const TextStyle(fontSize: 24),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  _folderNames[category]!,
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
                   ),
-                  const SizedBox(height: 2),
-                  Text(
-                    _folderNames[category]!,
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text('$count', style: theme.textTheme.labelSmall),
-                ],
-              ),
+                ),
+                Text('$count', style: theme.textTheme.labelSmall),
+              ],
             ),
           ),
         ),

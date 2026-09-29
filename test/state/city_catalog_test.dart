@@ -70,7 +70,11 @@ void main() {
 
       container.read(debugUnlockAllProvider.notifier).set(on: true);
       final all = await container.read(cityCatalogProvider.future);
-      expect(all.length, buildingRegistry.length);
+      // Everything except the placed office (unique) and the upgrade-only
+      // civic rungs, which never get a card.
+      expect(all.map((b) => b.id), isNot(contains('mayors_office')));
+      expect(all.map((b) => b.id), isNot(contains('town_hall')));
+      expect(all.length, buildingRegistry.length - 3);
 
       container.read(debugUnlockAllProvider.notifier).set(on: false);
       final back = await container.read(cityCatalogProvider.future);

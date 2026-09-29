@@ -76,13 +76,19 @@ class DebugUnlockAll extends Notifier<bool> {
 final cityCatalogProvider = FutureProvider<List<BuildingType>>((ref) async {
   final playerId = ref.watch(activePlayerIdProvider);
   if (playerId == null) throw StateError('No active player');
-  if (kDebugMode && ref.watch(debugUnlockAllProvider)) {
-    return buildingRegistry.toList();
-  }
   final db = ref.read(appDatabaseProvider);
   final player = await ref.watch(activePlayerProvider.future);
   final city = await ref.watch(activeCityProvider.future);
   final placements = await ref.watch(placementsProvider.future);
+  if (kDebugMode && ref.watch(debugUnlockAllProvider)) {
+    final placed = placedWithLadderAncestors(
+      placements.map((p) => p.buildingTypeId),
+    );
+    return buildingRegistry
+        .where((b) => !(b.unique && placed.contains(b.id)))
+        .where((b) => !isUpgradeOnly(b.id))
+        .toList();
+  }
   final arrivedBeats = await db.firedBeatIds(playerId);
 
   // A building's card only appears once the demand letter that asks for it

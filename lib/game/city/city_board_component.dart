@@ -167,6 +167,12 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
   /// with the yellow selection wash.
   Set<(int, int)> selectedLandSiteTiles = const {};
 
+  /// The footprint a building would have needed where the player just
+  /// tried to place it and could not: painted translucent red over
+  /// whatever is in the way, for a moment, so the size of the gap to clear
+  /// is visible. Window-local tiles.
+  Set<(int, int)> rejectedTiles = const {};
+
   static const _grassFill = Color(0xFF7CB342);
   static const _grassFillAlt = Color(0xFF689F38);
   static const _roadFill = Color(0xFF9E9E9E);
@@ -179,6 +185,11 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
   /// wash. Matches the picked-up-building tint so "selected" reads the same
   /// everywhere.
   static const _buyingFill = Color(0x66FFEB3B);
+  static const _rejectedFill = Color(0x80E53935);
+  final _rejectedStroke = Paint()
+    ..color = const Color(0xFFB71C1C)
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 2;
   final _buyingStroke = Paint()
     ..color = const Color(0xFFF9A825)
     ..style = PaintingStyle.stroke
@@ -282,6 +293,14 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     ]..sort((a, b) => a.$1.compareTo(b.$1));
     for (final (_, draw) in items) {
       draw();
+    }
+    // The rejected footprint sits over everything in its way.
+    for (final (col, row) in rejectedTiles) {
+      final (cx, cy) = grid.centerOf(col, row);
+      final path = _diamond(cx, cy, 0);
+      canvas
+        ..drawPath(path, Paint()..color = _rejectedFill)
+        ..drawPath(path, _rejectedStroke);
     }
     // Speech bubbles float above everything, over their walker's head.
     if (pedestrians.bubbles.isNotEmpty) {

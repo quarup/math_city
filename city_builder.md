@@ -1653,6 +1653,12 @@ the emulator). Where the code differs from the text above:
   the answer); the two remaining hands point *down* at their target
   (*Place here*, the wheel fling). The placement bar says "Tap the map to
   move it" instead of "place it here?".
+- Second playtest round (2026-09-29, evening): empty folders are not shown
+  at all; picking a card from a folder proposes a spot at once, exactly
+  like a letter's *Build it!*; a refused tap paints the building's
+  footprint translucent red at the tapped tile for ~1.6 s so the kid can
+  see how much room it needs; the debug *Unlock all* list obeys the same
+  card filters as the real catalog.
 - Not built: the mailbox (deferred), the album, the requester at the
   opening, themed events, drag-from-card — all still in the deferred list.
 
