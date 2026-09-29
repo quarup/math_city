@@ -18,6 +18,7 @@ class StoryBeat {
     required this.longText,
     required this.triggerRule,
     this.cooldownAfterAckCoins = 600,
+    this.citizen,
   });
 
   final String id;
@@ -25,10 +26,11 @@ class StoryBeat {
   final BeatTone tone;
   final String emoji;
 
-  /// One- or two-word sticker label drawn next to the emoji in the bubble.
+  /// One- or two-word label: the "wants a …" line of the letter header and
+  /// the text of a pedestrian bubble.
   final String shortLabel;
 
-  /// Full sentence shown when the bubble is tapped.
+  /// Full sentence: the body of the letter, spoken aloud when it opens.
   final String longText;
 
   final TriggerRule triggerRule;
@@ -37,4 +39,9 @@ class StoryBeat {
   /// study) must be earned before the beat can re-fire. Prevents the same
   /// praise beat repeating immediately on the next answered question.
   final int cooldownAfterAckCoins;
+
+  /// Who signs this beat's letter — a `castRegistry` id (city_builder.md
+  /// §10.8), or null to let `citizenForBeat` pick the citizen who owns the
+  /// building the beat is about.
+  final String? citizen;
 }

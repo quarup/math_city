@@ -31,8 +31,12 @@ class TriggerRule {
 
   bool evaluate(TriggerContext ctx) {
     if (!ctx.placedBuildingTypeIds.containsAll(buildingsPresent)) return false;
+    // A building with an open construction site counts as present for the
+    // absence check (city_builder.md §10.3): no letter ever asks for
+    // something already on the way.
     for (final id in buildingsAbsent) {
       if (ctx.placedBuildingTypeIds.contains(id)) return false;
+      if (ctx.underConstructionTypeIds.contains(id)) return false;
     }
     if (minPopulation != null && ctx.population < minPopulation!) return false;
     if (minBuildingAgeForId != null) {
@@ -59,9 +63,15 @@ class TriggerContext {
     required this.maxBuildingAgeByTypeId,
     required this.firedBeatIds,
     required this.coinsEarnedSinceBeatLastFired,
+    this.underConstructionTypeIds = const <String>{},
   });
 
   final Set<String> placedBuildingTypeIds;
+
+  /// Building types with an open construction site in the city. Treated as
+  /// present by `buildingsAbsent` so a demand never fires for a building the
+  /// player is already paying down.
+  final Set<String> underConstructionTypeIds;
   final int population;
 
   /// For each placed building type, the age (in rounds) of its *oldest*

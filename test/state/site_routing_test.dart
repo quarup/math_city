@@ -55,9 +55,10 @@ void main() {
       expect(start.placementId, isNotNull);
       final city = await db.cityForPlayer(pid);
       expect(await db.sitesForCity(city.id), isEmpty);
+      // The seeded office moved rather than doubling (unique type).
       expect(
-        (await db.placementsForCity(city.id)).single.buildingTypeId,
-        'mayors_office',
+        (await db.placementsForCity(city.id)).map((p) => p.buildingTypeId),
+        ['mayors_office'],
       );
     });
 
@@ -179,8 +180,8 @@ void main() {
       final city = await db.cityForPlayer(pid);
       expect(await db.sitesForCity(city.id), isEmpty);
       expect(
-        (await db.placementsForCity(city.id)).single.buildingTypeId,
-        'single_home',
+        (await db.placementsForCity(city.id)).map((p) => p.buildingTypeId),
+        contains('single_home'),
       );
       // Lifetime counts the whole reward, overflow included.
       expect(

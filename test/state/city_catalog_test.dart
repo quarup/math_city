@@ -40,19 +40,22 @@ void main() {
   });
 
   group('cityCatalogProvider', () {
-    test("a fresh player can buy only the mayor's office", () async {
-      final db = AppDatabase(NativeDatabase.memory());
-      final player = await db.createPlayer(
-        name: 'Sam',
-        gradeLevel: 2,
-        avatarConfigJson: '{}',
-      );
-      final container = await _container(db, player.id);
-      addTearDown(container.dispose);
+    test(
+      'a fresh player has an empty catalog: the office is already placed',
+      () async {
+        final db = AppDatabase(NativeDatabase.memory());
+        final player = await db.createPlayer(
+          name: 'Sam',
+          gradeLevel: 2,
+          avatarConfigJson: '{}',
+        );
+        final container = await _container(db, player.id);
+        addTearDown(container.dispose);
 
-      final catalog = await container.read(cityCatalogProvider.future);
-      expect(catalog.map((b) => b.id), ['mayors_office']);
-    });
+        final catalog = await container.read(cityCatalogProvider.future);
+        expect(catalog, isEmpty);
+      },
+    );
 
     test('the debug unlock-all switch shows the whole registry', () async {
       final db = AppDatabase(NativeDatabase.memory());
@@ -70,7 +73,7 @@ void main() {
 
       container.read(debugUnlockAllProvider.notifier).set(on: false);
       final back = await container.read(cityCatalogProvider.future);
-      expect(back.map((b) => b.id), ['mayors_office']);
+      expect(back, isEmpty);
     });
 
     test(
@@ -80,25 +83,25 @@ void main() {
         final container = await _container(db, player.id);
         addTearDown(container.dispose);
 
-        // No demand beat read yet, so nothing past the mayor shows.
+        // No demand letter has arrived yet, so nothing shows (the placed
+        // mayor's office is unique and has no card).
         final catalog = await container.read(cityCatalogProvider.future);
-        expect(catalog.map((b) => b.id), ['mayors_office']);
+        expect(catalog, isEmpty);
       },
     );
 
     test(
-      'reading a demand beat reveals just that building, buyable at once',
+      "a demand letter's arrival reveals just that building, buildable at once",
       () async {
         final (db, player) = await _playerWithMayor();
-        // The first-home demand fires, then the player opens (reads) it.
+        // The first-home demand fires: arrival is the gate, no read needed.
         await db.recordBeatFired(player.id, 'demand_first_home', 0);
-        await db.markBeatRead(player.id, 'demand_first_home', 0);
 
         final container = await _container(db, player.id);
         addTearDown(container.dispose);
 
         final catalog = await container.read(cityCatalogProvider.future);
-        expect(catalog.map((b) => b.id), ['mayors_office', 'single_home']);
+        expect(catalog.map((b) => b.id), ['single_home']);
         // No research step: the card carries its coin price directly.
         expect(catalog.last.coinCost, 60);
       },

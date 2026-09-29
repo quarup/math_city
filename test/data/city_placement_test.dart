@@ -26,9 +26,11 @@ void main() {
       expect(city.cityMapId, isNotEmpty);
     });
 
-    test('placementsForCity is empty for a fresh city', () async {
+    test('a fresh city holds just its seeded mayors office', () async {
       final (db, _, city) = await freshCity();
-      expect(await db.placementsForCity(city.id), isEmpty);
+      final rows = await db.placementsForCity(city.id);
+      expect(rows.map((r) => r.buildingTypeId), ['mayors_office']);
+      expect((rows.single.gridX, rows.single.gridY), (1, 1));
     });
   });
 
@@ -38,14 +40,16 @@ void main() {
       await db.placeBuilding(
         cityId: city.id,
         playerId: player.id,
-        buildingTypeId: 'mayors_office',
+        buildingTypeId: 'school',
         gridX: 4,
         gridY: 6,
       );
 
-      final rows = await db.placementsForCity(city.id);
+      final rows = (await db.placementsForCity(
+        city.id,
+      )).where((r) => r.buildingTypeId != 'mayors_office').toList();
       expect(rows, hasLength(1));
-      expect(rows.first.buildingTypeId, 'mayors_office');
+      expect(rows.first.buildingTypeId, 'school');
       expect(rows.first.gridX, 4);
       expect(rows.first.gridY, 6);
       expect(rows.first.placedAtRound, 0);
@@ -72,11 +76,13 @@ void main() {
       await db.placeBuilding(
         cityId: city.id,
         playerId: player.id,
-        buildingTypeId: 'mayors_office',
+        buildingTypeId: 'school',
         gridX: 2,
         gridY: 3,
       );
-      final original = (await db.placementsForCity(city.id)).single;
+      final original = (await db.placementsForCity(
+        city.id,
+      )).singleWhere((r) => r.buildingTypeId == 'school');
 
       await db.moveBuildingPlacement(
         placementId: original.id,
@@ -84,7 +90,9 @@ void main() {
         gridY: 8,
       );
 
-      final rows = await db.placementsForCity(city.id);
+      final rows = (await db.placementsForCity(
+        city.id,
+      )).where((r) => r.buildingTypeId == 'school').toList();
       expect(rows, hasLength(1));
       expect(rows.first.id, original.id); // same row, not a new insert
       expect(rows.first.gridX, 7);
@@ -101,12 +109,14 @@ void main() {
         await db.placeBuilding(
           cityId: city.id,
           playerId: player.id,
-          buildingTypeId: 'mayors_office',
+          buildingTypeId: 'school',
           gridX: i,
           gridY: 0,
         );
       }
-      final rows = await db.placementsForCity(city.id);
+      final rows = (await db.placementsForCity(
+        city.id,
+      )).where((r) => r.buildingTypeId == 'school');
       expect(
         rows.map((r) => r.placedAtRound).toList()..sort(),
         [1, 2, 3],

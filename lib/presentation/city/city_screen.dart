@@ -11,6 +11,7 @@ import 'package:math_city/domain/city/beat_registry.dart';
 import 'package:math_city/domain/city/building_registry.dart';
 import 'package:math_city/domain/city/building_type.dart';
 import 'package:math_city/domain/city/category.dart';
+import 'package:math_city/domain/city/citizen.dart';
 import 'package:math_city/domain/city/construction_site.dart';
 import 'package:math_city/domain/city/land_blocks.dart';
 import 'package:math_city/domain/city/placement_rules.dart';
@@ -23,6 +24,7 @@ import 'package:math_city/game/city/iso_city_game.dart';
 import 'package:math_city/game/city/iso_grid.dart';
 import 'package:math_city/game/city/land_window.dart';
 import 'package:math_city/presentation/city/celebration_overlay.dart';
+import 'package:math_city/presentation/city/letter_overlay.dart';
 import 'package:math_city/presentation/city/spin_overlay.dart';
 import 'package:math_city/presentation/navigation/route_observer.dart';
 import 'package:math_city/presentation/player/adventurer_avatar_widget.dart';
@@ -30,7 +32,6 @@ import 'package:math_city/presentation/question/question_screen.dart';
 import 'package:math_city/presentation/theme/app_palette.dart';
 import 'package:math_city/presentation/widgets/coin_icon.dart';
 import 'package:math_city/presentation/widgets/site_progress_bar.dart';
-import 'package:math_city/presentation/widgets/speech_toggle_button.dart';
 import 'package:math_city/state/city_provider.dart';
 import 'package:math_city/state/game_session_provider.dart';
 import 'package:math_city/state/player_provider.dart';
@@ -118,9 +119,18 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
   /// confirm, on X, and whenever another mode takes over.
   GridFootprint? _pendingSpot;
 
-  /// The only catalog entry is picked for the starter player automatically,
-  /// once — after they back out of it with X, the catalog shows instead.
-  bool _autoPicked = false;
+  /// The letter on screen (a beat id), or null. Set when a fired letter
+  /// interrupts the city at rest, or when the player re-opens one from its
+  /// badged catalog card; cleared by *Later* / *Build it!*.
+  String? _letterId;
+
+  /// The letter last announced (marked shown + spoken), so a rebuild while
+  /// it is up doesn't speak it twice.
+  String? _announcedLetterId;
+
+  /// Fulfilled beats whose retirement has been dispatched, so each is
+  /// retired once per completion.
+  final Set<String> _retiring = <String>{};
 
   /// The placed building currently picked up for repositioning (yellow tint +
   /// footprint outline), or null when nothing is selected. Set by tapping a
@@ -270,6 +280,19 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     final selected = _selected;
     if (selected == null) return;
     _tryPlace(selected, col, row, placements, sites, ownedTiles);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // A city always has its mayor's office (seeded at creation since
+    // 2026-09-29; repaired here for older cities), and the first letter is
+    // due the moment the office stands.
+    Future<void>.microtask(() async {
+      final actions = ref.read(cityActionsProvider);
+      await actions.ensureMayorsOffice();
+      await actions.fireBeats();
+    });
   }
 
   @override
@@ -1121,22 +1144,11 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
         ? null
         : findBuildingTypeById(selectedBuilding.buildingTypeId);
 
-    // Auto-select the only buildable building so the starter player doesn't
-    // have to click the mayor's office before placing it. Once the catalog
-    // grows, the player makes an explicit pick.
     // .value (not asData?.value) so a refresh — which the catalog does on
     // every placement — keeps the *previous* catalog instead of momentarily
     // dropping to null. Otherwise the bottom bar collapses for a frame, which
     // resizes the Flame viewport and makes the camera jump (see bottomNavBar).
     final catalog = catalogAsync.value;
-    if (_selected == null &&
-        !_autoPicked &&
-        catalog != null &&
-        catalog.length == 1 &&
-        sites.length < kMaxOpenSites) {
-      _selected = catalog.first;
-      _autoPicked = true;
-    }
 
     final zoomed = _mode != _CityMode.browsing;
     // The zoomed site as it stands now (its bar keeps filling between
@@ -1147,6 +1159,56 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
               _zoomedSite;
     final celebratingSite = _celebratingSite;
     final credit = player?.creditBalance ?? 0;
+
+    // Letters (city_builder.md §10.2). A fired beat whose letter hasn't been
+    // shown interrupts when the city is at rest; a shown one stays open on
+    // its badged catalog card, from which it can be re-opened. Fulfilled
+    // beats retire quietly (their thank-you reply is step 4).
+    final openBeats =
+        ref.watch(openBeatsProvider).asData?.value ?? const <OpenBeat>[];
+    _retiring.removeWhere(
+      (id) => !openBeats.any((b) => b.completed && b.beat.id == id),
+    );
+    for (final b in openBeats) {
+      if (b.completed && _retiring.add(b.beat.id)) {
+        unawaited(ref.read(cityActionsProvider).retireCompletedBeat(b.beat.id));
+      }
+    }
+    final requested = <String, OpenBeat>{};
+    for (final b in openBeats) {
+      if (b.completed || b.beat.kind != BeatKind.demand) continue;
+      final target = beatTargetBuilding(b.beat);
+      if (target != null) requested.putIfAbsent(target.id, () => b);
+    }
+    final atRest =
+        !zoomed &&
+        _selected == null &&
+        _movingId == null &&
+        _movingSiteId == null &&
+        _selectedSiteId == null &&
+        _selectedBuildingId == null &&
+        _buyingBlock == null;
+    if (_letterId == null && atRest) {
+      final next = openBeats.where((b) => !b.shown && !b.completed).firstOrNull;
+      if (next != null) _letterId = next.beat.id;
+    }
+    final letterBeat = _letterId == null ? null : findBeatById(_letterId!);
+    final letterTarget = letterBeat == null
+        ? null
+        : beatTargetBuilding(letterBeat);
+    final letterCanBuild =
+        letterBeat?.kind == BeatKind.demand &&
+        letterTarget != null &&
+        (catalog?.any((b) => b.id == letterTarget.id) ?? false);
+    if (letterBeat != null && _announcedLetterId != letterBeat.id) {
+      _announcedLetterId = letterBeat.id;
+      final spoken = 'Dear Mayor ${player?.name ?? ''}, ${letterBeat.longText}';
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        unawaited(ref.read(cityActionsProvider).markBeatRead(letterBeat.id));
+        unawaited(speakIfEnabled(ref, spoken));
+      });
+    }
 
     // While zoomed the bar is pinned to the site; otherwise: land selected
     // → start-a-site bar; site selected → its bar; something picked up →
@@ -1230,6 +1292,12 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
         : _BuildCatalogBar(
             catalog: catalog,
             selected: _selected,
+            requested: requested,
+            onOpenLetter: (b) => setState(() {
+              _letterId = b.beat.id;
+              // Re-opened on purpose: read it out again.
+              _announcedLetterId = null;
+            }),
             onSelect: (b) {
               if (_atSiteCap(sites)) return;
               setState(() {
@@ -1304,9 +1372,33 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                           ),
                         ),
                       ),
-                    // Floating citizen bubbles (and their tap-to-expand cards).
-                    if (!zoomed)
-                      const Positioned.fill(child: _CitizenBubbleOverlay()),
+                    // The letter on screen, over everything but the wheel.
+                    if (!zoomed && letterBeat != null)
+                      Positioned.fill(
+                        child: LetterOverlay(
+                          beat: letterBeat,
+                          citizen: citizenForBeat(letterBeat),
+                          playerName: player?.name ?? '',
+                          target: letterTarget,
+                          onBuild: letterCanBuild
+                              ? () {
+                                  if (_atSiteCap(sites)) return;
+                                  unawaited(
+                                    ref.read(ttsServiceProvider).stop(),
+                                  );
+                                  setState(() {
+                                    _letterId = null;
+                                    _selected = letterTarget;
+                                    _pendingSpot = null;
+                                  });
+                                }
+                              : null,
+                          onClose: () {
+                            unawaited(ref.read(ttsServiceProvider).stop());
+                            setState(() => _letterId = null);
+                          },
+                        ),
+                      ),
                     // The wheel over the blurred city, above the site pinned at
                     // the bottom (of the area the bar leaves visible). Fades in
                     // once the camera has landed; stays in the tree (faded
@@ -1345,7 +1437,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                     // The wheel is reached through a site's Build! — there is
                     // no free-floating "play" entry (city_builder.md §8.3).
                     // Parked above the tallest bar so no bar ever covers it.
-                    if (kDebugMode && !zoomed)
+                    if (kDebugMode && !zoomed && letterBeat == null)
                       Positioned(
                         right: 16,
                         bottom: _kDebugFabBottom,
@@ -1571,8 +1663,8 @@ class _CityDebugSheetState extends ConsumerState<_CityDebugSheet> {
             const SizedBox(height: 8),
             Text(
               'Round clock: ${player?.roundsPlayed ?? 0} '
-              '(building age = clock − placed-at; bubbles rotate off after '
-              '$kBubbleRotationRounds)',
+              '(building age = clock − placed-at; new letters '
+              '$kNewBeatSpacingRounds rounds apart)',
               style: theme.textTheme.labelLarge,
             ),
             const SizedBox(height: 8),
@@ -2127,471 +2219,6 @@ class _CreditChip extends StatelessWidget {
   }
 }
 
-/// Color accent for a beat by its kind — demands nudge (amber), praise
-/// celebrates (green), warnings alert (red).
-Color _beatColor(BeatKind kind) => switch (kind) {
-  BeatKind.demand => const Color(0xFFFFA726),
-  BeatKind.praise => const Color(0xFF66BB6A),
-  BeatKind.warning => const Color(0xFFEF5350),
-};
-
-/// The ✓ flash sequence for a fulfilled demand: a quick attention-grabbing pop
-/// (scale 1.0 → [_kPopMaxScale] → 1.0), then a hold, then a fade-out. Total
-/// wall-clock duration is [_kCompletedFlashDuration]; the overlay's retire
-/// timer matches it so the bubble's state row only flips to 'acked' once the
-/// fade has finished. Wall-clock and not rounds — completion happens on
-/// placement, and the round clock only ticks on answered math questions.
-const _kCompletedPopUp = Duration(milliseconds: 200);
-const _kCompletedPopDown = Duration(milliseconds: 200);
-const _kCompletedHold = Duration(seconds: 5);
-const _kCompletedFade = Duration(seconds: 3);
-const _kPopMaxScale = 1.5;
-const _kCompletedFlashDuration = Duration(
-  milliseconds: 200 + 200 + 5000 + 3000, // == pop-up + pop-down + hold + fade
-);
-
-/// Floating citizen-bubble layer drawn over the city. Shows up to 5 of the
-/// beats currently in the `onScreen` state (from [onScreenBeatsProvider]) as
-/// emoji stickers along the top; tapping one marks it read and expands it into
-/// a card with the full sentence and a "Got it" button. Opening a demand
-/// bubble is what unlocks the building it asks for; the sticker itself lingers
-/// a few rounds before retiring (see [kReadHideRounds]). "Got it" just closes
-/// the card.
-///
-/// Demand/warning bubbles whose request has been fulfilled (e.g. the player
-/// built the house the demand asked for) come back from the provider in their
-/// `completed` form: praise-green ring + ✓ badge. They auto-retire after
-/// [_kCompletedFlashDuration]; tapping them retires immediately.
-///
-/// Empty regions don't absorb touches, so the city stays pannable; while a
-/// card is open a scrim catches outside taps to collapse it.
-class _CitizenBubbleOverlay extends ConsumerStatefulWidget {
-  const _CitizenBubbleOverlay();
-
-  @override
-  ConsumerState<_CitizenBubbleOverlay> createState() =>
-      _CitizenBubbleOverlayState();
-}
-
-class _CitizenBubbleOverlayState extends ConsumerState<_CitizenBubbleOverlay> {
-  String? _expandedId;
-
-  /// Auto-retire timers for each currently-displayed `completed` bubble, keyed
-  /// by beat id. Cancelled on disposal so the dispatched retire-action doesn't
-  /// fire after the screen is gone.
-  final Map<String, Timer> _completedTimers = {};
-
-  void _scheduleRetire(String beatId) {
-    if (_completedTimers.containsKey(beatId)) return;
-    _completedTimers[beatId] = Timer(_kCompletedFlashDuration, () {
-      _completedTimers.remove(beatId);
-      if (!mounted) return;
-      unawaited(ref.read(cityActionsProvider).retireCompletedBeat(beatId));
-    });
-  }
-
-  void _retireNow(String beatId) {
-    _completedTimers.remove(beatId)?.cancel();
-    unawaited(ref.read(cityActionsProvider).retireCompletedBeat(beatId));
-  }
-
-  @override
-  void dispose() {
-    for (final t in _completedTimers.values) {
-      t.cancel();
-    }
-    _completedTimers.clear();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // Repeat the currently-open bubble's long text when the user flips
-    // speech off→on. Only a real user toggle counts — initial
-    // loading→AsyncData(true) is suppressed so we don't speak on every
-    // mount of the city screen.
-    ref.listen<AsyncValue<bool>>(ttsEnabledProvider, (prev, next) {
-      final wasExplicitlyOff = prev is AsyncData<bool> && !prev.value;
-      final isOn = next is AsyncData<bool> && next.value;
-      if (!wasExplicitlyOff || !isOn) return;
-      final id = _expandedId;
-      if (id == null) return;
-      final current = ref
-          .read(onScreenBeatsProvider)
-          .asData
-          ?.value
-          .where((b) => b.beat.id == id && !b.completed)
-          .firstOrNull;
-      if (current == null) return;
-      unawaited(ref.read(ttsServiceProvider).speak(current.beat.longText));
-    });
-
-    final beats =
-        ref.watch(onScreenBeatsProvider).asData?.value ??
-        const <OnScreenBeat>[];
-    final shown = beats.take(5).toList();
-
-    // Maintain timers in sync with what's currently in the completed state.
-    // Schedule a retire for each new completed bubble, and drop timers for any
-    // that have already left the list (e.g. the provider raced ahead of us).
-    final liveCompletedIds = <String>{
-      for (final b in shown)
-        if (b.completed) b.beat.id,
-    }..forEach(_scheduleRetire);
-    _completedTimers.removeWhere((id, t) {
-      if (liveCompletedIds.contains(id)) return false;
-      t.cancel();
-      return true;
-    });
-
-    if (shown.isEmpty) {
-      _expandedId = null;
-      return const SizedBox.shrink();
-    }
-
-    // Completed bubbles aren't expandable — they auto-retire. If the user
-    // somehow has one expanded when it completes, close the card.
-    final expanded = _expandedId == null
-        ? null
-        : shown
-              .where((b) => b.beat.id == _expandedId && !b.completed)
-              .firstOrNull
-              ?.beat;
-
-    return Stack(
-      children: [
-        // Sticker row, top-right so it clears the population chip.
-        Positioned(
-          top: 8,
-          right: 8,
-          left: 64,
-          child: SafeArea(
-            child: Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              alignment: WrapAlignment.end,
-              children: [
-                for (final b in shown)
-                  _BubbleSticker(
-                    key: ValueKey('beat-${b.beat.id}'),
-                    beat: b.beat,
-                    completed: b.completed,
-                    // Completed bubbles auto-retire on tap; for live bubbles,
-                    // opening one marks it read — which both starts its linger
-                    // timer and unlocks the building a demand asks for.
-                    onTap: b.completed
-                        ? () => _retireNow(b.beat.id)
-                        : () {
-                            unawaited(
-                              ref
-                                  .read(cityActionsProvider)
-                                  .markBeatRead(b.beat.id),
-                            );
-                            unawaited(
-                              speakIfEnabled(ref, b.beat.longText),
-                            );
-                            setState(() => _expandedId = b.beat.id);
-                          },
-                  ),
-              ],
-            ),
-          ),
-        ),
-        if (expanded != null) ...[
-          Positioned.fill(
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () {
-                unawaited(ref.read(ttsServiceProvider).stop());
-                setState(() => _expandedId = null);
-              },
-            ),
-          ),
-          Positioned(
-            top: 64,
-            left: 16,
-            right: 16,
-            child: SafeArea(
-              child: _ExpandedBeatCard(
-                beat: expanded,
-                // Already marked read on open; "Got it" just closes the card.
-                onDismiss: () {
-                  unawaited(ref.read(ttsServiceProvider).stop());
-                  setState(() => _expandedId = null);
-                },
-              ),
-            ),
-          ),
-        ],
-      ],
-    );
-  }
-}
-
-/// Collapsed bubble: a round emoji sticker ringed in its beat's accent color.
-/// When [completed] is true (a demand/warning whose request has been fulfilled)
-/// the ring flips to praise-green and a ✓ badge overlays the emoji. The
-/// sticker also runs the four-stage flash animation in that state:
-///   1. pop up to [_kPopMaxScale] over [_kCompletedPopUp]
-///   2. pop back to 1.0 over [_kCompletedPopDown]
-///   3. hold at full opacity for [_kCompletedHold]
-///   4. fade to invisible over [_kCompletedFade]
-/// The overlay's retire timer is sized to [_kCompletedFlashDuration] so the
-/// state row only flips to 'acked' once the fade has run.
-class _BubbleSticker extends StatefulWidget {
-  const _BubbleSticker({
-    required this.beat,
-    required this.onTap,
-    super.key,
-    this.completed = false,
-  });
-
-  final StoryBeat beat;
-  final VoidCallback onTap;
-  final bool completed;
-
-  @override
-  State<_BubbleSticker> createState() => _BubbleStickerState();
-}
-
-class _BubbleStickerState extends State<_BubbleSticker>
-    with SingleTickerProviderStateMixin {
-  static const _completedAccent = Color(0xFF66BB6A);
-
-  /// Drives scale + opacity for the completed flash. Null while the bubble
-  /// is in its normal (non-completed) state.
-  AnimationController? _flash;
-
-  @override
-  void initState() {
-    super.initState();
-    if (widget.completed) _startFlash();
-  }
-
-  @override
-  void didUpdateWidget(_BubbleSticker old) {
-    super.didUpdateWidget(old);
-    // Bubble transitions into completion (e.g. user placed the building):
-    // start the pop/hold/fade. Going back out of completed is unusual but
-    // harmless — drop the controller so the bubble snaps to its idle look.
-    if (widget.completed && !old.completed) {
-      _startFlash();
-    } else if (!widget.completed && old.completed) {
-      _flash?.dispose();
-      _flash = null;
-    }
-  }
-
-  void _startFlash() {
-    _flash?.dispose();
-    final controller = AnimationController(
-      vsync: this,
-      duration: _kCompletedFlashDuration,
-    );
-    _flash = controller;
-    unawaited(controller.forward().orCancel.catchError((Object _) {}));
-  }
-
-  @override
-  void dispose() {
-    _flash?.dispose();
-    super.dispose();
-  }
-
-  double _scaleFor(double tMs) {
-    final popUp = _kCompletedPopUp.inMilliseconds.toDouble();
-    final popDownEnd = popUp + _kCompletedPopDown.inMilliseconds;
-    if (tMs <= popUp) {
-      final p = (tMs / popUp).clamp(0.0, 1.0);
-      return 1.0 + (_kPopMaxScale - 1.0) * Curves.easeOut.transform(p);
-    }
-    if (tMs <= popDownEnd) {
-      final p = ((tMs - popUp) / _kCompletedPopDown.inMilliseconds).clamp(
-        0.0,
-        1.0,
-      );
-      return _kPopMaxScale - (_kPopMaxScale - 1) * Curves.easeIn.transform(p);
-    }
-    return 1;
-  }
-
-  double _opacityFor(double tMs) {
-    final fadeStart = (_kCompletedPopUp + _kCompletedPopDown + _kCompletedHold)
-        .inMilliseconds
-        .toDouble();
-    final fadeMs = _kCompletedFade.inMilliseconds.toDouble();
-    if (tMs <= fadeStart) return 1;
-    if (tMs >= fadeStart + fadeMs) return 0;
-    return 1 - (tMs - fadeStart) / fadeMs;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final sticker = _Sticker(
-      beat: widget.beat,
-      accent: widget.completed
-          ? _completedAccent
-          : _beatColor(widget.beat.kind),
-      showCheck: widget.completed,
-      checkColor: _completedAccent,
-    );
-    final flash = _flash;
-    final child = (widget.completed && flash != null)
-        ? AnimatedBuilder(
-            animation: flash,
-            builder: (context, cachedChild) {
-              final tMs = flash.value * _kCompletedFlashDuration.inMilliseconds;
-              return Opacity(
-                opacity: _opacityFor(tMs),
-                child: Transform.scale(
-                  scale: _scaleFor(tMs),
-                  child: cachedChild,
-                ),
-              );
-            },
-            child: sticker,
-          )
-        : sticker;
-    return GestureDetector(onTap: widget.onTap, child: child);
-  }
-}
-
-/// The pure visual: the emoji disc + optional ✓ badge. Pulled out of
-/// [_BubbleSticker] so the [AnimatedBuilder] can keep it as a const-ish child
-/// while the wrapper rebuilds on every tick.
-class _Sticker extends StatelessWidget {
-  const _Sticker({
-    required this.beat,
-    required this.accent,
-    required this.showCheck,
-    required this.checkColor,
-  });
-
-  final StoryBeat beat;
-  final Color accent;
-  final bool showCheck;
-  final Color checkColor;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 52,
-      height: 52,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Center(
-            child: Container(
-              width: 46,
-              height: 46,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
-                border: Border.all(color: accent, width: 3),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Color(0x33000000),
-                    blurRadius: 4,
-                    offset: Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Text(beat.emoji, style: const TextStyle(fontSize: 22)),
-            ),
-          ),
-          if (showCheck)
-            Positioned(
-              right: 0,
-              bottom: 0,
-              child: Container(
-                width: 20,
-                height: 20,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: checkColor,
-                  shape: BoxShape.circle,
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Color(0x33000000),
-                      blurRadius: 2,
-                      offset: Offset(0, 1),
-                    ),
-                  ],
-                ),
-                child: const Icon(
-                  Icons.check_rounded,
-                  size: 14,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-}
-
-/// Expanded bubble: the full sentence with a "Got it" dismiss button.
-class _ExpandedBeatCard extends StatelessWidget {
-  const _ExpandedBeatCard({required this.beat, required this.onDismiss});
-
-  final StoryBeat beat;
-  final VoidCallback onDismiss;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final accent = _beatColor(beat.kind);
-    return Material(
-      elevation: 6,
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: theme.colorScheme.surface,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: accent, width: 2),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Text(beat.emoji, style: const TextStyle(fontSize: 28)),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    beat.shortLabel,
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Text(beat.longText, style: theme.textTheme.bodyMedium),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                const SpeechToggleIconButton(),
-                const Spacer(),
-                FilledButton(
-                  style: FilledButton.styleFrom(backgroundColor: accent),
-                  onPressed: onDismiss,
-                  child: const Text('Got it'),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 /// Horizontal catalog of buildings whose unlock rule has passed. Every card
 /// is tap-to-select; placing it starts a site at the shown price, so nothing
 /// is ever unaffordable.
@@ -2599,16 +2226,28 @@ class _BuildCatalogBar extends StatelessWidget {
   const _BuildCatalogBar({
     required this.catalog,
     required this.selected,
+    required this.requested,
+    required this.onOpenLetter,
     required this.onSelect,
   });
 
   final List<BuildingType> catalog;
   final BuildingType? selected;
+
+  /// Buildings a citizen's letter has asked for, by building id. Their cards
+  /// wear an envelope badge, sit first, and re-open the letter on tap.
+  final Map<String, OpenBeat> requested;
+  final void Function(OpenBeat) onOpenLetter;
   final void Function(BuildingType) onSelect;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    // Asked-for buildings first, then the rest in unlock order.
+    final ordered = [
+      ...catalog.where((b) => requested.containsKey(b.id)),
+      ...catalog.where((b) => !requested.containsKey(b.id)),
+    ];
     return Material(
       elevation: 8,
       color: theme.colorScheme.surfaceContainer,
@@ -2629,15 +2268,21 @@ class _BuildCatalogBar extends StatelessWidget {
                     horizontal: 12,
                     vertical: 12,
                   ),
-                  itemCount: catalog.length,
+                  itemCount: ordered.length,
                   separatorBuilder: (_, _) => const SizedBox(width: 8),
                   itemBuilder: (context, i) {
-                    final b = catalog[i];
+                    final b = ordered[i];
+                    final req = requested[b.id];
                     return _CatalogCard(
                       building: b,
                       isSelected: b.id == selected?.id,
                       color: _colorFor(b),
-                      onTap: () => onSelect(b),
+                      requestedBy: req == null
+                          ? null
+                          : citizenForBeat(req.beat),
+                      onTap: req == null
+                          ? () => onSelect(b)
+                          : () => onOpenLetter(req),
                     );
                   },
                 ),
@@ -2653,12 +2298,17 @@ class _CatalogCard extends StatelessWidget {
     required this.isSelected,
     required this.color,
     required this.onTap,
+    this.requestedBy,
   });
 
   final BuildingType building;
   final bool isSelected;
   final Color color;
   final VoidCallback onTap;
+
+  /// The citizen whose open letter asks for this building, if any: drawn as
+  /// an envelope badge with their face in the card's corner.
+  final Citizen? requestedBy;
 
   @override
   Widget build(BuildContext context) {
@@ -2703,7 +2353,55 @@ class _CatalogCard extends StatelessWidget {
       ),
     );
 
-    return GestureDetector(onTap: onTap, child: card);
+    final badge = requestedBy;
+    return GestureDetector(
+      onTap: onTap,
+      child: badge == null
+          ? card
+          : Stack(
+              clipBehavior: Clip.none,
+              children: [
+                card,
+                Positioned(
+                  top: -6,
+                  right: -6,
+                  child: _EnvelopeBadge(citizen: badge),
+                ),
+              ],
+            ),
+    );
+  }
+}
+
+/// The "a citizen asked for this" badge: their face in a ring, with a small
+/// envelope so it reads as mail even at a glance.
+class _EnvelopeBadge extends StatelessWidget {
+  const _EnvelopeBadge({required this.citizen});
+
+  final Citizen citizen;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Container(
+      padding: const EdgeInsets.all(2),
+      decoration: BoxDecoration(
+        color: scheme.surface,
+        shape: BoxShape.circle,
+        border: Border.all(color: const Color(0xFFFFA726), width: 2),
+      ),
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          AdventurerAvatarWidget(config: citizen.face, size: 26),
+          const Positioned(
+            right: -6,
+            bottom: -4,
+            child: Text('✉️', style: TextStyle(fontSize: 12)),
+          ),
+        ],
+      ),
+    );
   }
 }
 

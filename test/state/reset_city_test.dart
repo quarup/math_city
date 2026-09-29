@@ -46,7 +46,11 @@ void main() {
       final after = await db.getPlayerById(player.id);
       expect(after.lifetimeCoinsEarned, 0);
       expect(after.streakCount, 0);
-      expect(await db.placementsForCity(city.id), isEmpty);
+      // The reset city keeps exactly its seeded mayor's office.
+      expect(
+        (await db.placementsForCity(city.id)).map((p) => p.buildingTypeId),
+        ['mayors_office'],
+      );
       expect(await db.sitesForCity(city.id), isEmpty);
       expect(await db.storyBeatStatesForPlayer(player.id), isEmpty);
       expect(

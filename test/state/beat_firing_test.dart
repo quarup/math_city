@@ -36,11 +36,11 @@ Future<void> _place(
   gridY: 0,
 );
 
-Set<String> _onScreenIds(ProviderContainer c) =>
-    c.read(onScreenBeatsProvider).asData!.value.map((b) => b.beat.id).toSet();
+Set<String> _openIds(ProviderContainer c) =>
+    c.read(openBeatsProvider).asData!.value.map((b) => b.beat.id).toSet();
 
 Set<String> _completedIds(ProviderContainer c) => c
-    .read(onScreenBeatsProvider)
+    .read(openBeatsProvider)
     .asData!
     .value
     .where((b) => b.completed)
@@ -121,9 +121,9 @@ void main() {
       await container
           .read(cityActionsProvider)
           .placeBuilding(findBuildingTypeById('mayors_office')!, 0, 0);
-      await container.refresh(onScreenBeatsProvider.future);
+      await container.refresh(openBeatsProvider.future);
 
-      expect(_onScreenIds(container), contains('demand_first_home'));
+      expect(_openIds(container), contains('demand_first_home'));
       expect(await db.firedBeatIds(pid), contains('demand_first_home'));
     });
 
@@ -160,8 +160,8 @@ void main() {
       expect(states['demand_first_home']!.state, 'completed');
 
       await _drainUntil(db, pid, actions, 'praise_first_home');
-      await container.refresh(onScreenBeatsProvider.future);
-      expect(_onScreenIds(container), contains('praise_first_home'));
+      await container.refresh(openBeatsProvider.future);
+      expect(_openIds(container), contains('praise_first_home'));
       expect(await db.firedBeatIds(pid), contains('praise_first_home'));
     });
 
@@ -177,7 +177,7 @@ void main() {
       // transitions it to the 'completed' ✓ flash.
       await _place(db, city.id, pid, 'single_home', 1);
       await actions.fireBeats();
-      await container.refresh(onScreenBeatsProvider.future);
+      await container.refresh(openBeatsProvider.future);
       expect(_completedIds(container), contains('demand_first_home'));
 
       // The overlay calls retireCompletedBeat once its hold elapses; that
@@ -185,8 +185,8 @@ void main() {
       await actions.retireCompletedBeat('demand_first_home');
       final states = await db.storyBeatStatesForPlayer(pid);
       expect(states['demand_first_home']!.state, 'acked');
-      await container.refresh(onScreenBeatsProvider.future);
-      expect(_onScreenIds(container), isNot(contains('demand_first_home')));
+      await container.refresh(openBeatsProvider.future);
+      expect(_openIds(container), isNot(contains('demand_first_home')));
     });
 
     test('newly-eligible beats trickle out a few rounds apart', () async {
@@ -246,11 +246,13 @@ void main() {
       },
     );
 
-    test('fireBeats is a no-op on an empty city', () async {
+    test("a fresh city's first letter is the first-home ask", () async {
       final (db, pid, container) = await _setup();
       addTearDown(container.dispose);
+      // The office is seeded at creation, so the very first evaluation
+      // fires exactly one letter: Mrs. Pomeroy asking for a home.
       await container.read(cityActionsProvider).fireBeats();
-      expect(await db.firedBeatIds(pid), isEmpty);
+      expect(await db.firedBeatIds(pid), {'demand_first_home'});
     });
 
     test('incrementRoundsPlayed advances and persists the clock', () async {
@@ -313,63 +315,78 @@ void main() {
     });
 
     test(
-      'an un-acknowledged bubble rotates off screen after the window',
+      'a letter never expires: shown, it stays open until fulfilled',
+      () async {
+        final (db, pid, container) = await _setup();
+        addTearDown(container.dispose);
+        final actions = container.read(cityActionsProvider);
+        await actions.fireBeats();
+        await container.refresh(openBeatsProvider.future);
+        final before = container
+            .read(openBeatsProvider)
+            .asData!
+            .value
+            .firstWhere((b) => b.beat.id == 'demand_first_home');
+        expect(before.shown, isFalse);
+
+        // Showing the letter stamps it shown; it stays open.
+        await actions.markBeatRead('demand_first_home');
+        await container.refresh(openBeatsProvider.future);
+        final after = container
+            .read(openBeatsProvider)
+            .asData!
+            .value
+            .firstWhere((b) => b.beat.id == 'demand_first_home');
+        expect(after.shown, isTrue);
+
+        // Many rounds later it is still open — no rotation, no read-hide.
+        for (var i = 0; i < 40; i++) {
+          await db.incrementRoundsPlayed(pid);
+        }
+        await actions.fireBeats();
+        await container.refresh(openBeatsProvider.future);
+        expect(_openIds(container), contains('demand_first_home'));
+        expect(
+          (await db.storyBeatStatesForPlayer(pid))['demand_first_home']!.state,
+          'onScreen',
+        );
+      },
+    );
+
+    test(
+      'a demand does not fire while its building is under construction',
       () async {
         final (db, pid, container) = await _setup();
         addTearDown(container.dispose);
         final city = await db.cityForPlayer(pid);
         final actions = container.read(cityActionsProvider);
-
-        await _place(db, city.id, pid, 'mayors_office', 0);
+        // The office is seeded at creation; a home site is already open.
+        await db.startBuildingSite(
+          cityId: city.id,
+          playerId: pid,
+          buildingTypeId: 'single_home',
+          gridX: 5,
+          gridY: 5,
+        );
         await actions.fireBeats();
-        await container.refresh(onScreenBeatsProvider.future);
-        expect(_onScreenIds(container), contains('demand_first_home'));
-
-        // Let the rotation window elapse without acking the bubble.
-        for (var i = 0; i < kBubbleRotationRounds; i++) {
-          await db.incrementRoundsPlayed(pid);
-        }
-        await actions.fireBeats();
-        await container.refresh(onScreenBeatsProvider.future);
-
-        // Hidden from the overlay, but still recorded as fired (state
-        // unchanged, so it won't re-fire and clutter the screen again).
-        expect(_onScreenIds(container), isNot(contains('demand_first_home')));
-        expect(await db.firedBeatIds(pid), contains('demand_first_home'));
-        final states = await db.storyBeatStatesForPlayer(pid);
-        expect(states['demand_first_home']!.state, 'onScreen');
+        expect(
+          await db.firedBeatIds(pid),
+          isNot(contains('demand_first_home')),
+        );
       },
     );
 
-    test('reading a beat keeps it on screen, then retires it', () async {
+    test('the mayors office is seeded at creation and on reset', () async {
       final (db, pid, container) = await _setup();
       addTearDown(container.dispose);
       final city = await db.cityForPlayer(pid);
-      await _place(db, city.id, pid, 'mayors_office', 0);
+      final placed = await db.placementsForCity(city.id);
+      expect(placed.map((p) => p.buildingTypeId), ['mayors_office']);
+      expect((placed.single.gridX, placed.single.gridY), (1, 1));
 
-      final actions = container.read(cityActionsProvider);
-      await actions.fireBeats();
-      await container.refresh(onScreenBeatsProvider.future);
-      expect(_onScreenIds(container), contains('demand_first_home'));
-
-      // Reading it does NOT take it off screen — it lingers, still 'onScreen'.
-      await actions.markBeatRead('demand_first_home');
-      await container.refresh(onScreenBeatsProvider.future);
-      expect(_onScreenIds(container), contains('demand_first_home'));
-      var states = await db.storyBeatStatesForPlayer(pid);
-      expect(states['demand_first_home']!.state, 'onScreen');
-
-      // After a few rounds of math play it retires off screen and becomes
-      // re-fireable ('acked'), still recorded as ever-fired.
-      for (var i = 0; i < kReadHideRounds; i++) {
-        await db.incrementRoundsPlayed(pid);
-      }
-      await actions.fireBeats();
-      await container.refresh(onScreenBeatsProvider.future);
-      expect(_onScreenIds(container), isNot(contains('demand_first_home')));
-      states = await db.storyBeatStatesForPlayer(pid);
-      expect(states['demand_first_home']!.state, 'acked');
-      expect(await db.firedBeatIds(pid), contains('demand_first_home'));
+      // ensureMayorsOffice is idempotent.
+      await container.read(cityActionsProvider).ensureMayorsOffice();
+      expect((await db.placementsForCity(city.id)).length, 1);
     });
   });
 }
