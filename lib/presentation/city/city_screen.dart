@@ -28,6 +28,7 @@ import 'package:math_city/game/city/land_window.dart';
 import 'package:math_city/presentation/city/celebration_overlay.dart';
 import 'package:math_city/presentation/city/letter_overlay.dart';
 import 'package:math_city/presentation/city/spin_overlay.dart';
+import 'package:math_city/presentation/city/times_overlay.dart';
 import 'package:math_city/presentation/navigation/route_observer.dart';
 import 'package:math_city/presentation/player/adventurer_avatar_widget.dart';
 import 'package:math_city/presentation/question/question_screen.dart';
@@ -134,6 +135,9 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
   /// Fulfilled beats whose retirement has been dispatched, so each is
   /// retired once per completion.
   final Set<String> _retiring = <String>{};
+
+  /// Bubble beats already handed to a walker, so each fire bubbles once.
+  final Set<String> _bubbled = <String>{};
 
   /// The folder open in the bar's third zone (city_builder.md §10.5), or
   /// null for the four folder cards.
@@ -1268,6 +1272,26 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
         unawaited(ref.read(cityActionsProvider).retireCompletedBeat(b.beat.id));
       }
     }
+    // Ambient praise rides on a walker near the building it is about, then
+    // the beat retires at once — nothing to dismiss (city_builder.md §10.2).
+    _bubbled.removeWhere((id) => !openBeats.any((b) => b.beat.id == id));
+    for (final b in openBeats) {
+      if (b.delivery != BeatDelivery.bubble || b.completed) continue;
+      if (!_bubbled.add(b.beat.id)) continue;
+      final target = beatTargetBuilding(b.beat);
+      final at = target == null
+          ? null
+          : placements?.where((p) => p.buildingTypeId == target.id).firstOrNull;
+      final window = _window;
+      if (at != null && window != null) {
+        _game?.showBubble(
+          localCol: at.gridX - window.minCol,
+          localRow: at.gridY - window.minRow,
+          text: '${b.beat.emoji} ${b.beat.shortLabel}',
+        );
+      }
+      unawaited(ref.read(cityActionsProvider).retireCompletedBeat(b.beat.id));
+    }
     final requested = <String, OpenBeat>{};
     for (final b in openBeats) {
       if (b.completed || b.beat.kind != BeatKind.demand) continue;
@@ -1283,10 +1307,16 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
         _selectedBuildingId == null &&
         _buyingBlock == null;
     if (_letterId == null && atRest) {
-      final next = openBeats.where((b) => !b.shown && !b.completed).firstOrNull;
+      final next = openBeats
+          .where(
+            (b) =>
+                !b.shown && !b.completed && b.delivery != BeatDelivery.bubble,
+          )
+          .firstOrNull;
       if (next != null) _letterId = next.beat.id;
     }
     final letterBeat = _letterId == null ? null : findBeatById(_letterId!);
+    final letterIsTimes = letterBeat?.staticDelivery == BeatDelivery.times;
     final letterTarget = letterBeat == null
         ? null
         : beatTargetBuilding(letterBeat);
@@ -1304,7 +1334,9 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     );
     if (letterBeat != null && _announcedLetterId != letterBeat.id) {
       _announcedLetterId = letterBeat.id;
-      final spoken = 'Dear Mayor ${player?.name ?? ''}, ${letterBeat.longText}';
+      final spoken = letterIsTimes
+          ? '${letterBeat.shortLabel}. ${letterBeat.longText}'
+          : 'Dear Mayor ${player?.name ?? ''}, ${letterBeat.longText}';
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
         unawaited(ref.read(cityActionsProvider).markBeatRead(letterBeat.id));
@@ -1500,8 +1532,20 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                           ),
                         ),
                       ),
+                    // The front page on screen.
+                    if (!zoomed && letterBeat != null && letterIsTimes)
+                      Positioned.fill(
+                        child: TimesOverlay(
+                          beat: letterBeat,
+                          cityName: '${player?.name ?? ''}’s city',
+                          onClose: () {
+                            unawaited(ref.read(ttsServiceProvider).stop());
+                            setState(() => _letterId = null);
+                          },
+                        ),
+                      ),
                     // The letter on screen, over everything but the wheel.
-                    if (!zoomed && letterBeat != null)
+                    if (!zoomed && letterBeat != null && !letterIsTimes)
                       Positioned.fill(
                         child: LetterOverlay(
                           beat: letterBeat,

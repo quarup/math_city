@@ -110,3 +110,32 @@ int stepPopulation(
   final next = current - ((current - capacity) * rate).ceil();
   return next < capacity ? capacity : next;
 }
+
+/// The two imbalance flags the §4.3 warning beats narrate, plus what the
+/// homes alone could hold. [population] is the live count; the flags are
+/// false for a city with no homes (nothing to be out of balance with).
+({bool lopsided, bool growthStalled, int housing}) cityBalance(
+  Iterable<BuildingType> placed,
+  int population,
+) {
+  var housing = 0;
+  var housingCount = 0;
+  var amenityCount = 0;
+  for (final b in placed) {
+    housing += b.populationContribution;
+    if (b.populationContribution > 0) housingCount++;
+    if (b.category == BuildingCategory.commercial ||
+        b.category == BuildingCategory.entertainment) {
+      amenityCount++;
+    }
+  }
+  if (housing == 0) {
+    return (lopsided: false, growthStalled: false, housing: 0);
+  }
+  final capacity = populationCapacity(placed);
+  return (
+    lopsided: amenityCount > lopsidedAmenityToHousingRatio * housingCount,
+    growthStalled: population >= capacity && capacity < housing,
+    housing: housing,
+  );
+}

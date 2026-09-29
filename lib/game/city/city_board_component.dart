@@ -1,8 +1,7 @@
-import 'dart:ui';
-
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/text.dart';
+import 'package:flutter/painting.dart';
 import 'package:math_city/domain/city/mover_depth.dart';
 import 'package:math_city/domain/city/road_sprites.dart';
 import 'package:math_city/domain/city/street_life.dart';
@@ -278,6 +277,62 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     for (final (_, draw) in items) {
       draw();
     }
+    // Speech bubbles float above everything, over their walker's head.
+    if (pedestrians.bubbles.isNotEmpty) {
+      final byWalker = {
+        for (final v in pedestrians.views(grid)) v.pedestrian: v,
+      };
+      for (final bubble in pedestrians.bubbles) {
+        final v = byWalker[bubble.pedestrian];
+        if (v != null) _drawBubble(canvas, bubble, v.feet, citizenScale);
+      }
+    }
+  }
+
+  /// A rounded speech bubble with a little tail, fading in and out at the
+  /// ends of its life.
+  void _drawBubble(
+    Canvas canvas,
+    SpeechBubble bubble,
+    Offset feet,
+    double scale,
+  ) {
+    final life = bubble.remaining;
+    final alpha = life < 0.4 ? life / 0.4 : 1.0;
+    final tp = TextPainter(
+      text: TextSpan(
+        text: bubble.text,
+        style: TextStyle(
+          fontSize: grid.tileWidth * 0.2,
+          color: const Color(0xFF1E2A33).withValues(alpha: alpha),
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      textDirection: TextDirection.ltr,
+    )..layout(maxWidth: grid.tileWidth * 2.2);
+    final padX = grid.tileWidth * 0.12;
+    final padY = grid.tileWidth * 0.08;
+    final w = tp.width + padX * 2;
+    final h = tp.height + padY * 2;
+    final headY = feet.dy - 58 * scale;
+    final rect = Rect.fromLTWH(feet.dx - w / 2, headY - h - 10 * scale, w, h);
+    final rrect = RRect.fromRectAndRadius(rect, Radius.circular(h / 2));
+    final fill = Paint()
+      ..color = const Color(0xFFFFFFFF).withValues(alpha: 0.92 * alpha);
+    final stroke = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5
+      ..color = const Color(0xFF1E2A33).withValues(alpha: 0.6 * alpha);
+    final tail = Path()
+      ..moveTo(feet.dx - 6 * scale, rect.bottom - 1)
+      ..lineTo(feet.dx, rect.bottom + 8 * scale)
+      ..lineTo(feet.dx + 6 * scale, rect.bottom - 1)
+      ..close();
+    canvas
+      ..drawRRect(rrect, fill)
+      ..drawPath(tail, fill)
+      ..drawRRect(rrect, stroke);
+    tp.paint(canvas, Offset(rect.left + padX, rect.top + padY));
   }
 
   void _drawTile(Canvas canvas, int col, int row) {

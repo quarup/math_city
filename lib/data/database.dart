@@ -882,6 +882,7 @@ class AppDatabase extends _$AppDatabase {
     String beatId,
     int lifetimeCoinsAtFire, [
     int atRound = 0,
+    String state = 'onScreen',
   ]) async {
     final existing =
         await (select(storyBeatStates)..where(
@@ -892,7 +893,10 @@ class AppDatabase extends _$AppDatabase {
       StoryBeatStatesCompanion.insert(
         playerId: playerId,
         beatId: beatId,
-        state: 'onScreen',
+        // 'onScreen' = an open letter / front page; 'bubble' = a praise
+        // beat the engine re-fired, shown over a pedestrian and retired
+        // by the screen at once.
+        state: state,
         fireCount: Value((existing?.fireCount ?? 0) + 1),
         lifetimeCoinsAtLastFire: Value(lifetimeCoinsAtFire),
         lastFiredAtRound: Value(atRound),

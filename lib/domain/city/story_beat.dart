@@ -6,6 +6,13 @@ enum BeatTone { silly, civic, cozy }
 
 enum BeatKind { demand, praise, warning }
 
+/// How a beat reaches the player (city_builder.md §10.2): a letter that
+/// interrupts, a speech bubble over a passing pedestrian, or a front page
+/// of the Math City Times. Demands are letters; warnings and milestones
+/// are front pages; praise is a *reply* letter when it answers the
+/// building that just opened and a bubble when the engine fires it later.
+enum BeatDelivery { letter, bubble, times }
+
 /// Pure-Dart description of a story beat. Static catalog — see
 /// `beatRegistry` for the v1 set of sample beats.
 class StoryBeat {
@@ -20,6 +27,8 @@ class StoryBeat {
     this.cooldownAfterAckCoins = 600,
     this.citizen,
     this.scripted = false,
+    this.delivery,
+    this.oneShot = false,
   });
 
   final String id;
@@ -49,4 +58,20 @@ class StoryBeat {
   /// A beat the engine never fires on its own — the chapter-one script
   /// (city_builder.md §10.4) fires it at the right moment.
   final bool scripted;
+
+  /// Explicit delivery for the static part of the decision (a milestone
+  /// praise beat that belongs on a front page). Null = by kind: demands
+  /// and praise as letters, warnings as the Times.
+  final BeatDelivery? delivery;
+
+  /// Fires at most once per player, ever (milestones): the engine skips it
+  /// once it has fired, whatever its trigger says afterwards.
+  final bool oneShot;
+
+  /// The static delivery: [delivery] if set, else warnings go to the Times
+  /// and everything else is a letter. The engine turns a praise letter
+  /// into a bubble at fire time (see `openBeatsProvider`).
+  BeatDelivery get staticDelivery =>
+      delivery ??
+      (kind == BeatKind.warning ? BeatDelivery.times : BeatDelivery.letter);
 }

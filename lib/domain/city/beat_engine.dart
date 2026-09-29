@@ -20,8 +20,11 @@ class BeatEngine {
   List<StoryBeat> eligibleBeats({
     required TriggerContext Function(StoryBeat beat) contextFor,
   }) {
-    return beatRegistry
-        .where((b) => !b.scripted && b.triggerRule.evaluate(contextFor(b)))
-        .toList();
+    return beatRegistry.where((b) {
+      if (b.scripted) return false;
+      final ctx = contextFor(b);
+      if (b.oneShot && ctx.firedBeatIds.contains(b.id)) return false;
+      return b.triggerRule.evaluate(ctx);
+    }).toList();
   }
 }

@@ -126,12 +126,17 @@ class OpenBeat {
     required this.shown,
     required this.completed,
     required this.firedAtRound,
+    required this.delivery,
   });
 
   final StoryBeat beat;
   final bool shown;
   final bool completed;
   final int firedAtRound;
+
+  /// How this fire reaches the player: a letter (demands, replies), a
+  /// pedestrian bubble (engine-fired praise), or a Times front page.
+  final BeatDelivery delivery;
 }
 
 /// Every open beat for the active player, oldest fire first. Letters never
@@ -145,7 +150,11 @@ final openBeatsProvider = FutureProvider<List<OpenBeat>>((ref) async {
   final beats = <OpenBeat>[];
   for (final entry in states.entries) {
     final st = entry.value;
-    if (st.state != 'onScreen' && st.state != 'completed') continue;
+    if (st.state != 'onScreen' &&
+        st.state != 'completed' &&
+        st.state != 'bubble') {
+      continue;
+    }
     final beat = findBeatById(entry.key);
     if (beat == null) continue;
     beats.add(
@@ -154,6 +163,9 @@ final openBeatsProvider = FutureProvider<List<OpenBeat>>((ref) async {
         shown: st.ackedAtRound != null,
         completed: st.state == 'completed',
         firedAtRound: st.lastFiredAtRound ?? 0,
+        delivery: st.state == 'bubble'
+            ? BeatDelivery.bubble
+            : beat.staticDelivery,
       ),
     );
   }
@@ -207,7 +219,7 @@ class CityActions {
   /// the population toward the new capacity so the change gives immediate
   /// feedback, then re-evaluate beats (a placement clears a demand /
   /// triggers praise).
-  Future<void> _afterCityChange() async {
+  Future<void> _afterCityChange({String? justOpened}) async {
     _ref
       ..invalidate(placementsProvider)
       ..invalidate(ownedBlocksProvider)
@@ -216,7 +228,7 @@ class CityActions {
       ..invalidate(activePlayerProvider)
       ..invalidate(allPlayersProvider);
     await tickPopulation();
-    await fireBeats();
+    await fireBeats(justOpened: justOpened);
   }
 
   /// Starts a construction site for [goal] (city_builder.md §8.2 step 2):
@@ -291,7 +303,7 @@ class CityActions {
     await db.setSitePaidCoins(siteId, result.site.paidCoins);
     if (result.site.isFull) {
       await db.openSite(siteId, playerId: playerId);
-      await _afterCityChange();
+      await _afterCityChange(justOpened: _openedTypeOf(site.goal));
     } else {
       _ref.invalidate(sitesProvider);
     }
@@ -339,7 +351,7 @@ class CityActions {
     await db.addCredit(playerId, -amount);
     if (result.site.isFull) {
       await db.openSite(siteId, playerId: playerId);
-      await _afterCityChange();
+      await _afterCityChange(justOpened: _openedTypeOf(site.goal));
     } else {
       _ref
         ..invalidate(sitesProvider)
@@ -357,7 +369,7 @@ class CityActions {
   /// Building-age triggers (`minBuildingAgeForId`) are evaluated against the
   /// player's round clock: each placed type's age is the round clock minus the
   /// earliest `placedAtRound` among its placements (its *oldest* instance).
-  Future<void> fireBeats() async {
+  Future<void> fireBeats({String? justOpened}) async {
     final playerId = _ref.read(activePlayerIdProvider);
     if (playerId == null) return;
     final db = _ref.read(appDatabaseProvider);
@@ -380,6 +392,12 @@ class CityActions {
       if (prev == null || age > prev) ageByType[p.buildingTypeId] = age;
     }
 
+    // The §4.3 imbalance flags the Times warnings narrate.
+    final balance = cityBalance(
+      [for (final p in placements) ?findBuildingTypeById(p.buildingTypeId)],
+      city.population,
+    );
+
     // Buildings with an open site count as present for demands
     // (city_builder.md §10.3): no letter asks for what is already on the way.
     final underConstruction = <String>{
@@ -399,6 +417,8 @@ class CityActions {
         population: city.population,
         maxBuildingAgeByTypeId: ageByType,
         firedBeatIds: firedIds,
+        lopsided: balance.lopsided,
+        growthStalled: balance.growthStalled,
         coinsEarnedSinceBeatLastFired: lastBricks == null || ignoreSpacing
             ? null
             : player.lifetimeCoinsEarned - lastBricks,
@@ -426,6 +446,32 @@ class CityActions {
       completed = true;
     }
     if (completed) states = await db.storyBeatStatesForPlayer(playerId);
+
+    // A building just opened: the praise beat that answers it is the
+    // citizen's thank-you reply (city_builder.md §10.2), sent at once —
+    // first opening only, no spacing — so it follows the celebration.
+    if (justOpened != null) {
+      for (final beat in beatRegistry) {
+        if (beat.kind != BeatKind.praise || beat.scripted) continue;
+        if (beat.staticDelivery != BeatDelivery.letter) continue;
+        final rule = beat.triggerRule;
+        if (rule.buildingsPresent.length != 1 ||
+            !rule.buildingsPresent.contains(justOpened) ||
+            rule.minBuildingAgeForId != null) {
+          continue;
+        }
+        if ((states[beat.id]?.fireCount ?? 0) > 0) continue;
+        if (!rule.evaluate(contextFor(beat, ignoreSpacing: true))) continue;
+        await db.recordBeatFired(
+          playerId,
+          beat.id,
+          player.lifetimeCoinsEarned,
+          player.roundsPlayed,
+        );
+        firedIds.add(beat.id);
+      }
+      states = await db.storyBeatStatesForPlayer(playerId);
+    }
 
     // Chapter one (city_builder.md §10.4): the script sends the letters,
     // not the engine, and each arrives the moment the previous building
@@ -468,12 +514,19 @@ class CityActions {
     if (canFireNew) {
       for (final beat in engine.eligibleBeats(contextFor: contextFor)) {
         // Already showing? Leave it (don't re-fire or bump the count).
-        if (states[beat.id]?.state == 'onScreen') continue;
+        final current = states[beat.id]?.state;
+        if (current == 'onScreen' || current == 'bubble') continue;
+        // Engine-fired praise is ambient: a bubble over a passing walker.
+        // Replies (the first praise for a just-opened building) fire above.
+        final asBubble =
+            beat.kind == BeatKind.praise &&
+            beat.staticDelivery == BeatDelivery.letter;
         await db.recordBeatFired(
           playerId,
           beat.id,
           player.lifetimeCoinsEarned,
           player.roundsPlayed,
+          asBubble ? 'bubble' : 'onScreen',
         );
         fired = true;
         // Fire just one new beat per pass; the rest wait their turn so the
@@ -485,6 +538,12 @@ class CityActions {
     if (fired) _ref.invalidate(cityCatalogProvider);
     _ref.invalidate(openBeatsProvider);
   }
+
+  /// The building type a site's opening places, or null for land.
+  String? _openedTypeOf(SiteGoal goal) => switch (goal) {
+    BuildingGoal(:final type) => type.id,
+    LandBlockGoal() => null,
+  };
 
   /// Whether a demand whose trigger still passes has nevertheless been
   /// answered: its building was started, or placed since the letter fired.
@@ -716,11 +775,18 @@ class CityActions {
     if (playerId == null) return;
     final db = _ref.read(appDatabaseProvider);
     final player = await db.getPlayerById(playerId);
+    // Praise fires the way the engine would (a bubble); replies come only
+    // from a real opening.
+    final beat = findBeatById(beatId);
+    final asBubble =
+        beat?.kind == BeatKind.praise &&
+        beat?.staticDelivery == BeatDelivery.letter;
     await db.recordBeatFired(
       playerId,
       beatId,
       player.lifetimeCoinsEarned,
       player.roundsPlayed,
+      asBubble ? 'bubble' : 'onScreen',
     );
     _ref
       ..invalidate(openBeatsProvider)
