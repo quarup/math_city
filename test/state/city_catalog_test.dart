@@ -165,6 +165,32 @@ void main() {
       expect(catalog.map((b) => b.id), isNot(contains('mayors_office')));
     });
 
+    test('a rung is unlocked by its letter but still gets no card', () async {
+      final (db, player) = await _playerWithMayor();
+      final city = await db.cityForPlayer(player.id);
+      await db.placeBuilding(
+        cityId: city.id,
+        playerId: player.id,
+        buildingTypeId: 'single_home',
+        gridX: 5,
+        gridY: 5,
+      );
+      await db.setCityPopulation(city.id, 50);
+      final container = await _container(db, player.id);
+      addTearDown(container.dispose);
+      // No letter yet: the town hall is not unlocked, so the office's info
+      // card offers no upgrade.
+      var unlocked = await container.read(unlockedBuildingIdsProvider.future);
+      expect(unlocked, isNot(contains('town_hall')));
+
+      await db.recordBeatFired(player.id, 'demand_town_hall', 0);
+      container.invalidate(unlockedBuildingIdsProvider);
+      unlocked = await container.read(unlockedBuildingIdsProvider.future);
+      expect(unlocked, contains('town_hall'));
+      final catalog = await container.read(cityCatalogProvider.future);
+      expect(catalog.map((b) => b.id), isNot(contains('town_hall')));
+    });
+
     test('upgrade-only rungs never get a card', () async {
       final (db, player) = await _playerWithMayor();
       final city = await db.cityForPlayer(player.id);

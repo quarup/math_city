@@ -231,7 +231,7 @@ so footprints aim for *plausibility*, not economy). Guidelines used below:
 | Building | Coins | Pop | Service | V | Foot | Unlock rule |
 |---|---|---|---|---|---|---|
 | ✅ `single_home` 🏠 ✓P7 | 60 (1 min) | 4 | — | – | 1×1 | `mayors_office` · reads:`demand_first_home` |
-| ✅ `duplex` 🏘️ | 120 (2 min) | 8 | — | – | 2×1 | `single_home` · reads:`demand_duplex` |
+| ✅ `duplex` 🏘️ | 120 (2 min) | 8 | — | – | 2×1 | `single_home` + pop≥8 · reads:`demand_duplex` |
 | ✅ `townhouse_row` 🏘️ | 300 (5 min) | 12 | — | – | 1×3 | `duplex` + pop≥12 · reads:`demand_townhouse_row` |
 | ✅ `apartment` 🏢 ✓P7 | 120 (2 min) | 16 | — | – | 2×2 | `single_home` + pop≥8 · reads:`demand_apartment` |
 | ✅ `mid_rise_apartment` 🏢 | 720 (12 min) | 30 | — | – | 2×3 | `apartment` + pop≥30 · reads:`demand_mid_rise` |
@@ -341,7 +341,7 @@ Parks / culture / recreation — the cozy, praise-heavy delight channel. All
 |---|---|---|---|
 | ✅ `park` 🌳 ✓P7 | 120 (2 min) | 2×2 | `single_home` · reads:`demand_more_parks` *(recurring — see §4)* |
 | ✅ `playground` 🛝 | 120 (2 min) | 1×2 | `park` · reads:`demand_playground` |
-| ✅ `community_garden` 🌻 | 180 (3 min) | 2×2 | `park` · reads:`demand_community_garden` |
+| ✅ `community_garden` 🌻 | 180 (3 min) | 2×2 | `park` + pop≥12 · reads:`demand_community_garden` |
 | ✅ `fountain_plaza` ⛲ | 600 (10 min) | 2×2 | `town_hall` · reads:`demand_fountain_plaza` |
 | ✅ `botanical_garden` 🌺 | 1200 (20 min) | 3×3 | `community_garden` + pop≥50 · reads:`demand_botanical_garden` |
 
@@ -450,7 +450,7 @@ summary. Trigger shorthand: `+B` present, `−B` absent, `pop≥N`, `age(B)≥N`
 | Beat | Tone | Sticker | Text | Trigger |
 |---|---|---|---|---|
 | ✅ `demand_first_home` ✓P7 | cozy | 🏠 a home! | "We've got a mayor's office but nowhere to live yet — could we get a house, please?" | `+mayors_office −single_home −apartment` |
-| ✅ `demand_duplex` | cozy | 🏘️ share a yard | "Two families want to share a yard — a duplex would fit them both nicely." | `+single_home −duplex` |
+| ✅ `demand_duplex` | cozy | 🏘️ share a yard | "Two families want to share a yard — a duplex would fit them both nicely." | `+single_home pop≥8 −duplex` |
 | ✅ `demand_townhouse_row` | cozy | 🏘️ row houses | "Lots of folks want to live close together — how about a row of townhouses?" | `+duplex pop≥12 −townhouse_row` |
 | ✅ `demand_apartment` ✓P7 | cozy | 🏢 more homes! | "More families want to move in but every house is full — an apartment block would help." | `+single_home pop≥8 −apartment` |
 | ✅ `demand_mid_rise` | cozy | 🏢 go taller | "The apartment filled up in a flash — a taller mid-rise would house even more." | `+apartment pop≥30 −mid_rise_apartment` |
@@ -506,7 +506,7 @@ summary. Trigger shorthand: `+B` present, `−B` absent, `pop≥N`, `age(B)≥N`
 |---|---|---|---|---|
 | ✅ `demand_more_parks` ✓P7 | cozy | 🌳 a park? | "The town's feeling a little grey — a new park would brighten everyone's day." | `+single_home 🪙since≥600` *(recurring)* |
 | ✅ `demand_playground` | cozy | 🛝 playground | "The little ones need somewhere to climb and slide — a playground!" | `+park −playground` |
-| ✅ `demand_community_garden` | cozy | 🌻 grow together | "Neighbors want to grow tomatoes together — a community garden?" | `+park −community_garden` |
+| ✅ `demand_community_garden` | cozy | 🌻 grow together | "Neighbors want to grow tomatoes together — a community garden?" | `+park pop≥12 −community_garden` |
 | ✅ `demand_fountain_plaza` | cozy | ⛲ town square | "The town square feels empty — a fountain plaza would make it sparkle." | `+town_hall −fountain_plaza` |
 | ✅ `demand_botanical_garden` | cozy | 🌺 rare plants | "The garden's a hit — imagine a whole botanical garden of rare plants." | `+community_garden pop≥50 −botanical_garden` |
 | ✅ `demand_sports_field` | civic | ⚽ let's play | "The school kids need somewhere to run and play — a sports field!" | `+school −sports_field` |
@@ -1668,6 +1668,17 @@ the emulator). Where the code differs from the text above:
   the city comes to rest before interrupting. "Grow into" became
   "Upgrade to" everywhere (the bar reads *Upgrade this one?* / *Yes,
   upgrade it*).
+- Fourth round (2026-09-29, evening): the info card offers *Upgrade to …*
+  only once the rung's own demand letter has arrived and its unlock rule
+  passes (`unlockedBuildingIdsProvider`; the catalog is now derived from
+  it), so upgrades appear at the story's pace, not the moment the source
+  opens. The two ungated upgrade asks gained gates: duplex pop ≥ 8,
+  community garden pop ≥ 12. The info card is two rows — name, detail
+  and ✕ above; *Upgrade to …* and *Move* lined up below. Two letter
+  bugs fixed on the way: a re-fired letter that had been shown once was
+  never shown again (the announce guard and the pending-delay id now
+  reset when a letter closes), and praise letters / front pages / the
+  celebration reply now retire on close instead of lingering open.
 - Not built: the mailbox (deferred), the album, the requester at the
   opening, themed events, drag-from-card — all still in the deferred list.
 

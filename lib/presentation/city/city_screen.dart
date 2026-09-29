@@ -1444,6 +1444,16 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     final selectedBuildingType = selectedBuilding == null
         ? null
         : findBuildingTypeById(selectedBuilding.buildingTypeId);
+    final unlockedIds =
+        ref.watch(unlockedBuildingIdsProvider).asData?.value ??
+        const <String>{};
+    final nextRungType = selectedBuildingType == null
+        ? null
+        : nextRung(selectedBuildingType.id);
+    final unlockedNextRung =
+        nextRungType != null && unlockedIds.contains(nextRungType.id)
+        ? nextRungType
+        : null;
 
     // .value (not asData?.value) so a refresh — which the catalog does on
     // every placement — keeps the *previous* catalog instead of momentarily
@@ -1541,6 +1551,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
       } else if (_letterArmed == next.beat.id) {
         _letterId = next.beat.id;
         _letterArmed = null;
+        _letterPending = null;
       } else if (_letterPending != next.beat.id) {
         _cancelLetterDelay();
         _letterPending = next.beat.id;
@@ -1698,8 +1709,9 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
             showMoveHint:
                 guideStep == kMoveStep &&
                 selectedBuildingType.id == 'single_home',
-            // No upgrades until the guide is over: the letters carry it.
-            growInto: chapterOne ? null : nextRung(selectedBuildingType.id),
+            // An upgrade is offered once its letter has arrived (the rung
+            // is unlocked), and never during the guide.
+            growInto: chapterOne ? null : unlockedNextRung,
             onGrow: () {
               final next = nextRung(selectedBuildingType.id);
               if (next == null) return;
@@ -1869,7 +1881,15 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                           cityName: '${player?.name ?? ''}’s city',
                           onClose: () {
                             unawaited(ref.read(ttsServiceProvider).stop());
-                            setState(() => _letterId = null);
+                            unawaited(
+                              ref
+                                  .read(cityActionsProvider)
+                                  .retireCompletedBeat(letterBeat.id),
+                            );
+                            setState(() {
+                              _letterId = null;
+                              _announcedLetterId = null;
+                            });
                           },
                         ),
                       ),
@@ -1889,7 +1909,10 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                                     unawaited(
                                       ref.read(ttsServiceProvider).stop(),
                                     );
-                                    setState(() => _letterId = null);
+                                    setState(() {
+                                      _letterId = null;
+                                      _announcedLetterId = null;
+                                    });
                                     unawaited(
                                       _startEvent(
                                         letterBeat.event!,
@@ -1914,6 +1937,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                                   );
                                   setState(() {
                                     _letterId = null;
+                                    _announcedLetterId = null;
                                     _selected = letterTarget;
                                     _pendingSpot = spot;
                                   });
@@ -1921,7 +1945,17 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                               : null,
                           onClose: () {
                             unawaited(ref.read(ttsServiceProvider).stop());
-                            setState(() => _letterId = null);
+                            if (letterBeat.kind == BeatKind.praise) {
+                              unawaited(
+                                ref
+                                    .read(cityActionsProvider)
+                                    .retireCompletedBeat(letterBeat.id),
+                              );
+                            }
+                            setState(() {
+                              _letterId = null;
+                              _announcedLetterId = null;
+                            });
                           },
                         ),
                       ),
@@ -1967,9 +2001,12 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                               unawaited(
                                 ref
                                     .read(cityActionsProvider)
-                                    .markBeatRead(celebrationReply.beat.id),
+                                    .retireCompletedBeat(
+                                      celebrationReply.beat.id,
+                                    ),
                               );
                             }
+                            _announcedLetterId = null;
                             _zoomOut();
                           },
                           cardKey: _celebrationCardKey,
@@ -2359,30 +2396,45 @@ class _BuildingBar extends StatelessWidget {
         top: false,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: Row(
+          // Name and detail on the first row with the close button; the
+          // actions on their own row so they line up whatever is offered.
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Text(type.emoji, style: const TextStyle(fontSize: 26)),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      type.name,
-                      style: theme.textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+              Row(
+                children: [
+                  Text(type.emoji, style: const TextStyle(fontSize: 26)),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          type.name,
+                          style: theme.textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          detail,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ],
                     ),
-                    Text(
-                      detail,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                    if (growInto != null && onGrow != null) ...[
-                      const SizedBox(height: 6),
-                      FilledButton.tonalIcon(
+                  ),
+                  const SizedBox(width: 8),
+                  _CloseButton(onPressed: onDeselect, tooltip: 'Close'),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  if (growInto != null && onGrow != null) ...[
+                    Expanded(
+                      child: FilledButton.icon(
                         onPressed: onGrow,
                         icon: const Icon(Icons.trending_up_rounded),
                         label: Text.rich(
@@ -2397,30 +2449,31 @@ class _BuildingBar extends StatelessWidget {
                           ),
                         ),
                       ),
-                    ],
-                  ],
-                ),
-              ),
-              const SizedBox(width: 8),
-              Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  FilledButton.tonalIcon(
-                    onPressed: onMove,
-                    icon: const Icon(Icons.open_with_rounded),
-                    label: const Text('Move'),
-                  ),
-                  if (showMoveHint)
-                    const Positioned(
-                      left: 0,
-                      right: 0,
-                      top: -62,
-                      child: Center(child: CoachHand(mode: CoachHandMode.tap)),
                     ),
+                    const SizedBox(width: 8),
+                  ] else
+                    const Spacer(),
+                  Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      FilledButton.tonalIcon(
+                        onPressed: onMove,
+                        icon: const Icon(Icons.open_with_rounded),
+                        label: const Text('Move'),
+                      ),
+                      if (showMoveHint)
+                        const Positioned(
+                          left: 0,
+                          right: 0,
+                          top: -62,
+                          child: Center(
+                            child: CoachHand(mode: CoachHandMode.tap),
+                          ),
+                        ),
+                    ],
+                  ),
                 ],
               ),
-              const SizedBox(width: 4),
-              _CloseButton(onPressed: onDeselect, tooltip: 'Close'),
             ],
           ),
         ),

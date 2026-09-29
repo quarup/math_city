@@ -73,7 +73,12 @@ class DebugUnlockAll extends Notifier<bool> {
 /// in registry order (stable display). Placing one starts a construction site
 /// at its coin price — there is no purchase and no affordability check.
 /// Drives the bottom catalog bar on the city screen.
-final cityCatalogProvider = FutureProvider<List<BuildingType>>((ref) async {
+/// Every building type whose unlock rule passes for the active player —
+/// arrival of its demand letter plus any placement / population / lifetime
+/// gates — before the catalog's card filters. The info card's *Upgrade to*
+/// keys on this: a rung is offered only once its letter has arrived
+/// (city_builder.md §10.6).
+final unlockedBuildingIdsProvider = FutureProvider<Set<String>>((ref) async {
   final playerId = ref.watch(activePlayerIdProvider);
   if (playerId == null) throw StateError('No active player');
   final db = ref.read(appDatabaseProvider);
@@ -81,39 +86,36 @@ final cityCatalogProvider = FutureProvider<List<BuildingType>>((ref) async {
   final city = await ref.watch(activeCityProvider.future);
   final placements = await ref.watch(placementsProvider.future);
   if (kDebugMode && ref.watch(debugUnlockAllProvider)) {
-    final placed = placedWithLadderAncestors(
-      placements.map((p) => p.buildingTypeId),
-    );
-    return buildingRegistry
-        .where((b) => !(b.unique && placed.contains(b.id)))
-        .where((b) => !isUpgradeOnly(b.id))
-        .toList();
+    return buildingRegistry.map((b) => b.id).toSet();
   }
   final arrivedBeats = await db.firedBeatIds(playerId);
-
-  // A building's card only appears once the demand letter that asks for it
-  // has arrived (`requiredBeatsRead` — arrival is the gate, city_builder.md
-  // §10.2), on top of any placement/population gates. Population is stepped
-  // by `tickPopulation`; letters arrive through `fireBeats`.
   // An opened upgrade removes its source, so a placed rung also stands in
   // for every rung below it — a town hall is still a mayor's office.
-  final placedIds = placedWithLadderAncestors(
-    placements.map((p) => p.buildingTypeId),
-  );
   final ctx = UnlockContext(
     lifetimeCoinsEarned: player.lifetimeCoinsEarned,
     population: city.population,
-    placedBuildingTypeIds: placedIds,
+    placedBuildingTypeIds: placedWithLadderAncestors(
+      placements.map((p) => p.buildingTypeId),
+    ),
     readBeatIds: arrivedBeats,
   );
   const engine = BuildingDagEngine();
-  // A placed unique building (the mayor's office) has no card: there is
-  // nothing more to place, and Move lives on its info card. That holds once
-  // it has grown into the town hall too (ladder ancestors count as placed).
-  // Upgrade-only rungs (town hall, city hall) come from letters and the
-  // office's info card, never a card of their own.
-  return engine
-      .availableToBuy(ctx)
+  return engine.availableToBuy(ctx).map((b) => b.id).toSet();
+});
+
+/// The build catalog: every unlocked type that deserves a card. A placed
+/// unique building (the mayor's office) has none — nothing more to place,
+/// and Move lives on its info card; that holds once it has grown into the
+/// town hall too. Upgrade-only rungs (town hall, city hall) come from
+/// letters and the office's info card, never a card of their own.
+final cityCatalogProvider = FutureProvider<List<BuildingType>>((ref) async {
+  final unlocked = await ref.watch(unlockedBuildingIdsProvider.future);
+  final placements = await ref.watch(placementsProvider.future);
+  final placedIds = placedWithLadderAncestors(
+    placements.map((p) => p.buildingTypeId),
+  );
+  return buildingRegistry
+      .where((b) => unlocked.contains(b.id))
       .where((b) => !(b.unique && placedIds.contains(b.id)))
       .where((b) => !isUpgradeOnly(b.id))
       .toList();
@@ -274,6 +276,7 @@ class CityActions {
       ..invalidate(placementsProvider)
       ..invalidate(ownedBlocksProvider)
       ..invalidate(sitesProvider)
+      ..invalidate(unlockedBuildingIdsProvider)
       ..invalidate(cityCatalogProvider)
       ..invalidate(activePlayerProvider)
       ..invalidate(allPlayersProvider);
@@ -566,6 +569,7 @@ class CityActions {
         roundsPlayed: player.roundsPlayed,
       );
       _ref
+        ..invalidate(unlockedBuildingIdsProvider)
         ..invalidate(cityCatalogProvider)
         ..invalidate(openBeatsProvider)
         ..invalidate(activePlayerProvider)
@@ -613,7 +617,11 @@ class CityActions {
       }
     }
     // A letter's arrival is what reveals its building's card.
-    if (fired) _ref.invalidate(cityCatalogProvider);
+    if (fired) {
+      _ref
+        ..invalidate(unlockedBuildingIdsProvider)
+        ..invalidate(cityCatalogProvider);
+    }
     _ref.invalidate(openBeatsProvider);
   }
 
@@ -870,6 +878,7 @@ class CityActions {
     _ref
       ..invalidate(activePlayerProvider)
       ..invalidate(allPlayersProvider)
+      ..invalidate(unlockedBuildingIdsProvider)
       ..invalidate(cityCatalogProvider);
   }
 
@@ -927,6 +936,7 @@ class CityActions {
     );
     _ref
       ..invalidate(openBeatsProvider)
+      ..invalidate(unlockedBuildingIdsProvider)
       ..invalidate(cityCatalogProvider);
   }
 
@@ -943,6 +953,7 @@ class CityActions {
       ..invalidate(ownedBlocksProvider)
       ..invalidate(sitesProvider)
       ..invalidate(activeCityProvider)
+      ..invalidate(unlockedBuildingIdsProvider)
       ..invalidate(cityCatalogProvider)
       ..invalidate(openBeatsProvider)
       ..invalidate(activePlayerProvider)

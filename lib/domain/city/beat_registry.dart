@@ -370,6 +370,7 @@ const beatRegistry = <StoryBeat>[
     triggerRule: TriggerRule(
       buildingsPresent: <String>{'single_home'},
       buildingsAbsent: <String>{'duplex'},
+      minPopulation: 8,
     ),
   ),
   StoryBeat(
@@ -1079,6 +1080,7 @@ const beatRegistry = <StoryBeat>[
     triggerRule: TriggerRule(
       buildingsPresent: <String>{'park'},
       buildingsAbsent: <String>{'community_garden'},
+      minPopulation: 12,
     ),
   ),
   StoryBeat(

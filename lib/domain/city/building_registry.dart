@@ -234,6 +234,7 @@ const buildingRegistry = <BuildingType>[
     coinCost: 120,
     unlockRule: UnlockRule(
       requiredBuildingsPlaced: <String>{'single_home'},
+      minPopulation: 8,
       requiredBeatsRead: <String>{'demand_duplex'},
     ),
     populationContribution: 8,
@@ -770,6 +771,7 @@ const buildingRegistry = <BuildingType>[
     coinCost: 180,
     unlockRule: UnlockRule(
       requiredBuildingsPlaced: <String>{'park'},
+      minPopulation: 12,
       requiredBeatsRead: <String>{'demand_community_garden'},
     ),
     varietyContribution: true,
