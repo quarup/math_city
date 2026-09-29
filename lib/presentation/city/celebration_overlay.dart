@@ -1,6 +1,9 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:math_city/domain/city/citizen.dart';
+import 'package:math_city/domain/city/story_beat.dart';
+import 'package:math_city/presentation/player/adventurer_avatar_widget.dart';
 import 'package:math_city/presentation/theme/app_palette.dart';
 
 /// The building-opened celebration drawn over the zoomed-in city
@@ -18,6 +21,9 @@ class CelebrationOverlay extends StatelessWidget {
   const CelebrationOverlay({
     required this.title,
     required this.onDone,
+    this.reply,
+    this.replyFrom,
+    this.playerName = '',
     this.cardKey,
     super.key,
   });
@@ -25,6 +31,13 @@ class CelebrationOverlay extends StatelessWidget {
   /// e.g. "Single home is finished!"
   final String title;
   final VoidCallback onDone;
+
+  /// The citizen's thank-you for the building that just opened
+  /// (city_builder.md §10.2), shown on the card under the headline so the
+  /// confetti and the reply are one moment.
+  final StoryBeat? reply;
+  final Citizen? replyFrom;
+  final String playerName;
   final Key? cardKey;
 
   @override
@@ -65,6 +78,14 @@ class CelebrationOverlay extends StatelessWidget {
                       ),
                       textAlign: TextAlign.center,
                     ),
+                    if (reply != null && replyFrom != null) ...[
+                      const SizedBox(height: 14),
+                      _ReplyNote(
+                        beat: reply!,
+                        from: replyFrom!,
+                        playerName: playerName,
+                      ),
+                    ],
                     const SizedBox(height: 14),
                     FilledButton(
                       onPressed: onDone,
@@ -76,7 +97,7 @@ class CelebrationOverlay extends StatelessWidget {
                         ),
                         textStyle: theme.textTheme.titleMedium,
                       ),
-                      child: const Text('Done'),
+                      child: Text(reply == null ? 'Done' : 'Thanks!'),
                     ),
                   ],
                 ),
@@ -85,6 +106,58 @@ class CelebrationOverlay extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+/// The thank-you as a note on the celebration card: the citizen's face and
+/// name, then their sentence addressed to the mayor.
+class _ReplyNote extends StatelessWidget {
+  const _ReplyNote({
+    required this.beat,
+    required this.from,
+    required this.playerName,
+  });
+
+  final StoryBeat beat;
+  final Citizen from;
+  final String playerName;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    return Container(
+      padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+      decoration: BoxDecoration(
+        color: scheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          AdventurerAvatarWidget(config: from.face, size: 44),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '${beat.emoji} ${from.name}',
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  'Dear Mayor $playerName, ${beat.longText}',
+                  style: theme.textTheme.bodyMedium,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -35,8 +35,9 @@ class _CoachHandState extends State<CoachHand>
 
   @override
   Widget build(BuildContext context) {
+    // A tap points down at the thing below it; a fling sweeps sideways.
     final hand = Text(
-      '👆',
+      widget.mode == CoachHandMode.tap ? '👇' : '👆',
       style: TextStyle(
         fontSize: widget.size,
         shadows: const [Shadow(blurRadius: 8, color: Colors.black54)],
@@ -53,7 +54,7 @@ class _CoachHandState extends State<CoachHand>
               t < 0.5 ? t * 2 : (1 - t) * 2,
             );
             return Transform.translate(
-              offset: Offset(0, -10 + 14 * dip),
+              offset: Offset(0, 14 * dip),
               child: Transform.scale(scale: 1 - 0.12 * dip, child: child),
             );
           }
