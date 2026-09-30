@@ -9,6 +9,9 @@ const MEADOW = ['#9CC466', '#93BB5E', '#A3C96B'];
 const SCRUB = ['#84AB50', '#7CA24A', '#8DB257'];
 const FOREST = ['#5F8C3B', '#578235', '#66943F'];
 const TODAY_OUTSIDE = '#9CCC65', TODAY_FRONTIER = 'rgba(102,163,107,.33)';
+const TENDED = ['#7DBE4C', '#78B847', '#83C452'];
+const FAINT = ['#85C354', '#70B040'];
+const STRIPES = ['#88C557', '#6EAE3F'];
 
 function hash2(c, r) { let h = (c * 73856093) ^ (r * 19349663); h = Math.imul(h ^ (h >>> 13), 0x5bd1e995); h ^= h >>> 15; return (h >>> 0) / 4294967296; }
 function startBlocks() { const o = []; for (let x = -1; x <= 1; x++) for (let y = -1; y <= 1; y++) o.push([x, y]); return o; }
@@ -44,10 +47,12 @@ class WorldScene extends Scene {
     for (const k of this.owned) { for (const p of this.blockCorners(...k.split(',').map(Number))) { x0 = Math.min(x0, p[0]); y0 = Math.min(y0, p[1]); x1 = Math.max(x1, p[0]); y1 = Math.max(y1, p[1]); } }
     return { x0: x0 - pad, y0: y0 - pad, x1: x1 + pad, y1: y1 + pad };
   }
+  takenTiles() { const taken = new Set(); for (const b of this.buildings) for (let c = b.col; c < b.col + b.w; c++) for (let r = b.row; r < b.row + b.h; r++) taken.add(c + ',' + r); for (const k of this.roads) taken.add(k); return taken; }
+  // True if a w×h footprint at grid col,row sits wholly on free owned land.
+  fits(col, row, w, h, taken = this.takenTiles()) { for (let c = col; c < col + w; c++) for (let r = row; r < row + h; r++) if (!this.isOwnedTile(c, r) || taken.has(c + ',' + r)) return false; return true; }
   // Free owned tile for a w×h footprint, or null.
   freeSpot(w, h) {
-    const taken = new Set(); for (const b of this.buildings) for (let c = b.col; c < b.col + b.w; c++) for (let r = b.row; r < b.row + b.h; r++) taken.add(c + ',' + r);
-    for (const k of this.roads) taken.add(k);
+    const taken = this.takenTiles();
     const g = this.grid; const cands = [];
     for (let c = 0; c < g.cols - w; c++) for (let r = 0; r < g.rows - h; r++) {
       let ok = true; for (let dc = 0; dc < w && ok; dc++) for (let dr = 0; dr < h && ok; dr++) if (!this.isOwnedTile(c + dc, r + dr) || taken.has((c + dc) + ',' + (r + dr))) ok = false;
@@ -68,7 +73,11 @@ function drawWorldGround(ctx, sc, o = {}) {
     const [cx, cy] = g.center(c, r); const owned = sc.isOwnedTile(c, r);
     if (!owned && style === 'today') { if (fr && fr.has(sc.blockOf(c, r).join(','))) { diamond(ctx, cx, cy); ctx.fillStyle = TODAY_FRONTIER; ctx.fill(); ctx.strokeStyle = 'rgba(0,0,0,.2)'; ctx.lineWidth = 1; ctx.stroke(); } continue; }
     diamond(ctx, cx, cy);
-    if (owned) { ctx.fillStyle = LAWN[(c + r) % 2]; ctx.fill(); ctx.strokeStyle = 'rgba(0,0,0,.2)'; ctx.lineWidth = 1; ctx.stroke(); }
+    const ins = o.inside || 'checker';
+    if (owned && ins === 'checker') { ctx.fillStyle = LAWN[(c + r) % 2]; ctx.fill(); ctx.strokeStyle = 'rgba(0,0,0,.2)'; ctx.lineWidth = 1; ctx.stroke(); }
+    else if (owned && ins === 'faint') { ctx.fillStyle = FAINT[(c + r) % 2]; ctx.fill(); }
+    else if (owned && ins === 'stripes') { ctx.fillStyle = STRIPES[((c - r) % 2 + 2) % 2]; ctx.fill(); }
+    else if (owned && ins === 'tended') { const h = hash2(c, r); ctx.fillStyle = TENDED[Math.floor(h * 3)]; ctx.fill(); if (h > 0.8) { ctx.strokeStyle = 'rgba(40,80,20,.22)'; ctx.lineWidth = 1; const tx = cx + (h - 0.5) * 20, ty = cy + (hash2(r, c) - 0.5) * 8; ctx.beginPath(); ctx.moveTo(tx, ty); ctx.lineTo(tx - 1, ty - 3); ctx.moveTo(tx + 2, ty); ctx.lineTo(tx + 3, ty - 3); ctx.stroke(); } }
     else {
       const rg = sc.tileRing(c, r); const h = hash2(c, r);
       const pal = style === 'density' ? (rg <= 2 ? MEADOW : rg === 3 ? SCRUB : FOREST) : MEADOW;
@@ -255,3 +264,85 @@ function label(ctx, text, x, y) { ctx.font = '600 12px "Nunito", system-ui, sans
 function fmtHour(h) { const hh = Math.floor(h) % 24, mm = Math.floor((h % 1) * 60); const ap = hh >= 12 ? 'pm' : 'am'; return `${((hh + 11) % 12) + 1}:${String(mm).padStart(2, '0')} ${ap}`; }
 function drawCoins(ctx, W, coins) { label(ctx, `🪙 ${coins}`, W - 84, 10); }
 function fmtCoins(n) { return '🪙 ' + n; }
+
+// ---- Round 2: inside treatment, boundary on demand, expand mode ----------------
+// Street trees and flower beds on owned tiles that touch a road.
+function makeStreetDecor(sc) {
+  const out = [], taken = sc.takenTiles(), g = sc.grid;
+  for (let c = 0; c < g.cols; c++) for (let r = 0; r < g.rows; r++) {
+    if (!sc.isOwnedTile(c, r) || taken.has(c + ',' + r)) continue;
+    const h = hash2(c * 5 + 2, r * 3 + 7); if (h > 0.34) continue;
+    const road = DIRD.map(([dc, dr], d) => sc.isRoad(c + dc, r + dr) ? d : -1).filter((d) => d >= 0); if (!road.length) continue;
+    const d = road[0], u = UNIT[d]; const [cx, cy] = g.center(c, r); const x = cx + u[0] * 14, y = cy + u[1] * 14;
+    if (h < 0.18) out.push({ kind: 'tree', c, r, x, y, s: 0.85 + h * 1.2, v: Math.floor(hash2(r, c) * 3) });
+    else out.push({ kind: 'bed', c, r, x, y, v: Math.floor(hash2(r, c) * 3) });
+  }
+  return out;
+}
+function drawBed(ctx, d) {
+  const cols = [['#F48FB1', '#FFF176', '#EF5350'], ['#FFFFFF', '#FFD54F', '#CE93D8'], ['#FF8A65', '#FFF176', '#F48FB1']][d.v];
+  ctx.fillStyle = '#4E8A2E'; ctx.beginPath(); ctx.ellipse(d.x, d.y, 13, 6.5, 0, 0, 7); ctx.fill();
+  for (let i = 0; i < 8; i++) { ctx.fillStyle = cols[i % 3]; ctx.beginPath(); ctx.arc(d.x + (i - 3.5) * 3.1, d.y - 2 + ((i * 5) % 3) - 1, 2.1, 0, 7); ctx.fill(); }
+}
+// Outline of the owned region: one segment per owned tile edge that faces unowned land.
+function drawBoundary(ctx, sc, o = {}) {
+  const g = sc.grid; ctx.save(); ctx.strokeStyle = o.color || 'rgba(255,255,255,.9)'; ctx.lineWidth = o.width || 2; if (o.dash) { ctx.setLineDash(o.dash); ctx.lineDashOffset = -(o.t || 0) * 14; }
+  ctx.beginPath();
+  for (let c = 0; c < g.cols; c++) for (let r = 0; r < g.rows; r++) {
+    if (!sc.isOwnedTile(c, r)) continue; const [cx, cy] = g.center(c, r);
+    const N = [cx, cy - HALF_H], E = [cx + HALF_W, cy], S = [cx, cy + HALF_H], W = [cx - HALF_W, cy];
+    if (!sc.isOwnedTile(c + 1, r)) { ctx.moveTo(...E); ctx.lineTo(...S); } if (!sc.isOwnedTile(c, r + 1)) { ctx.moveTo(...S); ctx.lineTo(...W); }
+    if (!sc.isOwnedTile(c - 1, r)) { ctx.moveTo(...W); ctx.lineTo(...N); } if (!sc.isOwnedTile(c, r - 1)) { ctx.moveTo(...N); ctx.lineTo(...E); }
+  }
+  ctx.stroke(); ctx.restore();
+}
+// Thin tile grid over owned land; `near` = [x, y, radius] limits it to a halo.
+function drawOwnedGrid(ctx, sc, view, o = {}) {
+  const g = sc.grid, vis = visibleTiles(sc, view); ctx.save(); ctx.lineWidth = 1;
+  for (let c = 0; c < g.cols; c++) for (let r = 0; r < g.rows; r++) {
+    if (!vis(c, r) || !sc.isOwnedTile(c, r)) continue; const [cx, cy] = g.center(c, r);
+    let a = o.alpha ?? 0.22; if (o.near) { const d = Math.hypot((cx - o.near[0]) / 1, (cy - o.near[1]) * 2) / o.near[2]; a *= Math.max(0, 1 - d); if (a < 0.01) continue; }
+    diamond(ctx, cx, cy); ctx.strokeStyle = `rgba(255,255,255,${a})`; ctx.stroke();
+  }
+  ctx.restore();
+}
+// Dim unowned land (optionally sparing the purchasable frontier).
+function dimOutside(ctx, sc, view, alpha, o = {}) {
+  const g = sc.grid, vis = visibleTiles(sc, view); const fr = o.spareFrontier ? new Set(sc.frontier().map((b) => b.join(','))) : null;
+  ctx.save(); ctx.fillStyle = `rgba(20,30,60,${alpha})`;
+  for (let c = 0; c < g.cols; c++) for (let r = 0; r < g.rows; r++) { if (!vis(c, r) || sc.isOwnedTile(c, r)) continue; if (fr && fr.has(sc.blockOf(c, r).join(','))) continue; diamond(ctx, cx_(g, c, r), cy_(g, c, r)); ctx.fill(); }
+  ctx.restore();
+}
+const cx_ = (g, c, r) => g.center(c, r)[0], cy_ = (g, c, r) => g.center(c, r)[1];
+// Constant-screen-size pill at a world point (the app's label style, or gold when affordable).
+function drawPill(ctx, x, y, zoom, text, o = {}) {
+  ctx.save(); ctx.translate(x, y); ctx.scale(1 / zoom, 1 / zoom); const pop = o.pop ?? 1; ctx.scale(pop, pop);
+  ctx.font = '700 11px "Nunito", system-ui, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; const w = ctx.measureText(text).width + 18;
+  ctx.fillStyle = o.gold ? '#FFE082' : 'rgba(16,25,23,.78)'; roundRect(ctx, -w / 2, -11, w, 22, 11); ctx.fill();
+  if (o.gold) { ctx.strokeStyle = '#B8860B'; ctx.lineWidth = 1.2; ctx.stroke(); }
+  ctx.fillStyle = o.gold ? '#5c4300' : '#fff'; ctx.fillText(text, 0, 0.5); ctx.restore();
+}
+function drawPlus(ctx, x, y, zoom, o = {}) {
+  ctx.save(); ctx.translate(x, y); ctx.scale(1 / zoom, 1 / zoom); const s = o.pop ?? 1; ctx.scale(s, s);
+  ctx.fillStyle = 'rgba(0,0,0,.18)'; ctx.beginPath(); ctx.ellipse(1, 3, 12, 6, 0, 0, 7); ctx.fill();
+  ctx.fillStyle = '#FFFFFF'; ctx.beginPath(); ctx.arc(0, 0, 12, 0, 7); ctx.fill(); ctx.strokeStyle = 'rgba(14,110,98,.6)'; ctx.lineWidth = 1.5; ctx.stroke();
+  ctx.strokeStyle = '#0E6E62'; ctx.lineWidth = 2.5; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(-5.5, 0); ctx.lineTo(5.5, 0); ctx.moveTo(0, -5.5); ctx.lineTo(0, 5.5); ctx.stroke(); ctx.restore();
+}
+// Translucent sprite ghost of a building at grid col,row.
+function drawGhostSprite(ctx, sc, id, col, row, alpha = 0.65) {
+  const [w, h] = FOOT[id]; const bb = sc.spriteBox({ id, col, row, w, h }); ctx.save(); ctx.globalAlpha = alpha; ctx.drawImage(IMG[id], bb.x, bb.y, bb.W, bb.H); ctx.restore();
+}
+// Bottom bar with folders and an optional labelled button (e.g. "Expand city").
+function drawActionBar(ctx, W, H, items, o = {}) {
+  const h = 52, y = H - h; ctx.save(); ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, y, W, h); ctx.fillStyle = '#D3DEDA'; ctx.fillRect(0, y, W, 1.5);
+  ctx.font = '700 12px "Nunito", system-ui, sans-serif'; ctx.textBaseline = 'middle';
+  const widths = items.map((it) => it.label ? ctx.measureText(it.label).width + 40 : 44); const total = widths.reduce((a, b) => a + b, 0) + (items.length - 1) * 10; let x = (W - total) / 2;
+  const rects = [];
+  items.forEach((it, i) => {
+    const w = widths[i]; ctx.fillStyle = it.on ? '#0E6E62' : it.label ? '#E0F2F1' : '#F1F5F4'; roundRect(ctx, x, y + 8, w, 36, 10); ctx.fill();
+    if (it.label) { ctx.fillStyle = it.on ? '#fff' : '#0E6E62'; ctx.font = '700 12px "Nunito", system-ui, sans-serif'; ctx.textAlign = 'center'; ctx.fillText((it.emoji ? it.emoji + ' ' : '') + it.label, x + w / 2, y + 27); }
+    else { ctx.font = '20px system-ui'; ctx.textAlign = 'center'; ctx.fillStyle = '#000'; ctx.fillText(it.emoji, x + w / 2, y + 27); }
+    rects.push({ x, y: y + 8, w, h: 36, item: it }); x += w + 10;
+  });
+  ctx.restore(); return rects;
+}

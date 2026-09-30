@@ -1,4 +1,4 @@
-<title>Math City Ground and Sky</title>
+<title>Math City Ground, Round Two</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Nunito:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
 <style>
 :root {
@@ -72,14 +72,14 @@ body.only .wrap { padding: 12px; max-width: none; } body.only article.mock { gri
 <div class="wrap">
 <header>
   <div>
-    <h1>Math City <em>Ground and Sky</em></h1>
-    <p class="lede">Twenty-three mocks for how the land under the city and the sky above it should look, how purchasable land announces itself without a pale cross, and what a brand-new player sees in their first ten minutes. Live on the real sprites at the game's 64 px tile; every idea from the brainstorm is here, including the ones I would not build.</p>
+    <h1>Math City <em>Ground, Round Two</em></h1>
+    <p class="lede">Eighteen mocks answering the round-one feedback: the town's own ground made as pleasant as the countryside around it, the city edge shown only while a building is being placed or moved, the haze alone with nothing floating in it, and an <em>Expand city</em> mode that marks land with stakes and string instead of signs. The island is gone.</p>
   </div>
   <div class="legend">
-    <b>Art</b><span>every mock on this page is code-drawn in Flame canvas; no Nano Banana sheet is needed for any of it.</span>
+    <b>Outside</b><span>every mock uses T3's density-as-distance countryside and the T4 haze band with the sun and clouds removed, per the feedback.</span>
     <b>Effort</b><span>S under half a day · M one or two sessions.</span>
-    <b>Perf</b><span>Free is a few draw calls · Light is per-tile or per-entity work worth measuring once on a low-end phone.</span>
-    <b>Tier</b><span>my recommendation: <em>Recommend</em>, <em>Nice</em> (after the recommended set), <em>Decide</em> where it is a taste or economy call for you, <em>Reject</em> shown so it is not re-derived.</span>
+    <b>Perf</b><span>Free is a few draw calls; nothing on this page is heavier than that.</span>
+    <b>Tier</b><span><em>Recommend</em>, <em>Nice</em> (after the recommended set), <em>Decide</em> where it is a taste call for you.</span>
   </div>
 </header>
 <nav class="toc" id="toc"></nav>
@@ -88,34 +88,32 @@ body.only .wrap { padding: 12px; max-width: none; } body.only article.mock { gri
 <section class="plan">
   <h2>What I would build, in order</h2>
   <ol>
-    <li><b>T2 + T4 + S1</b> — meadow beyond the lawn, the ground dissolving into a viewport-fixed sky. Removes the green square, the cross and the flat backdrop in one change, and gives the day cycle somewhere to live.</li>
-    <li><b>S2 + S4</b> — the eight-minute day with the clock frozen at 9:30 through chapter one, five minutes of day and three of night after the hand-over, paused under the question screens.</li>
-    <li><b>F1 + F2 + F5</b> — no frontier until the land beat; then one sign beside the site that did not fit; after the first purchase, a sign per block. Survey stakes (F3) become the selected state.</li>
-    <li><b>N3</b> — the land letter, with the animated hand on the sign and on Buy. Whether the first deed is a gift (N4) is your call.</li>
-    <li><b>N1 + N2 + N5</b> — start zoom, the tighter clamp, and the disclosure flags on the player row.</li>
-    <li><b>Then, as taste allows:</b> T3 density rings, S3 city glow, T6 cloud shadows, F4 the hedge, F6 prices on signs, F7 a Land folder as the home of the price list.</li>
+    <li><b>R5 + H1</b> — tended ground with street trees and flower beds inside, density-as-distance outside, and the haze alone. The town and the countryside become one landscape; the checkerboard, the cross and the flat backdrop all go.</li>
+    <li><b>B1 + B4</b> — the edge, the tile grid and the dimmed outside appear only while something is in the hand, for placing and for moving alike. One code path.</li>
+    <li><b>E1 + E6</b> — the <em>Expand city</em> button, stakes and string with a price pill per block, the camera pulling back to frame the ring. E5 is the no-room path into the same mode, replacing round one's letter-and-sign version.</li>
+    <li><b>H2</b> — the eight-minute day carried by the haze colour and the tints alone; H3's stars are yours to allow or not.</li>
+    <li><b>Then, as taste allows:</b> E4's preview on selection, B3's grid halo, R3 / R4 if the youngest players turn out to need countable tiles.</li>
   </ol>
-  <p style="margin:14px 0 0;color:var(--muted);font-size:14px">Everything lives in <code>lib/game/city/</code> and <code>lib/presentation/city/</code>: the meadow and signs are branches in <code>CityBoardComponent</code>'s terrain and overlay passes, the sky is a gradient behind the <code>GameWidget</code> plus a viewport-space haze component, and the schedule is a handful of flags on the chapter-one integer that already exists. No schema change except the clock, if D3 is ever chosen over the ambient loop.</p>
+  <p style="margin:14px 0 0;color:var(--muted);font-size:14px">Still all inside <code>CityBoardComponent</code>'s terrain and overlay passes plus a gradient behind the <code>GameWidget</code>; the expand mode is presentational state in <code>city_screen.dart</code> next to the existing buy-land selection, and the street decor is seeded from the tile hash so nothing is stored. No domain or schema change.</p>
   <div class="tablewrap"><table class="summary" id="summary"></table></div>
 </section>
-<footer>Sprites are the shipped <code>assets/buildings/*.png</code>; the world is the signed 4×4 block model of <code>land_blocks.dart</code> on a 15×15-block grid. Canvases pause when scrolled out of view. Companion to <a href="city_alive.html">Math City Alive</a>.</footer>
+<footer>Sprites are the shipped <code>assets/buildings/*.png</code>; the world is the signed 4×4 block model of <code>land_blocks.dart</code> on a 15×15-block grid. Canvases pause when scrolled out of view. Round one: <a href="terrain_sky.html">Math City Ground and Sky</a>.</footer>
 </div>
 <script src="sprites.js"></script>
 <script src="engine.js"></script>
 <script src="terrain.js"></script>
 <script src="mocks_common.js"></script>
-<script src="mocks_terrain.js"></script>
+<script src="mocks_terrain2.js"></script>
 <script>
 (function () {
   const SECTION_NOTES = {
-    'Terrain': 'How the ground plane renders: what owned land, unowned land and the far distance look like. T1 is the current build for comparison.',
-    'Sky': 'Where the sky lives on a fixed-angle isometric board, and what the eight-minute day does with it.',
-    'Frontier': 'How purchasable blocks announce themselves. Every mock here is tappable: tap a block to select it, then Buy.',
-    'First minutes': 'What a brand-new player sees, and when each affordance is allowed to appear.',
+    'Inside': 'What owned land looks like at rest. The checkerboard was the one thing that made the inside uglier than the outside; these are the replacements.',
+    'Boundary on demand': 'The city edge, the tile grid and a dimmed outside appear only while a building is being placed or moved, and vanish when it is dropped.',
+    'Haze only': 'T4 with nothing in the band: no sun, no moon, no clouds. The sky is a colour the ground fades into.',
+    'Expand city': 'Purchasable land is invisible until an Expand city button is pressed (or offered when a building will not fit). Every mock here is tappable, including the button in the bar.',
   };
-  const order = ['Terrain', 'Sky', 'Frontier', 'First minutes'];
+  const order = ['Inside', 'Boundary on demand', 'Haze only', 'Expand city'];
   const root = document.getElementById('sections'), toc = document.getElementById('toc');
-  // ?only=<id>&t=<seconds> renders one mock, pre-advanced, for screenshots.
   const qs = new URLSearchParams(location.search); const only = qs.get('only');
   if (only) { document.body.classList.add('only'); for (let i = MOCKS.length - 1; i >= 0; i--) if (MOCKS[i].id !== only) MOCKS.splice(i, 1); }
   const tierClass = (t) => t === 'Recommend' ? 'tier-ship' : t === 'Decide' ? 'tier-decide' : t === 'Reject' ? 'tier-reject' : t === 'Baseline' ? 'tier-base' : '';

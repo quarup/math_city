@@ -12,20 +12,24 @@ open tools/city_mocks/city_alive.html       # 29 animation ideas with feasibilit
 open tools/city_mocks/walkers.html          # 31 pedestrian styles
 open tools/city_mocks/p02_walk.html         # the chosen citizen: walk + shoe comparison
 open tools/city_mocks/terrain_sky.html      # 23 ground / sky / frontier / first-minutes ideas (§11)
+open tools/city_mocks/ground_round2.html    # 18 round-two ideas: inside ground, edges on demand, haze only, Expand city (§11.3)
 ```
 
 - `engine.js` — grid, scene, terrain/road/building drawing, day/night tint,
   emissive-window mask, `Mover` (road-graph walker), cars, particles.
 - `mocks.js`, `mocks2.js` — the 29 idea mocks (A streets, B people, C sky,
   D time & light, E landmarks, F construction, G touch & idle).
-- `terrain.js`, `mocks_terrain.js` — the ground-and-sky round (city_builder.md
+- `terrain.js`, `mocks_common.js`, `mocks_terrain.js`, `mocks_terrain2.js` — the ground-and-sky rounds (city_builder.md
   §11): `WorldScene` (signed 4×4 land blocks on a 15×15-block grid, as
   `land_blocks.dart`), meadow / density / island ground styles, procedural
   decor, the haze band + sun / moon / stars / clouds / city glow, for-sale
   signs, survey stakes, hedge with gates, letter / bar / folder-bar HUD
   pieces, and the 23 mocks (T terrain, S sky, F frontier, N first minutes).
-  `terrain_sky.html?only=<id>&t=<seconds>` renders one mock pre-advanced
-  (used for headless screenshots).
+  `<page>.html?only=<id>&t=<seconds>` renders one mock pre-advanced
+  (used for headless screenshots). Round two adds `WorldScene.fits`,
+  the inside styles (`tended` / `faint` / `stripes` / `meadow`), street
+  decor, `drawBoundary` / `drawOwnedGrid` / `dimOutside`, price pills, plus
+  discs and the `drawActionBar` with the *Expand city* button.
 - `ped.js` — `drawPed(...)`, the parameterised citizen renderer of record,
   plus the 31 style presets. The Dart `CitizenPainter` is a translation of
   this file.

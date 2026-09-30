@@ -9,7 +9,7 @@
 
 ## Status
 
-- **Last updated:** 2026-09-30 (§11 *Ground and sky* mock round; D2 chosen as the day/night driver). Previously 2026-09-29 (§10 *Letters from Math City* designed and **implemented** the same day — see the note under §10.9). Previously 2026-06-14 (Phase-9 catalog completed — all 54 anchors wired + sprite-backed; `train_station` dropped, the rail can't be drawn coherently in 2:1 dimetric)
+- **Last updated:** 2026-09-30 (§11 *Ground and sky* mock rounds one and two; D2 chosen as the day/night driver). Previously 2026-09-29 (§10 *Letters from Math City* designed and **implemented** the same day — see the note under §10.9). Previously 2026-06-14 (Phase-9 catalog completed — all 54 anchors wired + sprite-backed; `train_station` dropped, the rail can't be drawn coherently in 2:1 dimetric)
 - **Phase:** Phase 8 — City Builder: Research & Rich Design. Content-authoring only, **no code changes**. Deliverable is this document; Phase 9 implements it.
 - **Drafting mode:** *fill pass complete (first draft)*. §1 (references), §2 (categories), §3 (full building specs — 54 anchors), §4 (beat catalog), §5 (asset checklist), and §7 (open questions) are drafted. §6 (implementation status) is auto-managed by [tools/city_builder/sync_implementation_status.py](tools/city_builder/sync_implementation_status.py); as of 2026-06-14 all 54 anchors are wired and sprite-backed. Three structure decisions are locked (2026-05-31): education (`school`/`high_school`) lives under `services`; `water` is a hard-gating service; the housing spine keeps all 7 rungs. **Still expects Phase-9 iteration** — costs and service ratios are designed-coherent placeholders, finalized by playtest.
 - **Framework:** extends the Phase-7 model — four categories, the service-ratio + variety-multiplier growth model, and the typed `UnlockRule` / `TriggerRule` gates. **Currency revised 2026-09-08:** the two-currency 🧱/🔬 design this document was drafted against was replaced by a single currency, **coins** (1 coin ≈ 1 expected second of study); §3's cost columns and §3.5 were re-denominated accordingly, and the research step is gone — a building whose unlock rule passes is bought straight away. See prd.md *Cosmetics System*.
@@ -1793,7 +1793,57 @@ a ~6-tile unowned margin around the owned bbox); the sky is a gradient
 behind the `GameWidget` plus a viewport-space haze component drawn after
 the board; nothing touches the domain layer or the schema.
 
-### 11.3 Open decisions (the user's)
+### 11.3 Round two (2026-09-30, later the same day)
+
+Feedback on round one: the meadow *outside* the town looked better than
+the checkerboard *inside*; T3 (density as distance) is liked, and the user
+is on the fence about drawing inside and outside differently at all —
+maybe the boundary only while placing or moving a building; T4's haze is
+liked but not the sun and clouds floating in it; T5 (island) is killed;
+F3's stakes are liked but should only show in an explicit *Expand city*
+mode (or when a building will not fit), where buyable land can be more
+obvious — and the for-sale signs are cheesy.
+
+Second page, eighteen mocks:
+[tools/city_mocks/ground_round2.html](tools/city_mocks/ground_round2.html)
+(published copy, private: https://claude.ai/code/artifact/e88be617-5e3b-4c31-ad1e-d2a90987fa70). Every mock uses T3 outside and the
+haze band with nothing in it.
+
+| # | Idea | Tier |
+|---|---|---|
+| R1 | One meadow: owned land drawn exactly like the countryside | Decide |
+| R2 | Tended ground: the meadow's grain, a shade greener, no wild things | **Recommend** |
+| R3 | Mown stripes at low contrast | Nice |
+| R4 | A faint checker, two percent apart | Nice |
+| R5 | Tended ground + street trees and flower beds at the kerb (hash-seeded, hide under buildings) | **Recommend** |
+| B1 | Placement mode: boundary (moving dashes), tile grid, dimmed outside; ghost red when it straddles the edge | **Recommend** |
+| B2 | Placement mode: boundary line only | Nice |
+| B3 | Placement mode: a grid halo that follows the ghost | Nice |
+| B4 | Move mode: lifting a building shows the same edges | **Recommend** |
+| H1 | Haze alone, daytime (30 / 42 / 55 %) | **Recommend** |
+| H2 | Haze alone through the eight-minute day (colour carries the hour) | **Recommend** |
+| H3 | Haze with stars in the band at night only | Decide |
+| E1 | *Expand city* button in the bar; stakes + string + a price pill per block (gold when affordable); outside the ring dims | **Recommend** |
+| E2 | Plus marker per block, price only once selected | Nice |
+| E3 | Breathing string, no marker | Nice |
+| E4 | Selecting a block previews it as tended ground | Nice |
+| E5 | No room → *Expand city* in the bar → the block that fits breathes with the park ghosted inside → buy (replaces N3 + F5) | **Recommend** |
+| E6 | Entering the mode pulls the camera back to frame the ring; leaving restores it | **Recommend** |
+
+Recommended set: **R5 + H1**, then **B1 + B4**, then **E1 + E6** with E5 as
+the no-room path, then **H2**. This supersedes round one's F1 / F2 / F5 /
+N3 (signs and the land letter) and T5.
+
+### 11.4 Open decisions (the user's)
+
+- **Inside at rest** — R5 (tended + street decor), R2 (tended), or R1
+  (no distinction at all)?
+- **Placement edges** — B1 (grid + boundary + dim) or B2 (line only)?
+- **Expand-mode marker** — E1 price pills, E2 plus discs, or E3 nothing?
+- **H3** — stars at night, or a strictly empty band?
+- **Haze band height** — 30 / 42 / 55 %.
+- Superseded from round one: N4 (gift deed) is moot if E5 is the path;
+  S5 parallax is moot without clouds; F7 is now E1's button.
 
 - **N4** — is the first block a gift / discounted, or full price (🪙 1200)?
 - **S5** — parallax clouds or a fully fixed sky.
