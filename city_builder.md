@@ -9,7 +9,7 @@
 
 ## Status
 
-- **Last updated:** 2026-09-29 (§10 *Letters from Math City* designed and **implemented** the same day — see the note under §10.9). Previously 2026-06-14 (Phase-9 catalog completed — all 54 anchors wired + sprite-backed; `train_station` dropped, the rail can't be drawn coherently in 2:1 dimetric)
+- **Last updated:** 2026-09-30 (§11 *Ground and sky* mock round; D2 chosen as the day/night driver). Previously 2026-09-29 (§10 *Letters from Math City* designed and **implemented** the same day — see the note under §10.9). Previously 2026-06-14 (Phase-9 catalog completed — all 54 anchors wired + sprite-backed; `train_station` dropped, the rail can't be drawn coherently in 2:1 dimetric)
 - **Phase:** Phase 8 — City Builder: Research & Rich Design. Content-authoring only, **no code changes**. Deliverable is this document; Phase 9 implements it.
 - **Drafting mode:** *fill pass complete (first draft)*. §1 (references), §2 (categories), §3 (full building specs — 54 anchors), §4 (beat catalog), §5 (asset checklist), and §7 (open questions) are drafted. §6 (implementation status) is auto-managed by [tools/city_builder/sync_implementation_status.py](tools/city_builder/sync_implementation_status.py); as of 2026-06-14 all 54 anchors are wired and sprite-backed. Three structure decisions are locked (2026-05-31): education (`school`/`high_school`) lives under `services`; `water` is a hard-gating service; the housing spine keeps all 7 rungs. **Still expects Phase-9 iteration** — costs and service ratios are designed-coherent placeholders, finalized by playtest.
 - **Framework:** extends the Phase-7 model — four categories, the service-ratio + variety-multiplier growth model, and the typed `UnlockRule` / `TriggerRule` gates. **Currency revised 2026-09-08:** the two-currency 🧱/🔬 design this document was drafted against was replaced by a single currency, **coins** (1 coin ≈ 1 expected second of study); §3's cost columns and §3.5 were re-denominated accordingly, and the research step is gone — a building whose unlock rule passes is bought straight away. See prd.md *Cosmetics System*.
@@ -1160,9 +1160,11 @@ once, then open the pages in a browser. Published copies (private):
   flick; the two diagonal views are not mirrors (the lit side would flip).
   Do **not** ask NB for people or walk frames — it cannot keep a sheet
   consistent.
-- **Day/night driver:** undecided between device clock (D1), ambient loop
-  (D2, ~8 min day) and play-driven (D3, each block advances the hour, one
-  persisted number). The rendering is identical; pick by feel.
+- **Day/night driver:** **D2, the ~8 min ambient loop (decided 2026-09-30,
+  see §11).** D1 (device clock) and D3 (play-driven, one persisted hour) were
+  the alternatives; the rendering is identical. The clock policy — frozen at
+  9:30 through chapter one, then 5 min day + 3 min night, paused under the
+  question screens — is §11's S4.
 - **Bespoke per-building animation:** a few landmarks only (§9.4).
 - **Tap reactions:** yes, but the board hit-tests moving things **only when
   nothing is picked up and no site is selected**; otherwise the tap goes to
@@ -1728,3 +1730,73 @@ with signed avatars for stadium-sized asks; sticker album of completed
 threads; the requester attending the opening as a walker; population shown
 as faces for the youngest; day/night; mayor's badges; the citizen walking up
 to knock; drag-from-card placement; a single *Build* button + sheet.
+
+## 11. Ground and sky (mocked 2026-09-30)
+
+The user's complaint: the board reads as *a green square in the middle with
+a cross of darker tiles*, the cross (the twelve purchasable blocks, painted
+pale from the first second) is visible during chapter one when the first
+block costs twenty minutes of maths, and the coming 8-minute day cycle
+needs a sky that an isometric fixed-angle board has nowhere to put. One
+brainstorm, then one mock page with every idea live on the real sprites:
+[tools/city_mocks/terrain_sky.html](tools/city_mocks/terrain_sky.html)
+(`python3 tools/city_mocks/build_sprites.py` first; published copy, private:
+[Math City Ground and Sky](https://claude.ai/code/artifact/a554fe87-2794-4688-8eea-aa247b58ae61)). Twenty-three mocks in four sections, each with
+effort / perf / tier; every one is code-drawn, no Nano Banana sheet.
+
+### 11.1 The mocks
+
+| # | Idea | Tier |
+|---|---|---|
+| T1 | Today: lawn square, pale cross, flat green (baseline) | — |
+| T2 | A clearing in the countryside: lawn inside, procedural meadow (tufts, flowers, bushes, rocks, trees) outside; frontier not drawn | **Recommend** |
+| T3 | Density as distance: meadow on rings 2–3, scrub, then forest; the price gradient reads as terrain | Nice |
+| T4 | The ground dissolves into sky over the top ~40 % of the viewport (screen-space haze band; sun, moon, stars, clouds live there) | **Recommend** |
+| T5 | Island: owned blocks as a plateau with cliff faces, water around, sandbank frontier, bought blocks rise | Reject |
+| T6 | Cloud shadows crossing meadow and town (the same clouds as the sky band) | Nice |
+| S1 | The sky never pans: viewport-fixed backdrop while the camera roams | **Recommend** |
+| S2 | The eight-minute day: sun / moon / stars on an arc, dusk and night tints, D4 windows | **Recommend** |
+| S3 | City glow: a warm halo over the city at night scaled by building count | Nice |
+| S4 | Clock policy: frozen at 9:30 through chapter one, then 5 min day + 3 min night, paused under questions | **Recommend** |
+| S5 | Parallax: clouds shift at ~a tenth of the pan | Decide |
+| F1 | Nothing until it matters: the frontier appears (signs popping in) with the land beat | **Recommend** |
+| F2 | Signposts, not washes: a constant-screen-size for-sale sign per block; tap → survey stakes + yellow wash + buy bar; lawn wipes across on purchase | **Recommend** |
+| F3 | Survey stakes only, meadow inside (better as the selected state than the resting one) | Nice |
+| F4 | A hedge around the town with two-tile gates where land is for sale | Nice |
+| F5 | One sign, beside the site that did not fit, with the park ghosted inside it | **Recommend** |
+| F6 | Prices on signs; gold + glint when affordable | Nice |
+| F7 | Buy-land mode: the frontier washes pale only inside a Land folder | Decide |
+| N1 | First sight: zoomed in on the mayor's office, no edge anywhere | **Recommend** |
+| N2 | A tighter pan clamp (owned + one tile) until the land beat | Nice |
+| N3 | The land letter: refused fit → letter → *Show me* → sign → hand taps → buy bar → lawn wipe → park built | **Recommend** |
+| N4 | The first deed is a gift: the neighbours have paid, the kid opens the gate | Decide |
+| N5 | The disclosure schedule as a stepper: chapter one / hand-over / land beat / first purchase | **Recommend** |
+
+### 11.2 Recommended build order
+
+1. **T2 + T4 + S1** — meadow beyond the lawn, ground dissolving into a
+   viewport-fixed sky. Removes the square, the cross and the flat backdrop
+   in one change and gives the day cycle somewhere to live.
+2. **S2 + S4** — the eight-minute day with the chapter-one freeze.
+3. **F1 + F2 + F5** — no frontier until the land beat, then one sign, then
+   a sign per block after the first purchase; F3's stakes as the selected
+   state.
+4. **N3** — the land letter (§10.4 item 6 made concrete), with the animated
+   hand on the sign and on Buy.
+5. **N1 + N2 + N5** — start zoom, the tighter clamp, and the disclosure
+   flags on the chapter-one integer.
+6. Then, as taste allows: T3, S3, T6, F4, F6, F7 as the home of a price list.
+
+Implementation notes: the meadow and the signs are branches in
+`CityBoardComponent`'s terrain and overlay passes (the `LandWindow` needs
+a ~6-tile unowned margin around the owned bbox); the sky is a gradient
+behind the `GameWidget` plus a viewport-space haze component drawn after
+the board; nothing touches the domain layer or the schema.
+
+### 11.3 Open decisions (the user's)
+
+- **N4** — is the first block a gift / discounted, or full price (🪙 1200)?
+- **S5** — parallax clouds or a fully fixed sky.
+- **F7** — a Land folder in the bottom bar at all, and if so, when.
+- **Haze band height** — T4 offers 30 / 42 / 55 %.
+

@@ -7,7 +7,7 @@ const FOOT = {
   amusement_park_v1: [6, 6], fountain_plaza_v1: [2, 2], power_plant_v1: [2, 2],
   fire_station_v1: [2, 2], observation_tower_v1: [2, 2], duplex_v1: [2, 1],
   playground_v1: [1, 2], hospital_v1: [3, 3], bakery_v1: [1, 2], farmhouse_v1: [2, 2],
-  police_station_v1: [2, 2],
+  police_station_v1: [2, 2], mayors_office_v1: [2, 2], school_v1: [2, 3], single_home_v1: [1, 1],
 };
 // Grid direction -> screen vector (E = col+1 exits lower-right, S = row+1 lower-left).
 const DIRV = [[HALF_W, HALF_H], [-HALF_W, HALF_H], [-HALF_W, -HALF_H], [HALF_W, -HALF_H]];
@@ -88,13 +88,17 @@ function diamond(ctx, cx, cy, lift = 0) {
   ctx.beginPath(); ctx.moveTo(cx, cy - HALF_H - lift); ctx.lineTo(cx + HALF_W, cy - lift);
   ctx.lineTo(cx, cy + HALF_H - lift); ctx.lineTo(cx - HALF_W, cy - lift); ctx.closePath();
 }
-function drawTerrain(ctx, sc, opts = {}) {
+function drawTerrain(ctx, sc, opts = {}) { drawLawn(ctx, sc); drawPadsRoads(ctx, sc); }
+function drawLawn(ctx, sc) {
   const g = sc.grid;
   for (let c = 0; c < g.cols; c++) for (let r = 0; r < g.rows; r++) {
     const [cx, cy] = g.center(c, r); diamond(ctx, cx, cy);
     ctx.fillStyle = (c + r) % 2 === 0 ? '#7CB342' : '#689F38'; ctx.fill();
     ctx.strokeStyle = 'rgba(0,0,0,.2)'; ctx.lineWidth = 1; ctx.stroke();
   }
+}
+function drawPadsRoads(ctx, sc) {
+  const g = sc.grid;
   for (const s of sc.sites) for (let c = s.col; c < s.col + s.w; c++) for (let r = s.row; r < s.row + s.h; r++) {
     const [cx, cy] = g.center(c, r); diamond(ctx, cx, cy);
     ctx.fillStyle = (c + r) % 2 === 0 ? '#A1887F' : '#8D6E63'; ctx.fill(); ctx.strokeStyle = 'rgba(0,0,0,.2)'; ctx.stroke();
@@ -249,14 +253,14 @@ function mountMock(mock, canvas) {
   const W = canvas.clientWidth, H = canvas.clientHeight, dpr = Math.min(2, window.devicePixelRatio || 1);
   canvas.width = W * dpr; canvas.height = H * dpr;
   const ctx = canvas.getContext('2d');
-  const sc = new Scene(mock.scene); const st = { sc, t: 0, hour: mock.hourStart ?? 12, parts: new Particles(), W, H, reduce: matchMedia('(prefers-reduced-motion: reduce)').matches };
+  const sc = mock.scene instanceof Scene ? mock.scene : new Scene(mock.scene); const st = { sc, t: 0, hour: mock.hourStart ?? 12, parts: new Particles(), W, H, reduce: matchMedia('(prefers-reduced-motion: reduce)').matches };
   const view = mock.view || fitView(sc, W, H);
   st.view = view; mock.setup?.(st);
   const toWorld = (px, py) => [(px - W / 2) / view.zoom + view.cx, (py - H / 2) / view.zoom + view.cy];
   canvas.addEventListener('pointerdown', (e) => { const r = canvas.getBoundingClientRect(); const [wx, wy] = toWorld(e.clientX - r.left, e.clientY - r.top); mock.tap?.(st, wx, wy, e); });
   let last = performance.now();
   function frame(now) {
-    const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    const dt = Math.max(0, Math.min(0.05, (now - last) / 1000)); last = now;
     if (!st.reduce || st.t === 0) { st.t += dt; mock.update?.(st, dt); st.parts.step(dt); }
     const tod = timeOfDay(mock.hour ? mock.hour(st) : st.hour); st.tod = tod;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -265,7 +269,7 @@ function mountMock(mock, canvas) {
     mock.sky?.(ctx, st, W, H);
     ctx.translate(W / 2, H / 2); ctx.scale(view.zoom, view.zoom); ctx.translate(-view.cx, -view.cy);
     sc._lit = [];
-    drawTerrain(ctx, sc); mock.ground?.(ctx, st);
+    (mock.terrain || drawTerrain)(ctx, sc, st); mock.ground?.(ctx, st);
     const items = sc.buildings.map((b) => ({ depth: sc.depthOf(b), draw: (c) => drawBuilding(c, sc, b, tod.night, b.flicker ?? 1) }));
     for (const s of sc.sites) items.push({ depth: s.col + s.row + (s.w + s.h) / 2 - 1, draw: (c) => { const k = drawSite(c, sc, s); s.corners = k; s.drawInside?.(c, st, k); } });
     for (const e of (mock.entities?.(st) || [])) items.push(e);

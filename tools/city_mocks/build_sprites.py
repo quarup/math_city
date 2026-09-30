@@ -20,7 +20,7 @@ NAMES = [
     "apartment_v1", "park_v1", "coffee_shop_v1", "high_rise_v1", "amusement_park_v1",
     "fountain_plaza_v1", "power_plant_v1", "fire_station_v1", "observation_tower_v1",
     "duplex_v1", "playground_v1", "hospital_v1", "bakery_v1", "farmhouse_v1",
-    "police_station_v1", "road_cross", "road_straight", "road_curve_lr", "road_curve_ud",
+    "police_station_v1", "mayors_office_v1", "school_v1", "single_home_v1", "road_cross", "road_straight", "road_curve_lr", "road_curve_ud",
     "road_deadend", "road_tee",
 ]
 

@@ -1,0 +1,151 @@
+<title>Math City Ground and Sky</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Nunito:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+:root {
+  --bg: #EEF3F1; --surface: #FFFFFF; --ink: #16302B; --muted: #587169; --line: #D3DEDA;
+  --accent: #0E6E62; --accent-ink: #FFFFFF; --gold: #B8860B; --gold-soft: #FBF1C7; --sky: #5DB7E8;
+  --chip: #E4ECE9; --good: #2E7D32; --warn: #B26A00; --hot: #C62828; --canvas-bg: #101c2f;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0F1917; --surface: #172220; --ink: #E6EEEB; --muted: #93A8A2; --line: #263834;
+  --accent: #5CC9B5; --accent-ink: #0F1917; --gold: #F0CC30; --gold-soft: #3A3210; --chip: #22302D; --good: #6FCF7A; --warn: #F2B134; --hot: #FF7A70;
+} }
+:root[data-theme="dark"] {
+  --bg: #0F1917; --surface: #172220; --ink: #E6EEEB; --muted: #93A8A2; --line: #263834;
+  --accent: #5CC9B5; --accent-ink: #0F1917; --gold: #F0CC30; --gold-soft: #3A3210; --chip: #22302D; --good: #6FCF7A; --warn: #F2B134; --hot: #FF7A70;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 "Nunito", "Segoe UI", system-ui, sans-serif; }
+a { color: var(--accent); }
+code { font: 0.85em "JetBrains Mono", ui-monospace, Menlo, monospace; background: var(--chip); padding: 1px 5px; border-radius: 4px; }
+.wrap { max-width: 1180px; margin: 0 auto; padding: 40px 24px 80px; }
+header { display: grid; grid-template-columns: 1.3fr 1fr; gap: 40px; align-items: end; padding-bottom: 28px; border-bottom: 2px solid var(--ink); margin-bottom: 8px; }
+h1 { font: 700 clamp(40px, 6vw, 68px)/0.95 "Bricolage Grotesque", "Nunito", sans-serif; letter-spacing: -0.02em; margin: 0 0 14px; text-wrap: balance; }
+h1 em { font-style: normal; color: var(--accent); }
+.lede { font-size: 18px; max-width: 34em; margin: 0; color: var(--ink); }
+.legend { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font-size: 14px; color: var(--muted); align-content: end; }
+.legend b { color: var(--ink); font-weight: 700; white-space: nowrap; }
+nav.toc { display: flex; flex-wrap: wrap; gap: 8px 18px; padding: 16px 0 8px; font-size: 14px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+nav.toc a { text-decoration: none; color: var(--muted); }
+nav.toc a:hover, nav.toc a:focus-visible { color: var(--accent); outline: none; }
+h2 { font: 700 30px/1.1 "Bricolage Grotesque", "Nunito", sans-serif; letter-spacing: -0.01em; margin: 56px 0 6px; display: flex; align-items: baseline; gap: 14px; }
+h2 .count { font: 600 14px "JetBrains Mono", monospace; color: var(--muted); letter-spacing: 0.06em; }
+.section-note { margin: 0 0 22px; color: var(--muted); max-width: 60em; }
+article.mock { display: grid; grid-template-columns: minmax(0, 620px) minmax(280px, 1fr); gap: 0 32px; padding: 26px 0; border-top: 1px solid var(--line); }
+article.mock:first-of-type { border-top: 0; }
+.stage { position: relative; }
+.stage canvas { display: block; width: 100%; aspect-ratio: 16 / 10; border-radius: 10px; background: var(--canvas-bg); touch-action: manipulation; cursor: pointer; }
+.stage .code { position: absolute; left: 10px; bottom: 10px; font: 600 12px "JetBrains Mono", monospace; letter-spacing: 0.08em; color: #fff; background: rgba(16,25,23,.72); padding: 3px 8px; border-radius: 6px; }
+.controls { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.controls button { font: 700 13px "Nunito", sans-serif; color: var(--ink); background: var(--surface); border: 1.5px solid var(--line); border-radius: 999px; padding: 6px 14px; cursor: pointer; }
+.controls button:hover { border-color: var(--accent); color: var(--accent); }
+.controls button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.notes h3 { font: 700 22px/1.2 "Bricolage Grotesque", "Nunito", sans-serif; margin: 0 0 10px; text-wrap: balance; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 14px; }
+.chip { font: 700 11.5px/1 "Nunito", sans-serif; letter-spacing: 0.05em; text-transform: uppercase; padding: 6px 9px; border-radius: 6px; background: var(--chip); color: var(--ink); }
+.chip.tier-ship { background: var(--accent); color: var(--accent-ink); }
+.chip.tier-decide { background: var(--gold-soft); color: var(--gold); }
+.chip.tier-reject { background: color-mix(in srgb, var(--hot) 14%, transparent); color: var(--hot); }
+.chip.tier-base { border: 1px dashed var(--line); background: transparent; color: var(--muted); }
+.controls label.range { display: inline-flex; align-items: center; gap: 8px; font: 700 13px "Nunito", sans-serif; color: var(--ink); background: var(--surface); border: 1.5px solid var(--line); border-radius: 999px; padding: 4px 14px; }
+.controls input[type=range] { width: 130px; accent-color: var(--accent); }
+.chip.eff-S { color: var(--good); } .chip.eff-M { color: var(--warn); } .chip.eff-L { color: var(--hot); }
+.chip.art { border: 1px solid var(--line); background: transparent; color: var(--muted); }
+.notes p { margin: 0; font-size: 15.5px; max-width: 46em; }
+.spec { margin-top: 12px; padding: 10px 12px; border-left: 3px solid var(--gold); background: var(--surface); font-size: 13.5px; color: var(--muted); border-radius: 0 8px 8px 0; }
+.spec b { color: var(--gold); font: 700 11px "JetBrains Mono", monospace; letter-spacing: 0.08em; display: block; margin-bottom: 4px; }
+table.summary { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 18px; }
+table.summary th { text-align: left; font: 700 11.5px "Nunito", sans-serif; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); padding: 8px 10px; border-bottom: 2px solid var(--ink); }
+table.summary td { padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.summary td.id { font: 600 12px "JetBrains Mono", monospace; color: var(--muted); }
+table.summary tr.ship td { background: color-mix(in srgb, var(--accent) 8%, transparent); }
+.tablewrap { overflow-x: auto; }
+.plan { margin-top: 48px; padding: 24px 28px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; }
+.plan h2 { margin-top: 0; }
+.plan ol { padding-left: 22px; margin: 0; } .plan li { margin: 6px 0; } .plan li b { color: var(--accent); }
+footer { margin-top: 48px; color: var(--muted); font-size: 13.5px; }
+@media (max-width: 880px) { header { grid-template-columns: 1fr; } article.mock { grid-template-columns: 1fr; gap: 18px; } }
+@media (prefers-reduced-motion: reduce) { .stage canvas { cursor: default; } }
+body.only header, body.only nav, body.only .notes, body.only .plan, body.only footer, body.only h2, body.only .section-note { display: none; }
+body.only .wrap { padding: 12px; max-width: none; } body.only article.mock { grid-template-columns: 1fr; border: 0; padding: 0; }
+</style>
+<div class="wrap">
+<header>
+  <div>
+    <h1>Math City <em>Ground and Sky</em></h1>
+    <p class="lede">Twenty-three mocks for how the land under the city and the sky above it should look, how purchasable land announces itself without a pale cross, and what a brand-new player sees in their first ten minutes. Live on the real sprites at the game's 64 px tile; every idea from the brainstorm is here, including the ones I would not build.</p>
+  </div>
+  <div class="legend">
+    <b>Art</b><span>every mock on this page is code-drawn in Flame canvas; no Nano Banana sheet is needed for any of it.</span>
+    <b>Effort</b><span>S under half a day · M one or two sessions.</span>
+    <b>Perf</b><span>Free is a few draw calls · Light is per-tile or per-entity work worth measuring once on a low-end phone.</span>
+    <b>Tier</b><span>my recommendation: <em>Recommend</em>, <em>Nice</em> (after the recommended set), <em>Decide</em> where it is a taste or economy call for you, <em>Reject</em> shown so it is not re-derived.</span>
+  </div>
+</header>
+<nav class="toc" id="toc"></nav>
+<div id="sections"></div>
+
+<section class="plan">
+  <h2>What I would build, in order</h2>
+  <ol>
+    <li><b>T2 + T4 + S1</b> — meadow beyond the lawn, the ground dissolving into a viewport-fixed sky. Removes the green square, the cross and the flat backdrop in one change, and gives the day cycle somewhere to live.</li>
+    <li><b>S2 + S4</b> — the eight-minute day with the clock frozen at 9:30 through chapter one, five minutes of day and three of night after the hand-over, paused under the question screens.</li>
+    <li><b>F1 + F2 + F5</b> — no frontier until the land beat; then one sign beside the site that did not fit; after the first purchase, a sign per block. Survey stakes (F3) become the selected state.</li>
+    <li><b>N3</b> — the land letter, with the animated hand on the sign and on Buy. Whether the first deed is a gift (N4) is your call.</li>
+    <li><b>N1 + N2 + N5</b> — start zoom, the tighter clamp, and the disclosure flags on the player row.</li>
+    <li><b>Then, as taste allows:</b> T3 density rings, S3 city glow, T6 cloud shadows, F4 the hedge, F6 prices on signs, F7 a Land folder as the home of the price list.</li>
+  </ol>
+  <p style="margin:14px 0 0;color:var(--muted);font-size:14px">Everything lives in <code>lib/game/city/</code> and <code>lib/presentation/city/</code>: the meadow and signs are branches in <code>CityBoardComponent</code>'s terrain and overlay passes, the sky is a gradient behind the <code>GameWidget</code> plus a viewport-space haze component, and the schedule is a handful of flags on the chapter-one integer that already exists. No schema change except the clock, if D3 is ever chosen over the ambient loop.</p>
+  <div class="tablewrap"><table class="summary" id="summary"></table></div>
+</section>
+<footer>Sprites are the shipped <code>assets/buildings/*.png</code>; the world is the signed 4×4 block model of <code>land_blocks.dart</code> on a 15×15-block grid. Canvases pause when scrolled out of view. Companion to <a href="city_alive.html">Math City Alive</a>.</footer>
+</div>
+<script src="sprites.js"></script>
+<script src="engine.js"></script>
+<script src="terrain.js"></script>
+<script src="mocks_terrain.js"></script>
+<script>
+(function () {
+  const SECTION_NOTES = {
+    'Terrain': 'How the ground plane renders: what owned land, unowned land and the far distance look like. T1 is the current build for comparison.',
+    'Sky': 'Where the sky lives on a fixed-angle isometric board, and what the eight-minute day does with it.',
+    'Frontier': 'How purchasable blocks announce themselves. Every mock here is tappable: tap a block to select it, then Buy.',
+    'First minutes': 'What a brand-new player sees, and when each affordance is allowed to appear.',
+  };
+  const order = ['Terrain', 'Sky', 'Frontier', 'First minutes'];
+  const root = document.getElementById('sections'), toc = document.getElementById('toc');
+  // ?only=<id>&t=<seconds> renders one mock, pre-advanced, for screenshots.
+  const qs = new URLSearchParams(location.search); const only = qs.get('only');
+  if (only) { document.body.classList.add('only'); for (let i = MOCKS.length - 1; i >= 0; i--) if (MOCKS[i].id !== only) MOCKS.splice(i, 1); }
+  const tierClass = (t) => t === 'Recommend' ? 'tier-ship' : t === 'Decide' ? 'tier-decide' : t === 'Reject' ? 'tier-reject' : t === 'Baseline' ? 'tier-base' : '';
+  for (const sec of order) {
+    const items = MOCKS.filter((m) => m.section === sec); if (!items.length) continue;
+    const sid = 'sec-' + sec.replace(/\W+/g, '-').toLowerCase();
+    const h = document.createElement('h2'); h.id = sid; h.innerHTML = `${sec} <span class="count">${items.length} mock${items.length > 1 ? 's' : ''}</span>`; root.appendChild(h);
+    const p = document.createElement('p'); p.className = 'section-note'; p.textContent = SECTION_NOTES[sec]; root.appendChild(p);
+    const a = document.createElement('a'); a.href = '#' + sid; a.textContent = sec; toc.appendChild(a);
+    for (const m of items) {
+      const art = document.createElement('article'); art.className = 'mock'; art.id = m.id;
+      art.innerHTML = `<div><div class="stage"><canvas aria-label="${m.title}"></canvas><span class="code">${m.id.toUpperCase()}</span></div><div class="controls"></div></div>
+        <div class="notes"><h3>${m.id.toUpperCase()} · ${m.title}</h3>
+        <div class="chips"><span class="chip ${tierClass(m.tier)}">${m.tier}</span><span class="chip eff-${m.effort}">Effort ${m.effort}</span><span class="chip">Perf ${m.perf}</span><span class="chip art">${m.art}</span></div>
+        <p>${m.notes}</p></div>`;
+      root.appendChild(art);
+      m._el = art;
+    }
+  }
+  const tbody = document.getElementById('summary');
+  tbody.innerHTML = '<tr><th>#</th><th>Idea</th><th>Effort</th><th>Perf</th><th>Tier</th></tr>' + MOCKS.map((m) => `<tr class="${m.tier === 'Recommend' ? 'ship' : ''}"><td class="id"><a href="#${m.id}">${m.id.toUpperCase()}</a></td><td>${m.title}</td><td>${m.effort}</td><td>${m.perf}</td><td>${m.tier}</td></tr>`).join('');
+  loadSprites(() => {
+    for (const m of MOCKS) {
+      const canvas = m._el.querySelector('canvas'); const st = mountMock(m, canvas);
+      if (qs.get('t')) { const target = parseFloat(qs.get('t')); const step = 1 / 30; while (st.t < target) { st.t += step; m.update?.(st, step); st.parts.step(step); } }
+      const ctr = m._el.querySelector('.controls');
+      for (const c of (m.controls || [])) {
+        if (c.range) { const l = document.createElement('label'); l.className = 'range'; const [min, max, step] = c.range; l.innerHTML = `${c.label} <input type="range" min="${min}" max="${max}" step="${step}" value="${c.get(st)}">`; const inp = l.querySelector('input'); inp.addEventListener('input', () => c.set(st, parseFloat(inp.value))); ctr.appendChild(l); continue; }
+        const b = document.createElement('button'); b.textContent = c.label; b.addEventListener('click', () => c.run(st)); ctr.appendChild(b);
+      }
+    }
+  });
+})();
+</script>
