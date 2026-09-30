@@ -8,6 +8,7 @@ import 'package:flutter/services.dart' show AssetManifest, rootBundle;
 import 'package:math_city/domain/avatar/adventurer_config.dart';
 import 'package:math_city/domain/city/city_map_registry.dart';
 import 'package:math_city/domain/city/land_blocks.dart';
+import 'package:math_city/domain/city/upgrade_ladders.dart';
 import 'package:math_city/domain/concepts/concept.dart' as dom;
 import 'package:math_city/domain/concepts/concept_registry.dart' as dom;
 import 'package:math_city/domain/questions/dataset_question.dart';
@@ -624,20 +625,18 @@ class AppDatabase extends _$AppDatabase {
   static const kMayorsOfficeTile = (1, 1);
 
   /// Places the mayor's office at [kMayorsOfficeTile] unless the city already
-  /// has one. Idempotent, so it also repairs a city created before the
+  /// has one — or has grown it into a town hall or city hall, which stand in
+  /// for it. Idempotent, so it also repairs a city created before the
   /// office was seeded at creation.
   Future<void> placeMayorsOffice({
     required int cityId,
     required int playerId,
   }) async {
-    final existing =
-        await (select(buildingPlacements)..where(
-              (t) =>
-                  t.cityId.equals(cityId) &
-                  t.buildingTypeId.equals('mayors_office'),
-            ))
-            .get();
-    if (existing.isNotEmpty) return;
+    final placed = await placementsForCity(cityId);
+    final hasCivicCore = placedWithLadderAncestors(
+      placed.map((p) => p.buildingTypeId),
+    ).contains('mayors_office');
+    if (hasCivicCore) return;
     await placeBuilding(
       cityId: cityId,
       playerId: playerId,

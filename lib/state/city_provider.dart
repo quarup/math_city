@@ -849,7 +849,11 @@ class CityActions {
     final db = _ref.read(appDatabaseProvider);
     final city = await db.cityForPlayer(playerId);
     final before = await db.placementsForCity(city.id);
-    if (before.any((p) => p.buildingTypeId == 'mayors_office')) return;
+    // A town hall or city hall is the office, grown (ladder ancestors).
+    final hasCivicCore = placedWithLadderAncestors(
+      before.map((p) => p.buildingTypeId),
+    ).contains('mayors_office');
+    if (hasCivicCore) return;
     await db.placeMayorsOffice(cityId: city.id, playerId: playerId);
     await _afterCityChange();
   }

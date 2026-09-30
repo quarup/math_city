@@ -412,5 +412,28 @@ void main() {
       await container.read(cityActionsProvider).ensureMayorsOffice();
       expect((await db.placementsForCity(city.id)).length, 1);
     });
+
+    test('an office grown into a town hall is never re-seeded', () async {
+      final (db, pid, container) = await _setup();
+      addTearDown(container.dispose);
+      final city = await db.cityForPlayer(pid);
+      final office = (await db.placementsForCity(city.id)).single;
+      final siteId = await db.startBuildingSite(
+        cityId: city.id,
+        playerId: pid,
+        buildingTypeId: 'town_hall',
+        gridX: 1,
+        gridY: 1,
+        upgradesFromPlacementId: office.id,
+      );
+      await db.openSite(siteId, playerId: pid);
+      // The next city load repairs nothing: the town hall is the office.
+      await container.read(cityActionsProvider).ensureMayorsOffice();
+      await db.placeMayorsOffice(cityId: city.id, playerId: pid);
+      expect(
+        (await db.placementsForCity(city.id)).map((p) => p.buildingTypeId),
+        ['town_hall'],
+      );
+    });
   });
 }
