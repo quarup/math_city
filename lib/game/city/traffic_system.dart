@@ -97,7 +97,12 @@ class TrafficSystem {
     }
   }
 
-  void update(double dt) {
+  /// Steps every car. [walkers] are the pedestrians' tile positions this
+  /// frame: a car holds for one stepping across its path.
+  void update(
+    double dt, {
+    Iterable<({double col, double row})> walkers = const [],
+  }) {
     if (_roadList.isEmpty) return;
     for (final v in cars) {
       stepVehicle(
@@ -105,7 +110,7 @@ class TrafficSystem {
         dt,
         isRoad: _isRoad,
         random: _random,
-        blocked: vehicleBlocked(v, cars),
+        blocked: vehicleBlocked(v, cars) || vehicleBlockedByWalker(v, walkers),
       );
     }
   }

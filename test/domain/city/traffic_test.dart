@@ -166,7 +166,8 @@ void main() {
         blocked: true,
       );
       expect(v.t, 0);
-      for (var i = 0; i < 10; i++) {
+      // Past kMaxHold (6 s) the car drives on anyway.
+      for (var i = 0; i < 14; i++) {
         stepVehicle(
           v,
           0.5,
@@ -198,8 +199,14 @@ void main() {
 
     test('a car far ahead does not block', () {
       final me = at(0.1);
-      final ahead = at(0.1, col: 1);
+      final ahead = at(0.3, col: 1);
       expect(vehicleBlocked(me, [me, ahead]), isFalse);
+    });
+
+    test('a car within a tile ahead blocks — bumpers never touch', () {
+      final me = at(0.3);
+      final ahead = at(0.1, col: 1);
+      expect(vehicleBlocked(me, [me, ahead]), isTrue);
     });
 
     test('oncoming traffic on the other lane never blocks', () {
@@ -213,6 +220,40 @@ void main() {
         t: 0.4,
       );
       expect(vehicleBlocked(me, [me, oncoming]), isFalse);
+    });
+  });
+
+  group('vehicleBlockedByWalker', () {
+    Vehicle at(double t) =>
+        Vehicle(col: 0, row: 0, dir: 0, speed: 1, kind: 'hatchback', t: t);
+
+    test('a walker stepping across the lane just ahead blocks', () {
+      final me = at(0.2);
+      final pos = vehiclePosition(me);
+      final (uc, ur) = (1, 0); // dir 0 heads +col
+      final walker = (col: pos.col + 0.4 * uc, row: pos.row + 0.4 * ur);
+      expect(vehicleBlockedByWalker(me, [walker]), isTrue);
+    });
+
+    test('a walker on the sidewalk beside the lane does not block', () {
+      final me = at(0.2);
+      final pos = vehiclePosition(me);
+      // The sidewalk band sits ~0.4 tiles to the side of the lane.
+      final beside = (col: pos.col + 0.3, row: pos.row + 0.45);
+      expect(vehicleBlockedByWalker(me, [beside]), isFalse);
+    });
+
+    test('a walker behind or far ahead does not block', () {
+      final me = at(0.5);
+      final pos = vehiclePosition(me);
+      expect(
+        vehicleBlockedByWalker(me, [(col: pos.col - 0.3, row: pos.row)]),
+        isFalse,
+      );
+      expect(
+        vehicleBlockedByWalker(me, [(col: pos.col + 1.5, row: pos.row)]),
+        isFalse,
+      );
     });
   });
 }

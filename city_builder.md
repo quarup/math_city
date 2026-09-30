@@ -1349,6 +1349,15 @@ zero consistency risk. Not built yet.
 
 ---
 
+**Spacing (2026-09-30).** A car holds while another sits within one tile
+ahead in its lane (`kFollowGap` 1.0, side tolerance 0.2 so a car part-way
+round a bend still counts) — a car is about half a tile long, so a full
+tile leaves clear road between them instead of bumpers touching — and
+while a walker is within 0.7 tiles ahead and 0.3 to the side
+(`vehicleBlockedByWalker`): pedestrians crossing a side street's mouth
+have right of way. A held car drives on anyway after 6 s so a packed ring
+never freezes.
+
 ## 10. Letters from Math City (designed 2026-09-28 / 29)
 
 The story-delivery and guidance redesign. Brainstormed as ~50 ideas across

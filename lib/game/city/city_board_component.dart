@@ -3,6 +3,7 @@ import 'package:flame/events.dart';
 import 'package:flame/text.dart';
 import 'package:flutter/painting.dart';
 import 'package:math_city/domain/city/mover_depth.dart';
+import 'package:math_city/domain/city/pedestrian_walk.dart';
 import 'package:math_city/domain/city/road_sprites.dart';
 import 'package:math_city/domain/city/street_life.dart';
 import 'package:math_city/game/city/iso_grid.dart';
@@ -236,7 +237,15 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
   void update(double dt) {
     super.update(dt);
     pedestrians.update(dt);
-    traffic.update(dt);
+    // Cars yield to walkers crossing their path (a side street's mouth).
+    traffic.update(
+      dt,
+      walkers: [
+        for (final p in pedestrians.people)
+          if (pedestrianPosition(p) case final pos)
+            (col: pos.col, row: pos.row),
+      ],
+    );
   }
 
   @override

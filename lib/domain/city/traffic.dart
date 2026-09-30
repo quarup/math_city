@@ -32,13 +32,22 @@ const double _deadEndBack = 0.2;
 const int _arcSegments = 8;
 
 /// A car ahead within this many tiles (measured along the heading) and
-/// within [_laneTolerance] to the side makes the follower hold.
-const double kFollowGap = 0.62;
-const double _laneTolerance = 0.12;
+/// within [_laneTolerance] to the side makes the follower hold. A car is
+/// about half a tile long, so a full tile leaves clear road between them
+/// rather than bumpers touching; the side tolerance is wide enough that a
+/// car part-way round a bend still counts.
+const double kFollowGap = 1;
+const double _laneTolerance = 0.2;
+
+/// A walker on the road within this many tiles ahead of a car (and within
+/// [_walkerTolerance] to the side) makes the car hold: pedestrians crossing
+/// a side street's mouth have right of way.
+const double kWalkerGap = 0.7;
+const double _walkerTolerance = 0.3;
 
 /// A blocked car waits at most this long before driving on anyway, so a
 /// packed ring can never freeze for good.
-const double kMaxHold = 4;
+const double kMaxHold = 6;
 
 /// Seconds a heading change cross-fades over (game layer reads
 /// [Vehicle.fade] against this).
@@ -282,6 +291,31 @@ bool vehicleBlocked(Vehicle v, Iterable<Vehicle> others) {
     final ahead = dc * fc + dr * fr;
     final side = (dc * fr - dr * fc).abs();
     if (ahead > 0.05 && ahead < kFollowGap && side < _laneTolerance) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/// Whether [v] should hold for a walker just ahead: any of [walkers] (tile
+/// positions) within [kWalkerGap] along the heading and [_walkerTolerance]
+/// to the side. Sidewalk walkers beside the lane are outside the
+/// tolerance; only one stepping across the car's path counts.
+bool vehicleBlockedByWalker(
+  Vehicle v,
+  Iterable<({double col, double row})> walkers,
+) {
+  final pos = vehiclePosition(v);
+  final (uc, ur) = _headingTileVector(pos.heading);
+  final ul = math.sqrt((uc * uc + ur * ur).toDouble());
+  final fc = uc / ul;
+  final fr = ur / ul;
+  for (final w in walkers) {
+    final dc = w.col - pos.col;
+    final dr = w.row - pos.row;
+    final ahead = dc * fc + dr * fr;
+    final side = (dc * fr - dr * fc).abs();
+    if (ahead > 0 && ahead < kWalkerGap && side < _walkerTolerance) {
       return true;
     }
   }
