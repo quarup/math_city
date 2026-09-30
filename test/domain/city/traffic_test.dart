@@ -238,9 +238,26 @@ void main() {
     test('a walker on the sidewalk beside the lane does not block', () {
       final me = at(0.2);
       final pos = vehiclePosition(me);
-      // The sidewalk band sits ~0.4 tiles to the side of the lane.
-      final beside = (col: pos.col + 0.3, row: pos.row + 0.45);
-      expect(vehicleBlockedByWalker(me, [beside]), isFalse);
+      // The near sidewalk band runs 0.405 from the tile centre, the lane
+      // 0.12: a walker there is 0.285 to the side of the car. Neither
+      // sidewalk may hold the car, however close ahead the walker is.
+      for (final side in [0.285, -0.525]) {
+        for (final ahead in [0.1, 0.3, 0.6]) {
+          final beside = (col: pos.col + ahead, row: pos.row + side);
+          expect(
+            vehicleBlockedByWalker(me, [beside]),
+            isFalse,
+            reason: 'ahead $ahead side $side',
+          );
+        }
+      }
+    });
+
+    test('a walker part-way across the lane blocks', () {
+      final me = at(0.2);
+      final pos = vehiclePosition(me);
+      final crossing = (col: pos.col + 0.35, row: pos.row + 0.1);
+      expect(vehicleBlockedByWalker(me, [crossing]), isTrue);
     });
 
     test('a walker behind or far ahead does not block', () {

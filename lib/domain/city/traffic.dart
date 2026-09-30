@@ -41,9 +41,12 @@ const double _laneTolerance = 0.2;
 
 /// A walker on the road within this many tiles ahead of a car (and within
 /// [_walkerTolerance] to the side) makes the car hold: pedestrians crossing
-/// a side street's mouth have right of way.
+/// a side street's mouth have right of way. The rectangle is the lane
+/// itself: the sidewalk band runs 0.405 tiles from the tile centre and the
+/// lane 0.12, so a walker on the near sidewalk is 0.285 to the side and
+/// must never count — only one that has stepped onto the asphalt does.
 const double kWalkerGap = 0.7;
-const double _walkerTolerance = 0.3;
+const double _walkerTolerance = 0.16;
 
 /// A blocked car waits at most this long before driving on anyway, so a
 /// packed ring can never freeze for good.

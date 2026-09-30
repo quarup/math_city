@@ -1353,7 +1353,9 @@ zero consistency risk. Not built yet.
 ahead in its lane (`kFollowGap` 1.0, side tolerance 0.2 so a car part-way
 round a bend still counts) — a car is about half a tile long, so a full
 tile leaves clear road between them instead of bumpers touching — and
-while a walker is within 0.7 tiles ahead and 0.3 to the side
+while a walker is within 0.7 tiles ahead and 0.16 to the side — the lane
+itself, so a walker on the near sidewalk (0.285 to the side) never
+counts, only one that has stepped onto the asphalt
 (`vehicleBlockedByWalker`): pedestrians crossing a side street's mouth
 have right of way. A held car drives on anyway after 6 s so a packed ring
 never freezes.
