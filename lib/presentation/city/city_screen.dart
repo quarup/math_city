@@ -913,6 +913,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     );
     if (spot == null) {
       _toast('No room for ${type.name} there');
+      _flashRejected(type, col, row);
       return;
     }
     unawaited(
@@ -947,6 +948,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     );
     if (spot == null) {
       _toast('No room for ${type.name} there');
+      _flashRejected(type, col, row);
       return;
     }
     unawaited(
