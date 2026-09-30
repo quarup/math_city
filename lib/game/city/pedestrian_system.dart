@@ -86,7 +86,13 @@ class PedestrianSystem {
     }
   }
 
-  void update(double dt) {
+  /// Steps every walker. [cars] are the vehicles' positions this frame
+  /// (with whether each is already holding): a walker waits rather than
+  /// step into one.
+  void update(
+    double dt, {
+    Iterable<({double col, double row, bool held})> cars = const [],
+  }) {
     for (final b in bubbles) {
       b.remaining -= dt;
     }
@@ -95,7 +101,13 @@ class PedestrianSystem {
     );
     if (_roadList.isEmpty) return;
     for (final p in people) {
-      stepPedestrian(p, dt, isRoad: _isRoad, random: _random);
+      stepPedestrian(
+        p,
+        dt,
+        isRoad: _isRoad,
+        random: _random,
+        blocked: pedestrianBlockedByVehicle(p, cars),
+      );
     }
   }
 

@@ -172,6 +172,55 @@ PedestrianPosition pedestrianPosition(Pedestrian p) {
   throw StateError('unreachable');
 }
 
+/// Unit vector in tile space of the leg [p] is walking along right now.
+(double, double) pedestrianLegVector(Pedestrian p) {
+  final pts = pedestrianPath(p);
+  final total = pedestrianPathLength(p);
+  var remaining = p.t.clamp(0.0, 1.0) * total;
+  for (var i = 1; i < pts.length; i++) {
+    final a = pts[i - 1];
+    final b = pts[i];
+    final len = _legLength(a, b);
+    if (remaining <= len || i == pts.length - 1) {
+      if (len == 0) return (0, 0);
+      return ((b.$1 - a.$1) / len, (b.$2 - a.$2) / len);
+    }
+    remaining -= len;
+  }
+  return (0, 0);
+}
+
+/// A car this close ahead along the walker's leg (and within
+/// [kWalkerCarTolerance] to the side) makes the walker wait: nobody walks
+/// through a car. The tolerance is below the 0.285 tiles between the
+/// sidewalk band and the near lane, so a walker strolling beside traffic
+/// never stops for it — only one about to step onto a car's asphalt.
+const double kWalkerCarGap = 0.45;
+const double kWalkerCarTolerance = 0.2;
+
+/// Whether [p] should wait for one of [cars] just ahead. A car that is
+/// itself holding (for this walker, most likely) never blocks — one side
+/// has to go first, and that is the pedestrian.
+bool pedestrianBlockedByVehicle(
+  Pedestrian p,
+  Iterable<({double col, double row, bool held})> cars,
+) {
+  final pos = pedestrianPosition(p);
+  final (fc, fr) = pedestrianLegVector(p);
+  if (fc == 0 && fr == 0) return false;
+  for (final c in cars) {
+    if (c.held) continue;
+    final dc = c.col - pos.col;
+    final dr = c.row - pos.row;
+    final ahead = dc * fc + dr * fr;
+    final side = (dc * fr - dr * fc).abs();
+    if (ahead > -0.05 && ahead < kWalkerCarGap && side < kWalkerCarTolerance) {
+      return true;
+    }
+  }
+  return false;
+}
+
 /// Painter's-order key for the board's depth sort: `col + row` of the
 /// walker's actual position.
 double pedestrianDepth(Pedestrian p) {
@@ -234,11 +283,14 @@ void stepPedestrian(
   double pauseMax = 3.5,
   double phaseRate = 9,
   double referenceSpeed = 0.16,
+  bool blocked = false,
 }) {
   if (p.wait > 0) {
     p.wait = math.max(0, p.wait - dt);
     return;
   }
+  // Held at a kerb for a car: stand still, no pause timer, no leg swing.
+  if (blocked) return;
   if (random.nextDouble() < pauseChancePerSecond * dt) {
     p.wait = pauseMin + random.nextDouble() * (pauseMax - pauseMin);
     return;

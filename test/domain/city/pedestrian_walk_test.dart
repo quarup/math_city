@@ -254,4 +254,72 @@ void main() {
       }
     });
   });
+
+  group('pedestrianBlockedByVehicle', () {
+    Pedestrian walker(double t) => Pedestrian(
+      col: 0,
+      row: 0,
+      dir: 0,
+      speed: 0.16,
+      lane: kSidewalkLane,
+      look: look,
+      t: t,
+    );
+
+    test("a car just ahead on the walker's line makes it wait", () {
+      final p = walker(0.3);
+      final pos = pedestrianPosition(p);
+      final (fc, fr) = pedestrianLegVector(p);
+      final car = (
+        col: pos.col + 0.3 * fc,
+        row: pos.row + 0.3 * fr,
+        held: false,
+      );
+      expect(pedestrianBlockedByVehicle(p, [car]), isTrue);
+    });
+
+    test('a car on the lane beside the sidewalk never holds a walker', () {
+      final p = walker(0.3);
+      final pos = pedestrianPosition(p);
+      final (fc, fr) = pedestrianLegVector(p);
+      // The near lane runs 0.285 tiles to the side of the sidewalk band.
+      for (final ahead in [0.0, 0.2, 0.4]) {
+        final beside = (
+          col: pos.col + ahead * fc - 0.285 * fr,
+          row: pos.row + ahead * fr + 0.285 * fc,
+          held: false,
+        );
+        expect(
+          pedestrianBlockedByVehicle(p, [beside]),
+          isFalse,
+          reason: '$ahead',
+        );
+      }
+    });
+
+    test('a car that is itself holding never blocks — the walker goes', () {
+      final p = walker(0.3);
+      final pos = pedestrianPosition(p);
+      final (fc, fr) = pedestrianLegVector(p);
+      final car = (
+        col: pos.col + 0.3 * fc,
+        row: pos.row + 0.3 * fr,
+        held: true,
+      );
+      expect(pedestrianBlockedByVehicle(p, [car]), isFalse);
+    });
+
+    test('a blocked walker stands still without starting a pause', () {
+      final p = walker(0.3);
+      stepPedestrian(
+        p,
+        0.5,
+        isRoad: (_, _) => true,
+        random: math.Random(1),
+        blocked: true,
+      );
+      expect(p.t, 0.3);
+      expect(p.wait, 0);
+    });
+  });
 }

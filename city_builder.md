@@ -1358,7 +1358,12 @@ itself, so a walker on the near sidewalk (0.285 to the side) never
 counts, only one that has stepped onto the asphalt
 (`vehicleBlockedByWalker`): pedestrians crossing a side street's mouth
 have right of way. A held car drives on anyway after 6 s so a packed ring
-never freezes.
+never freezes. The other way round, a walker waits at the kerb while a
+car sits within 0.45 tiles ahead on its line and 0.2 to the side
+(`pedestrianBlockedByVehicle`) — below the 0.285 between the sidewalk band
+and the near lane, so nobody stops for traffic they are walking beside —
+and never waits for a car that is itself holding, so the pair cannot
+deadlock: the pedestrian goes first.
 
 ## 10. Letters from Math City (designed 2026-09-28 / 29)
 

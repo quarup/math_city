@@ -6,6 +6,7 @@ import 'package:math_city/domain/city/mover_depth.dart';
 import 'package:math_city/domain/city/pedestrian_walk.dart';
 import 'package:math_city/domain/city/road_sprites.dart';
 import 'package:math_city/domain/city/street_life.dart';
+import 'package:math_city/domain/city/traffic.dart';
 import 'package:math_city/game/city/iso_grid.dart';
 import 'package:math_city/game/city/pedestrian_system.dart';
 import 'package:math_city/game/city/traffic_system.dart';
@@ -236,8 +237,17 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
   @override
   void update(double dt) {
     super.update(dt);
-    pedestrians.update(dt);
-    // Cars yield to walkers crossing their path (a side street's mouth).
+    // Walkers wait rather than step into a car; cars yield to walkers
+    // already on their asphalt (a side street's mouth). A holding car never
+    // holds a walker, so the pair can't deadlock.
+    pedestrians.update(
+      dt,
+      cars: [
+        for (final v in traffic.cars)
+          if (vehiclePosition(v) case final pos)
+            (col: pos.col, row: pos.row, held: v.held > 0),
+      ],
+    );
     traffic.update(
       dt,
       walkers: [
