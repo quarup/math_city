@@ -1679,6 +1679,12 @@ the emulator). Where the code differs from the text above:
   never shown again (the announce guard and the pending-delay id now
   reset when a letter closes), and praise letters / front pages / the
   celebration reply now retire on close instead of lingering open.
+- Fifth round (2026-09-30): a building being upgraded is hidden while its
+  upgrade is proposed or under construction (it comes back by itself if
+  the proposal or the site is cancelled — the placement row only goes
+  when the upgrade opens). The info card's *Upgrade to …* skips the
+  "Upgrade this one?" bar: the building is already chosen. The bar with
+  ◀ ▶ is only for a letter, which names the oldest candidate first.
 - Not built: the mailbox (deferred), the album, the requester at the
   opening, themed events, drag-from-card — all still in the deferred list.
 

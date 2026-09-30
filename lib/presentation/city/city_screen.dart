@@ -477,7 +477,27 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
   ) {
     final target = _growTarget;
     if (target == null || _growCandidates.isEmpty) return;
-    final source = _growCandidates[_growIndex];
+    _proposeUpgrade(
+      target,
+      _growCandidates[_growIndex],
+      placements,
+      sites,
+      ownedTiles,
+    );
+  }
+
+  /// Proposes [target]'s footprint as an upgrade of [source] — over the old
+  /// tiles when it fits (the source's own tiles count as free), else on the
+  /// nearest spot with room around it — and hands over to *Place here*.
+  /// The info card's *Upgrade to …* comes straight here (the building is
+  /// already chosen); a letter goes through the grow bar first.
+  void _proposeUpgrade(
+    BuildingType target,
+    BuildingPlacement source,
+    List<BuildingPlacement> placements,
+    List<CitySite> sites,
+    Set<(int, int)> ownedTiles,
+  ) {
     final existing = _footprintsOf(placements, sites, exclude: source.id);
     final over = GridFootprint(
       col: source.gridX,
@@ -503,6 +523,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
       _growSource = source;
       _growTarget = null;
       _growCandidates = const [];
+      _selectedBuildingId = null;
       _selected = target;
       _pendingSpot = spot;
     });
@@ -1255,8 +1276,19 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
       }
     }
 
+    // A building being upgraded is hidden while its upgrade is proposed or
+    // under construction: the site stands on (or near) its plot. It comes
+    // back by itself if the proposal or the site is cancelled, since the
+    // placement row is only removed when the upgrade opens.
+    final upgrading = <int>{
+      if (_growSource case final s?) s.id,
+      for (final s in sites)
+        if (s.goal case BuildingGoal(:final upgrade?))
+          upgrade.sourcePlacementId,
+    };
     final out = <PlacedBuildingView>[];
     for (final p in placements) {
+      if (upgrading.contains(p.id)) continue;
       final type = findBuildingTypeById(p.buildingTypeId);
       if (type == null) continue;
       out.add(
@@ -1725,7 +1757,14 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                 return;
               }
               if (_atSiteCap(sites)) return;
-              _enterGrow(next, sources);
+              // The building is already chosen: no "which one?" bar.
+              _proposeUpgrade(
+                next,
+                sources.single,
+                placements ?? const [],
+                sites,
+                ownedTiles,
+              );
             },
             onMove: () => setState(() {
               _movingId = _selectedBuildingId;
@@ -1749,12 +1788,16 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
             onCancel: () => setState(() {
               _pendingSpot = null;
               _selected = null;
+              _growSource = null;
             }),
           )
         : _selected != null
         ? _ChooseLocationBar(
             type: _selected!,
-            onCancel: () => setState(() => _selected = null),
+            onCancel: () => setState(() {
+              _selected = null;
+              _growSource = null;
+            }),
           )
         : _BuildBar(
             catalog: catalog,
