@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:math_city/presentation/home/home_screen.dart';
 import 'package:math_city/presentation/navigation/route_observer.dart';
-import 'package:math_city/presentation/splash/splash_screen.dart';
 import 'package:math_city/presentation/theme/app_theme.dart';
 import 'package:math_city/services/debug_harness.dart';
 
@@ -16,7 +16,9 @@ class MathCityApp extends StatelessWidget {
       // outside the widget tree. Inert when the harness isn't running.
       navigatorKey: DebugHarness.navigatorKey,
       navigatorObservers: [routeObserver],
-      home: const SplashScreen(),
+      // Cold start: the home screen plays the launch intro from the frame
+      // the OS launch screen leaves behind (see HomeScreen.playIntro).
+      home: const HomeScreen(playIntro: true),
     );
   }
 }

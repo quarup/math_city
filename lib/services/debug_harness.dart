@@ -118,9 +118,8 @@ class DebugHarness {
   // Hooks called from the widget tree
   // ---------------------------------------------------------------------
 
-  /// Called by `HomeScreen.initState`. The splash screen replaces itself
-  /// with the home screen ~1.5 s after launch; opening a question before
-  /// that lands would be clobbered by the replacement.
+  /// Called by `HomeScreen.initState`, once the navigator has a route a
+  /// question can be pushed on top of.
   void markHomeReady() {
     if (kDebugMode) _homeReady = true;
   }

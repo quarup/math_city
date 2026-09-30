@@ -107,6 +107,24 @@ that exited non-zero as finished.
 - **Asset & content licensing.** Every art/audio/font asset must be CC0, CC-BY, or equivalent. Every math dataset must be MIT / Apache 2.0 / CC-BY / CC0 — **CC-BY-NC and CC-BY-NC-SA are excluded** because app-store distribution carries non-zero commercial-use risk. Track sources in `LICENSES_THIRD_PARTY.md` (to be created in Phase 6 alongside dataset ingestion).
 - **Don't speculate features.** Stay within the current phase scope in `plan.md`. Future phases are aspirational, not a TODO list.
 
+## App icon, launch screens and the home-screen tile art
+
+The launcher icon, the Android/iOS launch-screen images and the six tile
+SVGs the home-screen intro animates all come from one script:
+
+```sh
+tools/sprite_pipeline/.venv/bin/python tools/app_icon/build_icon.py
+```
+
+Never hand-edit the PNGs under `android/app/src/main/res/mipmap-*/`,
+`ios/Runner/Assets.xcassets/`, or `assets/images/tiles/` — change the
+drawing in the script and re-run it. The home screen's first frame is
+designed to be pixel-identical to the OS launch screen (flat sky, the
+icon's house on a 288 dp canvas), so the geometry constants in
+[tile_patch.dart](lib/presentation/home/tile_patch.dart) and
+[home_screen.dart](lib/presentation/home/home_screen.dart) must stay in
+step with the script's.
+
 ## Keeping curriculum.md status in sync
 
 [curriculum.md](curriculum.md) carries `✅` markers in §3 (sub-concepts) and §6 (widgets) plus rollup counts in its Status block. These are auto-managed by [tools/curriculum/sync_implementation_status.py](tools/curriculum/sync_implementation_status.py).

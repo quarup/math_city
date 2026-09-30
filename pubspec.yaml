@@ -63,6 +63,7 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/images/tiles/
     - assets/buildings/
     - assets/vehicles/
     - assets/data/dataset_questions/

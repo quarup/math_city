@@ -15,8 +15,7 @@ void main() {
         child: const MathCityApp(),
       ),
     );
-    // Splash holds for 1500ms then runs a 700ms transition to HomeScreen.
-    await tester.pump(const Duration(milliseconds: 1500));
+    // The home screen plays its launch intro on a cold start.
     await tester.pumpAndSettle();
 
     // With no players, the empty-state Create Player button is shown.

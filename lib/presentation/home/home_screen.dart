@@ -1,11 +1,14 @@
 import 'dart:async';
+import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:math_city/data/database.dart';
 import 'package:math_city/presentation/city/city_screen.dart';
 import 'package:math_city/presentation/debug/concept_debug_screen.dart';
+import 'package:math_city/presentation/home/tile_patch.dart';
 import 'package:math_city/presentation/player/adventurer_avatar_widget.dart';
 import 'package:math_city/presentation/player/player_creation_screen.dart';
 import 'package:math_city/presentation/theme/app_palette.dart';
@@ -15,8 +18,12 @@ import 'package:math_city/state/player_provider.dart';
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key, this.playIntro = false});
 
-  /// When true, the non-logo content fades in after the logo's hero flight
-  /// from the splash screen settles. Default false for back-navigations.
+  /// When true, the screen opens on the frame the OS launch screen leaves
+  /// behind — flat sky with the app icon's house in the middle — and plays
+  /// the launch intro from it: the neighbouring tiles pop in around the
+  /// house, the patch settles to the bottom of the screen, the lockup drops
+  /// in and the player cards fade up. Default false for back-navigations,
+  /// which show the resting layout at once.
   final bool playIntro;
 
   @override
@@ -25,31 +32,76 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen>
     with SingleTickerProviderStateMixin {
-  // Must match the splash-route transitionDuration so the fade waits for the
-  // hero to land.
-  static const _heroDuration = Duration(milliseconds: 700);
-  static const _fadeDuration = Duration(milliseconds: 450);
+  static const _introDuration = Duration(milliseconds: 1900);
+
+  /// The Android 12+ launch screen draws the icon on a 288 dp canvas; the
+  /// iOS storyboard does the same. The icon's own canvas is 108 units.
+  static const double _launchIconDp = 288;
+  static const double _unit = _launchIconDp / TilePatch.box;
+
+  /// Scale of the patch once it has settled at the bottom of the screen.
+  static const _restScale = 0.45;
+
+  /// Flat sky behind the OS launch icon; the top of the sky gradient.
+  static const _launchSky = Color(0xFF5DB7E8);
 
   late final AnimationController _intro;
+
+  // Timeline, as fractions of [_introDuration] (1.9 s):
+  //   0.25–0.95  neighbours pop in
+  //   0.60–1.00  flat sky fades to the gradient
+  //   1.00–1.60  patch glides down and shrinks to its resting spot
+  //   1.00–1.50  city strip fades in behind it
+  //   1.20–1.70  lockup drops in
+  //   1.50–1.90  player cards fade in
+  late final Animation<double> _pop = _phase(0.25, 0.95);
+  late final Animation<double> _gradient = _phase(0.6, 1);
+  late final Animation<double> _move = _phase(1, 1.6, Curves.easeInOutCubic);
+  late final Animation<double> _strip = _phase(1, 1.5);
+  late final Animation<double> _lockup = _phase(1.2, 1.7, Curves.easeOutCubic);
+  late final Animation<double> _cards = _phase(1.5, 1.9);
+
+  /// The launch icon's visible circle is 192 dp across; the clip grows well
+  /// past the tile box as the neighbours pop in.
+  late final Animation<double> _centreClip = Tween<double>(
+    begin: 96,
+    end: 400,
+  ).animate(_pop);
+
+  Animation<double> _phase(
+    double fromS,
+    double toS, [
+    Curve curve = Curves.easeOut,
+  ]) {
+    final total = _introDuration.inMilliseconds / 1000;
+    return CurvedAnimation(
+      parent: _intro,
+      curve: Interval(fromS / total, toS / total, curve: curve),
+    );
+  }
 
   @override
   void initState() {
     super.initState();
-    // Tells the UX-sweep harness the splash screen is done replacing
-    // itself, so a pushed question won't get clobbered.
+    // Tells the UX-sweep harness a question can be pushed now.
     DebugHarness.instance.markHomeReady();
     _intro = AnimationController(
       vsync: this,
-      duration: _fadeDuration,
+      duration: _introDuration,
       value: widget.playIntro ? 0 : 1,
     );
-    if (widget.playIntro) {
-      unawaited(
-        Future<void>.delayed(_heroDuration, () {
-          if (mounted) unawaited(_intro.forward());
-        }),
-      );
-    }
+    if (widget.playIntro) unawaited(_startIntro());
+  }
+
+  /// The OS launch screen stays up until Flutter's first frame is
+  /// rasterised, which on a cold start can take well over a second; the
+  /// intro's clock must not run while the launch screen still covers it.
+  /// The short hold after that gives the launch screen's dismissal time to
+  /// finish on the frame that matches it.
+  Future<void> _startIntro() async {
+    await WidgetsBinding.instance.waitUntilFirstFrameRasterized;
+    await Future<void>.delayed(const Duration(milliseconds: 250));
+    if (mounted) await _intro.forward();
   }
 
   @override
@@ -64,6 +116,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     final activeId = ref.watch(activePlayerIdProvider);
     final theme = Theme.of(context);
     final palette = theme.extension<AppPalette>()!;
+    final bottomInset = MediaQuery.paddingOf(context).bottom;
+    // The OS centres its launch icon on the physical display. Flutter's
+    // window can be shorter than that (it stops above the navigation bar
+    // unless the app is edge-to-edge), so the display, not the window,
+    // gives the launch icon's centre; the window starts at the display's top.
+    final display = View.of(context).display;
+    final displayHeight = display.size.height / display.devicePixelRatio;
 
     return Scaffold(
       body: DecoratedBox(
@@ -74,56 +133,114 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             colors: [palette.skyGradientStart, palette.skyGradientEnd],
           ),
         ),
-        child: Stack(
-          children: [
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Image.asset(
-                'assets/images/math_city_bottom.png',
-                width: double.infinity,
-                fit: BoxFit.fitWidth,
-              ),
-            ),
-            SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 32,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Center(
-                      child: Hero(
-                        tag: 'math-city-logo',
-                        child: Image.asset(
-                          'assets/images/math_city_logo.png',
-                          height: 120,
-                          fit: BoxFit.contain,
-                        ),
-                      ),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final size = constraints.biggest;
+            // Frame zero: the patch's centre box sits where the OS drew the
+            // launch icon, the middle of the screen. At rest it parks by its
+            // bottom edge, in front of the city strip.
+            final launchCentre = Offset(size.width / 2, displayHeight / 2);
+            final restCentre = Offset(
+              size.width / 2,
+              size.height -
+                  bottomInset -
+                  8 -
+                  TilePatch.bottomUnits * _unit * _restScale,
+            );
+            return Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: FadeTransition(
+                    opacity: _strip,
+                    child: Image.asset(
+                      'assets/images/math_city_bottom.png',
+                      width: double.infinity,
+                      fit: BoxFit.fitWidth,
                     ),
-                    const SizedBox(height: 24),
-                    Expanded(
-                      child: FadeTransition(
-                        opacity: CurvedAnimation(
-                          parent: _intro,
-                          curve: Curves.easeOut,
-                        ),
-                        child: allAsync.when(
-                          loading: () =>
-                              const Center(child: CircularProgressIndicator()),
-                          error: (e, _) => Center(child: Text('Error: $e')),
-                          data: (players) =>
-                              _buildPlayersAndSpin(theme, players, activeId),
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
-          ],
+                Positioned.fill(
+                  child: IgnorePointer(
+                    child: FadeTransition(
+                      opacity: ReverseAnimation(_gradient),
+                      child: const ColoredBox(color: _launchSky),
+                    ),
+                  ),
+                ),
+                AnimatedBuilder(
+                  animation: _move,
+                  builder: (context, child) {
+                    final t = _move.value;
+                    final centre = Offset.lerp(launchCentre, restCentre, t)!;
+                    final scale = lerpDouble(1, _restScale, t)!;
+                    return Positioned(
+                      left: centre.dx - TilePatch.widthUnits * _unit / 2,
+                      top: centre.dy - TilePatch.heightUnits * _unit / 2,
+                      child: Transform.scale(scale: scale, child: child),
+                    );
+                  },
+                  child: IgnorePointer(
+                    child: TilePatch(
+                      unit: _unit,
+                      pop: _pop,
+                      centreClipRadius: _centreClip,
+                    ),
+                  ),
+                ),
+                SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 24,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        SlideTransition(
+                          position: Tween(
+                            begin: const Offset(0, -0.6),
+                            end: Offset.zero,
+                          ).animate(_lockup),
+                          child: FadeTransition(
+                            opacity: _lockup,
+                            child: const _Lockup(),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        Expanded(
+                          child: AnimatedBuilder(
+                            animation: _cards,
+                            builder: (context, child) => IgnorePointer(
+                              ignoring: _cards.value < 1,
+                              child: Opacity(
+                                opacity: _cards.value,
+                                child: child,
+                              ),
+                            ),
+                            child: allAsync.when(
+                              loading: () => const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                              error: (e, _) => Center(child: Text('Error: $e')),
+                              data: (players) => _buildPlayersAndSpin(
+                                theme,
+                                players,
+                                activeId,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
@@ -138,7 +255,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          'Select player:',
+          'Who is playing?',
           style: theme.textTheme.labelLarge?.copyWith(
             color: theme.colorScheme.onSurfaceVariant,
           ),
@@ -212,6 +329,36 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           builder: (_) => const ConceptDebugScreen(),
         ),
       ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Lockup: the icon's tile at the head of the wordmark
+// ---------------------------------------------------------------------------
+
+class _Lockup extends StatelessWidget {
+  const _Lockup();
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SvgPicture.asset(
+          'assets/images/tiles/house.svg',
+          width: 88,
+          height: 88,
+        ),
+        const SizedBox(width: 6),
+        Flexible(
+          child: Image.asset(
+            'assets/images/math_city_wordmark.png',
+            height: 58,
+            fit: BoxFit.contain,
+          ),
+        ),
+      ],
     );
   }
 }
