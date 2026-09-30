@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Flat sky behind the launch screen and the home screen's first frame
+         (the top of AppPalette.skyGradient). -->
+    <color name="launch_sky">#5DB7E8</color>
+</resources>
