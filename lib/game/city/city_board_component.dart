@@ -225,6 +225,22 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     return isHighwayTile(col + oc, row + or);
   }
 
+  /// Whether every exit can be reached from the first over [tiles].
+  bool _linksAll(Set<(int, int)> tiles, List<HighwayExit> exits) {
+    if (exits.isEmpty) return true;
+    final start = (exits.first.col, exits.first.row);
+    final seen = <(int, int)>{start};
+    final stack = <(int, int)>[start];
+    while (stack.isNotEmpty) {
+      final (c, r) = stack.removeLast();
+      for (final (dc, dr) in const [(1, 0), (0, 1), (-1, 0), (0, -1)]) {
+        final n = (c + dc, r + dr);
+        if (tiles.contains(n) && seen.add(n)) stack.add(n);
+      }
+    }
+    return exits.every((e) => seen.contains((e.col, e.row)));
+  }
+
   /// Hands the movers their road graphs: walkers and town-only vehicles
   /// keep to the roads inside the fence; the through traffic also gets the
   /// highway on to [kHighwayReach] tiles past the window, ending at the
@@ -237,14 +253,17 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     final (oc, or) = origin;
     final mainRow = kMainStreetRow - or;
     final highCol = kHighStreetCol - oc;
-    final through = {..._roads};
+    // The through traffic keeps to the two roads that leave town, so the
+    // inter-town roads stay busy instead of the cars getting lost in the
+    // side streets.
+    final beyond = <(int, int)>{};
     final exits = <HighwayExit>[];
     if (mainRow >= 0 && mainRow < grid.rows) {
       for (var c = -kHighwayReach; c < 0; c++) {
-        through.add((c, mainRow));
+        beyond.add((c, mainRow));
       }
       for (var c = grid.cols; c < grid.cols + kHighwayReach; c++) {
-        through.add((c, mainRow));
+        beyond.add((c, mainRow));
       }
       exits
         ..add(HighwayExit(col: -kHighwayReach, row: mainRow, inbound: 0))
@@ -258,7 +277,7 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     }
     if (highCol >= 0 && highCol < grid.cols) {
       for (var r = grid.rows; r < grid.rows + kHighwayReach; r++) {
-        through.add((highCol, r));
+        beyond.add((highCol, r));
       }
       exits.add(
         HighwayExit(
@@ -268,6 +287,15 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
         ),
       );
     }
+    var through = <(int, int)>{
+      ...beyond,
+      for (final (c, r) in _roads)
+        if (isHighwayTile(c + oc, r + or)) (c, r),
+    };
+    // A city from before the fixed roads may have a building standing on
+    // one: if the highway alone no longer links the exits, the through
+    // traffic may use the town's streets to get across.
+    if (!_linksAll(through, exits)) through = {...beyond, ..._roads};
     pedestrians.setRoads(town);
     traffic.setRoads(
       _roads,

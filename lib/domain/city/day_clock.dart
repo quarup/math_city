@@ -121,3 +121,10 @@ String formatHour(double hour) {
   final h12 = h % 12 == 0 ? 12 : h % 12;
   return '$h12:${m.toString().padLeft(2, '0')} ${h < 12 ? 'am' : 'pm'}';
 }
+
+/// The minute of the day at [hour], rounded down to the quarter hour — what
+/// the town clock shows, so it ticks every 15 minutes rather than every one.
+int quarterHourMinute(double hour) {
+  final minute = ((((hour % 24) + 24) % 24) * 60).floor();
+  return minute - minute % 15;
+}

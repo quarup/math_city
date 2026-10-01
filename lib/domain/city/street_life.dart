@@ -368,7 +368,7 @@ VehicleKind drawCivilianKind(
 /// Through traffic (2026-10-01): on top of the town's own fleet, this many
 /// cars per road out of town drive in from the edge of the map, through
 /// the town, and out again by whichever road they reach.
-const int kCommutersPerExit = 2;
+const int kCommutersPerExit = 6;
 
 /// Through traffic per road at [hour]: the full number by day, sparser at
 /// night, never none.
