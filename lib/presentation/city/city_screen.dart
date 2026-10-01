@@ -3152,7 +3152,7 @@ class _StakeLandBar extends StatelessWidget {
                     children: [
                       TextSpan(
                         text:
-                            '${type.name} needs new land: '
+                            '${type.name} needs more land: '
                             '$blocks ${blocks == 1 ? 'block' : 'blocks'} for ',
                       ),
                       coinSpan(),
@@ -3165,7 +3165,7 @@ class _StakeLandBar extends StatelessWidget {
               const SizedBox(width: 8),
               _CloseButton(onPressed: onCancel, tooltip: 'Not now'),
               const SizedBox(width: 4),
-              FilledButton(onPressed: onStake, child: const Text('Stake it')),
+              FilledButton(onPressed: onStake, child: const Text('Buy it')),
             ],
           ),
         ),
@@ -3196,7 +3196,7 @@ class _ExpandBar extends StatelessWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  'Expand city · tap a block to stake it',
+                  'Expand city · tap the land you want to buy',
                   style: theme.textTheme.bodyMedium,
                 ),
               ),
@@ -3329,7 +3329,7 @@ class _StartLandSiteBar extends StatelessWidget {
                 child: Text.rich(
                   TextSpan(
                     children: [
-                      const TextSpan(text: 'Stake this land for '),
+                      const TextSpan(text: 'Buy this land for '),
                       coinSpan(),
                       TextSpan(text: ' $cost?'),
                     ],
@@ -3340,7 +3340,7 @@ class _StartLandSiteBar extends StatelessWidget {
               const SizedBox(width: 8),
               TextButton(onPressed: onCancel, child: const Text('Cancel')),
               const SizedBox(width: 4),
-              FilledButton(onPressed: onStart, child: const Text('Stake it')),
+              FilledButton(onPressed: onStart, child: const Text('Buy it')),
             ],
           ),
         ),
