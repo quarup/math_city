@@ -1944,7 +1944,7 @@ The user's notes after seeing §11.6 on the device, all implemented:
 - **No haze.** The gradient from the top "looks weird": T4 and K1 are
   dropped. The time of day is one tint over the whole screen (dusk / dawn
   wash, night multiply). A **digital clock** chip (`9:30 am`) sits
-  top-right, opposite the population chip.
+  top-right, opposite the population chip, ticking in quarter hours.
 - **The light grass follows the fence.** Bands are keyed on the distance
   to the nearest owned block, not on the world ring: meadow inside the
   perimeter, scrub one block out, forest beyond. Buying a block turns it
@@ -1952,10 +1952,12 @@ The user's notes after seeing §11.6 on the device, all implemented:
 - **Roads run to the edge of what is seen.** The main street and the high
   street are painted on every visible tile past the window, so they never
   end in the grass.
-- **Through traffic.** On top of the town's fleet, `kCommutersPerExit` (2)
+- **Through traffic.** On top of the town's fleet, `kCommutersPerExit` (6)
   civilian cars per road out of town drive in from far past the window,
   through the town, and out by whichever exit they reach (then a fresh one
-  comes in).
+  comes in). They keep to the main street and the high street, so the
+  inter-town roads stay busy; only where a legacy building breaks the
+  highway do they fall back to the town's streets.
 - **Who may leave town.** `VehicleKind.leavesTown`: civilians, the bus and
   the delivery truck use the roads beyond the fence; the school bus, ice
   cream truck, garbage truck, mail van, tractor and the emergency vehicles
@@ -1966,7 +1968,7 @@ The user's notes after seeing §11.6 on the device, all implemented:
   hours (`VehicleKind.hours`: school bus 7–16, ice cream truck 11–19,
   garbage truck 6–14, mail van 8–17, tractor 6–18, bus 6–22; emergency
   vehicles and the delivery truck at any hour); civilian cars thin to
-  about a third at night (never below one) and the through traffic to one
+  about a third at night (never below one) and the through traffic to two
   per exit. Movers fade in and out over 0.8 s as the plan changes, so
   nobody pops.
 - **Wording**: *buy*, not *stake* (§11.6). A debug-sheet *Town clock*

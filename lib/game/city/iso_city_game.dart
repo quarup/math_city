@@ -43,10 +43,10 @@ class IsoCityGame extends FlameGame with DragCallbacks {
   /// while a question route covers the city.
   final AmbientClock clock = AmbientClock();
 
-  /// The clock's minute of the day, for the clock chip over the city:
-  /// changes once a game minute, not every frame.
+  /// The clock's minute of the day for the clock chip over the city, in
+  /// quarter-hour steps: the chip reads 9:30, 9:45, 10:00, not every minute.
   final ValueNotifier<int> minuteOfDay = ValueNotifier<int>(
-    (kChapterOneHour * 60).floor(),
+    quarterHourMinute(kChapterOneHour),
   );
 
   static const double minZoom = 0.4;
@@ -194,7 +194,7 @@ class IsoCityGame extends FlameGame with DragCallbacks {
   void update(double dt) {
     super.update(dt);
     clock.tick(dt);
-    final minute = (clock.hour * 60).floor();
+    final minute = quarterHourMinute(clock.hour);
     if (minute != minuteOfDay.value) minuteOfDay.value = minute;
     if (isLoaded) {
       board

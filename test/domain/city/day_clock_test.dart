@@ -12,6 +12,17 @@ void main() {
     });
   });
 
+  group('quarterHourMinute', () {
+    test('rounds down to the quarter hour', () {
+      expect(quarterHourMinute(9.5), 9 * 60 + 30);
+      expect(quarterHourMinute(9.74), 9 * 60 + 30);
+      expect(quarterHourMinute(9.75), 9 * 60 + 45);
+      expect(quarterHourMinute(23.99), 23 * 60 + 45);
+      expect(quarterHourMinute(24.1), 0);
+      expect(formatHour(quarterHourMinute(18.1) / 60), '6:00 pm');
+    });
+  });
+
   group('night and dusk', () {
     test('night strength is 0 by day, 1 at night', () {
       expect(nightStrengthAt(12), 0);
