@@ -1914,3 +1914,25 @@ haze (band height still open: 30 / 42 / 55 %) with nothing in it, no stars
 - **F7** — a Land folder in the bottom bar at all, and if so, when.
 - **Haze band height** — T4 offers 30 / 42 / 55 %.
 
+### 11.6 Shipped (2026-10-01, PR)
+
+Every lock in §11.5 is implemented; one commit per item, in the order
+below. Domain logic lives in `lib/domain/city/` with unit tests, drawing
+in `lib/game/city/`, mode state in `city_screen.dart`.
+
+| Item | What shipped | Where |
+|---|---|---|
+| Ground (T2 / T3 / X10) | One meadow inside and out, three shades per band by world block ring (meadow ≤ 2, scrub 3, forest ≥ 4), per-tile hash noise and tufts; a 6-tile countryside margin round the owned land; hash-seeded trees / bushes / flowers / rocks on free tiles — 4 % trees in town, 32 % beyond — depth-sorted with buildings, hidden under footprints, roads and staked land; the ground past the window is painted from a cached picture, so there is no board edge | [terrain.dart](lib/domain/city/terrain.dart), [decor_painter.dart](lib/game/city/decor_painter.dart), `CityBoardComponent._drawGround` |
+| Edge (X11) | Split-rail fence on every owned-tile edge that faces unowned land, opening where a road crosses; the **main street** (world row 0) runs off the map east and west and the **high street** (world col 3) south — fixed roads the auto-roads join, reserved from building | `edgeSegments`, `highwayTiles`, `checkPlacement(reserved:)`, `generateRoads(fixedRoads:)` |
+| Sky (T4 / K1 / S1 / S4 / D2) | Viewport-fixed backdrop gradient behind the world; night multiply tint + dusk wash + the haze band over the top **42 %** of the viewport, coloured from `HAZE_KEY` (white by day, black at night, interpolation only between neighbouring keys); nothing in the band. The 8-minute clock: 5 min day (6:30 → 18:30), 3 min night; frozen at 9:30 through chapter one, paused under a question route. Default framing puts the town's centre at **58 %** of the visible height | [day_clock.dart](lib/domain/city/day_clock.dart), [sky_component.dart](lib/game/city/sky_component.dart), `kTownAnchorY` |
+| Edges on demand (B1 + B4) | Only while placing or moving: unowned land dims, a thin tile grid over owned land, the boundary as a marching dashed line; the red footprint for a refused spot | `CityBoardComponent.placementEdges` |
+| Expand city (E1 + E6) | *Expand city* card at the end of the folder bar; beyond the ring dims, each purchasable block gets stakes + string + a faint wash + a constant-screen-size price pill (gold when affordable); tap → amber selection + the buy bar; the camera pulls back to frame the ring and returns on exit. Land taps outside the mode do nothing | `FrontierBlockView`, `_enterExpand` / `_exitExpand` |
+| Land as a site (E7) | Schema **v21**: `LandBlockGoal.blocks` (`ConstructionSites.landBlocks`), `Players.nextBuildingTypeId`. Land sites draw as staked plots; opening one owns every block and the fence moves out. The wanted building shows as a *next* chip beside the sites and is auto-proposed on the new land after the celebration; dismissing the chip or cancelling the site forgets it | `LandBlockGoal`, `CityActions.setNextBuilding`, `_proposeNextOn` |
+| Big footprints (E9) | A refused placement finds the smallest connected purchasable block set that fits (cheapest total, then nearest to town; ring 3 allowed inside a group), frames it in Expand city, stakes it as one plot with the ghost inside and a *N blocks · 🪙 total* pill; *Buy it* starts one group-priced land site and remembers the building | [land_fit.dart](lib/domain/city/land_fit.dart) |
+
+Wording: the kid-facing bars say **buy** (“Buy this land for 🪙 1200?”,
+“Expand city · tap a block to buy it”), never *stake*.
+
+Not in this PR: D4 lit windows at night (the tint is in; the emissive
+pass is the next piece), a hand hint on the Expand city card, E8's
+bundled two-stage site (E7 won).
