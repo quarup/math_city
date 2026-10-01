@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/text.dart';
@@ -102,16 +104,23 @@ class FrontierBlockView {
 /// art per plan.md — colored diamonds + emoji, no PNGs.
 class CityBoardComponent extends PositionComponent with TapCallbacks {
   CityBoardComponent({
-    required this.grid,
+    required IsoGrid grid,
     required this.onTileTapped,
     required this.spriteFor,
     required this.vehicleSpriteFor,
-  });
+  }) : _grid = grid;
 
   /// The board's tile↔screen geometry for the current window. Reassigned by the
   /// host game when land is bought and the window grows (see
   /// `IsoCityGame.updateLand`); the render loop reads it live each frame.
-  IsoGrid grid;
+  IsoGrid get grid => _grid;
+  set grid(IsoGrid value) {
+    _grid = value;
+    _groundRange = null;
+    _decorDirty = true;
+  }
+
+  IsoGrid _grid;
   final void Function(int col, int row) onTileTapped;
 
   /// Resolves a `<id>_v<n>.png` filename to a loaded sprite, or null if it
@@ -135,7 +144,14 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
   /// World tile of the window's local origin `(0, 0)`: the terrain is a
   /// function of *world* tiles, so the same tree stands on the same tile
   /// however the window has grown. Reassigned with [grid] by `updateLand`.
-  (int, int) origin = (0, 0);
+  (int, int) get origin => _origin;
+  set origin((int, int) value) {
+    _origin = value;
+    _groundRange = null;
+    _decorDirty = true;
+  }
+
+  (int, int) _origin = (0, 0);
 
   /// The part of the board the camera can see, in board coordinates, set
   /// by the host game every frame. The ground and the decor are culled to
@@ -144,6 +160,15 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
 
   /// Seconds since the board was added; drives the moving dashes.
   double time = 0;
+
+  /// The ground (and the decor beyond the window) recorded once for the
+  /// visible tile range, in chunks of [_kGroundChunk] tiles, and replayed
+  /// until the camera leaves the range or the window changes. The plane
+  /// is infinite: tiles past the window are painted too, so a zoomed-out
+  /// camera never sees the backdrop.
+  ui.Picture? _groundPicture;
+  (int, int, int, int)? _groundRange;
+  static const int _kGroundChunk = 8;
 
   /// True while a building is being placed or moved (city_builder.md §11,
   /// B1 + B4): the countryside dims, a thin tile grid lies over the owned
@@ -519,18 +544,64 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     return vis.inflate(grid.tileWidth).contains(Offset(cx, cy));
   }
 
-  /// The meadow, inside and outside the fence alike: every tile of the
-  /// window in its band's greens with a tuft of grass here and there. The
-  /// band comes from the tile's *world* block ring, so the countryside
-  /// darkens with distance from the town (T3) and nothing shifts when the
-  /// window grows.
+  /// The local tile range (minCol, maxCol, minRow, maxRow) whose diamonds
+  /// can touch [rect], a tile beyond on every side.
+  (int, int, int, int) _tileRangeOf(Rect rect) {
+    var minC = double.infinity;
+    var minR = double.infinity;
+    var maxC = double.negativeInfinity;
+    var maxR = double.negativeInfinity;
+    for (final p in [
+      rect.topLeft,
+      rect.topRight,
+      rect.bottomLeft,
+      rect.bottomRight,
+    ]) {
+      final (c, r) = grid.fractionalTileAt(p.dx, p.dy);
+      if (c < minC) minC = c;
+      if (r < minR) minR = r;
+      if (c > maxC) maxC = c;
+      if (r > maxR) maxR = r;
+    }
+    return (
+      minC.floor() - 1,
+      maxC.ceil() + 1,
+      minR.floor() - 1,
+      maxR.ceil() + 1,
+    );
+  }
+
+  /// The meadow, inside and outside the fence alike — and on past the
+  /// window: every tile the camera can see is painted in its band's greens
+  /// with a tuft of grass here and there. The band comes from the tile's
+  /// *world* block ring, so the countryside darkens with distance from the
+  /// town (T3) and nothing shifts when the window grows. Recorded once per
+  /// visible chunk range and replayed.
   void _drawGround(Canvas canvas) {
     final vis = visibleWorldRect;
+    final (c0, c1, r0, r1) = vis == null
+        ? (0, grid.cols - 1, 0, grid.rows - 1)
+        : _tileRangeOf(vis);
+    int down(int v) => (v / _kGroundChunk).floor() * _kGroundChunk;
+    int up(int v) => (v / _kGroundChunk).ceil() * _kGroundChunk;
+    final range = (down(c0), up(c1), down(r0), up(r1));
+    if (_groundPicture == null || _groundRange != range) {
+      _groundPicture?.dispose();
+      _groundPicture = _recordGround(range);
+      _groundRange = range;
+    }
+    canvas.drawPicture(_groundPicture!);
+  }
+
+  ui.Picture _recordGround((int, int, int, int) range) {
+    final recorder = ui.PictureRecorder();
+    final canvas = Canvas(recorder);
     final k = grid.tileWidth / 64;
     final (oc, or) = origin;
-    for (var c = 0; c < grid.cols; c++) {
-      for (var r = 0; r < grid.rows; r++) {
-        if (vis != null && !_inView(vis, c, r)) continue;
+    final (c0, c1, r0, r1) = range;
+    final outside = <DecorItem>[];
+    for (var c = c0; c <= c1; c++) {
+      for (var r = r0; r <= r1; r++) {
         final (cx, cy) = grid.centerOf(c, r);
         final wc = c + oc;
         final wr = r + or;
@@ -558,8 +629,26 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
               _tuftPaint,
             );
         }
+        // Beyond the window nothing is ever built, so its decor needs no
+        // depth sort against buildings and can live in the picture.
+        if (c < 0 || c >= grid.cols || r < 0 || r >= grid.rows) {
+          final (bx, by) = blockOfTile(wc, wr);
+          final item = decorAt(
+            wc,
+            wr,
+            owned: false,
+            ring: blockRing(bx, by),
+          );
+          if (item != null) outside.add(item);
+        }
       }
     }
+    outside.sort((a, b) => (a.col + a.row).compareTo(b.col + b.row));
+    for (final d in outside) {
+      final (cx, cy) = grid.centerOf(d.col - oc, d.row - or);
+      paintDecor(canvas, d, Offset(cx, cy), grid.tileWidth);
+    }
+    return recorder.endRecording();
   }
 
   /// The two ground corners of a tile's [side], in painter order.

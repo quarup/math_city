@@ -41,14 +41,22 @@ class IsoGrid {
   /// The grid tile containing local point `(x, y)`, or null if the point is
   /// outside the board. Inverse of [centerOf].
   (int, int)? tileAt(double x, double y) {
+    final (c, r) = fractionalTileAt(x, y);
+    final col = c.round();
+    final row = r.round();
+    if (col < 0 || col >= cols || row < 0 || row >= rows) return null;
+    return (col, row);
+  }
+
+  /// Fractional tile coordinates of local point `(x, y)` — the inverse of
+  /// [pointAt], unbounded: points beyond the board map to tiles beyond it,
+  /// which is how the ground is painted past the window.
+  (double, double) fractionalTileAt(double x, double y) {
     final dx = x - _originX;
     final dy = y - _originY;
     // a = col - row, b = col + row.
     final a = dx / _halfW;
     final b = dy / _halfH;
-    final col = ((a + b) / 2).round();
-    final row = ((b - a) / 2).round();
-    if (col < 0 || col >= cols || row < 0 || row >= rows) return null;
-    return (col, row);
+    return ((a + b) / 2, (b - a) / 2);
   }
 }
