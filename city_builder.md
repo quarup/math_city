@@ -1875,17 +1875,18 @@ on `ConstructionSites` and `nextBuilding` on the player row.
 
 ### 11.5 Open decisions (the user's)
 
-- **Edge** — X11 is the user's current favourite (fence + wild beyond);
-  confirm, or another of X2–X10.
 - **E9 ring rule** — allow ring-3 blocks inside a group buy (as mocked) or
-  require the group to grow ring by ring.
+  require the group to grow ring by ring. *Default if unanswered: as mocked.*
+- **Haze band height** — 30 / 42 / 55 %. *Default if unanswered: 42 %.*
 
 **Roads leave town (2026-10-01):** the main street runs off the map east
 and west and the high street south, so there are at least two ways in and
 out by road; the edge marker opens where a road crosses it (`edgeSegments`
 skips road-to-road tile edges). Applied to every scene on all three pages.
 
-Locked so far: **E7** (land is a construction site; the wanted building
+**X11 locked (2026-10-01):** rail fence on the boundary, wooded countryside beyond, fence opening at road crossings, decor on free owned tiles.
+
+Locked so far: **X11** · **E7** (land is a construction site; the wanted building
 is a remembered `nextBuilding` the app proposes when the land opens) ·
 **E9** (a big footprint stakes the smallest connected block set that fits,
 as one group-priced site) · D2 ambient 8-minute loop · T3 density rings outside · T4
