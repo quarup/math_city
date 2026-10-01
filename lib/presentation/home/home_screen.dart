@@ -32,7 +32,7 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen>
     with SingleTickerProviderStateMixin {
-  static const _introDuration = Duration(milliseconds: 1600);
+  static const _introDuration = Duration(milliseconds: 1700);
 
   /// The Android 12+ launch screen draws the icon on a 288 dp canvas; the
   /// iOS storyboard does the same. The icon's own canvas is 108 units.
@@ -47,23 +47,27 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   late final AnimationController _intro;
 
-  // Timeline, in seconds of [_introDuration] (1.6 s):
+  // Timeline, in seconds of [_introDuration] (1.7 s):
   //   0.25–0.95  neighbours pop in
   //   0.60–1.00  flat sky fades to the gradient
-  //   0.95–1.35  patch glides down, shrinks and fades away
-  //   0.95–1.30  city strip fades in behind it
-  //   1.05–1.45  lockup drops in
-  //   1.25–1.60  player cards fade in
+  //   0.95–1.55  patch glides down and shrinks, fading over its last part
+  //   0.95–1.35  city strip fades in behind it
+  //   1.15–1.55  lockup drops in
+  //   1.35–1.70  player cards fade in
   late final Animation<double> _pop = _phase(0.25, 0.95);
   late final Animation<double> _gradient = _phase(0.6, 1);
-  late final Animation<double> _move = _phase(0.95, 1.35, Curves.easeInCubic);
-  late final Animation<double> _strip = _phase(0.95, 1.3);
+  late final Animation<double> _move = _phase(
+    0.95,
+    1.55,
+    Curves.easeInOutCubic,
+  );
+  late final Animation<double> _strip = _phase(0.95, 1.35);
   late final Animation<double> _lockup = _phase(
-    1.05,
-    1.45,
+    1.15,
+    1.55,
     Curves.easeOutCubic,
   );
-  late final Animation<double> _cards = _phase(1.25, 1.6);
+  late final Animation<double> _cards = _phase(1.35, 1.7);
 
   /// The launch icon's visible circle is 192 dp across; the clip grows well
   /// past the tile box as the neighbours pop in.
@@ -187,7 +191,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                       left: centre.dx - TilePatch.widthUnits * _unit / 2,
                       top: centre.dy - TilePatch.heightUnits * _unit / 2,
                       child: Opacity(
-                        opacity: 1 - t,
+                        opacity: 1 - Curves.easeIn.transform(t),
                         child: Transform.scale(scale: scale, child: child),
                       ),
                     );
