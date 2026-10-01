@@ -32,7 +32,7 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen>
     with SingleTickerProviderStateMixin {
-  static const _introDuration = Duration(milliseconds: 1700);
+  static const _introDuration = Duration(milliseconds: 2150);
 
   /// The Android 12+ launch screen draws the icon on a 288 dp canvas; the
   /// iOS storyboard does the same. The icon's own canvas is 108 units.
@@ -47,27 +47,28 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   late final AnimationController _intro;
 
-  // Timeline, in seconds of [_introDuration] (1.7 s):
+  // Timeline, in seconds of [_introDuration] (2.15 s):
   //   0.25–0.95  neighbours pop in
   //   0.60–1.00  flat sky fades to the gradient
-  //   0.95–1.55  patch glides down and shrinks, fading over its last part
-  //   0.95–1.35  city strip fades in behind it
-  //   1.15–1.55  lockup drops in
-  //   1.35–1.70  player cards fade in
+  //   0.95–1.25  the full patch holds, centred
+  //   1.25–2.05  patch glides down and shrinks, fading over its last part
+  //   1.25–1.70  city strip fades in behind it
+  //   1.50–1.95  lockup drops in
+  //   1.75–2.15  player cards fade in
   late final Animation<double> _pop = _phase(0.25, 0.95);
   late final Animation<double> _gradient = _phase(0.6, 1);
   late final Animation<double> _move = _phase(
-    0.95,
-    1.55,
+    1.25,
+    2.05,
     Curves.easeInOutCubic,
   );
-  late final Animation<double> _strip = _phase(0.95, 1.35);
+  late final Animation<double> _strip = _phase(1.25, 1.7);
   late final Animation<double> _lockup = _phase(
-    1.15,
-    1.55,
+    1.5,
+    1.95,
     Curves.easeOutCubic,
   );
-  late final Animation<double> _cards = _phase(1.35, 1.7);
+  late final Animation<double> _cards = _phase(1.75, 2.15);
 
   /// The launch icon's visible circle is 192 dp across; the clip grows well
   /// past the tile box as the neighbours pop in.
