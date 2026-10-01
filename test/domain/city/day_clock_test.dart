@@ -1,36 +1,14 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:math_city/domain/city/day_clock.dart';
 
-(int, int, int) _rgb(int c) => ((c >> 16) & 0xFF, (c >> 8) & 0xFF, c & 0xFF);
-
 void main() {
-  group('hazeColorAt', () {
-    test('is white by day and near black at midnight', () {
-      final (r, g, b) = _rgb(hazeColorAt(12));
-      expect(r, greaterThan(225));
-      expect(g, greaterThan(225));
-      expect(b, greaterThan(225));
-      final (nr, ng, nb) = _rgb(hazeColorAt(0));
-      expect(nr, lessThan(30));
-      expect(ng, lessThan(30));
-      expect(nb, lessThan(40));
-    });
-
-    test('is never purple before dawn', () {
-      for (var h = 0.0; h < 6.5; h += 0.25) {
-        final (r, g, b) = _rgb(hazeColorAt(h));
-        // Grey or peach: blue never dominates red by much.
-        expect(b - r, lessThan(16), reason: 'hour $h');
-        // And no magenta: green is never far below both red and blue.
-        expect(g, greaterThanOrEqualTo((r < b ? r : b) - 24), reason: '$h');
-      }
-    });
-
-    test('hits the keys exactly and wraps at 24', () {
-      expect(hazeColorAt(13), 0xE8F0F6);
-      expect(hazeColorAt(18.5), 0xF3C58F);
-      expect(hazeColorAt(24), hazeColorAt(0));
-      expect(hazeColorAt(25), hazeColorAt(1));
+  group('formatHour', () {
+    test('reads as a 12-hour clock', () {
+      expect(formatHour(9.5), '9:30 am');
+      expect(formatHour(0), '12:00 am');
+      expect(formatHour(12), '12:00 pm');
+      expect(formatHour(18.08), '6:04 pm');
+      expect(formatHour(24.25), '12:15 am');
     });
   });
 

@@ -9,8 +9,6 @@
 /// pixels.
 library;
 
-import 'package:math_city/domain/city/land_blocks.dart';
-
 /// A stable pseudo-random number in `[0, 1)` for a tile — the port of the
 /// mocks' `hash2`, so the Flutter ground matches the approved pages.
 double tileHash(int c, int r) {
@@ -20,20 +18,38 @@ double tileHash(int c, int r) {
   return h / 4294967296;
 }
 
-/// Which greens a tile is painted from (T3, density as distance): the
-/// meadow near town, scrub on ring 3, forest floor beyond.
+/// Which greens a tile is painted from: the light meadow inside the
+/// town, scrub on the purchasable ring, forest floor beyond. The bands
+/// follow the fence — buying a block turns it meadow and pushes the scrub
+/// and the forest out with it.
 enum TerrainBand { meadow, scrub, forest }
 
-TerrainBand terrainBandOf(int ring) => switch (ring) {
-  <= 2 => TerrainBand.meadow,
-  3 => TerrainBand.scrub,
+/// The band for a block [distance] blocks (Chebyshev) from the nearest
+/// owned block: `0` is owned.
+TerrainBand terrainBandForDistance(int distance) => switch (distance) {
+  0 => TerrainBand.meadow,
+  1 => TerrainBand.scrub,
   _ => TerrainBand.forest,
 };
 
-/// The band of world tile `(col, row)`, from its block's ring.
-TerrainBand terrainBandAt(int col, int row) {
-  final (bx, by) = blockOfTile(col, row);
-  return terrainBandOf(blockRing(bx, by));
+/// Chebyshev distance in blocks from `(bx, by)` to the nearest block in
+/// [owned], capped at [cap] (the bands stop changing past 2 anyway).
+int blockDistanceToOwned(
+  int bx,
+  int by,
+  Set<(int, int)> owned, {
+  int cap = 2,
+}) {
+  if (owned.contains((bx, by))) return 0;
+  var best = cap;
+  for (final (ox, oy) in owned) {
+    final d = (bx - ox).abs() > (by - oy).abs()
+        ? (bx - ox).abs()
+        : (by - oy).abs();
+    if (d < best) best = d;
+    if (best == 1) break;
+  }
+  return best;
 }
 
 /// Where a tile's grass tuft goes, if it has one: offsets in tile widths

@@ -1,31 +1,11 @@
-/// The ambient day (city_builder.md §11, D2 + K1 + S4): an eight-minute
-/// loop — five minutes of day, three of night — that colours the sky haze
-/// and tints the town. The clock is frozen at 9:30 through chapter one and
-/// pauses while a question screen covers the city.
+/// The ambient day (city_builder.md §11, D2 + S4): an eight-minute loop —
+/// five minutes of day, three of night — that tints the whole scene (a
+/// warm wash at dawn and dusk, a dark multiply at night). The clock is
+/// frozen at 9:30 through chapter one and pauses while a question screen
+/// covers the city.
 ///
-/// Pure Dart: no Flutter / Flame / Drift imports. Colours are plain
-/// `0xRRGGBB` ints; the painter wraps them.
+/// Pure Dart: no Flutter / Flame / Drift imports.
 library;
-
-/// The horizon colour by hour (K1): near-black at midnight, dark grey →
-/// peach → white at dawn, off-white through the day, orange → grey-brown
-/// → dark at dusk. Interpolation only ever runs between neighbouring keys,
-/// so there is no purple between night and dawn.
-const List<(double, int)> kHazeKeys = <(double, int)>[
-  (0, 0x0E1118),
-  (4.5, 0x141821),
-  (5.5, 0x3C4049),
-  (6.5, 0xF1CBA4),
-  (7.5, 0xF3EBDD),
-  (9, 0xEDF3F8),
-  (13, 0xE8F0F6),
-  (17, 0xF0EEE8),
-  (18.5, 0xF3C58F),
-  (19.5, 0x8E7568),
-  (20.5, 0x3A3C47),
-  (22, 0x171A22),
-  (24, 0x0E1118),
-];
 
 /// How dark the town is, `0` by day to `1` at night; drives the multiply
 /// tint. Keys from the mocks' `timeOfDay`.
@@ -67,25 +47,6 @@ double _keyed(List<(double, double)> keys, double hour) {
   final (h0, v0) = keys[i];
   final (h1, v1) = keys[i + 1];
   return v0 + (v1 - v0) * ((h - h0) / (h1 - h0));
-}
-
-/// The haze colour at [hour], as `0xRRGGBB`.
-int hazeColorAt(double hour) {
-  final h = _wrap(hour);
-  var i = 0;
-  while (i + 2 < kHazeKeys.length && kHazeKeys[i + 1].$1 <= h) {
-    i++;
-  }
-  final (h0, c0) = kHazeKeys[i];
-  final (h1, c1) = kHazeKeys[i + 1];
-  final t = (h - h0) / (h1 - h0);
-  int mix(int shift) {
-    final a = (c0 >> shift) & 0xFF;
-    final b = (c1 >> shift) & 0xFF;
-    return (a + (b - a) * t).round().clamp(0, 255);
-  }
-
-  return (mix(16) << 16) | (mix(8) << 8) | mix(0);
 }
 
 /// Night strength at [hour], `0` (full day) to `1` (deep night).
@@ -150,4 +111,13 @@ class AmbientClock {
     if (!running || seconds <= 0) return;
     hour = advanceHour(hour, seconds);
   }
+}
+
+/// The hour as a kid-readable clock, `9:30 am` / `6:05 pm`.
+String formatHour(double hour) {
+  final total = ((((hour % 24) + 24) % 24) * 60).floor();
+  final h = total ~/ 60;
+  final m = total % 60;
+  final h12 = h % 12 == 0 ? 12 : h % 12;
+  return '$h12:${m.toString().padLeft(2, '0')} ${h < 12 ? 'am' : 'pm'}';
 }
