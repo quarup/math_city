@@ -67,6 +67,27 @@ class PlacedBuildingView {
   final String? assetPath;
 }
 
+/// A purchasable block while Expand city is on (city_builder.md §11, E1):
+/// survey stakes and string round its 4×4, a faint wash, and a price pill
+/// at its centre — gold when the player can afford it, amber when it is
+/// the selected one.
+class FrontierBlockView {
+  const FrontierBlockView({
+    required this.col,
+    required this.row,
+    required this.price,
+    required this.affordable,
+    required this.selected,
+  });
+
+  /// Window-local tile of the block's north corner.
+  final int col;
+  final int row;
+  final int price;
+  final bool affordable;
+  final bool selected;
+}
+
 /// Renders the isometric terrain grid plus placeholder extruded-box buildings,
 /// and reports tile taps back to the presentation layer. Phase 7 placeholder
 /// art per plan.md — colored diamonds + emoji, no PNGs.
@@ -120,6 +141,15 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
   /// land and the town's boundary runs round it as a moving dashed line.
   /// Nothing of this is drawn at rest.
   bool placementEdges = false;
+
+  /// Expand-city mode (E1 + E6): the purchasable blocks to stake, and
+  /// whether the mode is on at all (the land beyond the ring dims).
+  bool expandMode = false;
+  List<FrontierBlockView> frontierBlocks = const [];
+
+  /// The camera's zoom, set by the host game every frame, so labels can be
+  /// drawn at a constant screen size.
+  double cameraZoom = 1;
 
   /// The town's outline for the placement edges — every owned-tile edge
   /// facing unowned land, road crossings included (the fence skips them).
@@ -274,6 +304,17 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     ..style = PaintingStyle.stroke
     ..strokeWidth = 2;
 
+  /// Survey stakes and string (E1): white string on a resting block, amber
+  /// marching dashes on the selected one.
+  static const _amber = Color(0xFFF9A825);
+  final _stringPaint = Paint()
+    ..style = PaintingStyle.stroke
+    ..strokeCap = StrokeCap.round;
+  final _stakePaint = Paint()..color = const Color(0xFF6D4C2B);
+  final _capPaint = Paint();
+  final _washPaint = Paint();
+  final Map<String, TextPainter> _pillText = {};
+
   /// Yellow wash for the selected land site, drawn over its pad. Matches
   /// the picked-up-building tint so "selected" reads the same everywhere.
   static const _buyingFill = Color(0x66FFEB3B);
@@ -402,6 +443,7 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
       draw();
     }
     if (placementEdges) _drawPlacementEdges(canvas);
+    if (expandMode) _drawExpandMode(canvas);
     // The rejected footprint sits over everything in its way.
     for (final (col, row) in rejectedTiles) {
       final (cx, cy) = grid.centerOf(col, row);
@@ -604,6 +646,152 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
       dashedPath(outline, dash: 8 * k, gap: 6 * k, phase: time * 14 * k),
       _boundaryPaint..strokeWidth = 2 * k,
     );
+  }
+
+  /// Corner points of a `w × h` tile region at local `(col, row)`: north,
+  /// east, south, west.
+  (Offset, Offset, Offset, Offset) _regionCorners(
+    int col,
+    int row,
+    int w,
+    int h,
+  ) {
+    final (ncx, ncy) = grid.centerOf(col, row);
+    final (ecx, ecy) = grid.centerOf(col + w - 1, row);
+    final (scx, scy) = grid.centerOf(col + w - 1, row + h - 1);
+    final (wcx, wcy) = grid.centerOf(col, row + h - 1);
+    return (
+      Offset(ncx, ncy - _halfH),
+      Offset(ecx + _halfW, ecy),
+      Offset(scx, scy + _halfH),
+      Offset(wcx - _halfW, wcy),
+    );
+  }
+
+  /// Survey stakes at the corners of a region and string between them,
+  /// over an optional wash. [selected] makes the string amber and marching.
+  void _drawSurvey(
+    Canvas canvas,
+    (Offset, Offset, Offset, Offset) corners, {
+    required bool selected,
+    Color? wash,
+  }) {
+    final k = grid.tileWidth / 64;
+    final (n, e, s, w) = corners;
+    final outline = Path()
+      ..moveTo(n.dx, n.dy)
+      ..lineTo(e.dx, e.dy)
+      ..lineTo(s.dx, s.dy)
+      ..lineTo(w.dx, w.dy)
+      ..close();
+    if (wash != null) canvas.drawPath(outline, _washPaint..color = wash);
+    _stringPaint
+      ..color = selected ? _amber : const Color(0xE6FFFFFF)
+      ..strokeWidth = (selected ? 2 : 1.5) * k;
+    canvas.drawPath(
+      dashedPath(
+        outline,
+        dash: 6 * k,
+        gap: 5 * k,
+        phase: selected ? time * 12 * k : 0,
+      ),
+      _stringPaint,
+    );
+    _capPaint.color = selected ? _amber : const Color(0xFFF5F2E8);
+    for (final p in [n, e, s, w]) {
+      canvas
+        ..drawRect(
+          Rect.fromLTWH(p.dx - 1.5 * k, p.dy - 10 * k, 3 * k, 11 * k),
+          _stakePaint,
+        )
+        ..drawRect(
+          Rect.fromLTWH(p.dx - 3 * k, p.dy - 12 * k, 6 * k, 4 * k),
+          _capPaint,
+        );
+    }
+  }
+
+  /// A label at a world point drawn at a constant screen size whatever the
+  /// zoom: the app's dark pill, or gold when [gold].
+  void _drawPill(Canvas canvas, Offset at, String text, {required bool gold}) {
+    final tp = _pillText.putIfAbsent(
+      '$text/$gold',
+      () => TextPainter(
+        text: TextSpan(
+          text: text,
+          style: TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.w700,
+            color: gold ? const Color(0xFF5C4300) : const Color(0xFFFFFFFF),
+          ),
+        ),
+        textDirection: TextDirection.ltr,
+      )..layout(),
+    );
+    final w = tp.width + 18;
+    final rect = RRect.fromRectAndRadius(
+      Rect.fromCenter(center: Offset.zero, width: w, height: 22),
+      const Radius.circular(11),
+    );
+    canvas
+      ..save()
+      ..translate(at.dx, at.dy)
+      ..scale(1 / cameraZoom)
+      ..drawRRect(
+        rect,
+        Paint()
+          ..color = gold ? const Color(0xFFFFE082) : const Color(0xC7101917),
+      );
+    if (gold) {
+      canvas.drawRRect(
+        rect,
+        Paint()
+          ..color = const Color(0xFFB8860B)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.2,
+      );
+    }
+    tp.paint(canvas, Offset(-tp.width / 2, -tp.height / 2 + 0.5));
+    canvas.restore();
+  }
+
+  /// E1 + E6: beyond the purchasable ring the land dims; each purchasable
+  /// block gets stakes, string, a faint wash and its price pill; the
+  /// selected block is amber with a yellow wash.
+  void _drawExpandMode(Canvas canvas) {
+    final vis = visibleWorldRect;
+    final ringTiles = <(int, int)>{
+      for (final b in frontierBlocks)
+        for (var c = b.col; c < b.col + kBlockSize; c++)
+          for (var r = b.row; r < b.row + kBlockSize; r++) (c, r),
+    };
+    for (var c = 0; c < grid.cols; c++) {
+      for (var r = 0; r < grid.rows; r++) {
+        if (_ownedTiles.contains((c, r)) || ringTiles.contains((c, r))) {
+          continue;
+        }
+        if (vis != null && !_inView(vis, c, r)) continue;
+        final (cx, cy) = grid.centerOf(c, r);
+        canvas.drawPath(_diamond(cx, cy, 0), _dimPaint);
+      }
+    }
+    for (final b in frontierBlocks) {
+      _drawSurvey(
+        canvas,
+        _regionCorners(b.col, b.row, kBlockSize, kBlockSize),
+        selected: b.selected,
+        wash: b.selected ? const Color(0x59FFEB3B) : const Color(0x1AFFFFFF),
+      );
+    }
+    for (final b in frontierBlocks) {
+      final (cx, cy) = grid.pointAt(b.col + 1.5, b.row + 1.5);
+      _drawPill(
+        canvas,
+        Offset(cx, cy - 6 * grid.tileWidth / 64),
+        '🪙 ${b.price}',
+        gold: b.affordable,
+      );
+    }
   }
 
   /// The decor for the current window, rebuilt when the owned land or the

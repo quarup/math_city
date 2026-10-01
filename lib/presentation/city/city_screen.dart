@@ -23,6 +23,7 @@ import 'package:math_city/domain/city/terrain.dart';
 import 'package:math_city/domain/city/upgrade_ladders.dart';
 import 'package:math_city/domain/economy/question_block.dart';
 import 'package:math_city/domain/proficiency/proficiency_band.dart';
+import 'package:math_city/game/city/camera_focus.dart';
 import 'package:math_city/game/city/city_board_component.dart';
 import 'package:math_city/game/city/iso_city_game.dart';
 import 'package:math_city/game/city/iso_grid.dart';
@@ -190,9 +191,14 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
   /// player can nudge it into place on a small screen.
   int? _movingId;
 
-  /// The frontier block currently selected to start a land site on (yellow
-  /// highlight + confirm bar at the bottom), or null.
+  /// The frontier block currently selected to start a land site on (amber
+  /// stakes + confirm bar at the bottom), or null. Only set in Expand city.
   (int, int)? _buyingBlock;
+
+  /// Expand city (city_builder.md §11, E1 + E6): the purchasable ring is
+  /// staked and priced, the camera pulls back to frame it, and a tap on a
+  /// block selects it. Off at rest, when nothing marks the frontier.
+  bool _expandMode = false;
 
   /// The construction site currently selected (yellow fence, site bar at the
   /// bottom with its `paid / price` and *Build!*), or null. A tap on the map
@@ -257,8 +263,9 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
         _selectSite(landSite.id);
         return;
       }
+      // Land is only for sale in Expand city (city_builder.md §11, E1).
+      if (!_expandMode) return;
       if (!purchasableBlocks(ownedBlocks).contains(block)) return;
-      if (_chapterOne) return; // land comes after the guide
       if (_atSiteCap(sites)) return;
       if (block == _buyingBlock) {
         _startSelectedLandSite();
@@ -276,9 +283,9 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
       return;
     }
 
-    // A tap back on owned land while picking land just cancels the
+    // A tap back on owned land while expanding just drops the block
     // selection — it shouldn't also place or pick up a building.
-    if (_buyingBlock != null) {
+    if (_expandMode) {
       setState(() => _buyingBlock = null);
       return;
     }
@@ -1062,6 +1069,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
       _selectedBuildingId = result.placementId;
       _selectedSiteId = result.siteId;
     });
+    if (goal is LandBlockGoal) _exitExpand();
     // Chapter one: placing it zooms and opens the wheel without a further
     // tap (city_builder.md §10.4).
     final siteId = result.siteId;
@@ -1284,12 +1292,71 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
   }
 
   /// Confirms the pending land selection: starts a land site on that block
-  /// (paid down by playing, like any site). Reached from the bar's Start
+  /// (paid down by playing, like any site). Reached from the bar's Stake
   /// button and from a second tap on the selected block.
   void _startSelectedLandSite() {
     final block = _buyingBlock;
     if (block == null) return;
     unawaited(_startSite(LandBlockGoal(blockX: block.$1, blockY: block.$2)));
+  }
+
+  /// Expand city (E1 + E6): stakes and prices the purchasable ring and
+  /// pulls the camera back to frame it, the town below the centre under
+  /// the haze. Every other mode gives way.
+  void _enterExpand() {
+    final ownedBlocks = ref.read(ownedBlocksProvider).asData?.value;
+    final window = _window;
+    if (ownedBlocks == null || window == null || _game == null) return;
+    setState(() {
+      _expandMode = true;
+      _buyingBlock = null;
+      _selected = null;
+      _pendingSpot = null;
+      _growSource = null;
+      _growTarget = null;
+      _growCandidates = const [];
+      _movingId = null;
+      _movingSiteId = null;
+      _moveOrigin = null;
+      _selectedSiteId = null;
+      _selectedBuildingId = null;
+      _letterId = null;
+    });
+    final ring = ownedTilesOf(purchasableBlocks(ownedBlocks));
+    var minC = ring.first.$1;
+    var minR = ring.first.$2;
+    var maxC = minC;
+    var maxR = minR;
+    for (final (c, r) in ring) {
+      minC = math.min(minC, c);
+      minR = math.min(minR, r);
+      maxC = math.max(maxC, c);
+      maxR = math.max(maxR, r);
+    }
+    // Pull back after the bar has swapped so the framing uses the right
+    // visible height.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || _game == null || !_expandMode) return;
+      _game!.focusOnFootprint(
+        col: minC - window.minCol,
+        row: minR - window.minRow,
+        width: maxC - minC + 1,
+        height: maxR - minR + 1,
+        anchorY: kTownAnchorY,
+        widthFraction: 0.92,
+        minZoom: 0.25,
+      );
+    });
+  }
+
+  /// Leaves Expand city and puts the camera back where it was.
+  void _exitExpand() {
+    if (!_expandMode) return;
+    setState(() {
+      _expandMode = false;
+      _buyingBlock = null;
+    });
+    _game?.releaseFocus();
   }
 
   List<PlacedBuildingView> _viewsFor(
@@ -1544,6 +1611,26 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
               _zoomedSite;
     final celebratingSite = _celebratingSite;
     final credit = player?.creditBalance ?? 0;
+    // Expand city: the purchasable ring, staked and priced (gold when the
+    // player's credit covers a block), the selected one amber.
+    if (_game != null && ownedBlocks != null && _window != null) {
+      final window = _window!;
+      _game!.setFrontier(
+        expand: _expandMode,
+        blocks: !_expandMode
+            ? const []
+            : [
+                for (final (bx, by) in purchasableBlocks(ownedBlocks))
+                  FrontierBlockView(
+                    col: bx * kBlockSize - window.minCol,
+                    row: by * kBlockSize - window.minRow,
+                    price: blockCost(bx, by),
+                    affordable: credit >= blockCost(bx, by),
+                    selected: (bx, by) == _buyingBlock,
+                  ),
+              ],
+      );
+    }
     // A selected site that has since opened (or was cancelled) is no
     // selection: drop the stale id so the city counts as at rest.
     if (_selectedSiteId != null && selectedSite == null) _selectedSiteId = null;
@@ -1603,7 +1690,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
         _selectedSiteId == null &&
         _selectedBuildingId == null &&
         _growTarget == null &&
-        _buyingBlock == null;
+        !_expandMode;
     if (_letterId == null && atRest) {
       final next = openBeats
           .where(
@@ -1721,6 +1808,8 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
             onStart: _startSelectedLandSite,
             onCancel: () => setState(() => _buyingBlock = null),
           )
+        : _expandMode
+        ? _ExpandBar(onClose: _exitExpand)
         : selectedSite != null
         ? _SiteBar(
             site: selectedSite,
@@ -1852,6 +1941,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
               }
             }),
             onSelectSite: (site) => setState(() => _selectedSiteId = site.id),
+            onExpand: chapterOne ? null : _enterExpand,
             onOpenLetter: (b) => setState(() {
               _letterId = b.beat.id;
               // Re-opened on purpose: read it out again.
@@ -1886,10 +1976,16 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     });
 
     return PopScope(
-      // Back from a zoomed state zooms out; it never leaves the city.
-      canPop: !zoomed,
+      // Back from a zoomed state zooms out, and from Expand city leaves
+      // the mode; it never leaves the city.
+      canPop: !zoomed && !_expandMode,
       onPopInvokedWithResult: (didPop, _) {
-        if (!didPop && !_game!.isTweening) _zoomOut();
+        if (didPop || _game!.isTweening) return;
+        if (_expandMode) {
+          _exitExpand();
+        } else {
+          _zoomOut();
+        }
       },
       child: Scaffold(
         appBar: AppBar(
@@ -2876,6 +2972,76 @@ class _PlaceHereBar extends StatelessWidget {
   }
 }
 
+/// Bottom strip while Expand city is on and no block is selected yet.
+class _ExpandBar extends StatelessWidget {
+  const _ExpandBar({required this.onClose});
+
+  final VoidCallback onClose;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Material(
+      elevation: 8,
+      color: theme.colorScheme.surfaceContainer,
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Row(
+            children: [
+              const Icon(Icons.open_in_full_rounded),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'Expand city · tap a block to stake it',
+                  style: theme.textTheme.bodyMedium,
+                ),
+              ),
+              const SizedBox(width: 8),
+              _CloseButton(onPressed: onClose, tooltip: 'Close'),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// The *Expand city* card at the end of the folder bar (E1).
+class _ExpandCard extends StatelessWidget {
+  const _ExpandCard({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return _BarCard(
+      color: const Color(0xFF8D6E63),
+      dashed: true,
+      onTap: onTap,
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.open_in_full_rounded, size: 24),
+            const SizedBox(height: 2),
+            Text(
+              'Expand',
+              style: theme.textTheme.labelSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text('city', style: theme.textTheme.labelSmall),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 /// Bottom strip shown while a frontier block is selected. Not a dialog on
 /// purpose: the city stays visible and tappable, so the player can still
 /// move the selection to a different spot before confirming. Starting the
@@ -2910,7 +3076,7 @@ class _StartLandSiteBar extends StatelessWidget {
                 child: Text.rich(
                   TextSpan(
                     children: [
-                      const TextSpan(text: 'Build out this land for '),
+                      const TextSpan(text: 'Stake this land for '),
                       coinSpan(),
                       TextSpan(text: ' $cost?'),
                     ],
@@ -2921,7 +3087,7 @@ class _StartLandSiteBar extends StatelessWidget {
               const SizedBox(width: 8),
               TextButton(onPressed: onCancel, child: const Text('Cancel')),
               const SizedBox(width: 4),
-              FilledButton(onPressed: onStart, child: const Text('Start')),
+              FilledButton(onPressed: onStart, child: const Text('Stake it')),
             ],
           ),
         ),
@@ -3099,6 +3265,7 @@ class _BuildBar extends StatelessWidget {
     required this.newCardIds,
     required this.onOpenFolder,
     required this.onSelectSite,
+    required this.onExpand,
     required this.onOpenLetter,
     required this.onSelect,
   });
@@ -3125,6 +3292,10 @@ class _BuildBar extends StatelessWidget {
   final Set<String> newCardIds;
   final void Function(BuildingCategory?) onOpenFolder;
   final void Function(CitySite) onSelectSite;
+
+  /// Opens Expand city (city_builder.md §11, E1); null hides the button
+  /// (chapter one).
+  final VoidCallback? onExpand;
   final void Function(OpenBeat) onOpenLetter;
   final void Function(BuildingType) onSelect;
 
@@ -3178,6 +3349,7 @@ class _BuildBar extends StatelessWidget {
               ),
               onTap: () => onOpenFolder(c),
             ),
+        if (onExpand case final onExpand?) _ExpandCard(onTap: onExpand),
       ] else ...[
         _BackCard(category: folder, onTap: () => onOpenFolder(null)),
         for (final b in rest.where((b) => b.category == folder))

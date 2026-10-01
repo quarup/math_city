@@ -102,7 +102,8 @@ class IsoCityGame extends FlameGame with DragCallbacks {
   /// Tweens the camera so the footprint at `(col, row)` of `width × height`
   /// tiles spans [widthFraction] of the viewport width and sits at viewport
   /// fraction `(0.5, anchorY)`. The first focus remembers the camera so
-  /// [releaseFocus] can put it back.
+  /// [releaseFocus] can put it back. [minZoom] lets a pull-back (Expand
+  /// city framing the whole ring) go further out than a pinch can.
   void focusOnFootprint({
     required int col,
     required int row,
@@ -110,6 +111,7 @@ class IsoCityGame extends FlameGame with DragCallbacks {
     required int height,
     required double anchorY,
     required double widthFraction,
+    double minZoom = IsoCityGame.minZoom,
     Duration duration = const Duration(milliseconds: 650),
     VoidCallback? onDone,
   }) {
@@ -185,7 +187,11 @@ class IsoCityGame extends FlameGame with DragCallbacks {
   void update(double dt) {
     super.update(dt);
     clock.tick(dt);
-    if (isLoaded) board.visibleWorldRect = camera.visibleWorldRect;
+    if (isLoaded) {
+      board
+        ..visibleWorldRect = camera.visibleWorldRect
+        ..cameraZoom = camera.viewfinder.zoom;
+    }
     final to = _tweenToPos;
     if (to == null) return;
     _tweenElapsed += dt;
@@ -491,6 +497,17 @@ class IsoCityGame extends FlameGame with DragCallbacks {
       _pendingOwned = ownedLocalTiles;
       _pendingOrigin = origin;
     }
+  }
+
+  /// Expand-city mode (E1): the purchasable blocks to stake, or off.
+  void setFrontier({
+    required bool expand,
+    required List<FrontierBlockView> blocks,
+  }) {
+    if (!isLoaded) return;
+    board
+      ..expandMode = expand
+      ..frontierBlocks = blocks;
   }
 
   /// Turns the placement edges (B1 + B4) on while a building is being
