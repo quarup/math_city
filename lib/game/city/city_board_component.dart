@@ -156,6 +156,12 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
   bool expandMode = false;
   List<FrontierBlockView> frontierBlocks = const [];
 
+  /// E9: the block set a building that did not fit needs, staked as one
+  /// plot (window-local tiles) with its group label, while Expand city
+  /// proposes it. Empty when no proposal is up.
+  Set<(int, int)> proposedPlot = const {};
+  String? proposedLabel;
+
   /// The camera's zoom, set by the host game every frame, so labels can be
   /// drawn at a constant screen size.
   double cameraZoom = 1;
@@ -399,6 +405,9 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     _drawFence(canvas);
     for (final site in _landSites) {
       _drawStakedPlot(canvas, site.tiles, selected: site.selected);
+    }
+    if (expandMode && proposedPlot.isNotEmpty) {
+      _drawStakedPlot(canvas, proposedPlot, selected: true);
     }
     // Painter's order: tiles further back (smaller col+row) draw first so
     // nearer buildings overlap them correctly. Movers slot into the same
@@ -808,6 +817,7 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
   void _drawExpandMode(Canvas canvas) {
     final vis = visibleWorldRect;
     final ringTiles = <(int, int)>{
+      ...proposedPlot,
       for (final b in frontierBlocks)
         for (var c = b.col; c < b.col + kBlockSize; c++)
           for (var r = b.row; r < b.row + kBlockSize; r++) (c, r),
@@ -837,6 +847,22 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
         Offset(cx, cy - 6 * grid.tileWidth / 64),
         '🪙 ${b.price}',
         gold: b.affordable,
+      );
+    }
+    if (proposedPlot.isNotEmpty && proposedLabel != null) {
+      var sx = 0.0;
+      var sy = 0.0;
+      for (final (c, r) in proposedPlot) {
+        final (cx, cy) = grid.centerOf(c, r);
+        sx += cx;
+        sy += cy;
+      }
+      final n = proposedPlot.length;
+      _drawPill(
+        canvas,
+        Offset(sx / n, sy / n + grid.tileWidth * 0.6),
+        proposedLabel!,
+        gold: true,
       );
     }
   }

@@ -440,4 +440,54 @@ void main() {
       }
     });
   });
+
+  group('LandBlockGoal groups (city_builder.md §11, E9)', () {
+    test('a group is priced as the sum of its blocks', () {
+      const g = LandBlockGoal(blocks: {(2, 0), (3, 0)});
+      expect(g.price, 1200 + 1800);
+      expect(g.tileBounds, (8, 0, 8, 4));
+    });
+
+    test('blocks round-trip through the text column', () {
+      const g = LandBlockGoal(blocks: {(3, 1), (2, 0), (2, 1)});
+      expect(g.encodeBlocks(), '2,0;2,1;3,1');
+      expect(LandBlockGoal.decodeBlocks(g.encodeBlocks()), g.blocks);
+    });
+
+    test('a ring-3 block may only be bought inside a connected group', () {
+      final owned = startingOwnedBlocks();
+      expect(
+        checkStartSite(
+          goal: const LandBlockGoal(blocks: {(3, 0)}),
+          openSites: const [],
+          ownedBlocks: owned,
+        ),
+        SiteStartRejection.blockNotPurchasable,
+      );
+      expect(
+        checkStartSite(
+          goal: const LandBlockGoal(blocks: {(2, 0), (3, 0)}),
+          openSites: const [],
+          ownedBlocks: owned,
+        ),
+        isNull,
+      );
+    });
+
+    test('a group overlapping an open land site is refused', () {
+      final owned = startingOwnedBlocks();
+      const open = ConstructionSite(
+        goal: LandBlockGoal(blocks: {(2, 0)}),
+        startedAtRound: 0,
+      );
+      expect(
+        checkStartSite(
+          goal: const LandBlockGoal(blocks: {(2, 0), (3, 0)}),
+          openSites: const [open],
+          ownedBlocks: owned,
+        ),
+        SiteStartRejection.blockAlreadyStarted,
+      );
+    });
+  });
 }

@@ -495,15 +495,20 @@ class IsoCityGame extends FlameGame with DragCallbacks {
     }
   }
 
-  /// Expand-city mode (E1): the purchasable blocks to stake, or off.
+  /// Expand-city mode (E1): the purchasable blocks to stake, or off; and
+  /// the plot + label of a proposed group (E9), if one is up.
   void setFrontier({
     required bool expand,
     required List<FrontierBlockView> blocks,
+    Set<(int, int)> proposal = const {},
+    String? proposalLabel,
   }) {
     if (!isLoaded) return;
     board
       ..expandMode = expand
-      ..frontierBlocks = blocks;
+      ..frontierBlocks = blocks
+      ..proposedPlot = proposal
+      ..proposedLabel = proposalLabel;
   }
 
   /// Turns the placement edges (B1 + B4) on while a building is being

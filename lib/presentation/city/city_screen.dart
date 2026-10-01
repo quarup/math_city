@@ -16,6 +16,7 @@ import 'package:math_city/domain/city/chapter_one.dart';
 import 'package:math_city/domain/city/citizen.dart';
 import 'package:math_city/domain/city/construction_site.dart';
 import 'package:math_city/domain/city/land_blocks.dart';
+import 'package:math_city/domain/city/land_fit.dart';
 import 'package:math_city/domain/city/placement_rules.dart';
 import 'package:math_city/domain/city/road_network.dart';
 import 'package:math_city/domain/city/story_beat.dart';
@@ -204,6 +205,11 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
   /// block selects it. Off at rest, when nothing marks the frontier.
   bool _expandMode = false;
 
+  /// E9: the block set a building that did not fit needs, up for staking
+  /// in Expand city with the building ghosted inside it. The ghost is
+  /// [_selected] at [_pendingSpot], as for any proposal.
+  ({BlockSetFit fit, BuildingType type})? _landProposal;
+
   /// The construction site currently selected (yellow fence, site bar at the
   /// bottom with its `paid / price` and *Build!*), or null. A tap on the map
   /// while a site is selected just deselects it; its bar's move button
@@ -277,6 +283,8 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
       }
       setState(() {
         _buyingBlock = block;
+        _landProposal = null;
+        _selected = null;
         _movingId = null;
         _movingSiteId = null;
         _moveOrigin = null;
@@ -1097,12 +1105,12 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
   /// selects the new site (or opens the placed building's card, for a free
   /// goal), or
   /// toasts why it was refused — a fourth site names the three open ones.
-  Future<void> _startSite(SiteGoal goal) async {
+  Future<bool> _startSite(SiteGoal goal) async {
     final result = await ref.read(cityActionsProvider).startSite(goal);
-    if (!mounted) return;
+    if (!mounted) return false;
     if (result.rejection case final rejection?) {
       _toast(_rejectionMessage(rejection, result.openSites));
-      return;
+      return false;
     }
     setState(() {
       _buyingBlock = null;
@@ -1118,6 +1126,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
       final site = sites.where((s) => s.id == siteId).firstOrNull;
       if (site != null && mounted) _buildSite(site);
     }
+    return true;
   }
 
   String _rejectionMessage(SiteStartRejection rejection, List<CitySite> open) =>
@@ -1343,13 +1352,14 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
   /// Expand city (E1 + E6): stakes and prices the purchasable ring and
   /// pulls the camera back to frame it, the town below the centre under
   /// the haze. Every other mode gives way.
-  void _enterExpand() {
+  void _enterExpand({Set<(int, int)> alsoFrame = const {}}) {
     final ownedBlocks = ref.read(ownedBlocksProvider).asData?.value;
     final window = _window;
     if (ownedBlocks == null || window == null || _game == null) return;
     setState(() {
       _expandMode = true;
       _buyingBlock = null;
+      _landProposal = null;
       _selected = null;
       _pendingSpot = null;
       _growSource = null;
@@ -1362,7 +1372,10 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
       _selectedBuildingId = null;
       _letterId = null;
     });
-    final ring = ownedTilesOf(purchasableBlocks(ownedBlocks));
+    final ring = {
+      ...ownedTilesOf(purchasableBlocks(ownedBlocks)),
+      ...alsoFrame,
+    };
     var minC = ring.first.$1;
     var minR = ring.first.$2;
     var maxC = minC;
@@ -1395,8 +1408,61 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     setState(() {
       _expandMode = false;
       _buyingBlock = null;
+      if (_landProposal != null) {
+        _landProposal = null;
+        _selected = null;
+        _pendingSpot = null;
+      }
     });
     _game?.releaseFocus();
+  }
+
+  /// A building with no room anywhere on owned land (city_builder.md §11,
+  /// E5 + E9): find the smallest connected block set that fits it, enter
+  /// Expand city framing that set, stake it as one plot with the building
+  /// ghosted inside, and offer it at the group price.
+  void _proposeLand(
+    BuildingType type,
+    List<BuildingPlacement> placements,
+    List<CitySite> sites,
+  ) {
+    final ownedBlocks = ref.read(ownedBlocksProvider).asData?.value;
+    if (ownedBlocks == null) return;
+    final fit = findBlockSetForFootprint(
+      ownedBlocks: ownedBlocks,
+      existing: _footprintsOf(placements, sites),
+      width: type.footprint.$1,
+      height: type.footprint.$2,
+      reserved: _highway(),
+    );
+    if (fit == null) {
+      _toast('No land fits ${type.name} yet');
+      return;
+    }
+    _enterExpand(alsoFrame: ownedTilesOf(fit.blocks));
+    setState(() {
+      _landProposal = (fit: fit, type: type);
+      _selected = type;
+      _pendingSpot = fit.footprint;
+    });
+  }
+
+  /// *Stake it* on a proposed block set: one land site for the group, and
+  /// the building remembered as the next one (E7).
+  Future<void> _stakeProposal() async {
+    final proposal = _landProposal;
+    if (proposal == null) return;
+    setState(() {
+      _landProposal = null;
+      _selected = null;
+      _pendingSpot = null;
+    });
+    final started = await _startSite(
+      LandBlockGoal(blocks: proposal.fit.blocks),
+    );
+    if (started) {
+      await ref.read(cityActionsProvider).setNextBuilding(proposal.type.id);
+    }
   }
 
   List<PlacedBuildingView> _viewsFor(
@@ -1577,7 +1643,9 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     // The town's edges show only while something is in the hand
     // (city_builder.md §11, B1 + B4).
     _game?.setPlacementEdges(
-      on: _selected != null || _movingId != null || _movingSiteId != null,
+      on:
+          !_expandMode &&
+          (_selected != null || _movingId != null || _movingSiteId != null),
     );
     if (_game != null && placements != null) {
       _game!.setBuildings(_viewsFor(placements, sites, _window!));
@@ -1650,19 +1718,30 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     // player's credit covers a block), the selected one amber.
     if (_game != null && ownedBlocks != null && _window != null) {
       final window = _window!;
+      final proposal = _landProposal;
+      final proposalBlocks = proposal?.fit.blocks ?? const <(int, int)>{};
       _game!.setFrontier(
         expand: _expandMode,
+        proposal: proposal == null
+            ? const {}
+            : _localTiles(ownedTilesOf(proposalBlocks)),
+        proposalLabel: proposal == null
+            ? null
+            : '${proposalBlocks.length} '
+                  '${proposalBlocks.length == 1 ? 'block' : 'blocks'} · '
+                  '🪙 ${proposal.fit.price}',
         blocks: !_expandMode
             ? const []
             : [
                 for (final (bx, by) in purchasableBlocks(ownedBlocks))
-                  FrontierBlockView(
-                    col: bx * kBlockSize - window.minCol,
-                    row: by * kBlockSize - window.minRow,
-                    price: blockCost(bx, by),
-                    affordable: credit >= blockCost(bx, by),
-                    selected: (bx, by) == _buyingBlock,
-                  ),
+                  if (!proposalBlocks.contains((bx, by)))
+                    FrontierBlockView(
+                      col: bx * kBlockSize - window.minCol,
+                      row: by * kBlockSize - window.minRow,
+                      price: blockCost(bx, by),
+                      affordable: credit >= blockCost(bx, by),
+                      selected: (bx, by) == _buyingBlock,
+                    ),
               ],
       );
     }
@@ -1837,6 +1916,14 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
             price: celebratingSite?.price ?? liveZoomed?.site.price,
             onBack: _mode == _CityMode.celebrating ? null : _zoomOut,
           )
+        : _landProposal != null
+        ? _StakeLandBar(
+            type: _landProposal!.type,
+            blocks: _landProposal!.fit.blocks.length,
+            cost: _landProposal!.fit.price,
+            onStake: () => unawaited(_stakeProposal()),
+            onCancel: _exitExpand,
+          )
         : _buyingBlock != null
         ? _StartLandSiteBar(
             cost: blockCost(_buyingBlock!.$1, _buyingBlock!.$2),
@@ -1997,6 +2084,10 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                 sites,
                 ownedTiles,
               );
+              if (spot == null) {
+                _proposeLand(b, placements ?? const [], sites);
+                return;
+              }
               setState(() {
                 _selected = b;
                 _pendingSpot = spot;
@@ -2149,6 +2240,18 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                                     sites,
                                     ownedTiles,
                                   );
+                                  if (spot == null) {
+                                    setState(() {
+                                      _letterId = null;
+                                      _announcedLetterId = null;
+                                    });
+                                    _proposeLand(
+                                      letterTarget,
+                                      placements ?? const [],
+                                      sites,
+                                    );
+                                    return;
+                                  }
                                   setState(() {
                                     _letterId = null;
                                     _announcedLetterId = null;
@@ -3004,6 +3107,65 @@ class _PlaceHereBar extends StatelessWidget {
                     ),
                 ],
               ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Bottom strip for a proposed block set (E9): the building that needs
+/// it, how many blocks, the group price, and *Stake it*.
+class _StakeLandBar extends StatelessWidget {
+  const _StakeLandBar({
+    required this.type,
+    required this.blocks,
+    required this.cost,
+    required this.onStake,
+    required this.onCancel,
+  });
+
+  final BuildingType type;
+  final int blocks;
+  final int cost;
+  final VoidCallback onStake;
+  final VoidCallback onCancel;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Material(
+      elevation: 8,
+      color: theme.colorScheme.surfaceContainer,
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Row(
+            children: [
+              Text(type.emoji, style: const TextStyle(fontSize: 24)),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text:
+                            '${type.name} needs new land: '
+                            '$blocks ${blocks == 1 ? 'block' : 'blocks'} for ',
+                      ),
+                      coinSpan(),
+                      TextSpan(text: ' $cost'),
+                    ],
+                  ),
+                  style: theme.textTheme.bodyMedium,
+                ),
+              ),
+              const SizedBox(width: 8),
+              _CloseButton(onPressed: onCancel, tooltip: 'Not now'),
+              const SizedBox(width: 4),
+              FilledButton(onPressed: onStake, child: const Text('Stake it')),
             ],
           ),
         ),
