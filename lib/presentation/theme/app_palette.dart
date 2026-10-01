@@ -18,6 +18,7 @@ class AppPalette extends ThemeExtension<AppPalette> {
     required this.errorRedSoft,
     required this.errorRedDeep,
     required this.cityHillGreen,
+    required this.tileInk,
   });
 
   final Color skyGradientStart;
@@ -60,6 +61,9 @@ class AppPalette extends ThemeExtension<AppPalette> {
 
   final Color cityHillGreen;
 
+  /// Outline ink of the tile art (app icon, intro tiles, player stickers).
+  final Color tileInk;
+
   static const light = AppPalette(
     skyGradientStart: Color(0xFF5DB7E8),
     skyGradientEnd: Color(0xFFA4DDC9),
@@ -73,6 +77,7 @@ class AppPalette extends ThemeExtension<AppPalette> {
     errorRedSoft: Color(0xFFFCE4E2),
     errorRedDeep: Color(0xFFC62828),
     cityHillGreen: Color(0xFF5BBF7A),
+    tileInk: Color(0xFF1E2A38),
   );
 
   @override
@@ -89,6 +94,7 @@ class AppPalette extends ThemeExtension<AppPalette> {
     Color? errorRedSoft,
     Color? errorRedDeep,
     Color? cityHillGreen,
+    Color? tileInk,
   }) {
     return AppPalette(
       skyGradientStart: skyGradientStart ?? this.skyGradientStart,
@@ -103,6 +109,7 @@ class AppPalette extends ThemeExtension<AppPalette> {
       errorRedSoft: errorRedSoft ?? this.errorRedSoft,
       errorRedDeep: errorRedDeep ?? this.errorRedDeep,
       cityHillGreen: cityHillGreen ?? this.cityHillGreen,
+      tileInk: tileInk ?? this.tileInk,
     );
   }
 
@@ -134,6 +141,7 @@ class AppPalette extends ThemeExtension<AppPalette> {
       errorRedSoft: Color.lerp(errorRedSoft, other.errorRedSoft, t)!,
       errorRedDeep: Color.lerp(errorRedDeep, other.errorRedDeep, t)!,
       cityHillGreen: Color.lerp(cityHillGreen, other.cityHillGreen, t)!,
+      tileInk: Color.lerp(tileInk, other.tileInk, t)!,
     );
   }
 }

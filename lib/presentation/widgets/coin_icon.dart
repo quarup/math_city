@@ -12,10 +12,8 @@ class CoinIcon extends StatelessWidget {
   final double size;
 
   @override
-  Widget build(BuildContext context) => CustomPaint(
-    size: Size.square(size),
-    painter: const _CoinPainter(),
-  );
+  Widget build(BuildContext context) =>
+      CustomPaint(size: Size.square(size), painter: const _CoinPainter());
 }
 
 /// Coin icon followed by an amount, for balances and payouts.

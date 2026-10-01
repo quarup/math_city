@@ -5,10 +5,7 @@ import 'package:math_city/domain/questions/diagram_spec.dart';
 /// (row label on the left + icons stacked horizontally), and a "key"
 /// line below the graph when [PictureGraphSpec.scale] > 1.
 class PictureGraph extends StatelessWidget {
-  const PictureGraph({
-    required this.spec,
-    super.key,
-  });
+  const PictureGraph({required this.spec, super.key});
 
   final PictureGraphSpec spec;
 
@@ -50,10 +47,7 @@ class PictureGraph extends StatelessWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: Text(
-                      spec.icons[i] * iconCount,
-                      style: iconStyle,
-                    ),
+                    child: Text(spec.icons[i] * iconCount, style: iconStyle),
                   ),
                 ],
               );

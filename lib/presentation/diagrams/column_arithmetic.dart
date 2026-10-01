@@ -92,10 +92,7 @@ class ColumnArithmetic extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           if (showCarries)
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: carryRow(),
-            ),
+            Row(mainAxisSize: MainAxisSize.min, children: carryRow()),
           // Top operands.
           for (var i = 0; i < spec.operands.length - 1; i++)
             Row(
@@ -105,10 +102,7 @@ class ColumnArithmetic extends StatelessWidget {
           // Last operand with operator symbol in the gutter.
           Row(
             mainAxisSize: MainAxisSize.min,
-            children: rowFor(
-              '${spec.operands.last}',
-              leadOp: opChar,
-            ),
+            children: rowFor('${spec.operands.last}', leadOp: opChar),
           ),
           // Horizontal rule under the operands.
           Container(
@@ -118,10 +112,7 @@ class ColumnArithmetic extends StatelessWidget {
             color: theme.colorScheme.onSurface,
           ),
           if (result != null)
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: rowFor('$result'),
-            )
+            Row(mainAxisSize: MainAxisSize.min, children: rowFor('$result'))
           else
             // Blank space under the rule, the way a worksheet leaves it.
             // A `?` here reads as a fifth digit sitting in the column, and

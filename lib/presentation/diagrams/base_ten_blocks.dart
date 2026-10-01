@@ -6,11 +6,7 @@ import 'package:math_city/domain/questions/diagram_spec.dart';
 /// ones-cubes on the right. Each block is drawn outline-only with a
 /// light fill and an internal grid so the kid sees 1/10/100 scale.
 class BaseTenBlocks extends StatelessWidget {
-  const BaseTenBlocks({
-    required this.spec,
-    this.cellSize = 13,
-    super.key,
-  });
+  const BaseTenBlocks({required this.spec, this.cellSize = 13, super.key});
 
   final BaseTenBlocksSpec spec;
   final double cellSize;
@@ -39,11 +35,7 @@ class BaseTenBlocks extends StatelessWidget {
 }
 
 class _Flat extends StatelessWidget {
-  const _Flat({
-    required this.cellSize,
-    required this.edge,
-    required this.fill,
-  });
+  const _Flat({required this.cellSize, required this.edge, required this.fill});
 
   final double cellSize;
   final Color edge;
@@ -68,11 +60,7 @@ class _Flat extends StatelessWidget {
 }
 
 class _Rod extends StatelessWidget {
-  const _Rod({
-    required this.cellSize,
-    required this.edge,
-    required this.fill,
-  });
+  const _Rod({required this.cellSize, required this.edge, required this.fill});
 
   final double cellSize;
   final Color edge;
@@ -97,11 +85,7 @@ class _Rod extends StatelessWidget {
 }
 
 class _Unit extends StatelessWidget {
-  const _Unit({
-    required this.cellSize,
-    required this.edge,
-    required this.fill,
-  });
+  const _Unit({required this.cellSize, required this.edge, required this.fill});
 
   final double cellSize;
   final Color edge;

@@ -118,11 +118,7 @@ class _TreeDiagramPainter extends CustomPainter {
     double yForLevel(int level) => topGutter + level * rowHeight;
 
     // Draw the root node.
-    canvas.drawCircle(
-      Offset(xForNode(0, 0), yForLevel(0)),
-      4,
-      nodePaint,
-    );
+    canvas.drawCircle(Offset(xForNode(0, 0), yForLevel(0)), 4, nodePaint);
 
     // For each stage k (1-indexed level), draw edges from parents at
     // level k-1 down to children at level k, with the stage's outcome

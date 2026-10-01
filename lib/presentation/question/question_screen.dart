@@ -310,9 +310,7 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
   }
 
   Future<void> _showCard(Widget card, Duration hold) async {
-    final entry = OverlayEntry(
-      builder: (_) => _CenteredCard(child: card),
-    );
+    final entry = OverlayEntry(builder: (_) => _CenteredCard(child: card));
     await _hold(entry, hold);
   }
 
@@ -408,23 +406,13 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
 
     if (question == null) {
       return Scaffold(
-        appBar: AppBar(
-          title: title,
-          leading: leading,
-          actions: actions,
-        ),
-        body: const SafeArea(
-          child: Center(child: CircularProgressIndicator()),
-        ),
+        appBar: AppBar(title: title, leading: leading, actions: actions),
+        body: const SafeArea(child: Center(child: CircularProgressIndicator())),
       );
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: title,
-        leading: leading,
-        actions: actions,
-      ),
+      appBar: AppBar(title: title, leading: leading, actions: actions),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24),
@@ -597,10 +585,7 @@ class _CenteredCard extends StatelessWidget {
                 curve: Curves.elasticOut,
                 builder: (_, scale, child) =>
                     Transform.scale(scale: scale, child: child),
-                child: Material(
-                  color: Colors.transparent,
-                  child: child,
-                ),
+                child: Material(color: Colors.transparent, child: child),
               ),
             ),
           ),
@@ -694,10 +679,7 @@ class _DiagramThenCardLayout extends MultiChildLayoutDelegate {
   void performLayout(Size size) {
     final diagramSize = layoutChild(
       _QuestionSlot.diagram,
-      BoxConstraints(
-        maxWidth: size.width,
-        maxHeight: size.height * 0.45,
-      ),
+      BoxConstraints(maxWidth: size.width, maxHeight: size.height * 0.45),
     );
     final cardSize = layoutChild(
       _QuestionSlot.card,

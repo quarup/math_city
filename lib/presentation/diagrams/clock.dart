@@ -5,11 +5,7 @@ import 'package:math_city/domain/questions/diagram_spec.dart';
 
 /// Renders a [ClockSpec] as an analog clock face.
 class Clock extends StatelessWidget {
-  const Clock({
-    required this.spec,
-    this.size = 180,
-    super.key,
-  });
+  const Clock({required this.spec, this.size = 180, super.key});
 
   final ClockSpec spec;
   final double size;

@@ -8,11 +8,7 @@ import 'package:math_city/domain/questions/diagram_spec.dart';
 /// kind), or a pair of two lines in a parallel / perpendicular /
 /// intersecting arrangement.
 class LineFigure extends StatelessWidget {
-  const LineFigure({
-    required this.spec,
-    this.size = 200,
-    super.key,
-  });
+  const LineFigure({required this.spec, this.size = 200, super.key});
 
   final LineFigureSpec spec;
   final double size;

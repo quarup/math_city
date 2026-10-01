@@ -1015,9 +1015,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
       _selected = null;
       _growSource = null;
     });
-    unawaited(
-      ref.read(cityActionsProvider).markHintSeen(GuideHint.placeHere),
-    );
+    unawaited(ref.read(cityActionsProvider).markHintSeen(GuideHint.placeHere));
     unawaited(
       _startSite(
         BuildingGoal(
@@ -1146,10 +1144,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     Set<(int, int)> ownedTiles,
   ) => generateRoads(
     ownedTiles: ownedTiles,
-    buildings: [
-      ..._footprintsOf(placements, sites),
-      ?_pendingSpot,
-    ],
+    buildings: [..._footprintsOf(placements, sites), ?_pendingSpot],
   );
 
   /// Recomputes the render window over owned land + its pale frontier and feeds
@@ -3482,10 +3477,7 @@ class _BackCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Icon(Icons.chevron_left_rounded, size: 28),
-            Text(
-              _folderNames[category]!,
-              style: theme.textTheme.labelSmall,
-            ),
+            Text(_folderNames[category]!, style: theme.textTheme.labelSmall),
           ],
         ),
       ),

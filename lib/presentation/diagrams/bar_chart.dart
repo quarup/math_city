@@ -143,12 +143,7 @@ class _BarChartPainter extends CustomPainter {
         Offset(plotRight, y),
         i == 0 ? axisPaint : gridPaint,
       );
-      _drawText(
-        canvas,
-        '$value',
-        Offset(plotLeft - 12, y),
-        tickStyle,
-      );
+      _drawText(canvas, '$value', Offset(plotLeft - 12, y), tickStyle);
     }
     // Bold left axis.
     canvas.drawLine(

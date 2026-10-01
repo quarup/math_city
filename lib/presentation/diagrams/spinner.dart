@@ -8,11 +8,7 @@ import 'package:math_city/domain/questions/diagram_spec.dart';
 /// looked up from a fixed name → color table so that "red" always
 /// renders red etc.
 class Spinner extends StatelessWidget {
-  const Spinner({
-    required this.spec,
-    this.size = 200,
-    super.key,
-  });
+  const Spinner({required this.spec, this.size = 200, super.key});
 
   final SpinnerSpec spec;
   final double size;

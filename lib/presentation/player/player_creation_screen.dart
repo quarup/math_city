@@ -109,9 +109,7 @@ class _PlayerCreationScreenState extends ConsumerState<PlayerCreationScreen> {
     final isEdit = widget.isEdit;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(isEdit ? 'Edit Player' : 'New Player'),
-      ),
+      appBar: AppBar(title: Text(isEdit ? 'Edit Player' : 'New Player')),
       body: SafeArea(
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,

@@ -92,10 +92,8 @@ class TilePatch extends StatelessWidget {
       if (popIndex == null && clip != null) {
         art = AnimatedBuilder(
           animation: clip,
-          builder: (context, child) => ClipPath(
-            clipper: _CircleClipper(clip.value),
-            child: child,
-          ),
+          builder: (context, child) =>
+              ClipPath(clipper: _CircleClipper(clip.value), child: child),
           child: art,
         );
       }

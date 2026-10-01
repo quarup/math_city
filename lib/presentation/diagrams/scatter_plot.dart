@@ -282,11 +282,7 @@ class _ScatterPlotPainter extends CustomPainter {
       final step = drawing ? dashLen : gapLen;
       final segEnd = travelled + step > total ? total : travelled + step;
       if (drawing) {
-        canvas.drawLine(
-          a + dir * travelled,
-          a + dir * segEnd,
-          paint,
-        );
+        canvas.drawLine(a + dir * travelled, a + dir * segEnd, paint);
       }
       travelled = segEnd;
       drawing = !drawing;

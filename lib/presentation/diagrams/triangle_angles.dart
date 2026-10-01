@@ -8,11 +8,7 @@ import 'package:math_city/domain/questions/diagram_spec.dart';
 /// using the law of sines so the visible triangle reflects the spec's
 /// shape (e.g. a 90-45-45 right triangle looks visibly right-angled).
 class TriangleAngles extends StatelessWidget {
-  const TriangleAngles({
-    required this.spec,
-    this.size = 220,
-    super.key,
-  });
+  const TriangleAngles({required this.spec, this.size = 220, super.key});
 
   final TriangleAnglesSpec spec;
   final double size;
@@ -67,10 +63,7 @@ class _TrianglePainter extends CustomPainter {
     // Math-space vertices (y up).
     const aMath = (x: 0.0, y: 0.0);
     const bMath = (x: 1.0, y: 0.0);
-    final cMath = (
-      x: acLen * math.cos(aRad),
-      y: acLen * math.sin(aRad),
-    );
+    final cMath = (x: acLen * math.cos(aRad), y: acLen * math.sin(aRad));
 
     // Fit into the canvas with a margin.
     const margin = 36.0;
@@ -166,10 +159,7 @@ class _TrianglePainter extends CustomPainter {
     Offset q,
     String label,
   ) {
-    final centroid = Offset(
-      (v.dx + p.dx + q.dx) / 3,
-      (v.dy + p.dy + q.dy) / 3,
-    );
+    final centroid = Offset((v.dx + p.dx + q.dx) / 3, (v.dy + p.dy + q.dy) / 3);
     final toCentroid = centroid - v;
     final dir = toCentroid / toCentroid.distance;
     final pos = v + dir * 28;

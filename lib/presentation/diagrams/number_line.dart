@@ -6,11 +6,7 @@ import 'package:math_city/domain/questions/diagram_spec.dart';
 /// Renders a [NumberLineSpec] with tick marks, labels, marked points,
 /// and optional hop arcs.
 class NumberLine extends StatelessWidget {
-  const NumberLine({
-    required this.spec,
-    this.height = 100,
-    super.key,
-  });
+  const NumberLine({required this.spec, this.height = 100, super.key});
 
   final NumberLineSpec spec;
   final double height;
@@ -79,11 +75,7 @@ class _NumberLinePainter extends CustomPainter {
     for (var i = 0; i <= spec.divisions; i++) {
       final v = spec.min + (spec.max - spec.min) * i / spec.divisions;
       final x = xFor(v);
-      canvas.drawLine(
-        Offset(x, lineY - 6),
-        Offset(x, lineY + 6),
-        linePaint,
-      );
+      canvas.drawLine(Offset(x, lineY - 6), Offset(x, lineY + 6), linePaint);
       if ((v - v.round()).abs() < 1e-9) wholeTicks.add(i);
     }
     if (wholeTicks.isNotEmpty) {
@@ -129,17 +121,10 @@ class _NumberLinePainter extends CustomPainter {
       final toX = xFor(hop.to);
       final cx = (fromX + toX) / 2;
       final radius = (toX - fromX).abs() / 2;
-      final rect = Rect.fromCircle(
-        center: Offset(cx, lineY),
-        radius: radius,
-      );
+      final rect = Rect.fromCircle(center: Offset(cx, lineY), radius: radius);
       canvas.drawArc(rect, math.pi, math.pi, false, hopPaint);
       if (hop.label != null) {
-        _drawLabel(
-          canvas,
-          hop.label!,
-          Offset(cx, lineY - radius - 8),
-        );
+        _drawLabel(canvas, hop.label!, Offset(cx, lineY - radius - 8));
       }
     }
   }

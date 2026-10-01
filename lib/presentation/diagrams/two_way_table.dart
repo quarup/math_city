@@ -69,11 +69,7 @@ class TwoWayTable extends StatelessWidget {
             for (var r = 0; r < spec.rowLabels.length; r++)
               TableRow(
                 children: [
-                  cell(
-                    spec.rowLabels[r],
-                    style: headerStyle,
-                    fill: headerFill,
-                  ),
+                  cell(spec.rowLabels[r], style: headerStyle, fill: headerFill),
                   for (var c = 0; c < spec.colLabels.length; c++)
                     cell('${spec.counts[r][c]}'),
                   if (spec.showTotals)

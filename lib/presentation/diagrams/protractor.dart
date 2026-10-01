@@ -14,11 +14,7 @@ import 'package:math_city/domain/questions/diagram_spec.dart';
 /// the 180° mark is on the left (west). Mirrors how a paper protractor
 /// is laid down with the straight edge horizontal.
 class Protractor extends StatelessWidget {
-  const Protractor({
-    required this.spec,
-    this.size = 300,
-    super.key,
-  });
+  const Protractor({required this.spec, this.size = 300, super.key});
 
   final ProtractorSpec spec;
   final double size;
@@ -88,10 +84,7 @@ class _ProtractorPainter extends CustomPainter {
     // from the vertex.
     Offset pointAt(int deg, double r) {
       final th = -deg * math.pi / 180;
-      return Offset(
-        vertex.dx + r * math.cos(th),
-        vertex.dy + r * math.sin(th),
-      );
+      return Offset(vertex.dx + r * math.cos(th), vertex.dy + r * math.sin(th));
     }
 
     // Minor ticks every 5° (angles are generated in 5° steps, so the ray
@@ -107,12 +100,7 @@ class _ProtractorPainter extends CustomPainter {
       final inner = pointAt(d, radius - tickLen);
       canvas.drawLine(outer, inner, tickPaint);
       if (d % 20 == 0) {
-        _drawLabel(
-          canvas,
-          '$d',
-          pointAt(d, radius - 22),
-          labelStyle,
-        );
+        _drawLabel(canvas, '$d', pointAt(d, radius - 22), labelStyle);
       }
     }
 

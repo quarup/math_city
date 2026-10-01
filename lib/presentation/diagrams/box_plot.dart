@@ -182,12 +182,7 @@ class _BoxPlotPainter extends CustomPainter {
         );
 
       // Box.
-      final boxRect = Rect.fromLTRB(
-        xFor(s.q1),
-        boxTop,
-        xFor(s.q3),
-        boxBottom,
-      );
+      final boxRect = Rect.fromLTRB(xFor(s.q1), boxTop, xFor(s.q3), boxBottom);
       canvas
         ..drawRect(boxRect, boxFillPaint)
         ..drawRect(boxRect, boxBorderPaint)

@@ -68,9 +68,7 @@ class _ConceptDebugScreenState extends ConsumerState<ConceptDebugScreen> {
       ..sort((a, b) => a.displayOrder.compareTo(b.displayOrder));
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Debug — Generator preview'),
-      ),
+      appBar: AppBar(title: const Text('Debug — Generator preview')),
       body: Column(
         children: [
           Padding(

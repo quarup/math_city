@@ -7,11 +7,7 @@ import 'package:math_city/domain/questions/diagram_spec.dart';
 /// labels inside the wedges between consecutive rays. Handles single-
 /// angle, two-adjacent-angle, and intersecting-line cases.
 class Angle extends StatelessWidget {
-  const Angle({
-    required this.spec,
-    this.size = 200,
-    super.key,
-  });
+  const Angle({required this.spec, this.size = 200, super.key});
 
   final AngleSpec spec;
   final double size;

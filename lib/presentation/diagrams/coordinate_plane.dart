@@ -13,11 +13,7 @@ import 'package:math_city/domain/questions/diagram_spec.dart';
 /// `[-8, 8]` grid (17 cells × 24 px = 408 px, which exceeds typical
 /// phone widths). It never grows beyond the requested size.
 class CoordinatePlane extends StatelessWidget {
-  const CoordinatePlane({
-    required this.spec,
-    this.cellSize = 24,
-    super.key,
-  });
+  const CoordinatePlane({required this.spec, this.cellSize = 24, super.key});
 
   final CoordinatePlaneSpec spec;
   final double cellSize;
@@ -132,19 +128,11 @@ class _CoordinatePlanePainter extends CustomPainter {
     // collisions at the origin.
     for (var x = spec.minX; x <= spec.maxX; x++) {
       if (x == 0) continue;
-      _drawLabel(
-        canvas,
-        '$x',
-        _pixel(x, spec.minY) + const Offset(0, 10),
-      );
+      _drawLabel(canvas, '$x', _pixel(x, spec.minY) + const Offset(0, 10));
     }
     for (var y = spec.minY; y <= spec.maxY; y++) {
       if (y == 0) continue;
-      _drawLabel(
-        canvas,
-        '$y',
-        _pixel(spec.minX, y) + const Offset(-10, 0),
-      );
+      _drawLabel(canvas, '$y', _pixel(spec.minX, y) + const Offset(-10, 0));
     }
     // Origin label "0" sits in the corner where both axes meet.
     if (spec.minX <= 0 && 0 <= spec.maxX && spec.minY <= 0 && 0 <= spec.maxY) {
@@ -313,11 +301,7 @@ class _CoordinatePlanePainter extends CustomPainter {
       final step = drawing ? dashLen : gapLen;
       final segEnd = travelled + step > total ? total : travelled + step;
       if (drawing) {
-        canvas.drawLine(
-          a + dir * travelled,
-          a + dir * segEnd,
-          paint,
-        );
+        canvas.drawLine(a + dir * travelled, a + dir * segEnd, paint);
       }
       travelled = segEnd;
       drawing = !drawing;

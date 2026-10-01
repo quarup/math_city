@@ -7,11 +7,7 @@ import 'package:math_city/domain/questions/diagram_spec.dart';
 /// up (triangles look like triangles, hexagons look like hexagons, etc.).
 /// Filled lightly so the outline reads at a glance.
 class Polygon extends StatelessWidget {
-  const Polygon({
-    required this.spec,
-    this.size = 160,
-    super.key,
-  });
+  const Polygon({required this.spec, this.size = 160, super.key});
 
   final PolygonSpec spec;
   final double size;
@@ -93,10 +89,7 @@ class _PolygonPainter extends CustomPainter {
         text: TextSpan(text: spec.label, style: labelStyle),
         textDirection: TextDirection.ltr,
       )..layout();
-      tp.paint(
-        canvas,
-        Offset(cx - tp.width / 2, size.height - tp.height - 2),
-      );
+      tp.paint(canvas, Offset(cx - tp.width / 2, size.height - tp.height - 2));
     }
   }
 

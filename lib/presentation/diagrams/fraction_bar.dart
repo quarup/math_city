@@ -10,11 +10,7 @@ import 'package:math_city/domain/questions/diagram_spec.dart';
 /// [FractionBarSpec.bars] > 1 the bar repeats vertically — the "m wholes
 /// cut into n pieces each" picture for whole ÷ unit-fraction.
 class FractionBar extends StatelessWidget {
-  const FractionBar({
-    required this.spec,
-    this.height = 56,
-    super.key,
-  });
+  const FractionBar({required this.spec, this.height = 56, super.key});
 
   final FractionBarSpec spec;
   final double height;

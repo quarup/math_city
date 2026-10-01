@@ -14,11 +14,7 @@ import 'package:math_city/domain/questions/diagram_spec.dart';
 ///        │ Bm│
 ///        └───┘
 class Net3D extends StatelessWidget {
-  const Net3D({
-    required this.spec,
-    this.cellPixels = 38,
-    super.key,
-  });
+  const Net3D({required this.spec, this.cellPixels = 38, super.key});
 
   final Net3DSpec spec;
   final double cellPixels;

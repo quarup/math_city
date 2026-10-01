@@ -5,11 +5,7 @@ import 'package:math_city/domain/questions/diagram_spec.dart';
 /// optional radius / diameter line and numeric labels. Used by
 /// `circle_circumference` and `area_circle`.
 class Circle extends StatelessWidget {
-  const Circle({
-    required this.spec,
-    this.size = 180,
-    super.key,
-  });
+  const Circle({required this.spec, this.size = 180, super.key});
 
   final CircleSpec spec;
   final double size;

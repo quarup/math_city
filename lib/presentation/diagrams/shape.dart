@@ -10,11 +10,7 @@ import 'package:math_city/domain/questions/diagram_spec.dart';
 /// schematics — enough to recognize "cube" vs. "cylinder" but not
 /// pretending to be photorealistic.
 class Shape extends StatelessWidget {
-  const Shape({
-    required this.spec,
-    this.size = 160,
-    super.key,
-  });
+  const Shape({required this.spec, this.size = 160, super.key});
 
   final ShapeSpec spec;
   final double size;

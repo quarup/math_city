@@ -8,8 +8,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:math_city/data/database.dart';
 import 'package:math_city/presentation/city/city_screen.dart';
 import 'package:math_city/presentation/debug/concept_debug_screen.dart';
+import 'package:math_city/presentation/home/player_sticker.dart';
 import 'package:math_city/presentation/home/tile_patch.dart';
-import 'package:math_city/presentation/player/adventurer_avatar_widget.dart';
 import 'package:math_city/presentation/player/player_creation_screen.dart';
 import 'package:math_city/presentation/theme/app_palette.dart';
 import 'package:math_city/services/debug_harness.dart';
@@ -57,17 +57,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   //   2.20–2.70  player cards fade in
   late final Animation<double> _pop = _phase(0.25, 1.15);
   late final Animation<double> _gradient = _phase(0.6, 1);
-  late final Animation<double> _move = _phase(
-    1.5,
-    2.6,
-    Curves.easeInOutCubic,
-  );
+  late final Animation<double> _move = _phase(1.5, 2.6, Curves.easeInOutCubic);
   late final Animation<double> _strip = _phase(1.5, 2.1);
-  late final Animation<double> _lockup = _phase(
-    1.9,
-    2.4,
-    Curves.easeOutCubic,
-  );
+  late final Animation<double> _lockup = _phase(1.9, 2.4, Curves.easeOutCubic);
   late final Animation<double> _cards = _phase(2.2, 2.7);
 
   /// The launch icon's visible circle is 192 dp across; the clip grows well
@@ -265,16 +257,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     List<Player> players,
     int? activeId,
   ) {
+    final palette = theme.extension<AppPalette>()!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
           'Who is playing?',
-          style: theme.textTheme.labelLarge?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
+          style: theme.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.w700,
+            color: palette.tileInk,
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 14),
         if (players.isEmpty)
           SizedBox(
             height: 130,
@@ -283,23 +277,37 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               onDebug: kDebugMode ? () => _openDebug(context) : null,
             ),
           )
-        else
+        else ...[
           Wrap(
             alignment: WrapAlignment.center,
-            spacing: 10,
-            runSpacing: 10,
+            spacing: 14,
+            runSpacing: 16,
             children: [
               for (final p in players)
-                _PlayerChip(
+                PlayerSticker(
                   player: p,
                   isSelected: p.id == activeId,
                   onTap: () => _selectAndOpenCity(p),
                   onEdit: () => _openEdit(context, p),
                 ),
-              _AddChip(onTap: () => _openCreation(context)),
-              if (kDebugMode) _DebugChip(onTap: () => _openDebug(context)),
+              AddPlayerSticker(onTap: () => _openCreation(context)),
             ],
           ),
+          if (kDebugMode) ...[
+            const SizedBox(height: 10),
+            Center(
+              child: TextButton.icon(
+                onPressed: () => _openDebug(context),
+                icon: const Icon(Icons.bug_report_rounded, size: 16),
+                label: const Text('Debug'),
+                style: TextButton.styleFrom(
+                  foregroundColor: theme.colorScheme.onSurfaceVariant,
+                  visualDensity: VisualDensity.compact,
+                ),
+              ),
+            ),
+          ],
+        ],
       ],
     );
   }
@@ -319,9 +327,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   void _openCreation(BuildContext context) {
     unawaited(
       Navigator.of(context).push(
-        MaterialPageRoute<void>(
-          builder: (_) => const PlayerCreationScreen(),
-        ),
+        MaterialPageRoute<void>(builder: (_) => const PlayerCreationScreen()),
       ),
     );
   }
@@ -339,9 +345,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   void _openDebug(BuildContext context) {
     unawaited(
       Navigator.of(context).push(
-        MaterialPageRoute<void>(
-          builder: (_) => const ConceptDebugScreen(),
-        ),
+        MaterialPageRoute<void>(builder: (_) => const ConceptDebugScreen()),
       ),
     );
   }
@@ -400,179 +404,6 @@ class _Lockup extends StatelessWidget {
 }
 
 // ---------------------------------------------------------------------------
-// Player chip
-// ---------------------------------------------------------------------------
-
-class _PlayerChip extends StatelessWidget {
-  const _PlayerChip({
-    required this.player,
-    required this.isSelected,
-    required this.onTap,
-    required this.onEdit,
-  });
-
-  final Player player;
-  final bool isSelected;
-  final VoidCallback onTap;
-  final VoidCallback onEdit;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        width: 96,
-        height: 120,
-        decoration: BoxDecoration(
-          color: isSelected
-              ? theme.colorScheme.primaryContainer
-              : theme.colorScheme.surfaceContainer,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(
-            color: isSelected ? theme.colorScheme.primary : Colors.transparent,
-            width: 2,
-          ),
-        ),
-        child: Stack(
-          children: [
-            // Main content
-            Padding(
-              padding: const EdgeInsets.fromLTRB(8, 10, 8, 8),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  AdventurerAvatarWidget(config: player.avatar, size: 52),
-                  const SizedBox(height: 4),
-                  Text(
-                    player.name,
-                    style: theme.textTheme.labelMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            ),
-            // Edit icon pinned to top-right
-            Positioned(
-              top: 2,
-              right: 2,
-              child: GestureDetector(
-                onTap: onEdit,
-                child: Container(
-                  padding: const EdgeInsets.all(3),
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.primary,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    Icons.edit_rounded,
-                    size: 13,
-                    color: theme.colorScheme.onPrimary,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Add-player chip
-// ---------------------------------------------------------------------------
-
-class _AddChip extends StatelessWidget {
-  const _AddChip({required this.onTap});
-
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final palette = theme.extension<AppPalette>()!;
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 96,
-        height: 120,
-        decoration: BoxDecoration(
-          color: theme.colorScheme.surfaceContainer,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: theme.colorScheme.outlineVariant),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // brandTealDeep, not primary: the logo teal only reaches 2.1:1 on
-            // this card fill.
-            Icon(
-              Icons.person_add_rounded,
-              size: 28,
-              color: palette.brandTealDeep,
-            ),
-            const SizedBox(height: 6),
-            Text(
-              'Add',
-              style: theme.textTheme.labelMedium?.copyWith(
-                color: palette.brandTealDeep,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Debug chip (kDebugMode only — opens the ConceptDebugScreen)
-// ---------------------------------------------------------------------------
-
-class _DebugChip extends StatelessWidget {
-  const _DebugChip({required this.onTap});
-
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    // The logo yellow lands at 1.29:1 on this card fill — all but invisible.
-    // A neutral keeps the dev-only chip legible and subordinate to the teal
-    // player/add cards; the bug glyph is what distinguishes it, not the hue.
-    final accent = theme.colorScheme.onSurfaceVariant;
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 96,
-        height: 120,
-        decoration: BoxDecoration(
-          color: theme.colorScheme.surfaceContainer,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: accent),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.bug_report_rounded, size: 28, color: accent),
-            const SizedBox(height: 6),
-            Text(
-              'Debug',
-              style: theme.textTheme.labelMedium?.copyWith(color: accent),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ---------------------------------------------------------------------------
 // Empty state prompt (no players yet)
 // ---------------------------------------------------------------------------
 
@@ -600,10 +431,7 @@ class _EmptyPlayerPrompt extends StatelessWidget {
             style: FilledButton.styleFrom(
               backgroundColor: palette.brandTealDeep,
               foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(
-                horizontal: 28,
-                vertical: 16,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
               textStyle: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w600,
               ),

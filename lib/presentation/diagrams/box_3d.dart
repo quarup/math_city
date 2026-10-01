@@ -8,11 +8,7 @@ import 'package:math_city/domain/questions/diagram_spec.dart';
 /// [Box3DSpec.showDimensionLabels] true, three edges are labelled
 /// with their integer values.
 class Box3D extends StatelessWidget {
-  const Box3D({
-    required this.spec,
-    this.size = 200,
-    super.key,
-  });
+  const Box3D({required this.spec, this.size = 200, super.key});
 
   final Box3DSpec spec;
   final double size;
