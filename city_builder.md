@@ -1884,6 +1884,13 @@ and west and the high street south, so there are at least two ways in and
 out by road; the edge marker opens where a road crosses it (`edgeSegments`
 skips road-to-road tile edges). Applied to every scene on all three pages.
 
+**Camera framing under the haze (2026-10-01):** with the haze band over
+the top of the viewport, a town centred on the screen sits half in the
+fog. The default framing (city creation, `releaseFocus`, the Expand-city
+pull-back) should place the town's centre **below** the screen centre —
+about 55–60 % of the viewport height down — so the clear ground holds the
+town and the haze reads as sky above it. Pinch/pan limits unchanged.
+
 **X11 locked (2026-10-01):** rail fence on the boundary, wooded countryside beyond, fence opening at road crossings, decor on free owned tiles.
 
 Locked so far: **X11** · **E7** (land is a construction site; the wanted building
