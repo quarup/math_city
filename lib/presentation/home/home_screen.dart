@@ -32,34 +32,38 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen>
     with SingleTickerProviderStateMixin {
-  static const _introDuration = Duration(milliseconds: 1900);
+  static const _introDuration = Duration(milliseconds: 1600);
 
   /// The Android 12+ launch screen draws the icon on a 288 dp canvas; the
   /// iOS storyboard does the same. The icon's own canvas is 108 units.
   static const double _launchIconDp = 288;
   static const double _unit = _launchIconDp / TilePatch.box;
 
-  /// Scale of the patch once it has settled at the bottom of the screen.
-  static const _restScale = 0.45;
+  /// Scale the patch shrinks towards while it glides down and fades out.
+  static const _endScale = 0.45;
 
   /// Flat sky behind the OS launch icon; the top of the sky gradient.
   static const _launchSky = Color(0xFF5DB7E8);
 
   late final AnimationController _intro;
 
-  // Timeline, as fractions of [_introDuration] (1.9 s):
+  // Timeline, in seconds of [_introDuration] (1.6 s):
   //   0.25–0.95  neighbours pop in
   //   0.60–1.00  flat sky fades to the gradient
-  //   1.00–1.60  patch glides down and shrinks to its resting spot
-  //   1.00–1.50  city strip fades in behind it
-  //   1.20–1.70  lockup drops in
-  //   1.50–1.90  player cards fade in
+  //   0.95–1.35  patch glides down, shrinks and fades away
+  //   0.95–1.30  city strip fades in behind it
+  //   1.05–1.45  lockup drops in
+  //   1.25–1.60  player cards fade in
   late final Animation<double> _pop = _phase(0.25, 0.95);
   late final Animation<double> _gradient = _phase(0.6, 1);
-  late final Animation<double> _move = _phase(1, 1.6, Curves.easeInOutCubic);
-  late final Animation<double> _strip = _phase(1, 1.5);
-  late final Animation<double> _lockup = _phase(1.2, 1.7, Curves.easeOutCubic);
-  late final Animation<double> _cards = _phase(1.5, 1.9);
+  late final Animation<double> _move = _phase(0.95, 1.35, Curves.easeInCubic);
+  late final Animation<double> _strip = _phase(0.95, 1.3);
+  late final Animation<double> _lockup = _phase(
+    1.05,
+    1.45,
+    Curves.easeOutCubic,
+  );
+  late final Animation<double> _cards = _phase(1.25, 1.6);
 
   /// The launch icon's visible circle is 192 dp across; the clip grows well
   /// past the tile box as the neighbours pop in.
@@ -137,15 +141,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           builder: (context, constraints) {
             final size = constraints.biggest;
             // Frame zero: the patch's centre box sits where the OS drew the
-            // launch icon, the middle of the screen. At rest it parks by its
-            // bottom edge, in front of the city strip.
+            // launch icon, the middle of the screen. It then glides towards
+            // the bottom edge, shrinking and fading, and hands the ground
+            // over to the painted city strip.
             final launchCentre = Offset(size.width / 2, displayHeight / 2);
-            final restCentre = Offset(
+            final endCentre = Offset(
               size.width / 2,
               size.height -
                   bottomInset -
                   8 -
-                  TilePatch.bottomUnits * _unit * _restScale,
+                  TilePatch.bottomUnits * _unit * _endScale,
             );
             return Stack(
               clipBehavior: Clip.none,
@@ -175,12 +180,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                   animation: _move,
                   builder: (context, child) {
                     final t = _move.value;
-                    final centre = Offset.lerp(launchCentre, restCentre, t)!;
-                    final scale = lerpDouble(1, _restScale, t)!;
+                    if (t >= 1) return const SizedBox.shrink();
+                    final centre = Offset.lerp(launchCentre, endCentre, t)!;
+                    final scale = lerpDouble(1, _endScale, t)!;
                     return Positioned(
                       left: centre.dx - TilePatch.widthUnits * _unit / 2,
                       top: centre.dy - TilePatch.heightUnits * _unit / 2,
-                      child: Transform.scale(scale: scale, child: child),
+                      child: Opacity(
+                        opacity: 1 - t,
+                        child: Transform.scale(scale: scale, child: child),
+                      ),
                     );
                   },
                   child: IgnorePointer(
@@ -337,6 +346,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 // Lockup: the icon's tile at the head of the wordmark
 // ---------------------------------------------------------------------------
 
+class _HouseTile extends StatelessWidget {
+  const _HouseTile({required this.size});
+
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    return SvgPicture.asset(
+      'assets/images/tiles/house.svg',
+      width: size,
+      height: size,
+    );
+  }
+}
+
 class _Lockup extends StatelessWidget {
   const _Lockup();
 
@@ -345,12 +369,19 @@ class _Lockup extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        SvgPicture.asset(
-          'assets/images/tiles/house.svg',
-          width: 88,
+        // The tile's box carries empty margin around the house (it is the
+        // icon's canvas); show it through a narrower slot so the house sits
+        // close to the wordmark.
+        const SizedBox(
+          width: 66,
           height: 88,
+          child: OverflowBox(
+            maxWidth: 88,
+            maxHeight: 88,
+            child: _HouseTile(size: 88),
+          ),
         ),
-        const SizedBox(width: 6),
+        const SizedBox(width: 2),
         Flexible(
           child: Image.asset(
             'assets/images/math_city_wordmark.png',
