@@ -2,11 +2,14 @@ import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/text.dart';
 import 'package:flutter/painting.dart';
+import 'package:math_city/domain/city/land_blocks.dart';
 import 'package:math_city/domain/city/mover_depth.dart';
 import 'package:math_city/domain/city/pedestrian_walk.dart';
 import 'package:math_city/domain/city/road_sprites.dart';
 import 'package:math_city/domain/city/street_life.dart';
+import 'package:math_city/domain/city/terrain.dart';
 import 'package:math_city/domain/city/traffic.dart';
+import 'package:math_city/game/city/decor_painter.dart';
 import 'package:math_city/game/city/iso_grid.dart';
 import 'package:math_city/game/city/pedestrian_system.dart';
 import 'package:math_city/game/city/traffic_system.dart';
@@ -91,7 +94,26 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
 
   /// Current placement render set. Reassigned (cheaply) by the host game
   /// whenever placements change.
-  List<PlacedBuildingView> buildings = const [];
+  List<PlacedBuildingView> get buildings => _buildings;
+  set buildings(List<PlacedBuildingView> value) {
+    _buildings = value;
+    _hiddenDirty = true;
+  }
+
+  List<PlacedBuildingView> _buildings = const [];
+
+  /// World tile of the window's local origin `(0, 0)`: the terrain is a
+  /// function of *world* tiles, so the same tree stands on the same tile
+  /// however the window has grown. Reassigned with [grid] by `updateLand`.
+  (int, int) origin = (0, 0);
+
+  /// The part of the board the camera can see, in board coordinates, set
+  /// by the host game every frame. The ground and the decor are culled to
+  /// it; null draws everything.
+  Rect? visibleWorldRect;
+
+  /// Seconds since the board was added; drives the moving dashes.
+  double time = 0;
 
   /// Tiles painted as road (auto-generated; see `road_network.dart`). Drawn in
   /// the terrain pass, so buildings always sit on top. Reassigned by the host
@@ -99,6 +121,7 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
   Set<(int, int)> get roads => _roads;
   set roads(Set<(int, int)> value) {
     _roads = value;
+    _hiddenDirty = true;
     pedestrians.setRoads(value);
     traffic.setRoads(value);
     _replanStreetLife();
@@ -145,29 +168,43 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
   /// painted alongside the pedestrians.
   final TrafficSystem traffic = TrafficSystem();
 
-  /// Owned (purchased) land tiles in **window-local** coords — painted as the
-  /// two-tone grass the city sits on. Reassigned by the host game as land is
-  /// bought. The set is what's drawn, so the owned region can be non-rectangle.
-  Set<(int, int)> ownedTiles = const {};
+  /// Owned (purchased) land tiles in **window-local** coords. Inside the
+  /// fence the decor is sparse; beyond it the countryside is wooded
+  /// (city_builder.md §11, X11). Reassigned by the host game as land is
+  /// bought. The set is what's drawn, so the owned region can be any shape.
+  Set<(int, int)> get ownedTiles => _ownedTiles;
+  set ownedTiles(Set<(int, int)> value) {
+    _ownedTiles = value;
+    _decorDirty = true;
+  }
 
-  /// The purchasable frontier in **window-local** coords — painted pale; a tap
-  /// on one of these selects that block for purchase. Reassigned alongside
-  /// [ownedTiles].
-  Set<(int, int)> buyableTiles = const {};
-
-  /// Tiles (window-local) of the frontier block the player currently has
-  /// selected to buy — highlighted yellow over the pale wash, mirroring the
-  /// picked-up-building tint, until the purchase is confirmed or cancelled.
-  Set<(int, int)> buyingTiles = const {};
+  Set<(int, int)> _ownedTiles = const {};
 
   /// Tiles (window-local) of land blocks with an open construction site —
-  /// painted as a cleared dirt pad over the pale wash. Reassigned by the
-  /// host game whenever sites change.
-  Set<(int, int)> landSiteTiles = const {};
+  /// painted as a cleared dirt pad. Reassigned by the host game whenever
+  /// sites change.
+  Set<(int, int)> get landSiteTiles => _landSiteTiles;
+  set landSiteTiles(Set<(int, int)> value) {
+    _landSiteTiles = value;
+    _hiddenDirty = true;
+  }
+
+  Set<(int, int)> _landSiteTiles = const {};
 
   /// The subset of [landSiteTiles] belonging to the selected site, drawn
   /// with the yellow selection wash.
   Set<(int, int)> selectedLandSiteTiles = const {};
+
+  /// Trees, bushes, flowers and rocks on every tile of the window, grown
+  /// from the tile hash (`decorAt`). Rebuilt when the window or the owned
+  /// land changes; hidden per frame under footprints, roads and land sites.
+  List<DecorItem> _decor = const [];
+  bool _decorDirty = true;
+
+  /// Tiles whose decor is covered: building and site footprints, roads,
+  /// staked land. Recomputed lazily when any of those sets changes.
+  Set<(int, int)> _hidden = const {};
+  bool _hiddenDirty = true;
 
   /// The footprint a building would have needed where the player just
   /// tried to place it and could not: painted translucent red over
@@ -175,17 +212,33 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
   /// is visible. Window-local tiles.
   Set<(int, int)> rejectedTiles = const {};
 
-  static const _grassFill = Color(0xFF7CB342);
-  static const _grassFillAlt = Color(0xFF689F38);
   static const _roadFill = Color(0xFF9E9E9E);
 
-  /// Pale wash for unowned-but-purchasable land — a desaturated, translucent
-  /// green so it clearly reads as "not yours yet, tap to buy".
-  static const _buyableFill = Color(0x5566A36B);
+  /// The ground's greens by distance from town (city_builder.md §11, T3):
+  /// three shades each, picked per tile by its hash so the meadow has grain.
+  static const _meadow = [
+    Color(0xFF9CC466),
+    Color(0xFF93BB5E),
+    Color(0xFFA3C96B),
+  ];
+  static const _scrub = [
+    Color(0xFF84AB50),
+    Color(0xFF7CA24A),
+    Color(0xFF8DB257),
+  ];
+  static const _forest = [
+    Color(0xFF5F8C3B),
+    Color(0xFF578235),
+    Color(0xFF66943F),
+  ];
+  final _groundPaint = Paint();
+  final _tuftPaint = Paint()
+    ..color = const Color(0x59285014)
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 1;
 
-  /// Yellow wash for the block selected for purchase, drawn over the pale
-  /// wash. Matches the picked-up-building tint so "selected" reads the same
-  /// everywhere.
+  /// Yellow wash for the selected land site, drawn over its pad. Matches
+  /// the picked-up-building tint so "selected" reads the same everywhere.
   static const _buyingFill = Color(0x66FFEB3B);
   static const _rejectedFill = Color(0x80E53935);
   final _rejectedStroke = Paint()
@@ -237,6 +290,7 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
   @override
   void update(double dt) {
     super.update(dt);
+    time += dt;
     // Walkers wait rather than step into a car; cars yield to walkers
     // already on their asphalt (a side street's mouth). A holding car never
     // holds a walker, so the pair can't deadlock.
@@ -260,17 +314,7 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
 
   @override
   void render(Canvas canvas) {
-    // Owned land first (two-tone grass), then the pale purchasable frontier.
-    // Both are explicit tile sets — the owned region is no longer a rectangle.
-    for (final (col, row) in ownedTiles) {
-      _drawTile(canvas, col, row);
-    }
-    for (final (col, row) in buyableTiles) {
-      _drawPaleTile(canvas, col, row);
-    }
-    for (final (col, row) in buyingTiles) {
-      _drawBuyingTile(canvas, col, row);
-    }
+    _drawGround(canvas);
     for (final (col, row) in landSiteTiles) {
       _drawPadTile(canvas, col, row);
       if (selectedLandSiteTiles.contains((col, row))) {
@@ -296,9 +340,15 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
       for (final b in buildings)
         (col: b.col, row: b.row, w: b.footprint.$1, h: b.footprint.$2),
     ];
+    final vis = visibleWorldRect;
+    final hidden = _hiddenTiles();
     final items = <(double, void Function())>[
       for (final b in buildings)
         ((b.col + b.row).toDouble(), () => _drawBuilding(canvas, b)),
+      for (final d in _decorItems())
+        if (!hidden.contains((d.col, d.row)) &&
+            (vis == null || _inView(vis, d.col, d.row)))
+          (d.col + d.row + 0.5, () => _drawDecor(canvas, d)),
       for (final v in pedestrians.views(grid))
         (
           moverDepth(v.col, v.row, footprints),
@@ -379,28 +429,114 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     tp.paint(canvas, Offset(rect.left + padX, rect.top + padY));
   }
 
-  void _drawTile(Canvas canvas, int col, int row) {
+  /// Whether tile `(col, row)`'s centre lies within a tile of [vis].
+  bool _inView(Rect vis, int col, int row) {
     final (cx, cy) = grid.centerOf(col, row);
-    final path = _diamond(cx, cy, 0);
-    final fill = (col + row).isEven ? _grassFill : _grassFillAlt;
-    canvas
-      ..drawPath(path, Paint()..color = fill)
-      ..drawPath(path, _tileStroke);
+    return vis.inflate(grid.tileWidth).contains(Offset(cx, cy));
   }
 
-  /// A pale, purchasable land tile (part of an unowned 4×4 block on the buy
-  /// frontier). Drawn flat and translucent so it reads as not-yet-owned.
-  void _drawPaleTile(Canvas canvas, int col, int row) {
-    final (cx, cy) = grid.centerOf(col, row);
-    final path = _diamond(cx, cy, 0);
-    canvas
-      ..drawPath(path, Paint()..color = _buyableFill)
-      ..drawPath(path, _tileStroke);
+  /// The meadow, inside and outside the fence alike: every tile of the
+  /// window in its band's greens with a tuft of grass here and there. The
+  /// band comes from the tile's *world* block ring, so the countryside
+  /// darkens with distance from the town (T3) and nothing shifts when the
+  /// window grows.
+  void _drawGround(Canvas canvas) {
+    final vis = visibleWorldRect;
+    final k = grid.tileWidth / 64;
+    final (oc, or) = origin;
+    for (var c = 0; c < grid.cols; c++) {
+      for (var r = 0; r < grid.rows; r++) {
+        if (vis != null && !_inView(vis, c, r)) continue;
+        final (cx, cy) = grid.centerOf(c, r);
+        final wc = c + oc;
+        final wr = r + or;
+        final palette = switch (terrainBandAt(wc, wr)) {
+          TerrainBand.meadow => _meadow,
+          TerrainBand.scrub => _scrub,
+          TerrainBand.forest => _forest,
+        };
+        final h = tileHash(wc, wr);
+        _groundPaint.color = palette[(h * palette.length).floor()];
+        canvas.drawPath(_diamond(cx, cy, 0), _groundPaint);
+        final tuft = tuftAt(wc, wr);
+        if (tuft != null) {
+          final tx = cx + tuft.$1 * grid.tileWidth;
+          final ty = cy + tuft.$2 * grid.tileWidth;
+          canvas
+            ..drawLine(
+              Offset(tx, ty),
+              Offset(tx - 1.5 * k, ty - 4 * k),
+              _tuftPaint,
+            )
+            ..drawLine(
+              Offset(tx + 2 * k, ty),
+              Offset(tx + 3 * k, ty - 4 * k),
+              _tuftPaint,
+            );
+        }
+      }
+    }
   }
 
-  /// A tile of the block selected for purchase: yellow wash + amber stroke on
-  /// top of its pale wash, so the pending selection stands out from the rest
-  /// of the frontier.
+  /// The decor for the current window, rebuilt when the owned land or the
+  /// window changes. Items are in window-local tiles, grown from world
+  /// tiles so a tree never moves when the window grows.
+  List<DecorItem> _decorItems() {
+    if (!_decorDirty) return _decor;
+    final (oc, or) = origin;
+    final out = <DecorItem>[];
+    for (var c = 0; c < grid.cols; c++) {
+      for (var r = 0; r < grid.rows; r++) {
+        final (bx, by) = blockOfTile(c + oc, r + or);
+        final world = decorAt(
+          c + oc,
+          r + or,
+          owned: _ownedTiles.contains((c, r)),
+          ring: blockRing(bx, by),
+        );
+        if (world == null) continue;
+        out.add(
+          DecorItem(
+            kind: world.kind,
+            col: c,
+            row: r,
+            dx: world.dx,
+            dy: world.dy,
+            scale: world.scale,
+            variant: world.variant,
+          ),
+        );
+      }
+    }
+    _decor = out;
+    _decorDirty = false;
+    return out;
+  }
+
+  /// Tiles whose decor is covered by something built or staked.
+  Set<(int, int)> _hiddenTiles() {
+    if (!_hiddenDirty) return _hidden;
+    final out = <(int, int)>{..._roads, ..._landSiteTiles};
+    for (final b in _buildings) {
+      final (w, h) = b.footprint;
+      for (var c = b.col; c < b.col + w; c++) {
+        for (var r = b.row; r < b.row + h; r++) {
+          out.add((c, r));
+        }
+      }
+    }
+    _hidden = out;
+    _hiddenDirty = false;
+    return out;
+  }
+
+  void _drawDecor(Canvas canvas, DecorItem d) {
+    final (cx, cy) = grid.centerOf(d.col, d.row);
+    paintDecor(canvas, d, Offset(cx, cy), grid.tileWidth);
+  }
+
+  /// A tile of the selected land site: yellow wash + amber stroke over its
+  /// pad, so the selection stands out.
   void _drawBuyingTile(Canvas canvas, int col, int row) {
     final (cx, cy) = grid.centerOf(col, row);
     final path = _diamond(cx, cy, 0);

@@ -1147,16 +1147,20 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     buildings: [..._footprintsOf(placements, sites), ?_pendingSpot],
   );
 
-  /// Recomputes the render window over owned land + its pale frontier and feeds
-  /// it to the game. On first call constructs the game; afterwards grows the
-  /// window in place, compensating the camera so a land purchase doesn't jump
-  /// the view (see `IsoCityGame.updateLand`). Sets [_window].
+  /// Recomputes the render window — the owned land plus [kCountrysideMargin]
+  /// tiles of countryside around it — and feeds it to the game. On first
+  /// call constructs the game; afterwards grows the window in place,
+  /// compensating the camera so a land purchase doesn't jump the view (see
+  /// `IsoCityGame.updateLand`). Sets [_window].
   void _syncLand(Set<(int, int)> ownedBlocks, Set<(int, int)> ownedTiles) {
-    final buyableTiles = ownedTilesOf(purchasableBlocks(ownedBlocks));
-    final window = computeLandWindow({...ownedTiles, ...buyableTiles}, _window);
+    final window = computeLandWindow(
+      ownedTiles,
+      _window,
+      margin: kCountrysideMargin,
+    );
     final grid = IsoGrid(cols: window.cols, rows: window.rows);
     final ownedLocal = _localTilesIn(ownedTiles, window);
-    final buyableLocal = _localTilesIn(buyableTiles, window);
+    final origin = (window.minCol, window.minRow);
 
     if (_game == null) {
       _game = IsoCityGame(grid: grid, onTileTapped: _onTileTapped)
@@ -1168,7 +1172,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
       _game!.updateLand(
         newGrid: grid,
         ownedLocalTiles: ownedLocal,
-        buyableLocalTiles: buyableLocal,
+        origin: origin,
         cameraOffsetDeltaPx: Vector2.zero(),
       );
     } else {
@@ -1178,7 +1182,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
       _game!.updateLand(
         newGrid: grid,
         ownedLocalTiles: ownedLocal,
-        buyableLocalTiles: buyableLocal,
+        origin: origin,
         cameraOffsetDeltaPx: delta,
       );
     }
@@ -1404,21 +1408,12 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
         : ownedTilesOf(ownedBlocks);
     if (ownedBlocks != null) _syncLand(ownedBlocks, ownedTiles);
 
-    // Drop a stale land selection (already bought, or gone after a reset), then
-    // feed the highlight tiles to the board.
+    // Drop a stale land selection (already bought, or gone after a reset).
     final buyingBlock = _buyingBlock;
     if (buyingBlock != null &&
         ownedBlocks != null &&
         !purchasableBlocks(ownedBlocks).contains(buyingBlock)) {
       _buyingBlock = null;
-    }
-    if (_game != null) {
-      final selected = _buyingBlock;
-      _game!.setBuyingTiles(
-        selected == null
-            ? const {}
-            : _localTiles(tilesOfBlock(selected.$1, selected.$2).toSet()),
-      );
     }
 
     final placements = placementsAsync.asData?.value;
