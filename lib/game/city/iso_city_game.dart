@@ -177,6 +177,7 @@ class IsoCityGame extends FlameGame with DragCallbacks {
   @override
   void update(double dt) {
     super.update(dt);
+    if (isLoaded) board.visibleWorldRect = camera.visibleWorldRect;
     final to = _tweenToPos;
     if (to == null) return;
     _tweenElapsed += dt;
@@ -206,11 +207,11 @@ class IsoCityGame extends FlameGame with DragCallbacks {
   /// Same buffering rationale as [_pendingBuildings].
   Set<(int, int)>? _pendingRoads;
 
-  /// Owned / buyable land tiles (window-local) pushed before [onLoad] ran —
-  /// applied once the board exists. Same buffering rationale as above.
+  /// Owned land tiles (window-local) and the window's world origin pushed
+  /// before [onLoad] ran — applied once the board exists. Same buffering
+  /// rationale as above.
   Set<(int, int)>? _pendingOwned;
-  Set<(int, int)>? _pendingBuyable;
-  Set<(int, int)>? _pendingBuying;
+  (int, int)? _pendingOrigin;
   Set<(int, int)>? _pendingLandSites;
   Set<(int, int)>? _pendingSelectedLandSite;
 
@@ -276,8 +277,7 @@ class IsoCityGame extends FlameGame with DragCallbacks {
       board.setStreetLife(population: population, buildingIds: buildingIds);
     }
     if (_pendingOwned != null) board.ownedTiles = _pendingOwned!;
-    if (_pendingBuyable != null) board.buyableTiles = _pendingBuyable!;
-    if (_pendingBuying != null) board.buyingTiles = _pendingBuying!;
+    if (_pendingOrigin != null) board.origin = _pendingOrigin!;
     if (_pendingLandSites != null) board.landSiteTiles = _pendingLandSites!;
     if (_pendingSelectedLandSite != null) {
       board.selectedLandSiteTiles = _pendingSelectedLandSite!;
@@ -422,16 +422,17 @@ class IsoCityGame extends FlameGame with DragCallbacks {
     }
   }
 
-  /// Pushes the latest land window into the board: the owned + buyable tile
-  /// sets (window-local) and, when the window grew, a larger [newGrid]. Growing
-  /// the window moves the local origin, so [cameraOffsetDeltaPx] is the screen
-  /// shift of any fixed world tile; adding it to the viewfinder keeps the view
-  /// visually put (no jump). Buffered before [onLoad]; the one-time initial fit
-  /// frames the start, so the delta is irrelevant then.
+  /// Pushes the latest land window into the board: the owned tile set
+  /// (window-local), the world tile at the window's local origin, and, when
+  /// the window grew, a larger [newGrid]. Growing the window moves the local
+  /// origin, so [cameraOffsetDeltaPx] is the screen shift of any fixed world
+  /// tile; adding it to the viewfinder keeps the view visually put (no
+  /// jump). Buffered before [onLoad]; the one-time initial fit frames the
+  /// start, so the delta is irrelevant then.
   void updateLand({
     required IsoGrid newGrid,
     required Set<(int, int)> ownedLocalTiles,
-    required Set<(int, int)> buyableLocalTiles,
+    required (int, int) origin,
     required Vector2 cameraOffsetDeltaPx,
   }) {
     grid = newGrid;
@@ -439,8 +440,8 @@ class IsoCityGame extends FlameGame with DragCallbacks {
       board
         ..grid = newGrid
         ..size = Vector2(newGrid.boardWidth, newGrid.boardHeight)
-        ..ownedTiles = ownedLocalTiles
-        ..buyableTiles = buyableLocalTiles;
+        ..origin = origin
+        ..ownedTiles = ownedLocalTiles;
       if (!cameraOffsetDeltaPx.isZero()) {
         camera.viewfinder.position += cameraOffsetDeltaPx;
         _clampCamera();
@@ -458,18 +459,7 @@ class IsoCityGame extends FlameGame with DragCallbacks {
       }
     } else {
       _pendingOwned = ownedLocalTiles;
-      _pendingBuyable = buyableLocalTiles;
-    }
-  }
-
-  /// Pushes the tiles (window-local) of the frontier block currently selected
-  /// for purchase — empty when none. Buffered before [onLoad] like the rest of
-  /// the land sets.
-  void setBuyingTiles(Set<(int, int)> tiles) {
-    if (isLoaded) {
-      board.buyingTiles = tiles;
-    } else {
-      _pendingBuying = tiles;
+      _pendingOrigin = origin;
     }
   }
 

@@ -25,6 +25,14 @@ void main() {
       expect(grown.maxRow, 7);
     });
 
+    test('pads the owned land with a margin of countryside', () {
+      final w = computeLandWindow({(-4, -4), (7, 7)}, null, margin: 6);
+      expect((w.minCol, w.minRow), (-10, -10));
+      expect((w.maxCol, w.maxRow), (13, 13));
+      expect((w.cols, w.rows), (24, 24));
+      expect(kCountrysideMargin, 6);
+    });
+
     test('sameAs distinguishes offset and size', () {
       const a = LandWindow(minCol: 0, minRow: 0, cols: 4, rows: 4);
       const b = LandWindow(minCol: 0, minRow: 0, cols: 4, rows: 4);
