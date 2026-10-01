@@ -6,12 +6,14 @@ import 'package:flame/cache.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flame/sprite.dart';
+import 'package:math_city/domain/city/day_clock.dart';
 import 'package:math_city/domain/city/road_sprites.dart';
 import 'package:math_city/domain/city/street_life.dart';
 import 'package:math_city/domain/city/traffic.dart' show vehicleHeadings;
 import 'package:math_city/game/city/camera_focus.dart';
 import 'package:math_city/game/city/city_board_component.dart';
 import 'package:math_city/game/city/iso_grid.dart';
+import 'package:math_city/game/city/sky_component.dart';
 import 'package:math_city/game/city/traffic_system.dart';
 
 /// Hosts the isometric [CityBoardComponent] inside Flame's camera/world so the
@@ -34,6 +36,11 @@ class IsoCityGame extends FlameGame with DragCallbacks {
   final void Function(int col, int row) onTileTapped;
 
   late final CityBoardComponent board;
+
+  /// The ambient day (city_builder.md §11, D2 / S4): ticked here with the
+  /// game's clock; the screen freezes it through chapter one and pauses it
+  /// while a question route covers the city.
+  final AmbientClock clock = AmbientClock();
 
   static const double minZoom = 0.4;
   static const double maxZoom = 3;
@@ -177,6 +184,7 @@ class IsoCityGame extends FlameGame with DragCallbacks {
   @override
   void update(double dt) {
     super.update(dt);
+    clock.tick(dt);
     if (isLoaded) board.visibleWorldRect = camera.visibleWorldRect;
     final to = _tweenToPos;
     if (to == null) return;
@@ -283,6 +291,16 @@ class IsoCityGame extends FlameGame with DragCallbacks {
       board.selectedLandSiteTiles = _pendingSelectedLandSite!;
     }
     await world.add(board);
+    // The sky: a viewport-fixed gradient behind the world and the haze
+    // band (with the night tint) over it, both coloured by the clock.
+    Vector2 viewportSize() => camera.viewport.size;
+    double hour() => clock.hour;
+    await camera.backdrop.add(
+      SkyBackdrop(hour: hour, viewportSize: viewportSize),
+    );
+    await camera.viewport.add(
+      SkyHaze(hour: hour, viewportSize: viewportSize),
+    );
     camera.viewfinder.position = _boardCenter;
     _maybeFit();
   }
@@ -356,9 +374,21 @@ class IsoCityGame extends FlameGame with DragCallbacks {
       center = Vector2((minX + maxX) / 2, (minY + maxY) / 2);
     }
     final z = zoom.clamp(minZoom, maxZoom);
+    // The haze covers the top of the screen, so the town sits below the
+    // centre, in clear ground (city_builder.md §11.5).
+    final (cx, cy) = cameraCenterFor(
+      targetX: center.x,
+      targetY: center.y,
+      zoom: z,
+      viewportWidth: fullViewport.x,
+      viewportHeight: fullViewport.y,
+      anchorX: 0.5,
+      anchorY: kTownAnchorY,
+      bottomInset: bottomInset,
+    );
     camera.viewfinder
       ..zoom = z
-      ..position = center + Vector2(0, bottomInset / 2 / z);
+      ..position = Vector2(cx, cy);
   }
 
   /// Absolute zoom setter, clamped. Called from the pinch-zoom Listener.

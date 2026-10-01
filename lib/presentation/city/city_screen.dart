@@ -27,6 +27,7 @@ import 'package:math_city/game/city/city_board_component.dart';
 import 'package:math_city/game/city/iso_city_game.dart';
 import 'package:math_city/game/city/iso_grid.dart';
 import 'package:math_city/game/city/land_window.dart';
+import 'package:math_city/game/city/sky_component.dart';
 import 'package:math_city/presentation/city/celebration_overlay.dart';
 import 'package:math_city/presentation/city/letter_overlay.dart';
 import 'package:math_city/presentation/city/spin_overlay.dart';
@@ -562,6 +563,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
   @override
   void didPopNext() {
     if (!mounted) return;
+    _game?.clock.paused = false;
     final result = ref.read(lastBlockResultProvider.notifier).take();
     if (_mode != _CityMode.siteZoomed) return;
     if (result != null && result.block.siteOpened) {
@@ -577,6 +579,13 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     } else {
       _zoomOut();
     }
+  }
+
+  /// A question route now covers the city: the ambient day waits for it
+  /// (city_builder.md §11, S4).
+  @override
+  void didPushNext() {
+    _game?.clock.paused = true;
   }
 
   // ---- The construction loop: zoom onto a site, wheel above it ----------
@@ -1665,6 +1674,8 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                     (catalog?.any((b) => b.id == letterTarget.id) ?? false))));
     final guideStep = player?.guideStep ?? kChapterOneDone;
     final chapterOne = guideStep < kChapterOneDone;
+    // The day stands at 9:30 until the hand-over letter (S4).
+    _game?.clock.frozen = chapterOne;
     final hints = player?.guideHints;
     final showPlaceHint = hints != null && !GuideHint.placeHere.seenIn(hints);
     _scheduleNudge(
@@ -1917,7 +1928,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                     Positioned.fill(
                       child: ColoredBox(
                         key: _boardKey,
-                        color: const Color(0xFF9CCC65),
+                        color: kMeadowBase,
                         child: _PinchZoomWrapper(
                           game: _game!,
                           child: GameWidget(game: _game!),
