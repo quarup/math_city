@@ -32,7 +32,7 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen>
     with SingleTickerProviderStateMixin {
-  static const _introDuration = Duration(milliseconds: 2150);
+  static const _introDuration = Duration(milliseconds: 2700);
 
   /// The Android 12+ launch screen draws the icon on a 288 dp canvas; the
   /// iOS storyboard does the same. The icon's own canvas is 108 units.
@@ -47,28 +47,28 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   late final AnimationController _intro;
 
-  // Timeline, in seconds of [_introDuration] (2.15 s):
-  //   0.25–0.95  neighbours pop in
+  // Timeline, in seconds of [_introDuration] (2.7 s):
+  //   0.25–1.15  neighbours pop in
   //   0.60–1.00  flat sky fades to the gradient
-  //   0.95–1.25  the full patch holds, centred
-  //   1.25–2.05  patch glides down and shrinks, fading over its last part
-  //   1.25–1.70  city strip fades in behind it
-  //   1.50–1.95  lockup drops in
-  //   1.75–2.15  player cards fade in
-  late final Animation<double> _pop = _phase(0.25, 0.95);
+  //   1.15–1.50  the full patch holds, centred
+  //   1.50–2.60  patch glides down and shrinks, fading over its last part
+  //   1.50–2.10  city strip fades in behind it
+  //   1.90–2.40  lockup drops in
+  //   2.20–2.70  player cards fade in
+  late final Animation<double> _pop = _phase(0.25, 1.15);
   late final Animation<double> _gradient = _phase(0.6, 1);
   late final Animation<double> _move = _phase(
-    1.25,
-    2.05,
+    1.5,
+    2.6,
     Curves.easeInOutCubic,
   );
-  late final Animation<double> _strip = _phase(1.25, 1.7);
+  late final Animation<double> _strip = _phase(1.5, 2.1);
   late final Animation<double> _lockup = _phase(
-    1.5,
-    1.95,
+    1.9,
+    2.4,
     Curves.easeOutCubic,
   );
-  late final Animation<double> _cards = _phase(1.75, 2.15);
+  late final Animation<double> _cards = _phase(2.2, 2.7);
 
   /// The launch icon's visible circle is 192 dp across; the clip grows well
   /// past the tile box as the neighbours pop in.
