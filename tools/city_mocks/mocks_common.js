@@ -7,11 +7,12 @@ const COL = (c, r0, r1) => range(r0, r1).map((r) => [c, r]);
 const B = (id, col, row) => ({ id, col, row });
 // Scenes in signed world tiles: the starting 3×3 blocks cover −4..7.
 const CITY = () => ({
-  roads: [...ROW(-1, -4, 7), ...ROW(4, -4, 7), ...COL(1, -4, 7)],
+  // The main street runs off the map east and west, the high street south: three ways in and out.
+  roads: [...ROW(-1, -28, 31), ...ROW(4, -4, 7), ...COL(1, -4, 31)],
   buildings: [B('mayors_office_v1', -1, 0), B('single_home_v1', 2, 0), B('single_home_v1', 3, 0), B('single_home_v1', 2, 1), B('duplex_v1', -4, 0), B('school_v1', -3, 5), B('park_v1', 2, 5), B('apartment_v1', -4, -3), B('bakery_v1', -1, -3), B('coffee_shop_v1', 2, -2), B('playground_v1', 4, -3), B('fountain_plaza_v1', 5, 0), B('police_station_v1', 5, 5), B('farmhouse_v1', -1, 5)],
 });
 const CROWDED = () => { const c = CITY(); c.buildings.push(B('high_rise_v1', -4, 1), B('apartment_v1', 5, -4), B('fire_station_v1', 2, -4), B('power_plant_v1', 5, 2), B('observation_tower_v1', -1, 2), B('duplex_v1', 2, 2), B('single_home_v1', 2, 3), B('single_home_v1', 3, 3), B('duplex_v1', 2, 7), B('duplex_v1', 5, 7), B('duplex_v1', -1, 7), B('single_home_v1', -1, -4), B('single_home_v1', 0, -4), B('single_home_v1', -4, -4), B('single_home_v1', -3, -4), B('single_home_v1', -2, -4)); return c; };
-const CHAPTER = () => ({ roads: [...ROW(-1, -4, 7), ...COL(1, -4, 7)], buildings: [B('mayors_office_v1', -1, 0)] });
+const CHAPTER = () => ({ roads: [...ROW(-1, -28, 31), ...COL(1, -4, 31)], buildings: [B('mayors_office_v1', -1, 0)] });
 const EXTRA_IDS = ['apartment_v1', 'duplex_v1', 'coffee_shop_v1', 'bakery_v1', 'single_home_v1', 'high_rise_v1', 'single_home_v1', 'duplex_v1'];
 const V = () => ({ zoom: 0.55, cx: 0, cy: 0 });
 const OVERVIEW_ZOOM = 0.55;

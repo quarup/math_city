@@ -361,8 +361,10 @@ function edgeSegments(sc) {
   for (let c = 0; c < g.cols; c++) for (let r = 0; r < g.rows; r++) {
     if (!sc.isOwnedTile(c, r)) continue; const [cx, cy] = g.center(c, r);
     const N = [cx, cy - HALF_H], E = [cx + HALF_W, cy], S = [cx, cy + HALF_H], W = [cx - HALF_W, cy];
-    if (!sc.isOwnedTile(c + 1, r)) out.push([E, S, 0]); if (!sc.isOwnedTile(c, r + 1)) out.push([S, W, 1]);
-    if (!sc.isOwnedTile(c - 1, r)) out.push([W, N, 2]); if (!sc.isOwnedTile(c, r - 1)) out.push([N, E, 3]);
+    // A road crossing the boundary leaves a gap in whatever marks it.
+    const open = (dc, dr) => !sc.isOwnedTile(c + dc, r + dr) && !(sc.isRoad(c, r) && sc.isRoad(c + dc, r + dr));
+    if (open(1, 0)) out.push([E, S, 0]); if (open(0, 1)) out.push([S, W, 1]);
+    if (open(-1, 0)) out.push([W, N, 2]); if (open(0, -1)) out.push([N, E, 3]);
   }
   return out;
 }

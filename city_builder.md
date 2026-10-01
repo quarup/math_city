@@ -1863,6 +1863,7 @@ ring-2 meadow with its decor on free owned tiles.
 | X8 | A line of trees just inside the edge | Nice |
 | X9 | Forest two tiles deep right outside the town | **Recommend** |
 | X10 | Wilder beyond: sparse inside, wooded everywhere outside, no hard line | Nice |
+| X11 | **X5 + X10** (added 2026-10-01 at the user's request): rail fence on the line, woods everywhere beyond, the fence opening where a road crosses | **Recommend** |
 | K1 | Haze colour from a fixed horizon table (`HAZE_KEY` in terrain.js): near-black at midnight, dark grey → peach → white at dawn, off-white by day, orange → grey-brown → dark at dusk; interpolation only between neighbouring keys, so no purple | **Recommend** |
 | E7 | **Land as a construction site** + a remembered *next* building: the block is staked and paid off through the question loop; the wanted building is a one-slot `nextBuilding` chip; when the land opens the app auto-proposes it on the new block as the second site | **Recommend** |
 | E8 | One bundled site: land + building at one price, a two-stage bar; land stage completes first (fence moves out, pad appears), then the building stage | Decide |
@@ -1874,12 +1875,20 @@ on `ConstructionSites` and `nextBuilding` on the player row.
 
 ### 11.5 Open decisions (the user's)
 
-- **Edge** — X9 + X5 together, either alone, or another of X2–X8 / X10.
-- **E7 vs E8** — two sites with a remembered next, or one bundled site.
+- **Edge** — X11 is the user's current favourite (fence + wild beyond);
+  confirm, or another of X2–X10.
 - **E9 ring rule** — allow ring-3 blocks inside a group buy (as mocked) or
   require the group to grow ring by ring.
 
-Locked so far: D2 ambient 8-minute loop · T3 density rings outside · T4
+**Roads leave town (2026-10-01):** the main street runs off the map east
+and west and the high street south, so there are at least two ways in and
+out by road; the edge marker opens where a road crosses it (`edgeSegments`
+skips road-to-road tile edges). Applied to every scene on all three pages.
+
+Locked so far: **E7** (land is a construction site; the wanted building
+is a remembered `nextBuilding` the app proposes when the land opens) ·
+**E9** (a big footprint stakes the smallest connected block set that fits,
+as one group-priced site) · D2 ambient 8-minute loop · T3 density rings outside · T4
 haze (band height still open: 30 / 42 / 55 %) with nothing in it, no stars
 · B1 + B4 · E1 + E6 · no island, no signs, no letter-and-sign land beat.
 

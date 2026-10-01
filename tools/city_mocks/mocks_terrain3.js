@@ -38,6 +38,9 @@ edgeMock('x9', 'Forest right outside: dense trees two tiles deep around the town
 edgeMock('x10', 'Wilder beyond: sparse inside, thick trees everywhere outside', 'Nice',
   `Instead of a two-tile ring, the whole countryside is wooded and the town is the only open ground: few trees inside, many outside, no hard line. The gentlest contrast of the ten, and the one that makes a bought block change the least.`,
   { density: (rg) => rg === 0 ? 0.04 : 0.32, insideRing: 0 });
+edgeMock('x11', 'Rail fence and wilder beyond: keeping the wild out', 'Recommend',
+  `X5 and X10 together: the whole countryside is wooded and the town is the one open ground, with the farm fence on the line to say so. The fence reads as what keeps the wild animals out rather than as a border. The main street now runs off the map east and west and the high street south, and the fence opens where a road crosses it, so there are three ways in and out of town and the roads no longer stop at the edge. Buying a block moves the fence out and clears that bite of woodland.`,
+  { edge: 'rail', density: (rg) => rg === 0 ? 0.04 : 0.32, insideRing: 0 });
 
 // ============ K. HAZE COLOUR ==============================================
 MOCKS.push({
