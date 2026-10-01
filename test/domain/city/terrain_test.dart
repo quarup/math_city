@@ -24,21 +24,29 @@ void main() {
     });
   });
 
-  group('terrainBandOf', () {
-    test('meadow near town, scrub on ring 3, forest beyond', () {
-      expect(terrainBandOf(0), TerrainBand.meadow);
-      expect(terrainBandOf(2), TerrainBand.meadow);
-      expect(terrainBandOf(3), TerrainBand.scrub);
-      expect(terrainBandOf(4), TerrainBand.forest);
-      expect(terrainBandOf(9), TerrainBand.forest);
+  group('terrain bands follow the fence', () {
+    test('meadow inside, scrub on the next ring, forest beyond', () {
+      expect(terrainBandForDistance(0), TerrainBand.meadow);
+      expect(terrainBandForDistance(1), TerrainBand.scrub);
+      expect(terrainBandForDistance(2), TerrainBand.forest);
+      expect(terrainBandForDistance(7), TerrainBand.forest);
     });
 
-    test("terrainBandAt reads the tile's block ring", () {
-      expect(terrainBandAt(0, 0), TerrainBand.meadow);
-      expect(terrainBandAt(12, 0), TerrainBand.scrub);
-      expect(terrainBandAt(-12, 0), TerrainBand.scrub);
-      expect(terrainBandAt(-13, 0), TerrainBand.forest);
-      expect(terrainBandAt(0, 16), TerrainBand.forest);
+    test('blockDistanceToOwned is Chebyshev, capped', () {
+      final owned = startingOwnedBlocks();
+      expect(blockDistanceToOwned(0, 0, owned), 0);
+      expect(blockDistanceToOwned(2, 0, owned), 1);
+      expect(blockDistanceToOwned(2, 2, owned), 1);
+      expect(blockDistanceToOwned(3, 0, owned), 2);
+      expect(blockDistanceToOwned(9, -9, owned), 2);
+      expect(blockDistanceToOwned(9, -9, owned, cap: 10), 8);
+    });
+
+    test('buying a block moves the bands out with it', () {
+      final owned = {...startingOwnedBlocks(), (2, 0)};
+      expect(blockDistanceToOwned(2, 0, owned), 0);
+      expect(blockDistanceToOwned(3, 0, owned), 1);
+      expect(blockDistanceToOwned(4, 0, owned), 2);
     });
   });
 

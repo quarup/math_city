@@ -15,6 +15,7 @@ import 'package:math_city/domain/city/category.dart';
 import 'package:math_city/domain/city/chapter_one.dart';
 import 'package:math_city/domain/city/citizen.dart';
 import 'package:math_city/domain/city/construction_site.dart';
+import 'package:math_city/domain/city/day_clock.dart';
 import 'package:math_city/domain/city/land_blocks.dart';
 import 'package:math_city/domain/city/land_fit.dart';
 import 'package:math_city/domain/city/placement_rules.dart';
@@ -1333,6 +1334,10 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
         ),
         builder: (_) => _CityDebugSheet(
           siteId: _selectedSiteId,
+          onAdvanceClock: (hours) {
+            final clock = _game?.clock;
+            if (clock != null) clock.hour = (clock.hour + hours) % 24;
+          },
           onReset: () => setState(() {
             _selected = null;
             _pendingSpot = null;
@@ -2174,7 +2179,8 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                         ),
                       ),
                     ),
-                    // Population counter, top-left over the city.
+                    // Population counter, top-left over the city; the
+                    // town clock top-right.
                     if (!zoomed)
                       Positioned(
                         top: 8,
@@ -2183,6 +2189,14 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                           child: _PopulationChip(
                             population: city?.population ?? 0,
                           ),
+                        ),
+                      ),
+                    if (!zoomed)
+                      Positioned(
+                        top: 8,
+                        right: 8,
+                        child: SafeArea(
+                          child: _ClockChip(minuteOfDay: _game!.minuteOfDay),
                         ),
                       ),
                     // The front page on screen.
@@ -2438,7 +2452,15 @@ class _ZoomedBar extends StatelessWidget {
 /// the city to a brand-new-player baseline.
 /// Operates on the *real* active player so persistence is exercised too.
 class _CityDebugSheet extends ConsumerStatefulWidget {
-  const _CityDebugSheet({required this.onReset, this.siteId});
+  const _CityDebugSheet({
+    required this.onReset,
+    required this.onAdvanceClock,
+    this.siteId,
+  });
+
+  /// Jumps the town clock forward by this many hours, to look at the
+  /// street life and the tint at another time of day.
+  final void Function(double hours) onAdvanceClock;
 
   /// Called after a successful reset so the parent screen can clear its
   /// pending building selection (which may no longer be available).
@@ -2594,6 +2616,22 @@ class _CityDebugSheetState extends ConsumerState<_CityDebugSheet> {
               ],
             ),
             const SizedBox(height: 16),
+            Text('Town clock', style: theme.textTheme.titleSmall),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              children: [
+                for (final hours in const [1.0, 3.0, 6.0])
+                  FilledButton.tonal(
+                    onPressed: () {
+                      widget.onAdvanceClock(hours);
+                      _snack('Clock +${hours.round()} h');
+                    },
+                    child: Text('+${hours.round()} h'),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 16),
             SwitchListTile(
               contentPadding: EdgeInsets.zero,
               title: const Text('Unlock all buildings'),
@@ -2642,6 +2680,42 @@ class _CityDebugSheetState extends ConsumerState<_CityDebugSheet> {
       ),
     );
   }
+}
+
+/// The town's clock (city_builder.md §11, D2): the ambient hour as a
+/// digital readout, top-right over the city.
+class _ClockChip extends StatelessWidget {
+  const _ClockChip({required this.minuteOfDay});
+
+  final ValueListenable<int> minuteOfDay;
+
+  @override
+  Widget build(BuildContext context) => ValueListenableBuilder<int>(
+    valueListenable: minuteOfDay,
+    builder: (_, minute, _) => Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.black.withValues(alpha: 0.32),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text('🕒', style: TextStyle(fontSize: 15)),
+          const SizedBox(width: 5),
+          Text(
+            formatHour(minute / 60),
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 15,
+              fontFeatures: [FontFeature.tabularFigures()],
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
 }
 
 /// Current population, shown as a shaded chip over the top-left of the city.

@@ -18,6 +18,12 @@ class PedestrianSystem {
   final math.Random _random;
   final List<Pedestrian> people = [];
 
+  /// Walkers fading in after joining the crowd (seconds since they did)
+  /// and fading out after leaving it (seconds left), so the crowd thins
+  /// and fills with the time of day without anyone popping.
+  final Map<Pedestrian, double> _appearing = {};
+  final List<(Pedestrian, double)> _leaving = [];
+
   /// Ambient praise riding on walkers (city_builder.md §10.2): each bubble
   /// follows one pedestrian for a few seconds, then goes.
   final List<SpeechBubble> bubbles = [];
@@ -67,10 +73,12 @@ class PedestrianSystem {
       return;
     }
     while (people.length > target) {
-      people.removeLast();
+      _leaving.add((people.removeLast(), kMoverFade));
     }
     while (people.length < target) {
-      people.add(_spawn());
+      final p = _spawn();
+      _appearing[p] = 0;
+      people.add(p);
     }
   }
 
@@ -79,7 +87,7 @@ class PedestrianSystem {
   /// depending on the caller; either order ends with every walker on a road.
   void shift(int dCol, int dRow) {
     if (dCol == 0 && dRow == 0) return;
-    for (final p in people) {
+    for (final p in people.followedBy(_leaving.map((l) => l.$1))) {
       p
         ..col += dCol
         ..row += dRow;
@@ -95,6 +103,17 @@ class PedestrianSystem {
   }) {
     for (final b in bubbles) {
       b.remaining -= dt;
+    }
+    _appearing
+      ..updateAll((_, age) => age + dt)
+      ..removeWhere((_, age) => age >= kMoverFade);
+    for (var i = _leaving.length - 1; i >= 0; i--) {
+      final (p, left) = _leaving[i];
+      if (left - dt <= 0) {
+        _leaving.removeAt(i);
+      } else {
+        _leaving[i] = (p, left - dt);
+      }
     }
     bubbles.removeWhere(
       (b) => b.remaining <= 0 || !people.contains(b.pedestrian),
@@ -154,18 +173,30 @@ class PedestrianSystem {
   /// see `mover_depth.dart`) and the heading to face.
   Iterable<PedestrianView> views(IsoGrid grid) sync* {
     for (final p in people) {
-      final pos = pedestrianPosition(p);
-      final (x, y) = grid.pointAt(pos.col, pos.row);
-      yield PedestrianView(
-        pedestrian: p,
-        feet: Offset(x, y),
-        col: pos.col,
-        row: pos.row,
-        heading: pos.heading,
-      );
+      yield _view(grid, p, (_appearing[p] ?? kMoverFade) / kMoverFade);
+    }
+    for (final (p, left) in _leaving) {
+      yield _view(grid, p, left / kMoverFade);
     }
   }
+
+  PedestrianView _view(IsoGrid grid, Pedestrian p, double opacity) {
+    final pos = pedestrianPosition(p);
+    final (x, y) = grid.pointAt(pos.col, pos.row);
+    return PedestrianView(
+      pedestrian: p,
+      feet: Offset(x, y),
+      col: pos.col,
+      row: pos.row,
+      heading: pos.heading,
+      opacity: opacity.clamp(0.0, 1.0),
+    );
+  }
 }
+
+/// How long a mover takes to fade in or out when the crowd or the fleet
+/// changes with the time of day, in seconds.
+const double kMoverFade = 0.8;
 
 /// A praise bubble over one walker, counting down.
 class SpeechBubble {
@@ -188,7 +219,11 @@ class PedestrianView {
     required this.col,
     required this.row,
     required this.heading,
+    this.opacity = 1,
   });
+
+  /// `1` normally; below it while fading in or out.
+  final double opacity;
 
   final Pedestrian pedestrian;
   final Offset feet;

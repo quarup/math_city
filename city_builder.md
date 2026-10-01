@@ -1922,9 +1922,9 @@ in `lib/game/city/`, mode state in `city_screen.dart`.
 
 | Item | What shipped | Where |
 |---|---|---|
-| Ground (T2 / T3 / X10) | One meadow inside and out, three shades per band by world block ring (meadow ≤ 2, scrub 3, forest ≥ 4), per-tile hash noise and tufts; a 6-tile countryside margin round the owned land; hash-seeded trees / bushes / flowers / rocks on free tiles — 4 % trees in town, 32 % beyond — depth-sorted with buildings, hidden under footprints, roads and staked land; the ground past the window is painted from a cached picture, so there is no board edge | [terrain.dart](lib/domain/city/terrain.dart), [decor_painter.dart](lib/game/city/decor_painter.dart), `CityBoardComponent._drawGround` |
+| Ground (T2 / T3 / X10) | One meadow inside and out, three shades per band by distance from the town (meadow on owned blocks, scrub on the next ring, forest beyond — the light shade grows with the fence, see §11.7), per-tile hash noise and tufts; a 6-tile countryside margin round the owned land; hash-seeded trees / bushes / flowers / rocks on free tiles — 4 % trees in town, 32 % beyond — depth-sorted with buildings, hidden under footprints, roads and staked land; the ground past the window is painted from a cached picture, so there is no board edge | [terrain.dart](lib/domain/city/terrain.dart), [decor_painter.dart](lib/game/city/decor_painter.dart), `CityBoardComponent._drawGround` |
 | Edge (X11) | Split-rail fence on every owned-tile edge that faces unowned land, opening where a road crosses; the **main street** (world row 0) runs off the map east and west and the **high street** (world col 3) south — fixed roads the auto-roads join, reserved from building | `edgeSegments`, `highwayTiles`, `checkPlacement(reserved:)`, `generateRoads(fixedRoads:)` |
-| Sky (T4 / K1 / S1 / S4 / D2) | Viewport-fixed backdrop gradient behind the world; night multiply tint + dusk wash + the haze band over the top **42 %** of the viewport, coloured from `HAZE_KEY` (white by day, black at night, interpolation only between neighbouring keys); nothing in the band. The 8-minute clock: 5 min day (6:30 → 18:30), 3 min night; frozen at 9:30 through chapter one, paused under a question route. Default framing puts the town's centre at **58 %** of the visible height | [day_clock.dart](lib/domain/city/day_clock.dart), [sky_component.dart](lib/game/city/sky_component.dart), `kTownAnchorY` |
+| Sky (S4 / D2; T4 + K1 dropped, §11.7) | A whole-scene tint by time of day — a warm multiply wash at dawn and dusk, a dark multiply at night — with **no haze band**. The 8-minute clock: 5 min day (6:30 → 18:30), 3 min night; frozen at 9:30 through chapter one, paused under a question route; shown as a digital clock chip top-right. Default framing puts the town's centre at **58 %** of the visible height | [day_clock.dart](lib/domain/city/day_clock.dart), [sky_component.dart](lib/game/city/sky_component.dart), `_ClockChip`, `kTownAnchorY` |
 | Edges on demand (B1 + B4) | Only while placing or moving: unowned land dims, a thin tile grid over owned land, the boundary as a marching dashed line; the red footprint for a refused spot | `CityBoardComponent.placementEdges` |
 | Expand city (E1 + E6) | *Expand city* card at the end of the folder bar; beyond the ring dims, each purchasable block gets stakes + string + a faint wash + a constant-screen-size price pill (gold when affordable); tap → amber selection + the buy bar; the camera pulls back to frame the ring and returns on exit. Land taps outside the mode do nothing | `FrontierBlockView`, `_enterExpand` / `_exitExpand` |
 | Land as a site (E7) | Schema **v21**: `LandBlockGoal.blocks` (`ConstructionSites.landBlocks`), `Players.nextBuildingTypeId`. Land sites draw as staked plots; opening one owns every block and the fence moves out. The wanted building shows as a *next* chip beside the sites and is auto-proposed on the new land after the celebration; dismissing the chip or cancelling the site forgets it | `LandBlockGoal`, `CityActions.setNextBuilding`, `_proposeNextOn` |
@@ -1936,3 +1936,38 @@ Wording: the kid-facing bars say **buy** (“Buy this land for 🪙 1200?”,
 Not in this PR: D4 lit windows at night (the tint is in; the emissive
 pass is the next piece), a hand hint on the Expand city card, E8's
 bundled two-stage site (E7 won).
+
+### 11.7 First-look revisions (2026-10-01, same PR)
+
+The user's notes after seeing §11.6 on the device, all implemented:
+
+- **No haze.** The gradient from the top "looks weird": T4 and K1 are
+  dropped. The time of day is one tint over the whole screen (dusk / dawn
+  wash, night multiply). A **digital clock** chip (`9:30 am`) sits
+  top-right, opposite the population chip.
+- **The light grass follows the fence.** Bands are keyed on the distance
+  to the nearest owned block, not on the world ring: meadow inside the
+  perimeter, scrub one block out, forest beyond. Buying a block turns it
+  meadow and pushes the darker bands out.
+- **Roads run to the edge of what is seen.** The main street and the high
+  street are painted on every visible tile past the window, so they never
+  end in the grass.
+- **Through traffic.** On top of the town's fleet, `kCommutersPerExit` (2)
+  civilian cars per road out of town drive in from far past the window,
+  through the town, and out by whichever exit they reach (then a fresh one
+  comes in).
+- **Who may leave town.** `VehicleKind.leavesTown`: civilians, the bus and
+  the delivery truck use the roads beyond the fence; the school bus, ice
+  cream truck, garbage truck, mail van, tractor and the emergency vehicles
+  stay on the town's own roads. **Pedestrians never leave the perimeter.**
+- **Street life follows the clock** (`planStreetLife(hour:)`): walkers
+  follow `pedestrianActivityAt` — the full crowd at the 8:00 and 17:00
+  peaks, thinner in between, nobody from 22:00 to 5:30; gated kinds keep
+  hours (`VehicleKind.hours`: school bus 7–16, ice cream truck 11–19,
+  garbage truck 6–14, mail van 8–17, tractor 6–18, bus 6–22; emergency
+  vehicles and the delivery truck at any hour); civilian cars thin to
+  about a third at night (never below one) and the through traffic to one
+  per exit. Movers fade in and out over 0.8 s as the plan changes, so
+  nobody pops.
+- **Wording**: *buy*, not *stake* (§11.6). A debug-sheet *Town clock*
+  row (+1 h / +3 h / +6 h) jumps the hour for testing.

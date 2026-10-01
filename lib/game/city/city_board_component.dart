@@ -4,6 +4,7 @@ import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/text.dart';
 import 'package:flutter/painting.dart';
+import 'package:math_city/domain/city/day_clock.dart';
 import 'package:math_city/domain/city/land_blocks.dart';
 import 'package:math_city/domain/city/mover_depth.dart';
 import 'package:math_city/domain/city/pedestrian_walk.dart';
@@ -204,9 +205,76 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     _roads = value;
     _hiddenDirty = true;
     _fenceDirty = true;
-    pedestrians.setRoads(value);
-    traffic.setRoads(value);
+    // The highway past the window joins the roads at its edge.
+    _groundRange = null;
+    _syncMoverRoads();
     _replanStreetLife();
+  }
+
+  /// How far past the window the roads out of town carry the through
+  /// traffic before it turns into a fresh car: well past any zoom.
+  static const int kHighwayReach = 40;
+
+  /// Whether local tile `(col, row)` lies outside the window on one of the
+  /// roads that leave town — road there with nothing else on it.
+  bool _isHighwayBeyond(int col, int row) {
+    if (col >= 0 && col < grid.cols && row >= 0 && row < grid.rows) {
+      return false;
+    }
+    final (oc, or) = origin;
+    return isHighwayTile(col + oc, row + or);
+  }
+
+  /// Hands the movers their road graphs: walkers and town-only vehicles
+  /// keep to the roads inside the fence; the through traffic also gets the
+  /// highway on to [kHighwayReach] tiles past the window, ending at the
+  /// three exits.
+  void _syncMoverRoads() {
+    final town = {
+      for (final t in _roads)
+        if (_ownedTiles.contains(t)) t,
+    };
+    final (oc, or) = origin;
+    final mainRow = kMainStreetRow - or;
+    final highCol = kHighStreetCol - oc;
+    final through = {..._roads};
+    final exits = <HighwayExit>[];
+    if (mainRow >= 0 && mainRow < grid.rows) {
+      for (var c = -kHighwayReach; c < 0; c++) {
+        through.add((c, mainRow));
+      }
+      for (var c = grid.cols; c < grid.cols + kHighwayReach; c++) {
+        through.add((c, mainRow));
+      }
+      exits
+        ..add(HighwayExit(col: -kHighwayReach, row: mainRow, inbound: 0))
+        ..add(
+          HighwayExit(
+            col: grid.cols + kHighwayReach - 1,
+            row: mainRow,
+            inbound: 2,
+          ),
+        );
+    }
+    if (highCol >= 0 && highCol < grid.cols) {
+      for (var r = grid.rows; r < grid.rows + kHighwayReach; r++) {
+        through.add((highCol, r));
+      }
+      exits.add(
+        HighwayExit(
+          col: highCol,
+          row: grid.rows + kHighwayReach - 1,
+          inbound: 3,
+        ),
+      );
+    }
+    pedestrians.setRoads(town);
+    traffic.setRoads(
+      _roads,
+      townRoads: town,
+      throughRoads: through,
+      exits: exits,
+    );
   }
 
   int _population = 0;
@@ -225,6 +293,20 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     _replanStreetLife();
   }
 
+  /// The town clock's hour, in quarter-hour steps: the street life follows
+  /// it (walkers by day, the school bus in school hours, a thin night
+  /// traffic). Set by the host game every frame; replans on a new step.
+  double _hour = kChapterOneHour;
+  int? _hourStep;
+
+  void setHour(double hour) {
+    final step = (hour * 4).floor();
+    if (step == _hourStep) return;
+    _hourStep = step;
+    _hour = hour;
+    _replanStreetLife();
+  }
+
   void _replanStreetLife() {
     // The roads that run on past the fence are not streets: the budget
     // counts the town's own.
@@ -232,8 +314,11 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
       population: _population,
       roadTiles: _roads.where(_ownedTiles.contains).length,
       buildingIds: _buildingIds,
+      hour: _hour,
     );
-    traffic.setFleet(plan, buildingIds: _buildingIds, population: _population);
+    traffic
+      ..setFleet(plan, buildingIds: _buildingIds, population: _population)
+      ..setCommutersPerExit(commutersPerExitAt(_hour));
     pedestrians.setCrowd(plan.pedestrians);
   }
 
@@ -258,6 +343,8 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     _decorDirty = true;
     _fenceDirty = true;
     _boundaryDirty = true;
+    _groundRange = null;
+    _syncMoverRoads();
   }
 
   Set<(int, int)> _ownedTiles = const {};
@@ -403,7 +490,7 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     pedestrians.update(
       dt,
       cars: [
-        for (final v in traffic.cars)
+        for (final v in traffic.allCars)
           if (vehiclePosition(v) case final pos)
             (col: pos.col, row: pos.row, held: v.held > 0),
       ],
@@ -459,12 +546,22 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
       for (final v in pedestrians.views(grid))
         (
           moverDepth(v.col, v.row, footprints),
-          () => v.paint(canvas, citizenScale),
+          () => _fading(
+            canvas,
+            v.feet,
+            v.opacity,
+            () => v.paint(canvas, citizenScale),
+          ),
         ),
       for (final v in traffic.views(grid))
         (
           moverDepth(v.col, v.row, footprints),
-          () => v.paint(canvas, spriteScale, vehicleSpriteFor),
+          () => _fading(
+            canvas,
+            v.centre,
+            v.opacity,
+            () => v.paint(canvas, spriteScale, vehicleSpriteFor),
+          ),
         ),
     ]..sort((a, b) => a.$1.compareTo(b.$1));
     for (final (_, draw) in items) {
@@ -490,6 +587,27 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
         if (v != null) _drawBubble(canvas, bubble, v.feet, citizenScale);
       }
     }
+  }
+
+  /// Paints a mover at [at] through [opacity] (a walker or a car joining or
+  /// leaving the street as the hour changes); a plain paint at full opacity.
+  void _fading(
+    Canvas canvas,
+    Offset at,
+    double opacity,
+    void Function() paint,
+  ) {
+    if (opacity >= 1) {
+      paint();
+      return;
+    }
+    final r = grid.tileWidth;
+    canvas.saveLayer(
+      Rect.fromLTRB(at.dx - r, at.dy - 1.5 * r, at.dx + r, at.dy + 0.75 * r),
+      Paint()..color = Color.fromRGBO(255, 255, 255, opacity),
+    );
+    paint();
+    canvas.restore();
   }
 
   /// A rounded speech bubble with a little tail, fading in and out at the
@@ -585,13 +703,21 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     int down(int v) => (v / _kGroundChunk).floor() * _kGroundChunk;
     int up(int v) => (v / _kGroundChunk).ceil() * _kGroundChunk;
     final range = (down(c0), up(c1), down(r0), up(r1));
-    if (_groundPicture == null || _groundRange != range) {
+    final roadSpriteArrived =
+        !_groundHadRoadSprite &&
+        spriteFor(RoadSpriteShape.straight.fileName) != null;
+    if (_groundPicture == null || _groundRange != range || roadSpriteArrived) {
       _groundPicture?.dispose();
       _groundPicture = _recordGround(range);
       _groundRange = range;
     }
     canvas.drawPicture(_groundPicture!);
   }
+
+  /// Whether the straight road sprite was loaded when the ground was last
+  /// recorded; the highway beyond the window is baked into the picture,
+  /// so it re-records once the sprite arrives.
+  bool _groundHadRoadSprite = false;
 
   ui.Picture _recordGround((int, int, int, int) range) {
     final recorder = ui.PictureRecorder();
@@ -600,12 +726,22 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     final (oc, or) = origin;
     final (c0, c1, r0, r1) = range;
     final outside = <DecorItem>[];
+    final ownedBlocks = <(int, int)>{
+      for (final (c, r) in _ownedTiles) blockOfTile(c + oc, r + or),
+    };
+    final distance = <(int, int), int>{};
+    _groundHadRoadSprite = spriteFor(RoadSpriteShape.straight.fileName) != null;
     for (var c = c0; c <= c1; c++) {
       for (var r = r0; r <= r1; r++) {
         final (cx, cy) = grid.centerOf(c, r);
         final wc = c + oc;
         final wr = r + or;
-        final palette = switch (terrainBandAt(wc, wr)) {
+        final block = blockOfTile(wc, wr);
+        final d = distance.putIfAbsent(
+          block,
+          () => blockDistanceToOwned(block.$1, block.$2, ownedBlocks),
+        );
+        final palette = switch (terrainBandForDistance(d)) {
           TerrainBand.meadow => _meadow,
           TerrainBand.scrub => _scrub,
           TerrainBand.forest => _forest,
@@ -630,15 +766,14 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
             );
         }
         // Beyond the window nothing is ever built, so its decor needs no
-        // depth sort against buildings and can live in the picture.
+        // depth sort against buildings and can live in the picture — and
+        // the roads out of town run on to the edge of whatever is seen.
         if (c < 0 || c >= grid.cols || r < 0 || r >= grid.rows) {
-          final (bx, by) = blockOfTile(wc, wr);
-          final item = decorAt(
-            wc,
-            wr,
-            owned: false,
-            ring: blockRing(bx, by),
-          );
+          if (isHighwayTile(wc, wr)) {
+            _drawRoadTile(canvas, c, r);
+            continue;
+          }
+          final item = decorAt(wc, wr, owned: false, ring: d + 2);
           if (item != null) outside.add(item);
         }
       }
@@ -963,6 +1098,9 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     if (!_decorDirty) return _decor;
     final (oc, or) = origin;
     final out = <DecorItem>[];
+    final ownedBlocks = <(int, int)>{
+      for (final (c, r) in _ownedTiles) blockOfTile(c + oc, r + or),
+    };
     for (var c = 0; c < grid.cols; c++) {
       for (var r = 0; r < grid.rows; r++) {
         final (bx, by) = blockOfTile(c + oc, r + or);
@@ -970,7 +1108,7 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
           c + oc,
           r + or,
           owned: _ownedTiles.contains((c, r)),
-          ring: blockRing(bx, by),
+          ring: blockDistanceToOwned(bx, by, ownedBlocks) + 2,
         );
         if (world == null) continue;
         out.add(
@@ -1022,7 +1160,7 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
   void _drawRoadTile(Canvas canvas, int col, int row) {
     final (cx, cy) = grid.centerOf(col, row);
     final spec = roadSpriteAt(
-      isRoad: (c, r) => roads.contains((c, r)),
+      isRoad: (c, r) => roads.contains((c, r)) || _isHighwayBeyond(c, r),
       col: col,
       row: row,
     );

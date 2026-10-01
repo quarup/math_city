@@ -22,6 +22,8 @@ class VehicleKind {
     this.gates = const [],
     this.maxCount = 1,
     this.speed = 1,
+    this.leavesTown = false,
+    this.hours,
     this.bonusGate,
     this.bonusWeight = 0,
     this.minPopulation = 0,
@@ -44,6 +46,23 @@ class VehicleKind {
 
   /// Speed multiplier on the base car speed.
   final double speed;
+
+  /// Whether this kind drives out past the fence. Town services — the
+  /// school bus, the ice cream truck, the garbage truck, the emergency
+  /// vehicles — stay inside the perimeter; civilians, the bus and the
+  /// delivery truck come and go on the roads that leave town.
+  final bool leavesTown;
+
+  /// The hours this kind is out, `(from, to)` on the 24-hour clock; null
+  /// for kinds on the road at any hour (emergency vehicles, civilians,
+  /// the delivery truck). The school bus keeps school hours, the ice cream
+  /// truck the afternoon, the workers their shifts.
+  final (double, double)? hours;
+
+  bool isOutAt(double hour) => switch (hours) {
+    null => true,
+    (final from, final to) => hour >= from && hour < to,
+  };
 
   /// A building that raises the pool weight to [bonusWeight] when placed.
   final String? bonusGate;
@@ -82,6 +101,8 @@ const List<VehicleKind> vehicleKinds = [
   ),
   VehicleKind(
     id: 'bus',
+    hours: (6, 22),
+    leavesTown: true,
     length: 0.9,
     width: 0.31,
     gates: ['bus_depot'],
@@ -90,6 +111,7 @@ const List<VehicleKind> vehicleKinds = [
   ),
   VehicleKind(
     id: 'school_bus',
+    hours: (7, 16),
     length: 0.8,
     width: 0.33,
     gates: ['school', 'high_school'],
@@ -98,6 +120,7 @@ const List<VehicleKind> vehicleKinds = [
   ),
   VehicleKind(
     id: 'mail_van',
+    hours: (8, 17),
     length: 0.45,
     width: 0.2,
     gates: ['post_office'],
@@ -105,6 +128,7 @@ const List<VehicleKind> vehicleKinds = [
   ),
   VehicleKind(
     id: 'delivery_truck',
+    leavesTown: true,
     length: 0.6,
     width: 0.3,
     gates: ['supermarket', 'grocery', 'shopping_mall'],
@@ -112,6 +136,7 @@ const List<VehicleKind> vehicleKinds = [
   ),
   VehicleKind(
     id: 'tractor',
+    hours: (6, 18),
     length: 0.4,
     width: 0.21,
     gates: ['farmhouse', 'farmers_market'],
@@ -119,6 +144,7 @@ const List<VehicleKind> vehicleKinds = [
   ),
   VehicleKind(
     id: 'garbage_truck',
+    hours: (6, 14),
     length: 0.7,
     width: 0.3,
     gates: ['waste_management', 'recycling_center'],
@@ -126,15 +152,29 @@ const List<VehicleKind> vehicleKinds = [
   ),
   VehicleKind(
     id: 'ice_cream_truck',
+    hours: (11, 19),
     length: 0.5,
     width: 0.28,
     gates: ['park', 'playground', 'amusement_park'],
     speed: 0.7,
   ),
-  VehicleKind(id: 'hatchback', length: 0.42, width: 0.22, weight: 4),
-  VehicleKind(id: 'sedan', length: 0.46, width: 0.24, weight: 3),
+  VehicleKind(
+    id: 'hatchback',
+    length: 0.42,
+    width: 0.22,
+    weight: 4,
+    leavesTown: true,
+  ),
+  VehicleKind(
+    id: 'sedan',
+    length: 0.46,
+    width: 0.24,
+    weight: 3,
+    leavesTown: true,
+  ),
   VehicleKind(
     id: 'taxi',
+    leavesTown: true,
     length: 0.46,
     width: 0.21,
     weight: 1,
@@ -142,10 +182,24 @@ const List<VehicleKind> vehicleKinds = [
     bonusGate: 'restaurant',
     bonusWeight: 2,
   ),
-  VehicleKind(id: 'suv', length: 0.48, width: 0.24, weight: 2),
-  VehicleKind(id: 'van', length: 0.5, width: 0.25, weight: 1, speed: 0.9),
+  VehicleKind(
+    id: 'suv',
+    length: 0.48,
+    width: 0.24,
+    weight: 2,
+    leavesTown: true,
+  ),
+  VehicleKind(
+    id: 'van',
+    length: 0.5,
+    width: 0.25,
+    weight: 1,
+    speed: 0.9,
+    leavesTown: true,
+  ),
   VehicleKind(
     id: 'pickup',
+    leavesTown: true,
     length: 0.5,
     width: 0.24,
     weight: 1,
@@ -187,12 +241,61 @@ const double kMoverDensity = 0.45;
 const double kCarDensity = 0.15;
 const double kWalkerDensity = 0.3;
 
+double _curve(List<(double, double)> keys, double hour) {
+  final h = ((hour % 24) + 24) % 24;
+  var i = 0;
+  while (i + 2 < keys.length && keys[i + 1].$1 <= h) {
+    i++;
+  }
+  final (h0, v0) = keys[i];
+  final (h1, v1) = keys[i + 1];
+  return v0 + (v1 - v0) * ((h - h0) / (h1 - h0));
+}
+
+/// How much of the daytime crowd is out walking at [hour], `0..1`: nobody
+/// in the middle of the night, the full crowd at the morning and evening
+/// peaks, a little thinner in between.
+double pedestrianActivityAt(double hour) => _curve(const [
+  (0, 0),
+  (5.5, 0),
+  (6.5, 0.3),
+  (8, 1),
+  (9.5, 0.7),
+  (12, 0.9),
+  (14, 0.7),
+  (17, 1),
+  (19, 0.6),
+  (21, 0.15),
+  (22, 0),
+  (24, 0),
+], hour);
+
+/// How much of the daytime civilian traffic is on the road at [hour]: a
+/// third of it through the night, all of it by day.
+double civilianActivityAt(double hour) => _curve(const [
+  (0, 0.3),
+  (5, 0.3),
+  (7, 0.8),
+  (8, 1),
+  (18, 1),
+  (20, 0.6),
+  (22, 0.35),
+  (24, 0.3),
+], hour);
+
 /// The §9.5 budget: `M = min(P, ⌊0.45·R⌋)`, cars `min(⌊M/3⌋, ⌊0.15·R⌋)`
 /// with gated kinds first, walkers `min(M − cars, ⌊0.3·R⌋)`.
+///
+/// With an [hour] the plan follows the time of day: kinds outside their
+/// [VehicleKind.hours] stay in, the civilian slots thin out at night (never
+/// below one car while the town has any) and the walkers follow
+/// [pedestrianActivityAt] — none in the middle of the night. Without one
+/// it is the full daytime budget.
 StreetLifePlan planStreetLife({
   required int population,
   required int roadTiles,
   required Iterable<String> buildingIds,
+  double? hour,
 }) {
   final movers = math.min(population, (kMoverDensity * roadTiles).floor());
   if (movers <= 0) return StreetLifePlan.empty;
@@ -215,10 +318,24 @@ StreetLifePlan planStreetLife({
       used += n;
     }
   }
+  final walkers = math.min(movers - cars, (kWalkerDensity * roadTiles).floor());
+  final civilians = cars - used;
+  if (hour == null) {
+    return StreetLifePlan(
+      pedestrians: walkers,
+      gated: gated,
+      civilians: civilians,
+    );
+  }
   return StreetLifePlan(
-    pedestrians: math.min(movers - cars, (kWalkerDensity * roadTiles).floor()),
-    gated: gated,
-    civilians: cars - used,
+    pedestrians: (walkers * pedestrianActivityAt(hour)).round(),
+    gated: {
+      for (final entry in gated.entries)
+        if (vehicleKindById(entry.key).isOutAt(hour)) entry.key: entry.value,
+    },
+    civilians: civilians == 0
+        ? 0
+        : math.max(1, (civilians * civilianActivityAt(hour)).round()),
   );
 }
 
@@ -246,4 +363,25 @@ VehicleKind drawCivilianKind(
     pick -= w;
   }
   return pool.last.$1;
+}
+
+/// Through traffic (2026-10-01): on top of the town's own fleet, this many
+/// cars per road out of town drive in from the edge of the map, through
+/// the town, and out again by whichever road they reach.
+const int kCommutersPerExit = 2;
+
+/// Through traffic per road at [hour]: the full number by day, sparser at
+/// night, never none.
+int commutersPerExitAt(double hour) => math.max(
+  1,
+  (kCommutersPerExit * civilianActivityAt(hour)).round(),
+);
+
+/// A civilian kind that leaves town, for the through traffic.
+VehicleKind drawCommuterKind(math.Random random) {
+  final pool = [
+    for (final kind in vehicleKinds)
+      if (kind.leavesTown && !kind.isGated) kind,
+  ];
+  return pool[random.nextInt(pool.length)];
 }

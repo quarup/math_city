@@ -6,6 +6,7 @@ import 'package:flame/cache.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flame/sprite.dart';
+import 'package:flutter/foundation.dart' show ValueNotifier;
 import 'package:math_city/domain/city/day_clock.dart';
 import 'package:math_city/domain/city/road_sprites.dart';
 import 'package:math_city/domain/city/street_life.dart';
@@ -41,6 +42,12 @@ class IsoCityGame extends FlameGame with DragCallbacks {
   /// game's clock; the screen freezes it through chapter one and pauses it
   /// while a question route covers the city.
   final AmbientClock clock = AmbientClock();
+
+  /// The clock's minute of the day, for the clock chip over the city:
+  /// changes once a game minute, not every frame.
+  final ValueNotifier<int> minuteOfDay = ValueNotifier<int>(
+    (kChapterOneHour * 60).floor(),
+  );
 
   static const double minZoom = 0.4;
   static const double maxZoom = 3;
@@ -187,10 +194,13 @@ class IsoCityGame extends FlameGame with DragCallbacks {
   void update(double dt) {
     super.update(dt);
     clock.tick(dt);
+    final minute = (clock.hour * 60).floor();
+    if (minute != minuteOfDay.value) minuteOfDay.value = minute;
     if (isLoaded) {
       board
         ..visibleWorldRect = camera.visibleWorldRect
-        ..cameraZoom = camera.viewfinder.zoom;
+        ..cameraZoom = camera.viewfinder.zoom
+        ..setHour(clock.hour);
     }
     final to = _tweenToPos;
     if (to == null) return;
@@ -293,15 +303,11 @@ class IsoCityGame extends FlameGame with DragCallbacks {
     if (_pendingOrigin != null) board.origin = _pendingOrigin!;
     if (_pendingLandSites != null) board.landSites = _pendingLandSites!;
     await world.add(board);
-    // The sky: a viewport-fixed gradient behind the world and the haze
-    // band (with the night tint) over it, both coloured by the clock.
+    // A flat backdrop behind the world and the time-of-day tint over it.
     Vector2 viewportSize() => camera.viewport.size;
-    double hour() => clock.hour;
-    await camera.backdrop.add(
-      SkyBackdrop(hour: hour, viewportSize: viewportSize),
-    );
+    await camera.backdrop.add(SkyBackdrop(viewportSize: viewportSize));
     await camera.viewport.add(
-      SkyHaze(hour: hour, viewportSize: viewportSize),
+      SkyTint(hour: () => clock.hour, viewportSize: viewportSize),
     );
     camera.viewfinder.position = _boardCenter;
     _maybeFit();

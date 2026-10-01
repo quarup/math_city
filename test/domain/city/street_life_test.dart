@@ -136,4 +136,107 @@ void main() {
     expect(ids.toSet().length, ids.length);
     expect(vehicleKindById('bus').length, 0.9);
   });
+
+  group('leaving town (2026-10-01)', () {
+    test('town services stay inside the fence, civilians come and go', () {
+      for (final id in [
+        'school_bus',
+        'ice_cream_truck',
+        'garbage_truck',
+        'police_car',
+        'fire_truck',
+        'ambulance',
+      ]) {
+        expect(vehicleKindById(id).leavesTown, isFalse, reason: id);
+      }
+      for (final id in [
+        'hatchback',
+        'sedan',
+        'taxi',
+        'bus',
+        'delivery_truck',
+      ]) {
+        expect(vehicleKindById(id).leavesTown, isTrue, reason: id);
+      }
+    });
+
+    test('commuters are drawn from the civilian kinds that leave town', () {
+      final r = math.Random(3);
+      for (var i = 0; i < 50; i++) {
+        final kind = drawCommuterKind(r);
+        expect(kind.leavesTown, isTrue);
+        expect(kind.isGated, isFalse);
+      }
+      expect(kCommutersPerExit, greaterThan(0));
+    });
+  });
+
+  group('time of day (2026-10-01)', () {
+    const buildings = [
+      'school',
+      'park',
+      'post_office',
+      'waste_management',
+      'police_station',
+    ];
+
+    StreetLifePlan at(double hour) => planStreetLife(
+      population: 200,
+      roadTiles: 100,
+      buildingIds: buildings,
+      hour: hour,
+    );
+
+    test('without an hour the plan is the full daytime budget', () {
+      final full = planStreetLife(
+        population: 200,
+        roadTiles: 100,
+        buildingIds: buildings,
+      );
+      expect(at(8).pedestrians, full.pedestrians);
+      expect(at(12).civilians, full.civilians);
+    });
+
+    test('nobody walks in the middle of the night', () {
+      for (final h in [23.0, 0.0, 2.5, 5.0]) {
+        expect(at(h).pedestrians, 0, reason: 'hour $h');
+      }
+      expect(at(8).pedestrians, greaterThan(0));
+      expect(at(17).pedestrians, greaterThan(at(14).pedestrians));
+      expect(at(21).pedestrians, lessThan(at(19).pedestrians));
+    });
+
+    test('the school bus keeps school hours, the ice cream truck the day', () {
+      expect(vehicleKindById('school_bus').isOutAt(9), isTrue);
+      expect(vehicleKindById('school_bus').isOutAt(18), isFalse);
+      expect(vehicleKindById('ice_cream_truck').isOutAt(14), isTrue);
+      expect(vehicleKindById('ice_cream_truck').isOutAt(9), isFalse);
+      expect(vehicleKindById('ice_cream_truck').isOutAt(22), isFalse);
+      expect(vehicleKindById('garbage_truck').isOutAt(2), isFalse);
+      expect(vehicleKindById('mail_van').isOutAt(20), isFalse);
+    });
+
+    test('gated kinds outside their hours stay in', () {
+      final day = at(12).gated;
+      final night = at(1).gated;
+      for (final id in night.keys) {
+        expect(vehicleKindById(id).hours, isNull, reason: id);
+      }
+      expect(night.length, lessThanOrEqualTo(day.length));
+      expect(night.containsKey('school_bus'), isFalse);
+    });
+
+    test('emergency vehicles are out at any hour', () {
+      for (final id in ['police_car', 'ambulance', 'fire_truck']) {
+        expect(vehicleKindById(id).isOutAt(3), isTrue, reason: id);
+      }
+    });
+
+    test('some cars are still out at night, more sparsely', () {
+      expect(at(2).civilians, greaterThan(0));
+      expect(at(2).civilians, lessThan(at(12).civilians));
+      expect(commutersPerExitAt(12), kCommutersPerExit);
+      expect(commutersPerExitAt(2), inInclusiveRange(1, kCommutersPerExit - 1));
+    });
+  });
 }
