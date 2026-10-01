@@ -1471,6 +1471,11 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     if (_movingSiteId != null && !sites.any((s) => s.id == _movingSiteId)) {
       _movingSiteId = null;
     }
+    // The town's edges show only while something is in the hand
+    // (city_builder.md §11, B1 + B4).
+    _game?.setPlacementEdges(
+      on: _selected != null || _movingId != null || _movingSiteId != null,
+    );
     if (_game != null && placements != null) {
       _game!.setBuildings(_viewsFor(placements, sites, _window!));
       _game!.setRoads(

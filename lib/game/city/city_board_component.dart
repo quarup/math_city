@@ -115,6 +115,17 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
   /// Seconds since the board was added; drives the moving dashes.
   double time = 0;
 
+  /// True while a building is being placed or moved (city_builder.md §11,
+  /// B1 + B4): the countryside dims, a thin tile grid lies over the owned
+  /// land and the town's boundary runs round it as a moving dashed line.
+  /// Nothing of this is drawn at rest.
+  bool placementEdges = false;
+
+  /// The town's outline for the placement edges — every owned-tile edge
+  /// facing unowned land, road crossings included (the fence skips them).
+  List<EdgeSegment> _boundary = const [];
+  bool _boundaryDirty = true;
+
   /// Tiles painted as road (auto-generated; see `road_network.dart`). Drawn in
   /// the terrain pass, so buildings always sit on top. Reassigned by the host
   /// game whenever placements change; the pedestrians follow the new network.
@@ -176,6 +187,7 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     _ownedTiles = value;
     _decorDirty = true;
     _fenceDirty = true;
+    _boundaryDirty = true;
   }
 
   Set<(int, int)> _ownedTiles = const {};
@@ -249,6 +261,18 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     ..strokeWidth = 1.6;
   final _postPaint = Paint()..color = const Color(0xFF8D6E63);
   final _postShadowPaint = Paint()..color = const Color(0x2E000000);
+
+  /// Placement-mode edges (B1): the dim over the countryside, the tile
+  /// grid over owned land, the dashed boundary.
+  final _dimPaint = Paint()..color = const Color(0x33141E3C);
+  final _gridPaint = Paint()
+    ..color = const Color(0x33FFFFFF)
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 1;
+  final _boundaryPaint = Paint()
+    ..color = const Color(0xE6FFFFFF)
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 2;
 
   /// Yellow wash for the selected land site, drawn over its pad. Matches
   /// the picked-up-building tint so "selected" reads the same everywhere.
@@ -377,6 +401,7 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     for (final (_, draw) in items) {
       draw();
     }
+    if (placementEdges) _drawPlacementEdges(canvas);
     // The rejected footprint sits over everything in its way.
     for (final (col, row) in rejectedTiles) {
       final (cx, cy) = grid.centerOf(col, row);
@@ -544,6 +569,41 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
           );
       }
     }
+  }
+
+  /// B1 + B4: while something is in the hand, dim the land beyond the town,
+  /// lay a tile grid over the owned land and run the boundary round it as
+  /// a moving dashed line, so a refused spot explains itself.
+  void _drawPlacementEdges(Canvas canvas) {
+    final vis = visibleWorldRect;
+    for (var c = 0; c < grid.cols; c++) {
+      for (var r = 0; r < grid.rows; r++) {
+        if (vis != null && !_inView(vis, c, r)) continue;
+        final (cx, cy) = grid.centerOf(c, r);
+        final path = _diamond(cx, cy, 0);
+        canvas.drawPath(
+          path,
+          _ownedTiles.contains((c, r)) ? _gridPaint : _dimPaint,
+        );
+      }
+    }
+    if (_boundaryDirty) {
+      _boundary = edgeSegments(owned: _ownedTiles);
+      _boundaryDirty = false;
+    }
+    final k = grid.tileWidth / 64;
+    final outline = Path();
+    for (final seg in _boundary) {
+      if (vis != null && !_inView(vis, seg.col, seg.row)) continue;
+      final (a, b) = _sideCorners(seg.col, seg.row, seg.side);
+      outline
+        ..moveTo(a.dx, a.dy)
+        ..lineTo(b.dx, b.dy);
+    }
+    canvas.drawPath(
+      dashedPath(outline, dash: 8 * k, gap: 6 * k, phase: time * 14 * k),
+      _boundaryPaint..strokeWidth = 2 * k,
+    );
   }
 
   /// The decor for the current window, rebuilt when the owned land or the
@@ -898,4 +958,31 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     final tile = grid.tileAt(event.localPosition.x, event.localPosition.y);
     if (tile != null) onTileTapped(tile.$1, tile.$2);
   }
+}
+
+/// [path] cut into dashes of [dash] length separated by [gap], starting
+/// [phase] along each contour so an increasing phase makes them march.
+Path dashedPath(
+  Path path, {
+  required double dash,
+  required double gap,
+  double phase = 0,
+}) {
+  final out = Path();
+  final period = dash + gap;
+  for (final metric in path.computeMetrics()) {
+    var d = -(phase % period);
+    while (d < metric.length) {
+      final start = d < 0 ? 0.0 : d;
+      final end = d + dash;
+      if (end > 0) {
+        out.addPath(
+          metric.extractPath(start, end > metric.length ? metric.length : end),
+          Offset.zero,
+        );
+      }
+      d += period;
+    }
+  }
+  return out;
 }

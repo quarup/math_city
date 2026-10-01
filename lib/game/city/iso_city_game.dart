@@ -493,6 +493,12 @@ class IsoCityGame extends FlameGame with DragCallbacks {
     }
   }
 
+  /// Turns the placement edges (B1 + B4) on while a building is being
+  /// placed or moved, off at rest.
+  void setPlacementEdges({required bool on}) {
+    if (isLoaded) board.placementEdges = on;
+  }
+
   /// Shows (or, with an empty set, clears) the footprint a building would
   /// have needed where placement was just refused.
   void setRejectedTiles(Set<(int, int)> tiles) {
