@@ -116,6 +116,17 @@ class $PlayersTable extends Players with TableInfo<$PlayersTable, Player> {
     requiredDuringInsert: false,
     defaultValue: const Constant(0),
   );
+  static const VerificationMeta _nextBuildingTypeIdMeta =
+      const VerificationMeta('nextBuildingTypeId');
+  @override
+  late final GeneratedColumn<String> nextBuildingTypeId =
+      GeneratedColumn<String>(
+        'next_building_type_id',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -149,6 +160,7 @@ class $PlayersTable extends Players with TableInfo<$PlayersTable, Player> {
     roundsPlayed,
     guideStep,
     guideHints,
+    nextBuildingTypeId,
     createdAt,
     avatarConfig,
   ];
@@ -231,6 +243,15 @@ class $PlayersTable extends Players with TableInfo<$PlayersTable, Player> {
         guideHints.isAcceptableOrUnknown(data['guide_hints']!, _guideHintsMeta),
       );
     }
+    if (data.containsKey('next_building_type_id')) {
+      context.handle(
+        _nextBuildingTypeIdMeta,
+        nextBuildingTypeId.isAcceptableOrUnknown(
+          data['next_building_type_id']!,
+          _nextBuildingTypeIdMeta,
+        ),
+      );
+    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
@@ -293,6 +314,10 @@ class $PlayersTable extends Players with TableInfo<$PlayersTable, Player> {
         DriftSqlType.int,
         data['${effectivePrefix}guide_hints'],
       )!,
+      nextBuildingTypeId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}next_building_type_id'],
+      ),
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -348,6 +373,12 @@ class Player extends DataClass implements Insertable<Player> {
   /// Bitmask of one-time gesture hints already shown (`GuideHint` bits):
   /// the animated hand for Place here, the wheel fling, and the answer.
   final int guideHints;
+
+  /// The building the player wanted when a refused placement sent them to
+  /// Expand city (city_builder.md §11, E7): a one-slot memory, shown as a
+  /// chip while the land site runs and proposed on the new land when it
+  /// opens. Null when nothing is remembered.
+  final String? nextBuildingTypeId;
   final DateTime createdAt;
   final String? avatarConfig;
   const Player({
@@ -360,6 +391,7 @@ class Player extends DataClass implements Insertable<Player> {
     required this.roundsPlayed,
     required this.guideStep,
     required this.guideHints,
+    this.nextBuildingTypeId,
     required this.createdAt,
     this.avatarConfig,
   });
@@ -375,6 +407,9 @@ class Player extends DataClass implements Insertable<Player> {
     map['rounds_played'] = Variable<int>(roundsPlayed);
     map['guide_step'] = Variable<int>(guideStep);
     map['guide_hints'] = Variable<int>(guideHints);
+    if (!nullToAbsent || nextBuildingTypeId != null) {
+      map['next_building_type_id'] = Variable<String>(nextBuildingTypeId);
+    }
     map['created_at'] = Variable<DateTime>(createdAt);
     if (!nullToAbsent || avatarConfig != null) {
       map['avatar_config'] = Variable<String>(avatarConfig);
@@ -393,6 +428,9 @@ class Player extends DataClass implements Insertable<Player> {
       roundsPlayed: Value(roundsPlayed),
       guideStep: Value(guideStep),
       guideHints: Value(guideHints),
+      nextBuildingTypeId: nextBuildingTypeId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(nextBuildingTypeId),
       createdAt: Value(createdAt),
       avatarConfig: avatarConfig == null && nullToAbsent
           ? const Value.absent()
@@ -417,6 +455,9 @@ class Player extends DataClass implements Insertable<Player> {
       roundsPlayed: serializer.fromJson<int>(json['roundsPlayed']),
       guideStep: serializer.fromJson<int>(json['guideStep']),
       guideHints: serializer.fromJson<int>(json['guideHints']),
+      nextBuildingTypeId: serializer.fromJson<String?>(
+        json['nextBuildingTypeId'],
+      ),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       avatarConfig: serializer.fromJson<String?>(json['avatarConfig']),
     );
@@ -434,6 +475,7 @@ class Player extends DataClass implements Insertable<Player> {
       'roundsPlayed': serializer.toJson<int>(roundsPlayed),
       'guideStep': serializer.toJson<int>(guideStep),
       'guideHints': serializer.toJson<int>(guideHints),
+      'nextBuildingTypeId': serializer.toJson<String?>(nextBuildingTypeId),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'avatarConfig': serializer.toJson<String?>(avatarConfig),
     };
@@ -449,6 +491,7 @@ class Player extends DataClass implements Insertable<Player> {
     int? roundsPlayed,
     int? guideStep,
     int? guideHints,
+    Value<String?> nextBuildingTypeId = const Value.absent(),
     DateTime? createdAt,
     Value<String?> avatarConfig = const Value.absent(),
   }) => Player(
@@ -461,6 +504,9 @@ class Player extends DataClass implements Insertable<Player> {
     roundsPlayed: roundsPlayed ?? this.roundsPlayed,
     guideStep: guideStep ?? this.guideStep,
     guideHints: guideHints ?? this.guideHints,
+    nextBuildingTypeId: nextBuildingTypeId.present
+        ? nextBuildingTypeId.value
+        : this.nextBuildingTypeId,
     createdAt: createdAt ?? this.createdAt,
     avatarConfig: avatarConfig.present ? avatarConfig.value : this.avatarConfig,
   );
@@ -487,6 +533,9 @@ class Player extends DataClass implements Insertable<Player> {
       guideHints: data.guideHints.present
           ? data.guideHints.value
           : this.guideHints,
+      nextBuildingTypeId: data.nextBuildingTypeId.present
+          ? data.nextBuildingTypeId.value
+          : this.nextBuildingTypeId,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       avatarConfig: data.avatarConfig.present
           ? data.avatarConfig.value
@@ -506,6 +555,7 @@ class Player extends DataClass implements Insertable<Player> {
           ..write('roundsPlayed: $roundsPlayed, ')
           ..write('guideStep: $guideStep, ')
           ..write('guideHints: $guideHints, ')
+          ..write('nextBuildingTypeId: $nextBuildingTypeId, ')
           ..write('createdAt: $createdAt, ')
           ..write('avatarConfig: $avatarConfig')
           ..write(')'))
@@ -523,6 +573,7 @@ class Player extends DataClass implements Insertable<Player> {
     roundsPlayed,
     guideStep,
     guideHints,
+    nextBuildingTypeId,
     createdAt,
     avatarConfig,
   );
@@ -539,6 +590,7 @@ class Player extends DataClass implements Insertable<Player> {
           other.roundsPlayed == this.roundsPlayed &&
           other.guideStep == this.guideStep &&
           other.guideHints == this.guideHints &&
+          other.nextBuildingTypeId == this.nextBuildingTypeId &&
           other.createdAt == this.createdAt &&
           other.avatarConfig == this.avatarConfig);
 }
@@ -553,6 +605,7 @@ class PlayersCompanion extends UpdateCompanion<Player> {
   final Value<int> roundsPlayed;
   final Value<int> guideStep;
   final Value<int> guideHints;
+  final Value<String?> nextBuildingTypeId;
   final Value<DateTime> createdAt;
   final Value<String?> avatarConfig;
   const PlayersCompanion({
@@ -565,6 +618,7 @@ class PlayersCompanion extends UpdateCompanion<Player> {
     this.roundsPlayed = const Value.absent(),
     this.guideStep = const Value.absent(),
     this.guideHints = const Value.absent(),
+    this.nextBuildingTypeId = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.avatarConfig = const Value.absent(),
   });
@@ -578,6 +632,7 @@ class PlayersCompanion extends UpdateCompanion<Player> {
     this.roundsPlayed = const Value.absent(),
     this.guideStep = const Value.absent(),
     this.guideHints = const Value.absent(),
+    this.nextBuildingTypeId = const Value.absent(),
     required DateTime createdAt,
     this.avatarConfig = const Value.absent(),
   }) : name = Value(name),
@@ -593,6 +648,7 @@ class PlayersCompanion extends UpdateCompanion<Player> {
     Expression<int>? roundsPlayed,
     Expression<int>? guideStep,
     Expression<int>? guideHints,
+    Expression<String>? nextBuildingTypeId,
     Expression<DateTime>? createdAt,
     Expression<String>? avatarConfig,
   }) {
@@ -607,6 +663,8 @@ class PlayersCompanion extends UpdateCompanion<Player> {
       if (roundsPlayed != null) 'rounds_played': roundsPlayed,
       if (guideStep != null) 'guide_step': guideStep,
       if (guideHints != null) 'guide_hints': guideHints,
+      if (nextBuildingTypeId != null)
+        'next_building_type_id': nextBuildingTypeId,
       if (createdAt != null) 'created_at': createdAt,
       if (avatarConfig != null) 'avatar_config': avatarConfig,
     });
@@ -622,6 +680,7 @@ class PlayersCompanion extends UpdateCompanion<Player> {
     Value<int>? roundsPlayed,
     Value<int>? guideStep,
     Value<int>? guideHints,
+    Value<String?>? nextBuildingTypeId,
     Value<DateTime>? createdAt,
     Value<String?>? avatarConfig,
   }) {
@@ -635,6 +694,7 @@ class PlayersCompanion extends UpdateCompanion<Player> {
       roundsPlayed: roundsPlayed ?? this.roundsPlayed,
       guideStep: guideStep ?? this.guideStep,
       guideHints: guideHints ?? this.guideHints,
+      nextBuildingTypeId: nextBuildingTypeId ?? this.nextBuildingTypeId,
       createdAt: createdAt ?? this.createdAt,
       avatarConfig: avatarConfig ?? this.avatarConfig,
     );
@@ -670,6 +730,9 @@ class PlayersCompanion extends UpdateCompanion<Player> {
     if (guideHints.present) {
       map['guide_hints'] = Variable<int>(guideHints.value);
     }
+    if (nextBuildingTypeId.present) {
+      map['next_building_type_id'] = Variable<String>(nextBuildingTypeId.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -691,6 +754,7 @@ class PlayersCompanion extends UpdateCompanion<Player> {
           ..write('roundsPlayed: $roundsPlayed, ')
           ..write('guideStep: $guideStep, ')
           ..write('guideHints: $guideHints, ')
+          ..write('nextBuildingTypeId: $nextBuildingTypeId, ')
           ..write('createdAt: $createdAt, ')
           ..write('avatarConfig: $avatarConfig')
           ..write(')'))
@@ -3792,6 +3856,17 @@ class $ConstructionSitesTable extends ConstructionSites
     type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _landBlocksMeta = const VerificationMeta(
+    'landBlocks',
+  );
+  @override
+  late final GeneratedColumn<String> landBlocks = GeneratedColumn<String>(
+    'land_blocks',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _paidCoinsMeta = const VerificationMeta(
     'paidCoins',
   );
@@ -3828,6 +3903,7 @@ class $ConstructionSitesTable extends ConstructionSites
     venuePlacementId,
     blockX,
     blockY,
+    landBlocks,
     paidCoins,
     startedAtRound,
   ];
@@ -3919,6 +3995,12 @@ class $ConstructionSitesTable extends ConstructionSites
         blockY.isAcceptableOrUnknown(data['block_y']!, _blockYMeta),
       );
     }
+    if (data.containsKey('land_blocks')) {
+      context.handle(
+        _landBlocksMeta,
+        landBlocks.isAcceptableOrUnknown(data['land_blocks']!, _landBlocksMeta),
+      );
+    }
     if (data.containsKey('paid_coins')) {
       context.handle(
         _paidCoinsMeta,
@@ -3989,6 +4071,10 @@ class $ConstructionSitesTable extends ConstructionSites
         DriftSqlType.int,
         data['${effectivePrefix}block_y'],
       ),
+      landBlocks: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}land_blocks'],
+      ),
       paidCoins: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}paid_coins'],
@@ -4024,6 +4110,7 @@ class ConstructionSiteRow extends DataClass
   final int? venuePlacementId;
   final int? blockX;
   final int? blockY;
+  final String? landBlocks;
   final int paidCoins;
 
   /// The player's round clock when the site was started.
@@ -4040,6 +4127,7 @@ class ConstructionSiteRow extends DataClass
     this.venuePlacementId,
     this.blockX,
     this.blockY,
+    this.landBlocks,
     required this.paidCoins,
     required this.startedAtRound,
   });
@@ -4075,6 +4163,9 @@ class ConstructionSiteRow extends DataClass
     if (!nullToAbsent || blockY != null) {
       map['block_y'] = Variable<int>(blockY);
     }
+    if (!nullToAbsent || landBlocks != null) {
+      map['land_blocks'] = Variable<String>(landBlocks);
+    }
     map['paid_coins'] = Variable<int>(paidCoins);
     map['started_at_round'] = Variable<int>(startedAtRound);
     return map;
@@ -4109,6 +4200,9 @@ class ConstructionSiteRow extends DataClass
       blockY: blockY == null && nullToAbsent
           ? const Value.absent()
           : Value(blockY),
+      landBlocks: landBlocks == null && nullToAbsent
+          ? const Value.absent()
+          : Value(landBlocks),
       paidCoins: Value(paidCoins),
       startedAtRound: Value(startedAtRound),
     );
@@ -4133,6 +4227,7 @@ class ConstructionSiteRow extends DataClass
       venuePlacementId: serializer.fromJson<int?>(json['venuePlacementId']),
       blockX: serializer.fromJson<int?>(json['blockX']),
       blockY: serializer.fromJson<int?>(json['blockY']),
+      landBlocks: serializer.fromJson<String?>(json['landBlocks']),
       paidCoins: serializer.fromJson<int>(json['paidCoins']),
       startedAtRound: serializer.fromJson<int>(json['startedAtRound']),
     );
@@ -4154,6 +4249,7 @@ class ConstructionSiteRow extends DataClass
       'venuePlacementId': serializer.toJson<int?>(venuePlacementId),
       'blockX': serializer.toJson<int?>(blockX),
       'blockY': serializer.toJson<int?>(blockY),
+      'landBlocks': serializer.toJson<String?>(landBlocks),
       'paidCoins': serializer.toJson<int>(paidCoins),
       'startedAtRound': serializer.toJson<int>(startedAtRound),
     };
@@ -4171,6 +4267,7 @@ class ConstructionSiteRow extends DataClass
     Value<int?> venuePlacementId = const Value.absent(),
     Value<int?> blockX = const Value.absent(),
     Value<int?> blockY = const Value.absent(),
+    Value<String?> landBlocks = const Value.absent(),
     int? paidCoins,
     int? startedAtRound,
   }) => ConstructionSiteRow(
@@ -4191,6 +4288,7 @@ class ConstructionSiteRow extends DataClass
         : this.venuePlacementId,
     blockX: blockX.present ? blockX.value : this.blockX,
     blockY: blockY.present ? blockY.value : this.blockY,
+    landBlocks: landBlocks.present ? landBlocks.value : this.landBlocks,
     paidCoins: paidCoins ?? this.paidCoins,
     startedAtRound: startedAtRound ?? this.startedAtRound,
   );
@@ -4213,6 +4311,9 @@ class ConstructionSiteRow extends DataClass
           : this.venuePlacementId,
       blockX: data.blockX.present ? data.blockX.value : this.blockX,
       blockY: data.blockY.present ? data.blockY.value : this.blockY,
+      landBlocks: data.landBlocks.present
+          ? data.landBlocks.value
+          : this.landBlocks,
       paidCoins: data.paidCoins.present ? data.paidCoins.value : this.paidCoins,
       startedAtRound: data.startedAtRound.present
           ? data.startedAtRound.value
@@ -4234,6 +4335,7 @@ class ConstructionSiteRow extends DataClass
           ..write('venuePlacementId: $venuePlacementId, ')
           ..write('blockX: $blockX, ')
           ..write('blockY: $blockY, ')
+          ..write('landBlocks: $landBlocks, ')
           ..write('paidCoins: $paidCoins, ')
           ..write('startedAtRound: $startedAtRound')
           ..write(')'))
@@ -4253,6 +4355,7 @@ class ConstructionSiteRow extends DataClass
     venuePlacementId,
     blockX,
     blockY,
+    landBlocks,
     paidCoins,
     startedAtRound,
   );
@@ -4271,6 +4374,7 @@ class ConstructionSiteRow extends DataClass
           other.venuePlacementId == this.venuePlacementId &&
           other.blockX == this.blockX &&
           other.blockY == this.blockY &&
+          other.landBlocks == this.landBlocks &&
           other.paidCoins == this.paidCoins &&
           other.startedAtRound == this.startedAtRound);
 }
@@ -4287,6 +4391,7 @@ class ConstructionSitesCompanion extends UpdateCompanion<ConstructionSiteRow> {
   final Value<int?> venuePlacementId;
   final Value<int?> blockX;
   final Value<int?> blockY;
+  final Value<String?> landBlocks;
   final Value<int> paidCoins;
   final Value<int> startedAtRound;
   const ConstructionSitesCompanion({
@@ -4301,6 +4406,7 @@ class ConstructionSitesCompanion extends UpdateCompanion<ConstructionSiteRow> {
     this.venuePlacementId = const Value.absent(),
     this.blockX = const Value.absent(),
     this.blockY = const Value.absent(),
+    this.landBlocks = const Value.absent(),
     this.paidCoins = const Value.absent(),
     this.startedAtRound = const Value.absent(),
   });
@@ -4316,6 +4422,7 @@ class ConstructionSitesCompanion extends UpdateCompanion<ConstructionSiteRow> {
     this.venuePlacementId = const Value.absent(),
     this.blockX = const Value.absent(),
     this.blockY = const Value.absent(),
+    this.landBlocks = const Value.absent(),
     this.paidCoins = const Value.absent(),
     required int startedAtRound,
   }) : cityId = Value(cityId),
@@ -4333,6 +4440,7 @@ class ConstructionSitesCompanion extends UpdateCompanion<ConstructionSiteRow> {
     Expression<int>? venuePlacementId,
     Expression<int>? blockX,
     Expression<int>? blockY,
+    Expression<String>? landBlocks,
     Expression<int>? paidCoins,
     Expression<int>? startedAtRound,
   }) {
@@ -4349,6 +4457,7 @@ class ConstructionSitesCompanion extends UpdateCompanion<ConstructionSiteRow> {
       if (venuePlacementId != null) 'venue_placement_id': venuePlacementId,
       if (blockX != null) 'block_x': blockX,
       if (blockY != null) 'block_y': blockY,
+      if (landBlocks != null) 'land_blocks': landBlocks,
       if (paidCoins != null) 'paid_coins': paidCoins,
       if (startedAtRound != null) 'started_at_round': startedAtRound,
     });
@@ -4366,6 +4475,7 @@ class ConstructionSitesCompanion extends UpdateCompanion<ConstructionSiteRow> {
     Value<int?>? venuePlacementId,
     Value<int?>? blockX,
     Value<int?>? blockY,
+    Value<String?>? landBlocks,
     Value<int>? paidCoins,
     Value<int>? startedAtRound,
   }) {
@@ -4382,6 +4492,7 @@ class ConstructionSitesCompanion extends UpdateCompanion<ConstructionSiteRow> {
       venuePlacementId: venuePlacementId ?? this.venuePlacementId,
       blockX: blockX ?? this.blockX,
       blockY: blockY ?? this.blockY,
+      landBlocks: landBlocks ?? this.landBlocks,
       paidCoins: paidCoins ?? this.paidCoins,
       startedAtRound: startedAtRound ?? this.startedAtRound,
     );
@@ -4425,6 +4536,9 @@ class ConstructionSitesCompanion extends UpdateCompanion<ConstructionSiteRow> {
     if (blockY.present) {
       map['block_y'] = Variable<int>(blockY.value);
     }
+    if (landBlocks.present) {
+      map['land_blocks'] = Variable<String>(landBlocks.value);
+    }
     if (paidCoins.present) {
       map['paid_coins'] = Variable<int>(paidCoins.value);
     }
@@ -4448,6 +4562,7 @@ class ConstructionSitesCompanion extends UpdateCompanion<ConstructionSiteRow> {
           ..write('venuePlacementId: $venuePlacementId, ')
           ..write('blockX: $blockX, ')
           ..write('blockY: $blockY, ')
+          ..write('landBlocks: $landBlocks, ')
           ..write('paidCoins: $paidCoins, ')
           ..write('startedAtRound: $startedAtRound')
           ..write(')'))
@@ -5616,6 +5731,7 @@ typedef $$PlayersTableCreateCompanionBuilder =
       Value<int> roundsPlayed,
       Value<int> guideStep,
       Value<int> guideHints,
+      Value<String?> nextBuildingTypeId,
       required DateTime createdAt,
       Value<String?> avatarConfig,
     });
@@ -5630,6 +5746,7 @@ typedef $$PlayersTableUpdateCompanionBuilder =
       Value<int> roundsPlayed,
       Value<int> guideStep,
       Value<int> guideHints,
+      Value<String?> nextBuildingTypeId,
       Value<DateTime> createdAt,
       Value<String?> avatarConfig,
     });
@@ -5809,6 +5926,11 @@ class $$PlayersTableFilterComposer
 
   ColumnFilters<int> get guideHints => $composableBuilder(
     column: $table.guideHints,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get nextBuildingTypeId => $composableBuilder(
+    column: $table.nextBuildingTypeId,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -6003,6 +6125,11 @@ class $$PlayersTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get nextBuildingTypeId => $composableBuilder(
+    column: $table.nextBuildingTypeId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -6059,6 +6186,11 @@ class $$PlayersTableAnnotationComposer
 
   GeneratedColumn<int> get guideHints => $composableBuilder(
     column: $table.guideHints,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get nextBuildingTypeId => $composableBuilder(
+    column: $table.nextBuildingTypeId,
     builder: (column) => column,
   );
 
@@ -6242,6 +6374,7 @@ class $$PlayersTableTableManager
                 Value<int> roundsPlayed = const Value.absent(),
                 Value<int> guideStep = const Value.absent(),
                 Value<int> guideHints = const Value.absent(),
+                Value<String?> nextBuildingTypeId = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<String?> avatarConfig = const Value.absent(),
               }) => PlayersCompanion(
@@ -6254,6 +6387,7 @@ class $$PlayersTableTableManager
                 roundsPlayed: roundsPlayed,
                 guideStep: guideStep,
                 guideHints: guideHints,
+                nextBuildingTypeId: nextBuildingTypeId,
                 createdAt: createdAt,
                 avatarConfig: avatarConfig,
               ),
@@ -6268,6 +6402,7 @@ class $$PlayersTableTableManager
                 Value<int> roundsPlayed = const Value.absent(),
                 Value<int> guideStep = const Value.absent(),
                 Value<int> guideHints = const Value.absent(),
+                Value<String?> nextBuildingTypeId = const Value.absent(),
                 required DateTime createdAt,
                 Value<String?> avatarConfig = const Value.absent(),
               }) => PlayersCompanion.insert(
@@ -6280,6 +6415,7 @@ class $$PlayersTableTableManager
                 roundsPlayed: roundsPlayed,
                 guideStep: guideStep,
                 guideHints: guideHints,
+                nextBuildingTypeId: nextBuildingTypeId,
                 createdAt: createdAt,
                 avatarConfig: avatarConfig,
               ),
@@ -8977,6 +9113,7 @@ typedef $$ConstructionSitesTableCreateCompanionBuilder =
       Value<int?> venuePlacementId,
       Value<int?> blockX,
       Value<int?> blockY,
+      Value<String?> landBlocks,
       Value<int> paidCoins,
       required int startedAtRound,
     });
@@ -8993,6 +9130,7 @@ typedef $$ConstructionSitesTableUpdateCompanionBuilder =
       Value<int?> venuePlacementId,
       Value<int?> blockX,
       Value<int?> blockY,
+      Value<String?> landBlocks,
       Value<int> paidCoins,
       Value<int> startedAtRound,
     });
@@ -9085,6 +9223,11 @@ class $$ConstructionSitesTableFilterComposer
 
   ColumnFilters<int> get blockY => $composableBuilder(
     column: $table.blockY,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get landBlocks => $composableBuilder(
+    column: $table.landBlocks,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -9181,6 +9324,11 @@ class $$ConstructionSitesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get landBlocks => $composableBuilder(
+    column: $table.landBlocks,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get paidCoins => $composableBuilder(
     column: $table.paidCoins,
     builder: (column) => ColumnOrderings(column),
@@ -9260,6 +9408,11 @@ class $$ConstructionSitesTableAnnotationComposer
   GeneratedColumn<int> get blockY =>
       $composableBuilder(column: $table.blockY, builder: (column) => column);
 
+  GeneratedColumn<String> get landBlocks => $composableBuilder(
+    column: $table.landBlocks,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<int> get paidCoins =>
       $composableBuilder(column: $table.paidCoins, builder: (column) => column);
 
@@ -9336,6 +9489,7 @@ class $$ConstructionSitesTableTableManager
                 Value<int?> venuePlacementId = const Value.absent(),
                 Value<int?> blockX = const Value.absent(),
                 Value<int?> blockY = const Value.absent(),
+                Value<String?> landBlocks = const Value.absent(),
                 Value<int> paidCoins = const Value.absent(),
                 Value<int> startedAtRound = const Value.absent(),
               }) => ConstructionSitesCompanion(
@@ -9350,6 +9504,7 @@ class $$ConstructionSitesTableTableManager
                 venuePlacementId: venuePlacementId,
                 blockX: blockX,
                 blockY: blockY,
+                landBlocks: landBlocks,
                 paidCoins: paidCoins,
                 startedAtRound: startedAtRound,
               ),
@@ -9366,6 +9521,7 @@ class $$ConstructionSitesTableTableManager
                 Value<int?> venuePlacementId = const Value.absent(),
                 Value<int?> blockX = const Value.absent(),
                 Value<int?> blockY = const Value.absent(),
+                Value<String?> landBlocks = const Value.absent(),
                 Value<int> paidCoins = const Value.absent(),
                 required int startedAtRound,
               }) => ConstructionSitesCompanion.insert(
@@ -9380,6 +9536,7 @@ class $$ConstructionSitesTableTableManager
                 venuePlacementId: venuePlacementId,
                 blockX: blockX,
                 blockY: blockY,
+                landBlocks: landBlocks,
                 paidCoins: paidCoins,
                 startedAtRound: startedAtRound,
               ),

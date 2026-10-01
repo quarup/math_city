@@ -83,7 +83,7 @@ void main() {
       addTearDown(c.dispose);
       final start = await c
           .read(cityActionsProvider)
-          .startSite(const LandBlockGoal(blockX: 2, blockY: 0));
+          .startSite(const LandBlockGoal(blocks: {(2, 0)}));
       expect(start.ok, isTrue);
       final result = await c
           .read(cityActionsProvider)
@@ -100,7 +100,7 @@ void main() {
       addTearDown(c.dispose);
       final start = await c
           .read(cityActionsProvider)
-          .startSite(const LandBlockGoal(blockX: 3, blockY: 3));
+          .startSite(const LandBlockGoal(blocks: {(3, 3)}));
       expect(start.rejection, SiteStartRejection.blockNotPurchasable);
     });
   });

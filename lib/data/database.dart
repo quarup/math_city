@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:flutter/services.dart' show AssetManifest, rootBundle;
 import 'package:math_city/domain/avatar/adventurer_config.dart';
 import 'package:math_city/domain/city/city_map_registry.dart';
+import 'package:math_city/domain/city/construction_site.dart';
 import 'package:math_city/domain/city/land_blocks.dart';
 import 'package:math_city/domain/city/upgrade_ladders.dart';
 import 'package:math_city/domain/concepts/concept.dart' as dom;
@@ -60,6 +61,12 @@ class Players extends Table {
   /// Bitmask of one-time gesture hints already shown (`GuideHint` bits):
   /// the animated hand for Place here, the wheel fling, and the answer.
   IntColumn get guideHints => integer().withDefault(const Constant(0))();
+
+  /// The building the player wanted when a refused placement sent them to
+  /// Expand city (city_builder.md §11, E7): a one-slot memory, shown as a
+  /// chip while the land site runs and proposed on the new land when it
+  /// opens. Null when nothing is remembered.
+  TextColumn get nextBuildingTypeId => text().nullable()();
 
   DateTimeColumn get createdAt => dateTime()();
   // Stored as JSON string; null = default avatar.
@@ -223,9 +230,11 @@ class ConstructionSites extends Table {
   TextColumn get eventId => text().nullable()();
   IntColumn get venuePlacementId => integer().nullable()();
 
-  // Land goals.
+  // Land goals: the first block, and (v21) every block of a group bought
+  // as one site, encoded `bx,by;bx,by` (`LandBlockGoal.encodeBlocks`).
   IntColumn get blockX => integer().nullable()();
   IntColumn get blockY => integer().nullable()();
+  TextColumn get landBlocks => text().nullable()();
 
   IntColumn get paidCoins => integer().withDefault(const Constant(0))();
 
@@ -317,7 +326,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 20;
+  int get schemaVersion => 21;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -488,6 +497,13 @@ class AppDatabase extends _$AppDatabase {
           'UPDATE players SET guide_step = guide_step + 1 '
           'WHERE guide_step >= 1',
         );
+      }
+      if (from < 21) {
+        // v21: ground and sky (city_builder.md §11). The remembered next
+        // building on the player, and a land site may stake a group of
+        // blocks. Both nullable; additive.
+        await m.addColumn(players, players.nextBuildingTypeId);
+        await m.addColumn(constructionSites, constructionSites.landBlocks);
       }
     },
   );
@@ -823,6 +839,7 @@ class AppDatabase extends _$AppDatabase {
     )..where((t) => t.cityId.equals(city.id))).go();
     await _seedStartingLand(city.id);
     await placeMayorsOffice(cityId: city.id, playerId: playerId);
+    await setPlayerNextBuilding(playerId, null);
     await (delete(
       storyBeatStates,
     )..where((t) => t.playerId.equals(playerId))).go();
@@ -1043,24 +1060,34 @@ class AppDatabase extends _$AppDatabase {
     );
   }
 
-  /// Starts a land site for block `(blockX, blockY)`. Returns the row id.
+  /// Starts a land site for [blocks] — one block, or a connected group
+  /// staked as one site (city_builder.md §11, E9). Returns the row id.
   Future<int> startLandSite({
     required int cityId,
     required int playerId,
-    required int blockX,
-    required int blockY,
+    required Set<(int, int)> blocks,
   }) async {
     final player = await getPlayerById(playerId);
+    final goal = LandBlockGoal(blocks: blocks);
+    final first = LandBlockGoal.decodeBlocks(goal.encodeBlocks()).first;
     return into(constructionSites).insert(
       ConstructionSitesCompanion.insert(
         cityId: cityId,
         goalKind: 'land',
-        blockX: Value(blockX),
-        blockY: Value(blockY),
+        blockX: Value(first.$1),
+        blockY: Value(first.$2),
+        landBlocks: Value(goal.encodeBlocks()),
         startedAtRound: player.roundsPlayed,
       ),
     );
   }
+
+  /// Remembers (or, with null, forgets) the building the player wanted
+  /// when they were sent to expand the city (city_builder.md §11, E7).
+  Future<void> setPlayerNextBuilding(int playerId, String? typeId) =>
+      (update(players)..where((t) => t.id.equals(playerId))).write(
+        PlayersCompanion(nextBuildingTypeId: Value(typeId)),
+      );
 
   /// Starts an event site at [venuePlacementId] (city_builder.md §10.7).
   Future<int> startEventSite({
@@ -1137,11 +1164,17 @@ class AppDatabase extends _$AppDatabase {
             )..where((t) => t.id.equals(source))).go();
           }
         } else if (site.goalKind == 'land') {
-          await addOwnedLandBlock(
-            cityId: site.cityId,
-            blockX: site.blockX!,
-            blockY: site.blockY!,
-          );
+          final encoded = site.landBlocks;
+          final blocks = encoded == null
+              ? {(site.blockX!, site.blockY!)}
+              : LandBlockGoal.decodeBlocks(encoded);
+          for (final (bx, by) in blocks) {
+            await addOwnedLandBlock(
+              cityId: site.cityId,
+              blockX: bx,
+              blockY: by,
+            );
+          }
         }
         // An event site leaves nothing behind but its row going away; the
         // party itself (population burst, reply) is the state layer's.

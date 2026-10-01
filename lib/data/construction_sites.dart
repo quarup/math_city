@@ -15,7 +15,8 @@ class CitySite {
   /// Kid-facing name of what the site is building.
   String get name => switch (site.goal) {
     BuildingGoal(:final type) => type.name,
-    LandBlockGoal() => 'New land',
+    LandBlockGoal(:final blocks) =>
+      blocks.length == 1 ? 'New land' : 'New land (${blocks.length} blocks)',
     EventGoal() => 'Block party',
   };
 }
@@ -30,7 +31,12 @@ ConstructionSite? siteFromRow(
 ) {
   final SiteGoal goal;
   if (row.goalKind == 'land') {
-    goal = LandBlockGoal(blockX: row.blockX!, blockY: row.blockY!);
+    final encoded = row.landBlocks;
+    goal = LandBlockGoal(
+      blocks: encoded == null
+          ? {(row.blockX!, row.blockY!)}
+          : LandBlockGoal.decodeBlocks(encoded),
+    );
   } else if (row.goalKind == 'event') {
     final venue = placements
         .where((p) => p.id == row.venuePlacementId)

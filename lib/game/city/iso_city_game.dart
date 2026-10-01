@@ -226,8 +226,7 @@ class IsoCityGame extends FlameGame with DragCallbacks {
   /// rationale as above.
   Set<(int, int)>? _pendingOwned;
   (int, int)? _pendingOrigin;
-  Set<(int, int)>? _pendingLandSites;
-  Set<(int, int)>? _pendingSelectedLandSite;
+  List<LandSiteView>? _pendingLandSites;
 
   /// Building sprites live under `assets/buildings/`, outside Flame's default
   /// `assets/images/` image cache, so they get their own cache + prefix.
@@ -292,10 +291,7 @@ class IsoCityGame extends FlameGame with DragCallbacks {
     }
     if (_pendingOwned != null) board.ownedTiles = _pendingOwned!;
     if (_pendingOrigin != null) board.origin = _pendingOrigin!;
-    if (_pendingLandSites != null) board.landSiteTiles = _pendingLandSites!;
-    if (_pendingSelectedLandSite != null) {
-      board.selectedLandSiteTiles = _pendingSelectedLandSite!;
-    }
+    if (_pendingLandSites != null) board.landSites = _pendingLandSites!;
     await world.add(board);
     // The sky: a viewport-fixed gradient behind the world and the haze
     // band (with the night tint) over it, both coloured by the clock.
@@ -522,20 +518,13 @@ class IsoCityGame extends FlameGame with DragCallbacks {
     if (isLoaded) board.rejectedTiles = tiles;
   }
 
-  /// Pushes the tiles (window-local) of every land block with an open
-  /// construction site, and the subset belonging to the selected site.
+  /// Pushes every open land site (window-local tiles, selected flag).
   /// Buffered before [onLoad] like the rest of the land sets.
-  void setLandSiteTiles({
-    required Set<(int, int)> all,
-    required Set<(int, int)> selected,
-  }) {
+  void setLandSites(List<LandSiteView> sites) {
     if (isLoaded) {
-      board
-        ..landSiteTiles = all
-        ..selectedLandSiteTiles = selected;
+      board.landSites = sites;
     } else {
-      _pendingLandSites = all;
-      _pendingSelectedLandSite = selected;
+      _pendingLandSites = sites;
     }
   }
 

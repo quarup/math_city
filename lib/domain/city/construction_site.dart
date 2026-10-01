@@ -14,6 +14,7 @@ library;
 
 import 'package:math_city/domain/city/building_type.dart';
 import 'package:math_city/domain/city/land_blocks.dart';
+import 'package:math_city/domain/city/land_fit.dart';
 import 'package:math_city/domain/city/placement_rules.dart';
 import 'package:math_city/domain/city/upgrade_ladders.dart';
 import 'package:math_city/domain/economy/question_block.dart';
@@ -160,16 +161,50 @@ final class EventGoal extends SiteGoal {
   int get price => kBlockPartyPrice;
 }
 
+/// New land (city_builder.md §11, E7 + E9): one purchasable block, or a
+/// connected group of them staked as one site for a footprint bigger than
+/// a block. Priced as the sum of the blocks' ring prices.
 final class LandBlockGoal extends SiteGoal {
-  const LandBlockGoal({required this.blockX, required this.blockY});
+  const LandBlockGoal({required this.blocks});
 
-  final int blockX;
-  final int blockY;
+  final Set<(int, int)> blocks;
 
-  (int, int) get block => (blockX, blockY);
+  /// The world-tile bounding box of the blocks: `(col, row, width, height)`.
+  (int, int, int, int) get tileBounds {
+    var minX = blocks.first.$1;
+    var minY = blocks.first.$2;
+    var maxX = minX;
+    var maxY = minY;
+    for (final (bx, by) in blocks) {
+      if (bx < minX) minX = bx;
+      if (by < minY) minY = by;
+      if (bx > maxX) maxX = bx;
+      if (by > maxY) maxY = by;
+    }
+    return (
+      minX * kBlockSize,
+      minY * kBlockSize,
+      (maxX - minX + 1) * kBlockSize,
+      (maxY - minY + 1) * kBlockSize,
+    );
+  }
 
   @override
-  int get price => blockCost(blockX, blockY);
+  int get price => blockSetPrice(blocks);
+
+  /// The blocks as `bx,by;bx,by` for a single text column.
+  String encodeBlocks() {
+    final list = blocks.toList()
+      ..sort(
+        (a, b) => a.$1 != b.$1 ? a.$1.compareTo(b.$1) : a.$2.compareTo(b.$2),
+      );
+    return list.map((b) => '${b.$1},${b.$2}').join(';');
+  }
+
+  static Set<(int, int)> decodeBlocks(String encoded) => {
+    for (final part in encoded.split(';'))
+      if (part.split(',') case [final x, final y]) (int.parse(x), int.parse(y)),
+  };
 }
 
 /// Outcome of paying coins into a site.
@@ -275,10 +310,11 @@ enum SiteStartRejection {
   /// ladder (`upgrade_ladders.dart`).
   notAnUpgradeStep,
 
-  /// The land block doesn't share an edge with owned land.
+  /// The land doesn't hang off the owned land (a group must be connected
+  /// to it through itself).
   blockNotPurchasable,
 
-  /// A site is already paying for that land block.
+  /// A site is already paying for one of those blocks.
   blockAlreadyStarted,
 
   /// One party at a time (city_builder.md §10.7).
@@ -324,11 +360,13 @@ SiteStartRejection? checkStartSite({
         if (s.goal is EventGoal) return SiteStartRejection.eventAlreadyOpen;
       }
     case LandBlockGoal():
-      if (!purchasableBlocks(ownedBlocks).contains(goal.block)) {
+      if (!blockSetPurchasable(ownedBlocks, goal.blocks)) {
         return SiteStartRejection.blockNotPurchasable;
       }
       for (final s in open) {
-        if (s.goal case LandBlockGoal(:final block) when block == goal.block) {
+        if (s.goal case LandBlockGoal(
+          :final blocks,
+        ) when blocks.any(goal.blocks.contains)) {
           return SiteStartRejection.blockAlreadyStarted;
         }
       }
