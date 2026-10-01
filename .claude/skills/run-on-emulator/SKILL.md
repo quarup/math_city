@@ -121,3 +121,40 @@ read.
 
 Leave the app running (cheap hot-reload target) or quit with `q` in the
 `flutter run` session. The emulator itself can stay up between runs.
+
+## iOS simulator (verified 2026-10-01, Xcode 27 / Flutter 3.41.7)
+
+The Android recipe above does not apply; this does.
+
+```sh
+xcrun simctl list devices available | grep -E "iPhone|iPad"   # pick a udid
+xcrun simctl boot <udid>; open -a Simulator
+caffeinate -dims flutter run -d <udid> --debug   # background it, poll the log
+xcrun simctl io <udid> screenshot shot.png        # no adb involved
+```
+
+- **Use `flutter run -d <udid>`, not `flutter build ios --simulator`.** The
+  two-architecture simulator build fails in Flutter's own packaging step:
+  Xcode 27's `lipo` rejects `-verify_arch arm64 x86_64` ("requires exactly
+  one input file"). A run targeted at a booted device builds only the
+  active arch and passes.
+- **The harness needs no `adb forward`** — the simulator shares the Mac's
+  loopback, so `curl http://127.0.0.1:8081/ping` works directly. But a
+  leftover Android forward holds that port on the Mac and the app logs
+  `could not bind 8081`; run `adb forward --remove tcp:8081` first, then
+  `xcrun simctl terminate <udid> com.quarup.mathCity && xcrun simctl launch
+  <udid> com.quarup.mathCity`. Only one app at a time can own the port, so
+  close the iPhone app before probing the iPad one.
+- **`build/` must live outside iCloud.** iCloud stamps `com.apple.FinderInfo`
+  and `com.apple.fileprovider.*` xattrs on files under the synced repo and
+  codesign fails with "resource fork, Finder information, or similar
+  detritus not allowed". On this machine `build/` is a symlink to
+  `~/Library/Caches/math_city/build`; if it is ever a real directory again,
+  recreate the symlink (`xattr -cr` does not remove the fileprovider
+  attribute).
+- **Deployment floor is iOS 15** (Xcode 27 rejects lower). The Podfile's
+  `post_install` lifts every plugin pod to 15 too; keep it in step with
+  `IPHONEOS_DEPLOYMENT_TARGET` in `Runner.xcodeproj`.
+- There is no `simctl` tap. AppleScript taps need Accessibility permission
+  for the terminal, which is not granted; drive screens through the harness
+  and leave the city for a manual look.

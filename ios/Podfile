@@ -1,6 +1,6 @@
-# games_services 5.x needs iOS 14; keep this in step with
-# IPHONEOS_DEPLOYMENT_TARGET in Runner.xcodeproj.
-platform :ios, '14.0'
+# Xcode 27 builds nothing below iOS 15 (games_services 5.x alone would need
+# 14). Keep this in step with IPHONEOS_DEPLOYMENT_TARGET in Runner.xcodeproj.
+platform :ios, '15.0'
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
@@ -40,5 +40,10 @@ end
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
+    # Plugin podspecs declare targets as low as iOS 8; Xcode 27 rejects
+    # anything below 15, so lift every pod to the app's floor.
+    target.build_configurations.each do |config|
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'
+    end
   end
 end
