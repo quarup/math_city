@@ -1973,3 +1973,66 @@ The user's notes after seeing §11.6 on the device, all implemented:
   nobody pops.
 - **Wording**: *buy*, not *stake* (§11.6). A debug-sheet *Town clock*
   row (+1 h / +3 h / +6 h) jumps the hour for testing.
+
+### 11.8 Remaining work (written 2026-10-01, after PR #129 merged)
+
+Everything in §11.6–11.7 is on `main`. What is left, most useful first.
+
+**Not yet seen on a device** — covered by unit tests of the pieces, never
+driven end to end on the emulator. Do these before building anything new.
+
+- [ ] **E7 end to end.** Pay a land site off through the question loop,
+  watch the celebration, and confirm the *next* chip's building is
+  auto-proposed on the new land with *Place here*. Only the first half
+  (refused placement → *needs more land* bar → *Buy it*) was checked.
+- [ ] **E9 with a real group.** The 6×6 amusement park only needed one
+  block in the test city. Force a multi-block set (a crowded town, or a
+  one-block city) and check the L-shaped outline, the *N blocks* pill, and
+  that opening the site owns every block and moves the fence.
+- [ ] **Chapter one on a fresh player.** Clock frozen at 9:30, no *Expand
+  city* card, proposals keeping off the main street, the fence and decor
+  around a nearly empty town.
+- [ ] **Dawn.** Day (9:40), dusk (18:06) and night (2:00) were looked at;
+  5:30–8:00 was not.
+- [ ] **iOS.** Not run on the simulator since this work landed.
+
+**Designed, not built.**
+
+- [ ] **D4 lit windows at night** (plan.md Phase 12). Night is a tint
+  only; the emissive-mask pipeline step and the light pass are the next
+  piece, with A5 headlights and D5 street lamps after it.
+- [ ] **A hand hint for Expand city** — the coach hand
+  (`coach_hand.dart`) on the card the first time it appears, and on *Buy
+  it* the first time a placement is refused.
+
+**The user's calls.**
+
+- [ ] **The gold price pill.** "Affordable" is implemented as *credit ≥
+  price*, and credit only comes from cancelled sites, so the pill is almost
+  never gold. Drop the gold state, or redefine it (the cheapest block?).
+- [ ] **Hours and counts** were picked without playtesting: the walker
+  curve (peaks at 8 and 17, nobody 22:00–5:30), each service vehicle's
+  shift, a third of the civilian cars at night, six through cars per exit
+  by day and two at night. Tune by eye.
+- [ ] **The clock restarts at 9:30 on every visit** (ambient, not
+  persisted). Keep, or carry the hour across sessions.
+
+**Rough edges.**
+
+- [ ] **Legacy cities with a building on the main street or the high
+  street.** The road is simply missing under it and the through traffic
+  falls back to the side streets. No nudge to move the building, no
+  auto-relocation. New cities cannot get into this state.
+- [ ] **Expand city locks the camera** (no pan, no pinch) while the mode
+  is on, because it reuses the focus tween.
+- [ ] **Walkers fade out where they stand at night** instead of walking
+  home.
+- [ ] **Performance is unmeasured on a large city or a slow device.** The
+  ground picture re-records on every road change and every eight tiles of
+  camera travel; decor is depth-sorted with the buildings every frame.
+- [ ] **No widget tests** for Expand city, the land bars or the clock
+  chip; the painters in `lib/game/city/` have none either.
+- [ ] **The mock pages are out of date** (`tools/city_mocks/ground_round*.html`
+  still show the haze band and ring-keyed greens). §11.1–11.5 above are
+  the record of what was mocked, §11.6–11.7 of what shipped.
+
