@@ -122,6 +122,7 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
   set roads(Set<(int, int)> value) {
     _roads = value;
     _hiddenDirty = true;
+    _fenceDirty = true;
     pedestrians.setRoads(value);
     traffic.setRoads(value);
     _replanStreetLife();
@@ -144,16 +145,14 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
   }
 
   void _replanStreetLife() {
+    // The roads that run on past the fence are not streets: the budget
+    // counts the town's own.
     final plan = planStreetLife(
       population: _population,
-      roadTiles: _roads.length,
+      roadTiles: _roads.where(_ownedTiles.contains).length,
       buildingIds: _buildingIds,
     );
-    traffic.setFleet(
-      plan,
-      buildingIds: _buildingIds,
-      population: _population,
-    );
+    traffic.setFleet(plan, buildingIds: _buildingIds, population: _population);
     pedestrians.setCrowd(plan.pedestrians);
   }
 
@@ -176,9 +175,15 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
   set ownedTiles(Set<(int, int)> value) {
     _ownedTiles = value;
     _decorDirty = true;
+    _fenceDirty = true;
   }
 
   Set<(int, int)> _ownedTiles = const {};
+
+  /// The fence line: every owned-tile edge facing the countryside, minus
+  /// the road crossings (X11). Recomputed when the land or the roads change.
+  List<EdgeSegment> _fence = const [];
+  bool _fenceDirty = true;
 
   /// Tiles (window-local) of land blocks with an open construction site —
   /// painted as a cleared dirt pad. Reassigned by the host game whenever
@@ -236,6 +241,14 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     ..color = const Color(0x59285014)
     ..style = PaintingStyle.stroke
     ..strokeWidth = 1;
+
+  /// The split-rail fence (X5): brown posts, two paler rails.
+  final _railPaint = Paint()
+    ..color = const Color(0xFFA1887F)
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 1.6;
+  final _postPaint = Paint()..color = const Color(0xFF8D6E63);
+  final _postShadowPaint = Paint()..color = const Color(0x2E000000);
 
   /// Yellow wash for the selected land site, drawn over its pad. Matches
   /// the picked-up-building tint so "selected" reads the same everywhere.
@@ -327,6 +340,7 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     for (final (col, row) in roads) {
       _drawRoadTile(canvas, col, row);
     }
+    _drawFence(canvas);
     // Painter's order: tiles further back (smaller col+row) draw first so
     // nearer buildings overlap them correctly. Movers slot into the same
     // sort by their interpolated col+row, pulled behind any wide building
@@ -474,6 +488,60 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
               _tuftPaint,
             );
         }
+      }
+    }
+  }
+
+  /// The two ground corners of a tile's [side], in painter order.
+  (Offset, Offset) _sideCorners(int col, int row, TileSide side) {
+    final (cx, cy) = grid.centerOf(col, row);
+    final n = Offset(cx, cy - _halfH);
+    final e = Offset(cx + _halfW, cy);
+    final s = Offset(cx, cy + _halfH);
+    final w = Offset(cx - _halfW, cy);
+    return switch (side) {
+      TileSide.east => (e, s),
+      TileSide.south => (s, w),
+      TileSide.west => (w, n),
+      TileSide.north => (n, e),
+    };
+  }
+
+  /// The rail fence along the town's edge (city_builder.md §11, X11): two
+  /// rails and three posts per tile edge, opening where a road crosses.
+  /// Drawn in the terrain pass so buildings stand in front of it.
+  void _drawFence(Canvas canvas) {
+    if (_fenceDirty) {
+      _fence = edgeSegments(owned: _ownedTiles, roads: _roads);
+      _fenceDirty = false;
+    }
+    final vis = visibleWorldRect;
+    final k = grid.tileWidth / 64;
+    final rails = Path();
+    for (final seg in _fence) {
+      if (vis != null && !_inView(vis, seg.col, seg.row)) continue;
+      final (a, b) = _sideCorners(seg.col, seg.row, seg.side);
+      for (final z in const [2.5, 6.0]) {
+        rails
+          ..moveTo(a.dx, a.dy - z * k)
+          ..lineTo(b.dx, b.dy - z * k);
+      }
+    }
+    canvas.drawPath(rails, _railPaint..strokeWidth = 1.6 * k);
+    for (final seg in _fence) {
+      if (vis != null && !_inView(vis, seg.col, seg.row)) continue;
+      final (a, b) = _sideCorners(seg.col, seg.row, seg.side);
+      for (var i = 0; i <= 2; i++) {
+        final p = Offset.lerp(a, b, i / 2)!;
+        canvas
+          ..drawRect(
+            Rect.fromLTWH(p.dx - 1.2 * k, p.dy - 0.5 * k, 2.4 * k, 1.5 * k),
+            _postShadowPaint,
+          )
+          ..drawRect(
+            Rect.fromLTWH(p.dx - 1.1 * k, p.dy - 8 * k, 2.2 * k, 8 * k),
+            _postPaint,
+          );
       }
     }
   }
