@@ -20,7 +20,6 @@ function tapExpand(st, wx, wy, e) {
   if (st.barBtn && e && e.offsetX >= st.barBtn.x && e.offsetX <= st.barBtn.x + st.barBtn.w && e.offsetY >= st.barBtn.y && e.offsetY <= st.barBtn.y + st.barBtn.h) { buySelected(st); st.preview = null; return; }
   if (st.expand) { const before = st.sel; frontierTap(st, wx, wy); if (st.sel !== before) st.preview = st.sel ? { bx: st.sel[0], by: st.sel[1], p: 0 } : null; }
 }
-function setExpand(st, on) { st.expand = on; st.sel = null; st.preview = null; st.signT = {}; if (on) st.sc.frontier().forEach(([bx, by], i) => st.signT[bx + ',' + by] = st.t + i * 0.05); }
 // Stakes and string around every purchasable block (F3), the selected one amber.
 function drawFrontierStakes(ctx, st, o = {}) {
   for (const [bx, by] of st.sc.frontier()) {

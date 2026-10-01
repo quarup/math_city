@@ -95,10 +95,10 @@ function visibleTiles(sc, view) {
 
 // Decorations (trees, bushes, flowers, rocks) outside owned land, as depth-sorted entities.
 function makeDecor(sc, o = {}) {
-  const out = []; const g = sc.grid; const dens = o.density || ((rg) => rg <= 2 ? 0.10 : 0.10);
+  const out = []; const g = sc.grid; const dens = o.density || ((rg) => rg <= 2 ? 0.10 : 0.10); const taken = o.inside ? sc.takenTiles() : null;
   for (let c = 0; c < g.cols; c++) for (let r = 0; r < g.rows; r++) {
-    if (sc.isOwnedTile(c, r)) continue;
-    const rg = sc.tileRing(c, r); const h = hash2(c * 3 + 1, r * 7 + 2), h2 = hash2(r * 5 + 3, c * 11 + 4);
+    const owned = sc.isOwnedTile(c, r); if (owned && !o.inside) continue; if (owned && taken.has(c + ',' + r)) continue;
+    const rg = owned ? (o.insideRing ?? 2) : sc.tileRing(c, r); const h = hash2(c * 3 + 1, r * 7 + 2), h2 = hash2(r * 5 + 3, c * 11 + 4);
     const [cx, cy] = g.center(c, r); const jx = (h2 - 0.5) * 22, jy = (hash2(c + 9, r + 9) - 0.5) * 10;
     const pTree = dens(rg);
     if (h < pTree) out.push({ kind: 'tree', c, r, x: cx + jx, y: cy + jy, s: 0.8 + h2 * 0.6, v: Math.floor(h2 * 3) });
@@ -109,8 +109,8 @@ function makeDecor(sc, o = {}) {
   return out;
 }
 function decorEntities(decor, sc, view, o = {}) {
-  const vis = view ? visibleTiles(sc, view) : () => true; const hide = o.hideBlock;
-  return decor.filter((d) => vis(d.c, d.r) && !(hide && hide(...sc.blockOf(d.c, d.r)))).map((d) => ({ depth: d.c + d.r + 0.5, draw: (ctx) => drawDecor(ctx, d, o) }));
+  const vis = view ? visibleTiles(sc, view) : () => true; const hide = o.hideBlock; const taken = o.taken;
+  return decor.filter((d) => vis(d.c, d.r) && !(hide && hide(...sc.blockOf(d.c, d.r))) && !(taken && taken.has(d.c + ',' + d.r))).map((d) => ({ depth: d.c + d.r + 0.5, draw: (ctx) => drawDecor(ctx, d, o) }));
 }
 function drawDecor(ctx, d, o = {}) {
   const { x, y } = d; const dim = o.night || 0;
@@ -135,8 +135,15 @@ function drawDecor(ctx, d, o = {}) {
 // ---- Sky, haze, clouds, glow (screen space) --------------------------------
 // The sky is only ever seen where the ground dissolves: a band at the top.
 function hazeAlpha(y, H, k = 0.42) { const t = y / (H * k); return t >= 1 ? 0 : Math.pow(1 - t, 1.6); }
+// Horizon colour by hour: the sky is mostly white by day, near black at night, and
+// goes dark grey → peach → white at dawn (no purple from interpolating through blue).
+const HAZE_KEY = [[0, '#0E1118'], [4.5, '#141821'], [5.5, '#3C4049'], [6.5, '#F1CBA4'], [7.5, '#F3EBDD'], [9, '#EDF3F8'], [13, '#E8F0F6'], [17, '#F0EEE8'], [18.5, '#F3C58F'], [19.5, '#8E7568'], [20.5, '#3A3C47'], [22, '#171A22'], [24, '#0E1118']];
+function hazeColorAt(hour) {
+  let i = 0; while (HAZE_KEY[i + 1][0] <= hour) i++;
+  const [h0, c0] = HAZE_KEY[i], [h1, c1] = HAZE_KEY[i + 1]; return mix(c0, c1, (hour - h0) / (h1 - h0));
+}
 function drawHaze(ctx, st, W, H, k = 0.42, strength = 1) {
-  const col = st.tod.sky[1]; const g = ctx.createLinearGradient(0, 0, 0, H * k);
+  const col = hazeColorAt(st.hour); const g = ctx.createLinearGradient(0, 0, 0, H * k);
   const [r, gg, b] = rgbOf(col);
   for (let i = 0; i <= 8; i++) { const t = i / 8; g.addColorStop(t, `rgba(${r},${gg},${b},${strength * Math.pow(1 - t, 1.6)})`); }
   ctx.fillStyle = g; ctx.fillRect(0, 0, W, H * k);
@@ -345,4 +352,88 @@ function drawActionBar(ctx, W, H, items, o = {}) {
     rects.push({ x, y: y + 8, w, h: 36, item: it }); x += w + 10;
   });
   ctx.restore(); return rects;
+}
+
+// ---- Round 3: where the town ends -------------------------------------------
+// Every owned-tile edge that faces unowned land, as [[x0,y0],[x1,y1], dir] (dir 0 E,1 S,2 W,3 N).
+function edgeSegments(sc) {
+  const g = sc.grid, out = [];
+  for (let c = 0; c < g.cols; c++) for (let r = 0; r < g.rows; r++) {
+    if (!sc.isOwnedTile(c, r)) continue; const [cx, cy] = g.center(c, r);
+    const N = [cx, cy - HALF_H], E = [cx + HALF_W, cy], S = [cx, cy + HALF_H], W = [cx - HALF_W, cy];
+    if (!sc.isOwnedTile(c + 1, r)) out.push([E, S, 0]); if (!sc.isOwnedTile(c, r + 1)) out.push([S, W, 1]);
+    if (!sc.isOwnedTile(c - 1, r)) out.push([W, N, 2]); if (!sc.isOwnedTile(c, r - 1)) out.push([N, E, 3]);
+  }
+  return out;
+}
+const lerp2 = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
+// style: 'line' | 'picket' | 'stone' | 'rail' | 'hedge' | 'flowerline'
+function drawEdge(ctx, sc, style, o = {}) {
+  const segs = edgeSegments(sc); ctx.save();
+  if (style === 'line') { // a worn footpath: pale double stroke
+    ctx.lineCap = 'round'; ctx.beginPath(); for (const [a, b] of segs) { ctx.moveTo(...a); ctx.lineTo(...b); }
+    ctx.strokeStyle = 'rgba(120,100,60,.28)'; ctx.lineWidth = 5; ctx.stroke(); ctx.strokeStyle = 'rgba(245,235,200,.7)'; ctx.lineWidth = 2; ctx.stroke();
+  }
+  if (style === 'picket' || style === 'rail') {
+    const post = style === 'picket' ? '#F5F2E8' : '#8D6E63', rail = style === 'picket' ? '#E8E4D6' : '#A1887F', ph = style === 'picket' ? 9 : 8;
+    for (const [a, b] of segs) { // rails
+      ctx.strokeStyle = rail; ctx.lineWidth = 1.6; for (const z of (style === 'picket' ? [3, 6] : [2.5, 6])) { ctx.beginPath(); ctx.moveTo(a[0], a[1] - z); ctx.lineTo(b[0], b[1] - z); ctx.stroke(); }
+    }
+    for (const [a, b] of segs) { const n = style === 'picket' ? 4 : 2; for (let i = 0; i <= n; i++) { const [x, y] = lerp2(a, b, i / n); ctx.fillStyle = 'rgba(0,0,0,.18)'; ctx.fillRect(x - 1.2, y - 0.5, 2.4, 1.5); ctx.fillStyle = post; ctx.fillRect(x - 1.1, y - ph, 2.2, ph); if (style === 'picket') { ctx.beginPath(); ctx.moveTo(x - 1.1, y - ph); ctx.lineTo(x, y - ph - 2); ctx.lineTo(x + 1.1, y - ph); ctx.fill(); } } }
+  }
+  if (style === 'stone') { // low wall: dark face below the top line, light cap
+    const h = 6;
+    for (const [a, b, dir] of segs) { if (dir === 0 || dir === 1) { ctx.fillStyle = '#8D8779'; ctx.beginPath(); ctx.moveTo(...a); ctx.lineTo(...b); ctx.lineTo(b[0], b[1] + h); ctx.lineTo(a[0], a[1] + h); ctx.closePath(); ctx.fill(); } }
+    ctx.lineCap = 'round'; ctx.beginPath(); for (const [a, b] of segs) { ctx.moveTo(...a); ctx.lineTo(...b); } ctx.strokeStyle = '#B9B3A4'; ctx.lineWidth = 5; ctx.stroke(); ctx.strokeStyle = 'rgba(70,65,55,.5)'; ctx.lineWidth = 1; ctx.stroke();
+    for (const [a, b] of segs) for (let i = 0.2; i < 1; i += 0.3) { const [x, y] = lerp2(a, b, i); ctx.fillStyle = 'rgba(90,85,75,.35)'; ctx.fillRect(x - 1.5, y - 1.5, 3, 1.4); }
+  }
+  if (style === 'hedge') {
+    for (const [a, b] of segs) for (let i = 0; i < 3; i++) { const [x, y] = lerp2(a, b, (i + 0.5) / 3); ctx.fillStyle = 'rgba(0,0,0,.15)'; ctx.beginPath(); ctx.ellipse(x + 1, y + 1, 7, 3.5, 0, 0, 7); ctx.fill(); ctx.fillStyle = '#3E7A2B'; ctx.beginPath(); ctx.ellipse(x, y - 3, 7, 5, 0, 0, 7); ctx.fill(); ctx.fillStyle = '#4F9435'; ctx.beginPath(); ctx.ellipse(x - 1, y - 5, 4, 3, 0, 0, 7); ctx.fill(); }
+  }
+  if (style === 'flowerline') { // a planted border: low bed with blooms
+    const cols = ['#F48FB1', '#FFF176', '#FFFFFF', '#EF5350', '#CE93D8'];
+    ctx.lineCap = 'round'; ctx.beginPath(); for (const [a, b] of segs) { ctx.moveTo(...a); ctx.lineTo(...b); } ctx.strokeStyle = '#4E8A2E'; ctx.lineWidth = 6; ctx.stroke();
+    for (const [a, b] of segs) for (let i = 0; i < 6; i++) { const [x, y] = lerp2(a, b, (i + 0.5) / 6); ctx.fillStyle = cols[(i + Math.round(a[0] / 7)) % cols.length]; ctx.beginPath(); ctx.arc(x + ((i * 7) % 3) - 1, y - 1.5 + ((i * 5) % 3) - 1, 1.7, 0, 7); ctx.fill(); }
+  }
+  ctx.restore();
+}
+// Trees just inside the edge (one per `spacing` edge segments), as decor items for depth sorting.
+function makeEdgeTrees(sc, spacing = 2) {
+  const out = []; let i = 0;
+  for (const [a, b, dir] of edgeSegments(sc)) {
+    if ((i++ % spacing) !== 0) continue;
+    const h = hash2(Math.round(a[0]), Math.round(a[1])); const [x, y] = lerp2(a, b, 0.25 + h * 0.5);
+    const u = UNIT[dir]; const ix = x - u[0] * 9, iy = y - u[1] * 9; // nudged inward
+    const tile = sc.grid.tileAt(ix, iy) || [0, 0];
+    out.push({ kind: 'tree', c: tile[0], r: tile[1], x: ix, y: iy, s: 0.85 + h * 0.5, v: Math.floor(h * 3) });
+  }
+  return out;
+}
+// Dense trees on unowned tiles within `depth` tiles of the boundary.
+function makeForestRing(sc, depth = 2, p = 0.75) {
+  const out = [], g = sc.grid;
+  const near = (c, r) => { for (let dc = -depth; dc <= depth; dc++) for (let dr = -depth; dr <= depth; dr++) if (sc.isOwnedTile(c + dc, r + dr)) return true; return false; };
+  for (let c = 0; c < g.cols; c++) for (let r = 0; r < g.rows; r++) {
+    if (sc.isOwnedTile(c, r) || !near(c, r)) continue; const h = hash2(c * 3 + 1, r * 7 + 2), h2 = hash2(r * 5 + 3, c * 11 + 4); if (h > p) continue;
+    const [cx, cy] = g.center(c, r); out.push({ kind: 'tree', c, r, x: cx + (h2 - 0.5) * 26, y: cy + (hash2(c + 9, r + 9) - 0.5) * 12, s: 0.9 + h2 * 0.7, v: Math.floor(h2 * 3) });
+    if (h < p * 0.5) out.push({ kind: 'tree', c, r, x: cx + (h - 0.5) * 26, y: cy + (h2 - 0.5) * 12 + 4, s: 0.8 + h * 0.6, v: Math.floor(h * 3) });
+  }
+  return out;
+}
+// Survey stakes + string around a w×h tile region at grid col,row.
+function drawSurveyTiles(ctx, sc, c0, r0, w, h, o = {}) {
+  const g = sc.grid; const [nx, ny] = g.center(c0, r0), [ex, ey] = g.center(c0 + w - 1, r0), [sx, sy] = g.center(c0 + w - 1, r0 + h - 1), [wx, wy] = g.center(c0, r0 + h - 1);
+  const pts = [[nx, ny - HALF_H], [ex + HALF_W, ey], [sx, sy + HALF_H], [wx - HALF_W, wy]];
+  ctx.save(); ctx.beginPath(); pts.forEach((p, i) => i ? ctx.lineTo(...p) : ctx.moveTo(...p)); ctx.closePath();
+  if (o.wash) { ctx.fillStyle = o.wash; ctx.fill(); }
+  ctx.setLineDash([6, 5]); ctx.lineDashOffset = -(o.t || 0) * 12; ctx.strokeStyle = o.color || '#F9A825'; ctx.lineWidth = o.width || 2; ctx.stroke(); ctx.setLineDash([]);
+  for (const [x, y] of pts) { ctx.fillStyle = '#6D4C2B'; ctx.fillRect(x - 1.5, y - 10, 3, 11); ctx.fillStyle = o.color || '#F9A825'; ctx.fillRect(x - 3, y - 12, 6, 4); }
+  ctx.restore();
+}
+// Progress pill (coins paid / cost) at a world point.
+function drawProgressPill(ctx, x, y, zoom, paid, cost, o = {}) {
+  ctx.save(); ctx.translate(x, y); ctx.scale(1 / zoom, 1 / zoom); const w = o.w || 96, h = 20;
+  ctx.fillStyle = 'rgba(16,25,23,.78)'; roundRect(ctx, -w / 2, -h / 2, w, h, 10); ctx.fill();
+  ctx.fillStyle = o.color || '#F2B134'; roundRect(ctx, -w / 2 + 3, -h / 2 + 3, (w - 6) * Math.min(1, paid / cost), h - 6, 7); ctx.fill();
+  ctx.fillStyle = '#fff'; ctx.font = '700 10px "Nunito", system-ui, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(o.text ?? `🪙 ${Math.round(paid)} / ${cost}`, 0, 0.5); ctx.restore();
 }

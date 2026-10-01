@@ -9,7 +9,7 @@
 
 ## Status
 
-- **Last updated:** 2026-09-30 (§11 *Ground and sky* mock rounds one and two; D2 chosen as the day/night driver). Previously 2026-09-29 (§10 *Letters from Math City* designed and **implemented** the same day — see the note under §10.9). Previously 2026-06-14 (Phase-9 catalog completed — all 54 anchors wired + sprite-backed; `train_station` dropped, the rail can't be drawn coherently in 2:1 dimetric)
+- **Last updated:** 2026-10-01 (§11 *Ground and sky* mock round three; see §11.5 for what is locked). Previously 2026-09-30 (rounds one and two; D2 chosen as the day/night driver). Previously 2026-09-29 (§10 *Letters from Math City* designed and **implemented** the same day — see the note under §10.9). Previously 2026-06-14 (Phase-9 catalog completed — all 54 anchors wired + sprite-backed; `train_station` dropped, the rail can't be drawn coherently in 2:1 dimetric)
 - **Phase:** Phase 8 — City Builder: Research & Rich Design. Content-authoring only, **no code changes**. Deliverable is this document; Phase 9 implements it.
 - **Drafting mode:** *fill pass complete (first draft)*. §1 (references), §2 (categories), §3 (full building specs — 54 anchors), §4 (beat catalog), §5 (asset checklist), and §7 (open questions) are drafted. §6 (implementation status) is auto-managed by [tools/city_builder/sync_implementation_status.py](tools/city_builder/sync_implementation_status.py); as of 2026-06-14 all 54 anchors are wired and sprite-backed. Three structure decisions are locked (2026-05-31): education (`school`/`high_school`) lives under `services`; `water` is a hard-gating service; the housing spine keeps all 7 rungs. **Still expects Phase-9 iteration** — costs and service ratios are designed-coherent placeholders, finalized by playtest.
 - **Framework:** extends the Phase-7 model — four categories, the service-ratio + variety-multiplier growth model, and the typed `UnlockRule` / `TriggerRule` gates. **Currency revised 2026-09-08:** the two-currency 🧱/🔬 design this document was drafted against was replaced by a single currency, **coins** (1 coin ≈ 1 expected second of study); §3's cost columns and §3.5 were re-denominated accordingly, and the research step is gone — a building whose unlock rule passes is bought straight away. See prd.md *Cosmetics System*.
@@ -1834,7 +1834,54 @@ Recommended set: **R5 + H1**, then **B1 + B4**, then **E1 + E6** with E5 as
 the no-room path, then **H2**. This supersedes round one's F1 / F2 / F5 /
 N3 (signs and the land letter) and T5.
 
-### 11.4 Open decisions (the user's)
+### 11.4 Round three (2026-10-01)
+
+Feedback on round two: R1 liked but the *outside* ring (its trees, rocks
+and greens) should be the look *inside* too; wants options for marking
+where the town ends; **B1 + B4 locked** (edges only while placing or
+moving); the haze was teal at 10 am, blue at midnight and purple at 5 am
+(sky should be mostly white by day, black at night); **no stars**; **E1 +
+E6 locked** (Expand city with stakes, price pills, camera pull-back); and
+two problems with E5: paying land then building (together or separately,
+and is the wanted building remembered?), and buildings bigger than a 4×4
+block.
+
+Third page, fourteen mocks:
+[tools/city_mocks/ground_round3.html](tools/city_mocks/ground_round3.html)
+(published copy, private: https://claude.ai/code/artifact/efc96078-6b96-44f2-8c55-763c3252dc0f). Inside and outside now share the
+ring-2 meadow with its decor on free owned tiles.
+
+| # | Idea | Tier |
+|---|---|---|
+| X1 | No indication: the town is where the buildings are | Decide |
+| X2 | A line: a worn footpath round the boundary | Nice |
+| X3 | White picket fence | Nice |
+| X4 | Low stone wall | Nice |
+| X5 | Split-rail farm fence | **Recommend** |
+| X6 | Hedge | Nice |
+| X7 | Planted flower border | Nice |
+| X8 | A line of trees just inside the edge | Nice |
+| X9 | Forest two tiles deep right outside the town | **Recommend** |
+| X10 | Wilder beyond: sparse inside, wooded everywhere outside, no hard line | Nice |
+| K1 | Haze colour from a fixed horizon table (`HAZE_KEY` in terrain.js): near-black at midnight, dark grey → peach → white at dawn, off-white by day, orange → grey-brown → dark at dusk; interpolation only between neighbouring keys, so no purple | **Recommend** |
+| E7 | **Land as a construction site** + a remembered *next* building: the block is staked and paid off through the question loop; the wanted building is a one-slot `nextBuilding` chip; when the land opens the app auto-proposes it on the new block as the second site | **Recommend** |
+| E8 | One bundled site: land + building at one price, a two-stage bar; land stage completes first (fence moves out, pad appears), then the building stage | Decide |
+| E9 | Bigger than a block: the fit search returns the smallest connected block set that, with owned land, fits the footprint (cheapest, then nearest); outlined as one region, priced as a group, bought as one site; ring-3 blocks allowed inside a group | **Recommend** |
+
+Recommended set: X1 ground + X9 forest ring + X5 rail fence, K1, E7, E9.
+Land-as-site is the first domain touch in these rounds: a `land` goal kind
+on `ConstructionSites` and `nextBuilding` on the player row.
+
+### 11.5 Open decisions (the user's)
+
+- **Edge** — X9 + X5 together, either alone, or another of X2–X8 / X10.
+- **E7 vs E8** — two sites with a remembered next, or one bundled site.
+- **E9 ring rule** — allow ring-3 blocks inside a group buy (as mocked) or
+  require the group to grow ring by ring.
+
+Locked so far: D2 ambient 8-minute loop · T3 density rings outside · T4
+haze (band height still open: 30 / 42 / 55 %) with nothing in it, no stars
+· B1 + B4 · E1 + E6 · no island, no signs, no letter-and-sign land beat.
 
 - **Inside at rest** — R5 (tended + street decor), R2 (tended), or R1
   (no distinction at all)?

@@ -48,3 +48,5 @@ function drawWipe(ctx, st) {
 function stepWipe(st, dt) { const w = st.wiping; if (!w) return; w.p = Math.min(1.01, w.p + dt * 1.2); if (w.p >= 1) { st.sc.buy(w.bx, w.by); st.wiping = null; } }
 function sparkle(st, bx, by) { const [x, y] = st.sc.blockCenter(bx, by); for (let i = 0; i < 26; i++) { const a = Math.random() * 6.28, sp = 40 + Math.random() * 90; st.parts.spawn({ x: x + (Math.random() - 0.5) * 120, y: y + (Math.random() - 0.5) * 60, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 60, g: 90, ttl: 1 + Math.random(), col: pick(['#FFD54F', '#FFF176', '#FFFFFF', '#81C784']) }); } }
 function drawParts(ctx, st) { st.parts.draw(ctx, (c, p) => { c.globalAlpha = Math.max(0, p.life); c.fillStyle = p.col; star(c, p.x, p.y, 4 + 3 * p.life); c.globalAlpha = 1; }); }
+// Expand-city mode toggle (rounds two and three).
+function setExpand(st, on) { st.expand = on; st.sel = null; st.preview = null; st.signT = {}; if (on) st.sc.frontier().forEach(([bx, by], i) => st.signT[bx + ',' + by] = st.t + i * 0.05); }
