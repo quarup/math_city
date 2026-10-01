@@ -36,12 +36,7 @@ void main() {
 
     test('perimeter is the orthogonal ring, no diagonals', () {
       // A 1×1 at (5,5): exactly its 4 orthogonal neighbors.
-      expect(_at(5, 5).perimeter().toSet(), {
-        (5, 4),
-        (5, 6),
-        (4, 5),
-        (6, 5),
-      });
+      expect(_at(5, 5).perimeter().toSet(), {(5, 4), (5, 6), (4, 5), (6, 5)});
       // Corners (4,4) etc. are NOT included.
       expect(_at(5, 5).perimeter().toSet().contains((4, 4)), isFalse);
     });
@@ -53,20 +48,13 @@ void main() {
     });
 
     test('negative coordinates are out of bounds', () {
-      expect(
-        _check(_at(-1, 5)).rejection,
-        PlacementRejection.outOfBounds,
-      );
+      expect(_check(_at(-1, 5)).rejection, PlacementRejection.outOfBounds);
     });
 
     test('footprint spilling past an edge is out of bounds', () {
       // 2×2 anchored so it pokes past the right/bottom edge of a 6×6 grid.
       expect(
-        _check(
-          _at(5, 5, w: 2, h: 2),
-          gridWidth: 6,
-          gridHeight: 6,
-        ).rejection,
+        _check(_at(5, 5, w: 2, h: 2), gridWidth: 6, gridHeight: 6).rejection,
         PlacementRejection.outOfBounds,
       );
     });
@@ -233,6 +221,71 @@ void main() {
       // boxed in (no open side), so there's no legal placement.
       final ring = [_at(4, 5), _at(6, 5), _at(5, 4), _at(5, 6)];
       expect(resolve(5, 5, existing: ring), isNull);
+    });
+  });
+
+  group('reserved tiles (the roads that leave town)', () {
+    final street = {for (var c = 0; c < 12; c++) (c, 0)};
+
+    test('nothing can be built on a reserved tile', () {
+      final check = checkPlacement(
+        ownedTiles: _rect(12, 12),
+        existing: const [],
+        candidate: _at(3, 0),
+        reserved: street,
+      );
+      expect(check.rejection, PlacementRejection.outOfBounds);
+    });
+
+    test('a reserved tile still counts as an open side', () {
+      // A 1×1 at (5, 1) hemmed in on three sides, with only the street
+      // to the north: the street is road, so it is not boxed in.
+      final check = checkPlacement(
+        ownedTiles: _rect(12, 12),
+        existing: [_at(4, 1), _at(6, 1), _at(5, 2)],
+        candidate: _at(5, 1),
+        reserved: street,
+      );
+      expect(check.isLegal, isTrue);
+    });
+
+    test('resolvePlacement slides off the street and never onto it', () {
+      final spot = resolvePlacement(
+        ownedTiles: _rect(12, 12),
+        existing: const [],
+        width: 2,
+        height: 2,
+        tapCol: 5,
+        tapRow: 1,
+        reserved: street,
+      );
+      expect(spot, isNotNull);
+      expect(spot!.tiles().any(street.contains), isFalse);
+      expect(
+        resolvePlacement(
+          ownedTiles: _rect(12, 12),
+          existing: const [],
+          width: 1,
+          height: 1,
+          tapCol: 5,
+          tapRow: 0,
+          reserved: street,
+        ),
+        isNull,
+      );
+    });
+
+    test('proposePlacement keeps off the street', () {
+      final spot = proposePlacement(
+        ownedTiles: _rect(12, 12),
+        existing: const [],
+        width: 3,
+        height: 3,
+        anchor: (5, 0),
+        reserved: street,
+      );
+      expect(spot, isNotNull);
+      expect(spot!.tiles().any(street.contains), isFalse);
     });
   });
 }

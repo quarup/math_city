@@ -19,6 +19,7 @@ import 'package:math_city/domain/city/land_blocks.dart';
 import 'package:math_city/domain/city/placement_rules.dart';
 import 'package:math_city/domain/city/road_network.dart';
 import 'package:math_city/domain/city/story_beat.dart';
+import 'package:math_city/domain/city/terrain.dart';
 import 'package:math_city/domain/city/upgrade_ladders.dart';
 import 'package:math_city/domain/economy/question_block.dart';
 import 'package:math_city/domain/proficiency/proficiency_band.dart';
@@ -509,6 +510,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
       ownedTiles: ownedTiles,
       existing: existing,
       candidate: over,
+      reserved: _highway(),
     ).isLegal;
     final spot = fits
         ? over
@@ -518,6 +520,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
             width: target.footprint.$1,
             height: target.footprint.$2,
             anchor: (source.gridX, source.gridY),
+            reserved: _highway(),
           );
     setState(() {
       _growSource = source;
@@ -548,6 +551,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
       anchor: office == null
           ? AppDatabase.kMayorsOfficeTile
           : (office.gridX, office.gridY),
+      reserved: _highway(),
     );
   }
 
@@ -1132,20 +1136,43 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
       height: type.footprint.$2,
       tapCol: col,
       tapRow: row,
+      reserved: _highway(),
     );
   }
 
-  /// The auto-generated road tiles for the current placements, confined to
-  /// [ownedTiles] (see `road_network.dart`). A proposed placement counts
-  /// too, so the player sees the roads it would get before confirming.
+  /// The main street and the high street across the current window
+  /// (`terrain.dart`): road on both sides of the fence, and off limits to
+  /// building. Empty until the window exists.
+  Set<(int, int)> _highway() {
+    final w = _window;
+    if (w == null) return const {};
+    return highwayTiles(
+      minCol: w.minCol,
+      maxCol: w.maxCol,
+      minRow: w.minRow,
+      maxRow: w.maxRow,
+    );
+  }
+
+  /// The road tiles for the current placements: the highway across the
+  /// whole window, plus the auto-roads on [ownedTiles] joined to it (see
+  /// `road_network.dart`). A proposed placement counts too, so the player
+  /// sees the roads it would get before confirming.
   Set<(int, int)> _roadTilesFor(
     List<BuildingPlacement> placements,
     List<CitySite> sites,
     Set<(int, int)> ownedTiles,
-  ) => generateRoads(
-    ownedTiles: ownedTiles,
-    buildings: [..._footprintsOf(placements, sites), ?_pendingSpot],
-  );
+  ) {
+    final highway = _highway();
+    return {
+      ...highway,
+      ...generateRoads(
+        ownedTiles: ownedTiles,
+        buildings: [..._footprintsOf(placements, sites), ?_pendingSpot],
+        fixedRoads: highway.where(ownedTiles.contains).toSet(),
+      ),
+    };
+  }
 
   /// Recomputes the render window — the owned land plus [kCountrysideMargin]
   /// tiles of countryside around it — and feeds it to the game. On first

@@ -123,4 +123,29 @@ void main() {
     }
     expect(_isConnected(roads), isTrue);
   });
+
+  group('fixed roads', () {
+    final street = {for (var c = 0; c < 12; c++) (c, 0)};
+
+    test('are road with no buildings at all', () {
+      final roads = generateRoads(
+        ownedTiles: _rect(12, 12),
+        buildings: const [],
+        fixedRoads: street,
+      );
+      expect(roads, street);
+    });
+
+    test('a far island is linked to the street', () {
+      final roads = generateRoads(
+        ownedTiles: _rect(12, 12),
+        buildings: [_at(6, 9)],
+        fixedRoads: street,
+      );
+      expect(roads, containsAll(street));
+      expect(_isConnected(roads), isTrue);
+      // The connector runs north from the hug ring to the street.
+      expect(roads.where((t) => t.$2 == 4), isNotEmpty);
+    });
+  });
 }

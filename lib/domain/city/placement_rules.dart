@@ -81,13 +81,20 @@ class PlacementCheck {
 /// that would have no open perimeter side, and a [candidate] that would take
 /// the last open side of an existing neighbor it now abuts. For a **move**,
 /// exclude the moved building from [existing] (its old tiles are vacated).
+///
+/// [reserved] tiles (the main street and the high street, `terrain.dart`)
+/// can never be built on, but they are road, so they count as an open side.
 PlacementCheck checkPlacement({
   required Set<(int, int)> ownedTiles,
   required List<GridFootprint> existing,
   required GridFootprint candidate,
+  Set<(int, int)> reserved = const {},
 }) {
-  // 1. Bounds: every tile of the footprint must sit on owned land.
-  if (!candidate.tiles().every(ownedTiles.contains)) {
+  // 1. Bounds: every tile of the footprint must sit on owned land, off the
+  // fixed roads.
+  if (!candidate.tiles().every(
+    (t) => ownedTiles.contains(t) && !reserved.contains(t),
+  )) {
     return const PlacementCheck.rejected(PlacementRejection.outOfBounds);
   }
 
@@ -158,10 +165,12 @@ GridFootprint? resolvePlacement({
   required int height,
   required int tapCol,
   required int tapRow,
+  Set<(int, int)> reserved = const {},
 }) {
   // The tapped tile itself must be on owned land and free — the player is
   // pointing at where the building should go.
-  if (!ownedTiles.contains((tapCol, tapRow))) {
+  if (!ownedTiles.contains((tapCol, tapRow)) ||
+      reserved.contains((tapCol, tapRow))) {
     return null;
   }
   for (final f in existing) {
@@ -190,6 +199,7 @@ GridFootprint? resolvePlacement({
         ownedTiles: ownedTiles,
         existing: existing,
         candidate: candidate,
+        reserved: reserved,
       );
       if (!check.isLegal) continue;
       best = candidate;
@@ -212,6 +222,7 @@ GridFootprint? proposePlacement({
   required int width,
   required int height,
   required (int, int) anchor,
+  Set<(int, int)> reserved = const {},
 }) {
   final occupied = <(int, int)>{};
   for (final f in existing) {
@@ -247,6 +258,7 @@ GridFootprint? proposePlacement({
         ownedTiles: ownedTiles,
         existing: existing,
         candidate: candidate,
+        reserved: reserved,
       );
       if (!check.isLegal) continue;
       final cx = col + (width - 1) / 2;

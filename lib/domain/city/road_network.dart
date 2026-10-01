@@ -12,18 +12,24 @@ import 'package:math_city/domain/city/placement_rules.dart';
 /// 2. **Connect the islands.** The hug rings of separate clusters are linked
 ///    into one network by the shortest road path through empty tiles.
 ///
-/// Returns an empty set when there are no buildings. The road-access invariant
-/// ([checkPlacement]) guarantees every building has an open orthogonal
-/// neighbour, so every building is always fronted by road. Roads only ever run
-/// on [ownedTiles] — the city's purchased land — so islands separated by
-/// unowned land stay unlinked.
+/// [fixedRoads] are road before anything is built (the main street and the
+/// high street where they cross owned land, `terrain.dart`): the hug rings
+/// are linked to them like any other island, so every building's road
+/// reaches the way out of town.
+///
+/// Returns [fixedRoads] alone when there are no buildings. The road-access
+/// invariant ([checkPlacement]) guarantees every building has an open
+/// orthogonal neighbour, so every building is always fronted by road. Roads
+/// only ever run on [ownedTiles] — the city's purchased land — so islands
+/// separated by unowned land stay unlinked.
 ///
 /// Pure — no Flutter / Flame / Drift.
 Set<(int, int)> generateRoads({
   required Set<(int, int)> ownedTiles,
   required List<GridFootprint> buildings,
+  Set<(int, int)> fixedRoads = const {},
 }) {
-  if (buildings.isEmpty) return const {};
+  if (buildings.isEmpty) return {...fixedRoads};
 
   final buildingTiles = <(int, int)>{};
   for (final b in buildings) {
@@ -32,8 +38,8 @@ Set<(int, int)> generateRoads({
 
   bool inBounds(int c, int r) => ownedTiles.contains((c, r));
 
-  // Step 1: hug rings.
-  final roads = <(int, int)>{};
+  // Step 1: hug rings (on top of the fixed roads).
+  final roads = <(int, int)>{...fixedRoads};
   for (final (bc, br) in buildingTiles) {
     for (final (dc, dr) in _moore) {
       final c = bc + dc;
