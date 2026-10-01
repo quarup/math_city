@@ -1229,12 +1229,19 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     List<CitySite> sites,
     Set<(int, int)> ownedTiles,
   ) {
-    final highway = _highway();
+    final footprints = [..._footprintsOf(placements, sites), ?_pendingSpot];
+    // A city from before the fixed roads existed may have a building on
+    // one: the tile under it is not road, or the junction beside it would
+    // grow an arm into the building.
+    final covered = <(int, int)>{
+      for (final f in footprints) ...f.tiles(),
+    };
+    final highway = _highway().where((t) => !covered.contains(t)).toSet();
     return {
       ...highway,
       ...generateRoads(
         ownedTiles: ownedTiles,
-        buildings: [..._footprintsOf(placements, sites), ?_pendingSpot],
+        buildings: footprints,
         fixedRoads: highway.where(ownedTiles.contains).toSet(),
       ),
     };
