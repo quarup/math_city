@@ -195,6 +195,10 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
   /// stakes + confirm bar at the bottom), or null. Only set in Expand city.
   (int, int)? _buyingBlock;
 
+  /// A land site that just opened, held until its celebration ends so the
+  /// remembered next building can be proposed on the new land (E7).
+  LandBlockGoal? _landOpened;
+
   /// Expand city (city_builder.md §11, E1 + E6): the purchasable ring is
   /// staked and priced, the camera pulls back to frame it, and a tap on a
   /// block selects it. Off at rest, when nothing marks the frontier.
@@ -256,7 +260,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
           .where(
             (s) =>
                 s.goal is LandBlockGoal &&
-                (s.goal as LandBlockGoal).block == block,
+                (s.goal as LandBlockGoal).blocks.contains(block),
           )
           .firstOrNull;
       if (landSite != null) {
@@ -641,12 +645,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
       type.footprint.$1,
       type.footprint.$2,
     ),
-    LandBlockGoal(:final blockX, :final blockY) => (
-      blockX * kBlockSize,
-      blockY * kBlockSize,
-      kBlockSize,
-      kBlockSize,
-    ),
+    LandBlockGoal(:final tileBounds) => tileBounds,
     EventGoal(:final footprint) => (
       footprint.col,
       footprint.row,
@@ -693,8 +692,43 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
           _mode = _CityMode.browsing;
           _zoomedSite = null;
         });
+        final opened = _landOpened;
+        _landOpened = null;
+        if (opened != null) _proposeNextOn(opened);
       },
     );
+  }
+
+  /// The land has opened: propose the remembered building on it with the
+  /// usual *Place here* bar, and forget the memory (city_builder.md §11,
+  /// E7). Nothing happens when nothing was remembered.
+  void _proposeNextOn(LandBlockGoal land) {
+    final player = ref.read(activePlayerProvider).asData?.value;
+    final typeId = player?.nextBuildingTypeId;
+    if (typeId == null) return;
+    unawaited(ref.read(cityActionsProvider).setNextBuilding(null));
+    final type = findBuildingTypeById(typeId);
+    final ownedBlocks = ref.read(ownedBlocksProvider).asData?.value;
+    if (type == null || ownedBlocks == null) return;
+    final placements = ref.read(placementsProvider).asData?.value ?? const [];
+    final sites = ref.read(sitesProvider).asData?.value ?? const <CitySite>[];
+    final (col, row, w, h) = land.tileBounds;
+    final spot = proposePlacement(
+      ownedTiles: ownedTilesOf(ownedBlocks),
+      existing: _footprintsOf(placements, sites),
+      width: type.footprint.$1,
+      height: type.footprint.$2,
+      anchor: (col + w ~/ 2, row + h ~/ 2),
+      reserved: _highway(),
+    );
+    if (spot == null) {
+      _toast('No room for ${type.name} yet');
+      return;
+    }
+    setState(() {
+      _selected = type;
+      _pendingSpot = spot;
+    });
   }
 
   /// A site just opened (a block filled it, or credit did): card and
@@ -703,6 +737,9 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
   /// *Done* zooms back out. Works from the zoomed loop and from browsing.
   void _celebrate(ConstructionSite site) {
     ref.read(activeSiteIdProvider.notifier).selected = null;
+    if (site.goal case LandBlockGoal(blocks: _) && final land) {
+      _landOpened = land;
+    }
     setState(() {
       _mode = _CityMode.celebrating;
       _wheelVisible = false;
@@ -800,6 +837,9 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
       if (confirmed != true || !mounted) return;
     }
     final refund = await ref.read(cityActionsProvider).cancelSite(site.id);
+    if (site.goal is LandBlockGoal) {
+      unawaited(ref.read(cityActionsProvider).setNextBuilding(null));
+    }
     if (!mounted || refund == null) return;
     setState(() => _selectedSiteId = null);
     _toast(
@@ -1297,7 +1337,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
   void _startSelectedLandSite() {
     final block = _buyingBlock;
     if (block == null) return;
-    unawaited(_startSite(LandBlockGoal(blockX: block.$1, blockY: block.$2)));
+    unawaited(_startSite(LandBlockGoal(blocks: {block})));
   }
 
   /// Expand city (E1 + E6): stakes and prices the purchasable ring and
@@ -1463,19 +1503,15 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     return out;
   }
 
-  /// Window-local tiles of every land site, and of the selected one.
-  (Set<(int, int)>, Set<(int, int)>) _landSiteTiles(List<CitySite> sites) {
-    final all = <(int, int)>{};
-    final selected = <(int, int)>{};
-    for (final s in sites) {
-      if (s.goal case LandBlockGoal(:final blockX, :final blockY)) {
-        final tiles = _localTiles(tilesOfBlock(blockX, blockY).toSet());
-        all.addAll(tiles);
-        if (s.id == _selectedSiteId) selected.addAll(tiles);
-      }
-    }
-    return (all, selected);
-  }
+  /// Every open land site as a staked plot (window-local tiles).
+  List<LandSiteView> _landSiteViews(List<CitySite> sites) => [
+    for (final s in sites)
+      if (s.goal case LandBlockGoal(:final blocks))
+        LandSiteView(
+          tiles: _localTiles(ownedTilesOf(blocks)),
+          selected: s.id == _selectedSiteId,
+        ),
+  ];
 
   /// `<id>_v<n>.png` for the round-robin [slot] (a building's 0-based index
   /// among placements of its type), or null if the type has no sprite art yet
@@ -1552,8 +1588,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
         population: city?.population ?? 0,
         buildingIds: [for (final p in placements) p.buildingTypeId],
       );
-      final (allSiteTiles, selectedSiteTiles) = _landSiteTiles(sites);
-      _game!.setLandSiteTiles(all: allSiteTiles, selected: selectedSiteTiles);
+      _game!.setLandSites(_landSiteViews(sites));
     }
     final selectedSite = _selectedSiteId == null
         ? null
@@ -1941,6 +1976,11 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
               }
             }),
             onSelectSite: (site) => setState(() => _selectedSiteId = site.id),
+            nextBuilding: player?.nextBuildingTypeId == null
+                ? null
+                : findBuildingTypeById(player!.nextBuildingTypeId!),
+            onDismissNext: () =>
+                unawaited(ref.read(cityActionsProvider).setNextBuilding(null)),
             onExpand: chapterOne ? null : _enterExpand,
             onOpenLetter: (b) => setState(() {
               _letterId = b.beat.id;
@@ -3008,6 +3048,57 @@ class _ExpandBar extends StatelessWidget {
   }
 }
 
+/// The one-slot memory of what the kid wanted to build when the land was
+/// too small (city_builder.md §11, E7): its building, marked *next*. A
+/// tap forgets it.
+class _NextBuildingChip extends StatelessWidget {
+  const _NextBuildingChip({required this.type, required this.onDismiss});
+
+  final BuildingType type;
+  final VoidCallback onDismiss;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        _BarCard(
+          color: _colorFor(type),
+          dashed: true,
+          onTap: onDismiss,
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(type.emoji, style: const TextStyle(fontSize: 24)),
+                const SizedBox(height: 2),
+                Text(
+                  type.name,
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text('next', style: theme.textTheme.labelSmall),
+              ],
+            ),
+          ),
+        ),
+        Positioned(
+          top: -4,
+          right: -4,
+          child: Icon(
+            Icons.cancel_rounded,
+            size: 16,
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 /// The *Expand city* card at the end of the folder bar (E1).
 class _ExpandCard extends StatelessWidget {
   const _ExpandCard({required this.onTap});
@@ -3265,6 +3356,8 @@ class _BuildBar extends StatelessWidget {
     required this.newCardIds,
     required this.onOpenFolder,
     required this.onSelectSite,
+    required this.nextBuilding,
+    required this.onDismissNext,
     required this.onExpand,
     required this.onOpenLetter,
     required this.onSelect,
@@ -3293,6 +3386,11 @@ class _BuildBar extends StatelessWidget {
   final void Function(BuildingCategory?) onOpenFolder;
   final void Function(CitySite) onSelectSite;
 
+  /// The building remembered for the land being bought (E7), shown as a
+  /// chip beside the sites; a tap on it forgets it.
+  final BuildingType? nextBuilding;
+  final VoidCallback onDismissNext;
+
   /// Opens Expand city (city_builder.md §11, E1); null hides the button
   /// (chapter one).
   final VoidCallback? onExpand;
@@ -3309,6 +3407,8 @@ class _BuildBar extends StatelessWidget {
     final cards = <Widget>[
       for (final site in sites)
         _SiteCard(site: site, onTap: () => onSelectSite(site)),
+      if (nextBuilding case final next?)
+        _NextBuildingChip(type: next, onDismiss: onDismissNext),
       if (sites.isNotEmpty &&
           (asked.isNotEmpty || eventAsks.isNotEmpty || rest.isNotEmpty))
         const _ZoneDivider(),

@@ -67,6 +67,15 @@ class PlacedBuildingView {
   final String? assetPath;
 }
 
+/// An open land site (city_builder.md §11, E7): its tiles (window-local,
+/// one block or a connected group) staked and strung, amber when selected.
+class LandSiteView {
+  const LandSiteView({required this.tiles, required this.selected});
+
+  final Set<(int, int)> tiles;
+  final bool selected;
+}
+
 /// A purchasable block while Expand city is on (city_builder.md §11, E1):
 /// survey stakes and string round its 4×4, a faint wash, and a price pill
 /// at its centre — gold when the player can afford it, amber when it is
@@ -227,20 +236,15 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
   List<EdgeSegment> _fence = const [];
   bool _fenceDirty = true;
 
-  /// Tiles (window-local) of land blocks with an open construction site —
-  /// painted as a cleared dirt pad. Reassigned by the host game whenever
-  /// sites change.
-  Set<(int, int)> get landSiteTiles => _landSiteTiles;
-  set landSiteTiles(Set<(int, int)> value) {
-    _landSiteTiles = value;
+  /// The open land sites: staked and strung plots on the countryside.
+  /// Reassigned by the host game whenever sites change.
+  List<LandSiteView> get landSites => _landSites;
+  set landSites(List<LandSiteView> value) {
+    _landSites = value;
     _hiddenDirty = true;
   }
 
-  Set<(int, int)> _landSiteTiles = const {};
-
-  /// The subset of [landSiteTiles] belonging to the selected site, drawn
-  /// with the yellow selection wash.
-  Set<(int, int)> selectedLandSiteTiles = const {};
+  List<LandSiteView> _landSites = const [];
 
   /// Trees, bushes, flowers and rocks on every tile of the window, grown
   /// from the tile hash (`decorAt`). Rebuilt when the window or the owned
@@ -315,16 +319,9 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
   final _washPaint = Paint();
   final Map<String, TextPainter> _pillText = {};
 
-  /// Yellow wash for the selected land site, drawn over its pad. Matches
-  /// the picked-up-building tint so "selected" reads the same everywhere.
-  static const _buyingFill = Color(0x66FFEB3B);
   static const _rejectedFill = Color(0x80E53935);
   final _rejectedStroke = Paint()
     ..color = const Color(0xFFB71C1C)
-    ..style = PaintingStyle.stroke
-    ..strokeWidth = 2;
-  final _buyingStroke = Paint()
-    ..color = const Color(0xFFF9A825)
     ..style = PaintingStyle.stroke
     ..strokeWidth = 2;
   final _tileStroke = Paint()
@@ -393,12 +390,6 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
   @override
   void render(Canvas canvas) {
     _drawGround(canvas);
-    for (final (col, row) in landSiteTiles) {
-      _drawPadTile(canvas, col, row);
-      if (selectedLandSiteTiles.contains((col, row))) {
-        _drawBuyingTile(canvas, col, row);
-      }
-    }
     // Roads draw after all terrain: the sprites carry a small overscan rim
     // (seam cover), which a later-drawn neighbouring grass diamond would
     // otherwise clip.
@@ -406,6 +397,9 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
       _drawRoadTile(canvas, col, row);
     }
     _drawFence(canvas);
+    for (final site in _landSites) {
+      _drawStakedPlot(canvas, site.tiles, selected: site.selected);
+    }
     // Painter's order: tiles further back (smaller col+row) draw first so
     // nearer buildings overlap them correctly. Movers slot into the same
     // sort by their interpolated col+row, pulled behind any wide building
@@ -668,6 +662,59 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     );
   }
 
+  /// A staked plot of any shape (a land site, or the group a big footprint
+  /// needs): a yellow wash over its tiles, string along its outline and a
+  /// stake at every corner. [selected] makes the string march.
+  void _drawStakedPlot(
+    Canvas canvas,
+    Set<(int, int)> tiles, {
+    required bool selected,
+  }) {
+    final k = grid.tileWidth / 64;
+    _washPaint.color = selected
+        ? const Color(0x59FFEB3B)
+        : const Color(0x2EFFEB3B);
+    for (final (c, r) in tiles) {
+      final (cx, cy) = grid.centerOf(c, r);
+      canvas.drawPath(_diamond(cx, cy, 0), _washPaint);
+    }
+    final outline = Path();
+    final corners = <Offset>{};
+    for (final seg in edgeSegments(owned: tiles)) {
+      final (a, b) = _sideCorners(seg.col, seg.row, seg.side);
+      outline
+        ..moveTo(a.dx, a.dy)
+        ..lineTo(b.dx, b.dy);
+      corners
+        ..add(Offset(a.dx.roundToDouble(), a.dy.roundToDouble()))
+        ..add(Offset(b.dx.roundToDouble(), b.dy.roundToDouble()));
+    }
+    _stringPaint
+      ..color = _amber
+      ..strokeWidth = 2 * k;
+    canvas.drawPath(
+      dashedPath(
+        outline,
+        dash: 6 * k,
+        gap: 5 * k,
+        phase: selected ? time * 12 * k : 0,
+      ),
+      _stringPaint,
+    );
+    _capPaint.color = _amber;
+    for (final p in corners) {
+      canvas
+        ..drawRect(
+          Rect.fromLTWH(p.dx - 1.5 * k, p.dy - 10 * k, 3 * k, 11 * k),
+          _stakePaint,
+        )
+        ..drawRect(
+          Rect.fromLTWH(p.dx - 3 * k, p.dy - 12 * k, 6 * k, 4 * k),
+          _capPaint,
+        );
+    }
+  }
+
   /// Survey stakes at the corners of a region and string between them,
   /// over an optional wash. [selected] makes the string amber and marching.
   void _drawSurvey(
@@ -832,7 +879,10 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
   /// Tiles whose decor is covered by something built or staked.
   Set<(int, int)> _hiddenTiles() {
     if (!_hiddenDirty) return _hidden;
-    final out = <(int, int)>{..._roads, ..._landSiteTiles};
+    final out = <(int, int)>{
+      ..._roads,
+      for (final site in _landSites) ...site.tiles,
+    };
     for (final b in _buildings) {
       final (w, h) = b.footprint;
       for (var c = b.col; c < b.col + w; c++) {
@@ -849,16 +899,6 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
   void _drawDecor(Canvas canvas, DecorItem d) {
     final (cx, cy) = grid.centerOf(d.col, d.row);
     paintDecor(canvas, d, Offset(cx, cy), grid.tileWidth);
-  }
-
-  /// A tile of the selected land site: yellow wash + amber stroke over its
-  /// pad, so the selection stands out.
-  void _drawBuyingTile(Canvas canvas, int col, int row) {
-    final (cx, cy) = grid.centerOf(col, row);
-    final path = _diamond(cx, cy, 0);
-    canvas
-      ..drawPath(path, Paint()..color = _buyingFill)
-      ..drawPath(path, _buyingStroke);
   }
 
   /// Draws one auto-road tile: resolves the connection mask to a canonical

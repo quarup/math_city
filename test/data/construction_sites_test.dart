@@ -170,8 +170,7 @@ void main() {
       final id = await db.startLandSite(
         cityId: city.id,
         playerId: player.id,
-        blockX: 2,
-        blockY: 0,
+        blocks: {(2, 0)},
       );
       final sites = sitesFromRows(await db.sitesForCity(city.id), const []);
       expect(sites.single.goal, isA<LandBlockGoal>());

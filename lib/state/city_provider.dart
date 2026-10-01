@@ -324,8 +324,7 @@ class CityActions {
         siteId = await db.startLandSite(
           cityId: city.id,
           playerId: playerId,
-          blockX: goal.blockX,
-          blockY: goal.blockY,
+          blocks: goal.blocks,
         );
       case EventGoal():
         siteId = await db.startEventSite(
@@ -337,6 +336,20 @@ class CityActions {
     }
     _ref.invalidate(sitesProvider);
     return SiteStart.started(siteId: siteId);
+  }
+
+  /// Remembers the building the player wanted when a refused placement
+  /// sent them to expand the city, or forgets it with null
+  /// (city_builder.md §11, E7).
+  Future<void> setNextBuilding(String? typeId) async {
+    final playerId = _ref.read(activePlayerIdProvider);
+    if (playerId == null) return;
+    await _ref
+        .read(appDatabaseProvider)
+        .setPlayerNextBuilding(playerId, typeId);
+    _ref
+      ..invalidate(activePlayerProvider)
+      ..invalidate(allPlayersProvider);
   }
 
   /// Moves a building site's footprint to `(col, row)`; its coins stay.

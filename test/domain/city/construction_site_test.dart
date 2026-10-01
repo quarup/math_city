@@ -216,15 +216,15 @@ void main() {
 
   group('land block sites', () {
     test('priced on the land ladder', () {
-      const g = LandBlockGoal(blockX: 2, blockY: 0);
+      const g = LandBlockGoal(blocks: {(2, 0)});
       expect(g.price, blockCost(2, 0));
       expect(g.price, 1200);
-      expect(const LandBlockGoal(blockX: -3, blockY: 1).price, 1800);
+      expect(const LandBlockGoal(blocks: {(-3, 1)}).price, 1800);
     });
 
     test('pays down like any site', () {
       const site = ConstructionSite(
-        goal: LandBlockGoal(blockX: 2, blockY: 0),
+        goal: LandBlockGoal(blocks: {(2, 0)}),
         startedAtRound: 3,
       );
       final r = site.payIn(400);
@@ -284,7 +284,7 @@ void main() {
       ];
       expect(
         checkStartSite(
-          goal: const LandBlockGoal(blockX: 2, blockY: 0),
+          goal: const LandBlockGoal(blocks: {(2, 0)}),
           openSites: three,
           ownedBlocks: owned,
         ),
@@ -350,7 +350,7 @@ void main() {
     test('a land site must touch owned land by an edge', () {
       expect(
         checkStartSite(
-          goal: const LandBlockGoal(blockX: 2, blockY: 0),
+          goal: const LandBlockGoal(blocks: {(2, 0)}),
           openSites: const [],
           ownedBlocks: owned,
         ),
@@ -358,7 +358,7 @@ void main() {
       );
       expect(
         checkStartSite(
-          goal: const LandBlockGoal(blockX: 2, blockY: 2),
+          goal: const LandBlockGoal(blocks: {(2, 2)}),
           openSites: const [],
           ownedBlocks: owned,
         ),
@@ -366,7 +366,7 @@ void main() {
       );
       expect(
         checkStartSite(
-          goal: const LandBlockGoal(blockX: 0, blockY: 0),
+          goal: const LandBlockGoal(blocks: {(0, 0)}),
           openSites: const [],
           ownedBlocks: owned,
         ),
@@ -376,7 +376,7 @@ void main() {
     });
 
     test('one site per land block', () {
-      const g = LandBlockGoal(blockX: 2, blockY: 0);
+      const g = LandBlockGoal(blocks: {(2, 0)});
       expect(
         checkStartSite(goal: g, openSites: [site(g)], ownedBlocks: owned),
         SiteStartRejection.blockAlreadyStarted,
