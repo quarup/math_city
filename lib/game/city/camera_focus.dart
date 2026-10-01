@@ -3,6 +3,12 @@
 /// Dart so the framing can be unit-tested without Flame.
 library;
 
+/// Where the town's centre sits on screen in the default framing — city
+/// creation, the Expand-city pull-back — as a fraction of the visible
+/// height: below the centre, so the haze band over the top of the viewport
+/// reads as sky above the town (city_builder.md §11.5).
+const double kTownAnchorY = 0.58;
+
 /// Zoom at which [contentWidth] world units span [fraction] of
 /// [viewportWidth] pixels, clamped to `[minZoom, maxZoom]`.
 double zoomToFit({

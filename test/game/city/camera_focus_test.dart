@@ -135,4 +135,20 @@ void _bottomInsetTests() {
       expect(cy, closeTo(-300, 1e-9));
     });
   });
+
+  test('the town is framed below the screen centre, under the haze', () {
+    expect(kTownAnchorY, inInclusiveRange(0.55, 0.6));
+    final (_, cy) = cameraCenterFor(
+      targetX: 0,
+      targetY: 1000,
+      zoom: 1,
+      viewportWidth: 400,
+      viewportHeight: 800,
+      anchorX: 0.5,
+      anchorY: kTownAnchorY,
+    );
+    // The camera centres above the target, so the target lands lower.
+    expect(cy, lessThan(1000));
+    expect(1000 - cy, closeTo(800 * (kTownAnchorY - 0.5), 1e-9));
+  });
 }
