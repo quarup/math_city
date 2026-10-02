@@ -34,7 +34,10 @@ REGIONS_JSON = HERE / "regions.json"
 NIGHT_TINT = np.array([80, 95, 160], dtype=np.float32) / 255.0
 
 # Window light colours, picked per region by a stable hash so a facade is not
-# one flat yellow: mostly warm, a little variety, the odd cool one.
+# one flat yellow. **Warm shades only**, pale gold to amber: an earlier
+# palette had a neutral white and a cool blue-white for variety, and the
+# blue ones read as an eyesore beside the rest (the user's call, 2026-10-03).
+# Keep the red channel full and blue well under green.
 WINDOW_COLOURS = [
     (255, 214, 140),
     (255, 214, 140),
@@ -42,8 +45,8 @@ WINDOW_COLOURS = [
     (255, 226, 166),
     (255, 200, 118),
     (255, 236, 196),
-    (240, 236, 222),
-    (206, 226, 255),
+    (255, 207, 128),
+    (255, 188, 104),
 ]
 
 

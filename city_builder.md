@@ -2065,7 +2065,8 @@ as dark glass. A window is a shape, not a colour.
    baked at once.
 3. **Bake** (`build.py`). The lit pixels are the sprite's own, recoloured:
    a window keeps its frames and curtains as a brightness pattern in one
-   of a few warm whites picked per window; a glow keeps its hue; a lamp
+   of a few warm shades, pale gold to amber, picked per window (no white
+   or blue ones: they looked wrong beside the rest); a glow keeps its hue; a lamp
    bakes nothing (the app draws it). Output:
    `assets/buildings/lights.json` (polygons + kind) and
    `assets/buildings/lit/<sprite>.png`.
