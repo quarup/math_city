@@ -558,6 +558,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
       _selected = target;
       _pendingSpot = spot;
     });
+    if (spot != null) _glideToSpot(spot);
   }
 
   /// Where a letter's *Build it!* proposes [type]: the legal footprint
@@ -737,6 +738,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
       _selected = type;
       _pendingSpot = spot;
     });
+    _glideToSpot(spot);
   }
 
   /// A site just opened (a block filled it, or credit did): card and
@@ -1117,7 +1119,11 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
       _selectedBuildingId = result.placementId;
       _selectedSiteId = result.siteId;
     });
-    if (goal is LandBlockGoal) _exitExpand();
+    if (goal is LandBlockGoal) {
+      _exitExpand(goBack: false);
+      final (col, row, w, h) = goal.tileBounds;
+      _glideTo(col, row, w, h);
+    }
     // Chapter one: placing it zooms and opens the wheel without a further
     // tap (city_builder.md §10.4).
     final siteId = result.siteId;
@@ -1381,10 +1387,41 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     unawaited(_startSite(LandBlockGoal(blocks: {block})));
   }
 
+  /// Glides the camera onto a proposed spot, moderately zoomed in, so a
+  /// spot proposed off-screen is easy to find — without taking the
+  /// controls, for a player who meant to build elsewhere.
+  void _glideToSpot(GridFootprint spot) =>
+      _glideTo(spot.col, spot.row, spot.width, spot.height);
+
+  /// Glides onto the world-tile footprint at `(col, row)` once the bottom
+  /// bar has swapped, so the framing centres it in the visible map.
+  void _glideTo(int col, int row, int width, int height) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final window = _window;
+      if (!mounted || _game == null || window == null) return;
+      _syncBarInset();
+      _game!.glideToFootprint(
+        col: col - window.minCol,
+        row: row - window.minRow,
+        width: width,
+        height: height,
+      );
+    });
+  }
+
+  /// Hands the game the bottom bar's height as laid out this frame, ahead
+  /// of the rebuild that would otherwise tell it.
+  void _syncBarInset() {
+    final box = _barKey.currentContext?.findRenderObject() as RenderBox?;
+    if (box != null && box.hasSize) _game?.bottomInset = box.size.height;
+  }
+
   /// Expand city (E1 + E6): stakes and prices the purchasable ring and
   /// pulls the camera back to frame it, the town below the centre under
-  /// the haze. Every other mode gives way.
-  void _enterExpand({Set<(int, int)> alsoFrame = const {}}) {
+  /// the haze — or, for a proposal, glides onto just the [frame] tiles.
+  /// Either way the player can still pan and pinch. Every other mode
+  /// gives way.
+  void _enterExpand({Set<(int, int)>? frame}) {
     final ownedBlocks = ref.read(ownedBlocksProvider).asData?.value;
     final window = _window;
     if (ownedBlocks == null || window == null || _game == null) return;
@@ -1404,10 +1441,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
       _selectedBuildingId = null;
       _letterId = null;
     });
-    final ring = {
-      ...ownedTilesOf(purchasableBlocks(ownedBlocks)),
-      ...alsoFrame,
-    };
+    final ring = frame ?? ownedTilesOf(purchasableBlocks(ownedBlocks));
     var minC = ring.first.$1;
     var minR = ring.first.$2;
     var maxC = minC;
@@ -1422,20 +1456,24 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     // visible height.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted || _game == null || !_expandMode) return;
-      _game!.focusOnFootprint(
+      _syncBarInset();
+      _game!.glideToFootprint(
         col: minC - window.minCol,
         row: minR - window.minRow,
         width: maxC - minC + 1,
         height: maxR - minR + 1,
-        anchorY: kTownAnchorY,
-        widthFraction: 0.92,
+        anchorY: frame == null ? kTownAnchorY : 0.5,
+        widthFraction: frame == null ? 0.92 : null,
         minZoom: 0.25,
+        remember: true,
       );
     });
   }
 
-  /// Leaves Expand city and puts the camera back where it was.
-  void _exitExpand() {
+  /// Leaves Expand city and puts the camera back where it was, unless the
+  /// player has moved it since — or [goBack] is false, as when the land
+  /// was just staked and the camera should stay on it.
+  void _exitExpand({bool goBack = true}) {
     if (!_expandMode) return;
     setState(() {
       _expandMode = false;
@@ -1446,7 +1484,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
         _pendingSpot = null;
       }
     });
-    _game?.releaseFocus();
+    _game?.releaseArea(goBack: goBack);
   }
 
   /// A building with no room anywhere on owned land (city_builder.md §11,
@@ -1471,7 +1509,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
       _toast('No land fits ${type.name} yet');
       return;
     }
-    _enterExpand(alsoFrame: ownedTilesOf(fit.blocks));
+    _enterExpand(frame: ownedTilesOf(fit.blocks));
     setState(() {
       _landProposal = (fit: fit, type: type);
       _selected = type;
@@ -2142,6 +2180,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                 _selected = b;
                 _pendingSpot = spot;
               });
+              _glideToSpot(spot);
             },
           );
 
@@ -2329,6 +2368,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                                     _selected = letterTarget;
                                     _pendingSpot = spot;
                                   });
+                                  _glideToSpot(spot);
                                 }
                               : null,
                           onClose: () {

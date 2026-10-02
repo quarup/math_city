@@ -81,6 +81,38 @@ void main() {
       expect(fit!.price, 600);
     });
 
+    test('two cheap blocks beat one dear one', () {
+      // An arm of owned land reaching ring 4, everything packed. Reserved
+      // tiles leave just one free 3×3 on the cheap ring-1 land, straddling
+      // blocks (0, 1) and (1, 1) — with a free row between it and the town
+      // so the packed buildings keep their open side; the ring-5 block past
+      // the arm's tip is clear. One block there costs 1320, the pair 1200.
+      final owned = {for (var bx = 0; bx <= 4; bx++) (bx, 0)};
+      final hole = {
+        for (var c = 1; c <= 5; c++) (c, 4),
+        for (var c = 2; c <= 4; c++)
+          for (var r = 5; r <= 7; r++) (c, r),
+      };
+      final reserved = {
+        for (var bx = -5; bx <= 5; bx++)
+          for (var by = -5; by <= 5; by++)
+            if (blockRing(bx, by) < 5 && !owned.contains((bx, by)))
+              for (final t in tilesOfBlock(bx, by))
+                if (!hole.contains(t)) t,
+      };
+      final fit = findBlockSetForFootprint(
+        ownedBlocks: owned,
+        existing: _packed(owned),
+        width: 3,
+        height: 3,
+        reserved: reserved,
+      );
+      expect(fit, isNotNull);
+      expect(fit!.blocks, {(0, 1), (1, 1)});
+      expect(fit.price, 1200);
+      expect(blockCost(5, 0), greaterThan(1200));
+    });
+
     test('nearest to town on ties', () {
       final fit = findBlockSetForFootprint(
         ownedBlocks: {(0, 0)},

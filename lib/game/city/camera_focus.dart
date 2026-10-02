@@ -3,6 +3,8 @@
 /// Dart so the framing can be unit-tested without Flame.
 library;
 
+import 'dart:math' as math;
+
 /// Where the town's centre sits on screen in the default framing — city
 /// creation, the Expand-city pull-back — as a fraction of the visible
 /// height: below the centre, so the haze band over the top of the viewport
@@ -20,6 +22,31 @@ double zoomToFit({
 }) {
   final zoom = fraction * viewportWidth / contentWidth;
   return zoom.clamp(minZoom, maxZoom);
+}
+
+/// How many tile-widths the view spans, at most, when the camera glides
+/// onto a suggested spot: close enough that the spot is easy to find,
+/// far enough that the town around it still shows, for a player who
+/// meant to build somewhere else. About the opening framing's distance.
+const double kModerateViewTiles = 10;
+
+/// Zoom for gliding onto a suggestion whose framed content is
+/// [contentWidth] world units wide: zooms in to at least the
+/// [kModerateViewTiles]-wide view, keeps a closer [current] zoom as it is,
+/// but backs off so the content still spans no more than [fraction] of the
+/// viewport. Clamped to `[minZoom, maxZoom]`.
+double suggestionZoom({
+  required double current,
+  required double contentWidth,
+  required double viewportWidth,
+  required double tileWidth,
+  required double minZoom,
+  required double maxZoom,
+  double fraction = 0.9,
+}) {
+  final moderate = viewportWidth / (kModerateViewTiles * tileWidth);
+  final fit = fraction * viewportWidth / contentWidth;
+  return math.min(math.max(current, moderate), fit).clamp(minZoom, maxZoom);
 }
 
 /// The world point the camera must centre on so that world point

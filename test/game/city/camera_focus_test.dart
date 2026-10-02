@@ -151,4 +151,31 @@ void _bottomInsetTests() {
     expect(cy, lessThan(1000));
     expect(1000 - cy, closeTo(800 * (kTownAnchorY - 0.5), 1e-9));
   });
+
+  group('suggestionZoom', () {
+    // A 400 px wide screen of 64-unit tiles: the moderate view is
+    // 400 / (10 × 64) = 0.625.
+    double zoom({required double current, double contentWidth = 100}) =>
+        suggestionZoom(
+          current: current,
+          contentWidth: contentWidth,
+          viewportWidth: 400,
+          tileWidth: 64,
+          minZoom: 0.4,
+          maxZoom: 3,
+        );
+
+    test('zooms in from far out to the moderate view', () {
+      expect(zoom(current: 0.25), closeTo(0.625, 1e-9));
+    });
+
+    test('keeps a closer zoom the player chose', () {
+      expect(zoom(current: 1.5), 1.5);
+    });
+
+    test('backs off so a big footprint still fits', () {
+      // 600 units at 90% of 400 px needs zoom 0.6, under the moderate view.
+      expect(zoom(current: 2, contentWidth: 600), closeTo(0.6, 1e-9));
+    });
+  });
 }

@@ -90,6 +90,22 @@ class IsoCityGame extends FlameGame with DragCallbacks {
   bool get isFocused => _restorePos != null;
   bool get isTweening => _tweenToPos != null;
 
+  // ---- Glide (free camera tween) -----------------------------------------
+  //
+  // A suggestion (a proposed spot, Expand city's ring or proposed land)
+  // glides the camera onto it but leaves the controls with the player: a
+  // pan or pinch cancels the glide and works as usual.
+
+  /// Camera as it stood before [glideToFootprint] with `remember`, put
+  /// back by [releaseArea] unless the player has moved it since.
+  Vector2? _areaRestorePos;
+  double _areaRestoreZoom = 1;
+  bool _movedSinceArea = false;
+
+  /// How far a pinch may zoom out. Lowered while Expand city frames the
+  /// whole purchasable ring, which can sit further out than [minZoom].
+  double _zoomFloor = minZoom;
+
   /// World-space centre of a footprint's ground diamond, in board coords.
   Vector2 footprintCenter({
     required int col,
@@ -166,6 +182,96 @@ class IsoCityGame extends FlameGame with DragCallbacks {
       bottomInset: bottomInset,
     );
     _startTween(Vector2(cx, cy), zoom, duration, onDone);
+  }
+
+  /// Glides the camera onto the footprint at `(col, row)` of `width ×
+  /// height` tiles, at viewport fraction `(0.5, anchorY)`, without locking
+  /// it: pan and pinch stay live. With [widthFraction] the footprint spans
+  /// that share of the viewport width (down to [minZoom], which also
+  /// becomes the pinch floor until [releaseArea]); without it the zoom is a
+  /// moderate one — see [suggestionZoom]. With [remember] the camera as it
+  /// stands is kept for [releaseArea] (the first time only).
+  void glideToFootprint({
+    required int col,
+    required int row,
+    required int width,
+    required int height,
+    double anchorY = 0.5,
+    double? widthFraction,
+    double minZoom = IsoCityGame.minZoom,
+    bool remember = false,
+    Duration duration = const Duration(milliseconds: 650),
+  }) {
+    if (isFocused) return;
+    final viewport = _viewport ?? size;
+    if (remember && _areaRestorePos == null) {
+      _areaRestorePos = camera.viewfinder.position.clone();
+      _areaRestoreZoom = camera.viewfinder.zoom;
+    }
+    if (remember) _movedSinceArea = false;
+    final target = footprintCenter(
+      col: col,
+      row: row,
+      width: width,
+      height: height,
+    );
+    final contentWidth = (width + height) * grid.tileWidth / 2 * 1.3;
+    final zoom = widthFraction == null
+        ? suggestionZoom(
+            current: camera.viewfinder.zoom,
+            contentWidth: contentWidth,
+            viewportWidth: viewport.x,
+            tileWidth: grid.tileWidth,
+            minZoom: IsoCityGame.minZoom,
+            maxZoom: maxZoom,
+          )
+        : zoomToFit(
+            contentWidth: contentWidth,
+            viewportWidth: viewport.x,
+            fraction: widthFraction,
+            minZoom: minZoom,
+            maxZoom: maxZoom,
+          );
+    if (widthFraction != null) _zoomFloor = math.min(zoom, _zoomFloor);
+    final (cx, cy) = cameraCenterFor(
+      targetX: target.x,
+      targetY: target.y,
+      zoom: zoom,
+      viewportWidth: viewport.x,
+      viewportHeight: viewport.y,
+      anchorX: 0.5,
+      anchorY: anchorY,
+      bottomInset: bottomInset,
+    );
+    _startTween(_clamped(Vector2(cx, cy), zoom), zoom, duration, null);
+  }
+
+  /// Ends what [glideToFootprint] remembered: with [goBack], and if the
+  /// player has not panned or pinched since, the camera glides back to
+  /// where it was; otherwise it stays, only zooming in as far as a pinch
+  /// can reach if it was further out. The pinch floor is restored.
+  void releaseArea({required bool goBack}) {
+    final restore = _areaRestorePos;
+    _areaRestorePos = null;
+    _zoomFloor = minZoom;
+    if (isFocused) return;
+    if (goBack && restore != null && !_movedSinceArea) {
+      _startTween(restore, _areaRestoreZoom, _glideBack, null);
+    } else if (camera.viewfinder.zoom < minZoom) {
+      final pos = isTweening ? _tweenToPos! : camera.viewfinder.position;
+      _startTween(_clamped(pos, minZoom), minZoom, _glideBack, null);
+    }
+  }
+
+  static const Duration _glideBack = Duration(milliseconds: 650);
+
+  /// A pan or pinch takes the camera back from a glide in progress.
+  void _playerMovedCamera() {
+    _movedSinceArea = true;
+    if (isTweening && !isFocused) {
+      _tweenToPos = null;
+      _tweenDone = null;
+    }
   }
 
   /// Tweens the camera back to where it was before [focusOnFootprint].
@@ -464,7 +570,8 @@ class IsoCityGame extends FlameGame with DragCallbacks {
   /// Ignored while focused on a footprint.
   void setZoom(double zoom) {
     if (isFocused) return;
-    camera.viewfinder.zoom = zoom.clamp(minZoom, maxZoom);
+    _playerMovedCamera();
+    camera.viewfinder.zoom = zoom.clamp(_zoomFloor, maxZoom);
   }
 
   /// Pushes the latest placement set into the rendered board. Buffered if
@@ -603,6 +710,7 @@ class IsoCityGame extends FlameGame with DragCallbacks {
   @override
   void onDragUpdate(DragUpdateEvent event) {
     if (pinchActive || isFocused) return;
+    _playerMovedCamera();
     // localDelta is in screen pixels; divide by zoom to get world units.
     // Pan the camera opposite the finger so content follows the drag.
     final zoom = camera.viewfinder.zoom;
@@ -612,12 +720,19 @@ class IsoCityGame extends FlameGame with DragCallbacks {
   }
 
   void _clampCamera() {
-    final p = camera.viewfinder.position;
+    camera.viewfinder.position = _clamped(
+      camera.viewfinder.position,
+      camera.viewfinder.zoom,
+    );
+  }
+
+  /// Camera centre [p] held within a tile of the board at [zoom].
+  Vector2 _clamped(Vector2 p, double zoom) {
     final margin = grid.tileWidth;
     // The bar covers the bottom of the viewport, so let the camera go that
     // much further down and the board's bottom edge can still be reached.
-    final under = bottomInset / camera.viewfinder.zoom;
-    camera.viewfinder.position = Vector2(
+    final under = bottomInset / zoom;
+    return Vector2(
       p.x.clamp(-margin, grid.boardWidth + margin),
       p.y.clamp(-margin, grid.boardHeight + margin + under),
     );

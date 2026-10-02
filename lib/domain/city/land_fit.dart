@@ -56,13 +56,13 @@ bool blockSetPurchasable(Set<(int, int)> owned, Set<(int, int)> blocks) {
   return seen.length == blocks.length;
 }
 
-/// Finds the block set for a `[width]×[height]` footprint: the smallest
+/// Finds the block set for a `[width]×[height]` footprint: the cheapest
 /// connected set of unowned blocks (at most [maxBlocks]) such that the
 /// footprint fits legally on `owned ∪ set`, using at least one new tile.
-/// Among sets of that size the cheapest wins, then the one whose centre is
-/// nearest [town] (a block), then the lowest-ordered. The footprint lands
-/// as near the town as the set allows. Null if no set of up to
-/// [maxBlocks] blocks works.
+/// Two cheap inner blocks beat one dear outer one. On a tie in price the
+/// smaller set wins, then the one whose centre is nearest [town] (a
+/// block), then the lowest-ordered. The footprint lands as near the town
+/// as the set allows. Null if no set of up to [maxBlocks] blocks works.
 BlockSetFit? findBlockSetForFootprint({
   required Set<(int, int)> ownedBlocks,
   required List<GridFootprint> existing,
@@ -79,17 +79,23 @@ BlockSetFit? findBlockSetForFootprint({
   );
 
   // Sets of size k, grown from the frontier; each keyed by its sorted
-  // blocks so a set reached two ways is tried once.
+  // blocks so a set reached two ways is tried once. Sizes go up, so a set
+  // that ties the best price found so far can't win, and neither can any
+  // set grown from it: those are dropped.
   var layer = <String, Set<(int, int)>>{
     for (final b in purchasableBlocks(ownedBlocks)) _key({b}): {b},
   };
+  BlockSetFit? best;
+  var bestPrice = 0;
+  var bestDist = double.infinity;
+  var bestKey = '';
   for (var k = 1; k <= maxBlocks && layer.isNotEmpty; k++) {
-    BlockSetFit? best;
-    var bestPrice = 0;
-    var bestDist = double.infinity;
-    var bestKey = '';
+    final bestBefore = best;
+    final priceBefore = bestPrice;
     for (final entry in layer.entries) {
       final blocks = entry.value;
+      final price = blockSetPrice(blocks);
+      if (bestBefore != null && price >= priceBefore) continue;
       final spot = _fitOn(
         ownedTiles: ownedTiles,
         blocks: blocks,
@@ -100,14 +106,16 @@ BlockSetFit? findBlockSetForFootprint({
         townTile: townTile,
       );
       if (spot == null) continue;
-      final price = blockSetPrice(blocks);
       final dist = _centreDistance(blocks, townTile);
       final better =
           best == null ||
-          price < bestPrice ||
-          (price == bestPrice &&
-              (dist < bestDist ||
-                  (dist == bestDist && entry.key.compareTo(bestKey) < 0)));
+          best.blocks.length < k && price < bestPrice ||
+          best.blocks.length == k &&
+              (price < bestPrice ||
+                  (price == bestPrice &&
+                      (dist < bestDist ||
+                          (dist == bestDist &&
+                              entry.key.compareTo(bestKey) < 0))));
       if (better) {
         best = BlockSetFit(blocks: blocks, footprint: spot);
         bestPrice = price;
@@ -115,7 +123,7 @@ BlockSetFit? findBlockSetForFootprint({
         bestKey = entry.key;
       }
     }
-    if (best != null) return best;
+    if (k == maxBlocks) break;
     // Grow every set by one adjacent unowned block.
     final next = <String, Set<(int, int)>>{};
     for (final blocks in layer.values) {
@@ -124,13 +132,14 @@ BlockSetFit? findBlockSetForFootprint({
           final n = (bx + dx, by + dy);
           if (blocks.contains(n) || ownedBlocks.contains(n)) continue;
           final grown = {...blocks, n};
+          if (best != null && blockSetPrice(grown) >= bestPrice) continue;
           next.putIfAbsent(_key(grown), () => grown);
         }
       }
     }
     layer = next;
   }
-  return null;
+  return best;
 }
 
 String _key(Set<(int, int)> blocks) {
