@@ -1,15 +1,15 @@
 """Shared pieces of the night-lights pipeline (city_builder.md §12).
 
-detect.py finds candidate window regions on each building sprite; the review
-server lets a person switch them on and off or draw their own; build.py bakes
-the chosen regions into the assets the app draws at night:
+A person draws every light region by hand in the review page (serve.py);
+regions.json holds them, and build.py bakes them into the assets the app
+draws at night:
 
     assets/buildings/lights.json        polygons + kind per sprite
     assets/buildings/lit/<sprite>.png   the lit pixels of those regions
 
 Run with the sprite pipeline's venv (needs numpy, opencv, Pillow):
 
-    tools/sprite_pipeline/.venv/bin/python tools/night_lights/detect.py
+    tools/sprite_pipeline/.venv/bin/python tools/night_lights/serve.py
 """
 from __future__ import annotations
 
@@ -26,8 +26,8 @@ SPRITES = ROOT / "assets" / "buildings"
 LIT_DIR = SPRITES / "lit"
 LIGHTS_JSON = SPRITES / "lights.json"
 HERE = Path(__file__).resolve().parent
-CANDIDATES_JSON = HERE / "candidates.json"
-OVERRIDES_JSON = HERE / "overrides.json"
+# Every region a person drew, per sprite: the source of truth.
+REGIONS_JSON = HERE / "regions.json"
 
 # Night tint the previews use — the app's multiply colour at full night
 # (sky_component.dart: 255 - 175, 255 - 160, 255 - 95).
@@ -58,6 +58,18 @@ def load_rgba(name: str) -> np.ndarray:
     return np.array(Image.open(SPRITES / f"{name}.png").convert("RGBA"))
 
 
+def sprite_size(name: str) -> tuple[int, int]:
+    """(width, height), read from the file's header."""
+    with Image.open(SPRITES / f"{name}.png") as image:
+        return image.size
+
+
+def regions_of(name: str, saved: dict) -> list[dict]:
+    """The regions drawn on a sprite: `[{id, k, p}]`, `k` being `w`
+    (window), `g` (glow) or `l` (lamp) and `p` a flat polygon."""
+    return saved.get(name, {}).get("regions", [])
+
+
 def stable_hash(*parts) -> int:
     return zlib.crc32("/".join(str(p) for p in parts).encode())
 
@@ -71,13 +83,13 @@ def polygon_mask(shape: tuple[int, int], polygon: list[float]) -> np.ndarray:
 
 
 # Every region is a simple polygon: a window is four corners, and nothing
-# needs more than six. That keeps the lit shapes clean and makes them easy
-# to correct by hand in the review page.
+# needs more than six. That keeps the lit shapes clean and easy to draw and
+# correct by hand in the review page.
 MAX_VERTICES = 6
 
 
 def tidy_polygon(mask: np.ndarray, min_fill: float = 0.6) -> list[float] | None:
-    """A region's pixels as a simple polygon: the parallelogram it nearly
+    """The wand's patch of pixels as a simple polygon: the parallelogram it nearly
     fills (vertical sides, top and bottom on a facade slope or level) when
     there is one — most windows — and otherwise its convex hull cut down to
     at most [MAX_VERTICES] corners."""
@@ -192,6 +204,20 @@ def night_preview(
     return np.clip(canvas, 0, 255).astype(np.uint8)
 
 
+def write_regions(saved: dict) -> None:
+    """regions.json, one region per line so a review reads well in a diff."""
+    if not saved:
+        REGIONS_JSON.write_text("{}\n")
+        return
+    blocks = []
+    for name in sorted(saved):
+        entry = saved[name]
+        rows = ",\n".join("  " + json.dumps(r) for r in entry.get("regions", []))
+        head = f' {json.dumps(name)}: {{"reviewed": {json.dumps(bool(entry.get("reviewed")))}, "regions": ['
+        blocks.append(f"{head}\n{rows}\n ]}}" if rows else f"{head}]}}")
+    REGIONS_JSON.write_text("{\n" + ",\n".join(blocks) + "\n}\n")
+
+
 def read_json(path: Path, default):
     if not path.exists():
         return default
@@ -200,7 +226,5 @@ def read_json(path: Path, default):
 
 def write_json(path: Path, data, compact=False) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    if compact:
-        path.write_text(json.dumps(data, separators=(",", ":")) + "\n")
-    else:
-        path.write_text(json.dumps(data, indent=1) + "\n")
+    separators = (",", ":") if compact else None
+    path.write_text(json.dumps(data, separators=separators) + "\n")

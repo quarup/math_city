@@ -163,17 +163,18 @@ step with the script's.
 
 ## Night lights on building sprites
 
-Which windows light up at night is decided per sprite in a review page,
-not in code:
+Which windows, signs and lamps light up at night is drawn by hand per
+sprite in a review page, not detected and not in code:
 
 ```sh
 tools/sprite_pipeline/.venv/bin/python tools/night_lights/serve.py
 ```
 
 Never hand-edit `assets/buildings/lit/` or `assets/buildings/lights.json`:
-change the regions in the review page (it saves `tools/night_lights/overrides.json`
-and re-bakes both). After adding or regenerating a building sprite, run
-`tools/night_lights/detect.py <sprite>` and review it. Details in
+change the regions in the review page (it saves `tools/night_lights/regions.json`
+and re-bakes both). A sprite nobody has drawn on has no lights. After
+adding or regenerating a building sprite, open it there and draw its
+lights. Details in
 [tools/night_lights/README.md](tools/night_lights/README.md); design in
 [city_builder.md §12](city_builder.md).
 

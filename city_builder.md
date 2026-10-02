@@ -2040,29 +2040,24 @@ b < 175, r − b > 55`). On this art that is terracotta roofs, cream stone
 and sunlit paving as much as windows, and it misses every window painted
 as dark glass. A window is a shape, not a colour.
 
-### 12.2 Windows: detect regions, review them, relight them
+### 12.2 Windows: draw regions by hand, relight them
 
-1. **Detect** (`tools/night_lights/detect.py`). Three kinds of glass, each
-   found as a *region*: panes already lit warm in the daylight art (with a
-   washed-out core, which a wooden bench lacks); dark glass, as a patch
-   darker than what surrounds it rather than as a grey; curtain walls,
-   cut into panes along their mullions. A region must fit a parallelogram
-   with vertical sides on one of the two facade slopes (±½); patches that
-   lie flat (paving, water, solar panels) are dropped. Dark panes need a
-   twin of the same size on the same facade to default on.
-2. **Review** (`tools/night_lights/serve.py`, a local page). Every sprite
-   at night. **Every region is a simple polygon of at most six corners**
-   (86 % are four-cornered parallelograms), so it can be corrected by
-   hand: select one, drag a corner or the whole shape, double-click an
-   edge to add a corner, Alt-click one to remove it; click out a new
-   polygon, drag a box, or use the magic wand for what was missed; a
-   region is a *window*, a *glow* (sign, screen, ride) or a *lamp* (one
-   click on a point of light); Shift-click or drag a box to select many
-   and delete, switch or move them together; undo. Saved to
-   `overrides.json` and baked at once. **A person has the last word**;
-   the detector only saves clicks. First pass: 1,634 regions on across
-   101 sprites, good on homes, apartments and offices, thin on shop
-   fronts and the landmarks, which need hand-picked glows.
+1. ~~**Detect**~~ **Removed 2026-10-02 (the user's call).** A detector
+   (`detect.py`) found windows as regions by shape: warm lit panes, dark
+   glass darker than its frame, curtain walls cut along their mullions.
+   On real play the user found its regions "mostly garbage": more work to
+   clean up than to draw. It and its `candidates.json` are gone (git
+   history has them); **every region is now drawn by a person**, and a
+   sprite nobody has drawn on has no lights.
+2. **Draw** (`tools/night_lights/serve.py`, a local page). Every sprite
+   at night, starting blank. **Every region is a simple polygon of at
+   most six corners**: drag a box, click out a polygon, or use the magic
+   wand; a region is a *window*, a *glow* (sign, screen, ride) or a
+   *lamp* (one click on a point of light). Edit: drag a corner or the
+   whole shape, double-click an edge to add a corner, Alt-click one to
+   remove it; Shift-click or drag a box to select many and move, delete
+   or duplicate (⌘D) them together; undo. Saved to `regions.json` and
+   baked at once.
 3. **Bake** (`build.py`). The lit pixels are the sprite's own, recoloured:
    a window keeps its frames and curtains as a brightness pattern in one
    of a few warm whites picked per window; a glow keeps its hue; a lamp
@@ -2152,6 +2147,7 @@ within four tenths of a tile.
 
 ### 12.5 Open
 
-- [ ] **The user's review pass** of the window regions (101 sprites),
-  now with polygon editing.
+- [ ] **The user draws the lights** on the 101 sprites in the review
+  page. Until then the town's nights have street lanterns and headlights
+  but no lit windows.
 - [x] Headlight style and street lamp picked and built (H3, L3).

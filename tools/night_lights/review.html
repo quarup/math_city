@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>Math City night lights</title>
 <style>
-  :root { --bg: #10161f; --panel: #18212d; --line: #2a3644; --ink: #e8eef4; --muted: #8fa1b3; --accent: #ffd27a; --on: #6fd08c; --off: #ff7a70; }
+  :root { --bg: #10161f; --panel: #18212d; --line: #2a3644; --ink: #e8eef4; --muted: #8fa1b3; --accent: #ffd27a; --on: #6fd08c; }
   * { box-sizing: border-box; }
   html, body { height: 100%; margin: 0; }
   body { display: grid; grid-template-columns: 270px 1fr; background: var(--bg); color: var(--ink); font: 14px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; }
@@ -48,12 +48,11 @@
   <div class="bar">
     <h2 id="title"></h2>
     <div class="group" id="tools">
-      <button data-tool="edit">Edit<kbd>E</kbd></button>
-      <button data-tool="toggle">Toggle<kbd>T</kbd></button>
-      <button data-tool="draw">Draw<kbd>P</kbd></button>
       <button data-tool="box">Box<kbd>B</kbd></button>
+      <button data-tool="draw">Draw<kbd>P</kbd></button>
       <button data-tool="wand">Wand<kbd>W</kbd></button>
       <button data-tool="lamp">Lamp<kbd>L</kbd></button>
+      <button data-tool="edit">Edit<kbd>E</kbd></button>
     </div>
     <div class="group" id="kinds" title="What a new region is">
       <button data-kind="w">Window</button>
@@ -72,8 +71,7 @@
     </div>
     <div class="group">
       <button id="undo">Undo<kbd>⌘Z</kbd></button>
-      <button id="allOn">All on</button>
-      <button id="allOff">All off</button>
+      <button id="clear" title="Remove every region on this sprite">Clear</button>
     </div>
     <span class="spacer"></span>
     <span id="status"></span>
@@ -88,15 +86,14 @@
 'use strict';
 const MAX_VERTICES = 6;
 const HELP = {
-  edit: '<b>Edit</b>: click a region to select it; <b>Shift-click</b> adds or removes one; <b>drag a box</b> to select everything inside (Shift adds to the selection); <b>⌘A</b> selects all that are on. One selected: drag a corner, double-click an edge to add a corner (up to 6), Alt-click a corner to remove it. Any selection: drag inside to move, <b>Delete</b> removes, <b>Space</b> on / off, <b>G</b> window ↔ glow, <b>[ ]</b> shrink / grow, <b>Esc</b> deselects.',
-  toggle: '<b>Toggle</b>: click a region to switch it on or off. Red outlines are off.',
-  draw: '<b>Draw</b>: click each corner of the window (3 to 6). Click the first corner again, double-click or press <b>Enter</b> to finish; <b>Esc</b> cancels.',
   box: '<b>Box</b>: drag from one corner of a window to the opposite one. Pick the slope of its top edge first (╲ ╱ ▭).',
-  wand: '<b>Wand</b>: click inside a window the detector missed; it grows to the patch of similar colour and becomes a polygon. Raise the tolerance if it stops short.',
-  lamp: '<b>Lamp</b>: click a porch lamp, a garden light, any point of light. It shines as a bright core in a round halo, from dusk until dawn. In Edit, <b>[ ]</b> makes a selected lamp smaller or bigger.',
+  draw: '<b>Draw</b>: click each corner of the shape (3 to 6). Click the first corner again, double-click or press <b>Enter</b> to finish; <b>Esc</b> cancels.',
+  wand: '<b>Wand</b>: click inside a window; it grows to the patch of similar colour and becomes a polygon. Raise the tolerance if it stops short, lower it if it leaks.',
+  lamp: '<b>Lamp</b>: click a porch lamp, a garden light, any point of light. It shines as a bright core in a round halo, from dusk until dawn. <b>[ ]</b> makes it smaller or bigger.',
+  edit: '<b>Edit</b>: click a region to select it; <b>Shift-click</b> adds or removes one; <b>drag a box</b> to select everything inside (Shift adds to the selection); <b>⌘A</b> selects all. One selected: drag a corner, double-click an edge to add a corner (up to 6), Alt-click a corner to remove it. Any selection: drag inside to move, <b>⌘D</b> duplicates, <b>Delete</b> removes, <b>G</b> window ↔ glow, <b>[ ]</b> shrink / grow, <b>Esc</b> deselects.',
 };
 const $ = (id) => document.getElementById(id);
-const S = { sprites: {}, names: [], cur: null, tool: 'edit', kind: 'w', slope: 0.5, night: true, outlines: true, zoom: 0, hover: null, sels: [], drag: null, draft: null, mouse: null, tint: [80, 95, 160], undo: [] };
+const S = { sprites: {}, names: [], cur: null, tool: 'box', kind: 'w', slope: 0.5, night: true, outlines: true, zoom: 0, hover: null, sels: [], drag: null, draft: null, mouse: null, tint: [80, 95, 160], undo: [] };
 const ZOOMS = [0, 2, 3, 4, 6];
 const LAMP_RADIUS = 2.5;
 // The one selected region, when exactly one is: corner editing needs that.
@@ -136,7 +133,7 @@ function render() {
   canvas.width = w * z; canvas.height = h * z;
   ctx.imageSmoothingEnabled = false;
   ctx.fillStyle = S.night ? '#121826' : '#5b7a52'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-  const on = sp.regions.filter((r) => r.on);
+  const on = sp.regions;
   if (S.night) {
     ctx.drawImage(tinted, 0, 0, w * z, h * z);
     const shapes = on.filter((r) => r.k !== 'l');
@@ -153,8 +150,7 @@ function render() {
     ctx.strokeStyle = 'rgba(255,210,90,.95)'; ctx.lineWidth = 1.5 * u; pathOf(ctx, on, z); ctx.stroke();
   }
   if (S.outlines) {
-    ctx.lineWidth = u; ctx.strokeStyle = 'rgba(255,110,100,.85)'; pathOf(ctx, sp.regions.filter((r) => !r.on), z); ctx.stroke();
-    ctx.strokeStyle = 'rgba(120,200,255,.9)'; pathOf(ctx, on.filter((r) => r.k === 'g'), z); ctx.stroke();
+    ctx.lineWidth = u; ctx.strokeStyle = 'rgba(120,200,255,.9)'; pathOf(ctx, on.filter((r) => r.k === 'g'), z); ctx.stroke();
     ctx.strokeStyle = 'rgba(255,214,150,.9)'; pathOf(ctx, on.filter((r) => r.k === 'l'), z); ctx.stroke();
   }
   if (S.hover && !S.sels.includes(S.hover)) { ctx.lineWidth = 1.5 * u; ctx.strokeStyle = 'rgba(255,255,255,.75)'; pathOf(ctx, [S.hover], z); ctx.stroke(); }
@@ -172,8 +168,8 @@ function render() {
   }
   $('title').textContent = S.cur;
   const KIND = { w: 'window', g: 'glow', l: 'lamp' };
-  const sel = one() ? ` · selected: ${one().k === 'l' ? '' : one().p.length / 2 + ' corners, '}${KIND[one().k]}, ${one().on ? 'on' : 'off'}` : S.sels.length ? ` · ${S.sels.length} selected` : '';
-  $('status').textContent = `${on.length} on · ${sp.regions.length - on.length} off${sel}`;
+  const sel = one() ? ` · selected: ${KIND[one().k]}${one().k === 'l' ? '' : ', ' + one().p.length / 2 + ' corners'}` : S.sels.length ? ` · ${S.sels.length} selected` : '';
+  $('status').textContent = `${on.length} ${on.length === 1 ? 'region' : 'regions'}${sel}`;
   $('undo').disabled = !S.undo.length;
 }
 function renderList() {
@@ -184,7 +180,7 @@ function renderList() {
   for (const n of S.names) {
     const sp = S.sprites[n]; if (hide && sp.reviewed && n !== S.cur) continue;
     const b = document.createElement('button'); if (n === S.cur) b.className = 'current';
-    b.innerHTML = `<span>${n}</span><span class="n">${sp.regions.filter((r) => r.on).length}</span><span class="ok">${sp.reviewed ? '✓' : ''}</span>`;
+    b.innerHTML = `<span>${n}</span><span class="n">${sp.regions.length || ''}</span><span class="ok">${sp.reviewed ? '✓' : ''}</span>`;
     b.onclick = () => open(n); $('list').appendChild(b);
   }
 }
@@ -208,8 +204,8 @@ function centreOf(p) { let x = 0, y = 0; for (let i = 0; i < p.length; i += 2) {
 // A lamp's centre and core radius, from the bounds of its little hexagon (as the app reads it).
 function lampOf(r) { let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity; for (let i = 0; i < r.p.length; i += 2) { x0 = Math.min(x0, r.p[i]); x1 = Math.max(x1, r.p[i]); y0 = Math.min(y0, r.p[i + 1]); y1 = Math.max(y1, r.p[i + 1]); } return [(x0 + x1) / 2, (y0 + y1) / 2, (x1 - x0 + y1 - y0) / 4]; }
 function hexagon(x, y, rad) { const p = []; for (let i = 0; i < 6; i++) { const a = Math.PI / 3 * i; p.push(Math.round((x + rad * Math.cos(a)) * 10) / 10, Math.round((y + rad * Math.sin(a)) * 10) / 10); } return p; }
-function touch(r) { if (!r.added) r.edited = true; }
-function centroidId(p) { let x = 0, y = 0; for (let i = 0; i < p.length; i += 2) { x += p[i]; y += p[i + 1]; } const n = p.length / 2; return `a${Math.round(x / n)}_${Math.round(y / n)}`; }
+// An id for a new region, from where it is: stable enough to read in a diff, unique on the sprite.
+function freshId(p) { const [x, y] = centreOf(p); let id = `a${Math.round(x)}_${Math.round(y)}`; while (cur().regions.some((r) => r.id === id)) id += 'x'; return id; }
 
 // ---- changes, undo, save ----
 function pushUndo() { S.undo.push(JSON.stringify(cur().regions)); if (S.undo.length > 60) S.undo.shift(); }
@@ -217,8 +213,7 @@ async function undo() { if (!S.undo.length) return; const ids = new Set(S.sels.m
 let saveTimer = null;
 function save(needLit) {
   const sp = cur(), name = S.cur;
-  const body = { set: {}, kind: {}, shape: {}, added: [], reviewed: sp.reviewed };
-  for (const r of sp.regions) { body.set[r.id] = r.on; if (r.k !== 'w') body.kind[r.id] = r.k; if (r.added) body.added.push({ id: r.id, k: r.k, p: r.p }); else if (r.edited) body.shape[r.id] = r.p; }
+  const body = { regions: sp.regions.map((r) => ({ id: r.id, k: r.k, p: r.p })), reviewed: sp.reviewed };
   clearTimeout(saveTimer);
   const send = async () => { await fetch(`/api/save/${name}`, { method: 'POST', body: JSON.stringify(body) }); if (needLit && name === S.cur) { await reloadLit(); render(); } };
   if (needLit) return send();
@@ -227,19 +222,24 @@ function save(needLit) {
 async function addRegion(p, kind = S.kind) {
   if (!p || p.length < 6) return;
   pushUndo();
-  const sp = cur(); let id = centroidId(p); while (sp.regions.some((r) => r.id === id)) id += 'x';
-  const r = { id, k: kind, on: true, p, added: true, edited: false }; sp.regions.push(r); S.sels = [r];
+  const r = { id: freshId(p), k: kind, p }; cur().regions.push(r); S.sels = [r];
   await save(true); renderList();
 }
-// Removes every selected region: one you added is deleted, a detected one is switched off.
 async function removeSelected() {
   if (!S.sels.length) return; pushUndo();
-  for (const r of S.sels) { if (r.added) cur().regions.splice(cur().regions.indexOf(r), 1); else r.on = false; }
+  cur().regions = cur().regions.filter((r) => !S.sels.includes(r));
   S.sels = []; S.hover = null; await save(true); renderList(); render();
+}
+// Copies the selection a little down and to the right, and selects the copies: drag them into place.
+async function duplicateSelected() {
+  if (!S.sels.length) return; pushUndo();
+  const copies = [];
+  for (const r of S.sels) { const p = r.p.map((v) => v + 6); const c = { id: freshId(p), k: r.k, p }; cur().regions.push(c); copies.push(c); }
+  S.sels = copies; await save(true); renderList(); render();
 }
 async function scaleSelected(f) {
   if (!S.sels.length) return; pushUndo();
-  for (const r of S.sels) { const [cx, cy] = centreOf(r.p); r.p = r.p.map((v, i) => Math.round(((i % 2 ? cy : cx) + (v - (i % 2 ? cy : cx)) * f) * 10) / 10); touch(r); }
+  for (const r of S.sels) { const [cx, cy] = centreOf(r.p); r.p = r.p.map((v, i) => Math.round(((i % 2 ? cy : cx) + (v - (i % 2 ? cy : cx)) * f) * 10) / 10); }
   await save(true); render();
 }
 async function finishDraft() { const d = S.draft; S.draft = null; if (d && d.length >= 6) await addRegion(d.map(snap)); render(); }
@@ -253,7 +253,7 @@ canvas.addEventListener('mousemove', (e) => {
   if (d?.kind === 'vertex') { one().p[d.index] = snap(x); one().p[d.index + 1] = snap(y); d.moved = true; render(); return; }
   if (d?.kind === 'move') { const dx = snap(x - d.x), dy = snap(y - d.y); if (dx || dy) { for (const r of S.sels) for (let i = 0; i < r.p.length; i += 2) { r.p[i] += dx; r.p[i + 1] += dy; } d.x += dx; d.y += dy; d.moved = true; render(); } return; }
   if (S.draft) { render(); return; }
-  const h = (S.tool === 'toggle' || S.tool === 'edit') ? regionAt(x, y) : null; if (h !== S.hover) { S.hover = h; render(); }
+  const h = S.tool === 'edit' ? regionAt(x, y) : null; if (h !== S.hover) { S.hover = h; render(); }
 });
 canvas.addEventListener('mouseleave', () => { S.mouse = null; if (S.hover) { S.hover = null; render(); } });
 canvas.addEventListener('mousedown', (e) => {
@@ -264,7 +264,7 @@ canvas.addEventListener('mousedown', (e) => {
   if (single && single.k !== 'l' && !e.shiftKey) {
     const v = vertexAt(single, x, y);
     if (v >= 0) {
-      if (e.altKey) { if (single.p.length > 6) { pushUndo(); single.p.splice(v, 2); touch(single); save(true); render(); } return; }
+      if (e.altKey) { if (single.p.length > 6) { pushUndo(); single.p.splice(v, 2); save(true); render(); } return; }
       pushUndo(); S.drag = { kind: 'vertex', index: v, moved: false }; render(); return;
     }
   }
@@ -272,8 +272,8 @@ canvas.addEventListener('mousedown', (e) => {
   // single selection counts — the first click of the double-click that adds a corner lands there.
   const hit = S.sels.find((r) => inside(r.p, x, y)) || (single && edgeAt(single, x, y) ? single : null) || regionAt(x, y);
   if (hit && S.sels.includes(hit) && !e.shiftKey) { pushUndo(); S.drag = { kind: 'move', x, y, moved: false }; return; }
-  // Anything else may become a selection box, even when it starts on a region (false positives sit
-  // close together); released without a drag it is a plain click on `pick`.
+  // Anything else may become a selection box, even when it starts on a region (windows sit close
+  // together); released without a drag it is a plain click on `pick`.
   S.drag = { kind: 'marquee', x0: x, y0: y, x1: x, y1: y, add: e.shiftKey, pick: hit };
 });
 window.addEventListener('mouseup', async () => {
@@ -290,7 +290,6 @@ window.addEventListener('mouseup', async () => {
     S.sels = d.add ? [...new Set([...S.sels, ...caught])] : caught; render(); return;
   }
   if (!d.moved) { S.undo.pop(); render(); return; }
-  for (const r of S.sels) touch(r);
   await save(true); render();
 });
 canvas.addEventListener('dblclick', async (e) => {
@@ -299,14 +298,12 @@ canvas.addEventListener('dblclick', async (e) => {
   const r = one();
   if (S.tool !== 'edit' || !r || r.k === 'l' || r.p.length >= MAX_VERTICES * 2) return;
   const hit = edgeAt(r, x, y); if (!hit) return;
-  pushUndo(); r.p.splice(hit[0], 0, snap(hit[1]), snap(hit[2])); touch(r);
+  pushUndo(); r.p.splice(hit[0], 0, snap(hit[1]), snap(hit[2]));
   await save(true); render();
 });
 canvas.addEventListener('click', async (e) => {
   const [x, y] = pos(e);
-  if (S.tool === 'toggle') {
-    const r = regionAt(x, y); if (!r) return; pushUndo(); r.on = !r.on; save(false); renderList(); render();
-  } else if (S.tool === 'wand') {
+  if (S.tool === 'wand') {
     const res = await fetch(`/api/wand/${S.cur}`, { method: 'POST', body: JSON.stringify({ x: Math.floor(x), y: Math.floor(y), tol: +$('tol').value }) });
     const { p } = await res.json(); if (!p) { $('status').textContent = 'wand: nothing there (try a higher tolerance)'; return; }
     await addRegion(p); render();
@@ -324,17 +321,17 @@ canvas.addEventListener('click', async (e) => {
 // ---- toolbar and keys ----
 function setActive(groupId, attr, value) { for (const b of $(groupId).children) b.classList.toggle('active', b.dataset[attr] === String(value)); }
 function setTool(t) { S.tool = t; S.hover = null; S.draft = null; S.drag = null; if (t !== 'edit') S.sels = []; setActive('tools', 'tool', t); $('help').innerHTML = HELP[t] + ' Everything saves as you go.'; render(); }
+function setToolKeepingSelection(t) { const sels = S.sels; setTool(t); S.sels = sels; render(); }
 $('tools').onclick = (e) => { const t = e.target.closest('button')?.dataset.tool; if (t) setTool(t); };
 $('kinds').onclick = (e) => { const k = e.target.closest('button')?.dataset.kind; if (k) { S.kind = k; setActive('kinds', 'kind', k); } };
 $('slopes').onclick = (e) => { const s = e.target.closest('button')?.dataset.slope; if (s !== undefined) { S.slope = +s; setActive('slopes', 'slope', s); } };
 function step(d) { const list = S.names; const i = list.indexOf(S.cur); open(list[(i + d + list.length) % list.length]); }
-function setAll(on) { pushUndo(); for (const r of cur().regions) r.on = on; S.sels = []; save(true); renderList(); render(); }
+async function clearAll() { if (!cur().regions.length) return; pushUndo(); cur().regions = []; S.sels = []; S.hover = null; await save(true); renderList(); render(); }
 $('day').onclick = () => { S.night = !S.night; render(); };
 $('outlines').onclick = () => { S.outlines = !S.outlines; render(); };
 $('zoom').onclick = () => { S.zoom = ZOOMS[(ZOOMS.indexOf(S.zoom) + 1) % ZOOMS.length]; render(); };
 $('undo').onclick = undo;
-$('allOn').onclick = () => setAll(true);
-$('allOff').onclick = () => setAll(false);
+$('clear').onclick = clearAll;
 $('prev').onclick = () => step(-1);
 $('next').onclick = () => step(1);
 $('done').onclick = async () => { cur().reviewed = true; await save(true); const i = S.names.indexOf(S.cur); const next = S.names.slice(i + 1).concat(S.names.slice(0, i)).find((n) => !S.sprites[n].reviewed); if (next) open(next); else { renderList(); render(); } };
@@ -343,17 +340,17 @@ window.addEventListener('keydown', async (e) => {
   if (e.target.tagName === 'INPUT') return;
   const k = e.key.toLowerCase();
   if ((e.metaKey || e.ctrlKey) && k === 'z') { e.preventDefault(); undo(); return; }
-  if ((e.metaKey || e.ctrlKey) && k === 'a') { e.preventDefault(); setTool('edit'); S.sels = cur().regions.filter((r) => r.on); render(); return; }
+  if ((e.metaKey || e.ctrlKey) && k === 'a') { e.preventDefault(); setTool('edit'); S.sels = [...cur().regions]; render(); return; }
+  if ((e.metaKey || e.ctrlKey) && k === 'd') { e.preventDefault(); if (S.sels.length) { await duplicateSelected(); setToolKeepingSelection('edit'); } return; }
   if (e.metaKey || e.ctrlKey) return;
   if (k === 'escape') { if (S.draft) S.draft = null; else S.sels = []; render(); }
   else if (k === 'enter' && S.draft) await finishDraft();
   else if ((k === 'delete' || k === 'backspace') && S.sels.length) await removeSelected();
-  else if (k === ' ' && S.sels.length) { pushUndo(); const on = !S.sels.some((r) => r.on); for (const r of S.sels) r.on = on; save(false); renderList(); render(); }
   else if (k === 'g' && S.sels.length) { pushUndo(); const to = S.sels.find((r) => r.k !== 'l')?.k === 'w' ? 'g' : 'w'; for (const r of S.sels) if (r.k !== 'l') r.k = to; await save(true); render(); }
   else if (k === '[' && S.sels.length) await scaleSelected(1 / 1.15);
   else if (k === ']' && S.sels.length) await scaleSelected(1.15);
   else if (k === 'arrowright') step(1); else if (k === 'arrowleft') step(-1);
-  else if (k === 'e') setTool('edit'); else if (k === 't') setTool('toggle'); else if (k === 'p') setTool('draw'); else if (k === 'b') setTool('box'); else if (k === 'w') setTool('wand'); else if (k === 'l') setTool('lamp');
+  else if (k === 'e') setTool('edit'); else if (k === 'p') setTool('draw'); else if (k === 'b') setTool('box'); else if (k === 'w') setTool('wand'); else if (k === 'l') setTool('lamp');
   else if (k === 'd') $('day').click(); else if (k === 'o') $('outlines').click(); else if (k === 'z') $('zoom').click();
   else if (k === 'r') $('done').click();
   else return;
@@ -367,6 +364,6 @@ window.addEventListener('resize', render);
   setActive('kinds', 'kind', S.kind); setActive('slopes', 'slope', S.slope);
   const wanted = decodeURIComponent(location.hash.slice(1));
   await open(S.names.includes(wanted) ? wanted : S.names.find((n) => !S.sprites[n].reviewed) || S.names[0]);
-  setTool('edit');
+  setTool(S.tool);
 })();
 </script>
