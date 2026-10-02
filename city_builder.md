@@ -378,9 +378,10 @@ minutes ladder, see the table in the rework PR.)*
   of accurate work at any grade — a kindergartner and an 8th grader afford the
   same building after the same study time.
 - **Whole catalog once over ≈ 57,700 coins ≈ 16 h of study.** Housing
-  repeats (several homes/apartments per city) and land (600 × ring, i.e. 1200
-  for the first new block) push the long arc well past that. No artificial
-  scarcity (the §1.3 reject) — everything is reachable through normal play.
+  repeats (several homes/apartments per city) and land (600 for a block on
+  the first new ring, +30% per ring beyond) push the long arc well past that.
+  No artificial scarcity (the §1.3 reject) — everything is reachable through
+  normal play.
 - **`life🪙` gates** (3600 / 5400 / 7200 / 10800 / 14400 = 1 / 1.5 / 2 / 3 / 4 h
   of lifetime study) read as "you've practiced a lot" milestones. Capstones gate
   on lifetime coins so they feel earned by *total practice*, not just city
@@ -947,7 +948,7 @@ making the question flow **the act of building**.
 - **No wallet.** A coin exists only inside a site. `Players.coinBalance` is
   dropped; `lifetimeCoinsEarned` stays (it drives the `life🪙` unlock gates and
   the progress screen's "total study time"). **Everything with a price is a
-  site** — buildings, upgrades, land blocks (600 × ring), parks — so there is
+  site** — buildings, upgrades, land blocks (600 on the first ring, +30% per ring), parks — so there is
   never a state where coins are earned into nothing, and the question flow is
   only reachable *through* a site.
 - **Earning rules unchanged.** Streak ramp (0.2 → 1.0 over five), keypad ×1.5,

@@ -113,7 +113,8 @@ final class BuildingGoal extends SiteGoal {
       BuildingGoal(type: type, col: col, row: row, upgrade: upgrade);
 }
 
-/// A land block (`land_blocks.dart`), priced on the ladder `600 × ring`.
+/// A land block (`land_blocks.dart`), priced by ring (`blockCost`: 600 on
+/// ring 2, +30% per ring).
 /// The one v1 event (city_builder.md §10.7): a block party prepared at a
 /// public space the town already has. Cheap — about one question block —
 /// and when it opens the population jumps to capacity.

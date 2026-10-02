@@ -218,8 +218,8 @@ void main() {
     test('priced on the land ladder', () {
       const g = LandBlockGoal(blocks: {(2, 0)});
       expect(g.price, blockCost(2, 0));
-      expect(g.price, 1200);
-      expect(const LandBlockGoal(blocks: {(-3, 1)}).price, 1800);
+      expect(g.price, 600);
+      expect(const LandBlockGoal(blocks: {(-3, 1)}).price, 780);
     });
 
     test('pays down like any site', () {
@@ -227,10 +227,10 @@ void main() {
         goal: LandBlockGoal(blocks: {(2, 0)}),
         startedAtRound: 3,
       );
-      final r = site.payIn(400);
+      final r = site.payIn(200);
       expect(r.site.stage, 1);
-      expect(r.site.remaining, 800);
-      expect(site.payIn(1200).opened, isTrue);
+      expect(r.site.remaining, 400);
+      expect(site.payIn(600).opened, isTrue);
     });
   });
 
@@ -444,7 +444,7 @@ void main() {
   group('LandBlockGoal groups (city_builder.md §11, E9)', () {
     test('a group is priced as the sum of its blocks', () {
       const g = LandBlockGoal(blocks: {(2, 0), (3, 0)});
-      expect(g.price, 1200 + 1800);
+      expect(g.price, 600 + 780);
       expect(g.tileBounds, (8, 0, 8, 4));
     });
 

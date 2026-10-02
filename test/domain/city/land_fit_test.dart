@@ -39,7 +39,7 @@ void main() {
       );
       expect(fit, isNotNull);
       expect(fit!.blocks.length, 1);
-      expect(fit.price, 1200);
+      expect(fit.price, 600);
       final block = fit.blocks.single;
       expect(blockRing(block.$1, block.$2), 2);
       // The building stands on the new block.
@@ -78,7 +78,7 @@ void main() {
         height: 1,
       );
       expect(fit, isNotNull);
-      expect(fit!.price, 1200);
+      expect(fit!.price, 600);
     });
 
     test('nearest to town on ties', () {

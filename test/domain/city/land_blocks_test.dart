@@ -24,10 +24,14 @@ void main() {
   });
 
   group('blockCost', () {
-    test('linear base × ring', () {
-      expect(blockCost(2, 0), 1200); // ~20 min of study
-      expect(blockCost(3, 0), 1800);
-      expect(blockCost(2, 2), 1200); // keys off ring, not distance
+    test('600 on the first purchasable ring, +30% per ring after', () {
+      expect(blockCost(2, 0), 600); // ~10 min of study
+      expect(blockCost(3, 0), 780);
+      expect(blockCost(4, 0), 1010); // rounded to the nearest 10
+      expect(blockCost(0, -5), 1320);
+      expect(blockCost(6, 0), 1710);
+      expect(blockCost(2, 2), 600); // keys off ring, not distance
+      expect(blockCost(1, 0), 600); // seeded free in play; base in tests
       expect(blockCost(0, 0), 0);
     });
   });
