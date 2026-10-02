@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:math_city/data/construction_sites.dart';
 import 'package:math_city/data/database.dart';
 import 'package:math_city/domain/city/construction_site.dart';
+import 'package:math_city/domain/city/land_blocks.dart';
 
 void main() {
   setUp(() {
@@ -174,7 +175,7 @@ void main() {
       );
       final sites = sitesFromRows(await db.sitesForCity(city.id), const []);
       expect(sites.single.goal, isA<LandBlockGoal>());
-      expect(sites.single.site.price, 1200);
+      expect(sites.single.site.price, blockCost(2, 0));
       expect(sites.single.name, 'New land');
 
       expect(await db.openSite(id, playerId: player.id), isNull);

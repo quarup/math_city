@@ -1164,8 +1164,8 @@ once, then open the pages in a browser. Published copies (private):
 - **Day/night driver:** **D2, the ~8 min ambient loop (decided 2026-09-30,
   see §11).** D1 (device clock) and D3 (play-driven, one persisted hour) were
   the alternatives; the rendering is identical. The clock policy — frozen at
-  9:30 through chapter one, then 5 min day + 3 min night, paused under the
-  question screens — is §11's S4.
+  9:30 through chapter one, then 5 min day + 3 min night, **running on
+  through the question screens** (revised 2026-10-02) — is §11's S4.
 - **Bespoke per-building animation:** a few landmarks only (§9.4).
 - **Tap reactions:** yes, but the board hit-tests moving things **only when
   nothing is picked up and no site is selected**; otherwise the tap goes to
@@ -1925,9 +1925,9 @@ in `lib/game/city/`, mode state in `city_screen.dart`.
 |---|---|---|
 | Ground (T2 / T3 / X10) | One meadow inside and out, three shades per band by distance from the town (meadow on owned blocks, scrub on the next ring, forest beyond — the light shade grows with the fence, see §11.7), per-tile hash noise and tufts; a 6-tile countryside margin round the owned land; hash-seeded trees / bushes / flowers / rocks on free tiles — 4 % trees in town, 32 % beyond — depth-sorted with buildings, hidden under footprints, roads and staked land; the ground past the window is painted from a cached picture, so there is no board edge | [terrain.dart](lib/domain/city/terrain.dart), [decor_painter.dart](lib/game/city/decor_painter.dart), `CityBoardComponent._drawGround` |
 | Edge (X11) | Split-rail fence on every owned-tile edge that faces unowned land, opening where a road crosses; the **main street** (world row 0) runs off the map east and west and the **high street** (world col 3) south — fixed roads the auto-roads join, reserved from building | `edgeSegments`, `highwayTiles`, `checkPlacement(reserved:)`, `generateRoads(fixedRoads:)` |
-| Sky (S4 / D2; T4 + K1 dropped, §11.7) | A whole-scene tint by time of day — a warm multiply wash at dawn and dusk, a dark multiply at night — with **no haze band**. The 8-minute clock: 5 min day (6:30 → 18:30), 3 min night; frozen at 9:30 through chapter one, paused under a question route; shown as a digital clock chip top-right. Default framing puts the town's centre at **58 %** of the visible height | [day_clock.dart](lib/domain/city/day_clock.dart), [sky_component.dart](lib/game/city/sky_component.dart), `_ClockChip`, `kTownAnchorY` |
+| Sky (S4 / D2; T4 + K1 dropped, §11.7) | A whole-scene tint by time of day — a warm multiply wash at dawn and dusk, a dark multiply at night — with **no haze band**. The 8-minute clock: 5 min day (6:30 → 18:30), 3 min night; frozen at 9:30 through chapter one, running on real time through the question screens (§11.8); shown as a digital clock chip top-right. Default framing puts the town's centre at **58 %** of the visible height | [day_clock.dart](lib/domain/city/day_clock.dart), [sky_component.dart](lib/game/city/sky_component.dart), `_ClockChip`, `kTownAnchorY` |
 | Edges on demand (B1 + B4) | Only while placing or moving: unowned land dims, a thin tile grid over owned land, the boundary as a marching dashed line; the red footprint for a refused spot | `CityBoardComponent.placementEdges` |
-| Expand city (E1 + E6) | *Expand city* card at the end of the folder bar; beyond the ring dims, each purchasable block gets stakes + string + a faint wash + a constant-screen-size price pill (gold when affordable); tap → amber selection + the buy bar; the camera pulls back to frame the ring and returns on exit. Land taps outside the mode do nothing | `FrontierBlockView`, `_enterExpand` / `_exitExpand` |
+| Expand city (E1 + E6) | *Expand city* card at the end of the folder bar; beyond the ring dims, each purchasable block gets stakes + string + a faint wash + a constant-screen-size price pill; tap → amber selection + the buy bar; the camera pulls back to frame the ring and returns on exit. Land taps outside the mode do nothing | `FrontierBlockView`, `_enterExpand` / `_exitExpand` |
 | Land as a site (E7) | Schema **v21**: `LandBlockGoal.blocks` (`ConstructionSites.landBlocks`), `Players.nextBuildingTypeId`. Land sites draw as staked plots; opening one owns every block and the fence moves out. The wanted building shows as a *next* chip beside the sites and is auto-proposed on the new land after the celebration; dismissing the chip or cancelling the site forgets it | `LandBlockGoal`, `CityActions.setNextBuilding`, `_proposeNextOn` |
 | Big footprints (E9) | A refused placement finds the smallest connected purchasable block set that fits (cheapest total, then nearest to town; ring 3 allowed inside a group), frames it in Expand city, stakes it as one plot with the ghost inside and a *N blocks · 🪙 total* pill; *Buy it* starts one group-priced land site and remembers the building | [land_fit.dart](lib/domain/city/land_fit.dart) |
 
@@ -1979,23 +1979,10 @@ The user's notes after seeing §11.6 on the device, all implemented:
 
 Everything in §11.6–11.7 is on `main`. What is left, most useful first.
 
-**Not yet seen on a device** — covered by unit tests of the pieces, never
-driven end to end on the emulator. Do these before building anything new.
-
-- [ ] **E7 end to end.** Pay a land site off through the question loop,
-  watch the celebration, and confirm the *next* chip's building is
-  auto-proposed on the new land with *Place here*. Only the first half
-  (refused placement → *needs more land* bar → *Buy it*) was checked.
-- [ ] **E9 with a real group.** The 6×6 amusement park only needed one
-  block in the test city. Force a multi-block set (a crowded town, or a
-  one-block city) and check the L-shaped outline, the *N blocks* pill, and
-  that opening the site owns every block and moves the fence.
-- [ ] **Chapter one on a fresh player.** Clock frozen at 9:30, no *Expand
-  city* card, proposals keeping off the main street, the fence and decor
-  around a nearly empty town.
-- [ ] **Dawn.** Day (9:40), dusk (18:06) and night (2:00) were looked at;
-  5:30–8:00 was not.
-- [ ] **iOS.** Not run on the simulator since this work landed.
+**Device checks — done by the user, 2026-10-02.** The five paths that
+had only unit tests behind them (E7 end to end, an E9 group, chapter one
+on a fresh player, dawn, iOS) were driven by hand, with fixes committed
+where needed.
 
 **Designed, not built.**
 
@@ -2006,19 +1993,20 @@ driven end to end on the emulator. Do these before building anything new.
   (`coach_hand.dart`) on the card the first time it appears, and on *Buy
   it* the first time a placement is refused.
 
-**The user's calls.**
+**The user's calls — decided 2026-10-02.**
 
-- [ ] **The gold price pill.** "Affordable" is implemented as *credit ≥
-  price*, and credit only comes from cancelled sites, so the pill is almost
-  never gold. Drop the gold state, or redefine it (the cheapest block?).
-- [ ] **Hours and counts** were picked without playtesting: the walker
-  curve (peaks at 8 and 17, nobody 22:00–5:30), each service vehicle's
-  shift, a third of the civilian cars at night, six through cars per exit
-  by day and two at night. Tune by eye.
-- [ ] **The clock restarts at 9:30 on every visit** (ambient, not
-  persisted). Keep, or carry the hour across sessions.
+- [x] **The gold price pill is dropped.** Every price pill is the dark
+  one; "affordable" had no meaning without a wallet.
+- [x] **Hours and counts** stay as picked, for now.
+- [x] **The clock still restarts at 9:30 on every visit**, but it **no
+  longer pauses for the question screens**: it runs on real time
+  (`IsoCityGame` ticks it from a stopwatch, not from frame time), so four
+  minutes of questions moves it half-way round the eight-minute day —
+  from 9:30 am to 7:30 pm with the 5 + 3 split. Chapter one's freeze is
+  unchanged.
 
-**Rough edges.**
+**Rough edges** — accepted for now (2026-10-02); listed so they are not
+rediscovered.
 
 - [ ] **Legacy cities with a building on the main street or the high
   street.** The road is simply missing under it and the through traffic

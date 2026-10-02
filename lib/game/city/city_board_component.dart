@@ -81,14 +81,12 @@ class LandSiteView {
 
 /// A purchasable block while Expand city is on (city_builder.md §11, E1):
 /// survey stakes and string round its 4×4, a faint wash, and a price pill
-/// at its centre — gold when the player can afford it, amber when it is
-/// the selected one.
+/// at its centre; the string turns amber when it is the selected one.
 class FrontierBlockView {
   const FrontierBlockView({
     required this.col,
     required this.row,
     required this.price,
-    required this.affordable,
     required this.selected,
   });
 
@@ -96,7 +94,6 @@ class FrontierBlockView {
   final int col;
   final int row;
   final int price;
-  final bool affordable;
   final bool selected;
 }
 
@@ -1020,17 +1017,17 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
   }
 
   /// A label at a world point drawn at a constant screen size whatever the
-  /// zoom: the app's dark pill, or gold when [gold].
-  void _drawPill(Canvas canvas, Offset at, String text, {required bool gold}) {
+  /// zoom: the app's dark pill.
+  void _drawPill(Canvas canvas, Offset at, String text) {
     final tp = _pillText.putIfAbsent(
-      '$text/$gold',
+      text,
       () => TextPainter(
         text: TextSpan(
           text: text,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 11,
             fontWeight: FontWeight.w700,
-            color: gold ? const Color(0xFF5C4300) : const Color(0xFFFFFFFF),
+            color: Color(0xFFFFFFFF),
           ),
         ),
         textDirection: TextDirection.ltr,
@@ -1045,20 +1042,7 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
       ..save()
       ..translate(at.dx, at.dy)
       ..scale(1 / cameraZoom)
-      ..drawRRect(
-        rect,
-        Paint()
-          ..color = gold ? const Color(0xFFFFE082) : const Color(0xC7101917),
-      );
-    if (gold) {
-      canvas.drawRRect(
-        rect,
-        Paint()
-          ..color = const Color(0xFFB8860B)
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 1.2,
-      );
-    }
+      ..drawRRect(rect, Paint()..color = const Color(0xC7101917));
     tp.paint(canvas, Offset(-tp.width / 2, -tp.height / 2 + 0.5));
     canvas.restore();
   }
@@ -1098,7 +1082,6 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
         canvas,
         Offset(cx, cy - 6 * grid.tileWidth / 64),
         '🪙 ${b.price}',
-        gold: b.affordable,
       );
     }
     if (proposedPlot.isNotEmpty && proposedLabel != null) {
@@ -1114,7 +1097,6 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
         canvas,
         Offset(sx / n, sy / n + grid.tileWidth * 0.6),
         proposedLabel!,
-        gold: true,
       );
     }
   }

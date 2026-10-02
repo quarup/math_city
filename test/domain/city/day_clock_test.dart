@@ -74,20 +74,25 @@ void main() {
       expect(clock.hour, closeTo(11.5, 1e-9));
     });
 
-    test('frozen or paused, it does not move', () {
+    test('frozen, it does not move', () {
       final clock = AmbientClock()
         ..frozen = true
         ..tick(100);
       expect(clock.hour, kChapterOneHour);
       clock
         ..frozen = false
-        ..paused = true
-        ..tick(100);
-      expect(clock.hour, kChapterOneHour);
-      clock
-        ..paused = false
         ..tick(25);
       expect(clock.hour, closeTo(10.5, 1e-9));
+    });
+
+    test('four minutes of questions is half the eight-minute day', () {
+      // One catch-up tick after the question screens: 225 s of day to
+      // 18:30, then 15 s of night (4 h a minute) to 19:30.
+      final clock = AmbientClock()..tick(240);
+      expect(clock.hour, closeTo(19.5, 1e-9));
+      // And a whole loop later it is the same time again.
+      clock.tick(kDaySeconds + kNightSeconds);
+      expect(clock.hour, closeTo(19.5, 1e-9));
     });
   });
 }

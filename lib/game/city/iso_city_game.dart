@@ -42,6 +42,8 @@ class IsoCityGame extends FlameGame with DragCallbacks {
   /// game's clock; the screen freezes it through chapter one and pauses it
   /// while a question route covers the city.
   final AmbientClock clock = AmbientClock();
+  final Stopwatch _wallClock = Stopwatch()..start();
+  int _lastWallMicros = 0;
 
   /// The clock's minute of the day for the clock chip over the city, in
   /// quarter-hour steps: the chip reads 9:30, 9:45, 10:00, not every minute.
@@ -193,7 +195,12 @@ class IsoCityGame extends FlameGame with DragCallbacks {
   @override
   void update(double dt) {
     super.update(dt);
-    clock.tick(dt);
+    // Real time, not frame time: the day keeps running while a question
+    // route covers the city (whether or not this loop is ticking under
+    // it), so four minutes of questions is half a day gone.
+    final now = _wallClock.elapsedMicroseconds;
+    clock.tick((now - _lastWallMicros) / 1e6);
+    _lastWallMicros = now;
     final minute = quarterHourMinute(clock.hour);
     if (minute != minuteOfDay.value) minuteOfDay.value = minute;
     if (isLoaded) {

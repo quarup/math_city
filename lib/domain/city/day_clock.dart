@@ -1,8 +1,8 @@
 /// The ambient day (city_builder.md §11, D2 + S4): an eight-minute loop —
 /// five minutes of day, three of night — that tints the whole scene (a
 /// warm wash at dawn and dusk, a dark multiply at night). The clock is
-/// frozen at 9:30 through chapter one and pauses while a question screen
-/// covers the city.
+/// frozen at 9:30 through chapter one; after that it runs on real time and
+/// keeps running while the question screens cover the city.
 ///
 /// Pure Dart: no Flutter / Flame / Drift imports.
 library;
@@ -97,18 +97,18 @@ double advanceHour(double hour, double seconds) {
 }
 
 /// The ambient clock a city screen keeps: ticks with real time unless it
-/// is [frozen] (chapter one) or [paused] (a question screen is up).
+/// is [frozen] (chapter one). It does not stop for the question screens.
 class AmbientClock {
   AmbientClock({this.hour = kChapterOneHour});
 
   double hour;
   bool frozen = false;
-  bool paused = false;
 
-  bool get running => !frozen && !paused;
-
+  /// Advances the day by [seconds] of real time — however long that is:
+  /// the day keeps running while the kid answers questions, so the first
+  /// tick back in the city may carry minutes at once.
   void tick(double seconds) {
-    if (!running || seconds <= 0) return;
+    if (frozen || seconds <= 0) return;
     hour = advanceHour(hour, seconds);
   }
 }

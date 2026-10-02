@@ -583,7 +583,6 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
   @override
   void didPopNext() {
     if (!mounted) return;
-    _game?.clock.paused = false;
     final result = ref.read(lastBlockResultProvider.notifier).take();
     if (_mode != _CityMode.siteZoomed) return;
     if (result != null && result.block.siteOpened) {
@@ -599,13 +598,6 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     } else {
       _zoomOut();
     }
-  }
-
-  /// A question route now covers the city: the ambient day waits for it
-  /// (city_builder.md §11, S4).
-  @override
-  void didPushNext() {
-    _game?.clock.paused = true;
   }
 
   // ---- The construction loop: zoom onto a site, wheel above it ----------
@@ -1726,8 +1718,8 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
               _zoomedSite;
     final celebratingSite = _celebratingSite;
     final credit = player?.creditBalance ?? 0;
-    // Expand city: the purchasable ring, staked and priced (gold when the
-    // player's credit covers a block), the selected one amber.
+    // Expand city: the purchasable ring, staked and priced, the selected
+    // one amber.
     if (_game != null && ownedBlocks != null && _window != null) {
       final window = _window!;
       final proposal = _landProposal;
@@ -1751,7 +1743,6 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                       col: bx * kBlockSize - window.minCol,
                       row: by * kBlockSize - window.minRow,
                       price: blockCost(bx, by),
-                      affordable: credit >= blockCost(bx, by),
                       selected: (bx, by) == _buyingBlock,
                     ),
               ],
