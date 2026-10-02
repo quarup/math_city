@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_city/domain/city/building_type.dart';
 import 'package:math_city/domain/city/citizen.dart';
@@ -120,7 +122,7 @@ class LetterOverlay extends ConsumerWidget {
                       Text(beat.longText, style: theme.textTheme.bodyLarge),
                       if (target != null) ...[
                         const SizedBox(height: 14),
-                        _PicturePanel(building: target!),
+                        _PicturePanel(building: target!, onTap: onBuild),
                       ],
                       const SizedBox(height: 16),
                       Row(
@@ -189,31 +191,141 @@ class LetterOverlay extends ConsumerWidget {
 }
 
 /// The building the letter is about: its sprite on a soft panel, the emoji
-/// as a fallback while the asset is missing.
+/// as a fallback while the asset is missing. Tapping it does what *Build
+/// it!* does ([onTap]; null when the letter has nothing to build).
 class _PicturePanel extends StatelessWidget {
-  const _PicturePanel({required this.building});
+  const _PicturePanel({required this.building, this.onTap});
 
   final BuildingType building;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    return Container(
-      height: 120,
-      decoration: BoxDecoration(
-        color: scheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      alignment: Alignment.center,
-      padding: const EdgeInsets.all(8),
-      child: Image.asset(
-        'assets/buildings/${building.id}_v1.png',
-        fit: BoxFit.contain,
-        errorBuilder: (_, _, _) =>
-            Text(building.emoji, style: const TextStyle(fontSize: 48)),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 120,
+        decoration: BoxDecoration(
+          color: scheme.surfaceContainerHighest,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        padding: const EdgeInsets.all(8),
+        child: _TrimmedSprite(
+          asset: 'assets/buildings/${building.id}_v1.png',
+          fallback: Text(building.emoji, style: const TextStyle(fontSize: 48)),
+        ),
       ),
     );
   }
+}
+
+/// A sprite drawn so its *visible* pixels are centred and fill the box: the
+/// building sprites carry transparent headroom above the roof (room for
+/// taller variants), which would otherwise sit the building low.
+class _TrimmedSprite extends StatefulWidget {
+  const _TrimmedSprite({required this.asset, required this.fallback});
+
+  final String asset;
+  final Widget fallback;
+
+  @override
+  State<_TrimmedSprite> createState() => _TrimmedSpriteState();
+}
+
+class _TrimmedSpriteState extends State<_TrimmedSprite> {
+  /// Decoded sprites and their opaque bounds, kept across letters.
+  static final Map<String, Future<(ui.Image, Rect)?>> _cache = {};
+
+  late Future<(ui.Image, Rect)?> _sprite = _load(widget.asset);
+
+  @override
+  void didUpdateWidget(_TrimmedSprite old) {
+    super.didUpdateWidget(old);
+    if (old.asset != widget.asset) _sprite = _load(widget.asset);
+  }
+
+  static Future<(ui.Image, Rect)?> _load(String asset) =>
+      _cache.putIfAbsent(asset, () async {
+        try {
+          final data = await rootBundle.load(asset);
+          final codec = await ui.instantiateImageCodec(
+            data.buffer.asUint8List(),
+          );
+          final image = (await codec.getNextFrame()).image;
+          final bytes = await image.toByteData();
+          if (bytes == null) return null;
+          final w = image.width;
+          final h = image.height;
+          var minX = w;
+          var minY = h;
+          var maxX = -1;
+          var maxY = -1;
+          for (var y = 0; y < h; y++) {
+            for (var x = 0; x < w; x++) {
+              if (bytes.getUint8((y * w + x) * 4 + 3) == 0) continue;
+              if (x < minX) minX = x;
+              if (x > maxX) maxX = x;
+              if (y < minY) minY = y;
+              if (y > maxY) maxY = y;
+            }
+          }
+          if (maxX < 0) return null;
+          return (
+            image,
+            Rect.fromLTRB(
+              minX.toDouble(),
+              minY.toDouble(),
+              maxX + 1.0,
+              maxY + 1.0,
+            ),
+          );
+        } on Exception {
+          return null;
+        }
+      });
+
+  @override
+  Widget build(BuildContext context) => FutureBuilder<(ui.Image, Rect)?>(
+    future: _sprite,
+    builder: (context, snap) {
+      if (snap.connectionState != ConnectionState.done) {
+        return const SizedBox.expand();
+      }
+      final sprite = snap.data;
+      if (sprite == null) return Center(child: widget.fallback);
+      return CustomPaint(
+        size: Size.infinite,
+        painter: _TrimmedSpritePainter(sprite.$1, sprite.$2),
+      );
+    },
+  );
+}
+
+class _TrimmedSpritePainter extends CustomPainter {
+  _TrimmedSpritePainter(this.image, this.bounds);
+
+  final ui.Image image;
+  final Rect bounds;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final fitted = applyBoxFit(BoxFit.contain, bounds.size, size);
+    final dst = Alignment.center.inscribe(
+      fitted.destination,
+      Offset.zero & size,
+    );
+    canvas.drawImageRect(
+      image,
+      bounds,
+      dst,
+      Paint()..filterQuality = FilterQuality.medium,
+    );
+  }
+
+  @override
+  bool shouldRepaint(_TrimmedSpritePainter old) =>
+      old.image != image || old.bounds != bounds;
 }
 
 /// The whole cast in a row, for a letter signed by everyone.
