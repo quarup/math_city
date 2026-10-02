@@ -61,6 +61,10 @@ enum PlacementRejection {
 
   /// The placement would seal off a neighbor's last open side.
   wouldBoxInNeighbor,
+
+  /// The placement would leave the roads out of town with no way to reach
+  /// each other through the town.
+  wouldCutRoadsOut,
 }
 
 /// Result of [checkPlacement]. Legal when [rejection] is null.
@@ -82,13 +86,22 @@ class PlacementCheck {
 /// the last open side of an existing neighbor it now abuts. For a **move**,
 /// exclude the moved building from [existing] (its old tiles are vacated).
 ///
-/// [reserved] tiles (the main street and the high street, `terrain.dart`)
-/// can never be built on, but they are road, so they count as an open side.
+/// [reserved] tiles can never be built on, but they are road, so they count
+/// as an open side. The automatic proposals pass the roads out of town here
+/// (the main street and the high street, `terrain.dart`) so they never put
+/// a building in the road.
+///
+/// [through] is those same roads for a placement the player chose by hand:
+/// they *may* be built on — the auto-roads then go round the building — as
+/// long as the stretches beyond the fence (the tiles of [through] that are
+/// not owned) can still reach each other through the town. So the roads
+/// outside never move; only the streets inside adapt.
 PlacementCheck checkPlacement({
   required Set<(int, int)> ownedTiles,
   required List<GridFootprint> existing,
   required GridFootprint candidate,
   Set<(int, int)> reserved = const {},
+  Set<(int, int)> through = const {},
 }) {
   // 1. Bounds: every tile of the footprint must sit on owned land, off the
   // fixed roads.
@@ -138,7 +151,44 @@ PlacementCheck checkPlacement({
     }
   }
 
+  // 4. The roads out of town stay joined. Only worth a search once a
+  // building stands on one (otherwise the roads themselves are the link),
+  // and only held against the candidate if they were joined without it.
+  if (after.any(through.contains) &&
+      !_roadsOutLinked(ownedTiles, after, through) &&
+      _roadsOutLinked(ownedTiles, occupied, through)) {
+    return const PlacementCheck.rejected(PlacementRejection.wouldCutRoadsOut);
+  }
+
   return const PlacementCheck.ok();
+}
+
+/// Whether every stretch of [through] beyond the owned land can reach every
+/// other by orthogonal steps over free owned tiles (where the auto-roads
+/// can run) and the unowned [through] tiles themselves. [blocked] is the
+/// tiles under buildings.
+bool _roadsOutLinked(
+  Set<(int, int)> ownedTiles,
+  Set<(int, int)> blocked,
+  Set<(int, int)> through,
+) {
+  final outside = [
+    for (final t in through)
+      if (!ownedTiles.contains(t)) t,
+  ];
+  if (outside.isEmpty) return true;
+  final seen = <(int, int)>{outside.first};
+  final stack = <(int, int)>[outside.first];
+  while (stack.isNotEmpty) {
+    final (c, r) = stack.removeLast();
+    for (final (dc, dr) in const [(1, 0), (0, 1), (-1, 0), (0, -1)]) {
+      final n = (c + dc, r + dr);
+      if (blocked.contains(n)) continue;
+      if (!ownedTiles.contains(n) && !through.contains(n)) continue;
+      if (seen.add(n)) stack.add(n);
+    }
+  }
+  return outside.every(seen.contains);
 }
 
 /// Auto-fit a `[width]×[height]` footprint so it *covers* the tapped tile
@@ -166,6 +216,7 @@ GridFootprint? resolvePlacement({
   required int tapCol,
   required int tapRow,
   Set<(int, int)> reserved = const {},
+  Set<(int, int)> through = const {},
 }) {
   // The tapped tile itself must be on owned land and free — the player is
   // pointing at where the building should go.
@@ -200,6 +251,7 @@ GridFootprint? resolvePlacement({
         existing: existing,
         candidate: candidate,
         reserved: reserved,
+        through: through,
       );
       if (!check.isLegal) continue;
       best = candidate;

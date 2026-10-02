@@ -289,9 +289,9 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
       for (final (c, r) in _roads)
         if (isHighwayTile(c + oc, r + or)) (c, r),
     };
-    // A city from before the fixed roads may have a building standing on
-    // one: if the highway alone no longer links the exits, the through
-    // traffic may use the town's streets to get across.
+    // The player may set a building down on one of them: if the highway
+    // alone no longer links the exits, the through traffic uses the
+    // town's streets to get across.
     if (!_linksAll(through, exits)) through = {...beyond, ..._roads};
     pedestrians.setRoads(town);
     traffic.setRoads(

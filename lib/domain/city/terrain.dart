@@ -207,8 +207,12 @@ bool isHighwayTile(int col, int row) =>
 
 /// The tiles of the two roads that leave town, clipped to the world-tile
 /// box `[minCol, maxCol] × [minRow, maxRow]` (the rendered window). They
-/// are road inside and outside the fence alike; nothing may be built on
-/// them (`checkPlacement`'s `reserved`), and the auto-roads join them.
+/// are road inside and outside the fence alike, and the auto-roads join
+/// them. Beyond the fence they never move. Inside it the player may set a
+/// building down on one — the auto-roads go round it — provided the
+/// stretches outside can still reach each other through the town
+/// (`checkPlacement`'s `through`); the automatic proposals keep off them
+/// (`reserved`).
 Set<(int, int)> highwayTiles({
   required int minCol,
   required int maxCol,

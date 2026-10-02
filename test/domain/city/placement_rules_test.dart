@@ -288,4 +288,90 @@ void main() {
       expect(spot!.tiles().any(street.contains), isFalse);
     });
   });
+
+  group('through roads (built on by hand)', () {
+    // A 12×12 town at (0,0); the main street is row 5 and runs six tiles
+    // past the fence on both sides, the high street is column 6 running
+    // south off the map from it.
+    final owned = _rect(12, 12);
+    final through = {
+      for (var c = -6; c < 18; c++) (c, 5),
+      for (var r = 6; r < 18; r++) (6, r),
+    };
+
+    PlacementCheck check(
+      GridFootprint candidate, [
+      List<GridFootprint> existing = const [],
+    ]) => checkPlacement(
+      ownedTiles: owned,
+      existing: existing,
+      candidate: candidate,
+      through: through,
+    );
+
+    test('a building may stand on the street inside the fence', () {
+      expect(check(_at(3, 5)).isLegal, isTrue);
+      expect(check(_at(6, 8)).isLegal, isTrue);
+    });
+
+    test('never on the street beyond the fence', () {
+      expect(check(_at(-1, 5)).rejection, PlacementRejection.outOfBounds);
+    });
+
+    test('not on a gate: the road outside would end at a wall', () {
+      expect(check(_at(0, 5)).rejection, PlacementRejection.wouldCutRoadsOut);
+      expect(check(_at(11, 5)).rejection, PlacementRejection.wouldCutRoadsOut);
+      expect(check(_at(6, 11)).rejection, PlacementRejection.wouldCutRoadsOut);
+    });
+
+    test('not where it completes a wall across the town', () {
+      // Column 3 is walled from the north fence to the south one, save
+      // the street tile itself.
+      final wall = [
+        for (var r = 0; r < 12; r++)
+          if (r != 5) _at(3, r),
+      ];
+      expect(
+        check(_at(3, 5), wall).rejection,
+        // The wall's neighbours keep an open side east and west, so the
+        // only objection is the cut.
+        PlacementRejection.wouldCutRoadsOut,
+      );
+      // One gap in the wall and the streets can go round.
+      expect(check(_at(3, 5), wall.sublist(1)).isLegal, isTrue);
+    });
+
+    test('a town already cut is not frozen', () {
+      // A legacy building on the west gate: the roads out are already
+      // unlinked, so a later placement is not blamed for it.
+      expect(check(_at(8, 2), [_at(0, 5)]).isLegal, isTrue);
+      expect(check(_at(4, 5), [_at(0, 5)]).isLegal, isTrue);
+    });
+
+    test('an off-street building may not close the last way round', () {
+      // A building on the street at (3,5) with the wall around it open
+      // only at (3,0): closing that gap cuts the west road off.
+      final wall = [
+        for (var r = 1; r < 12; r++) _at(3, r),
+      ];
+      expect(
+        check(_at(3, 0), wall).rejection,
+        PlacementRejection.wouldCutRoadsOut,
+      );
+    });
+
+    test('resolvePlacement lets a tap on the street land there', () {
+      final spot = resolvePlacement(
+        ownedTiles: owned,
+        existing: const [],
+        width: 1,
+        height: 1,
+        tapCol: 4,
+        tapRow: 5,
+        through: through,
+      );
+      expect(spot, isNotNull);
+      expect((spot!.col, spot.row), (4, 5));
+    });
+  });
 }

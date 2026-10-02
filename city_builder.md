@@ -1924,7 +1924,7 @@ in `lib/game/city/`, mode state in `city_screen.dart`.
 | Item | What shipped | Where |
 |---|---|---|
 | Ground (T2 / T3 / X10) | One meadow inside and out, three shades per band by distance from the town (meadow on owned blocks, scrub on the next ring, forest beyond — the light shade grows with the fence, see §11.7), per-tile hash noise and tufts; a 6-tile countryside margin round the owned land; hash-seeded trees / bushes / flowers / rocks on free tiles — 4 % trees in town, 32 % beyond — depth-sorted with buildings, hidden under footprints, roads and staked land; the ground past the window is painted from a cached picture, so there is no board edge | [terrain.dart](lib/domain/city/terrain.dart), [decor_painter.dart](lib/game/city/decor_painter.dart), `CityBoardComponent._drawGround` |
-| Edge (X11) | Split-rail fence on every owned-tile edge that faces unowned land, opening where a road crosses; the **main street** (world row 0) runs off the map east and west and the **high street** (world col 3) south — fixed roads the auto-roads join, reserved from building | `edgeSegments`, `highwayTiles`, `checkPlacement(reserved:)`, `generateRoads(fixedRoads:)` |
+| Edge (X11) | Split-rail fence on every owned-tile edge that faces unowned land, opening where a road crosses; the **main street** (world row 0) runs off the map east and west and the **high street** (world col 3) south — fixed roads the auto-roads join. Outside the fence they never move; inside it the player may build on them (the auto-roads go round the building) as long as the stretches outside can still reach each other through town. Automatic proposals keep off them | `edgeSegments`, `highwayTiles`, `checkPlacement(through:)` / `(reserved:)`, `generateRoads(fixedRoads:)` |
 | Sky (S4 / D2; T4 + K1 dropped, §11.7) | A whole-scene tint by time of day — a warm multiply wash at dawn and dusk, a dark multiply at night — with **no haze band**. The 8-minute clock: 5 min day (6:30 → 18:30), 3 min night; frozen at 9:30 through chapter one, running on real time through the question screens (§11.8); shown as a digital clock chip top-right. Default framing puts the town's centre at **58 %** of the visible height | [day_clock.dart](lib/domain/city/day_clock.dart), [sky_component.dart](lib/game/city/sky_component.dart), `_ClockChip`, `kTownAnchorY` |
 | Edges on demand (B1 + B4) | Only while placing or moving: unowned land dims, a thin tile grid over owned land, the boundary as a marching dashed line; the red footprint for a refused spot | `CityBoardComponent.placementEdges` |
 | Expand city (E1 + E6) | *Expand city* card at the end of the folder bar; beyond the ring dims, each purchasable block gets stakes + string + a faint wash + a constant-screen-size price pill; tap → amber selection + the buy bar; the camera pulls back to frame the ring and returns on exit. Land taps outside the mode do nothing | `FrontierBlockView`, `_enterExpand` / `_exitExpand` |
@@ -2008,10 +2008,12 @@ where needed.
 **Rough edges** — accepted for now (2026-10-02); listed so they are not
 rediscovered.
 
-- [ ] **Legacy cities with a building on the main street or the high
-  street.** The road is simply missing under it and the through traffic
-  falls back to the side streets. No nudge to move the building, no
-  auto-relocation. New cities cannot get into this state.
+- [x] **A building on the main street or the high street** (allowed by
+  hand since 2026-10-02). The road is missing under it, the auto-roads go
+  round it, and the through traffic falls back to the side streets. A
+  placement that would leave the roads outside the fence with no way to
+  reach each other through town is refused, so the roads outside never
+  move.
 - [ ] **Expand city locks the camera** (no pan, no pinch) while the mode
   is on, because it reuses the focus tween.
 - [ ] **Walkers fade out where they stand at night** instead of walking

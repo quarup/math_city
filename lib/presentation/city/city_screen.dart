@@ -532,7 +532,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
       ownedTiles: ownedTiles,
       existing: existing,
       candidate: over,
-      reserved: _highway(),
+      through: _highway(),
     ).isLegal;
     final spot = fits
         ? over
@@ -1196,13 +1196,14 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
       height: type.footprint.$2,
       tapCol: col,
       tapRow: row,
-      reserved: _highway(),
+      through: _highway(),
     );
   }
 
   /// The main street and the high street across the current window
-  /// (`terrain.dart`): road on both sides of the fence, and off limits to
-  /// building. Empty until the window exists.
+  /// (`terrain.dart`): road on both sides of the fence. The player may
+  /// build on the stretch inside it (the streets go round); the automatic
+  /// proposals keep off. Empty until the window exists.
   Set<(int, int)> _highway() {
     final w = _window;
     if (w == null) return const {};
@@ -1224,9 +1225,9 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     Set<(int, int)> ownedTiles,
   ) {
     final footprints = [..._footprintsOf(placements, sites), ?_pendingSpot];
-    // A city from before the fixed roads existed may have a building on
-    // one: the tile under it is not road, or the junction beside it would
-    // grow an arm into the building.
+    // A building may stand on one of the roads out of town: the tile
+    // under it is not road, or the junction beside it would grow an arm
+    // into the building.
     final covered = <(int, int)>{
       for (final f in footprints) ...f.tiles(),
     };

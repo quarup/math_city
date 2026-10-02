@@ -13,9 +13,11 @@ import 'package:math_city/domain/city/placement_rules.dart';
 ///    into one network by the shortest road path through empty tiles.
 ///
 /// [fixedRoads] are road before anything is built (the main street and the
-/// high street where they cross owned land, `terrain.dart`): the hug rings
-/// are linked to them like any other island, so every building's road
-/// reaches the way out of town.
+/// high street where they cross owned land, `terrain.dart`, less any tile a
+/// building stands on): the hug rings are linked to them like any other
+/// island, so every building's road reaches the way out of town — and a
+/// building set down on one of them gets a road round it that rejoins the
+/// street on either side.
 ///
 /// Returns [fixedRoads] alone when there are no buildings. The road-access
 /// invariant ([checkPlacement]) guarantees every building has an open
@@ -50,19 +52,22 @@ Set<(int, int)> generateRoads({
     }
   }
 
-  // Step 2: connect islands. Each pass links the lowest-ordered component to
-  // its nearest neighbour, paving the grass tiles in between, until one
-  // network remains (or no path exists).
+  // Step 2: connect islands. Each pass links the lowest-ordered component
+  // that can reach another to its nearest neighbour, paving the grass tiles
+  // in between, until one network remains (or nothing more can be linked —
+  // a walled-in pocket of road must not stop the rest from joining up).
   while (true) {
     final components = _components(roads);
     if (components.length <= 1) break;
-    final connector = _shortestConnector(
-      components.first,
-      roads,
-      buildingTiles,
-      inBounds,
-    );
-    if (connector == null || connector.isEmpty) break;
+    Set<(int, int)>? connector;
+    for (final component in components) {
+      final c = _shortestConnector(component, roads, buildingTiles, inBounds);
+      if (c != null && c.isNotEmpty) {
+        connector = c;
+        break;
+      }
+    }
+    if (connector == null) break;
     roads.addAll(connector);
   }
 

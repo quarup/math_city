@@ -147,5 +147,40 @@ void main() {
       // The connector runs north from the hug ring to the street.
       expect(roads.where((t) => t.$2 == 4), isNotEmpty);
     });
+
+    test('a building on the street gets a road round it', () {
+      // The street minus the tile under the building, as the screen
+      // passes it.
+      final roads = generateRoads(
+        ownedTiles: _rect(12, 12),
+        buildings: [_at(6, 5)],
+        fixedRoads: {
+          for (var c = 0; c < 12; c++)
+            if (c != 6) (c, 5),
+        },
+      );
+      expect(roads, isNot(contains((6, 5))));
+      expect(roads, containsAll([(5, 4), (6, 4), (7, 4), (5, 6), (7, 6)]));
+      expect(_isConnected(roads), isTrue);
+      // Nothing is paved beyond the ring: 11 street tiles + 6 ring tiles.
+      expect(roads.length, 17);
+    });
+
+    test('a walled-in pocket of road does not stop the rest linking', () {
+      // (0,0) is a street tile sealed in the corner by two buildings: it
+      // sorts first and can reach nothing, but the two islands beyond
+      // must still be joined.
+      final roads = generateRoads(
+        ownedTiles: _rect(12, 12),
+        buildings: [
+          const GridFootprint(col: 1, row: 0, width: 1, height: 2),
+          _at(0, 1),
+          _at(9, 9),
+        ],
+        fixedRoads: {(0, 0)},
+      );
+      final rest = {...roads}..remove((0, 0));
+      expect(_isConnected(rest), isTrue);
+    });
   });
 }
