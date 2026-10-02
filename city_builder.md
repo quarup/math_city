@@ -1039,6 +1039,13 @@ the draft recommendation, finalised by playtest.
   bottom of the viewport, a dim layer covers the rest, the wheel renders
   above. The PR #112 wheel art is unchanged; its static city backdrop is
   replaced by the live camera.
+- **The PR #112 spin effect carries over to the live city** (restored
+  2026-10-03, after PR #115 had dropped it with the static backdrop): the
+  slight blur behind the wheel (sigma 2.5) smears sideways with wheel
+  speed — easing up over ~⅓ s after a throw and calming as the wheel
+  slows — and pale streaks fly out from the rim (`SpinStreaks`). The blur's feathered
+  lower edge is stepped strips, not a `ShaderMask` — a `BackdropFilter`
+  under a mask blurs nothing.
 - `ResultScreen` becomes the summary card overlay of 8.2 step 5.
 - **Question screens stay full-screen routes** pushed over the overlay
   (default, to confirm): they are the teaching surface, diagrams need the

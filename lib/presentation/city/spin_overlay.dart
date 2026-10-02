@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ui' show ImageFilter;
 
 import 'package:flame/game.dart';
+import 'package:flutter/foundation.dart' show ValueListenable;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_city/domain/city/chapter_one.dart';
@@ -166,24 +167,7 @@ class _SpinOverlayState extends ConsumerState<SpinOverlay> {
     return Stack(
       fit: StackFit.expand,
       children: [
-        ShaderMask(
-          shaderCallback: (rect) => const LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Colors.white, Colors.white, Colors.transparent],
-            stops: [0, 0.82, 1],
-          ).createShader(rect),
-          blendMode: BlendMode.dstIn,
-          child: ClipRect(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
-              child: ColoredBox(
-                color: Colors.black.withValues(alpha: 0.28),
-                child: const SizedBox.expand(),
-              ),
-            ),
-          ),
-        ),
+        _FeatheredSpinBlur(intensity: _game?.spinIntensity),
         if (_game != null)
           Column(
             children: [
@@ -221,3 +205,78 @@ class _SpinOverlayState extends ConsumerState<SpinOverlay> {
 /// a `BuildContext` across the gap.
 Future<void> afterBeat(VoidCallback action) =>
     Future<void>.delayed(const Duration(milliseconds: 250), action);
+
+/// The blur + dim under the wheel: [_restSigma] both ways at rest, plus up
+/// to [_spinSigma] sideways at full speed — while the wheel spins the city
+/// smears in proportion to its speed (the PR #112 spin effect; the streaks
+/// are drawn by the game).
+///
+/// The lower [_featherFraction] fades out. Not with a `ShaderMask`: that
+/// renders its child into an offscreen layer, and a `BackdropFilter` in
+/// there only sees that empty layer, so nothing behind it got blurred at
+/// all. Instead the band is [_featherSteps] strips whose blur steps down to
+/// nothing, and the dim is a gradient.
+class _FeatheredSpinBlur extends StatelessWidget {
+  const _FeatheredSpinBlur({required this.intensity});
+
+  final ValueListenable<double>? intensity;
+
+  static const double _restSigma = 2.5;
+  static const double _spinSigma = 10;
+  static const double _featherFraction = 0.18;
+  static const int _featherSteps = 8;
+  static const double _dim = 0.28;
+
+  @override
+  Widget build(BuildContext context) {
+    final speed = intensity ?? const AlwaysStoppedAnimation<double>(0);
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        ValueListenableBuilder<double>(
+          valueListenable: speed,
+          builder: (context, k, _) => LayoutBuilder(
+            builder: (context, box) {
+              final band = box.maxHeight * _featherFraction;
+              final stripH = band / _featherSteps;
+              Widget blurred(double height, double scale) => SizedBox(
+                height: height,
+                child: ClipRect(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(
+                      sigmaX: (_restSigma + _spinSigma * k) * scale,
+                      sigmaY: _restSigma * scale,
+                      tileMode: TileMode.clamp,
+                    ),
+                    child: const SizedBox.expand(),
+                  ),
+                ),
+              );
+              return Column(
+                children: [
+                  blurred(box.maxHeight - band, 1),
+                  for (var i = 0; i < _featherSteps; i++)
+                    blurred(stripH, 1 - (i + 1) / (_featherSteps + 1)),
+                ],
+              );
+            },
+          ),
+        ),
+        DecoratedBox(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Colors.black.withValues(alpha: _dim),
+                Colors.black.withValues(alpha: _dim),
+                Colors.transparent,
+              ],
+              stops: const [0, 1 - _featherFraction, 1],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}

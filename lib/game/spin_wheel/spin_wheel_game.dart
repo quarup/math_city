@@ -8,6 +8,7 @@ import 'package:math_city/game/spin_wheel/burst_component.dart';
 import 'package:math_city/game/spin_wheel/city_backdrop.dart';
 import 'package:math_city/game/spin_wheel/reveal_pill.dart';
 import 'package:math_city/game/spin_wheel/spin_plan.dart';
+import 'package:math_city/game/spin_wheel/spin_streaks.dart';
 import 'package:math_city/game/spin_wheel/spin_wheel_component.dart';
 
 /// FlameGame that hosts the carnival wheel over the city backdrop.
@@ -57,6 +58,13 @@ class SpinWheelGame extends FlameGame with DragCallbacks {
 
   late SpinWheelComponent _wheel;
   CityBackdrop? _backdrop;
+  late SpinStreaks _streaks;
+
+  /// How hard the wheel is spinning, 0 (at rest) to 1 (a full throw),
+  /// updated every frame. When the wheel floats over the live city, the
+  /// host smears the city sideways by it — the backdrop's blur, done in
+  /// Flutter because the city is not in this canvas.
+  final ValueNotifier<double> spinIntensity = ValueNotifier<double>(0);
 
   /// Position of the last drag event, in canvas coordinates.
   Vector2 _lastDragPos = Vector2.zero();
@@ -95,11 +103,11 @@ class SpinWheelGame extends FlameGame with DragCallbacks {
     ].reduce((a, b) => a < b ? a : b);
     final center = Vector2(size.x / 2, cy);
     if (backdrop != null) {
-      backdrop
-        ..wheelCenter = center
-        ..wheelRadius = radius;
+      backdrop.wheelRadius = radius;
       await add(backdrop);
     }
+    _streaks = SpinStreaks(wheelCenter: center, wheelRadius: radius);
+    await add(_streaks);
 
     _wheel = SpinWheelComponent(
       segments: _segments,
@@ -110,12 +118,36 @@ class SpinWheelGame extends FlameGame with DragCallbacks {
     await add(_wheel);
   }
 
+  /// The spin effect eases toward the wheel's speed rather than jumping
+  /// to it: a strong throw starts the wheel at full speed in one frame, and
+  /// the blur snapping on with it read as a glitch. Rising takes
+  /// [_effectRise] seconds (time constant); falling follows the wheel down
+  /// within [_effectFall], so it calms as the wheel slows.
+  static const double _effectRise = 0.35;
+  static const double _effectFall = 0.12;
+  double _effect = 0;
+
   @override
   void update(double dt) {
     super.update(dt);
-    _backdrop?.intensity = _wheel.willSelect || _wheel.isSpinning
+    final target = _wheel.willSelect || _wheel.isSpinning
         ? _wheel.speedFraction
-        : 0;
+        : 0.0;
+    final tau = target > _effect ? _effectRise : _effectFall;
+    _effect += (target - _effect) * (1 - math.exp(-dt / tau));
+    _setIntensity(_effect < 0.005 ? 0 : _effect);
+  }
+
+  void _setIntensity(double k) {
+    _backdrop?.intensity = k;
+    _streaks.intensity = k;
+    spinIntensity.value = k;
+  }
+
+  @override
+  void onRemove() {
+    spinIntensity.dispose();
+    super.onRemove();
   }
 
   /// Set once the wheel lands on a concept: the pick stands, so the wheel
@@ -125,7 +157,6 @@ class SpinWheelGame extends FlameGame with DragCallbacks {
 
   Future<void> _onWheelLanded(String conceptId) async {
     _landed = true;
-    _backdrop?.intensity = 0;
     final index = _wheel.currentSelectedIndex;
     _wheel.landedIndex = index;
     final seg = _wheel.segments[index];
