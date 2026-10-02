@@ -54,7 +54,7 @@
       <button data-tool="lamp">Lamp<kbd>L</kbd></button>
       <button data-tool="edit">Edit<kbd>E</kbd></button>
     </div>
-    <div class="group" id="kinds" title="What a new region is">
+    <div class="group" id="kinds" title="In Edit: the kind of the selected regions (click to change it). Otherwise: the kind of the next region you draw">
       <button data-kind="w">Window</button>
       <button data-kind="g">Glow (sign)</button>
     </div>
@@ -90,7 +90,7 @@ const HELP = {
   draw: '<b>Draw</b>: click each corner of the shape (3 to 6). Click the first corner again, double-click or press <b>Enter</b> to finish; <b>Esc</b> cancels.',
   wand: '<b>Wand</b>: click inside a window; it grows to the patch of similar colour and becomes a polygon. Raise the tolerance if it stops short, lower it if it leaks.',
   lamp: '<b>Lamp</b>: click a porch lamp, a garden light, any point of light. It shines as a bright core in a round halo, from dusk until dawn. <b>[ ]</b> makes it smaller or bigger.',
-  edit: '<b>Edit</b>: click a region to select it; <b>Shift-click</b> adds or removes one; <b>drag a box</b> to select everything inside (Shift adds to the selection); <b>⌘A</b> selects all. One selected: drag a corner, double-click an edge to add a corner (up to 6), Alt-click a corner to remove it. Any selection: drag inside to move, <b>⌘D</b> duplicates, <b>Delete</b> removes, <b>G</b> window ↔ glow, <b>[ ]</b> shrink / grow, <b>Esc</b> deselects.',
+  edit: '<b>Edit</b>: click a region to select it; <b>Shift-click</b> adds or removes one; <b>drag a box</b> to select everything inside (Shift adds to the selection); <b>⌘A</b> selects all. One selected: drag a corner, double-click an edge to add a corner (up to 6), Alt-click a corner to remove it. Any selection: drag inside to move, <b>⌘D</b> duplicates, <b>Delete</b> removes, <b>G</b> or the Window / Glow buttons change the kind, <b>[ ]</b> shrink / grow, <b>Esc</b> deselects.',
 };
 const $ = (id) => document.getElementById(id);
 const S = { sprites: {}, names: [], cur: null, tool: 'box', kind: 'w', slope: 0.5, night: true, outlines: true, zoom: 0, hover: null, sels: [], drag: null, draft: null, mouse: null, tint: [80, 95, 160], undo: [] };
@@ -167,6 +167,7 @@ function render() {
     for (let i = 0; i < S.draft.length; i += 2) { ctx.beginPath(); ctx.arc(S.draft[i] * z, S.draft[i + 1] * z, (i === 0 ? 6 : 4) * u, 0, 7); ctx.fillStyle = i === 0 ? '#6fd08c' : '#fff'; ctx.fill(); }
   }
   $('title').textContent = S.cur;
+  setActive('kinds', 'kind', shownKind());
   const KIND = { w: 'window', g: 'glow', l: 'lamp' };
   const sel = one() ? ` · selected: ${KIND[one().k]}${one().k === 'l' ? '' : ', ' + one().p.length / 2 + ' corners'}` : S.sels.length ? ` · ${S.sels.length} selected` : '';
   $('status').textContent = `${on.length} ${on.length === 1 ? 'region' : 'regions'}${sel}`;
@@ -220,7 +221,8 @@ function save(needLit) {
   saveTimer = setTimeout(send, 250);
 }
 async function addRegion(p, kind = S.kind) {
-  if (!p || p.length < 6) return;
+  // A sliver (a box dragged along its own slope has no height) could never be seen or selected again.
+  if (!p || p.length < 6 || areaOf(p) < 4) return;
   pushUndo();
   const r = { id: freshId(p), k: kind, p }; cur().regions.push(r); S.sels = [r];
   await save(true); renderList();
@@ -323,7 +325,16 @@ function setActive(groupId, attr, value) { for (const b of $(groupId).children) 
 function setTool(t) { S.tool = t; S.hover = null; S.draft = null; S.drag = null; if (t !== 'edit') S.sels = []; setActive('tools', 'tool', t); $('help').innerHTML = HELP[t] + ' Everything saves as you go.'; render(); }
 function setToolKeepingSelection(t) { const sels = S.sels; setTool(t); S.sels = sels; render(); }
 $('tools').onclick = (e) => { const t = e.target.closest('button')?.dataset.tool; if (t) setTool(t); };
-$('kinds').onclick = (e) => { const k = e.target.closest('button')?.dataset.kind; if (k) { S.kind = k; setActive('kinds', 'kind', k); } };
+// Window / Glow: in Edit with a selection, the buttons show its kind (neither when it is mixed or all
+// lamps) and change it. Otherwise they are the kind of the next region drawn, so picking Glow for
+// the next sign does not turn the window just drawn into one.
+const editingSelection = () => S.tool === 'edit' && S.sels.length > 0;
+function shownKind() { if (!editingSelection()) return S.kind; const rs = S.sels.filter((r) => r.k !== 'l'); return rs.length && rs.every((r) => r.k === rs[0].k) ? rs[0].k : null; }
+async function changeKind(k) {
+  const rs = S.sels.filter((r) => r.k !== 'l' && r.k !== k); if (!rs.length) return;
+  pushUndo(); for (const r of rs) r.k = k; await save(true); render();
+}
+$('kinds').onclick = (e) => { const k = e.target.closest('button')?.dataset.kind; if (!k) return; if (editingSelection()) changeKind(k); else { S.kind = k; render(); } };
 $('slopes').onclick = (e) => { const s = e.target.closest('button')?.dataset.slope; if (s !== undefined) { S.slope = +s; setActive('slopes', 'slope', s); } };
 function step(d) { const list = S.names; const i = list.indexOf(S.cur); open(list[(i + d + list.length) % list.length]); }
 async function clearAll() { if (!cur().regions.length) return; pushUndo(); cur().regions = []; S.sels = []; S.hover = null; await save(true); renderList(); render(); }
@@ -346,7 +357,7 @@ window.addEventListener('keydown', async (e) => {
   if (k === 'escape') { if (S.draft) S.draft = null; else S.sels = []; render(); }
   else if (k === 'enter' && S.draft) await finishDraft();
   else if ((k === 'delete' || k === 'backspace') && S.sels.length) await removeSelected();
-  else if (k === 'g' && S.sels.length) { pushUndo(); const to = S.sels.find((r) => r.k !== 'l')?.k === 'w' ? 'g' : 'w'; for (const r of S.sels) if (r.k !== 'l') r.k = to; await save(true); render(); }
+  else if (k === 'g' && S.sels.length) await changeKind(S.sels.find((r) => r.k !== 'l')?.k === 'w' ? 'g' : 'w');
   else if (k === '[' && S.sels.length) await scaleSelected(1 / 1.15);
   else if (k === ']' && S.sels.length) await scaleSelected(1.15);
   else if (k === 'arrowright') step(1); else if (k === 'arrowleft') step(-1);
@@ -361,7 +372,7 @@ window.addEventListener('resize', render);
 (async () => {
   const state = await (await fetch('/api/state')).json();
   S.sprites = state.sprites; S.names = Object.keys(state.sprites); S.tint = state.tint;
-  setActive('kinds', 'kind', S.kind); setActive('slopes', 'slope', S.slope);
+  setActive('slopes', 'slope', S.slope);
   const wanted = decodeURIComponent(location.hash.slice(1));
   await open(S.names.includes(wanted) ? wanted : S.names.find((n) => !S.sprites[n].reviewed) || S.names[0]);
   setTool(S.tool);

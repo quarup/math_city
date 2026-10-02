@@ -27,10 +27,13 @@ window, never more than six.
 - **Lamp** (L): click a point of light: a porch lamp, a garden light, a
   bulb on a string. No shape to draw; the app paints a bright core in a
   round halo there. `[` and `]` resize it.
-- **Window / Glow**: what a new region is. A *window* is relit warm and
-  keeps a room's hours (dark from midnight to 5:30). A *glow* (a sign, a
-  screen, a ride) keeps its own colour. **Glows and lamps stay on all
-  night**, from dusk until dawn.
+- **Window / Glow**: in Edit with regions selected, the two buttons show
+  their kind and clicking one changes them (as does G); neither is lit
+  when the selection is mixed or all lamps. In the drawing tools, or with
+  nothing selected, they set what the next region you draw will be. A
+  *window* is relit warm and keeps a room's hours (dark from midnight to
+  5:30). A *glow* (a sign, a screen, a ride) keeps its own colour. **Glows
+  and lamps stay on all night**, from dusk until dawn.
 - **Edit** (E): click a region to select it.
   - **Several at once:** Shift-click adds or removes one; drag a box to
     select everything whose centre is inside it (Shift adds to what is
