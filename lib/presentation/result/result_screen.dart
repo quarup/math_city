@@ -59,6 +59,11 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
   /// deactivated, so `dispose` cannot look the service up itself.
   late final TtsService _tts;
 
+  /// The block's next question, drawn up front so the button can say
+  /// "See results" when the concept has run out of new ones (the draw then
+  /// shortens the block).
+  GeneratedQuestion? _next;
+
   /// Joined explanation text iff this result screen has something worth
   /// reading aloud — that is, a wrong-answer explanation that contains
   /// real prose (per [isWordProblem]). Correct answers show no
@@ -75,6 +80,8 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
   void initState() {
     super.initState();
     _tts = ref.read(ttsServiceProvider);
+    final block = widget.block;
+    if (block != null && !block.isOver) _next = drawNextQuestion(ref, block);
     DebugHarness.instance.attachResult(outcome: widget.outcome);
     final text = _speakableText;
     if (text != null) {
@@ -98,7 +105,8 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
       return;
     }
     final block = widget.block!;
-    if (block.isComplete) {
+    final next = _next;
+    if (block.isOver || next == null) {
       finishBlock(context, ref, block);
       return;
     }
@@ -109,6 +117,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
             conceptId: block.conceptId,
             band: block.band,
             block: block,
+            question: next,
           ),
         ),
       ),

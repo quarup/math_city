@@ -43,6 +43,7 @@ class QuestionScreen extends ConsumerStatefulWidget {
     this.block,
     this.debugMode = false,
     this.seed,
+    this.question,
     super.key,
   }) : assert(debugMode || block != null, 'real play always runs in a block');
 
@@ -68,8 +69,22 @@ class QuestionScreen extends ConsumerStatefulWidget {
   /// show the same question twice — once answered right, once wrong.
   final int? seed;
 
+  /// The question to show, already drawn by [drawNextQuestion] (every block
+  /// question after the first). Null: the screen draws its own.
+  final GeneratedQuestion? question;
+
   @override
   ConsumerState<QuestionScreen> createState() => _QuestionScreenState();
+}
+
+/// The block's next question — one it hasn't asked yet — or null after
+/// shortening the block, when the concept has run out of new questions.
+/// Only called mid-block, so the question source has already loaded.
+GeneratedQuestion? drawNextQuestion(WidgetRef ref, QuestionBlock block) {
+  final source = ref.read(questionSourceProvider).requireValue;
+  final q = block.drawUnique(() => source.generate(block.conceptId));
+  if (q == null) block.endEarly();
+  return q;
 }
 
 class _QuestionScreenState extends ConsumerState<QuestionScreen>
@@ -133,7 +148,11 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
     // given seed reproduces the screen exactly.
     final seed = widget.seed;
     final rand = seed == null ? null : Random(seed);
-    final q = source.generate(widget.conceptId, random: rand);
+    GeneratedQuestion generate() =>
+        source.generate(widget.conceptId, random: rand);
+    // A block's first question can't repeat, so drawUnique always finds one.
+    final q =
+        widget.question ?? widget.block?.drawUnique(generate) ?? generate();
     setState(() {
       _question = q;
       _shuffledChoices = List.of(q.allChoices)..shuffle(rand);
@@ -241,7 +260,8 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
 
     await _celebrate(reward, outcome, answer);
     if (!mounted) return;
-    if (block.isOver) {
+    final next = block.isOver ? null : drawNextQuestion(ref, block);
+    if (next == null) {
       finishBlock(context, ref, block);
       return;
     }
@@ -252,6 +272,7 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
             conceptId: widget.conceptId,
             band: widget.band,
             block: block,
+            question: next,
           ),
         ),
       ),

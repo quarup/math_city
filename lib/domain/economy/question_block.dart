@@ -1,6 +1,12 @@
 import 'package:math_city/domain/city/construction_site.dart';
 import 'package:math_city/domain/concepts/dag_engine.dart';
 import 'package:math_city/domain/proficiency/proficiency_band.dart';
+import 'package:math_city/domain/questions/generated_question.dart';
+
+/// How many fresh draws [QuestionBlock.drawUnique] tries before deciding the
+/// concept has run out of new questions. Generous on purpose: a concept with
+/// only six distinct questions should still fill a six-question block.
+const int kUniqueDrawAttempts = 50;
 
 /// One-time coin bonus paid when a concept's proficiency first crossed a
 /// band boundary (see `band_crossings.dart`).
@@ -65,9 +71,10 @@ class QuestionBlock {
   QuestionBlock({
     required this.conceptId,
     required this.band,
-    required this.size,
+    required int size,
     this.usesKeypad = false,
-  }) : assert(size >= 1, 'a block has at least one question');
+  }) : assert(size >= 1, 'a block has at least one question'),
+       _size = size;
 
   final String conceptId;
 
@@ -79,10 +86,17 @@ class QuestionBlock {
   /// questions whose answer can't be typed still fall back to MC.
   final bool usesKeypad;
 
-  /// Total questions in the block.
-  final int size;
+  /// Total questions in the block (shrinks if [endEarly] runs out of
+  /// distinct questions).
+  int get size => _size;
+  int _size;
 
   final List<AnswerReward> rewards = <AnswerReward>[];
+
+  /// Prompt + answer of every question asked so far — two questions that
+  /// read the same and have the same answer are the same question to a kid,
+  /// whatever the diagram's incidental details.
+  final Set<String> _asked = <String>{};
 
   int get answered => rewards.length;
   int get remaining => size - answered;
@@ -137,6 +151,24 @@ class QuestionBlock {
 
   /// The block's payments took the site from short to full — it opened.
   bool get siteOpened => sitePayIns.any((p) => p.opened);
+
+  /// A question this block hasn't asked yet, drawn from [generate] (up to
+  /// [kUniqueDrawAttempts] tries), and marked as asked. Null when every try
+  /// repeated one — the caller then [endEarly]s instead of asking it twice.
+  GeneratedQuestion? drawUnique(GeneratedQuestion Function() generate) {
+    for (var i = 0; i < kUniqueDrawAttempts; i++) {
+      final q = generate();
+      if (_asked.add('${q.prompt}\u0000${q.correctAnswer}')) return q;
+    }
+    return null;
+  }
+
+  /// Shortens the block to the questions already answered, so it reads as
+  /// complete (the recap's "all right" compares against [size]).
+  void endEarly() {
+    assert(answered >= 1, 'the first question is always new');
+    _size = answered;
+  }
 
   void record(AnswerReward reward) {
     assert(!isComplete, 'block already complete');
