@@ -16,6 +16,7 @@ class FractionBarSpec extends DiagramSpec {
     this.subdivideShaded,
     this.subdivideAll,
     this.bars = 1,
+    this.readShading = false,
   }) : assert(denominator > 0, 'denominator must be > 0'),
        assert(numerator >= 0, 'numerator must be >= 0'),
        assert(
@@ -47,6 +48,11 @@ class FractionBarSpec extends DiagramSpec {
   /// "m ÷ 1/n": m wholes each cut into n pieces, so the kid counts
   /// m × n pieces.
   final int bars;
+
+  /// The question asks the kid to read what's shaded ("What fraction is
+  /// shaded?"), so the bar draws high-contrast — near-black on light gray —
+  /// instead of the theme colors.
+  final bool readShading;
 }
 
 /// A single arc-shaped hop on a number line, optionally labelled.

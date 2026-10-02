@@ -30,7 +30,11 @@ GeneratedQuestion partitionHalvesFourths(Random rand) {
   return GeneratedQuestion(
     conceptId: 'partition_halves_fourths',
     prompt: 'What fraction of the bar is shaded?',
-    diagram: FractionBarSpec(numerator: n, denominator: d),
+    diagram: FractionBarSpec(
+      numerator: n,
+      denominator: d,
+      readShading: true,
+    ),
     correctAnswer: correct,
     distractors: fractionDistractors(Fraction(n, d), [
       '$d/$n',
@@ -58,7 +62,11 @@ GeneratedQuestion partitionThirds(Random rand) {
   return GeneratedQuestion(
     conceptId: 'partition_thirds',
     prompt: 'What fraction of the bar is shaded?',
-    diagram: FractionBarSpec(numerator: n, denominator: d),
+    diagram: FractionBarSpec(
+      numerator: n,
+      denominator: d,
+      readShading: true,
+    ),
     correctAnswer: correct,
     distractors: fractionDistractors(Fraction(n, d), [
       '$d/$n',
@@ -84,7 +92,11 @@ GeneratedQuestion unitFractionIntro(Random rand) {
   return GeneratedQuestion(
     conceptId: 'unit_fraction_intro',
     prompt: 'What fraction is shaded?',
-    diagram: FractionBarSpec(numerator: n, denominator: d),
+    diagram: FractionBarSpec(
+      numerator: n,
+      denominator: d,
+      readShading: true,
+    ),
     correctAnswer: correct,
     distractors: fractionDistractors(Fraction(n, d), [
       '$d/$n', // "d out of 1"

@@ -19,9 +19,13 @@ class FractionBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    const shadeColor = kDiagramShadedFill;
+    final shadeColor = spec.readShading
+        ? kDiagramShadedFill
+        : theme.colorScheme.primary;
     final highlightColor = theme.colorScheme.tertiary;
-    const emptyColor = kDiagramEmptyFill;
+    final emptyColor = spec.readShading
+        ? kDiagramEmptyFill
+        : theme.colorScheme.surfaceContainerHighest;
     final borderColor = theme.colorScheme.outline;
 
     // Stacked bars stay compact so several wholes fit on screen.

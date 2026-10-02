@@ -388,7 +388,11 @@ GeneratedQuestion fractionDenom10_100(Random rand) {
     // parenthetical — and the blank is the numerator alone, so a typed
     // bare count grades right (same pattern as equivalent_fractions_compute).
     prompt: 'What fraction is shaded?\n___/$d',
-    diagram: FractionBarSpec(numerator: n, denominator: d),
+    diagram: FractionBarSpec(
+      numerator: n,
+      denominator: d,
+      readShading: true,
+    ),
     correctAnswer: '$n',
     distractors: integerDistractorsWith(
       n,

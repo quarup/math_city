@@ -29,6 +29,7 @@ GeneratedQuestion fractionAOverB(Random rand) {
     diagram: FractionBarSpec(
       numerator: numerator,
       denominator: denominator,
+      readShading: true,
     ),
     correctAnswer: '$numerator',
     distractors: integerDistractorsWith(
