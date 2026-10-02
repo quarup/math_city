@@ -108,7 +108,13 @@ class SpinWheelGame extends FlameGame with DragCallbacks {
         : 0;
   }
 
+  /// Set once the wheel lands on a concept: the pick stands, so the wheel
+  /// ignores every drag from then on. The host builds a fresh game for the
+  /// next spin.
+  bool _landed = false;
+
   Future<void> _onWheelLanded(String conceptId) async {
+    _landed = true;
     _backdrop?.intensity = 0;
     final index = _wheel.currentSelectedIndex;
     _wheel.landedIndex = index;
@@ -134,8 +140,9 @@ class SpinWheelGame extends FlameGame with DragCallbacks {
     );
   }
 
-  /// True when the current spin is locked (selecting) and can't be interrupted.
-  bool get _spinLocked => _wheel.isSpinning && _wheel.willSelect;
+  /// True when the wheel can't be touched: a selecting spin is under way,
+  /// or the wheel has already landed on its concept.
+  bool get _spinLocked => _landed || (_wheel.isSpinning && _wheel.willSelect);
 
   @override
   void onDragStart(DragStartEvent event) {
