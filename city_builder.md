@@ -2051,10 +2051,14 @@ as dark glass. A window is a shape, not a colour.
    lie flat (paving, water, solar panels) are dropped. Dark panes need a
    twin of the same size on the same facade to default on.
 2. **Review** (`tools/night_lights/serve.py`, a local page). Every sprite
-   at night; click toggles a region, a magic wand and a box add what was
-   missed, a region is a *window* or a *glow* (sign, lamp, ride). Saved
-   to `overrides.json` and baked at once. **A person has the last word**;
-   the detector only saves clicks. First pass: 1,635 regions on across
+   at night. **Every region is a simple polygon of at most six corners**
+   (86 % are four-cornered parallelograms), so it can be corrected by
+   hand: select one, drag a corner or the whole shape, double-click an
+   edge to add a corner, Alt-click one to remove it; click out a new
+   polygon, drag a box, or use the magic wand for what was missed; a
+   region is a *window* or a *glow* (sign, lamp, ride); undo. Saved to
+   `overrides.json` and baked at once. **A person has the last word**;
+   the detector only saves clicks. First pass: 1,634 regions on across
    101 sprites, good on homes, apartments and offices, thin on shop
    fronts and the landmarks, which need hand-picked glows.
 3. **Bake** (`build.py`). The lit pixels are the sprite's own, recoloured:
@@ -2089,7 +2093,7 @@ follows its building's closing time. A window takes 0.05 clock hours to
 fade. Lights only show once the scene is dark enough (they ramp in with
 the dusk tint).
 
-### 12.4 Headlights and street lamps: mocked, not built
+### 12.4 Headlights and street lamps: H3 and L3 locked and built (2026-10-02)
 
 [tools/city_mocks/night_lights.html](tools/city_mocks/night_lights.html)
 (`python3 tools/city_mocks/build_sprites.py` first; published copy,
@@ -2117,6 +2121,23 @@ layer as the app.
 | L9 | Pools only, no posts | Nice |
 | L10 | String lights across the street | Decide |
 
+**Locked by the user: H3 and L3.** Both are in the app
+([night_light_painter.dart](lib/game/city/night_light_painter.dart)):
+
+- **H3 headlights.** One soft beam on the road ahead of every car, from
+  its length, width and heading (no per-sprite art): as wide as the bumper
+  at the nose, fanning to about a third of a tile nearly a tile ahead.
+  Two points at the nose when the car faces the viewer, two red points
+  when it drives away. No brake flare and no roof bar (those were H6).
+- **L3 lanterns** ([street_lamps.dart](lib/domain/city/street_lamps.dart)).
+  A caged lantern with a cap on the town's own streets: straight tiles
+  only, every other tile, swapping sides lamp by lamp, at the outer edge
+  of the pavement. Placed by *world* tile, so none moves when the town
+  grows. Each comes on at its own moment between about 17:30 and 18:20
+  with a brief flicker, burns all night and goes out around 6:30. The
+  light is an amber pool on the pavement and a tight halo round the lamp.
+  None on the roads beyond the fence.
+
 What changed from the early mocks: light is drawn **on the ground**, in
 tile space, so a beam foreshortens with the road and a lamp's pool is the
 right ellipse for the projection; it sits in the depth-ordered light
@@ -2125,7 +2146,6 @@ within four tenths of a tile.
 
 ### 12.5 Open
 
-- [ ] **The user's review pass** of the window regions (101 sprites).
-- [ ] **Pick a headlight style** (H2–H6) and **a street lamp** (L2–L10);
-  then build them: vehicle lights from each kind's length, width and
-  heading, lamps as items in the board's depth sort.
+- [ ] **The user's review pass** of the window regions (101 sprites),
+  now with polygon editing.
+- [x] Headlight style and street lamp picked and built (H3, L3).

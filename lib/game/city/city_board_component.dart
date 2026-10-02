@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:flame/components.dart';
@@ -9,6 +10,7 @@ import 'package:math_city/domain/city/land_blocks.dart';
 import 'package:math_city/domain/city/mover_depth.dart';
 import 'package:math_city/domain/city/pedestrian_walk.dart';
 import 'package:math_city/domain/city/road_sprites.dart';
+import 'package:math_city/domain/city/street_lamps.dart';
 import 'package:math_city/domain/city/street_life.dart';
 import 'package:math_city/domain/city/terrain.dart';
 import 'package:math_city/domain/city/traffic.dart';
@@ -16,6 +18,7 @@ import 'package:math_city/domain/city/window_lights.dart';
 import 'package:math_city/game/city/building_lights.dart';
 import 'package:math_city/game/city/decor_painter.dart';
 import 'package:math_city/game/city/iso_grid.dart';
+import 'package:math_city/game/city/night_light_painter.dart';
 import 'package:math_city/game/city/pedestrian_system.dart';
 import 'package:math_city/game/city/traffic_system.dart';
 
@@ -229,6 +232,9 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     _replanStreetLife();
   }
 
+  /// The street lanterns (city_builder.md §12, L3), in window-local tiles.
+  List<LampSpot> _lamps = const [];
+
   /// How far past the window the roads out of town carry the through
   /// traffic before it turns into a fresh car: well past any zoom.
   static const int kHighwayReach = 40;
@@ -314,6 +320,20 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     // alone no longer links the exits, the through traffic uses the
     // town's streets to get across.
     if (!_linksAll(through, exits)) through = {...beyond, ..._roads};
+    // Lanterns stand on the town's own streets, placed by world tile so
+    // none moves when the window grows.
+    _lamps = [
+      for (final spot in lampSpots({
+        for (final (c, r) in town) (c + oc, r + or),
+      }))
+        (
+          col: spot.col - oc,
+          row: spot.row - or,
+          de: spot.de,
+          ds: spot.ds,
+          alongEast: spot.alongEast,
+        ),
+    ];
     pedestrians.setRoads(town);
     traffic.setRoads(
       _roads,
@@ -629,8 +649,34 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
             v.opacity,
             () => v.paint(canvas, spriteScale, vehicleSpriteFor),
           ),
-          null,
+          // Headlights on the road ahead, lamps at the nose or the tail.
+          () => paintVehicleLights(
+            canvas,
+            grid: grid,
+            col: v.col,
+            row: v.row,
+            heading: v.vehicle.heading,
+            kind: vehicleKindById(v.vehicle.kind),
+            level: lightLevel * v.opacity,
+          ),
         ),
+      for (final lamp in _lamps)
+        if (vis == null || _inView(vis, lamp.col, lamp.row))
+          (
+            moverDepth(lamp.col + lamp.de, lamp.row + lamp.ds, footprints),
+            () => paintLampPost(
+              canvas,
+              lampBase(grid, lamp),
+              grid.tileWidth,
+              _lampLevel(lamp),
+            ),
+            () => paintLampLight(
+              canvas,
+              grid: grid,
+              spot: lamp,
+              on: _lampLevel(lamp, flicker: true) * lightLevel,
+            ),
+          ),
     ]..sort((a, b) => a.$1.compareTo(b.$1));
     for (final (_, draw, _) in items) {
       draw();
@@ -1225,6 +1271,15 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
   }
 
   // ---- Night: tint and lights (city_builder.md §12) ----------------------
+
+  /// How lit a lantern is right now: its own dusk-to-dawn hours (keyed on
+  /// its world tile), with a quick flicker while it comes up.
+  double _lampLevel(LampSpot lamp, {bool flicker = false}) {
+    final (oc, or) = origin;
+    final on = lampLightAt(clockHour, lamp.col + oc, lamp.row + or);
+    if (!flicker || on <= 0 || on >= 1) return on;
+    return on * (0.5 + 0.5 * math.sin(time * 40 + lamp.col));
+  }
 
   /// Cuts a shape out of the light layer: whatever stands in front of a
   /// lit window hides it.

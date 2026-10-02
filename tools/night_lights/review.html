@@ -243,7 +243,8 @@ canvas.addEventListener('mousedown', (e) => {
       if (e.altKey) { if (S.sel.p.length > 6) { pushUndo(); S.sel.p.splice(v, 2); if (!S.sel.added) S.sel.edited = true; save(true); render(); } return; }
       pushUndo(); S.drag = { kind: 'vertex', index: v, moved: false }; render(); return;
     }
-    if (inside(S.sel.p, x, y)) { pushUndo(); S.drag = { kind: 'move', x, y, moved: false }; return; }
+    // On an edge counts as on the shape: the first click of the double-click that adds a corner lands there.
+    if (inside(S.sel.p, x, y) || edgeAt(S.sel, x, y)) { pushUndo(); S.drag = { kind: 'move', x, y, moved: false }; return; }
   }
   S.sel = regionAt(x, y); S.hover = null; render();
 });
