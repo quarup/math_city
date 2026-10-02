@@ -2057,7 +2057,9 @@ as dark glass. A window is a shape, not a colour.
 2. **Draw** (`tools/night_lights/serve.py`, a local page). Every sprite
    at night, starting blank. **Every region is a simple polygon of at
    most six corners**: drag a box, click out a polygon, or use the magic
-   wand; a region is a *window*, a *glow* (sign, screen, ride) or a
+   wand; a region is a *window*, a *glow* (a window that stays on all
+   night), a *sign* (keeps the art's own colour: a cross, a screen, a
+   tank) or a
    *lamp* (one click on a point of light). Edit: drag a corner or the
    whole shape, double-click an edge to add a corner, Alt-click one to
    remove it; Shift-click or drag a box to select many and move, delete
@@ -2066,7 +2068,8 @@ as dark glass. A window is a shape, not a colour.
 3. **Bake** (`build.py`). The lit pixels are the sprite's own, recoloured:
    a window keeps its frames and curtains as a brightness pattern in one
    of a few warm shades, pale gold to amber, picked per window (no white
-   or blue ones: they looked wrong beside the rest); a glow keeps its hue; a lamp
+   or blue ones: they looked wrong beside the rest), and a glow is lit the
+   same way; only a sign keeps its hue; a lamp
    bakes nothing (the app draws it). Output:
    `assets/buildings/lights.json` (polygons + kind) and
    `assets/buildings/lit/<sprite>.png`.
@@ -2094,7 +2097,7 @@ identical houses never switch together.
 | Venue | entertainment | about 17:00 | 22:30 – 23:45 | none |
 
 **No window is lit from midnight to 5:30**, whatever the profile.
-**Signs and lamps (glows and lamp points) burn all night** (the user's
+**Glows, signs and lamps burn all night** (the user's
 call, 2026-10-02): on at about 17:00 with the building, each within
 minutes of the others, off between 6:20 and 6:45. A light takes 0.05 clock hours to
 fade. Lights only show once the scene is dark enough (they ramp in with
@@ -2160,7 +2163,10 @@ within four tenths of a tile.
 ### 12.5 Open
 
 - [x] **The user drew the lights** on all 101 sprites in the review page
-  (2026-10-03): 1,138 windows, 81 glows and 122 lamps over 87 sprites; 14
+  (2026-10-03): 1,128 windows, 68 glows, 23 signs and 122 lamps over 87 sprites
+  (the glows were split into warm glows and own-colour signs the same day:
+  the user wanted warm light everywhere except signs such as the clinics'
+  crosses); 14
   sprites are left dark on purpose (market stalls, playgrounds, water
   towers, the pool and the like).
 - [x] Headlight style and street lamp picked and built (H3, L3).

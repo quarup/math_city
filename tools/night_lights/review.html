@@ -55,8 +55,9 @@
       <button data-tool="edit">Edit<kbd>E</kbd></button>
     </div>
     <div class="group" id="kinds" title="In Edit: the kind of the selected regions (click to change it). Otherwise: the kind of the next region you draw">
-      <button data-kind="w">Window</button>
-      <button data-kind="g">Glow (sign)</button>
+      <button data-kind="w" title="Lit warm; keeps a room's hours, dark from midnight to 5:30">Window</button>
+      <button data-kind="g" title="Lit warm like a window, but on all night">Glow</button>
+      <button data-kind="s" title="Keeps the art's own colour (a cross, a neon, a screen, a tank); on all night">Sign</button>
     </div>
     <div class="group" id="slopes" title="Which way the box's top edge runs">
       <button data-slope="0.5">╲</button>
@@ -90,7 +91,7 @@ const HELP = {
   draw: '<b>Draw</b>: click each corner of the shape (3 to 6). Click the first corner again, double-click or press <b>Enter</b> to finish; <b>Esc</b> cancels.',
   wand: '<b>Wand</b>: click inside a window; it grows to the patch of similar colour and becomes a polygon. Raise the tolerance if it stops short, lower it if it leaks.',
   lamp: '<b>Lamp</b>: click a porch lamp, a garden light, any point of light. It shines as a bright core in a round halo, from dusk until dawn. <b>[ ]</b> makes it smaller or bigger.',
-  edit: '<b>Edit</b>: click a region to select it; <b>Shift-click</b> adds or removes one; <b>drag a box</b> to select everything inside (Shift adds to the selection); <b>⌘A</b> selects all. One selected: drag a corner, double-click an edge to add a corner (up to 6), Alt-click a corner to remove it. Any selection: drag inside to move, <b>⌘D</b> duplicates, <b>Delete</b> removes, <b>G</b> or the Window / Glow buttons change the kind, <b>[ ]</b> shrink / grow, <b>Esc</b> deselects.',
+  edit: '<b>Edit</b>: click a region to select it; <b>Shift-click</b> adds or removes one; <b>drag a box</b> to select everything inside (Shift adds to the selection); <b>⌘A</b> selects all. One selected: drag a corner, double-click an edge to add a corner (up to 6), Alt-click a corner to remove it. Any selection: drag inside to move, <b>⌘D</b> duplicates, <b>Delete</b> removes, <b>G</b> or the Window / Glow / Sign buttons change the kind, <b>[ ]</b> shrink / grow, <b>Esc</b> deselects.',
 };
 const $ = (id) => document.getElementById(id);
 const S = { sprites: {}, names: [], cur: null, tool: 'box', kind: 'w', slope: 0.5, night: true, outlines: true, zoom: 0, hover: null, sels: [], drag: null, draft: null, mouse: null, tint: [80, 95, 160], undo: [] };
@@ -151,6 +152,7 @@ function render() {
   }
   if (S.outlines) {
     ctx.lineWidth = u; ctx.strokeStyle = 'rgba(120,200,255,.9)'; pathOf(ctx, on.filter((r) => r.k === 'g'), z); ctx.stroke();
+    ctx.strokeStyle = 'rgba(255,130,210,.95)'; pathOf(ctx, on.filter((r) => r.k === 's'), z); ctx.stroke();
     ctx.strokeStyle = 'rgba(255,214,150,.9)'; pathOf(ctx, on.filter((r) => r.k === 'l'), z); ctx.stroke();
   }
   if (S.hover && !S.sels.includes(S.hover)) { ctx.lineWidth = 1.5 * u; ctx.strokeStyle = 'rgba(255,255,255,.75)'; pathOf(ctx, [S.hover], z); ctx.stroke(); }
@@ -168,7 +170,7 @@ function render() {
   }
   $('title').textContent = S.cur;
   setActive('kinds', 'kind', shownKind());
-  const KIND = { w: 'window', g: 'glow', l: 'lamp' };
+  const KIND = { w: 'window', g: 'glow', s: 'sign', l: 'lamp' };
   const sel = one() ? ` · selected: ${KIND[one().k]}${one().k === 'l' ? '' : ', ' + one().p.length / 2 + ' corners'}` : S.sels.length ? ` · ${S.sels.length} selected` : '';
   $('status').textContent = `${on.length} ${on.length === 1 ? 'region' : 'regions'}${sel}`;
   $('undo').disabled = !S.undo.length;
@@ -325,10 +327,11 @@ function setActive(groupId, attr, value) { for (const b of $(groupId).children) 
 function setTool(t) { S.tool = t; S.hover = null; S.draft = null; S.drag = null; if (t !== 'edit') S.sels = []; setActive('tools', 'tool', t); $('help').innerHTML = HELP[t] + ' Everything saves as you go.'; render(); }
 function setToolKeepingSelection(t) { const sels = S.sels; setTool(t); S.sels = sels; render(); }
 $('tools').onclick = (e) => { const t = e.target.closest('button')?.dataset.tool; if (t) setTool(t); };
-// Window / Glow: in Edit with a selection, the buttons show its kind (neither when it is mixed or all
-// lamps) and change it. Otherwise they are the kind of the next region drawn, so picking Glow for
+// Window / Glow / Sign: in Edit with a selection, the buttons show its kind (none when it is mixed or
+// all lamps) and change it. Otherwise they are the kind of the next region drawn, so picking Glow for
 // the next sign does not turn the window just drawn into one.
 const editingSelection = () => S.tool === 'edit' && S.sels.length > 0;
+const NEXT_KIND = { w: 'g', g: 's', s: 'w' }; // what G steps a selection through
 function shownKind() { if (!editingSelection()) return S.kind; const rs = S.sels.filter((r) => r.k !== 'l'); return rs.length && rs.every((r) => r.k === rs[0].k) ? rs[0].k : null; }
 async function changeKind(k) {
   const rs = S.sels.filter((r) => r.k !== 'l' && r.k !== k); if (!rs.length) return;
@@ -357,7 +360,7 @@ window.addEventListener('keydown', async (e) => {
   if (k === 'escape') { if (S.draft) S.draft = null; else S.sels = []; render(); }
   else if (k === 'enter' && S.draft) await finishDraft();
   else if ((k === 'delete' || k === 'backspace') && S.sels.length) await removeSelected();
-  else if (k === 'g' && S.sels.length) await changeKind(S.sels.find((r) => r.k !== 'l')?.k === 'w' ? 'g' : 'w');
+  else if (k === 'g' && S.sels.length) await changeKind(NEXT_KIND[S.sels.find((r) => r.k !== 'l')?.k] || 'w');
   else if (k === '[' && S.sels.length) await scaleSelected(1 / 1.15);
   else if (k === ']' && S.sels.length) await scaleSelected(1.15);
   else if (k === 'arrowright') step(1); else if (k === 'arrowleft') step(-1);

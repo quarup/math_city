@@ -69,7 +69,7 @@ def sprite_size(name: str) -> tuple[int, int]:
 
 def regions_of(name: str, saved: dict) -> list[dict]:
     """The regions drawn on a sprite: `[{id, k, p}]`, `k` being `w`
-    (window), `g` (glow) or `l` (lamp) and `p` a flat polygon."""
+    (window), `g` (glow), `s` (sign) or `l` (lamp) and `p` a flat polygon."""
     return saved.get(name, {}).get("regions", [])
 
 
@@ -140,9 +140,10 @@ def region_centroid(polygon: list[float]) -> tuple[float, float]:
 def bake_lit(rgba: np.ndarray, regions: list[dict], sprite: str) -> np.ndarray:
     """The lit pixels of [regions] as an RGBA image the size of the sprite.
 
-    A window keeps the sprite's own detail — frames, curtains, panes — as a
-    brightness pattern, recoloured to a warm light; a `glow` region (signs,
-    lamps, screens) keeps its own hue and is pushed bright. Alpha is the
+    A window (`w`) and a glow (`g`: the same light, on all night) keep the
+    sprite's own detail — frames, curtains, panes — as a brightness pattern,
+    recoloured to a warm light. A sign (`s`: a cross, a neon, a screen, a
+    tank of water) keeps its own hue and is pushed bright. Alpha is the
     region's coverage with a one-pixel feather, clipped to the sprite.
     """
     h, w = rgba.shape[:2]
@@ -161,7 +162,7 @@ def bake_lit(rgba: np.ndarray, regions: list[dict], sprite: str) -> np.ndarray:
         values = luma[mask]
         lo, hi = np.percentile(values, 5), np.percentile(values, 95)
         norm = np.clip((luma - lo) / max(hi - lo, 0.08), 0.0, 1.0)
-        if region.get("k") == "g":
+        if region.get("k") == "s":
             # Keep the hue: scale each pixel so its brightest channel is full.
             peak = np.maximum(rgb.max(axis=2, keepdims=True), 1.0)
             colour = rgb / peak * 255.0

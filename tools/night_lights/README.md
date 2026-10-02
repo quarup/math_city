@@ -27,13 +27,21 @@ window, never more than six.
 - **Lamp** (L): click a point of light: a porch lamp, a garden light, a
   bulb on a string. No shape to draw; the app paints a bright core in a
   round halo there. `[` and `]` resize it.
-- **Window / Glow**: in Edit with regions selected, the two buttons show
-  their kind and clicking one changes them (as does G); neither is lit
-  when the selection is mixed or all lamps. In the drawing tools, or with
-  nothing selected, they set what the next region you draw will be. A
-  *window* is relit warm and keeps a room's hours (dark from midnight to
-  5:30). A *glow* (a sign, a screen, a ride) keeps its own colour. **Glows
-  and lamps stay on all night**, from dusk until dawn.
+- **Window / Glow / Sign**: the kind of a shape.
+  - A *window* is lit warm and keeps a room's hours (dark from midnight to
+    5:30).
+  - A *glow* is lit warm exactly like a window but **stays on all night**:
+    a hospital ward, a police station, a shop front that never closes.
+  - A *sign* **keeps the art's own colour** and stays on all night: a red
+    cross, a neon, a screen, a tank of water, a reactor's glow.
+
+  Windows and glows are always warm (pale gold to amber), whatever the
+  glass looks like by day; only a sign shows the sprite's colour. In Edit
+  with regions selected, the three buttons show their kind and clicking one
+  changes them (G steps window → glow → sign); none is lit when the
+  selection is mixed or all lamps. In the drawing tools, or with nothing
+  selected, they set what the next region you draw will be. Lamps stay on
+  all night too.
 - **Edit** (E): click a region to select it.
   - **Several at once:** Shift-click adds or removes one; drag a box to
     select everything whose centre is inside it (Shift adds to what is
@@ -45,7 +53,7 @@ window, never more than six.
   - With any selection: drag inside it to move it; **⌘D / Ctrl-D
     duplicates it** (the copies land a little down and to the right,
     selected, ready to drag: the quick way down a row of like windows);
-    Delete removes it; G flips it between *window* and *glow*; `[` and `]`
+    Delete removes it; G steps it through *window*, *glow* and *sign*; `[` and `]`
     shrink and grow each shape about its centre; Esc deselects. Each of
     these is one undo step, however many regions it touched.
   - Delete, G, `[ ]` and ⌘D also work on the region you have just drawn,
@@ -64,8 +72,8 @@ its nights are simply dark.
 
 | File | What |
 |---|---|
-| `regions.json` | Every region a person drew, per sprite (`id`, kind `w` / `g` / `l`, polygon), and the reviewed flags. The source of truth. |
-| `build.py` | `regions.json` → `assets/buildings/lights.json` and `assets/buildings/lit/`. |
+| `regions.json` | Every region a person drew, per sprite (`id`, kind `w` window / `g` glow / `s` sign / `l` lamp, polygon), and the reviewed flags. The source of truth. |
+| `build.py` | `regions.json` → `assets/buildings/lights.json` and `assets/buildings/lit/`. The app only needs hours, so a sign is written to `lights.json` as a glow; its colour is in the lit image. |
 | `serve.py`, `review.html` | The review page. |
 | `nl_common.py` | Shared: the lit-pixel bake, the wand's polygon fit, the night preview. |
 

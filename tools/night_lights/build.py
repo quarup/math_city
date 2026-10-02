@@ -19,6 +19,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import nl_common as nl  # noqa: E402
 
 
+# Region kind → the kind the app reads from lights.json.
+APP_KIND = {"s": "g"}
+
+
 def build_sprite(name: str, saved: dict, lights: dict) -> int:
     """Bakes one sprite; updates [lights] in place. Returns its region count.
     A sprite with no regions has no entry and no lit image."""
@@ -36,7 +40,9 @@ def build_sprite(name: str, saved: dict, lights: dict) -> int:
     h, w = rgba.shape[:2]
     lights[name] = {
         "s": [w, h],
-        "r": [{"k": r["k"], "p": r["p"]} for r in regions],
+        # The app only needs the hours: a sign burns all night like a glow,
+        # and its colour is already in the lit image.
+        "r": [{"k": APP_KIND.get(r["k"], r["k"]), "p": r["p"]} for r in regions],
     }
     return len(regions)
 
