@@ -1973,7 +1973,12 @@ The user's notes after seeing §11.6 on the device, all implemented:
   per exit. Movers fade in and out over 0.8 s as the plan changes, so
   nobody pops.
 - **Wording**: *buy*, not *stake* (§11.6). A debug-sheet *Town clock*
-  row (+1 h / +3 h / +6 h) jumps the hour for testing.
+  row (+1 h / +3 h / +6 h) jumps the hour for testing. In debug builds
+  **tapping the clock chip** opens a time-of-day control
+  (`clock_debug_sheet.dart`, 2026-10-02): a slider over the whole day in
+  quarter hours, presets (6 am, noon, 6 pm, 8 pm, 11 pm, 2 am) and a
+  pause that outlasts the sheet (the chip shows ⏸). No scrim, so the
+  town follows the slider.
 
 ### 11.8 Remaining work (written 2026-10-01, after PR #129 merged)
 

@@ -34,6 +34,7 @@ import 'package:math_city/game/city/iso_grid.dart';
 import 'package:math_city/game/city/land_window.dart';
 import 'package:math_city/game/city/sky_component.dart';
 import 'package:math_city/presentation/city/celebration_overlay.dart';
+import 'package:math_city/presentation/city/clock_debug_sheet.dart';
 import 'package:math_city/presentation/city/letter_overlay.dart';
 import 'package:math_city/presentation/city/spin_overlay.dart';
 import 'package:math_city/presentation/city/times_overlay.dart';
@@ -207,6 +208,10 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
   /// staked and priced, the camera pulls back to frame it, and a tap on a
   /// block selects it. Off at rest, when nothing marks the frontier.
   bool _expandMode = false;
+
+  /// Debug only: the town clock paused from the clock sheet, to look at
+  /// one moment of the day. This visit only.
+  bool _debugClockPaused = false;
 
   /// E9: the block set a building that did not fit needs, up for staking
   /// in Expand city with the building ghosted inside it. The ghost is
@@ -1315,6 +1320,26 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
       );
   }
 
+  /// Debug only: the time-of-day control behind the clock chip. No scrim,
+  /// so the town shows the hour as the slider moves.
+  void _openClockSheet() {
+    final game = _game;
+    if (game == null) return;
+    unawaited(
+      showModalBottomSheet<void>(
+        context: context,
+        showDragHandle: true,
+        barrierColor: Colors.transparent,
+        builder: (_) => ClockDebugSheet(
+          clock: game.clock,
+          minuteOfDay: game.minuteOfDay,
+          paused: _debugClockPaused,
+          onPausedChanged: (v) => setState(() => _debugClockPaused = v),
+        ),
+      ),
+    );
+  }
+
   void _openDebugSheet() {
     unawaited(
       showModalBottomSheet<void>(
@@ -1892,7 +1917,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     final guideStep = player?.guideStep ?? kChapterOneDone;
     final chapterOne = guideStep < kChapterOneDone;
     // The day stands at 9:30 until the hand-over letter (S4).
-    _game?.clock.frozen = chapterOne;
+    _game?.clock.frozen = chapterOne || _debugClockPaused;
     final hints = player?.guideHints;
     final showPlaceHint = hints != null && !GuideHint.placeHere.seenIn(hints);
     // Chapter one's move step: a hand over Mrs. Pomeroy's house shows the
@@ -2209,7 +2234,11 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                         top: 8,
                         right: 8,
                         child: SafeArea(
-                          child: _ClockChip(minuteOfDay: _game!.minuteOfDay),
+                          child: _ClockChip(
+                            minuteOfDay: _game!.minuteOfDay,
+                            paused: _debugClockPaused,
+                            onTap: kDebugMode ? _openClockSheet : null,
+                          ),
                         ),
                       ),
                     if (moveHintHome != null)
@@ -2704,36 +2733,47 @@ class _CityDebugSheetState extends ConsumerState<_CityDebugSheet> {
 }
 
 /// The town's clock (city_builder.md §11, D2): the ambient hour as a
-/// digital readout, top-right over the city.
+/// digital readout, top-right over the city. In debug builds a tap opens
+/// the time-of-day control ([onTap]), and the chip shows when the clock is
+/// [paused] from there.
 class _ClockChip extends StatelessWidget {
-  const _ClockChip({required this.minuteOfDay});
+  const _ClockChip({
+    required this.minuteOfDay,
+    this.paused = false,
+    this.onTap,
+  });
 
   final ValueListenable<int> minuteOfDay;
+  final bool paused;
+  final VoidCallback? onTap;
 
   @override
-  Widget build(BuildContext context) => ValueListenableBuilder<int>(
-    valueListenable: minuteOfDay,
-    builder: (_, minute, _) => Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: Colors.black.withValues(alpha: 0.32),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Text('🕒', style: TextStyle(fontSize: 15)),
-          const SizedBox(width: 5),
-          Text(
-            formatHour(minute / 60),
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 15,
-              fontFeatures: [FontFeature.tabularFigures()],
+  Widget build(BuildContext context) => GestureDetector(
+    onTap: onTap,
+    child: ValueListenableBuilder<int>(
+      valueListenable: minuteOfDay,
+      builder: (_, minute, _) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: Colors.black.withValues(alpha: 0.32),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(paused ? '⏸' : '🕒', style: const TextStyle(fontSize: 15)),
+            const SizedBox(width: 5),
+            Text(
+              formatHour(minute / 60),
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 15,
+                fontFeatures: [FontFeature.tabularFigures()],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     ),
   );
