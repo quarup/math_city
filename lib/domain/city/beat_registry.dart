@@ -223,8 +223,8 @@ const beatRegistry = <StoryBeat>[
     emoji: '🏥',
     shortLabel: 'a clinic?',
     longText:
-        "Someone tripped chasing the ice-cream truck and there's nowhere to "
-        'get a bandage — could we build a clinic?',
+        'Someone tripped chasing the ice-cream truck and needs to see a '
+        'doctor — could we build a clinic?',
     triggerRule: TriggerRule(
       buildingsPresent: <String>{'single_home'},
       buildingsAbsent: <String>{'clinic'},

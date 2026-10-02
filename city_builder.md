@@ -466,7 +466,7 @@ summary. Trigger shorthand: `+B` present, `−B` absent, `pop≥N`, `age(B)≥N`
 
 | Beat | Tone | Sticker | Text | Trigger |
 |---|---|---|---|---|
-| ✅ `demand_clinic` ✓P7 | civic | 🏥 a clinic? | "Someone tripped chasing the ice-cream truck and there's nowhere to get a bandage — could we build a clinic?" | `+single_home −clinic` |
+| ✅ `demand_clinic` ✓P7 | civic | 🏥 a clinic? | "Someone tripped chasing the ice-cream truck and needs to see a doctor — could we build a clinic?" | `+single_home −clinic` |
 | ✅ `demand_power` ✓P7 | civic | ⚡ power! | "The lights keep flickering and the fridges are getting warm — the town really needs a power plant." | `+single_home −power_plant` |
 | ✅ `demand_water` ⚠ | civic | 🚰 water! | "The taps are sputtering and the gardens are going brown — the town needs a water tower." | `+single_home −water_tower` |
 | ✅ `demand_waste` ✓P7 ⚠ | civic | 🚮 trash! | "The neighborhood is tired of stepping over garbage — we need a Waste Management facility before it gets worse!" | `+single_home pop≥12 −waste_management` |
