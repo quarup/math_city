@@ -2152,7 +2152,8 @@ within four tenths of a tile.
 
 ### 12.5 Open
 
-- [ ] **The user draws the lights** on the 101 sprites in the review
-  page. Until then the town's nights have street lanterns and headlights
-  but no lit windows.
+- [x] **The user drew the lights** on all 101 sprites in the review page
+  (2026-10-03): 1,138 windows, 81 glows and 122 lamps over 87 sprites; 14
+  sprites are left dark on purpose (market stalls, playgrounds, water
+  towers, the pool and the like).
 - [x] Headlight style and street lamp picked and built (H3, L3).
