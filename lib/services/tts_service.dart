@@ -16,6 +16,12 @@ class TtsService {
   final FlutterTts _tts = FlutterTts();
   bool _initialised = false;
 
+  /// Who started the current utterance, if they said. A screen that is
+  /// replaced by the next one is disposed only after the route transition
+  /// finishes — by which time the new screen is already speaking — so a
+  /// screen's "stop on dispose" must not silence someone else's speech.
+  Object? _owner;
+
   Future<void> _ensureInitialised() async {
     if (_initialised) return;
     await _tts.setLanguage('en-US');
@@ -32,9 +38,13 @@ class TtsService {
   /// without Google TTS installed) are swallowed — TTS is an accessibility
   /// affordance, not a correctness boundary, so we'd rather degrade
   /// silently than crash the question flow.
-  Future<void> speak(String text) async {
+  ///
+  /// Pass [owner] (typically the calling `State`) to let that owner later
+  /// stop only its own utterance — see [stop].
+  Future<void> speak(String text, {Object? owner}) async {
     final trimmed = text.trim();
     if (trimmed.isEmpty) return;
+    _owner = owner;
     try {
       await _ensureInitialised();
       await _tts.stop();
@@ -45,8 +55,10 @@ class TtsService {
   }
 
   /// Stops any in-flight utterance. Safe to call before initialisation.
-  Future<void> stop() async {
+  /// With [owner], stops only if [owner] started the current utterance.
+  Future<void> stop({Object? owner}) async {
     if (!_initialised) return;
+    if (owner != null && !identical(owner, _owner)) return;
     try {
       await _tts.stop();
     } on Exception {

@@ -148,14 +148,14 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
     // Auto-read word problems only — bare equations like "3 + 4 = ?"
     // sound robotic when synthesised and don't help readers.
     if (isWordProblem(q.prompt)) {
-      unawaited(speakIfEnabled(ref, q.prompt));
+      unawaited(speakIfEnabled(ref, q.prompt, owner: this));
     }
   }
 
   @override
   void dispose() {
     // Silence anything still in flight when the player leaves the screen.
-    unawaited(_tts.stop());
+    unawaited(_tts.stop(owner: this));
     for (final e in _liveOverlays) {
       e.remove();
     }
@@ -339,7 +339,7 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
       final q = _question;
       if (q == null) return;
       if (!isWordProblem(q.prompt)) return;
-      unawaited(ref.read(ttsServiceProvider).speak(q.prompt));
+      unawaited(ref.read(ttsServiceProvider).speak(q.prompt, owner: this));
     });
 
     final theme = Theme.of(context);

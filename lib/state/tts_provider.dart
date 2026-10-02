@@ -37,9 +37,14 @@ final ttsEnabledProvider = AsyncNotifierProvider<TtsEnabledNotifier, bool>(
 /// Convenience: speaks [text] if (and only if) TTS is currently enabled.
 /// No-op while the preference is still loading (first build of the
 /// notifier) so the very first frame after launch can't trigger an
-/// out-of-order utterance.
-Future<void> speakIfEnabled(WidgetRef ref, String text) async {
+/// out-of-order utterance. [owner] is passed through to
+/// [TtsService.speak].
+Future<void> speakIfEnabled(
+  WidgetRef ref,
+  String text, {
+  Object? owner,
+}) async {
   final enabled = ref.read(ttsEnabledProvider).value ?? false;
   if (!enabled) return;
-  await ref.read(ttsServiceProvider).speak(text);
+  await ref.read(ttsServiceProvider).speak(text, owner: owner);
 }

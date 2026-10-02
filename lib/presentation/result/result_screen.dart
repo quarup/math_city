@@ -81,14 +81,14 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
       // Defer so the provider read happens after the first frame.
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
-        unawaited(speakIfEnabled(ref, text));
+        unawaited(speakIfEnabled(ref, text, owner: this));
       });
     }
   }
 
   @override
   void dispose() {
-    unawaited(_tts.stop());
+    unawaited(_tts.stop(owner: this));
     super.dispose();
   }
 
@@ -137,7 +137,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
       final isOn = next is AsyncData<bool> && next.value;
       if (!wasExplicitlyOff || !isOn) return;
       if (speakable == null) return;
-      unawaited(ref.read(ttsServiceProvider).speak(speakable));
+      unawaited(ref.read(ttsServiceProvider).speak(speakable, owner: this));
     });
 
     return Scaffold(
