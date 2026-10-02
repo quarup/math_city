@@ -387,7 +387,8 @@ class CityActions {
   /// Cancels site [siteId] (city_builder.md §8.11, revised 2026-09-20): the
   /// row goes and every coin paid into it comes back as credit, in full —
   /// a change of mind costs nothing, the coins just move. Returns the
-  /// refund, or null if the site no longer exists.
+  /// refund, or null if the site no longer exists. Beats are re-evaluated,
+  /// so a letter whose building was cancelled comes back.
   Future<int?> cancelSite(int siteId) async {
     final playerId = _ref.read(activePlayerIdProvider);
     if (playerId == null) return null;
@@ -401,6 +402,11 @@ class CityActions {
       ..invalidate(sitesProvider)
       ..invalidate(activePlayerProvider)
       ..invalidate(allPlayersProvider);
+    // The building a letter asked for is no longer coming: re-ask. In
+    // chapter one this re-sends the step's letter at once — without it the
+    // bar was left empty, a dead end (the letter had been read on *Build
+    // it!* and nothing else points at the next step).
+    await fireBeats();
     return refund;
   }
 

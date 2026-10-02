@@ -1974,6 +1974,16 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
               ?.where((p) => p.buildingTypeId == 'single_home')
               .firstOrNull
         : null;
+    // Chapter one, a request put off with *Later*: a hand over its card,
+    // the only way back to the letter (the idle wiggle alone was easy to
+    // miss). Not while the move step's hand is on the house.
+    final showRequestHint =
+        chapterOne &&
+        atRest &&
+        letterBeat == null &&
+        moveHintHome == null &&
+        sites.isEmpty &&
+        (requested.isNotEmpty || eventAsks.isNotEmpty);
     _scheduleNudge(
       wanted:
           atRest &&
@@ -2464,6 +2474,17 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                       bottom: 0,
                       child: SizedBox(key: _barKey, child: bar),
                     ),
+                    // Pointing down at the first card in the bar: with no
+                    // sites in chapter one, that is the request.
+                    if (showRequestHint && _barHeight > 0)
+                      Positioned(
+                        left: _kBarPadding,
+                        width: _kBarCardWidth,
+                        bottom: _barHeight - 6,
+                        child: const Center(
+                          child: CoachHand(mode: CoachHandMode.tap),
+                        ),
+                      ),
                   ],
                 ),
               ),
@@ -2479,6 +2500,10 @@ const kLetterDelay = Duration(milliseconds: 2500);
 /// Height of the catalog bar's content (its cards), used to seed the
 /// game's bottom inset before the bar has been measured.
 const double _kCatalogBarHeight = 120;
+
+/// The bottom bar's side padding and card width: where its first card sits.
+const double _kBarPadding = 12;
+const double _kBarCardWidth = 88;
 
 /// Where the debug FAB sits: clear of the tallest bottom bar.
 const double _kDebugFabBottom = 176;
@@ -3882,7 +3907,7 @@ class _BuildBar extends StatelessWidget {
               : ListView.separated(
                   scrollDirection: Axis.horizontal,
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
+                    horizontal: _kBarPadding,
                     vertical: 12,
                   ),
                   itemCount: cards.length,
@@ -3972,7 +3997,7 @@ class _BarCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 88,
+        width: _kBarCardWidth,
         padding: const EdgeInsets.all(6),
         decoration: BoxDecoration(
           color: color.withValues(alpha: dashed ? 0.10 : 0.25),

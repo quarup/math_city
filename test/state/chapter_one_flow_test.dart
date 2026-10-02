@@ -130,8 +130,9 @@ void main() {
     );
     await actions.fireBeats();
     expect(await _open(db, pid), isEmpty);
+    // Cancelling alone brings it back — no other trigger is needed (the
+    // screen calls nothing else, and the bar was left empty).
     await actions.cancelSite(start.siteId!);
-    await actions.fireBeats();
     expect(await _open(db, pid), {'demand_first_home'});
   });
 
