@@ -4,6 +4,7 @@ import 'dart:ui' as ui;
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'package:math_city/game/spin_wheel/concept_icons.dart';
+import 'package:math_city/game/spin_wheel/spin_plan.dart';
 
 /// One segment of the spin wheel.
 class WheelSegment {
@@ -97,6 +98,7 @@ class SpinWheelComponent extends PositionComponent {
 
   double _rotation = 0;
   double _angularVelocity = 0;
+  double _decay = kSpinDecay;
   bool _isSpinning = false;
   bool _hasReported = false;
   bool _willSelect = false;
@@ -165,11 +167,17 @@ class SpinWheelComponent extends PositionComponent {
   void rotateBy(double delta) => _rotation += delta;
 
   /// Begin free-spin deceleration at [angularVelocity] (radians/second).
-  /// Positive = clockwise; negative = counter-clockwise. When [selects] is
+  /// Positive = clockwise; negative = counter-clockwise. [decay] is the
+  /// friction (see `spin_plan.dart`): lower spins longer. When [selects] is
   /// false the wheel spins freely but does not fire [onLanded] — used for
   /// low-force throws.
-  void startSpinWithVelocity(double angularVelocity, {bool selects = true}) {
+  void startSpinWithVelocity(
+    double angularVelocity, {
+    bool selects = true,
+    double decay = kSpinDecay,
+  }) {
     _isSpinning = true;
+    _decay = decay;
     _hasReported = false;
     _willSelect = selects;
     _landedIndex = null;
@@ -185,9 +193,9 @@ class SpinWheelComponent extends PositionComponent {
     // Frame-rate-independent exponential decay.
     final effectiveDt = dt.clamp(0.0, 0.1);
     _rotation += _angularVelocity * effectiveDt;
-    _angularVelocity *= math.exp(-1.5 * effectiveDt);
+    _angularVelocity *= math.exp(-_decay * effectiveDt);
 
-    if (_angularVelocity.abs() < 0.05 && !_hasReported) {
+    if (_angularVelocity.abs() < kSpinStopVelocity && !_hasReported) {
       _isSpinning = false;
       _angularVelocity = 0;
       _hasReported = true;

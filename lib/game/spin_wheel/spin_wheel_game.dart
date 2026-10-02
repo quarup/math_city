@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:math_city/game/spin_wheel/burst_component.dart';
 import 'package:math_city/game/spin_wheel/city_backdrop.dart';
 import 'package:math_city/game/spin_wheel/reveal_pill.dart';
+import 'package:math_city/game/spin_wheel/spin_plan.dart';
 import 'package:math_city/game/spin_wheel/spin_wheel_component.dart';
 
 /// FlameGame that hosts the carnival wheel over the city backdrop.
@@ -17,8 +19,11 @@ import 'package:math_city/game/spin_wheel/spin_wheel_component.dart';
 /// Drag gesture physics:
 ///   - While dragging, the wheel rotates with the finger.
 ///   - On release, velocity is converted to angular velocity (rad/s).
-///   - Strong throws (≥ [_minSelectVelocity]): wheel spins, the backdrop
-///     blurs and streaks, concept is selected on landing.
+///   - Throws ≥ [_minSelectVelocity]: wheel spins, the backdrop blurs and
+///     streaks, concept is selected on landing. The bar is low so small
+///     hands can make it; a throw too gentle to go round
+///     [kMinSpinTurns] times is lubricated to go further, landing at
+///     random (`planSpin`), so it can't be aimed.
 ///   - Weak throws (< [_minSelectVelocity]): wheel still spins (boosted to
 ///     [_minBoostVelocity]) but no concept is selected — prevents "cheating"
 ///     by nudging the wheel to a desired segment.
@@ -31,7 +36,9 @@ class SpinWheelGame extends FlameGame with DragCallbacks {
     required this.skyBottom,
     this.showBackdrop = true,
     this.onThrow,
-  }) : _segments = segments;
+    math.Random? random,
+  }) : _segments = segments,
+       _random = random ?? math.Random();
 
   final void Function(String conceptId) onConceptSelected;
 
@@ -39,6 +46,7 @@ class SpinWheelGame extends FlameGame with DragCallbacks {
   /// anything sitting over the wheel before the spin effect kicks in.
   final VoidCallback? onThrow;
   final List<WheelSegment> _segments;
+  final math.Random _random;
   final Color skyTop;
   final Color skyBottom;
 
@@ -53,8 +61,10 @@ class SpinWheelGame extends FlameGame with DragCallbacks {
   /// Position of the last drag event, in canvas coordinates.
   Vector2 _lastDragPos = Vector2.zero();
 
-  /// Minimum throw speed (rad/s) required to select a concept.
-  static const double _minSelectVelocity = 10;
+  /// Minimum throw speed (rad/s) required to select a concept: a gentle
+  /// flick. Slower than this is a nudge, which spins but never selects —
+  /// otherwise a child could drag the wheel to a slice and let go.
+  static const double _minSelectVelocity = 4;
 
   /// Floor velocity applied to weak throws so the wheel always spins.
   static const double _minBoostVelocity = 3;
@@ -194,10 +204,12 @@ class SpinWheelGame extends FlameGame with DragCallbacks {
     final absOmega = rawOmega.abs();
 
     if (absOmega >= _minSelectVelocity) {
-      // Strong throw: spin, blur the city, and select a concept on landing.
-      _wheel.startSpinWithVelocity(
+      // A real throw: spin, blur the city, and select a concept on landing.
+      final plan = planSpin(
         rawOmega.clamp(-_maxAngularVelocity, _maxAngularVelocity),
+        extraTurns: _random.nextDouble(),
       );
+      _wheel.startSpinWithVelocity(plan.velocity, decay: plan.decay);
       onThrow?.call();
     } else {
       // Weak throw: spin for feel (with boost) but do not select.
