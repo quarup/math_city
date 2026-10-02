@@ -107,6 +107,42 @@ that exited non-zero as finished.
 - **Asset & content licensing.** Every art/audio/font asset must be CC0, CC-BY, or equivalent. Every math dataset must be MIT / Apache 2.0 / CC-BY / CC0 — **CC-BY-NC and CC-BY-NC-SA are excluded** because app-store distribution carries non-zero commercial-use risk. Track sources in `LICENSES_THIRD_PARTY.md` (to be created in Phase 6 alongside dataset ingestion).
 - **Don't speculate features.** Stay within the current phase scope in `plan.md`. Future phases are aspirational, not a TODO list.
 
+## Preserving player data across updates
+
+Kids now play on real iPads, so **an app update must never wipe a
+player's progress.** The schema history (v9, v11, v14, v16) wiped
+everything on upgrade under a "pre-launch, no real users" rule. That rule
+is over. Expect some disruption when content changes (a retired building
+refunded, the wheel reshuffled); never a reset.
+
+- **Database upgrades are additive.** In `onUpgrade` in
+  [lib/data/database.dart](lib/data/database.dart), add tables and
+  columns; never `DROP TABLE` a table that holds player data. To rename or
+  drop a column, use Drift's table rebuild (`TableMigration`), which
+  copies the rows across. Caches of bundled assets (`dataset_questions`)
+  are the exception: they are rebuilt from the assets anyway.
+- **IDs are permanent.** Saved rows refer to concepts, buildings, beats,
+  maps and events by string ID (`single_home`, `add_within_10`). Change
+  art, prices, footprints, names, prereqs and triggers freely — they are
+  looked up by ID at runtime. Renaming or deleting an ID silently orphans
+  that progress, so don't, unless the same change maps the old ID to its
+  replacement (or retires it with a refund) during the upgrade.
+- **Save facts, recompute the rest.** Store what the player did (answers
+  and proficiency per concept, concepts introduced, buildings placed,
+  coins paid, beats read) and derive everything else — what's unlocked,
+  the wheel, the next beat, population capacity — from the current DAGs
+  and catalogs at runtime. Then reshaping the question DAG or the beat
+  chain needs no migration. A stored *position* in a scripted sequence
+  (`Players.guideStep`) is the exception, and inserting or reordering
+  steps needs an upgrade step (see v20).
+- **Code tolerates unknown IDs.** A saved ID the current code no longer
+  knows is skipped, never force-unwrapped. The city and beats code already
+  does this (`findBuildingTypeById` / `findBeatById` return null).
+
+Known gaps against these rules are tracked in plan.md under Phase 13
+(*Preserving player data*). Check them before changing the schema or
+renaming content.
+
 ## App icon, launch screens and the home-screen tile art
 
 The launcher icon, the Android/iOS launch-screen images and the six tile
