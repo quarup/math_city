@@ -2136,10 +2136,16 @@ layer as the app.
   Two points at the nose when the car faces the viewer, two red points
   when it drives away. No brake flare and no roof bar (those were H6).
 - **L3 lanterns** ([street_lamps.dart](lib/domain/city/street_lamps.dart)).
-  A caged lantern with a cap on the town's own streets: straight tiles
-  only, every other tile, swapping sides lamp by lamp, at the outer edge
-  of the pavement. Placed by *world* tile, so none moves when the town
-  grows. Each comes on at its own moment between about 17:30 and 18:20
+  A caged lantern with a cap on the town's own streets: every other road
+  tile in a checkerboard, at a kerb (a side with no road beyond it: a
+  straight tile's two sides in turn, a T-junction's or a wide road's one,
+  a bend's outer side, a dead end's far end; a crossing has none), never
+  within a tile of another lamp, at the outer edge of the pavement. (The
+  first rule, 2026-10-02, lit straight tiles only; road rings round
+  neighbouring buildings merge into wide roads and tight grids of
+  junctions, so the built-up middle of a town stayed dark. Changed
+  2026-10-03: Sam's town went from 24 lamps on 119 road tiles to 52.)
+  Placed by *world* tile, so none moves when the town grows elsewhere. Each comes on at its own moment between about 17:30 and 18:20
   with a brief flicker, burns all night and goes out around 6:30. The
   light is an amber pool on the pavement and a tight halo round the lamp.
   None on the roads beyond the fence.
