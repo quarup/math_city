@@ -70,6 +70,53 @@ def polygon_mask(shape: tuple[int, int], polygon: list[float]) -> np.ndarray:
     return mask > 0
 
 
+# Every region is a simple polygon: a window is four corners, and nothing
+# needs more than six. That keeps the lit shapes clean and makes them easy
+# to correct by hand in the review page.
+MAX_VERTICES = 6
+
+
+def tidy_polygon(mask: np.ndarray, min_fill: float = 0.6) -> list[float] | None:
+    """A region's pixels as a simple polygon: the parallelogram it nearly
+    fills (vertical sides, top and bottom on a facade slope or level) when
+    there is one — most windows — and otherwise its convex hull cut down to
+    at most [MAX_VERTICES] corners."""
+    ys, xs = np.nonzero(mask)
+    if len(xs) < 6:
+        return None
+    ys = ys.astype(np.float32)
+    xs = xs.astype(np.float32)
+    best = None
+    for slope in (0.5, -0.5, 0.0):
+        yy = ys - slope * xs
+        x0, x1 = np.percentile(xs, 2), np.percentile(xs, 98) + 1
+        y0, y1 = np.percentile(yy, 2), np.percentile(yy, 98) + 1
+        inside = ((xs >= x0) & (xs < x1) & (yy >= y0) & (yy < y1)).sum()
+        fill = inside / max((x1 - x0) * (y1 - y0), 1.0)
+        if best is None or fill > best[0]:
+            best = (fill, slope, (x0, x1, y0, y1))
+    fill, slope, (x0, x1, y0, y1) = best
+    if fill >= min_fill:
+        corners = (
+            x0, y0 + slope * x0,
+            x1, y0 + slope * x1,
+            x1, y1 + slope * x1,
+            x0, y1 + slope * x0,
+        )
+        return [round(float(v), 1) for v in corners]
+    points = np.stack([xs, ys], axis=1).astype(np.int32)
+    hull = cv2.convexHull(points)
+    epsilon = 0.6
+    approx = cv2.approxPolyDP(hull, epsilon, True)
+    while len(approx) > MAX_VERTICES:
+        epsilon *= 1.4
+        approx = cv2.approxPolyDP(hull, epsilon, True)
+    if len(approx) < 3:
+        return None
+    pts = approx.reshape(-1, 2).astype(np.float32) + 0.5
+    return [round(float(v), 1) for v in pts.reshape(-1)]
+
+
 def region_centroid(polygon: list[float]) -> tuple[float, float]:
     pts = np.array(polygon, dtype=np.float32).reshape(-1, 2)
     return float(pts[:, 0].mean()), float(pts[:, 1].mean())

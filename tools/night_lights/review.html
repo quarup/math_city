@@ -18,20 +18,22 @@
   #list .n { color: var(--muted); font-variant-numeric: tabular-nums; }
   #list .ok { color: var(--on); width: 1em; }
   main { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
-  .bar { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--line); background: var(--panel); }
+  .bar { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--line); background: var(--panel); }
   .bar h2 { font-size: 16px; margin: 0 8px 0 0; }
   .group { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
   .group button, .bar > button { background: #1f2a38; color: var(--ink); border: 0; padding: 6px 11px; font: inherit; cursor: pointer; }
   .bar > button { border: 1px solid var(--line); border-radius: 8px; }
   .group button + button { border-left: 1px solid var(--line); }
   .group button.active { background: var(--accent); color: #2a1f00; font-weight: 600; }
+  .group button:disabled { opacity: .4; cursor: default; }
   .bar > button.primary { background: var(--on); color: #06220f; font-weight: 600; border-color: transparent; }
   .bar kbd { font: 11px ui-monospace, Menlo, monospace; opacity: .7; margin-left: 4px; }
   .bar .spacer { flex: 1; }
-  #status { color: var(--muted); font-size: 12.5px; }
+  #status { color: var(--muted); font-size: 12.5px; font-variant-numeric: tabular-nums; }
   #stage { flex: 1; overflow: auto; display: grid; place-items: center; padding: 20px; }
   canvas { image-rendering: pixelated; cursor: crosshair; border-radius: 6px; }
   #help { padding: 8px 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12.5px; background: var(--panel); }
+  #help b { color: var(--ink); }
   input[type=range] { accent-color: var(--accent); }
 </style>
 <aside>
@@ -46,9 +48,11 @@
   <div class="bar">
     <h2 id="title"></h2>
     <div class="group" id="tools">
+      <button data-tool="edit">Edit<kbd>E</kbd></button>
       <button data-tool="toggle">Toggle<kbd>T</kbd></button>
-      <button data-tool="wand">Wand<kbd>W</kbd></button>
+      <button data-tool="draw">Draw<kbd>P</kbd></button>
       <button data-tool="box">Box<kbd>B</kbd></button>
+      <button data-tool="wand">Wand<kbd>W</kbd></button>
     </div>
     <div class="group" id="kinds" title="What a new region is">
       <button data-kind="w">Window</button>
@@ -66,8 +70,9 @@
       <button id="zoom">Zoom<kbd>Z</kbd></button>
     </div>
     <div class="group">
-      <button id="allOn">All on<kbd>A</kbd></button>
-      <button id="allOff">All off<kbd>N</kbd></button>
+      <button id="undo">Undo<kbd>⌘Z</kbd></button>
+      <button id="allOn">All on</button>
+      <button id="allOff">All off</button>
     </div>
     <span class="spacer"></span>
     <span id="status"></span>
@@ -76,16 +81,21 @@
     <button class="primary" id="done">Reviewed, next<kbd>R</kbd></button>
   </div>
   <div id="stage"><canvas id="c"></canvas></div>
-  <div id="help">
-    <b>Toggle</b>: click a region to switch it on or off (red outlines are off). Alt-click changes its kind.
-    <b>Wand</b>: click a window the detector missed. <b>Box</b>: drag a window shape; pick the slope first.
-    A region you added is deleted when you switch it off. Everything saves as you go.
-  </div>
+  <div id="help"></div>
 </main>
 <script>
 'use strict';
+const MAX_VERTICES = 6;
+const HELP = {
+  edit: '<b>Edit</b>: click a region to select it. Drag a corner to move it, drag inside to move the whole shape. Double-click an edge to add a corner (up to 6); Alt-click a corner to remove it. <b>Space</b> switches it on or off, <b>G</b> window ↔ glow, <b>Delete</b> removes it, <b>Esc</b> deselects.',
+  toggle: '<b>Toggle</b>: click a region to switch it on or off. Red outlines are off.',
+  draw: '<b>Draw</b>: click each corner of the window (3 to 6). Click the first corner again, double-click or press <b>Enter</b> to finish; <b>Esc</b> cancels.',
+  box: '<b>Box</b>: drag from one corner of a window to the opposite one. Pick the slope of its top edge first (╲ ╱ ▭).',
+  wand: '<b>Wand</b>: click inside a window the detector missed; it grows to the patch of similar colour and becomes a polygon. Raise the tolerance if it stops short.',
+};
 const $ = (id) => document.getElementById(id);
-const S = { sprites: {}, names: [], cur: null, tool: 'toggle', kind: 'w', slope: 0.5, night: true, outlines: true, zoom: 0, hover: null, drag: null, tint: [80, 95, 160] };
+const S = { sprites: {}, names: [], cur: null, tool: 'edit', kind: 'w', slope: 0.5, night: true, outlines: true, zoom: 0, hover: null, sel: null, drag: null, draft: null, mouse: null, tint: [80, 95, 160], undo: [] };
+const ZOOMS = [0, 2, 3, 4, 6];
 const canvas = $('c'), ctx = canvas.getContext('2d');
 let spriteImg = null, litImg = null, tinted = null, litVersion = 0;
 
@@ -94,7 +104,7 @@ const cur = () => S.sprites[S.cur];
 function zoomFor(sp) { if (S.zoom) return S.zoom; const [w, h] = sp.size; const stage = $('stage'); const fit = Math.min((stage.clientWidth - 40) / w, (stage.clientHeight - 40) / h); return Math.max(1, Math.min(6, Math.floor(fit * 2) / 2)); }
 
 async function open(name) {
-  S.cur = name; S.hover = null; S.drag = null;
+  S.cur = name; S.hover = null; S.sel = null; S.drag = null; S.draft = null; S.undo = [];
   const sp = cur();
   spriteImg = await loadImage(`/sprites/${name}.png`);
   await reloadLit();
@@ -103,6 +113,7 @@ async function open(name) {
   const t = tinted.getContext('2d'); t.drawImage(spriteImg, 0, 0);
   t.globalCompositeOperation = 'multiply'; t.fillStyle = `rgb(${S.tint})`; t.fillRect(0, 0, tinted.width, tinted.height);
   t.globalCompositeOperation = 'destination-in'; t.drawImage(spriteImg, 0, 0);
+  history.replaceState(null, '', '#' + name);
   renderList(); render();
   document.querySelector('#list .current')?.scrollIntoView({ block: 'nearest' });
 }
@@ -112,9 +123,11 @@ function pathOf(c, regions, z) {
   c.beginPath();
   for (const r of regions) { const p = r.p; c.moveTo(p[0] * z, p[1] * z); for (let i = 2; i < p.length; i += 2) c.lineTo(p[i] * z, p[i + 1] * z); c.closePath(); }
 }
+// Canvas pixels per CSS pixel, so handles keep one size on screen.
+const cssScale = () => { const rect = canvas.getBoundingClientRect(); return rect.width ? canvas.width / rect.width : 1; };
 function render() {
   const sp = cur(); if (!sp || !spriteImg) return;
-  const z = zoomFor(sp), [w, h] = sp.size;
+  const z = zoomFor(sp), [w, h] = sp.size, u = cssScale();
   canvas.width = w * z; canvas.height = h * z;
   ctx.imageSmoothingEnabled = false;
   ctx.fillStyle = S.night ? '#121826' : '#5b7a52'; ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -129,16 +142,28 @@ function render() {
     }
   } else {
     ctx.drawImage(spriteImg, 0, 0, w * z, h * z);
-    ctx.strokeStyle = 'rgba(255,210,90,.95)'; ctx.lineWidth = 1.5; pathOf(ctx, on, z); ctx.stroke();
+    ctx.strokeStyle = 'rgba(255,210,90,.95)'; ctx.lineWidth = 1.5 * u; pathOf(ctx, on, z); ctx.stroke();
   }
   if (S.outlines) {
-    ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(255,110,100,.85)'; pathOf(ctx, sp.regions.filter((r) => !r.on), z); ctx.stroke();
+    ctx.lineWidth = u; ctx.strokeStyle = 'rgba(255,110,100,.85)'; pathOf(ctx, sp.regions.filter((r) => !r.on), z); ctx.stroke();
     ctx.strokeStyle = 'rgba(120,200,255,.9)'; pathOf(ctx, on.filter((r) => r.k === 'g'), z); ctx.stroke();
   }
-  if (S.hover) { ctx.lineWidth = 2; ctx.strokeStyle = '#fff'; pathOf(ctx, [S.hover], z); ctx.stroke(); }
-  if (S.drag) { ctx.lineWidth = 1.5; ctx.strokeStyle = '#fff'; ctx.setLineDash([4, 3]); pathOf(ctx, [{ p: boxPolygon(S.drag) }], z); ctx.stroke(); ctx.setLineDash([]); }
+  if (S.hover && S.hover !== S.sel) { ctx.lineWidth = 1.5 * u; ctx.strokeStyle = 'rgba(255,255,255,.75)'; pathOf(ctx, [S.hover], z); ctx.stroke(); }
+  if (S.sel) {
+    ctx.lineWidth = 2 * u; ctx.strokeStyle = '#fff'; pathOf(ctx, [S.sel], z); ctx.stroke();
+    const p = S.sel.p;
+    for (let i = 0; i < p.length; i += 2) { ctx.beginPath(); ctx.arc(p[i] * z, p[i + 1] * z, 5 * u, 0, 7); ctx.fillStyle = S.drag?.kind === 'vertex' && S.drag.index === i ? '#ffd27a' : '#fff'; ctx.fill(); ctx.lineWidth = 1.5 * u; ctx.strokeStyle = '#10161f'; ctx.stroke(); }
+  }
+  if (S.drag?.kind === 'box') { ctx.lineWidth = 1.5 * u; ctx.strokeStyle = '#fff'; ctx.setLineDash([4 * u, 3 * u]); pathOf(ctx, [{ p: boxPolygon(S.drag) }], z); ctx.stroke(); ctx.setLineDash([]); }
+  if (S.draft) {
+    const pts = S.draft.concat(S.mouse && S.draft.length < MAX_VERTICES ? S.mouse : []);
+    ctx.lineWidth = 1.5 * u; ctx.strokeStyle = '#fff'; ctx.setLineDash([4 * u, 3 * u]); ctx.beginPath(); ctx.moveTo(pts[0] * z, pts[1] * z); for (let i = 2; i < pts.length; i += 2) ctx.lineTo(pts[i] * z, pts[i + 1] * z); if (S.draft.length >= 6) ctx.closePath(); ctx.stroke(); ctx.setLineDash([]);
+    for (let i = 0; i < S.draft.length; i += 2) { ctx.beginPath(); ctx.arc(S.draft[i] * z, S.draft[i + 1] * z, (i === 0 ? 6 : 4) * u, 0, 7); ctx.fillStyle = i === 0 ? '#6fd08c' : '#fff'; ctx.fill(); }
+  }
   $('title').textContent = S.cur;
-  $('status').textContent = `${on.length} on · ${sp.regions.length - on.length} off`;
+  const sel = S.sel ? ` · selected: ${S.sel.p.length / 2} corners, ${S.sel.k === 'g' ? 'glow' : 'window'}, ${S.sel.on ? 'on' : 'off'}` : '';
+  $('status').textContent = `${on.length} on · ${sp.regions.length - on.length} off${sel}`;
+  $('undo').disabled = !S.undo.length;
 }
 function renderList() {
   const hide = $('hideDone').checked;
@@ -153,18 +178,31 @@ function renderList() {
   }
 }
 
+// ---- geometry ----
 function inside(p, x, y) { let hit = false; for (let i = 0, j = p.length - 2; i < p.length; j = i, i += 2) { const xi = p[i], yi = p[i + 1], xj = p[j], yj = p[j + 1]; if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) hit = !hit; } return hit; }
 function areaOf(p) { let a = 0; for (let i = 0, j = p.length - 2; i < p.length; j = i, i += 2) a += (p[j] + p[i]) * (p[j + 1] - p[i + 1]); return Math.abs(a / 2); }
 function regionAt(x, y) { let best = null, bestArea = Infinity; for (const r of cur().regions) if (inside(r.p, x, y)) { const a = areaOf(r.p); if (a < bestArea) { best = r; bestArea = a; } } return best; }
 function pos(e) { const rect = canvas.getBoundingClientRect(), z = zoomFor(cur()); return [(e.clientX - rect.left) * (canvas.width / rect.width) / z, (e.clientY - rect.top) * (canvas.height / rect.height) / z]; }
-function boxPolygon(d) { const s = S.slope, dx = d.x1 - d.x0, top1 = d.y0 + s * dx, hh = d.y1 - top1; return [d.x0, d.y0, d.x1, top1, d.x1, top1 + hh, d.x0, d.y0 + hh].map((v) => Math.round(v * 10) / 10); }
+// Sprite pixels per CSS pixel: how far a 6 px click tolerance reaches.
+const reach = (px) => px * cssScale() / zoomFor(cur());
+function vertexAt(r, x, y) { const lim = reach(8); for (let i = 0; i < r.p.length; i += 2) if (Math.hypot(r.p[i] - x, r.p[i + 1] - y) <= lim) return i; return -1; }
+function edgeAt(r, x, y) { // nearest edge within reach: [insert index, point on it]
+  let best = null, bestD = reach(6); const p = r.p;
+  for (let i = 0; i < p.length; i += 2) { const j = (i + 2) % p.length; const ax = p[i], ay = p[i + 1], bx = p[j], by = p[j + 1]; const len2 = (bx - ax) ** 2 + (by - ay) ** 2 || 1; const t = Math.max(0, Math.min(1, ((x - ax) * (bx - ax) + (y - ay) * (by - ay)) / len2)); const qx = ax + t * (bx - ax), qy = ay + t * (by - ay); const d = Math.hypot(x - qx, y - qy); if (d < bestD) { bestD = d; best = [i + 2, qx, qy]; } }
+  return best;
+}
+const snap = (v) => Math.round(v * 2) / 2;
+function boxPolygon(d) { const s = S.slope, dx = d.x1 - d.x0, top1 = d.y0 + s * dx, hh = d.y1 - top1; return [d.x0, d.y0, d.x1, top1, d.x1, top1 + hh, d.x0, d.y0 + hh].map(snap); }
 function centroidId(p) { let x = 0, y = 0; for (let i = 0; i < p.length; i += 2) { x += p[i]; y += p[i + 1]; } const n = p.length / 2; return `a${Math.round(x / n)}_${Math.round(y / n)}`; }
 
+// ---- changes, undo, save ----
+function pushUndo() { S.undo.push(JSON.stringify(cur().regions)); if (S.undo.length > 60) S.undo.shift(); }
+async function undo() { if (!S.undo.length) return; const id = S.sel?.id; cur().regions = JSON.parse(S.undo.pop()); S.sel = cur().regions.find((r) => r.id === id) || null; S.hover = null; S.draft = null; await save(true); renderList(); render(); }
 let saveTimer = null;
 function save(needLit) {
   const sp = cur(), name = S.cur;
-  const body = { set: {}, kind: {}, added: [], reviewed: sp.reviewed };
-  for (const r of sp.regions) { body.set[r.id] = r.on; if (r.k !== 'w') body.kind[r.id] = r.k; if (r.added) body.added.push({ id: r.id, k: r.k, p: r.p }); }
+  const body = { set: {}, kind: {}, shape: {}, added: [], reviewed: sp.reviewed };
+  for (const r of sp.regions) { body.set[r.id] = r.on; if (r.k !== 'w') body.kind[r.id] = r.k; if (r.added) body.added.push({ id: r.id, k: r.k, p: r.p }); else if (r.edited) body.shape[r.id] = r.p; }
   clearTimeout(saveTimer);
   const send = async () => { await fetch(`/api/save/${name}`, { method: 'POST', body: JSON.stringify(body) }); if (needLit && name === S.cur) { await reloadLit(); render(); } };
   if (needLit) return send();
@@ -172,59 +210,107 @@ function save(needLit) {
 }
 async function addRegion(p) {
   if (!p || p.length < 6) return;
+  pushUndo();
   const sp = cur(); let id = centroidId(p); while (sp.regions.some((r) => r.id === id)) id += 'x';
-  sp.regions.push({ id, k: S.kind, on: true, p, added: true });
+  const r = { id, k: S.kind, on: true, p, added: true, edited: false }; sp.regions.push(r); S.sel = r;
   await save(true); renderList();
 }
+async function removeSelected() {
+  const r = S.sel; if (!r) return; pushUndo();
+  if (r.added) cur().regions.splice(cur().regions.indexOf(r), 1); else r.on = false;
+  S.sel = null; S.hover = null; await save(true); renderList(); render();
+}
+async function finishDraft() { const d = S.draft; S.draft = null; if (d && d.length >= 6) await addRegion(d.map(snap)); render(); }
 
+// ---- mouse ----
 canvas.addEventListener('mousemove', (e) => {
-  const [x, y] = pos(e);
-  if (S.drag) { S.drag.x1 = x; S.drag.y1 = y; render(); return; }
-  const h = S.tool === 'toggle' ? regionAt(x, y) : null; if (h !== S.hover) { S.hover = h; render(); }
+  const [x, y] = pos(e); S.mouse = [x, y];
+  const d = S.drag;
+  if (d?.kind === 'box') { d.x1 = x; d.y1 = y; render(); return; }
+  if (d?.kind === 'vertex') { S.sel.p[d.index] = snap(x); S.sel.p[d.index + 1] = snap(y); d.moved = true; render(); return; }
+  if (d?.kind === 'move') { const dx = snap(x - d.x), dy = snap(y - d.y); if (dx || dy) { for (let i = 0; i < S.sel.p.length; i += 2) { S.sel.p[i] += dx; S.sel.p[i + 1] += dy; } d.x += dx; d.y += dy; d.moved = true; render(); } return; }
+  if (S.draft) { render(); return; }
+  const h = (S.tool === 'toggle' || S.tool === 'edit') ? regionAt(x, y) : null; if (h !== S.hover) { S.hover = h; render(); }
 });
-canvas.addEventListener('mouseleave', () => { if (S.hover) { S.hover = null; render(); } });
-canvas.addEventListener('mousedown', (e) => { if (S.tool !== 'box') return; const [x, y] = pos(e); S.drag = { x0: x, y0: y, x1: x, y1: y }; });
+canvas.addEventListener('mouseleave', () => { S.mouse = null; if (S.hover) { S.hover = null; render(); } });
+canvas.addEventListener('mousedown', (e) => {
+  const [x, y] = pos(e);
+  if (S.tool === 'box') { S.drag = { kind: 'box', x0: x, y0: y, x1: x, y1: y }; return; }
+  if (S.tool !== 'edit') return;
+  if (S.sel) {
+    const v = vertexAt(S.sel, x, y);
+    if (v >= 0) {
+      if (e.altKey) { if (S.sel.p.length > 6) { pushUndo(); S.sel.p.splice(v, 2); if (!S.sel.added) S.sel.edited = true; save(true); render(); } return; }
+      pushUndo(); S.drag = { kind: 'vertex', index: v, moved: false }; render(); return;
+    }
+    if (inside(S.sel.p, x, y)) { pushUndo(); S.drag = { kind: 'move', x, y, moved: false }; return; }
+  }
+  S.sel = regionAt(x, y); S.hover = null; render();
+});
 window.addEventListener('mouseup', async () => {
-  if (!S.drag) return; const d = S.drag; S.drag = null;
-  if (Math.abs(d.x1 - d.x0) >= 3 && Math.abs(d.y1 - d.y0) >= 3) await addRegion(boxPolygon(d)); render();
+  const d = S.drag; if (!d) return; S.drag = null;
+  if (d.kind === 'box') { if (Math.abs(d.x1 - d.x0) >= 3 && Math.abs(d.y1 - d.y0) >= 3) await addRegion(boxPolygon(d)); render(); return; }
+  if (!d.moved) { S.undo.pop(); render(); return; }
+  if (!S.sel.added) S.sel.edited = true;
+  await save(true); render();
+});
+canvas.addEventListener('dblclick', async (e) => {
+  const [x, y] = pos(e);
+  if (S.tool === 'draw') { await finishDraft(); return; }
+  if (S.tool !== 'edit' || !S.sel || S.sel.p.length >= MAX_VERTICES * 2) return;
+  const hit = edgeAt(S.sel, x, y); if (!hit) return;
+  pushUndo(); S.sel.p.splice(hit[0], 0, snap(hit[1]), snap(hit[2])); if (!S.sel.added) S.sel.edited = true;
+  await save(true); render();
 });
 canvas.addEventListener('click', async (e) => {
-  const [x, y] = pos(e); const sp = cur();
+  const [x, y] = pos(e);
   if (S.tool === 'toggle') {
-    const r = regionAt(x, y); if (!r) return;
-    if (e.altKey) { r.k = r.k === 'w' ? 'g' : 'w'; S.hover = null; await save(true); render(); return; }
-    if (r.added && r.on) { sp.regions.splice(sp.regions.indexOf(r), 1); S.hover = null; await save(true); } else { r.on = !r.on; save(false); }
-    renderList(); render();
+    const r = regionAt(x, y); if (!r) return; pushUndo(); r.on = !r.on; save(false); renderList(); render();
   } else if (S.tool === 'wand') {
     const res = await fetch(`/api/wand/${S.cur}`, { method: 'POST', body: JSON.stringify({ x: Math.floor(x), y: Math.floor(y), tol: +$('tol').value }) });
     const { p } = await res.json(); if (!p) { $('status').textContent = 'wand: nothing there (try a higher tolerance)'; return; }
     await addRegion(p); render();
+  } else if (S.tool === 'draw') {
+    if (e.detail > 1) return; // the second click of a double-click finishes instead
+    if (!S.draft) { S.draft = [x, y]; S.sel = null; render(); return; }
+    if (S.draft.length >= 6 && Math.hypot(S.draft[0] - x, S.draft[1] - y) <= reach(9)) { await finishDraft(); return; }
+    S.draft.push(x, y); if (S.draft.length >= MAX_VERTICES * 2) { await finishDraft(); return; }
+    render();
   }
 });
 
+// ---- toolbar and keys ----
 function setActive(groupId, attr, value) { for (const b of $(groupId).children) b.classList.toggle('active', b.dataset[attr] === String(value)); }
-function setTool(t) { S.tool = t; S.hover = null; setActive('tools', 'tool', t); render(); }
+function setTool(t) { S.tool = t; S.hover = null; S.draft = null; S.drag = null; if (t !== 'edit') S.sel = null; setActive('tools', 'tool', t); $('help').innerHTML = HELP[t] + ' Everything saves as you go.'; render(); }
 $('tools').onclick = (e) => { const t = e.target.closest('button')?.dataset.tool; if (t) setTool(t); };
 $('kinds').onclick = (e) => { const k = e.target.closest('button')?.dataset.kind; if (k) { S.kind = k; setActive('kinds', 'kind', k); } };
 $('slopes').onclick = (e) => { const s = e.target.closest('button')?.dataset.slope; if (s !== undefined) { S.slope = +s; setActive('slopes', 'slope', s); } };
 function step(d) { const list = S.names; const i = list.indexOf(S.cur); open(list[(i + d + list.length) % list.length]); }
-function setAll(on) { const sp = cur(); sp.regions = sp.regions.filter((r) => on || !r.added); for (const r of sp.regions) r.on = on; save(true); renderList(); render(); }
+function setAll(on) { pushUndo(); for (const r of cur().regions) r.on = on; S.sel = null; save(true); renderList(); render(); }
 $('day').onclick = () => { S.night = !S.night; render(); };
 $('outlines').onclick = () => { S.outlines = !S.outlines; render(); };
-$('zoom').onclick = () => { S.zoom = (S.zoom + 1) % 7; render(); };
+$('zoom').onclick = () => { S.zoom = ZOOMS[(ZOOMS.indexOf(S.zoom) + 1) % ZOOMS.length]; render(); };
+$('undo').onclick = undo;
 $('allOn').onclick = () => setAll(true);
 $('allOff').onclick = () => setAll(false);
 $('prev').onclick = () => step(-1);
 $('next').onclick = () => step(1);
-$('done').onclick = async () => { cur().reviewed = true; await save(true); const rest = S.names.filter((n) => !S.sprites[n].reviewed); if (rest.length) { const i = S.names.indexOf(S.cur); open(S.names.slice(i + 1).concat(S.names.slice(0, i)).find((n) => !S.sprites[n].reviewed)); } else { renderList(); render(); } };
+$('done').onclick = async () => { cur().reviewed = true; await save(true); const i = S.names.indexOf(S.cur); const next = S.names.slice(i + 1).concat(S.names.slice(0, i)).find((n) => !S.sprites[n].reviewed); if (next) open(next); else { renderList(); render(); } };
 $('hideDone').onchange = renderList;
-window.addEventListener('keydown', (e) => {
-  if (e.target.tagName === 'INPUT' || e.metaKey || e.ctrlKey) return;
+window.addEventListener('keydown', async (e) => {
+  if (e.target.tagName === 'INPUT') return;
   const k = e.key.toLowerCase();
-  if (k === 'arrowright') step(1); else if (k === 'arrowleft') step(-1);
-  else if (k === 't') setTool('toggle'); else if (k === 'w') setTool('wand'); else if (k === 'b') setTool('box');
+  if ((e.metaKey || e.ctrlKey) && k === 'z') { e.preventDefault(); undo(); return; }
+  if (e.metaKey || e.ctrlKey) return;
+  if (k === 'escape') { if (S.draft) S.draft = null; else S.sel = null; render(); }
+  else if (k === 'enter' && S.draft) await finishDraft();
+  else if ((k === 'delete' || k === 'backspace') && S.sel) await removeSelected();
+  else if (k === ' ' && S.sel) { pushUndo(); S.sel.on = !S.sel.on; save(false); renderList(); render(); }
+  else if (k === 'g' && S.sel) { pushUndo(); S.sel.k = S.sel.k === 'w' ? 'g' : 'w'; await save(true); render(); }
+  else if (k === 'arrowright') step(1); else if (k === 'arrowleft') step(-1);
+  else if (k === 'e') setTool('edit'); else if (k === 't') setTool('toggle'); else if (k === 'p') setTool('draw'); else if (k === 'b') setTool('box'); else if (k === 'w') setTool('wand');
   else if (k === 'd') $('day').click(); else if (k === 'o') $('outlines').click(); else if (k === 'z') $('zoom').click();
-  else if (k === 'a') setAll(true); else if (k === 'n') setAll(false); else if (k === 'r') $('done').click();
+  else if (k === 'r') $('done').click();
   else return;
   e.preventDefault();
 });
@@ -233,8 +319,9 @@ window.addEventListener('resize', render);
 (async () => {
   const state = await (await fetch('/api/state')).json();
   S.sprites = state.sprites; S.names = Object.keys(state.sprites); S.tint = state.tint;
-  setActive('tools', 'tool', S.tool); setActive('kinds', 'kind', S.kind); setActive('slopes', 'slope', S.slope);
+  setActive('kinds', 'kind', S.kind); setActive('slopes', 'slope', S.slope);
   const wanted = decodeURIComponent(location.hash.slice(1));
-  open(S.names.includes(wanted) ? wanted : S.names.find((n) => !S.sprites[n].reviewed) || S.names[0]);
+  await open(S.names.includes(wanted) ? wanted : S.names.find((n) => !S.sprites[n].reviewed) || S.names[0]);
+  setTool('edit');
 })();
 </script>

@@ -8,7 +8,8 @@ one of the projection's two facade slopes (±½). Roofs, stone and paving
 share the colours but not the shape, which is what the old "warm and bright
 pixel" rule got wrong.
 
-Each candidate gets a polygon, a class and a default on / off. The review
+Each candidate gets a simple polygon (four corners for a plain window,
+never more than six), a class and a default on / off. The review
 page shows all of them; a person has the last word (overrides.json).
 
     tools/sprite_pipeline/.venv/bin/python tools/night_lights/detect.py
@@ -128,22 +129,6 @@ def trimmed_parallelogram(ys, xs, slope) -> list[float]:
     return parallelogram((x0, x1, y0, y1), slope)
 
 
-def contour_polygon(mask: np.ndarray) -> list[float] | None:
-    contours, _ = cv2.findContours(
-        mask.astype(np.uint8), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
-    )
-    if not contours:
-        return None
-    contour = max(contours, key=cv2.contourArea)
-    approx = cv2.approxPolyDP(contour, 0.7, True).reshape(-1, 2)
-    if len(approx) < 3:
-        return None
-    # Pixel centres → pixel edges: grow by half a pixel about the centroid.
-    centre = approx.mean(axis=0)
-    grown = centre + (approx - centre) * (1 + 0.6 / max(np.abs(approx - centre).max(), 1))
-    return [round(float(v), 1) for v in grown.reshape(-1)]
-
-
 def parallelogram(box, slope) -> list[float]:
     x0, x1, y0, y1 = box
     return [
@@ -199,13 +184,7 @@ def detect(name: str) -> dict:
                     )
                     if pfill < 0.45:
                         continue
-                    poly = (
-                        trimmed_parallelogram(
-                            pys.astype(np.float32), pxs.astype(np.float32), pslope
-                        )
-                        if pfill >= 0.62
-                        else contour_polygon(pane)
-                    )
+                    poly = nl.tidy_polygon(pane)
                     if poly is None:
                         continue
                     found.append(
@@ -230,12 +209,7 @@ def detect(name: str) -> dict:
                     continue
                 if lies_flat(ys.astype(np.float32), xs.astype(np.float32), slope):
                     continue
-            if kind == "dark" and fill >= 0.62:
-                poly = trimmed_parallelogram(
-                    ys.astype(np.float32), xs.astype(np.float32), slope
-                )
-            else:
-                poly = contour_polygon(labels == i)
+            poly = nl.tidy_polygon(labels == i)
             if poly is None:
                 continue
             found.append(

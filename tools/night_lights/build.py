@@ -27,6 +27,7 @@ def all_regions(name: str, candidates: dict, overrides: dict) -> list[dict]:
     over = overrides.get(name, {})
     switch = over.get("set", {})
     kinds = over.get("kind", {})
+    shapes = over.get("shape", {})
     out = []
     for region in entry["regions"]:
         out.append(
@@ -34,7 +35,9 @@ def all_regions(name: str, candidates: dict, overrides: dict) -> list[dict]:
                 "id": region["id"],
                 "k": kinds.get(region["id"], region["k"]),
                 "on": bool(switch.get(region["id"], region["on"])),
-                "p": region["p"],
+                # A polygon someone reshaped by hand wins over the detector's.
+                "p": shapes.get(region["id"], region["p"]),
+                "edited": region["id"] in shapes,
                 "added": False,
             }
         )
@@ -45,6 +48,7 @@ def all_regions(name: str, candidates: dict, overrides: dict) -> list[dict]:
                 "k": kinds.get(region["id"], region.get("k", "w")),
                 "on": bool(switch.get(region["id"], True)),
                 "p": region["p"],
+                "edited": False,
                 "added": True,
             }
         )

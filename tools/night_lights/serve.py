@@ -52,16 +52,7 @@ def wand(name: str, x: int, y: int, tolerance: int) -> list[float] | None:
     patch = cv2.morphologyEx(
         patch.astype(np.uint8), cv2.MORPH_CLOSE, np.ones((3, 3), np.uint8)
     )
-    contours, _ = cv2.findContours(patch, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    if not contours:
-        return None
-    contour = max(contours, key=cv2.contourArea)
-    approx = cv2.approxPolyDP(contour, 0.6, True).reshape(-1, 2).astype(np.float32)
-    if len(approx) < 3:
-        return None
-    centre = approx.mean(axis=0)
-    grown = centre + (approx - centre) * (1 + 0.6 / max(np.abs(approx - centre).max(), 1))
-    return [round(float(v), 1) for v in grown.reshape(-1)]
+    return nl.tidy_polygon(patch > 0)
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -129,6 +120,7 @@ class Handler(BaseHTTPRequestHandler):
             overrides[name] = {
                 "set": payload.get("set", {}),
                 "kind": payload.get("kind", {}),
+                "shape": payload.get("shape", {}),
                 "added": payload.get("added", []),
                 "reviewed": bool(payload.get("reviewed")),
             }
