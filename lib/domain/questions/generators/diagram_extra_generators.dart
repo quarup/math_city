@@ -83,7 +83,7 @@ GeneratedQuestion unitFractionIntro(Random rand) {
   final correct = '$n/$d';
   return GeneratedQuestion(
     conceptId: 'unit_fraction_intro',
-    prompt: 'What unit fraction is shaded?',
+    prompt: 'What fraction is shaded?',
     diagram: FractionBarSpec(numerator: n, denominator: d),
     correctAnswer: correct,
     distractors: fractionDistractors(Fraction(n, d), [
@@ -94,9 +94,9 @@ GeneratedQuestion unitFractionIntro(Random rand) {
     ], rand),
     explanation: ['1 out of $d equal parts → 1/$d.'],
     answerFormat: AnswerFormat.fraction,
-    // Graded by value (see partition_halves_fourths). The prompt asks for
-    // the unit fraction, but a kid who types an equal non-unit form (2/8
-    // for 1/4) has still read the bar correctly — accept and nudge.
+    // Graded by value (see partition_halves_fourths). The answer is the
+    // unit fraction, but a kid who types an equal non-unit form (2/8 for
+    // 1/4) has still read the bar correctly — accept and nudge.
   );
 }
 
