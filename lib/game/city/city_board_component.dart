@@ -1288,6 +1288,7 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3);
   final _litPaint = Paint()..filterQuality = FilterQuality.low;
   static const _windowGlow = Color(0xFFFFD890);
+  static const _lampGlow = Color(0xFFFFD696);
 
   /// The time of day over the whole scene: a warm wash at dawn and dusk,
   /// a dark multiply at night. Drawn over the town and under its lights
@@ -1332,6 +1333,7 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     if (cached != null && cached.minute == minute) return cached;
     Path? full;
     final fading = <(Path, double)>[];
+    final lamps = <(Offset, double, double)>[];
     for (var i = 0; i < lights.regions.length; i++) {
       final region = lights.regions[i];
       final level = windowLightAt(
@@ -1344,13 +1346,15 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
         ),
       );
       if (level <= 0.01) continue;
-      if (level >= 0.99) {
+      if (region.kind == LightKind.lamp) {
+        lamps.add((region.centre, region.radius, level));
+      } else if (level >= 0.99) {
         (full ??= Path()).addPath(region.path, Offset.zero);
       } else {
         fading.add((region.path, level));
       }
     }
-    return _lightStates[key] = _LightState(minute, full, fading);
+    return _lightStates[key] = _LightState(minute, full, fading, lamps);
   }
 
   /// A building in the light pass: it hides the lights behind it, then
@@ -1364,7 +1368,9 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     final lit = lightsFor(path);
     if (lit == null) return;
     final state = _lightStateFor(b, lit.lights);
-    if (state.full == null && state.fading.isEmpty) return;
+    if (state.full == null && state.fading.isEmpty && state.lamps.isEmpty) {
+      return;
+    }
     // Sprite pixels → board space, anchored like `_drawSprite`.
     final (w, hTiles) = b.footprint;
     final (mcx, mcy) = grid.centerOf(b.col + w - 1, b.row + hTiles - 1);
@@ -1393,6 +1399,32 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     if (state.full case final full?) shine(full, level);
     for (final (region, alpha) in state.fading) {
       shine(region, alpha * level);
+    }
+    // Point lamps: a bright core in a round halo, like a lantern's head.
+    for (final (centre, radius, alpha) in state.lamps) {
+      final a = alpha * level;
+      final halo = radius * 4.5;
+      canvas
+        ..drawCircle(
+          centre,
+          halo,
+          Paint()
+            ..shader = ui.Gradient.radial(
+              centre,
+              halo,
+              [
+                _lampGlow.withValues(alpha: 0.95 * a),
+                _lampGlow.withValues(alpha: 0.33 * a),
+                _lampGlow.withValues(alpha: 0),
+              ],
+              const [0, 0.35, 1],
+            ),
+        )
+        ..drawCircle(
+          centre,
+          radius * 0.6,
+          Paint()..color = const Color(0xFFFFFCEC).withValues(alpha: a),
+        );
     }
     canvas.restore();
   }
@@ -1713,7 +1745,7 @@ Path dashedPath(
 
 /// A building's lit windows at one game minute.
 class _LightState {
-  const _LightState(this.minute, this.full, this.fading);
+  const _LightState(this.minute, this.full, this.fading, this.lamps);
 
   final int minute;
 
@@ -1722,4 +1754,8 @@ class _LightState {
 
   /// Regions coming on or going off, each with its level `0..1`.
   final List<(Path, double)> fading;
+
+  /// Point lamps that are on: centre and core radius in sprite pixels, and
+  /// level `0..1`.
+  final List<(Offset, double, double)> lamps;
 }

@@ -1,12 +1,13 @@
 /// When each window is lit (city_builder.md §12, D4).
 ///
-/// Lights come on as it gets dark and are all out again before midnight —
+/// Windows come on as it gets dark and are all out again before midnight —
 /// nobody's window glows at 2 am — and a few come back for the early
-/// risers before dawn. Every window keeps its own times, drawn from a hash
-/// of the building and the window, so a facade fills in one window at a
-/// time and two houses of the same kind never switch together; a shop's
-/// windows keep close to each other, because a shop opens and closes as
-/// one.
+/// risers before dawn. Signs and lamps are different: they burn from dusk
+/// until dawn, like the street lanterns. Every window keeps its own times,
+/// drawn from a hash of the building and the window, so a facade fills in
+/// one window at a time and two houses of the same kind never switch
+/// together; a shop's windows keep close to each other, because a shop
+/// opens and closes as one.
 ///
 /// Pure Dart: no Flutter / Flame / Drift imports.
 library;
@@ -69,7 +70,8 @@ LightProfile lightProfileFor({
   };
 }
 
-/// No window is lit between these hours, whatever its profile.
+/// No *window* is lit between these hours, whatever its profile. (Signs
+/// and lamps stay on through them.)
 const double kLightsOutHour = 0;
 const double kFirstLightHour = 5.5;
 
@@ -95,7 +97,16 @@ class WindowHours {
     required this.eveningOff,
     this.morningOn,
     this.morningOff,
-  });
+  }) : allNight = false;
+
+  /// A sign or a lamp: on from [on] in the evening straight through the
+  /// night until [off] the next morning.
+  const WindowHours.allNight({required double on, required double off})
+    : eveningOn = on,
+      eveningOff = 24,
+      morningOn = 0,
+      morningOff = off,
+      allNight = true;
 
   /// A window that never lights (an empty flat, a storeroom).
   static const never = WindowHours(eveningOn: 0, eveningOff: 0);
@@ -105,12 +116,15 @@ class WindowHours {
   final double? morningOn;
   final double? morningOff;
 
+  /// Lit from dusk until dawn rather than in an evening and a morning spell.
+  final bool allNight;
+
   bool get isNever => eveningOff <= eveningOn && morningOn == null;
 }
 
 /// The hours of window [index] of the building with [seed] (a stable id of
 /// the placed building). [glow] is a sign or a lamp rather than a window:
-/// it follows the building's closing time, not a room's.
+/// it comes on with the building at dusk and stays on until dawn.
 WindowHours windowHoursFor({
   required int seed,
   required int index,
@@ -121,16 +135,11 @@ WindowHours windowHoursFor({
   // Draws shared by the whole building (index −1).
   double b(int salt) => _draw(seed, -1, salt);
   if (glow) {
-    final close = switch (profile) {
-      LightProfile.home => 22.0 + b(1) * 1.0,
-      LightProfile.shop => 21.0 + b(1) * 1.5,
-      LightProfile.office => 20.5 + b(1) * 1.5,
-      LightProfile.civic => 23.0 + b(1) * 0.75,
-      LightProfile.venue => 22.75 + b(1) * 1.0,
-    };
-    return WindowHours(
-      eveningOn: 16.9 + b(2) * 0.3 + r(3) * 0.1,
-      eveningOff: close,
+    // The whole building's signs and lamps switch on within minutes of
+    // each other and go out one by one as it gets light.
+    return WindowHours.allNight(
+      on: 16.9 + b(2) * 0.3 + r(3) * 0.1,
+      off: 6.3 + r(4) * 0.4,
     );
   }
   switch (profile) {
@@ -189,6 +198,13 @@ double _spell(double hour, double on, double off) {
 /// while it fades.
 double windowLightAt(double hour, WindowHours hours) {
   final h = ((hour % 24) + 24) % 24;
+  if (hours.allNight) {
+    double ramp(double v) => v < 0 ? 0 : (v > 1 ? 1 : v);
+    if (h >= hours.eveningOn) {
+      return ramp((h - hours.eveningOn) / kWindowFadeHours);
+    }
+    return ramp((hours.morningOff! - h) / kWindowFadeHours);
+  }
   if (h < kFirstLightHour) return 0;
   final evening = _spell(h, hours.eveningOn, hours.eveningOff);
   final on = hours.morningOn;

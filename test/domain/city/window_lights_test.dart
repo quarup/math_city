@@ -45,25 +45,77 @@ void main() {
       for (final profile in LightProfile.values) {
         for (var seed = 1; seed <= 60; seed++) {
           for (var i = 0; i < 30; i++) {
-            for (final glow in [false, true]) {
-              final hours = windowHoursFor(
-                seed: seed,
-                index: i,
-                profile: profile,
-                glow: glow,
+            final hours = windowHoursFor(
+              seed: seed,
+              index: i,
+              profile: profile,
+            );
+            for (final h in [0.0, 0.5, 2.0, 3.75, 5.0, 5.49]) {
+              expect(
+                windowLightAt(h, hours),
+                0,
+                reason: '$profile seed $seed window $i at $h',
               );
-              for (final h in [0.0, 0.5, 2.0, 3.75, 5.0, 5.49]) {
-                expect(
-                  windowLightAt(h, hours),
-                  0,
-                  reason: '$profile seed $seed window $i at $h',
-                );
-              }
-              expect(hours.eveningOff, lessThan(24));
+            }
+            expect(hours.eveningOff, lessThan(24));
+          }
+        }
+      }
+    });
+  });
+
+  group('signs and lamps burn from dusk until dawn', () {
+    WindowHours glow(int seed, int i, LightProfile profile) =>
+        windowHoursFor(seed: seed, index: i, profile: profile, glow: true);
+
+    test('lit all through the night, whatever the building', () {
+      for (final profile in LightProfile.values) {
+        for (var seed = 1; seed <= 20; seed++) {
+          for (var i = 0; i < 8; i++) {
+            final hours = glow(seed, i, profile);
+            expect(hours.allNight, isTrue);
+            for (final h in [18.0, 21.0, 23.9, 0.0, 2.0, 5.0, 6.0]) {
+              expect(
+                windowLightAt(h, hours),
+                1,
+                reason: '$profile seed $seed glow $i at $h',
+              );
             }
           }
         }
       }
+    });
+
+    test('dark by day', () {
+      final hours = glow(3, 0, LightProfile.shop);
+      for (final h in [7.0, 9.5, 12.0, 16.0]) {
+        expect(windowLightAt(h, hours), 0, reason: 'at $h');
+      }
+    });
+
+    test("a building's signs come on within minutes of each other", () {
+      final ons = [
+        for (var i = 0; i < 10; i++) glow(4, i, LightProfile.shop).eveningOn,
+      ];
+      final spread =
+          ons.reduce((a, b) => a > b ? a : b) -
+          ons.reduce((a, b) => a < b ? a : b);
+      expect(spread, lessThan(0.11));
+      expect(ons.every((on) => on >= 16.9 && on <= 17.4), isTrue);
+    });
+
+    test('they fade in at dusk and out at dawn', () {
+      final hours = glow(5, 2, LightProfile.home);
+      expect(
+        windowLightAt(hours.eveningOn + kWindowFadeHours / 2, hours),
+        closeTo(0.5, 1e-9),
+      );
+      expect(
+        windowLightAt(hours.morningOff! - kWindowFadeHours / 2, hours),
+        closeTo(0.5, 1e-9),
+      );
+      expect(windowLightAt(hours.morningOff! + 0.01, hours), 0);
+      expect(hours.morningOff, inInclusiveRange(6.3, 6.7));
     });
   });
 

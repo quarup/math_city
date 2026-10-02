@@ -31,7 +31,8 @@ function drawHash(seed, index, salt) {
 const PROFILE = { single_home_v1: 'home', duplex_v1: 'home', apartment_v1: 'home', coffee_shop_v1: 'shop', bakery_v1: 'shop', hospital_v1: 'civic', park_v1: 'venue' };
 function windowHours(seed, index, profile, glow) {
   const r = (s) => drawHash(seed, index, s), b = (s) => drawHash(seed, -1, s);
-  if (glow) { const close = { home: 22 + b(1), shop: 21 + b(1) * 1.5, office: 20.5 + b(1) * 1.5, civic: 23 + b(1) * 0.75, venue: 22.75 + b(1) }[profile]; return { on: 16.9 + b(2) * 0.3 + r(3) * 0.1, off: close }; }
+  // Signs and lamps burn from dusk until dawn.
+  if (glow) return { on: 16.9 + b(2) * 0.3 + r(3) * 0.1, dawn: 6.3 + r(4) * 0.4 };
   if (profile === 'home') { if (r(1) < 0.12) return null; const early = r(2) < 0.35; return { on: 17.25 + r(3) * 2.75, off: 21 + r(4) * 2.5, mOn: early ? 5.6 + r(5) * 0.9 : null, mOff: early ? 7 + r(6) * 0.8 : null }; }
   if (profile === 'shop') return { on: 16.9 + b(3) * 0.4 + r(3) * 0.15, off: 20.5 + b(4) * 1.5 + r(4) * 0.2 };
   if (profile === 'civic') { const early = r(2) < 0.5; return { on: 16.9 + r(3), off: 22.5 + r(4) * 1.25, mOn: early ? 5.6 + r(5) * 0.6 : null, mOff: early ? 7.2 + r(6) * 0.6 : null }; }
@@ -39,7 +40,7 @@ function windowHours(seed, index, profile, glow) {
 }
 const FADE_H = 0.05;
 const spell = (h, on, off) => (off <= on || h <= on || h >= off) ? 0 : Math.min(1, (h - on) / FADE_H, (off - h) / FADE_H);
-function windowLight(hour, hrs) { if (!hrs || hour < 5.5) return 0; let v = spell(hour, hrs.on, hrs.off); if (hrs.mOn != null) v = Math.max(v, spell(hour, hrs.mOn, hrs.mOff)); return v; }
+function windowLight(hour, hrs) { if (!hrs) return 0; if (hrs.dawn != null) return Math.min(1, Math.max(0, hour >= hrs.on ? (hour - hrs.on) / FADE_H : (hrs.dawn - hour) / FADE_H)); if (hour < 5.5) return 0; let v = spell(hour, hrs.on, hrs.off); if (hrs.mOn != null) v = Math.max(v, spell(hour, hrs.mOn, hrs.mOff)); return v; }
 
 // ---- The light layer: lights over the tinted scene, hidden by what stands in front
 let LAYER = null;

@@ -135,6 +135,9 @@ def bake_lit(rgba: np.ndarray, regions: list[dict], sprite: str) -> np.ndarray:
     luma = (0.299 * rgb[..., 0] + 0.587 * rgb[..., 1] + 0.114 * rgb[..., 2]) / 255.0
     out = np.zeros((h, w, 4), dtype=np.float32)
     for region in regions:
+        if region.get("k") == "l":
+            # A point lamp is drawn by the app (a core and a halo), not baked.
+            continue
         mask = polygon_mask((h, w), region["p"]) & (rgba[..., 3] > 40)
         if not mask.any():
             continue

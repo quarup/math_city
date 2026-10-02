@@ -2056,21 +2056,25 @@ as dark glass. A window is a shape, not a colour.
    hand: select one, drag a corner or the whole shape, double-click an
    edge to add a corner, Alt-click one to remove it; click out a new
    polygon, drag a box, or use the magic wand for what was missed; a
-   region is a *window* or a *glow* (sign, lamp, ride); undo. Saved to
+   region is a *window*, a *glow* (sign, screen, ride) or a *lamp* (one
+   click on a point of light); Shift-click or drag a box to select many
+   and delete, switch or move them together; undo. Saved to
    `overrides.json` and baked at once. **A person has the last word**;
    the detector only saves clicks. First pass: 1,634 regions on across
    101 sprites, good on homes, apartments and offices, thin on shop
    fronts and the landmarks, which need hand-picked glows.
 3. **Bake** (`build.py`). The lit pixels are the sprite's own, recoloured:
    a window keeps its frames and curtains as a brightness pattern in one
-   of a few warm whites picked per window; a glow keeps its hue. Output:
+   of a few warm whites picked per window; a glow keeps its hue; a lamp
+   bakes nothing (the app draws it). Output:
    `assets/buildings/lights.json` (polygons + kind) and
    `assets/buildings/lit/<sprite>.png`.
 4. **Draw** (`CityBoardComponent`). The board paints the time-of-day
    tint itself and then a light layer over it, walking the same
    back-to-front order as the town: each building first cuts its own
    silhouette out of the layer (so it hides the windows behind it), then
-   draws its lit regions through a clip, over a soft glow. Trees cut
+   draws its lit regions through a clip, over a soft glow, and its lamps
+   as a bright core in a round halo. Trees cut
    themselves out too. Overlays (price pills, placement edges, speech
    bubbles) are no longer tinted.
 
@@ -2088,8 +2092,10 @@ identical houses never switch together.
 | Staffed | hospital, clinic, police, fire, power | 17:00 – 18:00 | 22:30 – 23:45 | half |
 | Venue | entertainment | about 17:00 | 22:30 – 23:45 | none |
 
-**Nothing is lit from midnight to 5:30**, whatever the profile. A glow
-follows its building's closing time. A window takes 0.05 clock hours to
+**No window is lit from midnight to 5:30**, whatever the profile.
+**Signs and lamps (glows and lamp points) burn all night** (the user's
+call, 2026-10-02): on at about 17:00 with the building, each within
+minutes of the others, off between 6:20 and 6:45. A light takes 0.05 clock hours to
 fade. Lights only show once the scene is dark enough (they ramp in with
 the dusk tint).
 

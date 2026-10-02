@@ -53,10 +53,11 @@
       <button data-tool="draw">Draw<kbd>P</kbd></button>
       <button data-tool="box">Box<kbd>B</kbd></button>
       <button data-tool="wand">Wand<kbd>W</kbd></button>
+      <button data-tool="lamp">Lamp<kbd>L</kbd></button>
     </div>
     <div class="group" id="kinds" title="What a new region is">
       <button data-kind="w">Window</button>
-      <button data-kind="g">Glow (sign, lamp)</button>
+      <button data-kind="g">Glow (sign)</button>
     </div>
     <div class="group" id="slopes" title="Which way the box's top edge runs">
       <button data-slope="0.5">╲</button>
@@ -87,15 +88,19 @@
 'use strict';
 const MAX_VERTICES = 6;
 const HELP = {
-  edit: '<b>Edit</b>: click a region to select it. Drag a corner to move it, drag inside to move the whole shape. Double-click an edge to add a corner (up to 6); Alt-click a corner to remove it. <b>Space</b> switches it on or off, <b>G</b> window ↔ glow, <b>Delete</b> removes it, <b>Esc</b> deselects.',
+  edit: '<b>Edit</b>: click a region to select it; <b>Shift-click</b> adds or removes one; <b>drag a box</b> to select everything inside (Shift adds to the selection); <b>⌘A</b> selects all that are on. One selected: drag a corner, double-click an edge to add a corner (up to 6), Alt-click a corner to remove it. Any selection: drag inside to move, <b>Delete</b> removes, <b>Space</b> on / off, <b>G</b> window ↔ glow, <b>[ ]</b> shrink / grow, <b>Esc</b> deselects.',
   toggle: '<b>Toggle</b>: click a region to switch it on or off. Red outlines are off.',
   draw: '<b>Draw</b>: click each corner of the window (3 to 6). Click the first corner again, double-click or press <b>Enter</b> to finish; <b>Esc</b> cancels.',
   box: '<b>Box</b>: drag from one corner of a window to the opposite one. Pick the slope of its top edge first (╲ ╱ ▭).',
   wand: '<b>Wand</b>: click inside a window the detector missed; it grows to the patch of similar colour and becomes a polygon. Raise the tolerance if it stops short.',
+  lamp: '<b>Lamp</b>: click a porch lamp, a garden light, any point of light. It shines as a bright core in a round halo, from dusk until dawn. In Edit, <b>[ ]</b> makes a selected lamp smaller or bigger.',
 };
 const $ = (id) => document.getElementById(id);
-const S = { sprites: {}, names: [], cur: null, tool: 'edit', kind: 'w', slope: 0.5, night: true, outlines: true, zoom: 0, hover: null, sel: null, drag: null, draft: null, mouse: null, tint: [80, 95, 160], undo: [] };
+const S = { sprites: {}, names: [], cur: null, tool: 'edit', kind: 'w', slope: 0.5, night: true, outlines: true, zoom: 0, hover: null, sels: [], drag: null, draft: null, mouse: null, tint: [80, 95, 160], undo: [] };
 const ZOOMS = [0, 2, 3, 4, 6];
+const LAMP_RADIUS = 2.5;
+// The one selected region, when exactly one is: corner editing needs that.
+const one = () => (S.sels.length === 1 ? S.sels[0] : null);
 const canvas = $('c'), ctx = canvas.getContext('2d');
 let spriteImg = null, litImg = null, tinted = null, litVersion = 0;
 
@@ -104,7 +109,7 @@ const cur = () => S.sprites[S.cur];
 function zoomFor(sp) { if (S.zoom) return S.zoom; const [w, h] = sp.size; const stage = $('stage'); const fit = Math.min((stage.clientWidth - 40) / w, (stage.clientHeight - 40) / h); return Math.max(1, Math.min(6, Math.floor(fit * 2) / 2)); }
 
 async function open(name) {
-  S.cur = name; S.hover = null; S.sel = null; S.drag = null; S.draft = null; S.undo = [];
+  S.cur = name; S.hover = null; S.sels = []; S.drag = null; S.draft = null; S.undo = [];
   const sp = cur();
   spriteImg = await loadImage(`/sprites/${name}.png`);
   await reloadLit();
@@ -134,12 +139,15 @@ function render() {
   const on = sp.regions.filter((r) => r.on);
   if (S.night) {
     ctx.drawImage(tinted, 0, 0, w * z, h * z);
-    if (on.length && litImg) {
+    const shapes = on.filter((r) => r.k !== 'l');
+    if (shapes.length && litImg) {
       const layer = document.createElement('canvas'); layer.width = w; layer.height = h;
-      const l = layer.getContext('2d'); pathOf(l, on, 1); l.clip(); l.drawImage(litImg, 0, 0);
+      const l = layer.getContext('2d'); pathOf(l, shapes, 1); l.clip(); l.drawImage(litImg, 0, 0);
       ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = 0.55; ctx.filter = `blur(${3 * z}px)`; ctx.drawImage(layer, 0, 0, w * z, h * z); ctx.restore();
       ctx.drawImage(layer, 0, 0, w * z, h * z);
     }
+    // Point lamps: a core in a round halo, as the app draws them.
+    for (const r of on) if (r.k === 'l') { const [cx, cy, rad] = lampOf(r); const g = ctx.createRadialGradient(cx * z, cy * z, 0, cx * z, cy * z, rad * 4.5 * z); g.addColorStop(0, 'rgba(255,214,150,.95)'); g.addColorStop(0.35, 'rgba(255,214,150,.33)'); g.addColorStop(1, 'rgba(255,214,150,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx * z, cy * z, rad * 4.5 * z, 0, 7); ctx.fill(); ctx.fillStyle = '#fffcec'; ctx.beginPath(); ctx.arc(cx * z, cy * z, rad * 0.6 * z, 0, 7); ctx.fill(); }
   } else {
     ctx.drawImage(spriteImg, 0, 0, w * z, h * z);
     ctx.strokeStyle = 'rgba(255,210,90,.95)'; ctx.lineWidth = 1.5 * u; pathOf(ctx, on, z); ctx.stroke();
@@ -147,11 +155,13 @@ function render() {
   if (S.outlines) {
     ctx.lineWidth = u; ctx.strokeStyle = 'rgba(255,110,100,.85)'; pathOf(ctx, sp.regions.filter((r) => !r.on), z); ctx.stroke();
     ctx.strokeStyle = 'rgba(120,200,255,.9)'; pathOf(ctx, on.filter((r) => r.k === 'g'), z); ctx.stroke();
+    ctx.strokeStyle = 'rgba(255,214,150,.9)'; pathOf(ctx, on.filter((r) => r.k === 'l'), z); ctx.stroke();
   }
-  if (S.hover && S.hover !== S.sel) { ctx.lineWidth = 1.5 * u; ctx.strokeStyle = 'rgba(255,255,255,.75)'; pathOf(ctx, [S.hover], z); ctx.stroke(); }
-  if (S.sel) {
-    ctx.lineWidth = 2 * u; ctx.strokeStyle = '#fff'; pathOf(ctx, [S.sel], z); ctx.stroke();
-    const p = S.sel.p;
+  if (S.hover && !S.sels.includes(S.hover)) { ctx.lineWidth = 1.5 * u; ctx.strokeStyle = 'rgba(255,255,255,.75)'; pathOf(ctx, [S.hover], z); ctx.stroke(); }
+  if (S.sels.length) { ctx.lineWidth = 2 * u; ctx.strokeStyle = '#fff'; pathOf(ctx, S.sels, z); ctx.stroke(); }
+  if (S.drag?.kind === 'marquee') { const d = S.drag; ctx.lineWidth = u; ctx.strokeStyle = '#fff'; ctx.fillStyle = 'rgba(255,255,255,.08)'; ctx.setLineDash([4 * u, 3 * u]); ctx.beginPath(); ctx.rect(Math.min(d.x0, d.x1) * z, Math.min(d.y0, d.y1) * z, Math.abs(d.x1 - d.x0) * z, Math.abs(d.y1 - d.y0) * z); ctx.fill(); ctx.stroke(); ctx.setLineDash([]); }
+  if (one() && one().k !== 'l') {
+    const p = one().p;
     for (let i = 0; i < p.length; i += 2) { ctx.beginPath(); ctx.arc(p[i] * z, p[i + 1] * z, 5 * u, 0, 7); ctx.fillStyle = S.drag?.kind === 'vertex' && S.drag.index === i ? '#ffd27a' : '#fff'; ctx.fill(); ctx.lineWidth = 1.5 * u; ctx.strokeStyle = '#10161f'; ctx.stroke(); }
   }
   if (S.drag?.kind === 'box') { ctx.lineWidth = 1.5 * u; ctx.strokeStyle = '#fff'; ctx.setLineDash([4 * u, 3 * u]); pathOf(ctx, [{ p: boxPolygon(S.drag) }], z); ctx.stroke(); ctx.setLineDash([]); }
@@ -161,7 +171,8 @@ function render() {
     for (let i = 0; i < S.draft.length; i += 2) { ctx.beginPath(); ctx.arc(S.draft[i] * z, S.draft[i + 1] * z, (i === 0 ? 6 : 4) * u, 0, 7); ctx.fillStyle = i === 0 ? '#6fd08c' : '#fff'; ctx.fill(); }
   }
   $('title').textContent = S.cur;
-  const sel = S.sel ? ` · selected: ${S.sel.p.length / 2} corners, ${S.sel.k === 'g' ? 'glow' : 'window'}, ${S.sel.on ? 'on' : 'off'}` : '';
+  const KIND = { w: 'window', g: 'glow', l: 'lamp' };
+  const sel = one() ? ` · selected: ${one().k === 'l' ? '' : one().p.length / 2 + ' corners, '}${KIND[one().k]}, ${one().on ? 'on' : 'off'}` : S.sels.length ? ` · ${S.sels.length} selected` : '';
   $('status').textContent = `${on.length} on · ${sp.regions.length - on.length} off${sel}`;
   $('undo').disabled = !S.undo.length;
 }
@@ -193,11 +204,16 @@ function edgeAt(r, x, y) { // nearest edge within reach: [insert index, point on
 }
 const snap = (v) => Math.round(v * 2) / 2;
 function boxPolygon(d) { const s = S.slope, dx = d.x1 - d.x0, top1 = d.y0 + s * dx, hh = d.y1 - top1; return [d.x0, d.y0, d.x1, top1, d.x1, top1 + hh, d.x0, d.y0 + hh].map(snap); }
+function centreOf(p) { let x = 0, y = 0; for (let i = 0; i < p.length; i += 2) { x += p[i]; y += p[i + 1]; } const n = p.length / 2; return [x / n, y / n]; }
+// A lamp's centre and core radius, from the bounds of its little hexagon (as the app reads it).
+function lampOf(r) { let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity; for (let i = 0; i < r.p.length; i += 2) { x0 = Math.min(x0, r.p[i]); x1 = Math.max(x1, r.p[i]); y0 = Math.min(y0, r.p[i + 1]); y1 = Math.max(y1, r.p[i + 1]); } return [(x0 + x1) / 2, (y0 + y1) / 2, (x1 - x0 + y1 - y0) / 4]; }
+function hexagon(x, y, rad) { const p = []; for (let i = 0; i < 6; i++) { const a = Math.PI / 3 * i; p.push(Math.round((x + rad * Math.cos(a)) * 10) / 10, Math.round((y + rad * Math.sin(a)) * 10) / 10); } return p; }
+function touch(r) { if (!r.added) r.edited = true; }
 function centroidId(p) { let x = 0, y = 0; for (let i = 0; i < p.length; i += 2) { x += p[i]; y += p[i + 1]; } const n = p.length / 2; return `a${Math.round(x / n)}_${Math.round(y / n)}`; }
 
 // ---- changes, undo, save ----
 function pushUndo() { S.undo.push(JSON.stringify(cur().regions)); if (S.undo.length > 60) S.undo.shift(); }
-async function undo() { if (!S.undo.length) return; const id = S.sel?.id; cur().regions = JSON.parse(S.undo.pop()); S.sel = cur().regions.find((r) => r.id === id) || null; S.hover = null; S.draft = null; await save(true); renderList(); render(); }
+async function undo() { if (!S.undo.length) return; const ids = new Set(S.sels.map((r) => r.id)); cur().regions = JSON.parse(S.undo.pop()); S.sels = cur().regions.filter((r) => ids.has(r.id)); S.hover = null; S.draft = null; await save(true); renderList(); render(); }
 let saveTimer = null;
 function save(needLit) {
   const sp = cur(), name = S.cur;
@@ -208,17 +224,23 @@ function save(needLit) {
   if (needLit) return send();
   saveTimer = setTimeout(send, 250);
 }
-async function addRegion(p) {
+async function addRegion(p, kind = S.kind) {
   if (!p || p.length < 6) return;
   pushUndo();
   const sp = cur(); let id = centroidId(p); while (sp.regions.some((r) => r.id === id)) id += 'x';
-  const r = { id, k: S.kind, on: true, p, added: true, edited: false }; sp.regions.push(r); S.sel = r;
+  const r = { id, k: kind, on: true, p, added: true, edited: false }; sp.regions.push(r); S.sels = [r];
   await save(true); renderList();
 }
+// Removes every selected region: one you added is deleted, a detected one is switched off.
 async function removeSelected() {
-  const r = S.sel; if (!r) return; pushUndo();
-  if (r.added) cur().regions.splice(cur().regions.indexOf(r), 1); else r.on = false;
-  S.sel = null; S.hover = null; await save(true); renderList(); render();
+  if (!S.sels.length) return; pushUndo();
+  for (const r of S.sels) { if (r.added) cur().regions.splice(cur().regions.indexOf(r), 1); else r.on = false; }
+  S.sels = []; S.hover = null; await save(true); renderList(); render();
+}
+async function scaleSelected(f) {
+  if (!S.sels.length) return; pushUndo();
+  for (const r of S.sels) { const [cx, cy] = centreOf(r.p); r.p = r.p.map((v, i) => Math.round(((i % 2 ? cy : cx) + (v - (i % 2 ? cy : cx)) * f) * 10) / 10); touch(r); }
+  await save(true); render();
 }
 async function finishDraft() { const d = S.draft; S.draft = null; if (d && d.length >= 6) await addRegion(d.map(snap)); render(); }
 
@@ -227,8 +249,9 @@ canvas.addEventListener('mousemove', (e) => {
   const [x, y] = pos(e); S.mouse = [x, y];
   const d = S.drag;
   if (d?.kind === 'box') { d.x1 = x; d.y1 = y; render(); return; }
-  if (d?.kind === 'vertex') { S.sel.p[d.index] = snap(x); S.sel.p[d.index + 1] = snap(y); d.moved = true; render(); return; }
-  if (d?.kind === 'move') { const dx = snap(x - d.x), dy = snap(y - d.y); if (dx || dy) { for (let i = 0; i < S.sel.p.length; i += 2) { S.sel.p[i] += dx; S.sel.p[i + 1] += dy; } d.x += dx; d.y += dy; d.moved = true; render(); } return; }
+  if (d?.kind === 'marquee') { d.x1 = x; d.y1 = y; render(); return; }
+  if (d?.kind === 'vertex') { one().p[d.index] = snap(x); one().p[d.index + 1] = snap(y); d.moved = true; render(); return; }
+  if (d?.kind === 'move') { const dx = snap(x - d.x), dy = snap(y - d.y); if (dx || dy) { for (const r of S.sels) for (let i = 0; i < r.p.length; i += 2) { r.p[i] += dx; r.p[i + 1] += dy; } d.x += dx; d.y += dy; d.moved = true; render(); } return; }
   if (S.draft) { render(); return; }
   const h = (S.tool === 'toggle' || S.tool === 'edit') ? regionAt(x, y) : null; if (h !== S.hover) { S.hover = h; render(); }
 });
@@ -237,30 +260,46 @@ canvas.addEventListener('mousedown', (e) => {
   const [x, y] = pos(e);
   if (S.tool === 'box') { S.drag = { kind: 'box', x0: x, y0: y, x1: x, y1: y }; return; }
   if (S.tool !== 'edit') return;
-  if (S.sel) {
-    const v = vertexAt(S.sel, x, y);
+  const single = one();
+  if (single && single.k !== 'l' && !e.shiftKey) {
+    const v = vertexAt(single, x, y);
     if (v >= 0) {
-      if (e.altKey) { if (S.sel.p.length > 6) { pushUndo(); S.sel.p.splice(v, 2); if (!S.sel.added) S.sel.edited = true; save(true); render(); } return; }
+      if (e.altKey) { if (single.p.length > 6) { pushUndo(); single.p.splice(v, 2); touch(single); save(true); render(); } return; }
       pushUndo(); S.drag = { kind: 'vertex', index: v, moved: false }; render(); return;
     }
-    // On an edge counts as on the shape: the first click of the double-click that adds a corner lands there.
-    if (inside(S.sel.p, x, y) || edgeAt(S.sel, x, y)) { pushUndo(); S.drag = { kind: 'move', x, y, moved: false }; return; }
   }
-  S.sel = regionAt(x, y); S.hover = null; render();
+  // What is under the pointer: a selected region first (they may overlap others), and an edge of the
+  // single selection counts — the first click of the double-click that adds a corner lands there.
+  const hit = S.sels.find((r) => inside(r.p, x, y)) || (single && edgeAt(single, x, y) ? single : null) || regionAt(x, y);
+  if (hit && S.sels.includes(hit) && !e.shiftKey) { pushUndo(); S.drag = { kind: 'move', x, y, moved: false }; return; }
+  // Anything else may become a selection box, even when it starts on a region (false positives sit
+  // close together); released without a drag it is a plain click on `pick`.
+  S.drag = { kind: 'marquee', x0: x, y0: y, x1: x, y1: y, add: e.shiftKey, pick: hit };
 });
 window.addEventListener('mouseup', async () => {
   const d = S.drag; if (!d) return; S.drag = null;
   if (d.kind === 'box') { if (Math.abs(d.x1 - d.x0) >= 3 && Math.abs(d.y1 - d.y0) >= 3) await addRegion(boxPolygon(d)); render(); return; }
+  if (d.kind === 'marquee') {
+    const x0 = Math.min(d.x0, d.x1), x1 = Math.max(d.x0, d.x1), y0 = Math.min(d.y0, d.y1), y1 = Math.max(d.y0, d.y1);
+    if (x1 - x0 < reach(4) && y1 - y0 < reach(4)) { // a plain click: select, or with Shift add / remove
+      const i = S.sels.indexOf(d.pick);
+      if (!d.add) S.sels = d.pick ? [d.pick] : []; else if (i >= 0) S.sels.splice(i, 1); else if (d.pick) S.sels.push(d.pick);
+      S.hover = null; render(); return;
+    }
+    const caught = cur().regions.filter((r) => { const [cx, cy] = centreOf(r.p); return cx >= x0 && cx <= x1 && cy >= y0 && cy <= y1; });
+    S.sels = d.add ? [...new Set([...S.sels, ...caught])] : caught; render(); return;
+  }
   if (!d.moved) { S.undo.pop(); render(); return; }
-  if (!S.sel.added) S.sel.edited = true;
+  for (const r of S.sels) touch(r);
   await save(true); render();
 });
 canvas.addEventListener('dblclick', async (e) => {
   const [x, y] = pos(e);
   if (S.tool === 'draw') { await finishDraft(); return; }
-  if (S.tool !== 'edit' || !S.sel || S.sel.p.length >= MAX_VERTICES * 2) return;
-  const hit = edgeAt(S.sel, x, y); if (!hit) return;
-  pushUndo(); S.sel.p.splice(hit[0], 0, snap(hit[1]), snap(hit[2])); if (!S.sel.added) S.sel.edited = true;
+  const r = one();
+  if (S.tool !== 'edit' || !r || r.k === 'l' || r.p.length >= MAX_VERTICES * 2) return;
+  const hit = edgeAt(r, x, y); if (!hit) return;
+  pushUndo(); r.p.splice(hit[0], 0, snap(hit[1]), snap(hit[2])); touch(r);
   await save(true); render();
 });
 canvas.addEventListener('click', async (e) => {
@@ -271,9 +310,11 @@ canvas.addEventListener('click', async (e) => {
     const res = await fetch(`/api/wand/${S.cur}`, { method: 'POST', body: JSON.stringify({ x: Math.floor(x), y: Math.floor(y), tol: +$('tol').value }) });
     const { p } = await res.json(); if (!p) { $('status').textContent = 'wand: nothing there (try a higher tolerance)'; return; }
     await addRegion(p); render();
+  } else if (S.tool === 'lamp') {
+    await addRegion(hexagon(x, y, LAMP_RADIUS), 'l'); render();
   } else if (S.tool === 'draw') {
     if (e.detail > 1) return; // the second click of a double-click finishes instead
-    if (!S.draft) { S.draft = [x, y]; S.sel = null; render(); return; }
+    if (!S.draft) { S.draft = [x, y]; S.sels = []; render(); return; }
     if (S.draft.length >= 6 && Math.hypot(S.draft[0] - x, S.draft[1] - y) <= reach(9)) { await finishDraft(); return; }
     S.draft.push(x, y); if (S.draft.length >= MAX_VERTICES * 2) { await finishDraft(); return; }
     render();
@@ -282,12 +323,12 @@ canvas.addEventListener('click', async (e) => {
 
 // ---- toolbar and keys ----
 function setActive(groupId, attr, value) { for (const b of $(groupId).children) b.classList.toggle('active', b.dataset[attr] === String(value)); }
-function setTool(t) { S.tool = t; S.hover = null; S.draft = null; S.drag = null; if (t !== 'edit') S.sel = null; setActive('tools', 'tool', t); $('help').innerHTML = HELP[t] + ' Everything saves as you go.'; render(); }
+function setTool(t) { S.tool = t; S.hover = null; S.draft = null; S.drag = null; if (t !== 'edit') S.sels = []; setActive('tools', 'tool', t); $('help').innerHTML = HELP[t] + ' Everything saves as you go.'; render(); }
 $('tools').onclick = (e) => { const t = e.target.closest('button')?.dataset.tool; if (t) setTool(t); };
 $('kinds').onclick = (e) => { const k = e.target.closest('button')?.dataset.kind; if (k) { S.kind = k; setActive('kinds', 'kind', k); } };
 $('slopes').onclick = (e) => { const s = e.target.closest('button')?.dataset.slope; if (s !== undefined) { S.slope = +s; setActive('slopes', 'slope', s); } };
 function step(d) { const list = S.names; const i = list.indexOf(S.cur); open(list[(i + d + list.length) % list.length]); }
-function setAll(on) { pushUndo(); for (const r of cur().regions) r.on = on; S.sel = null; save(true); renderList(); render(); }
+function setAll(on) { pushUndo(); for (const r of cur().regions) r.on = on; S.sels = []; save(true); renderList(); render(); }
 $('day').onclick = () => { S.night = !S.night; render(); };
 $('outlines').onclick = () => { S.outlines = !S.outlines; render(); };
 $('zoom').onclick = () => { S.zoom = ZOOMS[(ZOOMS.indexOf(S.zoom) + 1) % ZOOMS.length]; render(); };
@@ -302,14 +343,17 @@ window.addEventListener('keydown', async (e) => {
   if (e.target.tagName === 'INPUT') return;
   const k = e.key.toLowerCase();
   if ((e.metaKey || e.ctrlKey) && k === 'z') { e.preventDefault(); undo(); return; }
+  if ((e.metaKey || e.ctrlKey) && k === 'a') { e.preventDefault(); setTool('edit'); S.sels = cur().regions.filter((r) => r.on); render(); return; }
   if (e.metaKey || e.ctrlKey) return;
-  if (k === 'escape') { if (S.draft) S.draft = null; else S.sel = null; render(); }
+  if (k === 'escape') { if (S.draft) S.draft = null; else S.sels = []; render(); }
   else if (k === 'enter' && S.draft) await finishDraft();
-  else if ((k === 'delete' || k === 'backspace') && S.sel) await removeSelected();
-  else if (k === ' ' && S.sel) { pushUndo(); S.sel.on = !S.sel.on; save(false); renderList(); render(); }
-  else if (k === 'g' && S.sel) { pushUndo(); S.sel.k = S.sel.k === 'w' ? 'g' : 'w'; await save(true); render(); }
+  else if ((k === 'delete' || k === 'backspace') && S.sels.length) await removeSelected();
+  else if (k === ' ' && S.sels.length) { pushUndo(); const on = !S.sels.some((r) => r.on); for (const r of S.sels) r.on = on; save(false); renderList(); render(); }
+  else if (k === 'g' && S.sels.length) { pushUndo(); const to = S.sels.find((r) => r.k !== 'l')?.k === 'w' ? 'g' : 'w'; for (const r of S.sels) if (r.k !== 'l') r.k = to; await save(true); render(); }
+  else if (k === '[' && S.sels.length) await scaleSelected(1 / 1.15);
+  else if (k === ']' && S.sels.length) await scaleSelected(1.15);
   else if (k === 'arrowright') step(1); else if (k === 'arrowleft') step(-1);
-  else if (k === 'e') setTool('edit'); else if (k === 't') setTool('toggle'); else if (k === 'p') setTool('draw'); else if (k === 'b') setTool('box'); else if (k === 'w') setTool('wand');
+  else if (k === 'e') setTool('edit'); else if (k === 't') setTool('toggle'); else if (k === 'p') setTool('draw'); else if (k === 'b') setTool('box'); else if (k === 'w') setTool('wand'); else if (k === 'l') setTool('lamp');
   else if (k === 'd') $('day').click(); else if (k === 'o') $('outlines').click(); else if (k === 'z') $('zoom').click();
   else if (k === 'r') $('done').click();
   else return;
