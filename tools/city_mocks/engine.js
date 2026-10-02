@@ -20,7 +20,7 @@ function loadSprites(done) {
   const names = Object.keys(SPRITES); let left = names.length;
   names.forEach((n) => {
     const im = new Image();
-    im.onload = () => { IMG[n] = im; if (!n.startsWith('road')) LIT[n] = emissiveMask(im); if (--left === 0) done(); };
+    im.onload = () => { IMG[n] = im; if (!/^(road|veh_|lit_)/.test(n)) LIT[n] = emissiveMask(im); if (--left === 0) done(); };
     im.src = SPRITES[n];
   });
 }
@@ -282,6 +282,8 @@ function mountMock(mock, canvas) {
       ctx.restore();
       if (!mock.noWindows) { ctx.save(); for (const l of sc._lit) { ctx.globalAlpha = l.a; ctx.drawImage(LIT[l.b.id], l.bb.x, l.bb.y, l.bb.W, l.bb.H); } ctx.restore(); }
     }
+    // Night-lights round: the mock draws its own light layer over the tinted scene.
+    mock.lightPass?.(ctx, st, items);
     mock.overlay?.(ctx, st);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0); mock.hud?.(ctx, st, W, H);
     if (RUNNING.has(canvas)) requestAnimationFrame(frame);

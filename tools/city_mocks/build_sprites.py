@@ -9,6 +9,7 @@ gitignored; run this once after cloning (or after changing a sprite).
     open tools/city_mocks/city_alive.html
 """
 import base64
+import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -24,10 +25,39 @@ NAMES = [
     "road_deadend", "road_tee",
 ]
 
+# The night-lights page (night_lights.html) also needs the real vehicle
+# sprites (eight headings each), the lit-window images and their regions.
+VEHICLES = ["hatchback", "sedan", "taxi", "pickup", "bus", "police_car"]
+LIT = [
+    "apartment_v1", "duplex_v1", "bakery_v1", "single_home_v1",
+    "coffee_shop_v1", "park_v1", "hospital_v1",
+]
+
+
+def data_uri(path: Path) -> str:
+    return "data:image/png;base64," + base64.b64encode(path.read_bytes()).decode()
+
+
 lines = ["const SPRITES = {"]
 for n in NAMES:
-    b = base64.b64encode((ASSETS / f"{n}.png").read_bytes()).decode()
-    lines.append(f'  {n}: "data:image/png;base64,{b}",')
+    lines.append(f'  {n}: "{data_uri(ASSETS / f"{n}.png")}",')
+count = len(NAMES)
+for kind in VEHICLES:
+    for h in range(8):
+        file = ROOT / "assets" / "vehicles" / f"{kind}_h{h}.png"
+        lines.append(f'  veh_{kind}_h{h}: "{data_uri(file)}",')
+        count += 1
+lights = json.loads((ASSETS / "lights.json").read_text()) if (ASSETS / "lights.json").exists() else {}
+for n in LIT:
+    file = ASSETS / "lit" / f"{n}.png"
+    if file.exists():
+        lines.append(f'  lit_{n}: "{data_uri(file)}",')
+        count += 1
 lines.append("};")
+lines.append(
+    "const NIGHT_LIGHTS = "
+    + json.dumps({n: lights[n] for n in LIT if n in lights}, separators=(",", ":"))
+    + ";"
+)
 OUT.write_text("\n".join(lines) + "\n")
-print(f"wrote {OUT.relative_to(ROOT)} ({OUT.stat().st_size // 1024} KB, {len(NAMES)} sprites)")
+print(f"wrote {OUT.relative_to(ROOT)} ({OUT.stat().st_size // 1024} KB, {count} sprites)")

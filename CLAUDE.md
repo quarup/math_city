@@ -161,6 +161,22 @@ icon's house on a 288 dp canvas), so the geometry constants in
 [home_screen.dart](lib/presentation/home/home_screen.dart) must stay in
 step with the script's.
 
+## Night lights on building sprites
+
+Which windows light up at night is decided per sprite in a review page,
+not in code:
+
+```sh
+tools/sprite_pipeline/.venv/bin/python tools/night_lights/serve.py
+```
+
+Never hand-edit `assets/buildings/lit/` or `assets/buildings/lights.json`:
+change the regions in the review page (it saves `tools/night_lights/overrides.json`
+and re-bakes both). After adding or regenerating a building sprite, run
+`tools/night_lights/detect.py <sprite>` and review it. Details in
+[tools/night_lights/README.md](tools/night_lights/README.md); design in
+[city_builder.md §12](city_builder.md).
+
 ## Keeping curriculum.md status in sync
 
 [curriculum.md](curriculum.md) carries `✅` markers in §3 (sub-concepts) and §6 (widgets) plus rollup counts in its Status block. These are auto-managed by [tools/curriculum/sync_implementation_status.py](tools/curriculum/sync_implementation_status.py).

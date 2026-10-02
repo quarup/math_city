@@ -14,6 +14,7 @@ open tools/city_mocks/p02_walk.html         # the chosen citizen: walk + shoe co
 open tools/city_mocks/terrain_sky.html      # 23 ground / sky / frontier / first-minutes ideas (§11)
 open tools/city_mocks/ground_round2.html    # 18 round-two ideas: inside ground, edges on demand, haze only, Expand city (§11.3)
 open tools/city_mocks/ground_round3.html    # 14 round-three ideas: where the town ends, haze colour, land as a site, big buildings (§11.4)
+open tools/city_mocks/night_lights.html     # 17 night ideas: window schedule, headlights, street lamps (§12)
 ```
 
 - `engine.js` — grid, scene, terrain/road/building drawing, day/night tint,
@@ -38,6 +39,13 @@ open tools/city_mocks/ground_round3.html    # 14 round-three ideas: where the to
 - `ped.js` — `drawPed(...)`, the parameterised citizen renderer of record,
   plus the 31 style presets. The Dart `CitizenPainter` is a translation of
   this file.
+
+- `mocks_night.js` — the night-lights round (city_builder.md §12): the
+  window schedule (a port of `window_lights.dart`), sprite cars with head
+  and tail lamps, ten street lamps, and `nightPass`, the depth-ordered
+  light layer (a mock's `lightPass` hook runs after the night tint). The
+  bundle carries the vehicle sprites, the lit-window images and
+  `NIGHT_LIGHTS` for it.
 
 To add a mock, push an object onto `MOCKS` (see the shape at the top of
 `engine.js` → `mountMock`). Pages need no server; a `file://` URL works.
