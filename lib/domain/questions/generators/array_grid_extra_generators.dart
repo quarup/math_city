@@ -103,33 +103,37 @@ GeneratedQuestion equalGroupsIntro(Random rand) {
 GeneratedQuestion arrayRepeatedAddition(Random rand) {
   final rows = rand.nextInt(4) + 2; // 2..5
   final cols = rand.nextInt(4) + 2;
-  final correct = List.filled(rows, '$cols').join(' + ');
+  String sum(int count, int addend) =>
+      List.filled(count, '$addend').join(' + ');
+  final correct = sum(rows, cols);
   return GeneratedQuestion(
     conceptId: 'array_repeated_addition',
-    // "adds up the rows" (not "shows the total"): the transposed sum
-    // (cols copies of rows) reaches the same total, so asking for the
-    // total would make that distractor a second correct answer.
-    prompt:
-        'This array has $rows rows with $cols in each row. Which repeated '
-        'addition adds up the rows?',
+    // No "rows" / "columns": second graders don't have the words yet. The
+    // rows are drawn apart, so the picture reads as $rows groups of $cols —
+    // and the transposed sum ($cols groups of $rows, same total) is never
+    // offered, so the one choice that adds up to the picture is the answer.
+    prompt: 'Choose the right addition for this picture.',
     diagram: AreaGridSpec(
       rows: rows,
       cols: cols,
       shadedRows: rows,
       shadedCols: cols,
+      separateRows: true,
     ),
     correctAnswer: correct,
-    distractors: _distinctStrings(correct, [
-      List.filled(cols, '$rows').join(' + '), // wrong axis (rows ↔ cols)
-      List.filled(rows, '${cols + 1}').join(' + '), // each row +1
-      if (cols > 1) List.filled(rows, '${cols - 1}').join(' + '),
-      List.filled(rows + 1, '$cols').join(' + '), // extra row
-      if (rows > 1) List.filled(rows - 1, '$cols').join(' + '),
-      '$rows + $cols',
-      '${rows * cols}',
-    ]),
+    distractors: _distinctStrings(
+      correct,
+      [
+        sum(rows, cols + 1), // one too many in each group
+        sum(rows, cols - 1), // one too few in each group
+        sum(rows + 1, cols), // one group too many
+        // One group too few — unless that leaves a lone number, not a sum.
+        if (rows > 2) sum(rows - 1, cols),
+        '$rows + $cols',
+      ]..shuffle(rand),
+    ),
     explanation: [
-      'Each row has $cols. With $rows rows, the total is $correct.',
+      'There are $rows groups of $cols: $correct.',
     ],
     answerFormat: AnswerFormat.string,
   );

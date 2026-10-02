@@ -111,6 +111,20 @@ void main() {
         _expectThreeDistinctDistractors(q);
       }
     });
+
+    test('no distractor adds up to the same total', () {
+      // The transposed sum would be a second right answer, since the
+      // prompt no longer says which way to read the picture.
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'array_repeated_addition', i);
+        int total(String s) =>
+            s.split(' + ').map(int.parse).reduce((a, b) => a + b);
+        for (final d in q.distractors) {
+          expect(total(d), isNot(total(q.correctAnswer)), reason: d);
+          expect(d, contains(' + '), reason: 'every choice is an addition');
+        }
+      }
+    });
   });
 
   group('mult_meaning_groups', () {
