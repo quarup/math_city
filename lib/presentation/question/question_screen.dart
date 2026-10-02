@@ -9,15 +9,15 @@ import 'package:math_city/domain/economy/question_block.dart';
 import 'package:math_city/domain/proficiency/proficiency_band.dart';
 import 'package:math_city/domain/questions/answer_check.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
-import 'package:math_city/domain/questions/is_word_problem.dart';
+import 'package:math_city/domain/questions/spoken_text.dart';
 import 'package:math_city/presentation/block/block_recap.dart';
 import 'package:math_city/presentation/diagrams/diagram_renderer.dart';
 import 'package:math_city/presentation/question/number_pad_widget.dart';
 import 'package:math_city/presentation/result/result_screen.dart';
 import 'package:math_city/presentation/theme/app_palette.dart';
 import 'package:math_city/presentation/widgets/coin_icon.dart';
-import 'package:math_city/presentation/widgets/math_text.dart';
 import 'package:math_city/presentation/widgets/site_progress_bar.dart';
+import 'package:math_city/presentation/widgets/speech.dart';
 import 'package:math_city/presentation/widgets/speech_toggle_button.dart';
 import 'package:math_city/presentation/widgets/streak_flame.dart';
 import 'package:math_city/services/debug_harness.dart';
@@ -164,12 +164,35 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
       usesKeypad: _useNumberPad,
       submit: (answer) => unawaited(_onAnswerSubmitted(answer)),
     );
-    // Auto-read word problems only — bare equations like "3 + 4 = ?"
-    // sound robotic when synthesised and don't help readers.
-    if (isWordProblem(q.prompt)) {
-      unawaited(speakIfEnabled(ref, q.prompt, owner: this));
+    // Read the prompt if it has a word in it; a bare sum ("31 − 14 = ?")
+    // waits for a tap on its speaker. For the youngest players the answers
+    // follow when they are words too, since a child who can't read "above"
+    // can't pick it either.
+    if (hasReadableWords(q.prompt)) {
+      unawaited(
+        speakAllIfEnabled(ref, [
+          _promptItem(q),
+          if (_readsChoicesAloud(q)) ..._choiceItems(),
+        ], owner: this),
+      );
+    }
+    if (q.diagram != null && hasSpokenLabels(q.diagram!)) {
+      if (SpokenLabel.hintsLeft > 0) SpokenLabel.hintsLeft--;
     }
   }
+
+  static SpeechItem _promptItem(GeneratedQuestion q) =>
+      SpeechItem('prompt', q.prompt);
+
+  List<SpeechItem> _choiceItems() => [
+    for (var i = 0; i < _shuffledChoices.length; i++)
+      SpeechItem('choice:$i', _shuffledChoices[i]),
+  ];
+
+  bool _readsChoicesAloud(GeneratedQuestion q) =>
+      !_useNumberPad &&
+      (findConceptById(widget.conceptId)?.primaryGrade ?? 9) <= 2 &&
+      _shuffledChoices.any(hasReadableWords);
 
   @override
   void dispose() {
@@ -348,21 +371,6 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
 
   @override
   Widget build(BuildContext context) {
-    // Re-read the prompt when the user flips the speech toggle off→on, so
-    // they can hear what's currently on screen. We only react to a true
-    // user transition (AsyncData(false) → AsyncData(true)) — the initial
-    // loading→AsyncData(true) emission is suppressed so the load path
-    // (which already calls `speakIfEnabled` once) doesn't double-speak.
-    ref.listen<AsyncValue<bool>>(ttsEnabledProvider, (prev, next) {
-      final wasExplicitlyOff = prev is AsyncData<bool> && !prev.value;
-      final isOn = next is AsyncData<bool> && next.value;
-      if (!wasExplicitlyOff || !isOn) return;
-      final q = _question;
-      if (q == null) return;
-      if (!isWordProblem(q.prompt)) return;
-      unawaited(ref.read(ttsServiceProvider).speak(q.prompt, owner: this));
-    });
-
     final theme = Theme.of(context);
     final conceptName =
         findConceptById(widget.conceptId)?.name ?? widget.conceptId;
@@ -390,9 +398,10 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
     // The site the coins pay into: live while it is open, else the last
     // payment's snapshot (the row is gone once it opened).
     final site = ref.watch(activeSiteProvider).value?.site ?? _siteSnapshot;
+    // The toggle only governs reading a screen on its own; the speakers on
+    // the prompt and the answers work either way.
     final actions = <Widget>[
-      if (question != null && isWordProblem(question.prompt))
-        const SpeechToggleIconButton(),
+      const SpeechToggleIconButton(),
       if (block != null) ...[
         StreakBadge(count: _streakCount(block)),
         const SizedBox(width: 12),
@@ -436,91 +445,113 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
       );
     }
 
+    final showDottedHint =
+        question.diagram != null &&
+        hasSpokenLabels(question.diagram!) &&
+        SpokenLabel.hintsLeft > 0;
     return Scaffold(
       appBar: AppBar(title: title, leading: leading, actions: actions),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // With a diagram: the diagram is measured FIRST at its
-              // natural size (capped at 45% of the space, so a long
-              // prompt can never crush it into a speck), and the prompt
-              // card gets the true remainder — a short diagram (ruler,
-              // number line) hands its unused space to the card instead
-              // of reserving a fixed slot that left the card clipped
-              // mid-glyph while empty space sat above it. The card
-              // scrolls only when the prompt genuinely exceeds what's
-              // left.
-              //
-              // Without one: the card scrolls if a long word problem
-              // exceeds the space above the keypad (an unflexed card
-              // overflowed there by design of the diagram path).
-              Expanded(
-                child: question.diagram == null
-                    ? Center(
-                        child: SingleChildScrollView(
-                          child: _PromptCard(prompt: question.prompt),
-                        ),
-                      )
-                    : CustomMultiChildLayout(
-                        delegate: _DiagramThenCardLayout(),
-                        children: [
-                          LayoutId(
-                            id: _QuestionSlot.diagram,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                              ),
-                              child: LayoutBuilder(
-                                builder: (context, constraints) => FittedBox(
-                                  fit: BoxFit.scaleDown,
-                                  child: ConstrainedBox(
-                                    // Bound the width so self-sizing
-                                    // diagram widgets lay out at phone
-                                    // width; FittedBox then scales the
-                                    // result down if the 45% cap binds.
-                                    constraints: BoxConstraints(
-                                      maxWidth: constraints.maxWidth,
-                                    ),
-                                    child: DiagramRenderer(
-                                      spec: question.diagram!,
+      body: SpeechScope(
+        service: _tts,
+        owner: this,
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // With a diagram: the diagram is measured FIRST at its
+                // natural size (capped at 45% of the space, so a long
+                // prompt can never crush it into a speck), and the prompt
+                // card gets the true remainder — a short diagram (ruler,
+                // number line) hands its unused space to the card instead
+                // of reserving a fixed slot that left the card clipped
+                // mid-glyph while empty space sat above it. The card
+                // scrolls only when the prompt genuinely exceeds what's
+                // left.
+                //
+                // Without one: the card scrolls if a long word problem
+                // exceeds the space above the keypad (an unflexed card
+                // overflowed there by design of the diagram path).
+                // The scroll views don't clip, so the speaker on the
+                // card's corner can sit outside its edge.
+                Expanded(
+                  child: question.diagram == null
+                      ? Center(
+                          child: SingleChildScrollView(
+                            clipBehavior: Clip.none,
+                            child: _PromptCard(prompt: question.prompt),
+                          ),
+                        )
+                      : CustomMultiChildLayout(
+                          delegate: _DiagramThenCardLayout(),
+                          children: [
+                            LayoutId(
+                              id: _QuestionSlot.diagram,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                ),
+                                child: LayoutBuilder(
+                                  builder: (context, constraints) => FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    child: ConstrainedBox(
+                                      // Bound the width so self-sizing
+                                      // diagram widgets lay out at phone
+                                      // width; FittedBox then scales the
+                                      // result down if the 45% cap binds.
+                                      constraints: BoxConstraints(
+                                        maxWidth: constraints.maxWidth,
+                                      ),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          DiagramRenderer(
+                                            spec: question.diagram!,
+                                          ),
+                                          if (showDottedHint)
+                                            const Padding(
+                                              padding: EdgeInsets.only(top: 8),
+                                              child: DottedWordHint(),
+                                            ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                          LayoutId(
-                            id: _QuestionSlot.card,
-                            child: SingleChildScrollView(
-                              child: _PromptCard(
-                                prompt: question.prompt,
-                                compact: true,
+                            LayoutId(
+                              id: _QuestionSlot.card,
+                              child: SingleChildScrollView(
+                                clipBehavior: Clip.none,
+                                child: _PromptCard(
+                                  prompt: question.prompt,
+                                  compact: true,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-              ),
-              const SizedBox(height: 16),
-              if (_useNumberPad)
-                NumberPadWidget(
-                  onSubmit: _onAnswerSubmitted,
-                  extraChars: _extraCharsFor(question),
-                )
-              else
-                ..._shuffledChoices.map(
-                  (choice) => Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 6),
-                    child: _ChoiceButton(
-                      label: choice,
-                      onTap: () => _onAnswerSubmitted(choice),
-                    ),
-                  ),
+                          ],
+                        ),
                 ),
-            ],
+                const SizedBox(height: 16),
+                if (_useNumberPad)
+                  NumberPadWidget(
+                    onSubmit: _onAnswerSubmitted,
+                    extraChars: _extraCharsFor(question),
+                  )
+                else
+                  for (var i = 0; i < _shuffledChoices.length; i++)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 6),
+                      child: _ChoiceButton(
+                        label: _shuffledChoices[i],
+                        itemId: 'choice:$i',
+                        onTap: () => _onAnswerSubmitted(_shuffledChoices[i]),
+                      ),
+                    ),
+              ],
+            ),
           ),
         ),
       ),
@@ -759,36 +790,91 @@ class _PromptCard extends StatelessWidget {
     final style = prompt.length > (compact ? 90 : 120)
         ? theme.textTheme.titleLarge
         : theme.textTheme.headlineMedium;
-    return Card(
-      elevation: 4,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
-        child: MathText(
-          prompt,
-          style: style?.copyWith(fontWeight: FontWeight.bold),
-          textAlign: TextAlign.center,
+    final radius = BorderRadius.circular(12);
+    // The speaker sits on the card's top-left corner, half outside it, so
+    // the text stays centred and the button is still a full 40 dp target.
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        SpeakingRing(
+          itemId: 'prompt',
+          borderRadius: radius,
+          child: Card(
+            elevation: 4,
+            shape: RoundedRectangleBorder(borderRadius: radius),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
+              child: SpokenWords(
+                prompt,
+                itemId: 'prompt',
+                style: style?.copyWith(fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
         ),
-      ),
+        Positioned(
+          top: -12,
+          left: -10,
+          child: SpeakerChip(
+            items: [SpeechItem('prompt', prompt)],
+            tooltip: 'Hear the question',
+            solid: true,
+          ),
+        ),
+      ],
     );
   }
 }
 
+/// An answer. One made of words carries a speaker on its left so a child
+/// can hear it before choosing; a number doesn't need one.
 class _ChoiceButton extends StatelessWidget {
-  const _ChoiceButton({required this.label, required this.onTap});
+  const _ChoiceButton({
+    required this.label,
+    required this.itemId,
+    required this.onTap,
+  });
 
   final String label;
+  final String itemId;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return OutlinedButton(
-      onPressed: onTap,
-      style: OutlinedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
-        textStyle: theme.textTheme.headlineSmall,
+    final spoken = hasReadableWords(label);
+    final words = SpokenWords(
+      label,
+      itemId: itemId,
+      textAlign: TextAlign.center,
+    );
+    return SpeakingRing(
+      itemId: itemId,
+      borderRadius: BorderRadius.circular(32),
+      child: OutlinedButton(
+        onPressed: onTap,
+        style: OutlinedButton.styleFrom(
+          padding: spoken
+              ? const EdgeInsets.fromLTRB(8, 10, 20, 10)
+              : const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
+          textStyle: theme.textTheme.headlineSmall,
+        ),
+        child: spoken
+            ? Row(
+                children: [
+                  SpeakerChip(
+                    items: [SpeechItem(itemId, label)],
+                    tooltip: 'Hear this answer',
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(child: words),
+                  // Balance the speaker so the words stay centred.
+                  const SizedBox(width: 36),
+                ],
+              )
+            : words,
       ),
-      child: MathText(label),
     );
   }
 }

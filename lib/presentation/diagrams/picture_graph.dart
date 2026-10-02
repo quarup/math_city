@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:math_city/domain/questions/diagram_spec.dart';
+import 'package:math_city/presentation/widgets/speech.dart';
 
 /// Renders a [PictureGraphSpec]: title on top, one row per category
 /// (row label on the left + icons stacked horizontally), and a "key"
@@ -29,7 +30,7 @@ class PictureGraph extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(spec.title, style: titleStyle),
+          SpokenLabel(spec.title, style: titleStyle),
           const SizedBox(height: 8),
           Table(
             defaultVerticalAlignment: TableCellVerticalAlignment.middle,
@@ -43,7 +44,7 @@ class PictureGraph extends StatelessWidget {
                 children: [
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 4, 12, 4),
-                    child: Text(spec.rowLabels[i], style: labelStyle),
+                    child: SpokenLabel(spec.rowLabels[i], style: labelStyle),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 4),
@@ -55,7 +56,7 @@ class PictureGraph extends StatelessWidget {
           ),
           if (spec.scale > 1) ...[
             const SizedBox(height: 6),
-            Text(
+            SpokenLabel(
               'Each picture = ${spec.scale}',
               style: labelStyle.copyWith(fontStyle: FontStyle.italic),
             ),

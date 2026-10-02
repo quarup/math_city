@@ -32,6 +32,20 @@ import 'package:math_city/presentation/diagrams/tape_diagram.dart';
 import 'package:math_city/presentation/diagrams/tree_diagram.dart';
 import 'package:math_city/presentation/diagrams/triangle_angles.dart';
 import 'package:math_city/presentation/diagrams/two_way_table.dart';
+import 'package:math_city/presentation/widgets/speech.dart';
+
+/// Whether [spec]'s widget draws dotted, tappable [SpokenLabel]s — the
+/// diagrams whose words are Flutter text. The chart-style diagrams paint
+/// their labels on a canvas and can't be tapped yet.
+bool hasSpokenLabels(DiagramSpec spec) => switch (spec) {
+  LengthBarsSpec() ||
+  PictureGraphSpec() ||
+  TapeDiagramSpec() ||
+  TwoWayTableSpec() ||
+  PositionalSceneSpec() ||
+  MoneySpec() => true,
+  _ => false,
+};
 
 /// Dispatches a [DiagramSpec] (pure-Dart value type) to the corresponding
 /// Flutter widget. Used by the question screen so generators in

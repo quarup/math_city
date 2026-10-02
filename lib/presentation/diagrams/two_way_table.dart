@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:math_city/domain/questions/diagram_spec.dart';
+import 'package:math_city/domain/questions/spoken_text.dart';
+import 'package:math_city/presentation/widgets/speech.dart';
 
 /// Renders a [TwoWayTableSpec] as a bordered grid with header row +
 /// header column + body counts. When [TwoWayTableSpec.showTotals] is
@@ -40,7 +42,10 @@ class TwoWayTable extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         color: fill,
         alignment: Alignment.center,
-        child: Text(text, style: style ?? cellStyle),
+        // Headings are words to hear; the counts are read as numbers.
+        child: hasReadableWords(text)
+            ? SpokenLabel(text, style: style ?? cellStyle)
+            : Text(text, style: style ?? cellStyle),
       );
     }
 
@@ -51,7 +56,7 @@ class TwoWayTable extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.only(bottom: 6),
-          child: Text(spec.title, style: headerStyle),
+          child: SpokenLabel(spec.title, style: headerStyle),
         ),
         Table(
           defaultColumnWidth: const IntrinsicColumnWidth(),

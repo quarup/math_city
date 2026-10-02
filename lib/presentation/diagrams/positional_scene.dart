@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:math_city/domain/questions/diagram_spec.dart';
+import 'package:math_city/presentation/widgets/speech.dart';
 
 /// Renders a [PositionalSceneSpec] as two labelled rectangles placed in
 /// the named spatial relation, so the K kid sees the scene rather than
@@ -89,7 +90,7 @@ class PositionalScene extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(spec.referenceLabel, style: labelStyle),
+              SpokenLabel(spec.referenceLabel, style: labelStyle),
               SizedBox(height: gap),
               subject,
             ],
@@ -144,7 +145,7 @@ class _Box extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(emoji, style: const TextStyle(fontSize: 44)),
-          Text(label, style: labelStyle, textAlign: TextAlign.center),
+          SpokenLabel(label, style: labelStyle, textAlign: TextAlign.center),
         ],
       );
     }
@@ -156,7 +157,7 @@ class _Box extends StatelessWidget {
         color: fill,
         border: Border.all(color: edge, width: 1.2),
       ),
-      child: Text(label, style: labelStyle, textAlign: TextAlign.center),
+      child: SpokenLabel(label, style: labelStyle, textAlign: TextAlign.center),
     );
   }
 }

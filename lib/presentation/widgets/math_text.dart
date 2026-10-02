@@ -13,17 +13,49 @@ import 'package:flutter/material.dart';
 /// superscript exponents, which are ordinary characters — renders as
 /// plain text.
 class MathText extends StatelessWidget {
-  const MathText(this.text, {this.style, this.textAlign, super.key});
+  const MathText(
+    this.text, {
+    this.style,
+    this.textAlign,
+    this.highlight,
+    this.highlightColor,
+    super.key,
+  });
 
   final String text;
   final TextStyle? style;
   final TextAlign? textAlign;
 
+  /// A run of [text] to paint on [highlightColor]: the word being read
+  /// aloud. Ignored in text that draws a radical, where character offsets
+  /// no longer line up with the painted spans.
+  final TextRange? highlight;
+  final Color? highlightColor;
+
   @override
   Widget build(BuildContext context) {
     final segments = parseMathSegments(text);
     if (segments.whereType<RadicalSegment>().isEmpty) {
-      return Text(text, style: style, textAlign: textAlign);
+      final range = highlight;
+      if (range == null || !range.isValid || range.isCollapsed) {
+        return Text(text, style: style, textAlign: textAlign);
+      }
+      final end = range.end.clamp(0, text.length);
+      final start = range.start.clamp(0, end);
+      return Text.rich(
+        TextSpan(
+          children: [
+            TextSpan(text: text.substring(0, start)),
+            TextSpan(
+              text: text.substring(start, end),
+              style: TextStyle(backgroundColor: highlightColor),
+            ),
+            TextSpan(text: text.substring(end)),
+          ],
+        ),
+        style: style,
+        textAlign: textAlign,
+      );
     }
     // The painter needs the resolved text style (font size, color) that
     // plain spans inherit implicitly from DefaultTextStyle.

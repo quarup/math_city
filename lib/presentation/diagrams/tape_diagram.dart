@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:math_city/domain/questions/diagram_spec.dart';
+import 'package:math_city/presentation/widgets/speech.dart';
 
 /// Renders a [TapeDiagramSpec] as two horizontal bars stacked
 /// vertically. Each bar is divided into unit cells of the same width,
@@ -36,7 +37,7 @@ class TapeDiagram extends StatelessWidget {
         if (spec.topLabel != null)
           Padding(
             padding: const EdgeInsets.only(bottom: 4),
-            child: Text(spec.topLabel!, style: labelStyle),
+            child: SpokenLabel(spec.topLabel!, style: labelStyle),
           ),
         SizedBox(
           width: width,
@@ -66,7 +67,7 @@ class TapeDiagram extends StatelessWidget {
         if (spec.bottomLabel != null)
           Padding(
             padding: const EdgeInsets.only(top: 4),
-            child: Text(spec.bottomLabel!, style: labelStyle),
+            child: SpokenLabel(spec.bottomLabel!, style: labelStyle),
           ),
       ],
     );

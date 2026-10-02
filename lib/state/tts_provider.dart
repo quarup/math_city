@@ -48,3 +48,16 @@ Future<void> speakIfEnabled(
   if (!enabled) return;
   await ref.read(ttsServiceProvider).speak(text, owner: owner);
 }
+
+/// [speakIfEnabled] for a sequence of question parts. The preference only
+/// gates reading a screen on its own; a tapped speaker button bypasses it
+/// and calls [TtsService.speakAll] directly.
+Future<void> speakAllIfEnabled(
+  WidgetRef ref,
+  List<SpeechItem> items, {
+  Object? owner,
+}) async {
+  final enabled = ref.read(ttsEnabledProvider).value ?? false;
+  if (!enabled) return;
+  await ref.read(ttsServiceProvider).speakAll(items, owner: owner);
+}

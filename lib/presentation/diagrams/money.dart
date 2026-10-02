@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:math_city/domain/questions/diagram_spec.dart';
+import 'package:math_city/presentation/widgets/speech.dart';
 
 /// Renders a [MoneySpec] as a left-to-right row of coins (circles) and
 /// bills (rounded rectangles), each labelled with its face value. The
@@ -69,7 +70,7 @@ class _MoneyChip extends StatelessWidget {
           border: Border.all(color: theme.colorScheme.outline, width: 1.2),
         ),
         alignment: Alignment.center,
-        child: Text(
+        child: SpokenLabel(
           label,
           style: showValue ? labelStyle : labelStyle.copyWith(fontSize: 11),
           textAlign: TextAlign.center,
@@ -85,7 +86,7 @@ class _MoneyChip extends StatelessWidget {
         border: Border.all(color: theme.colorScheme.outline, width: 1.2),
       ),
       alignment: Alignment.center,
-      child: Text(denom.label, style: labelStyle),
+      child: SpokenLabel(denom.label, style: labelStyle),
     );
   }
 

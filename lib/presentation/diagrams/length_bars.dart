@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:math_city/domain/questions/diagram_spec.dart';
+import 'package:math_city/presentation/widgets/speech.dart';
 
 /// Renders a [LengthBarsSpec] as a stack of horizontal bars whose widths
 /// are proportional to each row's measured length, so a kid can compare
@@ -59,7 +60,7 @@ class LengthBars extends StatelessWidget {
                 children: [
                   SizedBox(
                     width: maxLabelWidth + 8,
-                    child: Text(
+                    child: SpokenLabel(
                       bar.label,
                       style: labelStyle,
                       textAlign: TextAlign.right,
@@ -75,7 +76,7 @@ class LengthBars extends StatelessWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 6),
-                    child: Text(
+                    child: SpokenLabel(
                       '${bar.length} ${spec.unit}',
                       style: valueStyle,
                     ),

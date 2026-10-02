@@ -6,12 +6,12 @@ import 'package:math_city/domain/economy/question_block.dart';
 import 'package:math_city/domain/questions/answer_check.dart';
 import 'package:math_city/domain/questions/diagram_spec.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
-import 'package:math_city/domain/questions/is_word_problem.dart';
 import 'package:math_city/presentation/block/block_recap.dart';
 import 'package:math_city/presentation/diagrams/diagram_renderer.dart';
 import 'package:math_city/presentation/question/question_screen.dart';
 import 'package:math_city/presentation/theme/app_palette.dart';
 import 'package:math_city/presentation/widgets/math_text.dart';
+import 'package:math_city/presentation/widgets/speech.dart';
 import 'package:math_city/presentation/widgets/speech_toggle_button.dart';
 import 'package:math_city/services/debug_harness.dart';
 import 'package:math_city/services/tts_service.dart';
@@ -64,17 +64,16 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
   /// shortens the block).
   GeneratedQuestion? _next;
 
-  /// Joined explanation text iff this result screen has something worth
-  /// reading aloud — that is, a wrong-answer explanation that contains
-  /// real prose (per [isWordProblem]). Correct answers show no
-  /// explanation, and purely numeric explanations don't gain anything
-  /// from synthesis.
-  String? get _speakableText {
-    if (widget.outcome != AnswerOutcome.wrong) return null;
-    final joined = widget.question.explanation.join(' ');
-    if (!isWordProblem(joined)) return null;
-    return joined;
-  }
+  /// What the red screen reads: the player's answer, then each step of
+  /// the explanation. Empty on a correct answer, which shows no
+  /// explanation.
+  List<SpeechItem> get _speechItems => widget.outcome != AnswerOutcome.wrong
+      ? const []
+      : [
+          SpeechItem('answered', 'You answered: ${widget.selectedAnswer}'),
+          for (var i = 0; i < widget.question.explanation.length; i++)
+            SpeechItem('step:$i', widget.question.explanation[i]),
+        ];
 
   @override
   void initState() {
@@ -83,12 +82,12 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
     final block = widget.block;
     if (block != null && !block.isOver) _next = drawNextQuestion(ref, block);
     DebugHarness.instance.attachResult(outcome: widget.outcome);
-    final text = _speakableText;
-    if (text != null) {
+    final items = _speechItems;
+    if (items.isNotEmpty) {
       // Defer so the provider read happens after the first frame.
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
-        unawaited(speakIfEnabled(ref, text, owner: this));
+        unawaited(speakAllIfEnabled(ref, items, owner: this));
       });
     }
   }
@@ -136,150 +135,171 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
     final isCorrect = widget.outcome != AnswerOutcome.wrong;
     final isEquivalentNonCanonical =
         widget.outcome == AnswerOutcome.equivalentNonCanonical;
-    final speakable = _speakableText;
-
-    // Toggle off→on while this screen is alive: re-read the explanation.
-    // Initial AsyncLoading→AsyncData(true) is suppressed so the initState
-    // post-frame speak isn't doubled.
-    ref.listen<AsyncValue<bool>>(ttsEnabledProvider, (prev, next) {
-      final wasExplicitlyOff = prev is AsyncData<bool> && !prev.value;
-      final isOn = next is AsyncData<bool> && next.value;
-      if (!wasExplicitlyOff || !isOn) return;
-      if (speakable == null) return;
-      unawaited(ref.read(ttsServiceProvider).speak(speakable, owner: this));
-    });
-
     return Scaffold(
       backgroundColor: isCorrect
           ? palette.successGreenSoft
           : palette.errorRedSoft,
-      body: SafeArea(
-        child: Stack(
-          children: [
-            // Stop answering: pops the chain back to the wheel over the
-            // site (a debug question just returns to the concept list).
-            Positioned(
-              top: 4,
-              left: 4,
-              child: IconButton(
-                icon: const Icon(Icons.close_rounded),
-                tooltip: 'Stop',
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-            ),
-            if (speakable != null)
-              const Positioned(
+      body: SpeechScope(
+        service: _tts,
+        owner: this,
+        child: SafeArea(
+          child: Stack(
+            children: [
+              // Stop answering: pops the chain back to the wheel over the
+              // site (a debug question just returns to the concept list).
+              Positioned(
                 top: 4,
-                right: 4,
-                child: SpeechToggleIconButton(),
+                left: 4,
+                child: IconButton(
+                  icon: const Icon(Icons.close_rounded),
+                  tooltip: 'Stop',
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
               ),
-            Padding(
-              padding: const EdgeInsets.all(32),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const Spacer(),
-                  Icon(
-                    isCorrect
-                        ? Icons.check_circle_rounded
-                        : Icons.cancel_rounded,
-                    size: 80,
-                    color: isCorrect
-                        ? palette.successGreenDeep
-                        : palette.errorRedDeep,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    isCorrect ? 'Correct!' : 'Not quite…',
-                    style: theme.textTheme.headlineLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
+              if (!isCorrect)
+                const Positioned(
+                  top: 4,
+                  right: 4,
+                  child: SpeechToggleIconButton(),
+                ),
+              Padding(
+                padding: const EdgeInsets.all(32),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const Spacer(),
+                    Icon(
+                      isCorrect
+                          ? Icons.check_circle_rounded
+                          : Icons.cancel_rounded,
+                      size: 80,
                       color: isCorrect
                           ? palette.successGreenDeep
                           : palette.errorRedDeep,
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                  if (isEquivalentNonCanonical) ...[
                     const SizedBox(height: 16),
-                    EquivalentNudgeCard(
-                      playerAnswer: widget.selectedAnswer,
-                      canonical: widget.question.correctAnswer,
+                    Text(
+                      isCorrect ? 'Correct!' : 'Not quite…',
+                      style: theme.textTheme.headlineLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: isCorrect
+                            ? palette.successGreenDeep
+                            : palette.errorRedDeep,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
+                    if (isEquivalentNonCanonical) ...[
+                      const SizedBox(height: 16),
+                      EquivalentNudgeCard(
+                        playerAnswer: widget.selectedAnswer,
+                        canonical: widget.question.correctAnswer,
+                      ),
+                    ],
+                    if (!isCorrect) ...[
+                      const SizedBox(height: 24),
+                      _ExplanationCard(
+                        selectedAnswer: widget.selectedAnswer,
+                        explanation: widget.question.explanation,
+                        diagram: widget.question.explanationDiagram,
+                        speechItems: _speechItems,
+                      ),
+                    ],
+                    const Spacer(),
+                    FilledButton(
+                      onPressed: _onNext,
+                      style: FilledButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 18),
+                        textStyle: theme.textTheme.titleLarge,
+                      ),
+                      child: Text(_buttonLabel),
+                    ),
+                    const SizedBox(height: 12),
                   ],
-                  if (!isCorrect) ...[
-                    const SizedBox(height: 24),
-                    _ExplanationCard(
-                      selectedAnswer: widget.selectedAnswer,
-                      explanation: widget.question.explanation,
-                      diagram: widget.question.explanationDiagram,
-                    ),
-                  ],
-                  const Spacer(),
-                  FilledButton(
-                    onPressed: _onNext,
-                    style: FilledButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 18),
-                      textStyle: theme.textTheme.titleLarge,
-                    ),
-                    child: Text(_buttonLabel),
-                  ),
-                  const SizedBox(height: 12),
-                ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
+/// The explanation, with one speaker on its corner that reads the whole
+/// card again; each line is ringed as the voice reaches it.
 class _ExplanationCard extends StatelessWidget {
   const _ExplanationCard({
     required this.selectedAnswer,
     required this.explanation,
+    required this.speechItems,
     this.diagram,
   });
 
   final String selectedAnswer;
   final List<String> explanation;
+  final List<SpeechItem> speechItems;
   final DiagramSpec? diagram;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final palette = theme.extension<AppPalette>()!;
-    return Card(
-      color: theme.colorScheme.surfaceContainerLowest,
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            MathText(
-              'You answered: $selectedAnswer',
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: palette.errorRedDeep,
-              ),
-            ),
-            const SizedBox(height: 12),
-            if (diagram != null) ...[
-              Center(child: DiagramRenderer(spec: diagram!)),
-              const SizedBox(height: 12),
-            ],
-            for (final step in explanation)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 6),
-                child: MathText(
-                  step,
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
+    final lineRadius = BorderRadius.circular(6);
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Card(
+          color: theme.colorScheme.surfaceContainerLowest,
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SpeakingRing(
+                  itemId: 'answered',
+                  borderRadius: lineRadius,
+                  child: SpokenWords(
+                    'You answered: $selectedAnswer',
+                    itemId: 'answered',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: palette.errorRedDeep,
+                    ),
                   ),
                 ),
-              ),
-          ],
+                const SizedBox(height: 12),
+                if (diagram != null) ...[
+                  Center(child: DiagramRenderer(spec: diagram!)),
+                  const SizedBox(height: 12),
+                ],
+                for (var i = 0; i < explanation.length; i++)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 6),
+                    child: SpeakingRing(
+                      itemId: 'step:$i',
+                      borderRadius: lineRadius,
+                      child: SpokenWords(
+                        explanation[i],
+                        itemId: 'step:$i',
+                        style: theme.textTheme.bodyLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
         ),
-      ),
+        Positioned(
+          top: -12,
+          right: -8,
+          child: SpeakerChip(
+            items: speechItems,
+            tooltip: 'Hear the explanation',
+            solid: true,
+          ),
+        ),
+      ],
     );
   }
 }

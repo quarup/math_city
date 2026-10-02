@@ -19,6 +19,7 @@ class AppPalette extends ThemeExtension<AppPalette> {
     required this.errorRedDeep,
     required this.cityHillGreen,
     required this.tileInk,
+    required this.speechHighlight,
   });
 
   final Color skyGradientStart;
@@ -64,6 +65,9 @@ class AppPalette extends ThemeExtension<AppPalette> {
   /// Outline ink of the tile art (app icon, intro tiles, player stickers).
   final Color tileInk;
 
+  /// Behind the word the voice is on while a question is read aloud.
+  final Color speechHighlight;
+
   static const light = AppPalette(
     skyGradientStart: Color(0xFF5DB7E8),
     skyGradientEnd: Color(0xFFA4DDC9),
@@ -78,6 +82,7 @@ class AppPalette extends ThemeExtension<AppPalette> {
     errorRedDeep: Color(0xFFC62828),
     cityHillGreen: Color(0xFF5BBF7A),
     tileInk: Color(0xFF1E2A38),
+    speechHighlight: Color(0xFFFFE08A),
   );
 
   @override
@@ -95,6 +100,7 @@ class AppPalette extends ThemeExtension<AppPalette> {
     Color? errorRedDeep,
     Color? cityHillGreen,
     Color? tileInk,
+    Color? speechHighlight,
   }) {
     return AppPalette(
       skyGradientStart: skyGradientStart ?? this.skyGradientStart,
@@ -110,6 +116,7 @@ class AppPalette extends ThemeExtension<AppPalette> {
       errorRedDeep: errorRedDeep ?? this.errorRedDeep,
       cityHillGreen: cityHillGreen ?? this.cityHillGreen,
       tileInk: tileInk ?? this.tileInk,
+      speechHighlight: speechHighlight ?? this.speechHighlight,
     );
   }
 
@@ -142,6 +149,7 @@ class AppPalette extends ThemeExtension<AppPalette> {
       errorRedDeep: Color.lerp(errorRedDeep, other.errorRedDeep, t)!,
       cityHillGreen: Color.lerp(cityHillGreen, other.cityHillGreen, t)!,
       tileInk: Color.lerp(tileInk, other.tileInk, t)!,
+      speechHighlight: Color.lerp(speechHighlight, other.speechHighlight, t)!,
     );
   }
 }
