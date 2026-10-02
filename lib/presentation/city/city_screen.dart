@@ -636,7 +636,9 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
         row: row - _window!.minRow,
         width: w,
         height: h,
-        anchorY: 0.82,
+        // Low in the strip the wheel leaves free: the sprite rises well
+        // above its footprint, and at 0.82 the roof met the wheel.
+        anchorY: 0.9,
         widthFraction: 0.42,
         onDone: () {
           if (mounted && _mode == _CityMode.siteZoomed) _showWheel();
