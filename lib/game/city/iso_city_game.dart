@@ -102,6 +102,14 @@ class IsoCityGame extends FlameGame with DragCallbacks {
     return Vector2((wx + ex) / 2, (ny + sy) / 2);
   }
 
+  /// Where window tile `(col, row)`'s centre is on screen, in the game
+  /// widget's logical pixels — so a Flutter overlay (a coach hand) can sit
+  /// on a building and follow the camera.
+  Vector2 screenPointOfTile(int col, int row) {
+    final (x, y) = grid.centerOf(col, row);
+    return camera.localToGlobal(Vector2(x, y));
+  }
+
   /// Viewport pixels covered by the bottom bar the screen draws over the
   /// game. The game widget keeps one size whatever the bar does (so the
   /// camera never jumps when the bar changes height); framing and the

@@ -4,6 +4,7 @@ import 'dart:math' as math;
 import 'package:flame/game.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart' show Ticker;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_city/data/construction_sites.dart';
 import 'package:math_city/data/database.dart';
@@ -1887,6 +1888,20 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     _game?.clock.frozen = chapterOne;
     final hints = player?.guideHints;
     final showPlaceHint = hints != null && !GuideHint.placeHere.seenIn(hints);
+    // Chapter one's move step: a hand over Mrs. Pomeroy's house shows the
+    // kid what to tap first (the Move button then has its own hand).
+    final window = _window;
+    final moveHintHome =
+        guideStep == kMoveStep &&
+            atRest &&
+            letterBeat == null &&
+            _buyingBlock == null &&
+            _landProposal == null &&
+            window != null
+        ? placements
+              ?.where((p) => p.buildingTypeId == 'single_home')
+              .firstOrNull
+        : null;
     _scheduleNudge(
       wanted:
           atRest &&
@@ -2188,6 +2203,14 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                         right: 8,
                         child: SafeArea(
                           child: _ClockChip(minuteOfDay: _game!.minuteOfDay),
+                        ),
+                      ),
+                    if (moveHintHome != null)
+                      Positioned.fill(
+                        child: _MapCoachHand(
+                          game: _game!,
+                          col: moveHintHome.gridX - window!.minCol,
+                          row: moveHintHome.gridY - window.minRow,
                         ),
                       ),
                     // The front page on screen.
@@ -2746,6 +2769,54 @@ class _PopulationChip extends StatelessWidget {
 /// Bottom strip for a tapped building — its info card: emoji, name, what it
 /// does for the city, *Move* (picks it up; see [_MoveModeBar]) and X. The
 /// place for upgrade options later (house → bigger house, park → zoo).
+/// A tapping [CoachHand] over window tile `(col, row)` of the map,
+/// re-projected every frame so it stays on the building while the kid pans
+/// or pinches.
+class _MapCoachHand extends StatefulWidget {
+  const _MapCoachHand({
+    required this.game,
+    required this.col,
+    required this.row,
+  });
+
+  final IsoCityGame game;
+  final int col;
+  final int row;
+
+  @override
+  State<_MapCoachHand> createState() => _MapCoachHandState();
+}
+
+class _MapCoachHandState extends State<_MapCoachHand>
+    with SingleTickerProviderStateMixin {
+  late final Ticker _ticker = createTicker((_) => setState(() {}))..start();
+
+  @override
+  void dispose() {
+    _ticker.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final p = widget.game.screenPointOfTile(widget.col, widget.row);
+    // The fingertip is the hand's bottom centre; lift it off the ground
+    // diamond onto the house's walls.
+    return Stack(
+      children: [
+        Positioned(
+          left: p.x,
+          top: p.y - 12,
+          child: const FractionalTranslation(
+            translation: Offset(-0.5, -1),
+            child: CoachHand(mode: CoachHandMode.tap),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class _BuildingBar extends StatelessWidget {
   const _BuildingBar({
     required this.type,
