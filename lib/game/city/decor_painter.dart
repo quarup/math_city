@@ -6,16 +6,32 @@ import 'package:math_city/domain/city/terrain.dart';
 /// ground) at a tile centre. Everything is drawn in code at the mocks'
 /// 64 px tile and scaled to the live tile width, so no sprite sheet is
 /// needed for trees, bushes, flowers and rocks.
+///
+/// With a [silhouette] paint only the tall shape is drawn, in that paint —
+/// the night pass uses it to cut a tree out of the lights behind it.
 void paintDecor(
   Canvas canvas,
   DecorItem item,
   Offset tileCenter,
-  double tileWidth,
-) {
+  double tileWidth, {
+  Paint? silhouette,
+}) {
   final k = tileWidth / 64;
   final x = tileCenter.dx + item.dx * tileWidth;
   final y = tileCenter.dy + item.dy * tileWidth;
   final s = item.scale * k;
+  if (silhouette != null) {
+    if (item.kind != DecorKind.tree) return;
+    canvas
+      ..drawRect(
+        Rect.fromLTWH(x - 1.5 * s, y - 10 * s, 3 * s, 10 * s),
+        silhouette,
+      )
+      ..drawCircle(Offset(x, y - 15 * s), 9 * s, silhouette)
+      ..drawCircle(Offset(x - 3 * s, y - 18 * s), 6.5 * s, silhouette)
+      ..drawCircle(Offset(x + 4 * s, y - 13 * s), 5.5 * s, silhouette);
+    return;
+  }
   final fill = Paint();
   switch (item.kind) {
     case DecorKind.tree:

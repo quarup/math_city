@@ -12,6 +12,8 @@ import 'package:math_city/domain/city/road_sprites.dart';
 import 'package:math_city/domain/city/street_life.dart';
 import 'package:math_city/domain/city/terrain.dart';
 import 'package:math_city/domain/city/traffic.dart';
+import 'package:math_city/domain/city/window_lights.dart';
+import 'package:math_city/game/city/building_lights.dart';
 import 'package:math_city/game/city/decor_painter.dart';
 import 'package:math_city/game/city/iso_grid.dart';
 import 'package:math_city/game/city/pedestrian_system.dart';
@@ -36,7 +38,16 @@ class PlacedBuildingView {
     this.selected = false,
     this.stage,
     this.party = false,
+    this.lightSeed = 0,
+    this.lightProfile = LightProfile.home,
   });
+
+  /// A stable id of the placed building (its placement row), so each
+  /// building's windows keep their own hours (city_builder.md §12).
+  final int lightSeed;
+
+  /// Whose windows these are — a home's, a shop's — which sets the hours.
+  final LightProfile lightProfile;
 
   /// An event site on this footprint (city_builder.md §10.7): drawn as
   /// bunting around the venue instead of a building.
@@ -106,7 +117,16 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     required this.onTileTapped,
     required this.spriteFor,
     required this.vehicleSpriteFor,
+    required this.lightsFor,
   }) : _grid = grid;
+
+  /// Resolves a building sprite file to its lights and lit pixels, or null
+  /// if it has none (or they are not loaded yet).
+  final LitSprite? Function(String assetPath) lightsFor;
+
+  /// The town clock's exact hour, set by the host game every frame: the
+  /// night tint and the lights follow it.
+  double clockHour = kChapterOneHour;
 
   /// The board's tile↔screen geometry for the current window. Reassigned by the
   /// host game when land is bought and the window grows (see
@@ -135,6 +155,7 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
   set buildings(List<PlacedBuildingView> value) {
     _buildings = value;
     _hiddenDirty = true;
+    _lightStates.clear();
   }
 
   List<PlacedBuildingView> _buildings = const [];
@@ -561,13 +582,33 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     ];
     final vis = visibleWorldRect;
     final hidden = _hiddenTiles();
-    final items = <(double, void Function())>[
+    // The night: how dark it is, and how much the lights show. Each item
+    // carries, next to its draw, what it does in the light pass — a
+    // building cuts itself out of the lights behind it and adds its own
+    // windows; a tree only cuts itself out.
+    final night = nightStrengthAt(clockHour);
+    final dusk = duskWarmthAt(clockHour);
+    final darkness = night > dusk * 0.45 ? night : dusk * 0.45;
+    final lightLevel = ((darkness - 0.08) / 0.22).clamp(0.0, 1.0);
+    final items = <(double, void Function(), void Function()?)>[
       for (final b in buildings)
-        ((b.col + b.row).toDouble(), () => _drawBuilding(canvas, b)),
+        (
+          (b.col + b.row).toDouble(),
+          () => _drawBuilding(canvas, b),
+          b.stage == null && !b.party
+              ? () => _drawBuildingLights(canvas, b, lightLevel)
+              : null,
+        ),
       for (final d in _decorItems())
         if (!hidden.contains((d.col, d.row)) &&
             (vis == null || _inView(vis, d.col, d.row)))
-          (d.col + d.row + 0.5, () => _drawDecor(canvas, d)),
+          (
+            d.col + d.row + 0.5,
+            () => _drawDecor(canvas, d),
+            d.kind == DecorKind.tree
+                ? () => _drawDecor(canvas, d, silhouette: _erasePaint)
+                : null,
+          ),
       for (final v in pedestrians.views(grid))
         (
           moverDepth(v.col, v.row, footprints),
@@ -577,6 +618,7 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
             v.opacity,
             () => v.paint(canvas, citizenScale),
           ),
+          null,
         ),
       for (final v in traffic.views(grid))
         (
@@ -587,10 +629,22 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
             v.opacity,
             () => v.paint(canvas, spriteScale, vehicleSpriteFor),
           ),
+          null,
         ),
     ]..sort((a, b) => a.$1.compareTo(b.$1));
-    for (final (_, draw) in items) {
+    for (final (_, draw, _) in items) {
       draw();
+    }
+    _drawNightTint(canvas, night, dusk);
+    if (lightLevel > 0.02) {
+      // The lights go on their own layer over the tinted town, in the same
+      // back-to-front order, so a building in front hides the windows
+      // behind it.
+      canvas.saveLayer(vis?.inflate(grid.tileWidth * 2), Paint());
+      for (final (_, _, light) in items) {
+        light?.call();
+      }
+      canvas.restore();
     }
     if (placementEdges) _drawPlacementEdges(canvas);
     if (expandMode) _drawExpandMode(canvas);
@@ -1159,9 +1213,133 @@ class CityBoardComponent extends PositionComponent with TapCallbacks {
     return out;
   }
 
-  void _drawDecor(Canvas canvas, DecorItem d) {
+  void _drawDecor(Canvas canvas, DecorItem d, {Paint? silhouette}) {
     final (cx, cy) = grid.centerOf(d.col, d.row);
-    paintDecor(canvas, d, Offset(cx, cy), grid.tileWidth);
+    paintDecor(
+      canvas,
+      d,
+      Offset(cx, cy),
+      grid.tileWidth,
+      silhouette: silhouette,
+    );
+  }
+
+  // ---- Night: tint and lights (city_builder.md §12) ----------------------
+
+  /// Cuts a shape out of the light layer: whatever stands in front of a
+  /// lit window hides it.
+  final _erasePaint = Paint()..blendMode = BlendMode.dstOut;
+  final _glowPaint = Paint()
+    ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3);
+  final _litPaint = Paint()..filterQuality = FilterQuality.low;
+  static const _windowGlow = Color(0xFFFFD890);
+
+  /// The time of day over the whole scene: a warm wash at dawn and dusk,
+  /// a dark multiply at night. Drawn over the town and under its lights
+  /// and its overlays.
+  void _drawNightTint(Canvas canvas, double night, double dusk) {
+    if (night <= 0.02 && dusk <= 0.02) return;
+    final rect =
+        (visibleWorldRect ??
+                Rect.fromLTWH(0, 0, grid.boardWidth, grid.boardHeight))
+            .inflate(grid.tileWidth * 2);
+    if (dusk > 0.02) {
+      canvas.drawRect(
+        rect,
+        Paint()
+          ..color = const Color(0xFFFFAA5A).withValues(alpha: dusk * 0.35)
+          ..blendMode = BlendMode.multiply,
+      );
+    }
+    if (night > 0.02) {
+      canvas.drawRect(
+        rect,
+        Paint()
+          ..color = Color.fromARGB(
+            255,
+            (255 - 175 * night).round(),
+            (255 - 160 * night).round(),
+            (255 - 95 * night).round(),
+          )
+          ..blendMode = BlendMode.multiply,
+      );
+    }
+  }
+
+  /// Which of a building's windows are on this game minute: the fully lit
+  /// ones as one path, the ones mid-fade each with its level.
+  final Map<String, _LightState> _lightStates = {};
+
+  _LightState _lightStateFor(PlacedBuildingView b, SpriteLights lights) {
+    final minute = (clockHour * 60).floor();
+    final key = '${b.assetPath}#${b.lightSeed}';
+    final cached = _lightStates[key];
+    if (cached != null && cached.minute == minute) return cached;
+    Path? full;
+    final fading = <(Path, double)>[];
+    for (var i = 0; i < lights.regions.length; i++) {
+      final region = lights.regions[i];
+      final level = windowLightAt(
+        clockHour,
+        windowHoursFor(
+          seed: b.lightSeed,
+          index: i,
+          profile: b.lightProfile,
+          glow: region.glow,
+        ),
+      );
+      if (level <= 0.01) continue;
+      if (level >= 0.99) {
+        (full ??= Path()).addPath(region.path, Offset.zero);
+      } else {
+        fading.add((region.path, level));
+      }
+    }
+    return _lightStates[key] = _LightState(minute, full, fading);
+  }
+
+  /// A building in the light pass: it hides the lights behind it, then
+  /// shows its own lit windows — the sprite's lit pixels through the
+  /// regions that are on, over a soft glow.
+  void _drawBuildingLights(Canvas canvas, PlacedBuildingView b, double level) {
+    final path = b.assetPath;
+    final sprite = path == null ? null : spriteFor(path);
+    if (path == null || sprite == null) return;
+    _drawSprite(canvas, b, sprite, overridePaint: _erasePaint);
+    final lit = lightsFor(path);
+    if (lit == null) return;
+    final state = _lightStateFor(b, lit.lights);
+    if (state.full == null && state.fading.isEmpty) return;
+    // Sprite pixels → board space, anchored like `_drawSprite`.
+    final (w, hTiles) = b.footprint;
+    final (mcx, mcy) = grid.centerOf(b.col + w - 1, b.row + hTiles - 1);
+    final scale = grid.tileWidth / kSpriteAuthoringTilePx;
+    final size = sprite.srcSize * scale;
+    canvas
+      ..save()
+      ..translate(mcx - size.x * w / (w + hTiles), mcy + _halfH - size.y)
+      ..scale(scale);
+    void shine(Path region, double alpha) {
+      canvas
+        ..drawPath(
+          region,
+          _glowPaint..color = _windowGlow.withValues(alpha: 0.4 * alpha),
+        )
+        ..save()
+        ..clipPath(region)
+        ..drawImage(
+          lit.lit,
+          Offset.zero,
+          _litPaint..color = Color.fromRGBO(255, 255, 255, alpha),
+        )
+        ..restore();
+    }
+
+    if (state.full case final full?) shine(full, level);
+    for (final (region, alpha) in state.fading) {
+      shine(region, alpha * level);
+    }
+    canvas.restore();
   }
 
   /// Draws one auto-road tile: resolves the connection mask to a canonical
@@ -1476,4 +1654,17 @@ Path dashedPath(
     }
   }
   return out;
+}
+
+/// A building's lit windows at one game minute.
+class _LightState {
+  const _LightState(this.minute, this.full, this.fading);
+
+  final int minute;
+
+  /// Every fully lit region as one path, or null if none is.
+  final Path? full;
+
+  /// Regions coming on or going off, each with its level `0..1`.
+  final List<(Path, double)> fading;
 }

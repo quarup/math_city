@@ -1,0 +1,156 @@
+"""Shared pieces of the night-lights pipeline (city_builder.md §12).
+
+detect.py finds candidate window regions on each building sprite; the review
+server lets a person switch them on and off or draw their own; build.py bakes
+the chosen regions into the assets the app draws at night:
+
+    assets/buildings/lights.json        polygons + kind per sprite
+    assets/buildings/lit/<sprite>.png   the lit pixels of those regions
+
+Run with the sprite pipeline's venv (needs numpy, opencv, Pillow):
+
+    tools/sprite_pipeline/.venv/bin/python tools/night_lights/detect.py
+"""
+from __future__ import annotations
+
+import json
+import zlib
+from pathlib import Path
+
+import cv2
+import numpy as np
+from PIL import Image
+
+ROOT = Path(__file__).resolve().parents[2]
+SPRITES = ROOT / "assets" / "buildings"
+LIT_DIR = SPRITES / "lit"
+LIGHTS_JSON = SPRITES / "lights.json"
+HERE = Path(__file__).resolve().parent
+CANDIDATES_JSON = HERE / "candidates.json"
+OVERRIDES_JSON = HERE / "overrides.json"
+
+# Night tint the previews use — the app's multiply colour at full night
+# (sky_component.dart: 255 - 175, 255 - 160, 255 - 95).
+NIGHT_TINT = np.array([80, 95, 160], dtype=np.float32) / 255.0
+
+# Window light colours, picked per region by a stable hash so a facade is not
+# one flat yellow: mostly warm, a little variety, the odd cool one.
+WINDOW_COLOURS = [
+    (255, 214, 140),
+    (255, 214, 140),
+    (255, 226, 166),
+    (255, 226, 166),
+    (255, 200, 118),
+    (255, 236, 196),
+    (240, 236, 222),
+    (206, 226, 255),
+]
+
+
+def sprite_names() -> list[str]:
+    """Every building sprite (`<id>_v<n>.png`), roads excluded."""
+    return sorted(
+        p.stem for p in SPRITES.glob("*_v*.png") if not p.stem.startswith("road")
+    )
+
+
+def load_rgba(name: str) -> np.ndarray:
+    return np.array(Image.open(SPRITES / f"{name}.png").convert("RGBA"))
+
+
+def stable_hash(*parts) -> int:
+    return zlib.crc32("/".join(str(p) for p in parts).encode())
+
+
+def polygon_mask(shape: tuple[int, int], polygon: list[float]) -> np.ndarray:
+    """Boolean mask of a flat `[x0, y0, x1, y1, ...]` polygon."""
+    pts = np.array(polygon, dtype=np.float32).reshape(-1, 2)
+    mask = np.zeros(shape, dtype=np.uint8)
+    cv2.fillPoly(mask, [np.round(pts).astype(np.int32)], 255)
+    return mask > 0
+
+
+def region_centroid(polygon: list[float]) -> tuple[float, float]:
+    pts = np.array(polygon, dtype=np.float32).reshape(-1, 2)
+    return float(pts[:, 0].mean()), float(pts[:, 1].mean())
+
+
+def bake_lit(rgba: np.ndarray, regions: list[dict], sprite: str) -> np.ndarray:
+    """The lit pixels of [regions] as an RGBA image the size of the sprite.
+
+    A window keeps the sprite's own detail — frames, curtains, panes — as a
+    brightness pattern, recoloured to a warm light; a `glow` region (signs,
+    lamps, screens) keeps its own hue and is pushed bright. Alpha is the
+    region's coverage with a one-pixel feather, clipped to the sprite.
+    """
+    h, w = rgba.shape[:2]
+    rgb = rgba[..., :3].astype(np.float32)
+    luma = (0.299 * rgb[..., 0] + 0.587 * rgb[..., 1] + 0.114 * rgb[..., 2]) / 255.0
+    out = np.zeros((h, w, 4), dtype=np.float32)
+    for region in regions:
+        mask = polygon_mask((h, w), region["p"]) & (rgba[..., 3] > 40)
+        if not mask.any():
+            continue
+        cx, cy = region_centroid(region["p"])
+        seed = stable_hash(sprite, round(cx), round(cy))
+        values = luma[mask]
+        lo, hi = np.percentile(values, 5), np.percentile(values, 95)
+        norm = np.clip((luma - lo) / max(hi - lo, 0.08), 0.0, 1.0)
+        if region.get("k") == "g":
+            # Keep the hue: scale each pixel so its brightest channel is full.
+            peak = np.maximum(rgb.max(axis=2, keepdims=True), 1.0)
+            colour = rgb / peak * 255.0
+            colour = colour * 0.75 + 255.0 * 0.25
+            shade = 0.86 + 0.14 * norm
+        else:
+            base = np.array(
+                WINDOW_COLOURS[seed % len(WINDOW_COLOURS)], dtype=np.float32
+            )
+            colour = np.broadcast_to(base, rgb.shape)
+            # Brighter towards the top of the window, like a ceiling lamp.
+            ys = np.arange(h, dtype=np.float32)[:, None]
+            y0, y1 = np.where(mask.any(axis=1))[0][[0, -1]]
+            fall = 1.0 - 0.14 * np.clip((ys - y0) / max(y1 - y0, 1), 0, 1)
+            shade = (0.74 + 0.26 * norm) * fall
+        lit = np.clip(colour * shade[..., None], 0, 255)
+        soft = cv2.GaussianBlur(mask.astype(np.float32), (0, 0), 0.6)
+        soft = np.clip(soft * 1.25, 0, 1) * (rgba[..., 3] / 255.0)
+        better = soft > out[..., 3]
+        out[..., :3][better] = lit[better]
+        out[..., 3][better] = soft[better]
+    out[..., 3] *= 255.0
+    return np.clip(out, 0, 255).astype(np.uint8)
+
+
+def night_preview(
+    rgba: np.ndarray, lit: np.ndarray, background=(18, 24, 38)
+) -> np.ndarray:
+    """What the sprite looks like at night with [lit] switched on: the
+    tinted sprite, a soft glow, then the lit pixels. RGB, on [background]."""
+    h, w = rgba.shape[:2]
+    alpha = rgba[..., 3:4].astype(np.float32) / 255.0
+    base = rgba[..., :3].astype(np.float32) * NIGHT_TINT
+    canvas = np.empty((h, w, 3), dtype=np.float32)
+    canvas[:] = background
+    canvas = canvas * (1 - alpha) + base * alpha
+    la = lit[..., 3:4].astype(np.float32) / 255.0
+    lrgb = lit[..., :3].astype(np.float32)
+    glow_a = cv2.GaussianBlur(la, (0, 0), 3.0)[..., None] if la.any() else la
+    glow_c = cv2.GaussianBlur(lrgb * la, (0, 0), 3.0)
+    canvas = canvas + glow_c * 0.55 * (glow_a > 0)
+    canvas = canvas * (1 - la) + lrgb * la
+    return np.clip(canvas, 0, 255).astype(np.uint8)
+
+
+def read_json(path: Path, default):
+    if not path.exists():
+        return default
+    return json.loads(path.read_text())
+
+
+def write_json(path: Path, data, compact=False) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if compact:
+        path.write_text(json.dumps(data, separators=(",", ":")) + "\n")
+    else:
+        path.write_text(json.dumps(data, indent=1) + "\n")

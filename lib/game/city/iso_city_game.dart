@@ -7,10 +7,12 @@ import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flame/sprite.dart';
 import 'package:flutter/foundation.dart' show ValueNotifier;
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:math_city/domain/city/day_clock.dart';
 import 'package:math_city/domain/city/road_sprites.dart';
 import 'package:math_city/domain/city/street_life.dart';
 import 'package:math_city/domain/city/traffic.dart' show vehicleHeadings;
+import 'package:math_city/game/city/building_lights.dart';
 import 'package:math_city/game/city/camera_focus.dart';
 import 'package:math_city/game/city/city_board_component.dart';
 import 'package:math_city/game/city/iso_grid.dart';
@@ -215,6 +217,7 @@ class IsoCityGame extends FlameGame with DragCallbacks {
       board
         ..visibleWorldRect = camera.visibleWorldRect
         ..cameraZoom = camera.viewfinder.zoom
+        ..clockHour = clock.hour
         ..setHour(clock.hour);
     }
     final to = _tweenToPos;
@@ -279,11 +282,53 @@ class IsoCityGame extends FlameGame with DragCallbacks {
     }
   }
 
+  /// Which windows light up on which sprite (city_builder.md §12), from
+  /// `assets/buildings/lights.json`; empty until it has loaded.
+  Map<String, SpriteLights> _lights = const {};
+  final Images _litImages = Images(prefix: 'assets/buildings/lit/');
+  final Map<String, LitSprite> _litSprites = <String, LitSprite>{};
+  final Set<String> _loadingLit = <String>{};
+
+  /// The lights of a building sprite and its lit pixels, once both are
+  /// loaded; null for a sprite without lights. Read by the board at night.
+  LitSprite? lightsFor(String assetPath) => _litSprites[assetPath];
+
+  Future<void> _loadLights() async {
+    try {
+      _lights = parseBuildingLights(
+        await rootBundle.loadString('assets/buildings/lights.json'),
+      );
+    } on Object {
+      return; // no lights asset: nights are simply dark
+    }
+    _ensureLitLoaded([..._sprites.keys, ..._loadingSprites]);
+  }
+
+  void _ensureLitLoaded(Iterable<String> assetPaths) {
+    for (final path in assetPaths) {
+      final lights = _lights[path.replaceAll('.png', '')];
+      if (lights == null || _litSprites.containsKey(path)) continue;
+      if (!_loadingLit.add(path)) continue;
+      unawaited(
+        _litImages
+            .load(path)
+            .then((image) {
+              _litSprites[path] = (lights: lights, lit: image);
+            })
+            .catchError((Object _) {
+              _loadingLit.remove(path);
+            }),
+      );
+    }
+  }
+
   /// Kicks off async loads for any referenced sprite we don't have cached.
   /// Each completed load lands in [_sprites]; Flame re-renders every frame, so
   /// the building swaps from box placeholder to sprite as soon as it arrives.
   void _ensureSpritesLoaded(Iterable<String> assetPaths) {
-    for (final path in assetPaths) {
+    final paths = assetPaths.toList();
+    _ensureLitLoaded(paths);
+    for (final path in paths) {
       if (_sprites.containsKey(path) || !_loadingSprites.add(path)) continue;
       unawaited(
         Sprite.load(path, images: _buildingImages)
@@ -307,8 +352,10 @@ class IsoCityGame extends FlameGame with DragCallbacks {
       onTileTapped: onTileTapped,
       spriteFor: spriteFor,
       vehicleSpriteFor: vehicleSpriteFor,
+      lightsFor: lightsFor,
     );
     unawaited(_loadVehicleSprites());
+    unawaited(_loadLights());
     if (_pendingBuildings != null) board.buildings = _pendingBuildings!;
     if (_pendingRoads != null) board.roads = _pendingRoads!;
     if (_pendingStreetLife case (final population, final buildingIds)) {
@@ -318,11 +365,10 @@ class IsoCityGame extends FlameGame with DragCallbacks {
     if (_pendingOrigin != null) board.origin = _pendingOrigin!;
     if (_pendingLandSites != null) board.landSites = _pendingLandSites!;
     await world.add(board);
-    // A flat backdrop behind the world and the time-of-day tint over it.
-    Vector2 viewportSize() => camera.viewport.size;
-    await camera.backdrop.add(SkyBackdrop(viewportSize: viewportSize));
-    await camera.viewport.add(
-      SkyTint(hour: () => clock.hour, viewportSize: viewportSize),
+    // A flat backdrop behind the world; the board itself paints the
+    // time-of-day tint, with the lights on top of it.
+    await camera.backdrop.add(
+      SkyBackdrop(viewportSize: () => camera.viewport.size),
     );
     camera.viewfinder.position = _boardCenter;
     _maybeFit();

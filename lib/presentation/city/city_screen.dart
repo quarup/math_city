@@ -24,6 +24,7 @@ import 'package:math_city/domain/city/road_network.dart';
 import 'package:math_city/domain/city/story_beat.dart';
 import 'package:math_city/domain/city/terrain.dart';
 import 'package:math_city/domain/city/upgrade_ladders.dart';
+import 'package:math_city/domain/city/window_lights.dart';
 import 'package:math_city/domain/economy/question_block.dart';
 import 'package:math_city/domain/proficiency/proficiency_band.dart';
 import 'package:math_city/game/city/camera_focus.dart';
@@ -1515,6 +1516,11 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
           color: _colorFor(type),
           footprint: type.footprint,
           assetPath: _assetPathFor(type, slotById[p.id] ?? 0),
+          lightSeed: p.id,
+          lightProfile: lightProfileFor(
+            typeId: type.id,
+            category: type.category,
+          ),
           selected:
               p.id == _movingId ||
               p.id == _selectedBuildingId ||

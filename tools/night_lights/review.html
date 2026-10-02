@@ -1,0 +1,240 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Math City night lights</title>
+<style>
+  :root { --bg: #10161f; --panel: #18212d; --line: #2a3644; --ink: #e8eef4; --muted: #8fa1b3; --accent: #ffd27a; --on: #6fd08c; --off: #ff7a70; }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body { display: grid; grid-template-columns: 270px 1fr; background: var(--bg); color: var(--ink); font: 14px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  aside { border-right: 1px solid var(--line); display: flex; flex-direction: column; min-height: 0; background: var(--panel); }
+  aside header { padding: 14px 14px 10px; border-bottom: 1px solid var(--line); }
+  aside h1 { font-size: 16px; margin: 0 0 4px; }
+  #progress { color: var(--muted); font-size: 12.5px; }
+  aside label { display: flex; gap: 6px; align-items: center; margin-top: 8px; color: var(--muted); font-size: 12.5px; }
+  #list { overflow-y: auto; flex: 1; padding: 6px 0; }
+  #list button { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; width: 100%; text-align: left; background: none; border: 0; color: var(--ink); padding: 5px 14px; font: inherit; cursor: pointer; }
+  #list button:hover { background: #202c3a; }
+  #list button.current { background: #26364a; }
+  #list .n { color: var(--muted); font-variant-numeric: tabular-nums; }
+  #list .ok { color: var(--on); width: 1em; }
+  main { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+  .bar { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--line); background: var(--panel); }
+  .bar h2 { font-size: 16px; margin: 0 8px 0 0; }
+  .group { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .group button, .bar > button { background: #1f2a38; color: var(--ink); border: 0; padding: 6px 11px; font: inherit; cursor: pointer; }
+  .bar > button { border: 1px solid var(--line); border-radius: 8px; }
+  .group button + button { border-left: 1px solid var(--line); }
+  .group button.active { background: var(--accent); color: #2a1f00; font-weight: 600; }
+  .bar > button.primary { background: var(--on); color: #06220f; font-weight: 600; border-color: transparent; }
+  .bar kbd { font: 11px ui-monospace, Menlo, monospace; opacity: .7; margin-left: 4px; }
+  .bar .spacer { flex: 1; }
+  #status { color: var(--muted); font-size: 12.5px; }
+  #stage { flex: 1; overflow: auto; display: grid; place-items: center; padding: 20px; }
+  canvas { image-rendering: pixelated; cursor: crosshair; border-radius: 6px; }
+  #help { padding: 8px 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12.5px; background: var(--panel); }
+  input[type=range] { accent-color: var(--accent); }
+</style>
+<aside>
+  <header>
+    <h1>Night lights</h1>
+    <div id="progress"></div>
+    <label><input type="checkbox" id="hideDone"> Hide reviewed</label>
+  </header>
+  <div id="list"></div>
+</aside>
+<main>
+  <div class="bar">
+    <h2 id="title"></h2>
+    <div class="group" id="tools">
+      <button data-tool="toggle">Toggle<kbd>T</kbd></button>
+      <button data-tool="wand">Wand<kbd>W</kbd></button>
+      <button data-tool="box">Box<kbd>B</kbd></button>
+    </div>
+    <div class="group" id="kinds" title="What a new region is">
+      <button data-kind="w">Window</button>
+      <button data-kind="g">Glow (sign, lamp)</button>
+    </div>
+    <div class="group" id="slopes" title="Which way the box's top edge runs">
+      <button data-slope="0.5">╲</button>
+      <button data-slope="-0.5">╱</button>
+      <button data-slope="0">▭</button>
+    </div>
+    <label>Wand <input type="range" id="tol" min="6" max="48" value="18"></label>
+    <div class="group">
+      <button id="day">Day / night<kbd>D</kbd></button>
+      <button id="outlines">Outlines<kbd>O</kbd></button>
+      <button id="zoom">Zoom<kbd>Z</kbd></button>
+    </div>
+    <div class="group">
+      <button id="allOn">All on<kbd>A</kbd></button>
+      <button id="allOff">All off<kbd>N</kbd></button>
+    </div>
+    <span class="spacer"></span>
+    <span id="status"></span>
+    <button id="prev">←</button>
+    <button id="next">→</button>
+    <button class="primary" id="done">Reviewed, next<kbd>R</kbd></button>
+  </div>
+  <div id="stage"><canvas id="c"></canvas></div>
+  <div id="help">
+    <b>Toggle</b>: click a region to switch it on or off (red outlines are off). Alt-click changes its kind.
+    <b>Wand</b>: click a window the detector missed. <b>Box</b>: drag a window shape; pick the slope first.
+    A region you added is deleted when you switch it off. Everything saves as you go.
+  </div>
+</main>
+<script>
+'use strict';
+const $ = (id) => document.getElementById(id);
+const S = { sprites: {}, names: [], cur: null, tool: 'toggle', kind: 'w', slope: 0.5, night: true, outlines: true, zoom: 0, hover: null, drag: null, tint: [80, 95, 160] };
+const canvas = $('c'), ctx = canvas.getContext('2d');
+let spriteImg = null, litImg = null, tinted = null, litVersion = 0;
+
+function loadImage(src) { return new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = rej; im.src = src; }); }
+const cur = () => S.sprites[S.cur];
+function zoomFor(sp) { if (S.zoom) return S.zoom; const [w, h] = sp.size; const stage = $('stage'); const fit = Math.min((stage.clientWidth - 40) / w, (stage.clientHeight - 40) / h); return Math.max(1, Math.min(6, Math.floor(fit * 2) / 2)); }
+
+async function open(name) {
+  S.cur = name; S.hover = null; S.drag = null;
+  const sp = cur();
+  spriteImg = await loadImage(`/sprites/${name}.png`);
+  await reloadLit();
+  // The sprite under the app's night tint: multiply, then cut back to its alpha.
+  tinted = document.createElement('canvas'); tinted.width = sp.size[0]; tinted.height = sp.size[1];
+  const t = tinted.getContext('2d'); t.drawImage(spriteImg, 0, 0);
+  t.globalCompositeOperation = 'multiply'; t.fillStyle = `rgb(${S.tint})`; t.fillRect(0, 0, tinted.width, tinted.height);
+  t.globalCompositeOperation = 'destination-in'; t.drawImage(spriteImg, 0, 0);
+  renderList(); render();
+  document.querySelector('#list .current')?.scrollIntoView({ block: 'nearest' });
+}
+async function reloadLit() { litImg = await loadImage(`/api/lit/${S.cur}.png?v=${++litVersion}`); }
+
+function pathOf(c, regions, z) {
+  c.beginPath();
+  for (const r of regions) { const p = r.p; c.moveTo(p[0] * z, p[1] * z); for (let i = 2; i < p.length; i += 2) c.lineTo(p[i] * z, p[i + 1] * z); c.closePath(); }
+}
+function render() {
+  const sp = cur(); if (!sp || !spriteImg) return;
+  const z = zoomFor(sp), [w, h] = sp.size;
+  canvas.width = w * z; canvas.height = h * z;
+  ctx.imageSmoothingEnabled = false;
+  ctx.fillStyle = S.night ? '#121826' : '#5b7a52'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+  const on = sp.regions.filter((r) => r.on);
+  if (S.night) {
+    ctx.drawImage(tinted, 0, 0, w * z, h * z);
+    if (on.length && litImg) {
+      const layer = document.createElement('canvas'); layer.width = w; layer.height = h;
+      const l = layer.getContext('2d'); pathOf(l, on, 1); l.clip(); l.drawImage(litImg, 0, 0);
+      ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = 0.55; ctx.filter = `blur(${3 * z}px)`; ctx.drawImage(layer, 0, 0, w * z, h * z); ctx.restore();
+      ctx.drawImage(layer, 0, 0, w * z, h * z);
+    }
+  } else {
+    ctx.drawImage(spriteImg, 0, 0, w * z, h * z);
+    ctx.strokeStyle = 'rgba(255,210,90,.95)'; ctx.lineWidth = 1.5; pathOf(ctx, on, z); ctx.stroke();
+  }
+  if (S.outlines) {
+    ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(255,110,100,.85)'; pathOf(ctx, sp.regions.filter((r) => !r.on), z); ctx.stroke();
+    ctx.strokeStyle = 'rgba(120,200,255,.9)'; pathOf(ctx, on.filter((r) => r.k === 'g'), z); ctx.stroke();
+  }
+  if (S.hover) { ctx.lineWidth = 2; ctx.strokeStyle = '#fff'; pathOf(ctx, [S.hover], z); ctx.stroke(); }
+  if (S.drag) { ctx.lineWidth = 1.5; ctx.strokeStyle = '#fff'; ctx.setLineDash([4, 3]); pathOf(ctx, [{ p: boxPolygon(S.drag) }], z); ctx.stroke(); ctx.setLineDash([]); }
+  $('title').textContent = S.cur;
+  $('status').textContent = `${on.length} on · ${sp.regions.length - on.length} off`;
+}
+function renderList() {
+  const hide = $('hideDone').checked;
+  const done = S.names.filter((n) => S.sprites[n].reviewed).length;
+  $('progress').textContent = `${done} of ${S.names.length} reviewed`;
+  $('list').innerHTML = '';
+  for (const n of S.names) {
+    const sp = S.sprites[n]; if (hide && sp.reviewed && n !== S.cur) continue;
+    const b = document.createElement('button'); if (n === S.cur) b.className = 'current';
+    b.innerHTML = `<span>${n}</span><span class="n">${sp.regions.filter((r) => r.on).length}</span><span class="ok">${sp.reviewed ? '✓' : ''}</span>`;
+    b.onclick = () => open(n); $('list').appendChild(b);
+  }
+}
+
+function inside(p, x, y) { let hit = false; for (let i = 0, j = p.length - 2; i < p.length; j = i, i += 2) { const xi = p[i], yi = p[i + 1], xj = p[j], yj = p[j + 1]; if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) hit = !hit; } return hit; }
+function areaOf(p) { let a = 0; for (let i = 0, j = p.length - 2; i < p.length; j = i, i += 2) a += (p[j] + p[i]) * (p[j + 1] - p[i + 1]); return Math.abs(a / 2); }
+function regionAt(x, y) { let best = null, bestArea = Infinity; for (const r of cur().regions) if (inside(r.p, x, y)) { const a = areaOf(r.p); if (a < bestArea) { best = r; bestArea = a; } } return best; }
+function pos(e) { const rect = canvas.getBoundingClientRect(), z = zoomFor(cur()); return [(e.clientX - rect.left) * (canvas.width / rect.width) / z, (e.clientY - rect.top) * (canvas.height / rect.height) / z]; }
+function boxPolygon(d) { const s = S.slope, dx = d.x1 - d.x0, top1 = d.y0 + s * dx, hh = d.y1 - top1; return [d.x0, d.y0, d.x1, top1, d.x1, top1 + hh, d.x0, d.y0 + hh].map((v) => Math.round(v * 10) / 10); }
+function centroidId(p) { let x = 0, y = 0; for (let i = 0; i < p.length; i += 2) { x += p[i]; y += p[i + 1]; } const n = p.length / 2; return `a${Math.round(x / n)}_${Math.round(y / n)}`; }
+
+let saveTimer = null;
+function save(needLit) {
+  const sp = cur(), name = S.cur;
+  const body = { set: {}, kind: {}, added: [], reviewed: sp.reviewed };
+  for (const r of sp.regions) { body.set[r.id] = r.on; if (r.k !== 'w') body.kind[r.id] = r.k; if (r.added) body.added.push({ id: r.id, k: r.k, p: r.p }); }
+  clearTimeout(saveTimer);
+  const send = async () => { await fetch(`/api/save/${name}`, { method: 'POST', body: JSON.stringify(body) }); if (needLit && name === S.cur) { await reloadLit(); render(); } };
+  if (needLit) return send();
+  saveTimer = setTimeout(send, 250);
+}
+async function addRegion(p) {
+  if (!p || p.length < 6) return;
+  const sp = cur(); let id = centroidId(p); while (sp.regions.some((r) => r.id === id)) id += 'x';
+  sp.regions.push({ id, k: S.kind, on: true, p, added: true });
+  await save(true); renderList();
+}
+
+canvas.addEventListener('mousemove', (e) => {
+  const [x, y] = pos(e);
+  if (S.drag) { S.drag.x1 = x; S.drag.y1 = y; render(); return; }
+  const h = S.tool === 'toggle' ? regionAt(x, y) : null; if (h !== S.hover) { S.hover = h; render(); }
+});
+canvas.addEventListener('mouseleave', () => { if (S.hover) { S.hover = null; render(); } });
+canvas.addEventListener('mousedown', (e) => { if (S.tool !== 'box') return; const [x, y] = pos(e); S.drag = { x0: x, y0: y, x1: x, y1: y }; });
+window.addEventListener('mouseup', async () => {
+  if (!S.drag) return; const d = S.drag; S.drag = null;
+  if (Math.abs(d.x1 - d.x0) >= 3 && Math.abs(d.y1 - d.y0) >= 3) await addRegion(boxPolygon(d)); render();
+});
+canvas.addEventListener('click', async (e) => {
+  const [x, y] = pos(e); const sp = cur();
+  if (S.tool === 'toggle') {
+    const r = regionAt(x, y); if (!r) return;
+    if (e.altKey) { r.k = r.k === 'w' ? 'g' : 'w'; S.hover = null; await save(true); render(); return; }
+    if (r.added && r.on) { sp.regions.splice(sp.regions.indexOf(r), 1); S.hover = null; await save(true); } else { r.on = !r.on; save(false); }
+    renderList(); render();
+  } else if (S.tool === 'wand') {
+    const res = await fetch(`/api/wand/${S.cur}`, { method: 'POST', body: JSON.stringify({ x: Math.floor(x), y: Math.floor(y), tol: +$('tol').value }) });
+    const { p } = await res.json(); if (!p) { $('status').textContent = 'wand: nothing there (try a higher tolerance)'; return; }
+    await addRegion(p); render();
+  }
+});
+
+function setActive(groupId, attr, value) { for (const b of $(groupId).children) b.classList.toggle('active', b.dataset[attr] === String(value)); }
+function setTool(t) { S.tool = t; S.hover = null; setActive('tools', 'tool', t); render(); }
+$('tools').onclick = (e) => { const t = e.target.closest('button')?.dataset.tool; if (t) setTool(t); };
+$('kinds').onclick = (e) => { const k = e.target.closest('button')?.dataset.kind; if (k) { S.kind = k; setActive('kinds', 'kind', k); } };
+$('slopes').onclick = (e) => { const s = e.target.closest('button')?.dataset.slope; if (s !== undefined) { S.slope = +s; setActive('slopes', 'slope', s); } };
+function step(d) { const list = S.names; const i = list.indexOf(S.cur); open(list[(i + d + list.length) % list.length]); }
+function setAll(on) { const sp = cur(); sp.regions = sp.regions.filter((r) => on || !r.added); for (const r of sp.regions) r.on = on; save(true); renderList(); render(); }
+$('day').onclick = () => { S.night = !S.night; render(); };
+$('outlines').onclick = () => { S.outlines = !S.outlines; render(); };
+$('zoom').onclick = () => { S.zoom = (S.zoom + 1) % 7; render(); };
+$('allOn').onclick = () => setAll(true);
+$('allOff').onclick = () => setAll(false);
+$('prev').onclick = () => step(-1);
+$('next').onclick = () => step(1);
+$('done').onclick = async () => { cur().reviewed = true; await save(true); const rest = S.names.filter((n) => !S.sprites[n].reviewed); if (rest.length) { const i = S.names.indexOf(S.cur); open(S.names.slice(i + 1).concat(S.names.slice(0, i)).find((n) => !S.sprites[n].reviewed)); } else { renderList(); render(); } };
+$('hideDone').onchange = renderList;
+window.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT' || e.metaKey || e.ctrlKey) return;
+  const k = e.key.toLowerCase();
+  if (k === 'arrowright') step(1); else if (k === 'arrowleft') step(-1);
+  else if (k === 't') setTool('toggle'); else if (k === 'w') setTool('wand'); else if (k === 'b') setTool('box');
+  else if (k === 'd') $('day').click(); else if (k === 'o') $('outlines').click(); else if (k === 'z') $('zoom').click();
+  else if (k === 'a') setAll(true); else if (k === 'n') setAll(false); else if (k === 'r') $('done').click();
+  else return;
+  e.preventDefault();
+});
+window.addEventListener('resize', render);
+
+(async () => {
+  const state = await (await fetch('/api/state')).json();
+  S.sprites = state.sprites; S.names = Object.keys(state.sprites); S.tint = state.tint;
+  setActive('tools', 'tool', S.tool); setActive('kinds', 'kind', S.kind); setActive('slopes', 'slope', S.slope);
+  const wanted = decodeURIComponent(location.hash.slice(1));
+  open(S.names.includes(wanted) ? wanted : S.names.find((n) => !S.sprites[n].reviewed) || S.names[0]);
+})();
+</script>
