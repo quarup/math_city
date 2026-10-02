@@ -2789,7 +2789,16 @@ class _MapCoachHand extends StatefulWidget {
 
 class _MapCoachHandState extends State<_MapCoachHand>
     with SingleTickerProviderStateMixin {
-  late final Ticker _ticker = createTicker((_) => setState(() {}))..start();
+  late final Ticker _ticker;
+
+  @override
+  void initState() {
+    super.initState();
+    // Re-project every frame: the camera settles after the first build
+    // and moves with every pan and pinch.
+    _ticker = createTicker((_) => setState(() {}));
+    unawaited(_ticker.start());
+  }
 
   @override
   void dispose() {
