@@ -102,7 +102,7 @@ Based on proficiency, each sub-concept is classified into one of four bands:
 | Band | Condition | Action |
 |---|---|---|
 | **Mastered** | Player has demonstrated reliable correctness | Stays on the wheel in up to 2 *review* slots (typed input, normal pay) unless retired as outgrown; DAG children become eligible to surface |
-| **Comfortable** | At fluency, but not yet mastered | Included; typed numeric input (keypad — pays the higher free-form coin rate) |
+| **Comfortable** | At fluency, but not yet mastered | Included; typed numeric input (keypad — pays the higher free-form coin rate) once the player has answered the concept correctly a few times in multiple choice; a brand-new player's opening questions are all multiple choice |
 | **Challenging** | Newly introduced or partially understood | Included with lower probability; multiple choice |
 | **Not yet** | Prerequisites not yet mastered, OR concept is far from the player's current frontier | Excluded from wheel. A concept the drip-feed *introduces* (all prereqs mastered) never starts here — it starts at the challenging floor so it is playable immediately |
 

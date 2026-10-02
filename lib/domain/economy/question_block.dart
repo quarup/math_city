@@ -66,13 +66,18 @@ class QuestionBlock {
     required this.conceptId,
     required this.band,
     required this.size,
+    this.usesKeypad = false,
   }) : assert(size >= 1, 'a block has at least one question');
 
   final String conceptId;
 
-  /// The band at spin time — chooses MC vs keypad for every question in the
-  /// block (it isn't re-evaluated mid-block, so the input mode is stable).
+  /// The band at spin time.
   final ProficiencyBand band;
+
+  /// Whether the block's questions use the number pad ([keypadUnlocked] at
+  /// spin time). Fixed for the block, so the input mode is stable; individual
+  /// questions whose answer can't be typed still fall back to MC.
+  final bool usesKeypad;
 
   /// Total questions in the block.
   final int size;

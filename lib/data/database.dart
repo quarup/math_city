@@ -1195,6 +1195,14 @@ class AppDatabase extends _$AppDatabase {
     return {for (final r in rows) r.conceptId: r.proficiency};
   }
 
+  /// conceptId → lifetime correct answers for the player (gates the keypad).
+  Future<Map<String, int>> correctAnswerCountsForPlayer(int playerId) async {
+    final rows = await (select(
+      conceptProficiencies,
+    )..where((t) => t.playerId.equals(playerId))).get();
+    return {for (final r in rows) r.conceptId: r.questionsCorrect};
+  }
+
   /// Inserts or updates a proficiency record, incrementing answer counters.
   /// Returns the new proficiency value persisted.
   Future<void> upsertProficiency(

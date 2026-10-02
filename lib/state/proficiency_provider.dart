@@ -180,6 +180,16 @@ final proficiencyProvider =
       ProficiencyNotifier.new,
     );
 
+/// conceptId → correct answers the active player has given on it. Rebuilds
+/// with [proficiencyProvider] (once per answer); feeds [keypadUnlocked].
+final correctAnswerCountsProvider = FutureProvider<Map<String, int>>((
+  ref,
+) async {
+  await ref.watch(proficiencyProvider.future);
+  final player = await ref.watch(activePlayerProvider.future);
+  return ref.read(appDatabaseProvider).correctAnswerCountsForPlayer(player.id);
+});
+
 // ---------------------------------------------------------------------------
 // Wheel concepts — `selectWheelConcepts` over the player's playable concepts
 // (introduced ∩ generator-registered), split into the frontier tier

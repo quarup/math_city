@@ -48,8 +48,9 @@ class QuestionScreen extends ConsumerStatefulWidget {
 
   final String conceptId;
 
-  /// The proficiency band at the time the wheel landed. Determines input
-  /// mode (MC vs number pad), which in turn sets the pay rate.
+  /// The proficiency band at the time the wheel landed. In debug mode it
+  /// alone picks the input mode (MC vs number pad, which sets the pay rate);
+  /// in real play the block's [QuestionBlock.usesKeypad] gate decides.
   final ProficiencyBand band;
 
   /// The block this question belongs to (null in debug mode).
@@ -162,15 +163,18 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
     super.dispose();
   }
 
-  /// Keypad eligibility is gated by band, answer format, AND the question's
-  /// own opt-out. The keypad can only enter numeric values (digits + a small
-  /// extra-chars row); answer formats whose surface form is text-shaped
-  /// (string, commaList) force MC even at the comfortable band. Questions
+  /// Keypad eligibility is gated by band (plus, in real play, the block's
+  /// MC-proficiency gate — see [keypadUnlocked]), answer format, AND the
+  /// question's own opt-out. The keypad can only enter numeric values
+  /// (digits + a small extra-chars row); answer formats whose surface form
+  /// is text-shaped (string, commaList) force MC even at the comfortable
+  /// band. Questions
   /// that read against a list of choices ("Which of these is a factor of
   /// 24?") set `multipleChoiceOnly` — their answer is numeric, but more than
   /// one number is right and only the stored one is accepted.
   bool _keypadEligible(GeneratedQuestion q) =>
       widget.band == ProficiencyBand.comfortable &&
+      (widget.block?.usesKeypad ?? true) &&
       !q.multipleChoiceOnly &&
       formatSupportsKeypad(q.answerFormat);
 

@@ -100,6 +100,8 @@ class _SpinOverlayState extends ConsumerState<SpinOverlay> {
     final engine = ref.read(dagEngineProvider);
     final effectiveGrade = engine.effectiveGradeFor(statedGrade);
     final band = bandForConcept(conceptId, profMap, effectiveGrade);
+    final correctCounts =
+        ref.read(correctAnswerCountsProvider).asData?.value ?? {};
 
     // One spin = one block of questions on the landed concept, sized so the
     // block adds up to ~25 s of expected work.
@@ -107,6 +109,12 @@ class _SpinOverlayState extends ConsumerState<SpinOverlay> {
       conceptId: conceptId,
       band: band,
       size: blockSizeFor(expectedSecondsFor(conceptId)),
+      usesKeypad: keypadUnlocked(
+        band: band,
+        correctAnswers: correctCounts[conceptId] ?? 0,
+        roundsPlayed:
+            ref.read(activePlayerProvider).asData?.value.roundsPlayed ?? 0,
+      ),
     );
     widget.onBlockStart(conceptId, band, block);
   }
@@ -114,6 +122,8 @@ class _SpinOverlayState extends ConsumerState<SpinOverlay> {
   @override
   Widget build(BuildContext context) {
     final wheelAsync = ref.watch(wheelConceptsProvider);
+    // Kept loaded so `_startBlock` can read it synchronously.
+    ref.watch(correctAnswerCountsProvider);
     final theme = Theme.of(context);
     // The animated hand shows the fling once, until the first real throw.
     final hints = ref.watch(activePlayerProvider).asData?.value.guideHints;
