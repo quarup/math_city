@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:math_city/domain/questions/diagram_spec.dart';
+import 'package:math_city/presentation/theme/diagram_shading.dart';
 
 /// Renders a [FractionBarSpec]: a horizontal bar with `denominator` equal
 /// segments, the first `numerator` of which are shaded.
@@ -18,9 +19,9 @@ class FractionBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final shadeColor = theme.colorScheme.primary;
+    const shadeColor = kDiagramShadedFill;
     final highlightColor = theme.colorScheme.tertiary;
-    final emptyColor = theme.colorScheme.surfaceContainerHighest;
+    const emptyColor = kDiagramEmptyFill;
     final borderColor = theme.colorScheme.outline;
 
     // Stacked bars stay compact so several wholes fit on screen.

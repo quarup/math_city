@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:math_city/domain/questions/diagram_spec.dart';
+import 'package:math_city/presentation/theme/diagram_shading.dart';
 
 /// Renders a [PercentGridSpec] as a 10×10 grid of cells with the first
 /// [PercentGridSpec.shadedCount] cells filled in row-major order.
@@ -16,8 +17,8 @@ class PercentGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final shadedColor = theme.colorScheme.primary;
-    final emptyColor = theme.colorScheme.surfaceContainerHighest;
+    const shadedColor = kDiagramShadedFill;
+    const emptyColor = kDiagramEmptyFill;
     final borderColor = theme.colorScheme.outline;
 
     return SizedBox(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:math_city/domain/questions/diagram_spec.dart';
+import 'package:math_city/presentation/theme/diagram_shading.dart';
 
 /// Renders an [AreaGridSpec] as a rows×cols grid of square cells. Cells
 /// in the top `shadedRows` rows are shaded in the row color; cells in the
@@ -28,10 +29,10 @@ class AreaGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final overlapColor = theme.colorScheme.primary;
+    const overlapColor = kDiagramShadedFill;
     final colShade = theme.colorScheme.primary.withValues(alpha: 0.4);
     final rowShade = theme.colorScheme.secondary.withValues(alpha: 0.4);
-    final emptyColor = theme.colorScheme.surfaceContainerHighest;
+    const emptyColor = kDiagramEmptyFill;
     final borderColor = theme.colorScheme.outline;
 
     final count = spec.shadedCount;
