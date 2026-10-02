@@ -6,7 +6,8 @@ enum ProficiencyBand { notYet, challenging, comfortable, mastered }
 /// Thresholds (from plan.md Domain Specs):
 ///   p < 0.20              → notYet     (off wheel)
 ///   0.20 ≤ p < 0.50       → challenging (multiple choice)
-///   0.50 ≤ p < 0.85       → comfortable (number pad)
+///   0.50 ≤ p < 0.85       → comfortable (number pad, once
+///                           [keypadUnlocked])
 ///   p ≥ 0.85              → mastered    (off wheel)
 ProficiencyBand bandForProficiency(double p) {
   if (p < 0.20) return ProficiencyBand.notYet;
@@ -14,6 +15,31 @@ ProficiencyBand bandForProficiency(double p) {
   if (p < 0.85) return ProficiencyBand.comfortable;
   return ProficiencyBand.mastered;
 }
+
+/// Correct answers a player must give on a concept (in multiple choice — the
+/// only mode before this gate opens) before its questions switch to the
+/// number pad. Typing an answer is much harder than picking one, so a concept
+/// that *starts* comfortable (one grade below the player, p = 0.70) still
+/// earns the keypad through play rather than getting it on question one.
+const int kCorrectAnswersBeforeKeypad = 5;
+
+/// Questions a new player answers, across all concepts, before any keypad
+/// question appears. The opening of the game is all multiple choice.
+const int kKeypadWarmUpRounds = 40;
+
+/// Whether a block on a concept uses the number pad: the concept is in the
+/// comfortable band, the player has proven it in multiple choice
+/// ([kCorrectAnswersBeforeKeypad]) and is past the opening warm-up
+/// ([kKeypadWarmUpRounds]). Per-question opt-outs (text-shaped answers,
+/// `multipleChoiceOnly`) still apply on top of this.
+bool keypadUnlocked({
+  required ProficiencyBand band,
+  required int correctAnswers,
+  required int roundsPlayed,
+}) =>
+    band == ProficiencyBand.comfortable &&
+    correctAnswers >= kCorrectAnswersBeforeKeypad &&
+    roundsPlayed >= kKeypadWarmUpRounds;
 
 /// A concept this many grades (or more) below the player's grade retires from
 /// the wheel once it reaches the comfortable band — mastered baby-steps

@@ -181,4 +181,44 @@ void main() {
       expect(bandForProficiency(0.05), ProficiencyBand.notYet);
     });
   });
+
+  group('keypadUnlocked', () {
+    bool unlocked({
+      ProficiencyBand band = ProficiencyBand.comfortable,
+      int correct = kCorrectAnswersBeforeKeypad,
+      int rounds = kKeypadWarmUpRounds,
+    }) => keypadUnlocked(
+      band: band,
+      correctAnswers: correct,
+      roundsPlayed: rounds,
+    );
+
+    test('comfortable, proven in MC, past the warm-up → keypad', () {
+      expect(unlocked(), isTrue);
+    });
+
+    test('a concept that starts comfortable still needs MC answers first', () {
+      expect(
+        bandForProficiency(initialProficiency(1, 2)),
+        ProficiencyBand.comfortable,
+      );
+      expect(unlocked(correct: 0), isFalse);
+      expect(unlocked(correct: kCorrectAnswersBeforeKeypad - 1), isFalse);
+    });
+
+    test('nothing is typed during the opening warm-up', () {
+      expect(unlocked(correct: 100, rounds: 0), isFalse);
+      expect(unlocked(correct: 100, rounds: kKeypadWarmUpRounds - 1), isFalse);
+    });
+
+    test('only the comfortable band types', () {
+      for (final band in [
+        ProficiencyBand.notYet,
+        ProficiencyBand.challenging,
+        ProficiencyBand.mastered,
+      ]) {
+        expect(unlocked(band: band, correct: 100, rounds: 1000), isFalse);
+      }
+    });
+  });
 }
