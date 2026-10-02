@@ -88,6 +88,11 @@ class QuestionBlock {
   int get remaining => size - answered;
   bool get isComplete => answered >= size;
 
+  /// The block ends here: every question answered, or the site it was paying
+  /// opened — there's nothing left to build, so the player goes straight to
+  /// the opening celebration instead of finishing the block.
+  bool get isOver => isComplete || siteOpened;
+
   /// 1-based index of the question currently on screen (or about to be).
   int get currentIndex => answered + 1;
 

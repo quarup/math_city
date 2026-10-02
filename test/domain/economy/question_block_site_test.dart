@@ -61,4 +61,31 @@ void main() {
     expect(b.sitePaidBefore, 50);
     expect(b.siteAfter!.isFull, isTrue);
   });
+
+  test('opening the site ends the block early', () {
+    final b = block(5);
+    final r1 = site(50).payIn(8);
+    b.record(
+      AnswerReward(correct: true, coins: 8, streakCount: 1, sitePayIn: r1),
+    );
+    expect(b.isOver, isFalse);
+    b.record(
+      AnswerReward(
+        correct: true,
+        coins: 10,
+        streakCount: 2,
+        sitePayIn: r1.site.payIn(10),
+      ),
+    );
+    expect(b.isComplete, isFalse);
+    expect(b.isOver, isTrue);
+  });
+
+  test('a block with no site runs every question', () {
+    final b = block(2)
+      ..record(const AnswerReward(correct: true, coins: 5, streakCount: 1));
+    expect(b.isOver, isFalse);
+    b.record(const AnswerReward(correct: true, coins: 5, streakCount: 2));
+    expect(b.isOver, isTrue);
+  });
 }

@@ -39,8 +39,8 @@ class ProficiencyNotifier extends AsyncNotifier<Map<String, double>> {
   ///
   /// Coins have no wallet to land in (city_builder.md §8.3): they go to the
   /// site in `activeSiteIdProvider`, which opens when its bar fills. With no
-  /// active site — or one that already opened earlier in the block — the
-  /// lifetime counter still moves but the coins go nowhere.
+  /// active site the lifetime counter still moves but the coins go nowhere.
+  /// (A block ends the moment its site opens, so nothing pays a full site.)
   ///
   /// Unlock events fire only on *correct* answers: the drip-feed tops the
   /// active frontier back up to `kActivePoolTarget` after a mastery (or a

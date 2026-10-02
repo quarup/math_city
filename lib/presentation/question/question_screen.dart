@@ -241,7 +241,7 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
 
     await _celebrate(reward, outcome, answer);
     if (!mounted) return;
-    if (block.isComplete) {
+    if (block.isOver) {
       finishBlock(context, ref, block);
       return;
     }
