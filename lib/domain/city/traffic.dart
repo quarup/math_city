@@ -280,22 +280,38 @@ double vehicleDepth(Vehicle v) {
 /// within [kFollowGap] tiles along [v]'s heading and [_laneTolerance] to
 /// the side. Cars on the opposite lane are two lane offsets away and never
 /// count.
+///
+/// Two rules keep a pair from waiting on each other for good where paths
+/// bend or cross. An oncoming car (headings more than 120° apart, e.g. one
+/// cutting across mid-turn) never counts: the two just pass. And when two
+/// cars at an angle each have the other in their box, the one further into
+/// the other's path goes first, so it pulls away from the one that waits.
 bool vehicleBlocked(Vehicle v, Iterable<Vehicle> others) {
   final pos = vehiclePosition(v);
-  final (uc, ur) = _headingTileVector(pos.heading);
-  final ul = math.sqrt((uc * uc + ur * ur).toDouble());
-  final fc = uc / ul;
-  final fr = ur / ul;
+  final (fc, fr) = vehicleHeadingVector(pos.heading);
   for (final o in others) {
     if (identical(o, v)) continue;
     final op = vehiclePosition(o);
+    final (oc, or) = vehicleHeadingVector(op.heading);
+    if (fc * oc + fr * or < -0.5) continue;
     final dc = op.col - pos.col;
     final dr = op.row - pos.row;
     final ahead = dc * fc + dr * fr;
     final side = (dc * fr - dr * fc).abs();
-    if (ahead > 0.05 && ahead < kFollowGap && side < _laneTolerance) {
-      return true;
+    if (!(ahead > 0.05 && ahead < kFollowGap && side < _laneTolerance)) {
+      continue;
     }
+    // Does [o] have [v] in its box too? Then the nearer one goes first.
+    final back = -dc * oc - dr * or;
+    final backSide = (dc * or - dr * oc).abs();
+    final mutual =
+        back > 0.05 && back < kFollowGap && backSide < _laneTolerance;
+    if (mutual &&
+        (back < ahead ||
+            (back == ahead && identityHashCode(v) < identityHashCode(o)))) {
+      continue;
+    }
+    return true;
   }
   return false;
 }

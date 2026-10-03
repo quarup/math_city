@@ -221,6 +221,59 @@ void main() {
       );
       expect(vehicleBlocked(me, [me, oncoming]), isFalse);
     });
+
+    test('a car turning across oncoming traffic passes, not gridlocks', () {
+      final me = at(0.2);
+      final turning = Vehicle(
+        col: 0,
+        row: 0,
+        dirIn: 2,
+        dir: 1,
+        speed: 1,
+        kind: 'hatchback',
+        t: 0.5,
+      );
+      expect(vehicleBlocked(me, [me, turning]), isFalse);
+      expect(vehicleBlocked(turning, [me, turning]), isFalse);
+    });
+
+    test('no two cars on a tile ever wait on each other', () {
+      for (var inA = 0; inA < 4; inA++) {
+        for (var outA = 0; outA < 4; outA++) {
+          for (var inB = 0; inB < 4; inB++) {
+            for (var outB = 0; outB < 4; outB++) {
+              for (var ta = 0.0; ta < 1; ta += 0.05) {
+                for (var tb = 0.0; tb < 1; tb += 0.05) {
+                  final a = Vehicle(
+                    col: 0,
+                    row: 0,
+                    dirIn: inA,
+                    dir: outA,
+                    speed: 1,
+                    kind: 'hatchback',
+                    t: ta,
+                  );
+                  final b = Vehicle(
+                    col: 0,
+                    row: 0,
+                    dirIn: inB,
+                    dir: outB,
+                    speed: 1,
+                    kind: 'hatchback',
+                    t: tb,
+                  );
+                  expect(
+                    vehicleBlocked(a, [a, b]) && vehicleBlocked(b, [a, b]),
+                    isFalse,
+                    reason: 'A $inA→$outA t=$ta, B $inB→$outB t=$tb',
+                  );
+                }
+              }
+            }
+          }
+        }
+      }
+    });
   });
 
   group('vehicleBlockedByWalker', () {
