@@ -547,6 +547,7 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
                       child: _ChoiceButton(
                         label: _shuffledChoices[i],
                         itemId: 'choice:$i',
+                        speakerSlot: _shuffledChoices.any(hasReadableWords),
                         onTap: () => _onAnswerSubmitted(_shuffledChoices[i]),
                       ),
                     ),
@@ -831,54 +832,57 @@ class _PromptCard extends StatelessWidget {
   }
 }
 
-/// An answer. One made of words carries a speaker on its left so a child
-/// can hear it before choosing; a number doesn't need one.
+/// An answer. One made of words has a speaker beside it, outside the button,
+/// so a child can hear it before choosing without a slip of the finger
+/// choosing it; a number doesn't need one. When any answer in the set has a
+/// speaker, every answer keeps the [speakerSlot] so the buttons line up.
 class _ChoiceButton extends StatelessWidget {
   const _ChoiceButton({
     required this.label,
     required this.itemId,
+    required this.speakerSlot,
     required this.onTap,
   });
 
   final String label;
   final String itemId;
+  final bool speakerSlot;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final spoken = hasReadableWords(label);
-    final words = SpokenWords(
-      label,
-      itemId: itemId,
-      textAlign: TextAlign.center,
-    );
-    return SpeakingRing(
+    final button = SpeakingRing(
       itemId: itemId,
       borderRadius: BorderRadius.circular(32),
       child: OutlinedButton(
         onPressed: onTap,
         style: OutlinedButton.styleFrom(
-          padding: spoken
-              ? const EdgeInsets.fromLTRB(8, 10, 20, 10)
-              : const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
+          padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
           textStyle: theme.textTheme.headlineSmall,
         ),
-        child: spoken
-            ? Row(
-                children: [
-                  SpeakerChip(
-                    items: [SpeechItem(itemId, label)],
-                    tooltip: 'Hear this answer',
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(child: words),
-                  // Balance the speaker so the words stay centred.
-                  const SizedBox(width: 36),
-                ],
-              )
-            : words,
+        child: SpokenWords(
+          label,
+          itemId: itemId,
+          textAlign: TextAlign.center,
+        ),
       ),
+    );
+    if (!speakerSlot) return button;
+    return Row(
+      children: [
+        SizedBox(
+          width: 36,
+          child: hasReadableWords(label)
+              ? SpeakerChip(
+                  items: [SpeechItem(itemId, label)],
+                  tooltip: 'Hear this answer',
+                )
+              : null,
+        ),
+        const SizedBox(width: 12),
+        Expanded(child: button),
+      ],
     );
   }
 }
