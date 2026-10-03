@@ -1,0 +1,19 @@
+{
+  "scope": "compose_shapes,integers_on_number_line,measure_to_half_cm,round_decimals,scale_drawing,histogram,box_plot,line_plot_fractional,estimate_length,convert_units_within_system,sales_tax_tip,ratio_table",
+  "band": "both",
+  "limit": 0,
+  "ids": [
+    "compose_shapes",
+    "integers_on_number_line",
+    "measure_to_half_cm",
+    "round_decimals",
+    "scale_drawing",
+    "histogram",
+    "box_plot",
+    "line_plot_fractional",
+    "estimate_length",
+    "convert_units_within_system",
+    "sales_tax_tip",
+    "ratio_table"
+  ]
+}

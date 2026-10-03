@@ -280,7 +280,7 @@ The columns:
 | ✅ `find_whole_from_part_percent` | Find whole from a percent | 6 | [percent_of_quantity] | algorithmic | none |
 | ✅ `percent_change` | Percent increase/decrease | 7 | [percent_of_quantity] | algorithmic | none |
 | ✅ `markup_markdown` | Markup and markdown | 7 | [percent_change] | dataset | optional |
-| ✅ `sales_tax_tip` | Sales tax and tip | 7 | [percent_of_quantity] | dataset | optional |
+| ✅ `sales_tax_tip` | Tax and service charge | 7 | [percent_of_quantity] | dataset | optional |
 | ✅ `simple_interest` | Simple interest | 7 | [percent_of_quantity] | algorithmic | none |
 | ✅ `commission` | Commission | 7 | [percent_of_quantity] | algorithmic | none |
 | ✅ `convert_fraction_decimal_percent` | Convert F/D/% | 6 | [decimal_to_fraction, percent_intro] | algorithmic | none |

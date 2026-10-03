@@ -1863,8 +1863,8 @@ const List<Concept> allConcepts = [
   ),
   Concept(
     id: 'sales_tax_tip',
-    name: 'Sales tax and tip',
-    shortLabel: 'tax/tip',
+    name: 'Tax and service charge',
+    shortLabel: 'tax/charge',
     categoryId: 'decimals_percent',
     primaryGrade: 7,
     prereqIds: ['percent_of_quantity'],

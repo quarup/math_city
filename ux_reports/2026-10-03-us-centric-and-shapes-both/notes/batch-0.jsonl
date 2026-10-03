@@ -1,0 +1,12 @@
+{"id": "compose_shapes", "verdict": "ok", "notes": ""}
+{"id": "integers_on_number_line", "verdict": "improve", "notes": "Works as intended (only 0 and 25 labelled, point at \u221275, counted not read). The number-line tick labels are small (~11 px) for a whole-screen diagram; a larger label font would help \u2014 pre-existing to the NumberLine widget."}
+{"id": "measure_to_half_cm", "verdict": "ok", "notes": ""}
+{"id": "round_decimals", "verdict": "ok", "notes": "Generator sample; the 200 dataset items now read \"to the nearest tenth/hundredth/thousandth\" too (checked in the JSON, not on screen)."}
+{"id": "scale_drawing", "verdict": "ok", "notes": ""}
+{"id": "histogram", "verdict": "ok", "notes": ""}
+{"id": "box_plot", "verdict": "ok", "notes": ""}
+{"id": "line_plot_fractional", "verdict": "ok", "notes": ""}
+{"id": "estimate_length", "verdict": "ok", "notes": ""}
+{"id": "convert_units_within_system", "verdict": "ok", "notes": ""}
+{"id": "sales_tax_tip", "verdict": "improve", "notes": "Question now says \"service charge\"; the concept name in the title bar still reads \"Sales tax and tip\". Fixed in the same session: renamed \"Tax and service charge\"."}
+{"id": "ratio_table", "verdict": "ok", "notes": ""}

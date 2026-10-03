@@ -204,7 +204,7 @@ const _shortLabelOverrides = <String, String>{
   'simple_interest': 'interest',
   'commission': 'commission',
   'markup_markdown': 'mark up/dn',
-  'sales_tax_tip': 'tax/tip',
+  'sales_tax_tip': 'tax/charge',
   'convert_fraction_decimal_percent': 'F/D/% conv',
   'decimals_fluent_4ops': 'dec ±×÷',
   'ratio_intro': 'ratio?',
