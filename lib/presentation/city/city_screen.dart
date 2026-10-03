@@ -3622,6 +3622,20 @@ class _StartLandSiteBar extends StatelessWidget {
 /// holds credit the site can take, and *Build!*, which makes it the active
 /// site and opens the wheel. A building site can be nudged by tapping a
 /// tile while it is selected.
+const EdgeInsets _kSiteButtonPadding = EdgeInsets.symmetric(horizontal: 8);
+
+/// A button label that shrinks rather than overflows when its button is
+/// narrow.
+class _FitLabel extends StatelessWidget {
+  const _FitLabel(this.child);
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) =>
+      FittedBox(fit: BoxFit.scaleDown, child: child);
+}
+
 class _SiteBar extends StatelessWidget {
   const _SiteBar({
     required this.site,
@@ -3674,44 +3688,76 @@ class _SiteBar extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 10),
+              // The buttons share the row: with Move and Use credit as well
+              // as Cancel and Build! there isn't room for each at its
+              // natural width, so labels shrink to fit rather than overflow.
               Row(
                 children: [
-                  FilledButton(
-                    onPressed: onCancel,
-                    style: FilledButton.styleFrom(
-                      backgroundColor: palette.errorRedDeep,
-                      foregroundColor: Colors.white,
+                  Expanded(
+                    child: FilledButton(
+                      onPressed: onCancel,
+                      style: FilledButton.styleFrom(
+                        backgroundColor: palette.errorRedDeep,
+                        foregroundColor: Colors.white,
+                        padding: _kSiteButtonPadding,
+                      ),
+                      child: const _FitLabel(Text('Cancel')),
                     ),
-                    child: const Text('Cancel'),
                   ),
                   if (onMove != null) ...[
                     const SizedBox(width: 8),
-                    FilledButton.tonalIcon(
-                      onPressed: onMove,
-                      icon: const Icon(Icons.open_with_rounded),
-                      label: const Text('Move'),
-                    ),
-                  ],
-                  if (usable > 0) ...[
-                    const SizedBox(width: 8),
-                    FilledButton(
-                      onPressed: onUseCredit,
-                      style: FilledButton.styleFrom(
-                        backgroundColor: palette.successGreenDeep,
-                        foregroundColor: Colors.white,
-                      ),
-                      child: Text.rich(
-                        TextSpan(
-                          children: [
-                            coinSpan(),
-                            TextSpan(text: ' Use $usable'),
-                          ],
+                    Expanded(
+                      child: FilledButton.tonal(
+                        onPressed: onMove,
+                        style: FilledButton.styleFrom(
+                          padding: _kSiteButtonPadding,
+                        ),
+                        child: const _FitLabel(
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.open_with_rounded, size: 18),
+                              SizedBox(width: 6),
+                              Text('Move'),
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ],
-                  const Spacer(),
-                  FilledButton(onPressed: onBuild, child: const Text('Build!')),
+                  if (usable > 0) ...[
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: FilledButton(
+                        onPressed: onUseCredit,
+                        style: FilledButton.styleFrom(
+                          backgroundColor: palette.successGreenDeep,
+                          foregroundColor: Colors.white,
+                          padding: _kSiteButtonPadding,
+                        ),
+                        child: _FitLabel(
+                          Text.rich(
+                            TextSpan(
+                              children: [
+                                coinSpan(),
+                                TextSpan(text: ' Use $usable'),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: FilledButton(
+                      onPressed: onBuild,
+                      style: FilledButton.styleFrom(
+                        padding: _kSiteButtonPadding,
+                      ),
+                      child: const _FitLabel(Text('Build!')),
+                    ),
+                  ),
                 ],
               ),
             ],
