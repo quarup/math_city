@@ -204,7 +204,7 @@ const buildingRegistry = <BuildingType>[
     id: 'library',
     name: 'Library',
     emoji: '📚',
-    category: BuildingCategory.civicHousing,
+    category: BuildingCategory.services,
     coinCost: 300,
     unlockRule: UnlockRule(
       requiredBuildingsPlaced: <String>{'school'},
