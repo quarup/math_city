@@ -246,6 +246,10 @@ class _ExplanationCard extends StatelessWidget {
     final palette = theme.extension<AppPalette>()!;
     final lineRadius = BorderRadius.circular(6);
     return Stack(
+      // Passthrough, not the default loose fit: the card must take the
+      // width it is given (full width on a tablet), not shrink to its text
+      // while the speaker stays pinned to the far edge.
+      fit: StackFit.passthrough,
       clipBehavior: Clip.none,
       children: [
         Card(

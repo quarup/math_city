@@ -794,6 +794,10 @@ class _PromptCard extends StatelessWidget {
     // The speaker sits on the card's top-left corner, half outside it, so
     // the text stays centred and the button is still a full 40 dp target.
     return Stack(
+      // Passthrough, not the default loose fit: the card must take the
+      // width it is given (full width on a tablet), not shrink to its text
+      // while the speaker stays pinned to the far edge.
+      fit: StackFit.passthrough,
       clipBehavior: Clip.none,
       children: [
         SpeakingRing(
