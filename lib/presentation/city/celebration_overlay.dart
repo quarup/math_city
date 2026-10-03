@@ -10,10 +10,9 @@ import 'package:math_city/presentation/theme/app_palette.dart';
 /// (city_builder.md §8.2 step 6): confetti rains over the finished
 /// building, a card congratulates and names it, and *Done* hands control
 /// back so the camera can zoom out. Empty regions don't absorb touches;
-/// only the card does. The block's coins and streak are not repeated here
-/// — the site bar's full `price / price` already says the job is paid, a
-/// "+N" next to the headline read as a bonus, and the streak is beside the
-/// point at this moment.
+/// only the card does. The block's coins are not repeated here — the site
+/// bar's full `price / price` already says the job is paid, and a "+N" next
+/// to the headline read as a bonus.
 ///
 /// [cardKey] lets the host measure the card so it can frame the building
 /// in the space the card leaves free.

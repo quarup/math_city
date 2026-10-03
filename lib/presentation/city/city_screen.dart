@@ -2611,7 +2611,7 @@ class _CityDebugSheetState extends ConsumerState<_CityDebugSheet> {
         title: const Text('Reset city?'),
         content: const Text(
           'Wipes all placements, sites, beats, and population, and zeroes '
-          'lifetime coins and the streak. Cannot be undone.',
+          'lifetime coins. Cannot be undone.',
         ),
         actions: [
           TextButton(

@@ -8,7 +8,6 @@ import 'package:math_city/presentation/city/city_screen.dart';
 import 'package:math_city/presentation/theme/app_palette.dart';
 import 'package:math_city/presentation/widgets/coin_icon.dart';
 import 'package:math_city/presentation/widgets/concept_icon_badge.dart';
-import 'package:math_city/presentation/widgets/streak_flame.dart';
 import 'package:math_city/state/game_session_provider.dart';
 
 /// Ends a block from wherever its last question finished. There is no
@@ -38,7 +37,7 @@ void exitBlock(
 }
 
 /// What the block just earned, in one card that sits above the wheel while
-/// the player winds up the next spin: headline, coins, score, streak, any
+/// the player winds up the next spin: headline, coins, score, any
 /// band-crossing bonus, and the drip-feed unlocks that fired mid-block (the
 /// wheel carries their NEW! tags; this names them). The site's own bar is
 /// pinned at the bottom of the screen already, so it isn't repeated here.
@@ -53,7 +52,6 @@ class BlockRecapCard extends StatelessWidget {
     final palette = theme.extension<AppPalette>()!;
     final conceptName =
         findConceptById(block.conceptId)?.name ?? block.conceptId;
-    final streak = block.streakCount ?? 0;
     final allRight = block.correctCount == block.size;
     final headline = block.coinsEarned == 0
         ? 'Keep going!'
@@ -114,7 +112,6 @@ class BlockRecapCard extends StatelessWidget {
                     style: theme.textTheme.titleMedium,
                   ),
                 ),
-                if (streak > 0) StreakBadge(count: streak),
               ],
             ),
             for (final bonus in block.bandBonuses) ...[

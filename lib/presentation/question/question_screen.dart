@@ -19,12 +19,10 @@ import 'package:math_city/presentation/widgets/coin_icon.dart';
 import 'package:math_city/presentation/widgets/site_progress_bar.dart';
 import 'package:math_city/presentation/widgets/speech.dart';
 import 'package:math_city/presentation/widgets/speech_toggle_button.dart';
-import 'package:math_city/presentation/widgets/streak_flame.dart';
 import 'package:math_city/services/debug_harness.dart';
 import 'package:math_city/services/tts_service.dart';
 import 'package:math_city/state/game_session_provider.dart';
 import 'package:math_city/state/introduced_concepts_provider.dart';
-import 'package:math_city/state/player_provider.dart';
 import 'package:math_city/state/proficiency_provider.dart';
 import 'package:math_city/state/tts_provider.dart';
 
@@ -403,8 +401,6 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
     final actions = <Widget>[
       const SpeechToggleIconButton(),
       if (block != null) ...[
-        StreakBadge(count: _streakCount(block)),
-        const SizedBox(width: 12),
         if (site != null)
           Padding(
             padding: const EdgeInsets.only(right: 12),
@@ -558,12 +554,6 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
       ),
     );
   }
-
-  /// Streak to show in the AppBar: the count after the block's last answer,
-  /// else the persisted count the player walked in with.
-  int _streakCount(QuestionBlock block) =>
-      block.streakCount ??
-      (ref.watch(activePlayerProvider).value?.streakCount ?? 0);
 }
 
 /// Whether the on-screen number pad can produce a valid answer for this
