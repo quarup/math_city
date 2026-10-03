@@ -8,7 +8,8 @@ imports from here. Centralises:
 - The distractor-generation pattern (jitter + misconception)
 - Idempotent per-source JSON merge (re-runs replace only this source's rows;
   other ingesters' rows in the same file survive)
-- The output schema + writer
+- The output schema + writer (which drops US-centric items via
+  ``us_centric_filter.py``)
 
 The first DeepMind ingester (`ingest_deepmind_arithmetic.py`, Chunk 80)
 predates this module and has its own inlined versions of these helpers
@@ -22,6 +23,8 @@ import json
 import random
 from pathlib import Path
 from typing import Iterable
+
+from us_centric_filter import item_us_centric_reason
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 OUTPUT_DIR = REPO_ROOT / "assets" / "data" / "dataset_questions"
@@ -115,6 +118,9 @@ def write_buckets(
         return
     output_dir.mkdir(parents=True, exist_ok=True)
     for concept_id, items in buckets.items():
+        # Synthetic DeepMind prose never trips this today; the guard keeps
+        # a future submodule from shipping US money / units unnoticed.
+        items = [it for it in items if not item_us_centric_reason(it)]
         items_sorted = sorted(items, key=lambda x: x["id"])
         path = output_dir / f"{concept_id}.json"
         existing: list[dict] = []

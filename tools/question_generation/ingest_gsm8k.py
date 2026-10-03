@@ -46,6 +46,7 @@ from audit_gsm8k import (
     features,
     load_items,
 )
+from us_centric_filter import item_us_centric_reason
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -324,6 +325,7 @@ def ingest(
     stats = {
         "considered": 0,
         "rejected_no_bucket": 0,
+        "rejected_us_centric": 0,
         "rejected_no_annotations": 0,
         "rejected_math_failed": 0,
         "rejected_distractor_short": 0,
@@ -344,6 +346,14 @@ def ingest(
             stats["rejected_no_bucket"] += 1
             continue
         bucket_id, bucket_short = cls
+
+        # US money / units / culture don't travel (see us_centric_filter.py).
+        # Checked before the cap so the bucket backfills with usable items.
+        if item_us_centric_reason(
+            {"prompt": question, "explanation": extract_explanation(answer)}
+        ):
+            stats["rejected_us_centric"] += 1
+            continue
 
         if len(buckets[bucket_id]) >= items_per_concept:
             stats["bucket_full_skips"] += 1

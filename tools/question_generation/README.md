@@ -36,6 +36,16 @@ hashing, integer-distractor generation, and the idempotent per-source JSON
 merge writer (re-runs replace only this ingester's rows; other ingesters'
 rows in the same file survive).
 
+[us_centric_filter.py](us_centric_filter.py) drops items with US money,
+US customary units or US-specific culture (the game is played worldwide).
+The GSM8K ingester and the DeepMind writer apply it at ingest time;
+running the script directly filters the bundled JSONs in place, keeping
+every surviving item byte-identical:
+
+```sh
+python3 tools/question_generation/us_centric_filter.py --dry-run --verbose
+```
+
 More modules and datasets will be added incrementally. See plan.md §
 "Dataset ingestion sub-track" for the priority list.
 
