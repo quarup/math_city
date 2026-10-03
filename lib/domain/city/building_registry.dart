@@ -24,7 +24,7 @@ const buildingRegistry = <BuildingType>[
     id: 'mayors_office',
     name: "Mayor's office",
     emoji: '🏛️',
-    category: BuildingCategory.civicHousing,
+    category: BuildingCategory.services,
     coinCost: 0,
     unlockRule: UnlockRule.open,
     footprint: (2, 2),
@@ -35,7 +35,7 @@ const buildingRegistry = <BuildingType>[
     id: 'single_home',
     name: 'Single home',
     emoji: '🏠',
-    category: BuildingCategory.civicHousing,
+    category: BuildingCategory.housing,
     coinCost: 60,
     unlockRule: UnlockRule(
       requiredBuildingsPlaced: <String>{'mayors_office'},
@@ -48,7 +48,7 @@ const buildingRegistry = <BuildingType>[
     id: 'apartment',
     name: 'Apartment',
     emoji: '🏢',
-    category: BuildingCategory.civicHousing,
+    category: BuildingCategory.housing,
     coinCost: 120,
     unlockRule: UnlockRule(
       requiredBuildingsPlaced: <String>{'mayors_office'},
@@ -62,7 +62,7 @@ const buildingRegistry = <BuildingType>[
     id: 'school',
     name: 'School',
     emoji: '🏫',
-    // §3.2: education moved from civicHousing to services (2026-05-31
+    // §3.2: education moved from housing to services (2026-05-31
     // city_builder.md decision; the one-field change Phase 9 applies).
     category: BuildingCategory.services,
     coinCost: 120,
@@ -174,7 +174,7 @@ const buildingRegistry = <BuildingType>[
     id: 'town_hall',
     name: 'Town hall',
     emoji: '🏤',
-    category: BuildingCategory.civicHousing,
+    category: BuildingCategory.services,
     coinCost: 720,
     unlockRule: UnlockRule(
       requiredBuildingsPlaced: <String>{'mayors_office'},
@@ -189,7 +189,7 @@ const buildingRegistry = <BuildingType>[
     id: 'city_hall',
     name: 'City hall',
     emoji: '🏙️',
-    category: BuildingCategory.civicHousing,
+    category: BuildingCategory.services,
     coinCost: 2400,
     unlockRule: UnlockRule(
       requiredBuildingsPlaced: <String>{'town_hall'},
@@ -217,7 +217,7 @@ const buildingRegistry = <BuildingType>[
     id: 'post_office',
     name: 'Post office',
     emoji: '📮',
-    category: BuildingCategory.civicHousing,
+    category: BuildingCategory.services,
     coinCost: 300,
     unlockRule: UnlockRule(
       requiredBuildingsPlaced: <String>{'town_hall'},
@@ -230,7 +230,7 @@ const buildingRegistry = <BuildingType>[
     id: 'duplex',
     name: 'Duplex',
     emoji: '🏘️',
-    category: BuildingCategory.civicHousing,
+    category: BuildingCategory.housing,
     coinCost: 120,
     unlockRule: UnlockRule(
       requiredBuildingsPlaced: <String>{'single_home'},
@@ -245,7 +245,7 @@ const buildingRegistry = <BuildingType>[
     id: 'townhouse_row',
     name: 'Townhouse row',
     emoji: '🏘️',
-    category: BuildingCategory.civicHousing,
+    category: BuildingCategory.housing,
     coinCost: 300,
     unlockRule: UnlockRule(
       requiredBuildingsPlaced: <String>{'duplex'},
@@ -260,7 +260,7 @@ const buildingRegistry = <BuildingType>[
     id: 'mid_rise_apartment',
     name: 'Mid-rise apartment',
     emoji: '🏢',
-    category: BuildingCategory.civicHousing,
+    category: BuildingCategory.housing,
     coinCost: 720,
     unlockRule: UnlockRule(
       requiredBuildingsPlaced: <String>{'apartment'},
@@ -275,7 +275,7 @@ const buildingRegistry = <BuildingType>[
     id: 'high_rise',
     name: 'High-rise',
     emoji: '🌆',
-    category: BuildingCategory.civicHousing,
+    category: BuildingCategory.housing,
     coinCost: 1500,
     unlockRule: UnlockRule(
       minLifetimeCoins: 3600,
@@ -291,7 +291,7 @@ const buildingRegistry = <BuildingType>[
     id: 'luxury_condo',
     name: 'Luxury condo',
     emoji: '🏨',
-    category: BuildingCategory.civicHousing,
+    category: BuildingCategory.housing,
     coinCost: 3000,
     unlockRule: UnlockRule(
       minLifetimeCoins: 7200,
@@ -307,7 +307,7 @@ const buildingRegistry = <BuildingType>[
     id: 'farmhouse',
     name: 'Farmhouse',
     emoji: '🏡',
-    category: BuildingCategory.civicHousing,
+    category: BuildingCategory.housing,
     coinCost: 90,
     unlockRule: UnlockRule(
       requiredBuildingsPlaced: <String>{'single_home'},

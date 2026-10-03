@@ -137,7 +137,7 @@ softened for kids into "slows growth" rather than "collapses."
 
 | Category (`enum`) | Display | Growth role | Variety-counts? |
 |---|---|---|---|
-| `civicHousing` | Civic & Housing | **The spine.** Housing sets the raw population *ceiling* (`populationContribution`); civic anchors (mayor's office, town hall) are the narrative core and unlock gates. | Mostly no (housing tiers aren't "celebrated for variety") |
+| `housing` | Homes | **The spine.** Housing sets the raw population *ceiling* (`populationContribution`). (The civic anchors — mayor's office, town hall, city hall, post office, library — sat here as `civicHousing` until 2026-10; they're now `services`.) | Mostly no (housing tiers aren't "celebrated for variety") |
 | `services` | Services | **The enabler.** Gating infrastructure (power, water, waste, health) lifts the service ceilings so housing can actually fill; soft services (education, safety, transit) add desirability. | Yes |
 | `commercial` | Commercial | **The multiplier.** Shops/food/offices raise desirability via the variety bonus and give the town life; over-building them without housing triggers the lopsidedness penalty. | Yes |
 | `entertainment` | Entertainment | **The delight.** Parks/culture/recreation are the cozy, praise-heavy channel; they feed the variety multiplier and anchor the happiest beats. | Yes |
@@ -215,6 +215,9 @@ so footprints aim for *plausibility*, not economy). Guidelines used below:
   shadow direction.
 
 ### 3.1 Civic & Housing (`civicHousing`)
+
+> **2026-10:** the enum is now `housing` ("Homes"); the civic-core line
+> and the library/post office below moved to `services`.
 
 **Civic-core line** (unique narrative anchors; gate later arcs):
 
@@ -1518,7 +1521,7 @@ Replaces the flat unlock-order list.
   (Build it / Later), so the story is one tap from the card that fulfils it.
   An upgrade request's card reads *Grow a …* and enters §10.6's flow.
 - **Zone 3 — four folders** mapping one-to-one onto the `BuildingCategory`
-  enum with kid-facing names: **Homes** (`civicHousing`), **Services**,
+  enum with kid-facing names: **Homes** (`housing`), **Services**,
   **Shops** (`commercial`), **Fun** (`entertainment`). Tapping a folder swaps
   zone 3 for its cards with a back chevron. Never a third level; if a folder
   outgrows a screen, split by tier (small / big) rather than adding a scroll.

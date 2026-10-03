@@ -8,7 +8,7 @@ import 'package:math_city/domain/city/unlock_rule.dart';
 /// model reads, independent of the real registry's tuning.
 BuildingType _b({
   String id = 'x',
-  BuildingCategory category = BuildingCategory.civicHousing,
+  BuildingCategory category = BuildingCategory.housing,
   int pop = 0,
   Map<String, int> service = const {},
   bool variety = false,

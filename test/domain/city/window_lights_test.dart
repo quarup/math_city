@@ -18,12 +18,12 @@ void main() {
       LightProfile of(String id, BuildingCategory c) =>
           lightProfileFor(typeId: id, category: c);
       expect(
-        of('single_home', BuildingCategory.civicHousing),
+        of('single_home', BuildingCategory.housing),
         LightProfile.home,
       );
-      expect(of('high_rise', BuildingCategory.civicHousing), LightProfile.home);
+      expect(of('high_rise', BuildingCategory.housing), LightProfile.home);
       expect(
-        of('mayors_office', BuildingCategory.civicHousing),
+        of('mayors_office', BuildingCategory.housing),
         LightProfile.office,
       );
       expect(of('school', BuildingCategory.services), LightProfile.office);

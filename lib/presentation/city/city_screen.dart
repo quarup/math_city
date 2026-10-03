@@ -52,7 +52,7 @@ import 'package:math_city/state/tts_provider.dart';
 
 /// Category → placeholder building color (presentation concern, not domain).
 const _categoryColors = <BuildingCategory, Color>{
-  BuildingCategory.civicHousing: Color(0xFFBCAAA4), // warm stone
+  BuildingCategory.housing: Color(0xFFBCAAA4), // warm stone
   BuildingCategory.services: Color(0xFF64B5F6), // blue
   BuildingCategory.commercial: Color(0xFFFFB74D), // amber
   BuildingCategory.entertainment: Color(0xFF81C784), // green
@@ -3801,14 +3801,14 @@ class _CreditChip extends StatelessWidget {
 
 /// Kid-facing folder names for the four categories (city_builder.md §10.5).
 const _folderNames = <BuildingCategory, String>{
-  BuildingCategory.civicHousing: 'Homes',
+  BuildingCategory.housing: 'Homes',
   BuildingCategory.services: 'Services',
   BuildingCategory.commercial: 'Shops',
   BuildingCategory.entertainment: 'Fun',
 };
 
 const _folderEmoji = <BuildingCategory, String>{
-  BuildingCategory.civicHousing: '🏠',
+  BuildingCategory.housing: '🏠',
   BuildingCategory.services: '🚒',
   BuildingCategory.commercial: '🛒',
   BuildingCategory.entertainment: '🎡',

@@ -63,7 +63,7 @@ LightProfile lightProfileFor({
   if (_alwaysStaffed.contains(typeId)) return LightProfile.civic;
   if (_offices.contains(typeId)) return LightProfile.office;
   return switch (category) {
-    BuildingCategory.civicHousing => LightProfile.office,
+    BuildingCategory.housing => LightProfile.office,
     BuildingCategory.services => LightProfile.office,
     BuildingCategory.commercial => LightProfile.shop,
     BuildingCategory.entertainment => LightProfile.venue,
