@@ -59,10 +59,10 @@ const List<(String, String, String, String, int, int)> _pairScenarios = [
   // Value ranges are per-scenario so the stated measurements stay
   // realistic — an apple at "4 grams" undermined the comparison.
   ('the pencil', 'the crayon', 'cm', 'longer', 2, 20),
-  ('the rope', 'the string', 'feet', 'longer', 2, 20),
-  ('the cat', 'the dog', 'pounds', 'heavier', 6, 25),
+  ('the rope', 'the string', 'metres', 'longer', 2, 20),
+  ('the cat', 'the dog', 'kilograms', 'heavier', 3, 25),
   ('the apple', 'the orange', 'grams', 'heavier', 100, 300),
-  ('the red ribbon', 'the blue ribbon', 'inches', 'longer', 2, 20),
+  ('the red ribbon', 'the blue ribbon', 'cm', 'longer', 10, 60),
 ];
 
 GeneratedQuestion compareTwoObjects(Random rand) {
@@ -118,9 +118,9 @@ String _capitalise(String s) =>
 /// shown as proportional bars on a [LengthBarsSpec] diagram. CCSS 1.MD.A.1.
 const List<(String, String, String, String)> _tripleScenarios = [
   // (subject1, subject2, subject3, unit noun)
-  ('rope A', 'rope B', 'rope C', 'feet'),
+  ('rope A', 'rope B', 'rope C', 'metres'),
   ('the pencil', 'the marker', 'the crayon', 'cm'),
-  ('Anna', 'Beto', 'Cami', 'inches'),
+  ('the red ribbon', 'the blue ribbon', 'the green ribbon', 'cm'),
   ('the snake', 'the worm', 'the lizard', 'cm'),
 ];
 

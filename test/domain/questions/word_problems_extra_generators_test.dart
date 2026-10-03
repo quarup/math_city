@@ -35,22 +35,6 @@ void main() {
     });
   });
 
-  group('money_word_problems', () {
-    test('both flavors (coin count, dollars) appear; answer non-negative', () {
-      var sawCoins = false;
-      var sawDollars = false;
-      for (var i = 0; i < _iterations; i++) {
-        final q = _gen(registry, 'money_word_problems', i);
-        final answer = int.parse(q.correctAnswer);
-        expect(answer, greaterThan(0));
-        if (q.prompt.contains('in cents')) sawCoins = true;
-        if (q.prompt.contains('in dollars')) sawDollars = true;
-        _expectThreeDistinctDistractors(q);
-      }
-      expect(sawCoins && sawDollars, isTrue);
-    });
-  });
-
   group('liquid_volume_mass', () {
     test('answer = start − removed; both stay positive', () {
       for (var i = 0; i < _iterations; i++) {

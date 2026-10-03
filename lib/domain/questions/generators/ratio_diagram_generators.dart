@@ -8,10 +8,10 @@ import 'package:math_city/domain/questions/generated_question.dart';
 /// widgets: ratio_table, double_number_line. CCSS 6.RP.A.3.
 
 const List<(String, String)> _ratioContexts = [
-  ('cups of flour', 'cups of sugar'),
+  ('scoops of flour', 'scoops of sugar'),
   ('apples', 'oranges'),
   ('red marbles', 'blue marbles'),
-  ('miles', 'gallons'),
+  ('spoons of cocoa', 'glasses of milk'),
   ('boys', 'girls'),
 ];
 

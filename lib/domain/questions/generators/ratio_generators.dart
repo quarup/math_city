@@ -238,7 +238,8 @@ GeneratedQuestion equivalentRatios(Random rand) {
 // unit_rate (Grade 6)
 // ─────────────────────────────────────────────────────────────────────────
 
-/// "60 miles in 3 hours. What's the unit rate (miles per hour)?" → 20.
+/// "60 kilometres in 3 hours. What's the unit rate (kilometres per
+/// hour)?" → 20.
 /// Parameters picked so the unit rate is always a whole number.
 GeneratedQuestion unitRate(Random rand) {
   // Pick rate (the unit-per-1 answer) in [2, 30] and divisor in [2, 12].
@@ -249,7 +250,7 @@ GeneratedQuestion unitRate(Random rand) {
 
   // Choose a (unit, denom-noun) context for the prompt wording.
   const contexts = <(String, String, String)>[
-    ('miles', 'hours', 'miles per hour'),
+    ('kilometres', 'hours', 'kilometres per hour'),
     ('words', 'minutes', 'words per minute'),
     ('pages', 'days', 'pages per day'),
     ('apples', 'baskets', 'apples per basket'),
@@ -285,12 +286,12 @@ GeneratedQuestion unitRate(Random rand) {
 // unit_pricing (Grade 6)
 // ─────────────────────────────────────────────────────────────────────────
 
-/// "Three apples cost \$6. What's the unit price (dollars per apple)?"
-/// → 2. Same arithmetic shape as `unit_rate`, framed as money.
+/// "3 apples cost 6 coins. What's the unit price (coins per apple)?"
+/// → 2. Same arithmetic shape as `unit_rate`, framed as the game's coins.
 /// Curriculum tags as dataset; implemented algorithmically per design
 /// principle 4.
 GeneratedQuestion unitPricing(Random rand) {
-  final price = rand.nextInt(8) + 2; // 2..9 dollars per item
+  final price = rand.nextInt(8) + 2; // 2..9 coins per item
   final count = rand.nextInt(8) + 2; // 2..9 items
   final total = price * count;
 
@@ -315,13 +316,13 @@ GeneratedQuestion unitPricing(Random rand) {
   return GeneratedQuestion(
     conceptId: 'unit_pricing',
     prompt:
-        '$count $item cost \$$total. What is the unit price '
-        '(dollars per $single)?',
+        '$count $item cost $total coins. What is the unit price '
+        '(coins per $single)?',
     correctAnswer: correct,
     distractors: _wholeDistractors(price, candidates, rand),
     explanation: [
       'Unit price = total ÷ how many items.',
-      '\$$total ÷ $count = \$$price per $single.',
+      '$total ÷ $count = $price coins per $single.',
     ],
   );
 }
@@ -330,14 +331,15 @@ GeneratedQuestion unitPricing(Random rand) {
 // convert_units_using_ratio (Grade 6)
 // ─────────────────────────────────────────────────────────────────────────
 
-/// "1 ft = 12 in. How many inches in 4 ft?" → 48. Uses small whole-
-/// number conversion factors so the answer is always an integer.
+/// "1 metre = 100 centimetres. How many centimetres are in 4 metres?"
+/// → 400. Uses small whole-number conversion factors so the answer is
+/// always an integer.
 GeneratedQuestion convertUnitsUsingRatio(Random rand) {
   // Curated (from-unit, to-unit, factor) triples; factor = to/from.
   const conversions = <(String, String, int)>[
-    ('foot', 'inches', 12),
-    ('yard', 'feet', 3),
-    ('meter', 'centimeters', 100),
+    ('centimetre', 'millimetres', 10),
+    ('litre', 'millilitres', 1000),
+    ('metre', 'centimetres', 100),
     ('hour', 'minutes', 60),
     ('minute', 'seconds', 60),
     ('day', 'hours', 24),
@@ -510,10 +512,8 @@ GeneratedQuestion constantSpeed(Random rand) {
   final rate = (rand.nextInt(9) + 2) * 5; // 10, 15, 20, …, 50
   final time = rand.nextInt(7) + 2; // 2..8 hours
   final distance = rate * time;
-  // 50/50 miles or kilometres — metric alongside imperial, per concept.
-  final metric = rand.nextBool();
-  final unit = metric ? 'kilometres' : 'miles';
-  final speedUnit = metric ? 'km/h' : 'mph';
+  const unit = 'kilometres';
+  const speedUnit = 'km/h';
 
   final whichBlank = rand.nextInt(3); // 0 = distance, 1 = time, 2 = rate
   final String prompt;

@@ -134,8 +134,8 @@ void main() {
   group('word_problem_two_step_eq', () {
     test('px + q = r recovery: answer = (r-q)/p', () {
       final re = RegExp(
-        r'apples at \$(\d+) each, plus an? \$(\d+) delivery fee\. '
-        r'The total cost is \$(\d+)\.',
+        r'apples at (\d+) coins each, plus a delivery fee of (\d+) coins\. '
+        r'The total cost is (\d+) coins\.',
       );
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'word_problem_two_step_eq', i);

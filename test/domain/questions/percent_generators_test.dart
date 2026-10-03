@@ -123,7 +123,7 @@ void main() {
   group('simple_interest', () {
     test('I = P × R × T / 100; principal is a multiple of 100', () {
       final re = RegExp(
-        r'^\$(\d+) earns (\d+)% simple interest per year for (\d+) years?\..*\(in dollars\)$',
+        r'^(\d+) coins earn (\d+)% simple interest per year for (\d+) years?\..*\(in coins\)$',
       );
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'simple_interest', i);
@@ -142,9 +142,9 @@ void main() {
   });
 
   group('commission', () {
-    test('commission = sale × rate / 100; always an integer dollar amount', () {
+    test('commission = sale × rate / 100; always a whole number of coins', () {
       final re = RegExp(
-        r'^A salesperson earns (\d+)% commission on a \$(\d+) sale\..*\(in dollars\)$',
+        r'^A salesperson earns (\d+)% commission on a sale of (\d+) coins\..*\(in coins\)$',
       );
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'commission', i);
@@ -166,10 +166,10 @@ void main() {
   group('markup_markdown', () {
     test('new price = original ± original×rate/100; correct direction', () {
       final reUp = RegExp(
-        r'^A store buys an item for \$(\d+) and marks it up (\d+)%.*\(in dollars\)$',
+        r'^A store buys an item for (\d+) coins and marks it up (\d+)%.*\(in coins\)$',
       );
       final reDown = RegExp(
-        r'^An item costs \$(\d+)\. After a (\d+)% markdown,.*\(in dollars\)$',
+        r'^An item costs (\d+) coins\. After a (\d+)% markdown,.*\(in coins\)$',
       );
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'markup_markdown', i);
@@ -242,12 +242,12 @@ void main() {
   });
 
   group('sales_tax_tip', () {
-    test('extra = bill × rate / 100; always an integer dollar amount', () {
+    test('extra = price × rate / 100; always a whole number of coins', () {
       final reTip = RegExp(
-        r'^A meal cost \$(\d+)\. With a (\d+)% tip,.*\(in dollars\)$',
+        r'^A meal costs (\d+) coins\. A (\d+)% service charge is added\..*\(in coins\)$',
       );
       final reTax = RegExp(
-        r'^A purchase costs \$(\d+)\. With (\d+)% sales tax,.*\(in dollars\)$',
+        r'^A bike costs (\d+) coins\. A (\d+)% tax is added\..*\(in coins\)$',
       );
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'sales_tax_tip', i);

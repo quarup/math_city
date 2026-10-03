@@ -1235,8 +1235,6 @@ const List<Concept> allConcepts = [
     categoryRowOrder: 32,
   ),
   Concept(
-    // Named for what the generator actually asks (single-level parens)
-    // — "Brackets and braces" promised nesting it never showed.
     id: 'nested_grouping',
     name: 'Parentheses first',
     shortLabel: 'parens',
@@ -2130,17 +2128,6 @@ const List<Concept> allConcepts = [
     categoryRowOrder: 3,
   ),
   Concept(
-    id: 'measure_with_ruler_inches',
-    name: 'Measure with ruler (in.)',
-    shortLabel: 'ruler in',
-    categoryId: 'measurement',
-    primaryGrade: 2,
-    prereqIds: ['measure_length_units'],
-    source: ConceptSource.algorithmicWithDiagram,
-    diagramRequirement: DiagramRequired('ruler'),
-    categoryRowOrder: 4,
-  ),
-  Concept(
     id: 'measure_with_ruler_cm',
     name: 'Measure with ruler (cm)',
     shortLabel: 'ruler cm',
@@ -2149,7 +2136,7 @@ const List<Concept> allConcepts = [
     prereqIds: ['measure_length_units'],
     source: ConceptSource.algorithmicWithDiagram,
     diagramRequirement: DiagramRequired('ruler'),
-    categoryRowOrder: 5,
+    categoryRowOrder: 4,
   ),
   Concept(
     id: 'estimate_length',
@@ -2157,10 +2144,10 @@ const List<Concept> allConcepts = [
     shortLabel: 'estimate',
     categoryId: 'measurement',
     primaryGrade: 2,
-    prereqIds: ['measure_with_ruler_inches', 'measure_with_ruler_cm'],
+    prereqIds: ['measure_with_ruler_cm'],
     source: ConceptSource.algorithmicWithDiagram,
     diagramRequirement: DiagramRequired('shape'),
-    categoryRowOrder: 6,
+    categoryRowOrder: 5,
   ),
   Concept(
     id: 'length_word_problems',
@@ -2168,10 +2155,10 @@ const List<Concept> allConcepts = [
     shortLabel: 'len word',
     categoryId: 'measurement',
     primaryGrade: 2,
-    prereqIds: ['measure_with_ruler_inches', 'add_within_100'],
+    prereqIds: ['measure_with_ruler_cm', 'add_within_100'],
     source: ConceptSource.dataset,
     diagramRequirement: DiagramOptional(),
-    categoryRowOrder: 7,
+    categoryRowOrder: 6,
   ),
   Concept(
     id: 'length_diff_units',
@@ -2179,21 +2166,21 @@ const List<Concept> allConcepts = [
     shortLabel: 'len diff',
     categoryId: 'measurement',
     primaryGrade: 2,
-    prereqIds: ['measure_with_ruler_inches', 'sub_within_100'],
+    prereqIds: ['measure_with_ruler_cm', 'sub_within_100'],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
-    categoryRowOrder: 8,
+    categoryRowOrder: 7,
   ),
   Concept(
-    id: 'measure_to_half_quarter_inch',
-    name: 'Measure to ½ or ¼ inch',
-    shortLabel: 'ruler ½/¼',
+    id: 'measure_to_half_cm',
+    name: 'Measure to ½ cm',
+    shortLabel: 'ruler ½ cm',
     categoryId: 'measurement',
     primaryGrade: 3,
-    prereqIds: ['measure_with_ruler_inches', 'partition_halves_fourths'],
+    prereqIds: ['measure_with_ruler_cm', 'partition_halves_fourths'],
     source: ConceptSource.algorithmicWithDiagram,
     diagramRequirement: DiagramRequired('ruler'),
-    categoryRowOrder: 9,
+    categoryRowOrder: 8,
   ),
   Concept(
     id: 'time_to_hour_half',
@@ -2204,7 +2191,7 @@ const List<Concept> allConcepts = [
     prereqIds: [],
     source: ConceptSource.algorithmicWithDiagram,
     diagramRequirement: DiagramRequired('clock_analog'),
-    categoryRowOrder: 10,
+    categoryRowOrder: 9,
   ),
   Concept(
     id: 'time_to_5_min',
@@ -2215,7 +2202,7 @@ const List<Concept> allConcepts = [
     prereqIds: ['time_to_hour_half', 'skip_count_5'],
     source: ConceptSource.algorithmicWithDiagram,
     diagramRequirement: DiagramRequired('clock_analog'),
-    categoryRowOrder: 11,
+    categoryRowOrder: 10,
   ),
   Concept(
     id: 'time_to_minute',
@@ -2226,7 +2213,7 @@ const List<Concept> allConcepts = [
     prereqIds: ['time_to_5_min'],
     source: ConceptSource.algorithmicWithDiagram,
     diagramRequirement: DiagramRequired('clock_analog'),
-    categoryRowOrder: 12,
+    categoryRowOrder: 11,
   ),
   Concept(
     id: 'am_pm',
@@ -2237,7 +2224,7 @@ const List<Concept> allConcepts = [
     prereqIds: ['time_to_5_min'],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
-    categoryRowOrder: 13,
+    categoryRowOrder: 12,
   ),
   Concept(
     id: 'elapsed_time',
@@ -2248,62 +2235,7 @@ const List<Concept> allConcepts = [
     prereqIds: ['time_to_minute', 'add_within_100'],
     source: ConceptSource.algorithmicWithDiagramPlusDataset,
     diagramRequirement: DiagramRequired('clock_analog'),
-    categoryRowOrder: 14,
-  ),
-  Concept(
-    id: 'coins_id_value',
-    name: 'Coin values',
-    shortLabel: 'coin?',
-    categoryId: 'measurement',
-    primaryGrade: 1,
-    prereqIds: [],
-    source: ConceptSource.algorithmicWithDiagram,
-    diagramRequirement: DiagramRequired('money'),
-    categoryRowOrder: 15,
-  ),
-  Concept(
-    id: 'count_coins',
-    name: 'Count coins',
-    shortLabel: 'coin sum',
-    categoryId: 'measurement',
-    primaryGrade: 2,
-    prereqIds: ['coins_id_value', 'skip_count_5', 'skip_count_10'],
-    source: ConceptSource.algorithmicWithDiagram,
-    diagramRequirement: DiagramRequired('money'),
-    categoryRowOrder: 16,
-  ),
-  Concept(
-    id: 'count_bills_coins',
-    name: 'Bills and coins',
-    shortLabel: r'$ + ¢',
-    categoryId: 'measurement',
-    primaryGrade: 2,
-    prereqIds: ['count_coins'],
-    source: ConceptSource.algorithmicWithDiagram,
-    diagramRequirement: DiagramRequired('money'),
-    categoryRowOrder: 17,
-  ),
-  Concept(
-    id: 'money_word_problems',
-    name: 'Money word problems',
-    shortLabel: r'$ word',
-    categoryId: 'measurement',
-    primaryGrade: 2,
-    prereqIds: ['count_bills_coins', 'add_within_100'],
-    source: ConceptSource.dataset,
-    diagramRequirement: DiagramOptional(),
-    categoryRowOrder: 18,
-  ),
-  Concept(
-    id: 'change_from_purchase',
-    name: 'Make change',
-    shortLabel: 'change',
-    categoryId: 'measurement',
-    primaryGrade: 2,
-    prereqIds: ['money_word_problems', 'sub_within_100'],
-    source: ConceptSource.algorithmicWithDiagram,
-    diagramRequirement: DiagramRequired('money'),
-    categoryRowOrder: 19,
+    categoryRowOrder: 13,
   ),
   Concept(
     id: 'liquid_volume_mass',
@@ -2314,7 +2246,7 @@ const List<Concept> allConcepts = [
     prereqIds: ['add_within_1000'],
     source: ConceptSource.dataset,
     diagramRequirement: DiagramOptional(),
-    categoryRowOrder: 20,
+    categoryRowOrder: 14,
   ),
   Concept(
     id: 'convert_units_within_system',
@@ -2325,7 +2257,7 @@ const List<Concept> allConcepts = [
     prereqIds: ['mult_facts_within_100'],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
-    categoryRowOrder: 21,
+    categoryRowOrder: 15,
   ),
   Concept(
     id: 'convert_units_multistep',
@@ -2336,7 +2268,7 @@ const List<Concept> allConcepts = [
     prereqIds: ['convert_units_within_system', 'mult_decimals'],
     source: ConceptSource.dataset,
     diagramRequirement: DiagramOptional(),
-    categoryRowOrder: 22,
+    categoryRowOrder: 16,
   ),
   Concept(
     id: 'area_rectangle_count_squares',
@@ -2347,7 +2279,7 @@ const List<Concept> allConcepts = [
     prereqIds: ['skip_count_5'],
     source: ConceptSource.algorithmicWithDiagram,
     diagramRequirement: DiagramRequired('area_grid'),
-    categoryRowOrder: 23,
+    categoryRowOrder: 17,
   ),
   Concept(
     id: 'area_rectangle_formula',
@@ -2358,7 +2290,7 @@ const List<Concept> allConcepts = [
     prereqIds: ['area_rectangle_count_squares', 'mult_facts_within_100'],
     source: ConceptSource.algorithmicWithDiagram,
     diagramRequirement: DiagramRequired('shape'),
-    categoryRowOrder: 24,
+    categoryRowOrder: 18,
   ),
   Concept(
     id: 'perimeter_polygon',
@@ -2369,7 +2301,7 @@ const List<Concept> allConcepts = [
     prereqIds: ['add_within_100'],
     source: ConceptSource.algorithmicWithDiagram,
     diagramRequirement: DiagramRequired('shape'),
-    categoryRowOrder: 25,
+    categoryRowOrder: 19,
   ),
   Concept(
     id: 'perimeter_unknown_side',
@@ -2380,7 +2312,7 @@ const List<Concept> allConcepts = [
     prereqIds: ['perimeter_polygon'],
     source: ConceptSource.algorithmicWithDiagram,
     diagramRequirement: DiagramRequired('shape'),
-    categoryRowOrder: 26,
+    categoryRowOrder: 20,
   ),
   Concept(
     id: 'area_perimeter_word',
@@ -2391,7 +2323,7 @@ const List<Concept> allConcepts = [
     prereqIds: ['area_rectangle_formula', 'perimeter_polygon'],
     source: ConceptSource.dataset,
     diagramRequirement: DiagramOptional(),
-    categoryRowOrder: 27,
+    categoryRowOrder: 21,
   ),
   Concept(
     id: 'volume_unit_cubes',
@@ -2402,7 +2334,7 @@ const List<Concept> allConcepts = [
     prereqIds: ['area_rectangle_count_squares'],
     source: ConceptSource.algorithmicWithDiagram,
     diagramRequirement: DiagramRequired('net_3d'),
-    categoryRowOrder: 28,
+    categoryRowOrder: 22,
   ),
   Concept(
     id: 'volume_rect_prism_formula',
@@ -2413,7 +2345,7 @@ const List<Concept> allConcepts = [
     prereqIds: ['volume_unit_cubes', 'mult_facts_within_100'],
     source: ConceptSource.algorithmicWithDiagram,
     diagramRequirement: DiagramRequired('shape'),
-    categoryRowOrder: 29,
+    categoryRowOrder: 23,
   ),
   Concept(
     id: 'volume_composite',
@@ -2424,7 +2356,7 @@ const List<Concept> allConcepts = [
     prereqIds: ['volume_rect_prism_formula'],
     source: ConceptSource.algorithmicWithDiagram,
     diagramRequirement: DiagramRequired('shape'),
-    categoryRowOrder: 30,
+    categoryRowOrder: 24,
   ),
   Concept(
     id: 'volume_prism_fractional_edges',
@@ -2435,7 +2367,7 @@ const List<Concept> allConcepts = [
     prereqIds: ['volume_rect_prism_formula', 'mult_fractions_proper'],
     source: ConceptSource.algorithmic,
     diagramRequirement: DiagramNone(),
-    categoryRowOrder: 31,
+    categoryRowOrder: 25,
   ),
   Concept(
     id: 'surface_area_from_net',
@@ -2446,7 +2378,7 @@ const List<Concept> allConcepts = [
     prereqIds: ['area_rectangle_formula'],
     source: ConceptSource.algorithmicWithDiagram,
     diagramRequirement: DiagramRequired('net_3d'),
-    categoryRowOrder: 32,
+    categoryRowOrder: 26,
   ),
   Concept(
     id: 'volume_cylinder',
@@ -2457,7 +2389,7 @@ const List<Concept> allConcepts = [
     prereqIds: ['area_circle', 'volume_rect_prism_formula'],
     source: ConceptSource.algorithmicWithDiagram,
     diagramRequirement: DiagramRequired('shape'),
-    categoryRowOrder: 33,
+    categoryRowOrder: 27,
   ),
   Concept(
     id: 'volume_cone',
@@ -2468,7 +2400,7 @@ const List<Concept> allConcepts = [
     prereqIds: ['volume_cylinder'],
     source: ConceptSource.algorithmicWithDiagram,
     diagramRequirement: DiagramRequired('shape'),
-    categoryRowOrder: 34,
+    categoryRowOrder: 28,
   ),
   Concept(
     id: 'volume_sphere',
@@ -2479,7 +2411,7 @@ const List<Concept> allConcepts = [
     prereqIds: ['volume_cylinder'],
     source: ConceptSource.algorithmicWithDiagram,
     diagramRequirement: DiagramRequired('shape'),
-    categoryRowOrder: 35,
+    categoryRowOrder: 29,
   ),
   // ── geometry ──
   Concept(
@@ -3622,9 +3554,6 @@ const List<Concept> allConcepts = [
     categoryRowOrder: 35,
   ),
   Concept(
-    // Neutral name: the screen title showed the concept name, and
-    // "System with no solution" actively misled on instances whose
-    // correct answer is "Exactly one solution".
     id: 'inspect_system_no_solution',
     name: 'How many solutions?',
     shortLabel: 'sys soln?',
@@ -3708,7 +3637,7 @@ const List<Concept> allConcepts = [
     shortLabel: 'line plot',
     categoryId: 'stats',
     primaryGrade: 2,
-    prereqIds: ['measure_with_ruler_inches'],
+    prereqIds: ['measure_with_ruler_cm'],
     source: ConceptSource.algorithmicWithDiagram,
     diagramRequirement: DiagramRequired('line_plot'),
     categoryRowOrder: 5,

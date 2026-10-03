@@ -116,7 +116,9 @@ void main() {
 
   group('unit_pricing', () {
     test('answer = total ÷ count; arithmetic exact', () {
-      final re = RegExp(r'^(\d+) \S+ cost \$(\d+)\. What is the unit price');
+      final re = RegExp(
+        r'^(\d+) \S+ cost (\d+) coins\. What is the unit price',
+      );
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'unit_pricing', i);
         final m = re.firstMatch(q.prompt);

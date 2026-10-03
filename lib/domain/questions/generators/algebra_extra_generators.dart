@@ -113,15 +113,15 @@ GeneratedQuestion numericalPatternRule(Random rand) {
 // ─────────────────────────────────────────────────────────────────────────
 
 // `{n}` is replaced with the magnitude, so the amount lands mid-phrase
-// ("is 18 meters above sea level"), not appended after it.
+// ("is 18 metres above sea level"), not appended after it.
 const _signedScenarios = [
-  ('owes {n} dollars', 'has {n} dollars'),
-  ('is {n} meters below sea level', 'is {n} meters above sea level'),
+  ('owes {n} coins', 'has {n} coins'),
+  ('is {n} metres below sea level', 'is {n} metres above sea level'),
   ('lost {n} points', 'gained {n} points'),
   ('is {n} degrees below zero', 'is {n} degrees above zero'),
 ];
 
-/// "Maria owes 10 dollars. What integer represents this?" → −10.
+/// "Maria owes 10 coins. What integer represents this?" → −10.
 /// 50/50 negative/positive context.
 GeneratedQuestion signedQuantitiesContext(Random rand) {
   final scenario = _signedScenarios[rand.nextInt(_signedScenarios.length)];
@@ -278,16 +278,16 @@ GeneratedQuestion identifyPartsExpression(Random rand) {
 // ─────────────────────────────────────────────────────────────────────────
 
 const _unitConversions = [
-  ('feet', 'inches', 12),
-  ('yards', 'feet', 3),
+  ('centimetres', 'millimetres', 10),
+  ('kilograms', 'grams', 1000),
   ('hours', 'minutes', 60),
   ('minutes', 'seconds', 60),
-  ('pounds', 'ounces', 16),
-  ('meters', 'centimeters', 100),
-  ('kilometers', 'meters', 1000),
+  ('litres', 'millilitres', 1000),
+  ('metres', 'centimetres', 100),
+  ('kilometres', 'metres', 1000),
 ];
 
-/// "How many inches are in 4 feet?" → 48. Big-unit → small-unit
+/// "How many centimetres are in 4 metres?" → 400. Big-unit → small-unit
 /// conversion with integer multiplier. Tests CCSS 4.MD.A.1.
 GeneratedQuestion convertUnitsWithinSystem(Random rand) {
   final c = _unitConversions[rand.nextInt(_unitConversions.length)];
@@ -309,13 +309,10 @@ GeneratedQuestion convertUnitsWithinSystem(Random rand) {
   );
 }
 
-String _singular(String plural) => switch (plural) {
-  // Irregulars first; the generic strip-the-s produced "1 feet" and the
-  // strip-es rule would turn "minutes" into "minut".
-  'feet' => 'foot',
-  'inches' => 'inch',
-  _ => plural.endsWith('s') ? plural.substring(0, plural.length - 1) : plural,
-};
+// Every big unit above is a regular plural ending in a bare "s" (a
+// strip-es rule would turn "minutes" into "minut").
+String _singular(String plural) =>
+    plural.endsWith('s') ? plural.substring(0, plural.length - 1) : plural;
 
 // ─────────────────────────────────────────────────────────────────────────
 // volume_prism_fractional_edges (G6)

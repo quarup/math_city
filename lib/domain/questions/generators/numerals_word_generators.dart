@@ -214,11 +214,11 @@ GeneratedQuestion multistepRatioWord(Random rand) {
   if (kind == 0) {
     // Two legs of travel: d = r1·t1 + r2·t2. Two multiplications plus an
     // addition — a single rate × time was not the multi-STEP problem the
-    // concept is named for. Metric or imperial 50/50.
-    final unit = rand.nextBool() ? 'kilometres' : 'miles';
-    final rate1 = (rand.nextInt(5) + 6) * 5; // 30..50, step 5
+    // concept is named for.
+    const unit = 'kilometres';
+    final rate1 = (rand.nextInt(5) + 6) * 10; // 60..100, step 10
     final time1 = rand.nextInt(3) + 2; // 2..4 hours
-    final rate2 = (rand.nextInt(5) + 4) * 5; // 20..40, step 5
+    final rate2 = (rand.nextInt(5) + 4) * 10; // 40..80, step 10
     final time2 = rand.nextInt(3) + 1; // 1..3 hours
     final leg1 = rate1 * time1;
     final leg2 = rate2 * time2;
@@ -243,18 +243,19 @@ GeneratedQuestion multistepRatioWord(Random rand) {
       ],
     );
   } else {
-    // unit-pricing scaling: "n items cost $p, how much for m items?"
+    // unit-pricing scaling: "n items cost p coins, how much for m items?"
     final small = rand.nextInt(4) + 2; // 2..5
-    final pricePerSmall = rand.nextInt(4) + 1; // 1..4 dollars
+    final pricePerSmall = rand.nextInt(4) + 1; // 1..4 coins
     final smallCost = small * pricePerSmall;
     final scale = rand.nextInt(4) + 2; // 2..5 multiplier
     final big = small * scale;
     final correct = pricePerSmall * big;
+    final coinWord = pricePerSmall == 1 ? 'coin' : 'coins';
     return GeneratedQuestion(
       conceptId: 'multistep_ratio_word',
       prompt:
-          '$small apples cost \$$smallCost. '
-          'At the same price each, how much do $big apples cost in dollars?',
+          '$small apples cost $smallCost coins. '
+          'At the same price each, how many coins do $big apples cost?',
       correctAnswer: '$correct',
       distractors: integerDistractorsWith(
         correct,
@@ -262,8 +263,8 @@ GeneratedQuestion multistepRatioWord(Random rand) {
         misconception: smallCost + scale,
       ),
       explanation: [
-        'Price per apple: \$$smallCost ÷ $small = \$$pricePerSmall.',
-        '$big apples cost $big × \$$pricePerSmall = \$$correct.',
+        'Price per apple: $smallCost ÷ $small = $pricePerSmall $coinWord.',
+        '$big apples cost $big × $pricePerSmall = $correct coins.',
       ],
     );
   }
@@ -307,7 +308,7 @@ GeneratedQuestion rationalsFourOpWord(Random rand) {
       conceptId: 'rationals_four_op_word',
       prompt:
           'A submarine is at ${_signed(startElev)} m. '
-          'It dives $descent m. What is its new depth, in meters?',
+          'It dives $descent m. What is its new depth, in metres?',
       correctAnswer: '$correct',
       distractors: integerDistractorsWith(
         correct,
@@ -338,9 +339,9 @@ GeneratedQuestion wordProblemTwoStepEq(Random rand) {
   return GeneratedQuestion(
     conceptId: 'word_problem_two_step_eq',
     prompt:
-        '$name buys some apples at \$$p each, plus '
-        '${q == 8 ? "an" : "a"} \$$q delivery fee. '
-        'The total cost is \$$r. How many apples did $name buy?',
+        '$name buys some apples at $p coins each, plus '
+        'a delivery fee of $q coins. '
+        'The total cost is $r coins. How many apples did $name buy?',
     correctAnswer: '$x',
     distractors: integerDistractorsWith(
       x,

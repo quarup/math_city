@@ -228,22 +228,16 @@ const Map<String, int> expectedSecondsByConcept = <String, int>{
   'compare_two_objects': 5, // K · Compare objects directly
   'order_three_objects_length': 7, // G1 · Order three by length
   'measure_length_units': 8, // G1 · Measure with same-size units
-  'measure_with_ruler_inches': 9, // G2 · Measure with ruler (in.)
   'measure_with_ruler_cm': 9, // G2 · Measure with ruler (cm)
   'estimate_length': 8, // G2 · Estimate length
   'length_word_problems': 18, // G2 · Length word problems
   'length_diff_units': 12, // G2 · How much longer?
-  'measure_to_half_quarter_inch': 12, // G3 · Measure to ½ or ¼ inch
+  'measure_to_half_cm': 10, // G3 · Measure to ½ cm
   'time_to_hour_half': 6, // G1 · Time to hour and half-hour
   'time_to_5_min': 9, // G2 · Time to 5 minutes
   'time_to_minute': 12, // G3 · Time to the minute
   'am_pm': 7, // G2 · a.m. vs. p.m.
   'elapsed_time': 25, // G3 · Elapsed time
-  'coins_id_value': 5, // G1 · Coin values
-  'count_coins': 10, // G2 · Count coins
-  'count_bills_coins': 14, // G2 · Bills and coins
-  'money_word_problems': 20, // G2 · Money word problems
-  'change_from_purchase': 20, // G2 · Make change
   'liquid_volume_mass': 18, // G3 · Liquid volume / mass
   'convert_units_within_system': 25, // G4 · Convert units (one system)
   'convert_units_multistep': 45, // G5 · Convert in word problems

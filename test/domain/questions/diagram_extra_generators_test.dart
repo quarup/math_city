@@ -109,6 +109,22 @@ void main() {
         _expectThreeDistinctDistractors(q);
       }
     });
+
+    test('the point sits on an unlabelled tick, mostly below zero', () {
+      var below = 0;
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'integers_on_number_line', i);
+        final spec = q.diagram! as NumberLineSpec;
+        final v = spec.markedPoints.first;
+        final step = (spec.max - spec.min) / spec.divisions;
+        expect(spec.labelledValues, [0, step]);
+        expect(spec.labelledValues, isNot(contains(v)));
+        expect(v % step, 0);
+        expect(v, inInclusiveRange(spec.min, spec.max));
+        if (v < 0) below++;
+      }
+      expect(below, greaterThan(_iterations / 2));
+    });
   });
 
   group('area_rectangle_count_squares', () {

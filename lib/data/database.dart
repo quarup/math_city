@@ -1188,11 +1188,18 @@ class AppDatabase extends _$AppDatabase {
 
   /// Returns a map of conceptId → proficiency for [playerId].
   /// Only concepts that have been answered at least once are included.
+  ///
+  /// Like every concept-keyed read here, rows for a concept the current
+  /// catalog no longer has (a retired ID, e.g. the US coin concepts) are
+  /// kept on disk but skipped, so nothing downstream meets an unknown ID.
   Future<Map<String, double>> proficiencyMapForPlayer(int playerId) async {
     final rows = await (select(
       conceptProficiencies,
     )..where((t) => t.playerId.equals(playerId))).get();
-    return {for (final r in rows) r.conceptId: r.proficiency};
+    return {
+      for (final r in rows)
+        if (_knownConcept(r.conceptId)) r.conceptId: r.proficiency,
+    };
   }
 
   /// conceptId → lifetime correct answers for the player (gates the keypad).
@@ -1200,7 +1207,10 @@ class AppDatabase extends _$AppDatabase {
     final rows = await (select(
       conceptProficiencies,
     )..where((t) => t.playerId.equals(playerId))).get();
-    return {for (final r in rows) r.conceptId: r.questionsCorrect};
+    return {
+      for (final r in rows)
+        if (_knownConcept(r.conceptId)) r.conceptId: r.questionsCorrect,
+    };
   }
 
   /// Inserts or updates a proficiency record, incrementing answer counters.
@@ -1239,8 +1249,10 @@ class AppDatabase extends _$AppDatabase {
     final rows = await (select(
       introducedConcepts,
     )..where((t) => t.playerId.equals(playerId))).get();
-    return rows.map((r) => r.conceptId).toSet();
+    return rows.map((r) => r.conceptId).where(_knownConcept).toSet();
   }
+
+  static bool _knownConcept(String id) => dom.findConceptById(id) != null;
 
   Future<void> introduceConcept(int playerId, String conceptId) =>
       into(introducedConcepts).insertOnConflictUpdate(

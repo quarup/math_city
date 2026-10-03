@@ -122,7 +122,7 @@ const _scenarios = <_Scenario>[
     dependent: 'cost',
     independent: 'number of apples',
     context:
-        r'Apples cost $1 each. The total cost depends on the '
+        'Apples cost 1 coin each. The total cost depends on the '
         'number of apples bought.',
   ),
 ];

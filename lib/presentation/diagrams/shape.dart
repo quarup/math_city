@@ -181,16 +181,19 @@ class _ShapePainter extends CustomPainter {
     c
       ..drawRect(sq, fill)
       ..drawRect(sq, stroke);
+    if (spec.showHalvingCut) _drawCut(c, sq.bottomLeft, sq.topRight);
   }
 
   void _drawRectangle(Canvas c, Rect box, Paint fill, Paint stroke) {
-    // Force visibly wider than tall (3:2 inside the box).
+    // Force visibly wider than tall (3:2 inside the box) — or exactly 2:1
+    // when cut in half, so each half is a true square.
     final w = box.width;
-    final h = w * 0.6;
+    final h = w * (spec.showHalvingCut ? 0.5 : 0.6);
     final r = Rect.fromCenter(center: box.center, width: w, height: h);
     c
       ..drawRect(r, fill)
       ..drawRect(r, stroke);
+    if (spec.showHalvingCut) _drawCut(c, r.topCenter, r.bottomCenter);
   }
 
   void _drawParallelogram(Canvas c, Rect box, Paint fill, Paint stroke) {
@@ -216,6 +219,7 @@ class _ShapePainter extends CustomPainter {
     c
       ..drawPath(p, fill)
       ..drawPath(p, stroke);
+    if (spec.showHalvingCut) _drawCut(c, box.centerLeft, box.centerRight);
   }
 
   void _drawTrapezoid(Canvas c, Rect box, Paint fill, Paint stroke) {
@@ -258,6 +262,25 @@ class _ShapePainter extends CustomPainter {
     c
       ..drawPath(p, fill)
       ..drawPath(p, stroke);
+    // Only the hexagon is ever cut: through its top and bottom corners.
+    if (spec.showHalvingCut && n == 6) {
+      _drawCut(c, Offset(cx, cy - r), Offset(cx, cy + r));
+    }
+  }
+
+  /// A dashed line from [a] to [b] — where the shape is cut in two.
+  void _drawCut(Canvas c, Offset a, Offset b) {
+    final paint = Paint()
+      ..color = edgeColor
+      ..strokeWidth = 2.5
+      ..strokeCap = StrokeCap.round;
+    const dash = 7.0;
+    const gap = 5.0;
+    final len = (b - a).distance;
+    final dir = (b - a) / len;
+    for (var d = 0.0; d < len; d += dash + gap) {
+      c.drawLine(a + dir * d, a + dir * math.min(d + dash, len), paint);
+    }
   }
 
   // ── 3D — schematic ─────────────────────────────────────────────────────

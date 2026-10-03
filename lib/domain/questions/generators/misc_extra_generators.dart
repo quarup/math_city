@@ -64,8 +64,8 @@ const _lengthScenarios = [
   ('pencil', 'eraser', 'cm'),
   ('marker', 'crayon', 'cm'),
   ('book', 'notebook', 'cm'),
-  ('rope', 'string', 'in'),
-  ('table', 'chair', 'in'),
+  ('rope', 'string', 'cm'),
+  ('table', 'chair', 'cm'),
 ];
 
 /// "A pencil is 17 cm long. An eraser is 4 cm long. How much longer is
@@ -313,7 +313,8 @@ String _fmtB(int b) {
 // unit_rate_with_fractions (G7)
 // ─────────────────────────────────────────────────────────────────────────
 
-/// "Sarah ran 1/2 mile in 1/4 hour. How many miles per hour did she run?"
+/// "Sam ran 1/2 kilometre in 1/4 hour. How many kilometres per hour did
+/// Sam run?"
 /// → 2. Distance and time are both fractions; the quotient is forced to
 /// a small whole number so the kid sees a clean unit-rate result.
 GeneratedQuestion unitRateWithFractions(Random rand) {
@@ -329,8 +330,7 @@ GeneratedQuestion unitRateWithFractions(Random rand) {
   final correct = '$rate';
   final timeStr = _renderFraction(time);
   final distanceStr = _renderFraction(distance);
-  // Metric alongside imperial, 50/50.
-  final unit = rand.nextBool() ? 'kilometres' : 'miles';
+  const unit = 'kilometres';
   // The time fraction is always proper (< 1 hour), so singular "hour" —
   // "in 1/2 hours" read like a typo.
   return GeneratedQuestion(

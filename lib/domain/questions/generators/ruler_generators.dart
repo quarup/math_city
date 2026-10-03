@@ -5,39 +5,9 @@ import 'package:math_city/domain/questions/distractors.dart';
 import 'package:math_city/domain/questions/fraction.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
 
-/// G2-G3 length-measurement generators using the new Ruler widget:
-/// measure_with_ruler_inches, measure_with_ruler_cm,
-/// measure_to_half_quarter_inch.
-
-// ─────────────────────────────────────────────────────────────────────────
-// measure_with_ruler_inches (G2)
-// ─────────────────────────────────────────────────────────────────────────
-
-/// Show a ruler with an object spanning a whole number of inches; ask
-/// for the length. CCSS 2.MD.A.1.
-GeneratedQuestion measureWithRulerInches(Random rand) {
-  // Object length in [1, 8] inches; ruler total length = max(object + 1, 6)
-  // so there's always at least one tick of headroom to the right.
-  final length = rand.nextInt(8) + 1; // 1..8
-  final totalLength = length + 1 > 6 ? length + 1 : 6;
-  return GeneratedQuestion(
-    conceptId: 'measure_with_ruler_inches',
-    prompt: 'How long is the bar, in inches?',
-    diagram: RulerSpec(
-      totalLength: totalLength,
-      markedLength: length,
-      unitLabel: 'in',
-    ),
-    correctAnswer: '$length',
-    distractors: integerDistractorsWith(
-      length,
-      rand,
-      // Misconception: counted ticks instead of intervals (off by 1).
-      misconception: length + 1,
-    ),
-    explanation: ['The bar reaches the $length-inch tick → $length inches.'],
-  );
-}
+/// G2-G3 length-measurement generators using the Ruler widget:
+/// measure_with_ruler_cm, measure_to_half_cm. (The inch rulers were
+/// retired 2026-10-03 — see curriculum.md §3.8.)
 
 // ─────────────────────────────────────────────────────────────────────────
 // measure_with_ruler_cm (G2)
@@ -67,53 +37,43 @@ GeneratedQuestion measureWithRulerCm(Random rand) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────
-// measure_to_half_quarter_inch (G3)
+// measure_to_half_cm (G3)
 // ─────────────────────────────────────────────────────────────────────────
 
-/// Show a ruler subdivided into halves or quarters; the object's right
-/// edge lands on a non-whole tick. CCSS 3.MD.B.4.
-GeneratedQuestion measureToHalfQuarterInch(Random rand) {
-  final sub = rand.nextBool() ? 2 : 4; // halves or quarters
-  // Internal: length in 1/sub-inch units; pick so length / sub has a
-  // fractional component (i.e. length is NOT a multiple of sub).
-  int rawLength;
-  do {
-    rawLength = rand.nextInt(6 * sub - sub) + sub + 1; // sub+1..6·sub
-  } while (rawLength % sub == 0);
-  const totalLength = 6;
-  // Display the answer as a mixed number (e.g. "1 1/2", "2 3/4") or as
-  // a simple proper fraction when whole = 0.
-  final whole = rawLength ~/ sub;
-  final num = rawLength % sub;
-  // Reduce num/sub if possible: gcd(num, sub) (always 1 or 2 since sub
-  // is 2 or 4 and num ∈ [1, sub-1]).
-  final reduced = Fraction(num, sub).reduce();
-  final fractionStr = '${reduced.numerator}/${reduced.denominator}';
-  final correct = whole == 0 ? fractionStr : '$whole $fractionStr';
+/// A centimetre ruler with half-centimetre ticks; the bar ends on a half
+/// tick, so the answer is a mixed number like "3 1/2". The metric take on
+/// CCSS 3.MD.B.4 (which measures to halves and quarters of an inch —
+/// quarter-centimetre ticks don't exist on real rulers).
+GeneratedQuestion measureToHalfCm(Random rand) {
+  const sub = 2;
+  const totalLength = 8;
+  final whole = rand.nextInt(totalLength - 1) + 1; // 1..7
+  final rawLength = whole * sub + 1; // ends on the half tick after it
+  final correct = '$whole 1/2';
+  final next = whole + 1;
   return GeneratedQuestion(
-    conceptId: 'measure_to_half_quarter_inch',
-    prompt: 'How long is the bar?',
+    conceptId: 'measure_to_half_cm',
+    prompt: 'How long is the bar, in centimetres?',
     diagram: RulerSpec(
       totalLength: totalLength,
       markedLength: rawLength,
-      unitLabel: 'in',
+      unitLabel: 'cm',
       subdivisions: sub,
     ),
     correctAnswer: correct,
     distractors: _distinctStringDistractors(correct, [
-      // Misconception: dropped the fractional part — gave the whole only.
-      if (whole > 0) '$whole',
+      // Misconception: dropped the half — gave the whole only.
+      '$whole',
       // Misconception: read up to the next whole tick.
       '${whole + 1}',
-      // Misconception: read the fractional part backwards (sub − num)/sub.
-      _mixedOrFraction(whole, sub - num, sub),
-      // Misconception: counted ticks 1-indexed.
-      _mixedOrFraction(whole, num + 1, sub),
+      // Misconception: counted half ticks as centimetres.
+      '$rawLength',
       // Last-resort: nudge whole by 1.
-      if (whole > 0) _mixedOrFraction(whole - 1, num, sub),
+      _mixedOrFraction(whole - 1, 1, sub),
     ]),
     explanation: [
-      'The bar reaches $rawLength/$sub = $correct.',
+      'Each small tick is half a centimetre.',
+      'The bar stops halfway from $whole to $next → $correct cm.',
     ],
     answerFormat: AnswerFormat.mixedNumber,
   );

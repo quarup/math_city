@@ -16,7 +16,6 @@ import 'package:math_city/presentation/diagrams/fraction_bar.dart';
 import 'package:math_city/presentation/diagrams/histogram.dart';
 import 'package:math_city/presentation/diagrams/length_bars.dart';
 import 'package:math_city/presentation/diagrams/line_figure.dart';
-import 'package:math_city/presentation/diagrams/money.dart';
 import 'package:math_city/presentation/diagrams/net_3d.dart';
 import 'package:math_city/presentation/diagrams/number_line.dart';
 import 'package:math_city/presentation/diagrams/percent_grid.dart';
@@ -43,7 +42,6 @@ bool hasSpokenLabels(DiagramSpec spec) => switch (spec) {
   TapeDiagramSpec() ||
   TwoWayTableSpec() ||
   PositionalSceneSpec() ||
-  MoneySpec() => true,
   _ => false,
 };
 
@@ -72,7 +70,6 @@ class DiagramRenderer extends StatelessWidget {
     final AngleSpec s => Angle(spec: s),
     final TriangleAnglesSpec s => TriangleAngles(spec: s),
     final PictureGraphSpec s => PictureGraph(spec: s),
-    final MoneySpec s => Money(spec: s),
     final RulerSpec s => Ruler(spec: s),
     final ProtractorSpec s => Protractor(spec: s),
     final ShapeSpec s => Shape(spec: s),

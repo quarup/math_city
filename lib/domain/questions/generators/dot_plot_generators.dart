@@ -36,22 +36,21 @@ class _DotPlotTheme {
   /// a key under the axis so the reader never has to infer it.
   final String observationNoun;
 
-  /// Returns "How many plants are 6 inches tall?" given `v`.
+  /// Returns "How many shells are 6 centimetres long?" given `v`.
   final String Function(int v) exactPrompt;
 
-  /// Returns "How many plants are at least 6 inches tall?" given `v`.
+  /// Returns "How many shells are at least 6 centimetres long?" given `v`.
   final String Function(int v) atLeastPrompt;
 }
 
 final _themes = <_DotPlotTheme>[
   _DotPlotTheme(
-    title: 'Plant heights',
-    axisLabel: 'Height in inches',
-    observationNoun: 'plant',
-    exactPrompt: (v) => 'How many plants are $v inches tall?',
-    atLeastPrompt: (v) => 'How many plants are at least $v inches tall?',
+    title: 'Shell lengths',
+    axisLabel: 'Length in centimetres',
+    observationNoun: 'shell',
+    exactPrompt: (v) => 'How many shells are $v centimetres long?',
+    atLeastPrompt: (v) => 'How many shells are at least $v centimetres long?',
   ),
-  // Metric sibling — both systems taught side by side.
   _DotPlotTheme(
     title: 'Seedling heights',
     axisLabel: 'Height in centimetres',
@@ -114,7 +113,7 @@ Map<int, int> _countByValue(List<int> values) {
 // line_plot_whole (Grade 2)
 // ─────────────────────────────────────────────────────────────────────────
 
-/// "How many plants are 6 inches tall?" — count the dots above one
+/// "How many shells are 6 centimetres long?" — count the dots above one
 /// integer tick. Range 1..8, 10..15 measurements; the asked value is
 /// guaranteed to occur in the data (so the answer is never 0).
 GeneratedQuestion lineplotWhole(Random rand) {
@@ -169,7 +168,7 @@ GeneratedQuestion lineplotWhole(Random rand) {
 // dot_plot (Grade 6)
 // ─────────────────────────────────────────────────────────────────────────
 
-/// "How many plants are at least 6 inches tall?" — count the dots from
+/// "How many shells are at least 6 centimetres long?" — count the dots from
 /// the asked tick rightward. Same range and dataset size as the G2 case;
 /// re-rolls until 1 ≤ correct ≤ n − 1 so the answer isn't trivially 0
 /// (everyone shorter) or n (everyone taller).
@@ -236,7 +235,7 @@ class _FractionalTheme {
     required this.axisLabel,
     required this.itemPlural, // "pencils"
     required this.measureNoun, // "length"
-    required this.measureUnit, // "inches"
+    required this.measureUnit, // "centimetres"
   });
 
   final String title;
@@ -250,28 +249,29 @@ class _FractionalTheme {
 }
 
 final _fractionalThemes = <_FractionalTheme>[
+  // Values run 1..4 units in halves or quarters, so each theme pairs an
+  // object with a unit that keeps those sizes realistic.
   const _FractionalTheme(
-    title: 'Pencil lengths',
-    axisLabel: 'Length in inches',
-    itemPlural: 'pencils',
+    title: 'Beetle lengths',
+    axisLabel: 'Length in centimetres',
+    itemPlural: 'beetles',
     measureNoun: 'length',
-    measureUnit: 'inches',
+    measureUnit: 'centimetres',
   ),
   const _FractionalTheme(
     title: 'Ribbon lengths',
-    axisLabel: 'Length in inches',
+    axisLabel: 'Length in metres',
     itemPlural: 'ribbons',
     measureNoun: 'length',
-    measureUnit: 'inches',
+    measureUnit: 'metres',
   ),
   const _FractionalTheme(
     title: 'Leaf lengths',
-    axisLabel: 'Length in inches',
+    axisLabel: 'Length in centimetres',
     itemPlural: 'leaves',
     measureNoun: 'length',
-    measureUnit: 'inches',
+    measureUnit: 'centimetres',
   ),
-  // Metric siblings — both systems taught side by side.
   const _FractionalTheme(
     title: 'String lengths',
     axisLabel: 'Length in centimetres',
@@ -298,7 +298,7 @@ final _fractionalThemes = <_FractionalTheme>[
 _buildFractionalDataset(Random rand) {
   final theme = _fractionalThemes[rand.nextInt(_fractionalThemes.length)];
   final denom = rand.nextBool() ? 2 : 4;
-  final maxDisplay = rand.nextInt(2) + 3; // 3..4 inches
+  final maxDisplay = rand.nextInt(2) + 3; // 3..4 whole units
   final minInternal = denom; // skip 0 — value ≥ 1 display unit
   final maxInternal = maxDisplay * denom;
   final n = rand.nextInt(5) + 8; // 8..12 measurements
@@ -328,7 +328,7 @@ String _noWrap(String mixed) => mixed.replaceAll(' ', ' ');
 // line_plot_fractional (Grade 4)
 // ─────────────────────────────────────────────────────────────────────────
 
-/// "How many pencils are 3 1/4 inches long?" — count dots above one
+/// "How many beetles are 3 1/4 centimetres long?" — count dots above one
 /// fractional tick on a line plot. Same shape as `line_plot_whole` but
 /// values land on halves or quarters; the asked value is one that
 /// actually occurs (so the answer is always ≥ 1).
@@ -381,7 +381,7 @@ GeneratedQuestion lineplotFractional(Random rand) {
 // line_plot_fraction_word (Grade 4)
 // ─────────────────────────────────────────────────────────────────────────
 
-/// "What is the total length of all pencils that are 3 1/4 inches?"
+/// "What is the total length of all ribbons that are 3 1/4 metres?"
 /// — read the count above one tick, multiply by the tick's fractional
 /// value, give the total as a mixed number. Re-rolls until the asked
 /// value occurs ≥ 2 times so the multiplication is non-trivial.
@@ -395,7 +395,7 @@ GeneratedQuestion lineplotFractionWord(Random rand) {
     final d = _buildFractionalDataset(rand);
     final counts = _countByValue(d.values);
     // Asked value must (a) occur ≥ 2 times so the multiplication is
-    // non-trivial, and (b) be a true fraction (not a whole-inch tick) —
+    // non-trivial, and (b) be a true fraction (not a whole-unit tick) —
     // otherwise the "just gave the count" distractor can collide with the
     // correct total (count × 1 == count, count × 2 == 2N can collide with
     // count "2" when count=2, etc.).
@@ -470,7 +470,7 @@ GeneratedQuestion lineplot5thGradeOps(Random rand) {
     final d = _buildFractionalDataset(rand);
     final maxV = d.values.reduce(max);
     final minV = d.values.reduce(min);
-    if (maxV - minV < d.denom) return attempt(depth + 1); // ≥ 1 inch gap
+    if (maxV - minV < d.denom) return attempt(depth + 1); // ≥ 1 unit gap
 
     final maxDisplay = _formatInternal(maxV, d.denom);
     final minDisplay = _formatInternal(minV, d.denom);

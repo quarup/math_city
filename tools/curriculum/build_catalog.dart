@@ -105,7 +105,7 @@ const _shortLabelOverrides = <String, String>{
   'add_3_addends_within_20': '3 addends',
   'add_sub_unknown_position': '?+b=r',
   'equal_sign_meaning': 'true?',
-  'commutative_add': 'a+b=b+a',
+  'commutative_add': 'any order',
   'add_2digit_1digit': '2d+1d',
   'sub_multiples_of_10': '×10 −',
   'mental_add_10_or_100': '±10/100',
@@ -218,6 +218,8 @@ const _shortLabelOverrides = <String, String>{
   'constant_of_proportionality': 'find k',
   'proportional_equation': 'y = kx',
   'order_of_operations_no_exp': 'order ops',
+  // Named for what the generator actually asks (single-level parens) —
+  // "Brackets and braces" promised nesting it never showed.
   'nested_grouping': 'parens',
   'evaluate_expression': 'eval ax+b',
   'solve_one_step_eq_addition': 'x ± p = q',
@@ -307,12 +309,12 @@ const _shortLabelOverrides = <String, String>{
   'mult_facts_9': '×9',
   'mult_facts_10': '×10',
   'mult_1digit_by_multiple_of_10': '× ×10',
-  'commutative_mult': 'a·b=b·a',
-  'associative_mult': '(ab)c',
+  'commutative_mult': 'any order',
+  'associative_mult': 'regroup ×',
   'div_as_unknown_factor': 'a·?=c',
   'arithmetic_patterns_in_tables': 'pattern',
   'decompose_10': '10=a+?',
-  'associative_add': '(a+b)+c',
+  'associative_add': 'regroup +',
   'add_2digit_multiple_of_10': '2d+×10',
   'add_up_to_4_2digit': '+ 4 nums',
   'add_sub_fluency_within_20': '±/20 fluent',
@@ -327,6 +329,9 @@ const _shortLabelOverrides = <String, String>{
   'triangle_inequality_recognize': '△ valid?',
   'adjacent_angles': 'adj ∠',
   'exterior_angle_triangle': 'ext ∠',
+  // Neutral name: the screen title shows the concept name, and "System
+  // with no solution" misled on instances whose answer is "Exactly one
+  // solution".
   'inspect_system_no_solution': 'sys soln?',
   'unit_rate_with_fractions': 'frac rate',
   'read_numerals_0_20': 'read 0-20',
@@ -346,7 +351,6 @@ const _shortLabelOverrides = <String, String>{
   'convert_units_within_system': 'unit conv',
   'volume_prism_fractional_edges': 'V frac',
   'length_word_problems': 'len word',
-  'money_word_problems': r'$ word',
   'liquid_volume_mass': 'liquid',
   'mult_div_word_2step': '×÷ 2-step',
   'area_perimeter_word': 'area word',
@@ -386,13 +390,8 @@ const _shortLabelOverrides = <String, String>{
   'three_category_data': '3 cats',
   'picture_graph_read': 'pic graph',
   'scaled_picture_graph': 'pic scaled',
-  'coins_id_value': 'coin?',
-  'count_coins': 'coin sum',
-  'count_bills_coins': r'$ + ¢',
-  'change_from_purchase': 'change',
-  'measure_with_ruler_inches': 'ruler in',
   'measure_with_ruler_cm': 'ruler cm',
-  'measure_to_half_quarter_inch': 'ruler ½/¼',
+  'measure_to_half_cm': 'ruler ½ cm',
   'measure_angle_protractor': 'measure ∠',
   'draw_angle_protractor': 'draw ∠',
   'identify_shape_2d': 'name 2D',
@@ -535,7 +534,7 @@ const _prereqOverrides = <String, List<String>>{
   // (Chunk 63), so the curriculum prereq is met — no override needed.
   // angle_addition: measure_angle_protractor now lives (Chunk 58), so
   // the curriculum prereq is met — no override needed.
-  // measure_with_ruler_inches / measure_with_ruler_cm:
+  // measure_with_ruler_cm:
   // measure_length_units now lives (Chunk 68), so the curriculum
   // prereqs are met — no overrides needed.
   // plot_first_quadrant: number_line_add_sub now lives — curriculum
@@ -552,7 +551,7 @@ const _prereqOverrides = <String, List<String>>{
   // both implemented, no override needed.
   // scaled_bar_graph_read prereqs are [bar_graph_read,
   // mult_facts_within_100] — both implemented, no override needed.
-  // line_plot_whole: measure_with_ruler_inches now lives (Chunk 57), so
+  // line_plot_whole: measure_with_ruler_cm lives, so
   // the curriculum prereq is met — no override needed.
   // dot_plot prereq is [line_plot_whole] — implemented, no override needed.
   // drop partition_halves_fourths (no generator — would need a FractionBar
@@ -579,14 +578,12 @@ const _prereqOverrides = <String, List<String>>{
   // percent_intro] — both implemented, no override needed.
   // mult_facts_3: mult_meaning_groups now lives (Chunk 52) — curriculum
   // prereq is met, no override needed.
-  // length_diff_units: measure_with_ruler_inches now lives (Chunk 57), so
+  // length_diff_units: measure_with_ruler_cm lives, so
   // the curriculum prereq is met — no override needed.
   // triangle_inequality_recognize: shape_attributes_basic now lives
   // (Chunk 59), so the curriculum prereq is met — no override needed.
-  // length_word_problems: measure_with_ruler_inches now lives (Chunk 57),
+  // length_word_problems: measure_with_ruler_cm lives,
   // so the curriculum prereq is met — no override needed.
-  // money_word_problems: count_bills_coins now lives (Chunk 56), so the
-  // curriculum prereq is met — no override needed.
   // partition_into_rows_columns: identify_shape_2d now lives (Chunk 59),
   // so the curriculum prereq is met — no override needed.
   // classify_2d_hierarchy: classify_2d_by_lines_angles now lives

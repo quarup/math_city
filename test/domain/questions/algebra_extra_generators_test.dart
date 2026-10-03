@@ -153,13 +153,13 @@ void main() {
     test('answer = n × multiplier', () {
       final re = RegExp(r'How many (\w+) are in (\d+) (\w+)\?');
       const factor = {
-        'inches': 12,
-        'feet': 3,
+        'millimetres': 10,
+        'grams': 1000,
         'minutes': 60,
         'seconds': 60,
-        'ounces': 16,
-        'centimeters': 100,
-        'meters': 1000,
+        'millilitres': 1000,
+        'centimetres': 100,
+        'metres': 1000,
       };
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'convert_units_within_system', i);

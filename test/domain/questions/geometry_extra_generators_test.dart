@@ -34,10 +34,20 @@ void main() {
         final spec = q.diagram! as ShapeSpec;
         expect(expected.containsKey(spec.kind), isTrue);
         expect(q.correctAnswer, expected[spec.kind]);
+        expect(spec.showHalvingCut, isTrue);
         _expectThreeDistinctDistractors(q);
         seen.add(spec.kind);
       }
       expect(seen, expected.keys.toSet());
+    });
+
+    test('a square piece never has "rectangle" as a wrong answer', () {
+      for (var i = 0; i < _iterations; i++) {
+        final q = _gen(registry, 'compose_shapes', i);
+        if (q.correctAnswer == 'square') {
+          expect(q.distractors, isNot(contains('rectangle')));
+        }
+      }
     });
   });
 
@@ -116,16 +126,16 @@ void main() {
         ).allMatches(q.prompt).map((m) => int.parse(m.group(0)!)).toList();
         expect(nums.length, greaterThanOrEqualTo(2));
         final ans = int.parse(q.correctAnswer);
-        if (q.prompt.contains('long is the actual wall')) {
-          // Forward: "1 inch represents s feet. drawing is d inches.
-          // How long is the actual wall?" — nums = [1, s, d].
+        if (q.prompt.contains('How long is the actual')) {
+          // Forward: "1 centimetre represents s metres. drawing is d
+          // centimetres. How long is the actual park?" — nums = [1, s, d].
           final s = nums[1];
           final d = nums[2];
           expect(ans, d * s);
           forwardCount++;
         } else {
-          // Inverse: "A wall is r feet long. ... 1 inch represents s
-          // feet, how many inches?" — nums = [r, 1, s].
+          // Inverse: "A park is r metres long. ... 1 centimetre
+          // represents s metres, how many centimetres?" — nums = [r, 1, s].
           final r = nums[0];
           final s = nums[2];
           expect(ans, r ~/ s);

@@ -231,12 +231,16 @@ GeneratedQuestion percentChange(Random rand) {
   );
 }
 
+/// "1 coin" / "12 coins" — small percents of small prices can land on 1.
+String _coins(int n) => n == 1 ? '1 coin' : '$n coins';
+
 // ─────────────────────────────────────────────────────────────────────────
 // simple_interest (Grade 7)
 // ─────────────────────────────────────────────────────────────────────────
 
-/// "Principal \$P at R% per year for T years. How much interest?"
-/// I = P × R × T / 100. Parameters chosen so I is always a whole dollar.
+/// "P coins at R% per year for T years. How much interest?"
+/// I = P × R × T / 100. Parameters chosen so I is always a whole number
+/// of coins.
 GeneratedQuestion simpleInterest(Random rand) {
   // Friendly rates (small whole percents).
   const rates = <int>[2, 3, 4, 5, 6, 8, 10];
@@ -261,13 +265,13 @@ GeneratedQuestion simpleInterest(Random rand) {
   return GeneratedQuestion(
     conceptId: 'simple_interest',
     prompt:
-        '\$$principal earns $rate% simple interest per year for $years '
-        'year${years == 1 ? "" : "s"}. How much interest? (in dollars)',
+        '$principal coins earn $rate% simple interest per year for $years '
+        'year${years == 1 ? "" : "s"}. How much interest? (in coins)',
     correctAnswer: correct,
     distractors: _wholeDistractors(interest, candidates, rand),
     explanation: [
       'Simple interest = principal × rate × time ÷ 100.',
-      '\$$principal × $rate × $years ÷ 100 = \$$correct.',
+      '$principal × $rate × $years ÷ 100 = $correct coins.',
     ],
   );
 }
@@ -276,7 +280,7 @@ GeneratedQuestion simpleInterest(Random rand) {
 // commission (Grade 7)
 // ─────────────────────────────────────────────────────────────────────────
 
-/// "A salesperson earns R% commission on a \$S sale. Commission = ?"
+/// "A salesperson earns R% commission on a sale of S coins. Commission = ?"
 /// Reuses the percent-of-quantity arithmetic shape.
 GeneratedQuestion commission(Random rand) {
   const rates = <int>[2, 3, 4, 5, 6, 8, 10, 12, 15, 20];
@@ -300,13 +304,13 @@ GeneratedQuestion commission(Random rand) {
   return GeneratedQuestion(
     conceptId: 'commission',
     prompt:
-        'A salesperson earns $rate% commission on a \$$sale sale. '
-        'How much commission? (in dollars)',
+        'A salesperson earns $rate% commission on a sale of $sale coins. '
+        'How much commission? (in coins)',
     correctAnswer: correct,
     distractors: _wholeDistractors(earned, candidates, rand),
     explanation: [
       'Commission = sale × rate ÷ 100.',
-      '\$$sale × $rate ÷ 100 = \$$correct.',
+      '$sale × $rate ÷ 100 = ${_coins(earned)}.',
     ],
   );
 }
@@ -339,19 +343,20 @@ GeneratedQuestion markupMarkdown(Random rand) {
   ];
 
   final prompt = isUp
-      ? 'A store buys an item for \$$original and marks it up $rate%. '
-            'What is the new price? (in dollars)'
-      : 'An item costs \$$original. After a $rate% markdown, what is the '
-            'sale price? (in dollars)';
+      ? 'A store buys an item for $original coins and marks it up $rate%. '
+            'What is the new price? (in coins)'
+      : 'An item costs $original coins. After a $rate% markdown, what is '
+            'the sale price? (in coins)';
 
+  final change = isUp ? 'Markup' : 'Markdown';
   return GeneratedQuestion(
     conceptId: 'markup_markdown',
     prompt: prompt,
     correctAnswer: correct,
     distractors: _wholeDistractors(updated, candidates, rand),
     explanation: [
-      '${isUp ? "Markup" : "Markdown"} = \$$original × $rate ÷ 100 = \$$delta.',
-      'New = \$$original ${isUp ? "+" : "−"} \$$delta = \$$correct.',
+      '$change = $original × $rate ÷ 100 = $delta coins.',
+      'New = $original ${isUp ? "+" : "−"} $delta = $correct coins.',
     ],
   );
 }
@@ -360,13 +365,15 @@ GeneratedQuestion markupMarkdown(Random rand) {
 // sales_tax_tip (Grade 7)
 // ─────────────────────────────────────────────────────────────────────────
 
-/// "A bill is \$B; the tax/tip rate is R%. How much extra?" Asks just
-/// for the tax/tip amount (not the total) so the answer is a clean
-/// percent-of-quantity. Currently tagged `dataset` in curriculum.md but
-/// implemented algorithmically per design-principle-4 precedent.
+/// "A price is B coins; a tax or service charge of R% is added. How much
+/// extra?" Asks just for the added amount (not the total) so the answer
+/// is a clean percent-of-quantity. Tipping is a regional custom, so the
+/// second variant is a service charge on a meal rather than a tip.
+/// Currently tagged `dataset` in curriculum.md but implemented
+/// algorithmically per design-principle-4 precedent.
 GeneratedQuestion salesTaxTip(Random rand) {
-  final isTip = rand.nextBool();
-  const tipRates = <int>[10, 15, 18, 20, 25];
+  final isTip = rand.nextBool(); // true → service charge on a meal
+  const tipRates = <int>[10, 12, 15, 20, 25];
   const taxRates = <int>[5, 6, 7, 8, 10];
   final rate = (isTip
       ? tipRates
@@ -387,10 +394,10 @@ GeneratedQuestion salesTaxTip(Random rand) {
   ];
 
   final prompt = isTip
-      ? 'A meal cost \$$bill. With a $rate% tip, how much is the tip? '
-            '(in dollars)'
-      : 'A purchase costs \$$bill. With $rate% sales tax, how much is the '
-            'tax? (in dollars)';
+      ? 'A meal costs $bill coins. A $rate% service charge is added. '
+            'How much is the service charge? (in coins)'
+      : 'A bike costs $bill coins. A $rate% tax is added. How much is '
+            'the tax? (in coins)';
 
   return GeneratedQuestion(
     conceptId: 'sales_tax_tip',
@@ -398,8 +405,8 @@ GeneratedQuestion salesTaxTip(Random rand) {
     correctAnswer: correct,
     distractors: _wholeDistractors(extra, candidates, rand),
     explanation: [
-      '${isTip ? "Tip" : "Tax"} = bill × rate ÷ 100.',
-      '\$$bill × $rate ÷ 100 = \$$correct.',
+      '${isTip ? "Service charge" : "Tax"} = price × rate ÷ 100.',
+      '$bill × $rate ÷ 100 = ${_coins(extra)}.',
     ],
   );
 }

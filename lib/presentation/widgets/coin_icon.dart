@@ -3,9 +3,8 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 /// The game's coin, painted rather than drawn from an emoji or a photo: a
-/// gold disc with a rim and a stamped star. Deliberately *un*-currency-like
-/// — the money curriculum (`diagrams/money.dart`) draws real US coins with
-/// their values, and a kid must never confuse the two.
+/// gold disc with a rim and a stamped star. Deliberately *un*-currency-like:
+/// it is no country's money, so word problems can price things in coins.
 class CoinIcon extends StatelessWidget {
   const CoinIcon({this.size = 20, super.key});
 

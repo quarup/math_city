@@ -40,10 +40,10 @@ const _themes = <_BoxPlotTheme>[
   ),
   _BoxPlotTheme(
     title: 'Student heights',
-    axisLabel: 'Inches',
-    minX: 50,
-    maxX: 75,
-    tickStep: 5,
+    axisLabel: 'Centimetres',
+    minX: 120,
+    maxX: 170,
+    tickStep: 10,
   ),
   _BoxPlotTheme(
     title: 'Hours of sleep',

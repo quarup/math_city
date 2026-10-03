@@ -17,8 +17,8 @@ const _lengthItems = [
   ('rope', 'cm'),
   ('ribbon', 'cm'),
   ('string', 'cm'),
-  ('plank', 'in'),
-  ('hose', 'ft'),
+  ('plank', 'cm'),
+  ('hose', 'm'),
 ];
 
 /// "Maria has a rope that is 25 cm long. She buys 15 cm more. How long
@@ -28,11 +28,9 @@ GeneratedQuestion lengthWordProblems(Random rand) {
   final item = _lengthItems[rand.nextInt(_lengthItems.length)];
   final isAdd = rand.nextBool();
   final name = pickRandom(wordProblemNames, rand);
-  // Spell the unit out in prose — 'in 31 in?' doubled the abbreviation.
+  // Spell the unit out in prose — 'in 31 cm?' read awkwardly.
   final unit = switch (item.$2) {
-    'in' => 'inches',
     'cm' => 'centimetres',
-    'ft' => 'feet',
     'm' => 'metres',
     _ => item.$2,
   };
@@ -71,68 +69,6 @@ GeneratedQuestion lengthWordProblems(Random rand) {
       '$a ${isAdd ? "+" : "−"} $b = $correct $unit.',
     ],
   );
-}
-
-// ─────────────────────────────────────────────────────────────────────────
-// money_word_problems (G2)
-// ─────────────────────────────────────────────────────────────────────────
-
-/// "Maria has 3 dimes and 2 nickels. How much money does she have in
-/// cents?" — uses standard US coin values. 50/50 between coin-count and
-/// straightforward $ word problem.
-GeneratedQuestion moneyWordProblems(Random rand) {
-  final flavor = rand.nextInt(2);
-  final name = pickRandom(wordProblemNames, rand);
-  if (flavor == 0) {
-    // Coins: pick two distinct coin types.
-    const coins = [
-      ('pennies', 1),
-      ('nickels', 5),
-      ('dimes', 10),
-      ('quarters', 25),
-    ];
-    final i = rand.nextInt(coins.length);
-    var j = rand.nextInt(coins.length);
-    while (j == i) {
-      j = rand.nextInt(coins.length);
-    }
-    final n1 = rand.nextInt(5) + 2; // 2..6
-    final n2 = rand.nextInt(5) + 2;
-    final correct = n1 * coins[i].$2 + n2 * coins[j].$2;
-    return GeneratedQuestion(
-      conceptId: 'money_word_problems',
-      prompt:
-          '$name has $n1 ${coins[i].$1} and $n2 ${coins[j].$1}. '
-          'How much money does $name have, in cents?',
-      correctAnswer: '$correct',
-      distractors: integerDistractorsWith(
-        correct,
-        rand,
-        misconception: n1 + n2, // counted coins, ignored value
-      ),
-      explanation: [
-        '$n1 × ${coins[i].$2}¢ + $n2 × ${coins[j].$2}¢ = $correct¢.',
-      ],
-    );
-  } else {
-    // Dollars: simple +/− word problem.
-    final start = rand.nextInt(40) + 20; // 20..59
-    final spend = rand.nextInt(start - 5) + 2; // 2..(start-3)
-    final correct = start - spend;
-    return GeneratedQuestion(
-      conceptId: 'money_word_problems',
-      prompt:
-          '$name has \$$start. $name spends \$$spend at the store. '
-          'How much money does $name have left, in dollars?',
-      correctAnswer: '$correct',
-      distractors: integerDistractorsWith(
-        correct,
-        rand,
-        misconception: start + spend,
-      ),
-      explanation: ['$start − $spend = $correct dollars.'],
-    );
-  }
 }
 
 // ─────────────────────────────────────────────────────────────────────────

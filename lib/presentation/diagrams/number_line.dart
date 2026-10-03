@@ -78,7 +78,12 @@ class _NumberLinePainter extends CustomPainter {
       canvas.drawLine(Offset(x, lineY - 6), Offset(x, lineY + 6), linePaint);
       if ((v - v.round()).abs() < 1e-9) wholeTicks.add(i);
     }
-    if (wholeTicks.isNotEmpty) {
+    final labelled = spec.labelledValues;
+    if (labelled != null) {
+      for (final v in labelled) {
+        _drawLabel(canvas, _formatValue(v), Offset(xFor(v), lineY + 18));
+      }
+    } else if (wholeTicks.isNotEmpty) {
       double num2x(int i) =>
           xFor(spec.min + (spec.max - spec.min) * i / spec.divisions);
       // Widest label ("-10" is wider than "8") + breathing room decides

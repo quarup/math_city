@@ -194,35 +194,54 @@ GeneratedQuestion decimalOnNumberLine(Random rand) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────
-// integers_on_number_line (G6) — NumberLine spanning negatives
+// integers_on_number_line (G6) — NumberLine spanning negatives, counted
 // ─────────────────────────────────────────────────────────────────────────
 
+/// Ten ticks worth 2, 5, 10, 25 or 50 each, with 0 somewhere in the
+/// middle. Only 0 and the tick after it are labelled, so the child reads
+/// the scale off those two and counts ticks to the point — usually below
+/// zero. Every integer labelled, as this once was, is a Grade 2 question
+/// with a minus sign.
 GeneratedQuestion integersOnNumberLine(Random rand) {
-  const lo = -10;
-  const hi = 10;
-  int value;
-  do {
-    value = rand.nextInt(hi - lo + 1) + lo; // -10..10
-  } while (value == 0); // exclude 0 (trivial)
-  final correct = value < 0 ? '−${-value}' : '$value';
+  const divisions = 10;
+  const steps = [2, 5, 10, 25, 50];
+  final step = steps[rand.nextInt(steps.length)];
+  final zeroAt = 3 + rand.nextInt(5); // 0 sits at tick 3..7
+  final lo = -zeroAt * step;
+  final hi = (divisions - zeroAt) * step;
+  // Any unlabelled tick; three in four below zero.
+  final below = rand.nextInt(4) > 0;
+  final ticks = below
+      ? rand.nextInt(zeroAt) +
+            1 // 1..zeroAt ticks left of 0
+      : rand.nextInt(divisions - zeroAt - 1) + 2; // 2.. ticks right of 0
+  final value = below ? -ticks * step : ticks * step;
   String fmt(int v) => v < 0 ? '−${-v}' : '$v';
+  final correct = fmt(value);
+  final side = below ? 'left of' : 'right of';
+  final tickWord = ticks == 1 ? 'tick' : 'ticks';
+  final product = '$ticks × $step = ${ticks * step}';
   return GeneratedQuestion(
     conceptId: 'integers_on_number_line',
     prompt: 'What integer is marked on the number line?',
     diagram: NumberLineSpec(
       min: lo,
       max: hi,
-      divisions: hi - lo,
+      divisions: divisions,
       markedPoints: [value],
+      labelledValues: [0, step],
     ),
     correctAnswer: correct,
     distractors: _distinctStrings(correct, [
-      fmt(-value), // sign-error
-      fmt(value + 1),
-      fmt(value - 1),
-      '0',
+      fmt(-value), // sign error
+      fmt(below ? -ticks : ticks), // counted ticks as ones
+      fmt(value - step), // one tick off
+      fmt(value + step),
     ]),
-    explanation: ['The marked point is at $value.'],
+    explanation: [
+      'From 0 to $step is one tick, so each tick is worth $step.',
+      'The point is $ticks $tickWord $side 0: $product, so it is at $correct.',
+    ],
   );
 }
 

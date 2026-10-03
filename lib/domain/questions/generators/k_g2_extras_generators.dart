@@ -145,43 +145,40 @@ GeneratedQuestion partitionCircleRectHalves(Random rand) {
 // ─────────────────────────────────────────────────────────────────────────
 
 /// "About how long is a typical {object}?" — MC over plausible
-/// lengths in a single unit. Half the scenarios are imperial
-/// (inches/feet) and half metric (centimetres/metres), following the
-/// measure_with_ruler_inches + measure_with_ruler_cm pattern of teaching
-/// both systems side by side. CCSS 2.MD.A.3.
+/// lengths in centimetres or metres, with distractors that swap the
+/// unit or shift the number by a factor of ten. CCSS 2.MD.A.3.
 const List<(String, String, List<String>)> _estimateScenarios = [
   // (object, correct answer, MC pool — must include the correct)
   (
-    'a new pencil',
-    '7 inches',
-    ['7 inches', '1 inch', '2 feet', '20 feet'],
+    'a bed',
+    '2 metres',
+    ['2 metres', '2 centimetres', '20 metres', '20 centimetres'],
   ),
   (
-    'a doorway',
-    '7 feet',
-    ['7 feet', '7 inches', '20 feet', '1 inch'],
+    'a fork',
+    '20 centimetres',
+    ['20 centimetres', '20 metres', '2 centimetres', '2 metres'],
   ),
   (
-    'a paper clip',
-    '1 inch',
-    ['1 inch', '1 foot', '6 inches', '3 feet'],
+    'a crayon',
+    '9 centimetres',
+    ['9 centimetres', '9 metres', '90 centimetres', '1 centimetre'],
   ),
   (
-    'a school bus',
-    '40 feet',
-    ['40 feet', '40 inches', '4 feet', '4 inches'],
+    'a swimming pool',
+    '25 metres',
+    ['25 metres', '25 centimetres', '2 metres', '250 metres'],
   ),
   (
-    'a sheet of notebook paper',
-    '11 inches',
-    ['11 inches', '11 feet', '2 inches', '5 feet'],
+    'a picture book',
+    '25 centimetres',
+    ['25 centimetres', '25 metres', '2 centimetres', '2 metres'],
   ),
   (
-    'a marker',
-    '5 inches',
-    ['5 inches', '5 feet', '15 inches', '1 inch'],
+    'a car',
+    '4 metres',
+    ['4 metres', '4 centimetres', '40 metres', '40 centimetres'],
   ),
-  // Metric siblings.
   (
     'a new pencil',
     '18 centimetres',

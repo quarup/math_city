@@ -77,6 +77,7 @@ class NumberLineSpec extends DiagramSpec {
     required this.divisions,
     this.markedPoints = const [],
     this.hops = const [],
+    this.labelledValues,
   }) : assert(divisions > 0, 'divisions must be > 0');
 
   final num min;
@@ -84,6 +85,11 @@ class NumberLineSpec extends DiagramSpec {
   final int divisions;
   final List<num> markedPoints;
   final List<NumberLineHop> hops;
+
+  /// The only tick values that get a label, when set — so the child has
+  /// to count ticks from them. Null labels whole-number ticks, thinned to
+  /// fit.
+  final List<num>? labelledValues;
 }
 
 /// A `rows × cols` grid where the top `shadedRows` rows and the left
@@ -368,7 +374,7 @@ class DotPlotSpec extends DiagramSpec {
   /// Header above the plot, e.g. "Plant heights" or "Books read".
   final String title;
 
-  /// Short caption under the axis identifying the unit, e.g. "Inches".
+  /// Short caption under the axis identifying the unit, e.g. "Centimetres".
   final String axisLabel;
 
   /// Singular name for what one dot stands for, e.g. "family" or
@@ -457,13 +463,12 @@ class ProtractorSpec extends DiagramSpec {
 
 /// A horizontal ruler showing a marked object measuring some fraction
 /// of the ruler's length. Lengths are tracked in units of
-/// `1/subdivisions` so a 3.5-inch object on a half-inch ruler is
+/// `1/subdivisions` so a 3.5 cm object on a half-centimetre ruler is
 /// `markedLength = 7` with `subdivisions = 2`. The renderer draws major
 /// ticks at every whole unit (labelled) and minor ticks at every
 /// subdivision (unlabelled).
 ///
-/// Used by `measure_with_ruler_inches`, `measure_with_ruler_cm`,
-/// `measure_to_half_quarter_inch`.
+/// Used by `measure_with_ruler_cm`, `measure_to_half_cm`.
 class RulerSpec extends DiagramSpec {
   const RulerSpec({
     required this.totalLength,
@@ -478,7 +483,7 @@ class RulerSpec extends DiagramSpec {
          'markedLength must fit within the ruler',
        );
 
-  /// Total ruler length in *whole* units (e.g. 6 = a 6-inch ruler).
+  /// Total ruler length in *whole* units (e.g. 8 = an 8 cm ruler).
   final int totalLength;
 
   /// Length of the object shown above the ruler, in units of
@@ -491,61 +496,6 @@ class RulerSpec extends DiagramSpec {
   /// `1` for whole-unit ticks only. `2` adds half ticks; `4` adds
   /// quarter ticks.
   final int subdivisions;
-}
-
-/// A single coin or bill denomination shown in a [MoneySpec]. Values
-/// are in cents to keep arithmetic in integers (e.g. `quarter = 25`,
-/// `oneDollar = 100`, `fiveDollar = 500`).
-enum MoneyDenom {
-  penny(1, '1¢', isCoin: true),
-  nickel(5, '5¢', isCoin: true),
-  dime(10, '10¢', isCoin: true),
-  quarter(25, '25¢', isCoin: true),
-  oneDollar(100, r'$1', isCoin: false),
-  fiveDollar(500, r'$5', isCoin: false),
-  tenDollar(1000, r'$10', isCoin: false),
-  twentyDollar(2000, r'$20', isCoin: false)
-  ;
-
-  const MoneyDenom(this.cents, this.label, {required this.isCoin});
-
-  /// Face value in cents.
-  final int cents;
-
-  /// Short kid-facing label. Coins are shown in `Nc` form, bills in
-  /// `$N` form.
-  final String label;
-
-  /// Kid-facing coin name ("penny"); bills fall back to [label].
-  String get coinName => switch (this) {
-    MoneyDenom.penny => 'penny',
-    MoneyDenom.nickel => 'nickel',
-    MoneyDenom.dime => 'dime',
-    MoneyDenom.quarter => 'quarter',
-    _ => label,
-  };
-
-  /// True for coins (rendered as circles), false for paper bills
-  /// (rendered as rounded rectangles).
-  final bool isCoin;
-}
-
-/// A small money figure showing a sequence of coins and/or bills. The
-/// renderer arranges them left-to-right (coins first, then bills) so
-/// the visual stays consistent across generator instances.
-///
-/// Used by `coins_id_value`, `count_coins`, `count_bills_coins`,
-/// `change_from_purchase`.
-class MoneySpec extends DiagramSpec {
-  const MoneySpec({required this.items, this.showValues = true})
-    : assert(items.length >= 1, 'need at least one coin or bill');
-
-  final List<MoneyDenom> items;
-
-  /// When false, coins are printed with their NAME ("penny") instead of
-  /// their cent value — for `coins_id_value`, where a "1¢" label would
-  /// hand the answer over.
-  final bool showValues;
 }
 
 /// A picture graph (a.k.a. pictograph): one row per category, with a
@@ -1003,8 +953,8 @@ class TapeDiagramSpec extends DiagramSpec {
 /// Two parallel number lines stacked vertically with corresponding
 /// tick positions: position `i` on the top line corresponds to
 /// position `i` on the bottom line. Used to visualise a proportional
-/// relationship between two quantities (e.g. "for every 2 cups of
-/// flour, you need 5 cups of sugar").
+/// relationship between two quantities (e.g. "for every 2 scoops of
+/// flour, you need 5 scoops of sugar").
 ///
 /// Used by `double_number_line` and (optionally) other ratio /
 /// proportional-reasoning generators.
@@ -1067,6 +1017,7 @@ class ShapeSpec extends DiagramSpec {
     required this.kind,
     this.label,
     this.showRightAngleMark = false,
+    this.showHalvingCut = false,
   });
 
   final ShapeKind kind;
@@ -1079,6 +1030,12 @@ class ShapeSpec extends DiagramSpec {
   /// If true on a right triangle, draws the small square symbol at the
   /// right-angle vertex.
   final bool showRightAngleMark;
+
+  /// If true, draws a dashed line cutting the shape into two equal pieces
+  /// (`compose_shapes`): a square along its diagonal, a rectangle (drawn
+  /// 2:1, so each half is a square) down the middle, a rhombus between its
+  /// side corners, a hexagon through its top and bottom corners.
+  final bool showHalvingCut;
 }
 
 /// Operation supported by [ColumnArithmeticSpec]. Subtraction renders
@@ -1234,8 +1191,8 @@ class LengthBarsSpec extends DiagramSpec {
 
   final List<LengthBar> bars;
 
-  /// The unit noun shown after each bar's value (e.g. `cm`, `feet`,
-  /// `inches`, `pounds`, `grams`).
+  /// The unit noun shown after each bar's value (e.g. `cm`, `metres`,
+  /// `kilograms`, `grams`).
   final String unit;
 }
 

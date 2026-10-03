@@ -13,16 +13,19 @@ import 'package:math_city/domain/questions/generated_question.dart';
 // compose_shapes (G1)
 // ─────────────────────────────────────────────────────────────────────────
 
-/// "Two equal ___s can be put together to make a {result}. What
-/// shape are the parts?" The diagram renders the *result* shape so
-/// the kid sees what they're composing toward. CCSS 1.G.A.2.
+/// "This {result} is cut into two pieces that are the same. What shape is
+/// each piece?" The diagram renders the *result* shape with the cut
+/// dashed across it. CCSS 1.G.A.2.
 ///
 /// Hardcoded compositions:
 ///   - Rectangle composed of 2 squares (side-by-side)
-///   - Hexagon composed of 2 trapezoids (cut horizontally through the
-///     middle pair of vertices)
-///   - Rhombus composed of 2 equilateral triangles (base-to-base)
+///   - Hexagon composed of 2 trapezoids (cut through the top and bottom
+///     corners)
+///   - Rhombus composed of 2 triangles (cut between the side corners)
 ///   - Square composed of 2 right triangles (along the diagonal)
+///
+/// The cut is drawn, so a Grade 1 child names the pieces they can see
+/// rather than imagining the split.
 const List<(ShapeKind, String)> _compositions = [
   (ShapeKind.rectangle, 'square'),
   (ShapeKind.hexagon, 'trapezoid'),
@@ -37,18 +40,27 @@ GeneratedQuestion composeShapes(Random rand) {
   return GeneratedQuestion(
     conceptId: 'compose_shapes',
     prompt:
-        'You can build this $resultName by putting two of the same shape '
-        'together. What is that shape?',
-    diagram: ShapeSpec(kind: c.$1),
+        'This $resultName is cut into two pieces that are the same. '
+        'What shape is each piece?',
+    diagram: ShapeSpec(kind: c.$1, showHalvingCut: true),
     correctAnswer: partName,
     distractors: stringDistractorsFromPool(
       partName,
-      const ['square', 'rectangle', 'triangle', 'trapezoid', 'hexagon'],
+      [
+        'square',
+        // A square is a rectangle too, so it can't be a wrong answer.
+        if (partName != 'square') 'rectangle',
+        'triangle',
+        'trapezoid',
+        'hexagon',
+        'circle',
+      ],
       rand,
     ),
     answerFormat: AnswerFormat.string,
     explanation: [
-      'Two equal ${partName}s put together can make a $resultName.',
+      'Each piece is a $partName.',
+      'Two ${partName}s that are the same, put together, make a $resultName.',
     ],
   );
 }
@@ -96,8 +108,9 @@ GeneratedQuestion crossSection3d(Random rand) {
 // scale_drawing (G7)
 // ─────────────────────────────────────────────────────────────────────────
 
-/// "On a scale drawing, 1 inch represents s feet. The drawing of the
-/// wall is d inches. How long is the actual wall?" → d × s feet.
+/// "On a scale drawing, 1 centimetre represents s metres. The drawing of
+/// a park is d centimetres long. How long is the actual park?" → d × s
+/// metres.
 /// CCSS 7.G.A.1.
 ///
 /// Two question flavours drawn 50/50: forward (drawing → real) and
@@ -106,12 +119,13 @@ GeneratedQuestion scaleDrawing(Random rand) {
   // Scale (1 small-unit = s big-units) ∈ {5, 10, 20, 25, 50}.
   const scales = [5, 10, 20, 25, 50];
   final s = scales[rand.nextInt(scales.length)];
-  // 50/50 imperial (inch/feet) or metric (centimetre/metres) — both
-  // systems taught side by side, same as the ruler concepts.
-  final metric = rand.nextBool();
-  final small = metric ? 'centimetre' : 'inch';
-  final smalls = metric ? 'centimetres' : 'inches';
-  final bigs = metric ? 'metres' : 'feet';
+  // 50/50 a park drawn in metres or a road on a map in kilometres —
+  // real lengths run 10..500, so each object keeps them realistic.
+  final inKm = rand.nextBool();
+  const small = 'centimetre';
+  const smalls = 'centimetres';
+  final bigs = inKm ? 'kilometres' : 'metres';
+  final thing = inKm ? 'road' : 'park';
   // Forward: drawing length ∈ 2..10 → real = d × s.
   // Inverse: real length that is a multiple of s (so the drawing
   // length comes out a whole number).
@@ -138,7 +152,7 @@ GeneratedQuestion scaleDrawing(Random rand) {
       conceptId: 'scale_drawing',
       prompt:
           'On a scale drawing, 1 $small represents $s $bigs. The drawing of '
-          'a wall is $d $smalls long. How long is the actual wall, '
+          'a $thing is $d $smalls long. How long is the actual $thing, '
           'in $bigs?',
       correctAnswer: '$answer',
       distractors: distractors,
@@ -152,9 +166,9 @@ GeneratedQuestion scaleDrawing(Random rand) {
     return GeneratedQuestion(
       conceptId: 'scale_drawing',
       prompt:
-          'A wall is $real $bigs long. On a scale drawing where 1 $small '
+          'A $thing is $real $bigs long. On a scale drawing where 1 $small '
           'represents $s $bigs, how many $smalls long is the drawing of '
-          'the wall?',
+          'the $thing?',
       correctAnswer: '$d',
       distractors: integerDistractorsWith(
         d,

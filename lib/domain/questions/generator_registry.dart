@@ -30,7 +30,6 @@ import 'package:math_city/domain/questions/generators/line_figure_generators.dar
 import 'package:math_city/domain/questions/generators/linear_function_generators.dart';
 import 'package:math_city/domain/questions/generators/measurement_vocab_generators.dart';
 import 'package:math_city/domain/questions/generators/misc_extra_generators.dart';
-import 'package:math_city/domain/questions/generators/money_generators.dart';
 import 'package:math_city/domain/questions/generators/mult_div_generators.dart';
 import 'package:math_city/domain/questions/generators/mult_facts_extra_generators.dart';
 import 'package:math_city/domain/questions/generators/number_theory_generators.dart';
@@ -409,7 +408,6 @@ class GeneratorRegistry {
     'volume_prism_fractional_edges': volumePrismFractionalEdges,
     // Word problems (dataset-marked but algorithmically generated)
     'length_word_problems': lengthWordProblems,
-    'money_word_problems': moneyWordProblems,
     'liquid_volume_mass': liquidVolumeMass,
     'mult_div_word_2step': multDivWord2step,
     'area_perimeter_word': areaPerimeterWord,
@@ -455,15 +453,9 @@ class GeneratorRegistry {
     'three_category_data': threeCategoryData,
     'picture_graph_read': pictureGraphRead,
     'scaled_picture_graph': scaledPictureGraph,
-    // G1-G2 money family using the new Money widget
-    'coins_id_value': coinsIdValue,
-    'count_coins': countCoins,
-    'count_bills_coins': countBillsCoins,
-    'change_from_purchase': changeFromPurchase,
     // G2-G3 length-measurement family using the new Ruler widget
-    'measure_with_ruler_inches': measureWithRulerInches,
     'measure_with_ruler_cm': measureWithRulerCm,
-    'measure_to_half_quarter_inch': measureToHalfQuarterInch,
+    'measure_to_half_cm': measureToHalfCm,
     // G4 protractor family
     'measure_angle_protractor': measureAngleProtractor,
     'draw_angle_protractor': drawAngleProtractor,
