@@ -43,6 +43,7 @@ import 'package:math_city/presentation/player/adventurer_avatar_widget.dart';
 import 'package:math_city/presentation/question/question_screen.dart';
 import 'package:math_city/presentation/theme/app_palette.dart';
 import 'package:math_city/presentation/widgets/coach_hand.dart';
+import 'package:math_city/presentation/widgets/coin_flight.dart';
 import 'package:math_city/presentation/widgets/coin_icon.dart';
 import 'package:math_city/presentation/widgets/site_progress_bar.dart';
 import 'package:math_city/state/city_provider.dart';
@@ -223,6 +224,11 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
   /// while a site is selected just deselects it; its bar's move button
   /// enters [_movingSiteId].
   int? _selectedSiteId;
+
+  /// The site bar's refund button and the AppBar credit pill: a cancel's
+  /// coins fly from one to the other.
+  final GlobalKey _refundButtonKey = GlobalKey();
+  final GlobalKey _creditChipKey = GlobalKey();
 
   /// The placed building whose info card is open at the bottom (name, what
   /// it does, *Move*, X), or null. A tap on the map deselects it; *Move*
@@ -809,10 +815,13 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     return true;
   }
 
-  /// Cancel on the site bar. A site nobody has paid into just goes; one
-  /// with coins in it asks first, then refunds every coin as credit.
+  /// The refund button on the site bar. A site nobody has paid into just
+  /// goes; one with coins in it asks first, then refunds every coin as
+  /// credit and flies them into the credit pill.
   Future<void> _cancelSite(CitySite site) async {
     final paid = site.site.paidCoins;
+    // Read before the bar goes away with the selection.
+    final from = globalRectOf(_refundButtonKey);
     if (paid > 0) {
       final confirmed = await showDialog<bool>(
         context: context,
@@ -837,10 +846,18 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
               FilledButton(
                 onPressed: () => Navigator.of(ctx).pop(true),
                 style: FilledButton.styleFrom(
-                  backgroundColor: palette.errorRedDeep,
+                  backgroundColor: palette.successGreenDeep,
                   foregroundColor: Colors.white,
                 ),
-                child: const Text('Cancel site'),
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      const TextSpan(text: 'Get '),
+                      coinSpan(),
+                      TextSpan(text: ' $paid back'),
+                    ],
+                  ),
+                ),
               ),
             ],
           );
@@ -854,6 +871,16 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     }
     if (!mounted || refund == null) return;
     setState(() => _selectedSiteId = null);
+    if (refund > 0 && from != null) {
+      unawaited(
+        flyCoins(
+          context,
+          from: from,
+          to: () => globalRectOf(_creditChipKey),
+          count: refund.clamp(3, 8),
+        ),
+      );
+    }
     _toast(
       refund > 0
           ? '${site.name} cancelled — $refund coins back as credit'
@@ -2038,6 +2065,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
             credit: credit,
             onBuild: () => _buildSite(selectedSite),
             onCancel: () => unawaited(_cancelSite(selectedSite)),
+            refundButtonKey: _refundButtonKey,
             onUseCredit: () => unawaited(_useCredit(selectedSite)),
             onMove: selectedSite.goal is BuildingGoal
                 ? () => setState(() {
@@ -2238,7 +2266,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
             if (credit > 0)
               Padding(
                 padding: const EdgeInsets.only(right: 12),
-                child: _CreditChip(amount: credit),
+                child: _CreditChip(key: _creditChipKey, amount: credit),
               ),
             if (chapterOne)
               PopupMenuButton<String>(
@@ -3616,9 +3644,10 @@ class _StartLandSiteBar extends StatelessWidget {
 }
 
 /// Bottom strip for the selected construction site. Top row: its
-/// `paid / price` bar and an X to deselect. Bottom row: red *Cancel*,
-/// *Move* (building sites only),
-/// (refunds every paid coin as credit), green *Use N* while the player
+/// `paid / price` bar and an X to deselect. Bottom row: the refund button
+/// (cancels the site; reads *↩ 🪙 N* — every paid coin comes back as
+/// credit — or *Remove* when nothing is paid), *Move* (building sites
+/// only), green *Use N* while the player
 /// holds credit the site can take, and *Build!*, which makes it the active
 /// site and opens the wheel. A building site can be nudged by tapping a
 /// tile while it is selected.
@@ -3642,6 +3671,7 @@ class _SiteBar extends StatelessWidget {
     required this.credit,
     required this.onBuild,
     required this.onCancel,
+    required this.refundButtonKey,
     required this.onUseCredit,
     required this.onMove,
     required this.onDeselect,
@@ -3651,6 +3681,9 @@ class _SiteBar extends StatelessWidget {
   final int credit;
   final VoidCallback onBuild;
   final VoidCallback onCancel;
+
+  /// On the refund button, so a cancel's coins can fly from it.
+  final GlobalKey refundButtonKey;
   final VoidCallback onUseCredit;
 
   /// Null for a land site, which can't move.
@@ -3662,6 +3695,7 @@ class _SiteBar extends StatelessWidget {
     final theme = Theme.of(context);
     final palette = theme.extension<AppPalette>()!;
     final usable = credit < site.site.remaining ? credit : site.site.remaining;
+    final paid = site.site.paidCoins;
     return Material(
       elevation: 8,
       color: theme.colorScheme.surfaceContainer,
@@ -3689,19 +3723,37 @@ class _SiteBar extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               // The buttons share the row: with Move and Use credit as well
-              // as Cancel and Build! there isn't room for each at its
+              // as the refund and Build! there isn't room for each at its
               // natural width, so labels shrink to fit rather than overflow.
               Row(
                 children: [
                   Expanded(
-                    child: FilledButton(
-                      onPressed: onCancel,
-                      style: FilledButton.styleFrom(
-                        backgroundColor: palette.errorRedDeep,
-                        foregroundColor: Colors.white,
-                        padding: _kSiteButtonPadding,
+                    // Not red and not "Cancel": kids read both as losing
+                    // the coins, when every one of them comes back.
+                    child: Tooltip(
+                      message: paid > 0
+                          ? 'Stop building and get $paid coins back'
+                          : 'Remove this site',
+                      child: FilledButton.tonal(
+                        key: refundButtonKey,
+                        onPressed: onCancel,
+                        style: FilledButton.styleFrom(
+                          padding: _kSiteButtonPadding,
+                        ),
+                        child: _FitLabel(
+                          paid > 0
+                              ? Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(Icons.undo_rounded, size: 18),
+                                    const SizedBox(width: 4),
+                                    const CoinIcon(size: 18),
+                                    Text(' $paid'),
+                                  ],
+                                )
+                              : const Text('Remove'),
+                        ),
                       ),
-                      child: const _FitLabel(Text('Cancel')),
                     ),
                   ),
                   if (onMove != null) ...[
@@ -3771,7 +3823,7 @@ class _SiteBar extends StatelessWidget {
 /// AppBar pill showing credit from cancelled sites — coins with no site
 /// yet. Only shown while the balance is above zero.
 class _CreditChip extends StatelessWidget {
-  const _CreditChip({required this.amount});
+  const _CreditChip({required this.amount, super.key});
 
   final int amount;
 

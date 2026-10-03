@@ -1110,7 +1110,10 @@ tutorial item is folded into this.
 ### 8.11 Open questions (Phase 10)
 
 - ~~**Cancel a site?**~~ **Revised 2026-09-20 (later the same day): cancel
-  is in, with a full refund as credit.** Playtesting showed a placed-by-
+  is in, with a full refund as credit.** *(Button revised 2026-10-04: no
+  longer red or labelled Cancel, which kids read as losing the coins. It
+  reads ↩ 🪙 N, the dialog confirms with *Get 🪙 N back*, and the coins fly
+  into the credit pill.)* Playtesting showed a placed-by-
   mistake site is a dead end once the 3-site cap is hit. A red *Cancel* on
   the site bar deletes the site; every coin paid into it comes back as
   `Players.creditBalance` (schema v17), shown as a pill in the city AppBar
