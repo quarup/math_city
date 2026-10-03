@@ -110,32 +110,31 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
   /// the header doesn't tick over during the counter beat.
   late final int _questionNumber = widget.block?.currentIndex ?? 1;
 
-  /// Counter reaction when the balance changes: a quick grow-and-settle
-  /// plus a bright flash that fades over the same beat.
+  /// Counter reaction when the balance changes: a grow-and-settle plus a
+  /// bright flash that fades over the same beat. The coins go in as a run
+  /// of small pops ending on a big one (see [_bumpCounter]), so the peak
+  /// size and flash are set per pop.
   late final AnimationController _pulseCtrl;
-  late final Animation<double> _pulseScale;
-  late final Animation<double> _pulseFlash;
+  double _pulsePeak = 1.5;
+  double _flashPeak = 0.75;
 
-  /// How long a correct answer lingers on screen for the counter reaction.
-  static const Duration _counterBeat = Duration(milliseconds: 600);
+  /// The deposit run: at most [_maxPops] pops, small ones up to
+  /// [_popGapMax] apart, squeezed closer so the run never exceeds
+  /// [_popBudget], ending on a [_finalPop]-long big pop.
+  static const int _maxPops = 6;
+  static const Duration _popBudget = Duration(milliseconds: 650);
+  static const Duration _popGapMax = Duration(milliseconds: 120);
+  static const Duration _finalPop = Duration(milliseconds: 350);
+
+  /// How long the screen lingers after the final pop starts.
+  static const Duration _finalHold = Duration(milliseconds: 500);
   final List<OverlayEntry> _liveOverlays = <OverlayEntry>[];
 
   @override
   void initState() {
     super.initState();
     _tts = ref.read(ttsServiceProvider);
-    _pulseCtrl = AnimationController(
-      duration: const Duration(milliseconds: 450),
-      vsync: this,
-    );
-    _pulseScale = TweenSequence<double>([
-      TweenSequenceItem(tween: Tween(begin: 1, end: 1.5), weight: 35),
-      TweenSequenceItem(tween: Tween(begin: 1.5, end: 1), weight: 65),
-    ]).animate(CurvedAnimation(parent: _pulseCtrl, curve: Curves.easeOut));
-    _pulseFlash = TweenSequence<double>([
-      TweenSequenceItem(tween: Tween(begin: 0, end: 0.75), weight: 20),
-      TweenSequenceItem(tween: Tween(begin: 0.75, end: 0), weight: 80),
-    ]).animate(_pulseCtrl);
+    _pulseCtrl = AnimationController(duration: _finalPop, vsync: this);
     unawaited(_loadQuestion());
   }
 
@@ -346,13 +345,53 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
     if (!opened && _frozenPaid != null) setState(() => _frozenPaid = null);
   }
 
-  /// Shows [frozenAfter] on the site bar (null = the live total) with its
-  /// flash-and-pulse, and holds one beat so the reaction is seen before the
-  /// screen moves on.
+  /// Counts the site bar up to [frozenAfter] (null = the live total) so
+  /// the coins look deposited: one small pop per share of the coins, the
+  /// number ticking up with each, then a big pop on the total. Holds a beat
+  /// so the reaction is seen before the screen moves on.
   Future<void> _bumpCounter(int? frozenAfter) async {
+    final before = _frozenPaid;
+    final gain = before == null || frozenAfter == null
+        ? 0
+        : frozenAfter - before;
+    final pops = gain.clamp(1, _maxPops);
+    final gapMs = pops > 1
+        ? min(
+            _popGapMax.inMilliseconds,
+            (_popBudget - _finalPop).inMilliseconds ~/ (pops - 1),
+          )
+        : 0;
+    for (var k = 1; k < pops; k++) {
+      setState(() => _frozenPaid = before! + (gain * k / pops).round());
+      _pop(Duration(milliseconds: min(200, gapMs * 9 ~/ 5)), 1.22, 0.45);
+      await Future<void>.delayed(Duration(milliseconds: gapMs));
+      if (!mounted) return;
+    }
     setState(() => _frozenPaid = frozenAfter);
+    _pop(_finalPop, 1.5, 0.75);
+    await Future<void>.delayed(_finalHold);
+  }
+
+  /// Restarts the counter pulse: grow to [peak] over the first 35%, settle
+  /// back; a warm flash peaks at [flash] 20% in and fades.
+  void _pop(Duration duration, double peak, double flash) {
+    _pulsePeak = peak;
+    _flashPeak = flash;
+    _pulseCtrl.duration = duration;
     unawaited(_pulseCtrl.forward(from: 0));
-    await Future<void>.delayed(_counterBeat);
+  }
+
+  double get _pulseScale {
+    final t = _pulseCtrl.value;
+    const rise = Curves.easeOutCubic;
+    return t < 0.35
+        ? 1 + (_pulsePeak - 1) * rise.transform(t / 0.35)
+        : _pulsePeak - (_pulsePeak - 1) * rise.transform((t - 0.35) / 0.65);
+  }
+
+  double get _pulseFlash {
+    final t = _pulseCtrl.value;
+    return t < 0.2 ? _flashPeak * t / 0.2 : _flashPeak * (1 - (t - 0.2) / 0.8);
   }
 
   Future<void> _showCard(Widget card, Duration hold) async {
@@ -410,10 +449,10 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
               // the number changes, gone by the end of the pulse.
               builder: (_, child) => ColorFiltered(
                 colorFilter: ColorFilter.mode(
-                  const Color(0xFFFFF3B0).withValues(alpha: _pulseFlash.value),
+                  const Color(0xFFFFF3B0).withValues(alpha: _pulseFlash),
                   BlendMode.srcATop,
                 ),
-                child: ScaleTransition(scale: _pulseScale, child: child),
+                child: Transform.scale(scale: _pulseScale, child: child),
               ),
               child: SiteProgressBar(
                 paid: _frozenPaid ?? site.paidCoins,
