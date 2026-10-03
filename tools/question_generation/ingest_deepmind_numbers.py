@@ -223,6 +223,11 @@ ROUND_PROMPT_ECHO_RE = re.compile(
     r"to\s+(?P<place>.+?)\s*[.?]?$"
 )
 
+# Place names for "to k decimal places", k = 0..3 (the round_decimals range).
+DECIMAL_PLACE_NAMES: dict[int, str] = {
+    0: "whole number", 1: "tenth", 2: "hundredth", 3: "thousandth",
+}
+
 WORD_TO_INT: dict[str, int] = {
     "zero": 0, "one": 1, "two": 2, "three": 3, "four": 4,
     "five": 5, "six": 6, "seven": 7, "eight": 8, "nine": 9,
@@ -450,9 +455,10 @@ def ingest_round_number(
         # one million", so the explanation no longer answers with "1000000".
         echo = ROUND_PROMPT_ECHO_RE.match(prompt)
         if kind == "dps":
-            # Normalised ("two dps" → "2 decimal places") rather than echoed,
-            # since the source phrasing varies more than it's worth mirroring.
-            place_phrase = f"{k} decimal place{'s' if k != 1 else ''}"
+            # Normalised ("two dps" → "the nearest hundredth") rather than
+            # echoed: kids don't know "dp", and the place name is the
+            # Grade 5 vocabulary the algorithmic generator uses too.
+            place_phrase = f"the nearest {DECIMAL_PLACE_NAMES[k]}"
         elif echo:
             place_phrase = echo.group("place")
         else:
@@ -468,9 +474,14 @@ def ingest_round_number(
         ]
 
         item = build_item(
+            # Hashed from the source prompt, so rewording ours keeps IDs.
             id=item_id(prompt, prefix="round"),
             concept_id=concept_id,
-            prompt=prompt,
+            prompt=(
+                f"Round {value_str} to {place_phrase}."
+                if kind == "dps"
+                else prompt
+            ),
             correct_answer=correct_answer_str,
             distractors=distractors,
             explanation=explanation,
