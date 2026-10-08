@@ -61,8 +61,11 @@ class StoryBeat {
   final bool scripted;
 
   /// Explicit delivery for the static part of the decision (a milestone
-  /// praise beat that belongs on a front page). Null = by kind: demands
-  /// and praise as letters, warnings as the Times.
+  /// praise beat that belongs on a front page; a capacity demand — water,
+  /// trash, hospital — that reads as news). Null = by kind: demands and
+  /// praise as letters, warnings as the Times. A demand on a front page
+  /// keeps a demand's behaviour: Build it! / Later, a badged card, and it
+  /// clears when the building is placed.
   final BeatDelivery? delivery;
 
   /// Fires at most once per player, ever (milestones): the engine skips it

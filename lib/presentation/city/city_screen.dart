@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:math' as math;
+import 'dart:ui' as ui;
 
 import 'package:flame/game.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart' show RenderRepaintBoundary;
 import 'package:flutter/scheduler.dart' show Ticker;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_city/data/construction_sites.dart';
@@ -106,6 +108,13 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
   /// building in the map area the card leaves free.
   final GlobalKey _celebrationCardKey = GlobalKey();
   final GlobalKey _boardKey = GlobalKey();
+
+  /// The repaint boundary around the board, snapped for a Times photo.
+  final GlobalKey _photoKey = GlobalKey();
+
+  /// Snapshot of the city taken as a news front page came out (null for an
+  /// ask, whose photo is the building's sprite). Disposed with the page.
+  ui.Image? _timesPhoto;
 
   /// The bottom bar, measured after each layout: it is drawn *over* the
   /// game rather than beside it, so the game widget never resizes (and the
@@ -400,6 +409,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
 
   @override
   void dispose() {
+    _timesPhoto?.dispose();
     _letterDelay?.cancel();
     _rejectedTimer?.cancel();
     _nudgeTimer?.cancel();
@@ -457,6 +467,26 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     _letterDelay = null;
     _letterPending = null;
     _letterArmed = null;
+  }
+
+  /// The city photo for a Times news page (milestone or warning): a
+  /// snapshot of the board as it stands. Null for anything else — an ask
+  /// prints the building it is about instead.
+  Future<ui.Image?> _timesPhotoFor(String? beatId) async {
+    final beat = beatId == null ? null : findBeatById(beatId);
+    if (beat == null ||
+        beat.staticDelivery != BeatDelivery.times ||
+        beat.kind == BeatKind.demand) {
+      return null;
+    }
+    final boundary = _photoKey.currentContext?.findRenderObject();
+    if (boundary is! RenderRepaintBoundary) return null;
+    if (!boundary.hasSize) return null;
+    try {
+      return await boundary.toImage();
+    } on Exception {
+      return null;
+    }
   }
 
   /// Paints [type]'s footprint in red at the tapped tile for a moment, so
@@ -1924,10 +1954,20 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
       } else if (_letterPending != next.beat.id) {
         _cancelLetterDelay();
         _letterPending = next.beat.id;
-        _letterDelay = Timer(kLetterDelay, () {
+        _letterDelay = Timer(kLetterDelay, () async {
           if (!mounted) return;
+          final pending = _letterPending;
+          // A news page shows the city as it was before the page dimmed
+          // it, so the photo is taken now, while the board is clear.
+          final photo = await _timesPhotoFor(pending);
+          if (!mounted || _letterPending != pending) {
+            photo?.dispose();
+            return;
+          }
           setState(() {
-            _letterArmed = _letterPending;
+            _timesPhoto?.dispose();
+            _timesPhoto = photo;
+            _letterArmed = pending;
             _letterDelay = null;
           });
         });
@@ -1981,6 +2021,62 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
             (letterTarget != null &&
                 (letterGrowSources.isNotEmpty ||
                     (catalog?.any((b) => b.id == letterTarget.id) ?? false))));
+    // *Build it!* on a letter or a Times ask: start the event, grow an
+    // existing building, or propose a spot (land if none fits).
+    final letterBuild = !letterCanBuild
+        ? null
+        : () {
+            if (_atSiteCap(sites)) return;
+            if (letterBeat.event != null && letterVenue != null) {
+              unawaited(
+                ref.read(ttsServiceProvider).stop(),
+              );
+              setState(() {
+                _letterId = null;
+                _announcedLetterId = null;
+              });
+              unawaited(
+                _startEvent(
+                  letterBeat.event!,
+                  letterVenue,
+                ),
+              );
+              return;
+            }
+            if (letterTarget == null) return;
+            if (letterGrowSources.isNotEmpty) {
+              _enterGrow(letterTarget, letterGrowSources);
+              return;
+            }
+            unawaited(
+              ref.read(ttsServiceProvider).stop(),
+            );
+            final spot = _proposeFor(
+              letterTarget,
+              placements ?? const [],
+              sites,
+              ownedTiles,
+            );
+            if (spot == null) {
+              setState(() {
+                _letterId = null;
+                _announcedLetterId = null;
+              });
+              _proposeLand(
+                letterTarget,
+                placements ?? const [],
+                sites,
+              );
+              return;
+            }
+            setState(() {
+              _letterId = null;
+              _announcedLetterId = null;
+              _selected = letterTarget;
+              _pendingSpot = spot;
+            });
+            _glideToSpot(spot);
+          };
     final guideStep = player?.guideStep ?? kChapterOneDone;
     final chapterOne = guideStep < kChapterOneDone;
     // The day stands at 9:30 until the hand-over letter (S4).
@@ -2287,12 +2383,15 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                 builder: (context, constraints) => Stack(
                   children: [
                     Positioned.fill(
-                      child: ColoredBox(
-                        key: _boardKey,
-                        color: kMeadowBase,
-                        child: _PinchZoomWrapper(
-                          game: _game!,
-                          child: GameWidget(game: _game!),
+                      child: RepaintBoundary(
+                        key: _photoKey,
+                        child: ColoredBox(
+                          key: _boardKey,
+                          color: kMeadowBase,
+                          child: _PinchZoomWrapper(
+                            game: _game!,
+                            child: GameWidget(game: _game!),
+                          ),
                         ),
                       ),
                     ),
@@ -2334,14 +2433,34 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                         child: TimesOverlay(
                           beat: letterBeat,
                           cityName: '${player?.name ?? ''}’s city',
+                          target: letterBeat.kind == BeatKind.demand
+                              ? letterTarget
+                              : null,
+                          onBuild: letterBuild == null
+                              ? null
+                              : () {
+                                  _timesPhoto?.dispose();
+                                  _timesPhoto = null;
+                                  letterBuild();
+                                },
+                          photo: _timesPhoto,
+                          mayor: letterBeat.kind == BeatKind.praise
+                              ? player?.avatar
+                              : null,
                           onClose: () {
                             unawaited(ref.read(ttsServiceProvider).stop());
-                            unawaited(
-                              ref
-                                  .read(cityActionsProvider)
-                                  .retireCompletedBeat(letterBeat.id),
-                            );
+                            // News is read once; an ask stays open on its
+                            // badged card until the building goes up.
+                            if (letterBeat.kind != BeatKind.demand) {
+                              unawaited(
+                                ref
+                                    .read(cityActionsProvider)
+                                    .retireCompletedBeat(letterBeat.id),
+                              );
+                            }
                             setState(() {
+                              _timesPhoto?.dispose();
+                              _timesPhoto = null;
                               _letterId = null;
                               _announcedLetterId = null;
                             });
@@ -2356,61 +2475,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                           citizen: citizenForBeat(letterBeat),
                           playerName: player?.name ?? '',
                           target: letterTarget,
-                          onBuild: letterCanBuild
-                              ? () {
-                                  if (_atSiteCap(sites)) return;
-                                  if (letterBeat.event != null &&
-                                      letterVenue != null) {
-                                    unawaited(
-                                      ref.read(ttsServiceProvider).stop(),
-                                    );
-                                    setState(() {
-                                      _letterId = null;
-                                      _announcedLetterId = null;
-                                    });
-                                    unawaited(
-                                      _startEvent(
-                                        letterBeat.event!,
-                                        letterVenue,
-                                      ),
-                                    );
-                                    return;
-                                  }
-                                  if (letterTarget == null) return;
-                                  if (letterGrowSources.isNotEmpty) {
-                                    _enterGrow(letterTarget, letterGrowSources);
-                                    return;
-                                  }
-                                  unawaited(
-                                    ref.read(ttsServiceProvider).stop(),
-                                  );
-                                  final spot = _proposeFor(
-                                    letterTarget,
-                                    placements ?? const [],
-                                    sites,
-                                    ownedTiles,
-                                  );
-                                  if (spot == null) {
-                                    setState(() {
-                                      _letterId = null;
-                                      _announcedLetterId = null;
-                                    });
-                                    _proposeLand(
-                                      letterTarget,
-                                      placements ?? const [],
-                                      sites,
-                                    );
-                                    return;
-                                  }
-                                  setState(() {
-                                    _letterId = null;
-                                    _announcedLetterId = null;
-                                    _selected = letterTarget;
-                                    _pendingSpot = spot;
-                                  });
-                                  _glideToSpot(spot);
-                                }
-                              : null,
+                          onBuild: letterBuild,
                           onClose: () {
                             unawaited(ref.read(ttsServiceProvider).stop());
                             if (letterBeat.kind == BeatKind.praise) {
@@ -3945,6 +4010,8 @@ class _BuildBar extends StatelessWidget {
             building: b,
             color: _colorFor(b),
             requestedBy: citizenForBeat(requested[b.id]!.beat),
+            viaTimes:
+                requested[b.id]!.beat.staticDelivery == BeatDelivery.times,
             onTap: () => onOpenLetter(requested[b.id]!),
           ),
         ),
@@ -4330,6 +4397,7 @@ class _CatalogCard extends StatelessWidget {
     required this.color,
     required this.onTap,
     this.requestedBy,
+    this.viaTimes = false,
     this.isNew = false,
   });
 
@@ -4339,6 +4407,9 @@ class _CatalogCard extends StatelessWidget {
 
   /// The citizen whose open letter asks for this building, if any.
   final Citizen? requestedBy;
+
+  /// The ask came as a Times front page: a newspaper badge, not a face.
+  final bool viaTimes;
   final bool isNew;
 
   @override
@@ -4382,9 +4453,11 @@ class _CatalogCard extends StatelessWidget {
         Positioned(
           top: -6,
           right: -6,
-          child: badge != null
-              ? _EnvelopeBadge(citizen: badge)
-              : const Text('✨', style: TextStyle(fontSize: 16)),
+          child: badge == null
+              ? const Text('✨', style: TextStyle(fontSize: 16))
+              : viaTimes
+              ? const _NewsBadge()
+              : _EnvelopeBadge(citizen: badge),
         ),
       ],
     );
@@ -4448,6 +4521,28 @@ class _EventCard extends StatelessWidget {
           child: _EnvelopeBadge(citizen: requestedBy),
         ),
       ],
+    );
+  }
+}
+
+/// The "the Times asked for this" badge: a newspaper in the same ring as
+/// the envelope badge, so the two asks sit together on the bar.
+class _NewsBadge extends StatelessWidget {
+  const _NewsBadge();
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Container(
+      width: 32,
+      height: 32,
+      decoration: BoxDecoration(
+        color: scheme.surface,
+        shape: BoxShape.circle,
+        border: Border.all(color: const Color(0xFFFFA726), width: 2),
+      ),
+      alignment: Alignment.center,
+      child: const Text('📰', style: TextStyle(fontSize: 15)),
     );
   }
 }

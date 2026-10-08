@@ -246,7 +246,8 @@ const beatRegistry = <StoryBeat>[
   ),
   StoryBeat(
     id: 'demand_waste',
-    kind: BeatKind.warning,
+    kind: BeatKind.demand,
+    delivery: BeatDelivery.times,
     tone: BeatTone.civic,
     emoji: '🚮',
     shortLabel: 'trash!',
@@ -506,11 +507,15 @@ const beatRegistry = <StoryBeat>[
     ),
   ),
 
-  // -- Service demands (water arc is new; ⚠ rows are warning-kind capacity
-  //    asks, matching Phase 7's demand_waste) --------------------------------
+  // -- Service demands (water arc is new). Capacity asks read like bad news,
+  //    so they arrive as Times front pages (`delivery: times`) — but they are
+  //    demands: the page has Build it! / Later and the ask stays on the
+  //    building's badged card until it is built (2026-10-08; they were
+  //    warning-kind before, which retired them on close with no way to build).
   StoryBeat(
     id: 'demand_water',
-    kind: BeatKind.warning,
+    kind: BeatKind.demand,
+    delivery: BeatDelivery.times,
     tone: BeatTone.civic,
     emoji: '🚰',
     shortLabel: 'water!',
@@ -524,7 +529,8 @@ const beatRegistry = <StoryBeat>[
   ),
   StoryBeat(
     id: 'demand_power_station',
-    kind: BeatKind.warning,
+    kind: BeatKind.demand,
+    delivery: BeatDelivery.times,
     tone: BeatTone.civic,
     emoji: '🏭',
     shortLabel: 'brownouts',
@@ -553,7 +559,8 @@ const beatRegistry = <StoryBeat>[
   ),
   StoryBeat(
     id: 'demand_water_treatment',
-    kind: BeatKind.warning,
+    kind: BeatKind.demand,
+    delivery: BeatDelivery.times,
     tone: BeatTone.civic,
     emoji: '💧',
     shortLabel: 'clean water',
@@ -583,7 +590,8 @@ const beatRegistry = <StoryBeat>[
   ),
   StoryBeat(
     id: 'demand_hospital',
-    kind: BeatKind.warning,
+    kind: BeatKind.demand,
+    delivery: BeatDelivery.times,
     tone: BeatTone.civic,
     emoji: '🚑',
     shortLabel: 'hospital',

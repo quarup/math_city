@@ -32,6 +32,33 @@ void main() {
     });
   });
 
+  group('Times asks', () {
+    // Capacity asks read as news but behave as demands: Build it! / Later
+    // on the page, a badged card, cleared when the building goes up.
+    const asks = {
+      'demand_waste': 'waste_management',
+      'demand_water': 'water_tower',
+      'demand_power_station': 'power_station',
+      'demand_water_treatment': 'water_treatment',
+      'demand_hospital': 'hospital',
+    };
+    test('are demands delivered as front pages that name their building', () {
+      for (final entry in asks.entries) {
+        final beat = findBeatById(entry.key)!;
+        expect(beat.kind, BeatKind.demand, reason: beat.id);
+        expect(beat.staticDelivery, BeatDelivery.times, reason: beat.id);
+        expect(beatTargetBuilding(beat)?.id, entry.value, reason: beat.id);
+      }
+    });
+
+    test('only the two balance warnings are still warnings', () {
+      expect(
+        beatRegistry.where((b) => b.kind == BeatKind.warning).map((b) => b.id),
+        unorderedEquals(['warn_lopsided', 'warn_growth_stalled']),
+      );
+    });
+  });
+
   group('beatTargetBuilding', () {
     test('every demand beat names the building it asks for', () {
       for (final beat in beatRegistry.where(

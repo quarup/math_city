@@ -211,7 +211,7 @@ class _PicturePanel extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
         ),
         padding: const EdgeInsets.all(8),
-        child: _TrimmedSprite(
+        child: TrimmedSprite(
           asset: 'assets/buildings/${building.id}_v1.png',
           fallback: Text(building.emoji, style: const TextStyle(fontSize: 48)),
         ),
@@ -220,29 +220,34 @@ class _PicturePanel extends StatelessWidget {
   }
 }
 
-/// A sprite drawn so its *visible* pixels are centred and fill the box: the
+/// A sprite drawn so its *visible* pixels are centred and fill the box
+/// (shared with the Times front page): the
 /// building sprites carry transparent headroom above the roof (room for
 /// taller variants), which would otherwise sit the building low.
-class _TrimmedSprite extends StatefulWidget {
-  const _TrimmedSprite({required this.asset, required this.fallback});
+class TrimmedSprite extends StatefulWidget {
+  const TrimmedSprite({
+    required this.asset,
+    required this.fallback,
+    super.key,
+  });
 
   final String asset;
   final Widget fallback;
 
   @override
-  State<_TrimmedSprite> createState() => _TrimmedSpriteState();
+  State<TrimmedSprite> createState() => TrimmedSpriteState();
 }
 
-class _TrimmedSpriteState extends State<_TrimmedSprite> {
+class TrimmedSpriteState extends State<TrimmedSprite> {
   /// Decoded sprites and their opaque bounds, kept across letters.
   static final Map<String, Future<(ui.Image, Rect)?>> _cache = {};
 
   late Future<(ui.Image, Rect)?> _sprite = _load(widget.asset);
 
   @override
-  void didUpdateWidget(_TrimmedSprite old) {
-    super.didUpdateWidget(old);
-    if (old.asset != widget.asset) _sprite = _load(widget.asset);
+  void didUpdateWidget(TrimmedSprite oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.asset != widget.asset) _sprite = _load(widget.asset);
   }
 
   static Future<(ui.Image, Rect)?> _load(String asset) =>
@@ -296,14 +301,14 @@ class _TrimmedSpriteState extends State<_TrimmedSprite> {
       if (sprite == null) return Center(child: widget.fallback);
       return CustomPaint(
         size: Size.infinite,
-        painter: _TrimmedSpritePainter(sprite.$1, sprite.$2),
+        painter: TrimmedSpritePainter(sprite.$1, sprite.$2),
       );
     },
   );
 }
 
-class _TrimmedSpritePainter extends CustomPainter {
-  _TrimmedSpritePainter(this.image, this.bounds);
+class TrimmedSpritePainter extends CustomPainter {
+  TrimmedSpritePainter(this.image, this.bounds);
 
   final ui.Image image;
   final Rect bounds;
@@ -324,7 +329,7 @@ class _TrimmedSpritePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_TrimmedSpritePainter old) =>
+  bool shouldRepaint(TrimmedSpritePainter old) =>
       old.image != image || old.bounds != bounds;
 }
 

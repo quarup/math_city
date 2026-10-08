@@ -1441,8 +1441,13 @@ one) and the bubble — emoji plus the beat's `shortLabel` — rides with them
 for ~6 s. Tap to hear the sentence. Nothing persists, nothing to dismiss.
 This is Phase-12's *B4 citizen bubbles* given a purpose.
 
-**The Times.** A front page: masthead, headline, a photo of the city, one
-spoken line. Past editions stack in a drawer on the profile. Rare by design.
+**The Times.** A front page: masthead, headline, a photo, one spoken line.
+The photo is the story's (2026-10-08): the building's sprite as an artist's
+impression on an ask, a black-and-white snapshot of the board on news, with
+the mayor inset on a milestone. Capacity asks (water, trash, hospital, …)
+are *demands delivered as front pages*: *Later* / *Build it!*, a 📰-badged
+card, cleared when the building goes up. Past editions stack in a drawer on
+the profile (later). Rare by design.
 
 **Thank-you replies.** A praise beat whose trigger is the building that just
 opened (`praise_first_home`, `praise_school`, … — the `+self` rows of §4.2)
