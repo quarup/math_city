@@ -125,9 +125,25 @@ class LetterOverlay extends ConsumerWidget {
                         _PicturePanel(building: target!, onTap: onBuild),
                       ],
                       const SizedBox(height: 16),
+                      // Primary action on the right, like every other row in
+                      // the app (site bar, front page, refund dialog) and the
+                      // Android / iOS convention this ships on.
                       Row(
                         children: [
                           if (onBuild != null) ...[
+                            Expanded(
+                              flex: 2,
+                              child: OutlinedButton(
+                                onPressed: onClose,
+                                style: OutlinedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 14,
+                                  ),
+                                ),
+                                child: const Text('Later'),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
                             Expanded(
                               flex: 3,
                               child: FilledButton(
@@ -140,19 +156,6 @@ class LetterOverlay extends ConsumerWidget {
                                       ?.copyWith(fontWeight: FontWeight.bold),
                                 ),
                                 child: const Text('Build it!'),
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              flex: 2,
-                              child: OutlinedButton(
-                                onPressed: onClose,
-                                style: OutlinedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 14,
-                                  ),
-                                ),
-                                child: const Text('Later'),
                               ),
                             ),
                           ] else
