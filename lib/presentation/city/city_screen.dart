@@ -26,6 +26,7 @@ import 'package:math_city/domain/city/road_network.dart';
 import 'package:math_city/domain/city/story_beat.dart';
 import 'package:math_city/domain/city/terrain.dart';
 import 'package:math_city/domain/city/upgrade_ladders.dart';
+import 'package:math_city/domain/city/warning_fix.dart';
 import 'package:math_city/domain/city/window_lights.dart';
 import 'package:math_city/domain/economy/question_block.dart';
 import 'package:math_city/domain/proficiency/proficiency_band.dart';
@@ -469,14 +470,14 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     _letterArmed = null;
   }
 
-  /// The city photo for a Times news page (milestone or warning): a
-  /// snapshot of the board as it stands. Null for anything else — an ask
-  /// prints the building it is about instead.
+  /// The city photo for a Times milestone: a snapshot of the board as it
+  /// stands. Null for anything else — an ask, and a warning with a fix,
+  /// print the building they are about instead.
   Future<ui.Image?> _timesPhotoFor(String? beatId) async {
     final beat = beatId == null ? null : findBeatById(beatId);
     if (beat == null ||
         beat.staticDelivery != BeatDelivery.times ||
-        beat.kind == BeatKind.demand) {
+        beat.kind != BeatKind.praise) {
       return null;
     }
     final boundary = _photoKey.currentContext?.findRenderObject();
@@ -1916,17 +1917,38 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
       }
       unawaited(ref.read(cityActionsProvider).retireCompletedBeat(b.beat.id));
     }
+    // A balance warning resolves to the building that fixes it, from the
+    // city as it stands (so the numbers in its headline stay current).
+    final placedTypes = [
+      for (final p in placements ?? const <BuildingPlacement>[])
+        ?findBuildingTypeById(p.buildingTypeId),
+    ];
+    WarningFix? fixFor(StoryBeat beat) => beat.kind != BeatKind.warning
+        ? null
+        : warningFixFor(
+            beat,
+            placed: placedTypes,
+            population: city?.population ?? 0,
+            catalog: catalog ?? const <BuildingType>[],
+          );
+    BuildingType? targetFor(StoryBeat beat) => beat.kind == BeatKind.warning
+        ? fixFor(beat)?.building
+        : beatTargetBuilding(beat);
+
     final requested = <String, OpenBeat>{};
     final eventAsks = <OpenBeat>[];
     for (final b in openBeats) {
-      if (b.completed || b.beat.kind != BeatKind.demand) continue;
+      if (b.completed) continue;
+      if (b.beat.kind != BeatKind.demand && b.beat.kind != BeatKind.warning) {
+        continue;
+      }
       // Asks that are not "build X" — a party, or chapter one's "move
       // your house" — get a card of their own rather than a building's.
       if (b.beat.event != null || b.beat.scripted) {
         eventAsks.add(b);
         continue;
       }
-      final target = beatTargetBuilding(b.beat);
+      final target = targetFor(b.beat);
       if (target != null) requested.putIfAbsent(target.id, () => b);
     }
     final atRest =
@@ -2002,9 +2024,8 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
         if (mounted) unawaited(speakIfEnabled(ref, spoken));
       });
     }
-    final letterTarget = letterBeat == null
-        ? null
-        : beatTargetBuilding(letterBeat);
+    final letterFix = letterBeat == null ? null : fixFor(letterBeat);
+    final letterTarget = letterBeat == null ? null : targetFor(letterBeat);
     // A letter for a rung above a root grows an existing building
     // (city_builder.md §10.6): the oldest eligible one is named first.
     final letterGrowSources = letterTarget == null
@@ -2015,7 +2036,8 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
         ? null
         : partyVenueFor(placements ?? const []);
     final letterCanBuild =
-        letterBeat?.kind == BeatKind.demand &&
+        (letterBeat?.kind == BeatKind.demand ||
+            (letterBeat?.kind == BeatKind.warning && letterFix != null)) &&
         !(letterBeat!.scripted && letterBeat.event == null) &&
         ((letterBeat.event != null && letterVenue != null) ||
             (letterTarget != null &&
@@ -2116,8 +2138,9 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     );
     if (letterBeat != null && _announcedLetterId != letterBeat.id) {
       _announcedLetterId = letterBeat.id;
+      final story = letterFix?.story ?? letterBeat.longText;
       final spoken = letterIsTimes
-          ? '${letterBeat.shortLabel}. ${letterBeat.longText}'
+          ? '${letterBeat.shortLabel}. $story'
           : 'Dear Mayor ${player?.name ?? ''}, ${letterBeat.longText}';
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
@@ -2433,9 +2456,10 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                         child: TimesOverlay(
                           beat: letterBeat,
                           cityName: '${player?.name ?? ''}’s city',
-                          target: letterBeat.kind == BeatKind.demand
-                              ? letterTarget
-                              : null,
+                          target: letterBeat.kind == BeatKind.praise
+                              ? null
+                              : letterTarget,
+                          story: letterFix?.story,
                           onBuild: letterBuild == null
                               ? null
                               : () {
@@ -2449,9 +2473,14 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                               : null,
                           onClose: () {
                             unawaited(ref.read(ttsServiceProvider).stop());
-                            // News is read once; an ask stays open on its
-                            // badged card until the building goes up.
-                            if (letterBeat.kind != BeatKind.demand) {
+                            // News is read once; an ask (a demand, or a
+                            // warning with a fix) stays open on its badged
+                            // card until the city is back in balance.
+                            final isAsk =
+                                letterBeat.kind == BeatKind.demand ||
+                                (letterBeat.kind == BeatKind.warning &&
+                                    letterTarget != null);
+                            if (!isAsk) {
                               unawaited(
                                 ref
                                     .read(cityActionsProvider)

@@ -1446,8 +1446,12 @@ The photo is the story's (2026-10-08): the building's sprite as an artist's
 impression on an ask, a black-and-white snapshot of the board on news, with
 the mayor inset on a milestone. Capacity asks (water, trash, hospital, …)
 are *demands delivered as front pages*: *Later* / *Build it!*, a 📰-badged
-card, cleared when the building goes up. Past editions stack in a drawer on
-the profile (later). Rare by design.
+card, cleared when the building goes up. The two balance warnings (§4.3) do
+the same (2026-10-10): `warningFixFor` names the cheapest building that
+moves the number — any home for *no homes!*, the thinnest gating service's
+provider for *stuck* — and the headline quotes the numbers; a warning with
+no buildable fix never fires. Past editions stack in a drawer on the profile
+(later). Rare by design.
 
 **Thank-you replies.** A praise beat whose trigger is the building that just
 opened (`praise_first_home`, `praise_school`, … — the `+self` rows of §4.2)

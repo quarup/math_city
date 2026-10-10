@@ -15,6 +15,7 @@ import 'package:math_city/domain/city/story_beat.dart';
 import 'package:math_city/domain/city/trigger_rule.dart';
 import 'package:math_city/domain/city/unlock_rule.dart';
 import 'package:math_city/domain/city/upgrade_ladders.dart';
+import 'package:math_city/domain/city/warning_fix.dart';
 import 'package:math_city/state/game_session_provider.dart';
 import 'package:math_city/state/player_provider.dart';
 
@@ -499,6 +500,19 @@ class CityActions {
         gap >= 8 &&
         gap * 4 >= capacity;
 
+    // A balance warning is only news while the player can do something
+    // about it: no front page says "the clinic is full" before a clinic is
+    // in the catalog. The fix is what the page's Build it! offers.
+    final catalog = await _ref.read(cityCatalogProvider.future);
+    bool hasFix(StoryBeat beat) =>
+        warningFixFor(
+          beat,
+          placed: placedTypes,
+          population: city.population,
+          catalog: catalog,
+        ) !=
+        null;
+
     // [ignoreSpacing] evaluates the rule as if the beat had never fired:
     // the fulfilment check below must not count a beat's own coin-spacing
     // clause (which fails right after it fires) as "no longer wanted".
@@ -511,8 +525,12 @@ class CityActions {
         population: city.population,
         maxBuildingAgeByTypeId: ageByType,
         firedBeatIds: firedIds,
-        lopsided: balance.lopsided,
-        growthStalled: balance.growthStalled,
+        lopsided:
+            balance.lopsided &&
+            (!beat.triggerRule.requiresLopsided || hasFix(beat)),
+        growthStalled:
+            balance.growthStalled &&
+            (!beat.triggerRule.requiresGrowthStalled || hasFix(beat)),
         partyGap: partyGap,
         coinsEarnedSinceBeatLastFired: lastBricks == null || ignoreSpacing
             ? null

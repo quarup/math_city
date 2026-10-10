@@ -29,6 +29,7 @@ class TimesOverlay extends ConsumerWidget {
     this.onBuild,
     this.photo,
     this.mayor,
+    this.story,
     super.key,
   });
 
@@ -54,10 +55,18 @@ class TimesOverlay extends ConsumerWidget {
   /// The mayor, inset on a milestone's photo.
   final AdventurerConfig? mayor;
 
-  /// What the voice reads: the kicker, then the story.
-  String get spokenText => '${beat.shortLabel}. ${beat.longText}';
+  /// Replaces the beat's text: a balance warning's headline with today's
+  /// numbers in it ("9 shops and only 2 homes").
+  final String? story;
 
-  bool get _isAsk => beat.kind == BeatKind.demand;
+  String get _story => story ?? beat.longText;
+
+  /// What the voice reads: the kicker, then the story.
+  String get spokenText => '${beat.shortLabel}. $_story';
+
+  /// An ask has *Later* / *Build it!*: a demand, or a warning that names
+  /// the building that fixes it.
+  bool get _isAsk => beat.kind == BeatKind.demand || target != null;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -150,7 +159,7 @@ class TimesOverlay extends ConsumerWidget {
                       ),
                       const SizedBox(height: 6),
                       Text(
-                        beat.longText,
+                        _story,
                         style: theme.textTheme.titleLarge?.copyWith(
                           color: ink,
                           fontWeight: FontWeight.w800,
