@@ -233,10 +233,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                                 child: CircularProgressIndicator(),
                               ),
                               error: (e, _) => Center(child: Text('Error: $e')),
-                              data: (players) => _buildPlayersAndSpin(
-                                theme,
-                                players,
-                                activeId,
+                              // Scales the block down rather than overflow
+                              // when the screen is short (a phone on its
+                              // side): no scrolling, no stripes.
+                              data: (players) => LayoutBuilder(
+                                builder: (context, c) => FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  alignment: Alignment.topCenter,
+                                  child: SizedBox(
+                                    width: c.maxWidth,
+                                    child: _buildPlayersAndSpin(
+                                      theme,
+                                      players,
+                                      activeId,
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
                           ),

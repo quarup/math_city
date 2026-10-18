@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_city/data/database.dart';
 import 'package:math_city/domain/avatar/adventurer_config.dart';
 import 'package:math_city/presentation/player/avatar_editor_step.dart';
-import 'package:math_city/presentation/player/avatar_thumb.dart';
+import 'package:math_city/presentation/player/creation_chrome.dart';
 import 'package:math_city/presentation/player/grade_step.dart';
 import 'package:math_city/presentation/player/name_step.dart';
 import 'package:math_city/presentation/theme/app_palette.dart';
@@ -137,74 +137,53 @@ class _PlayerEditHubState extends ConsumerState<PlayerEditHub> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final palette = theme.extension<AppPalette>()!;
-    return Scaffold(
-      backgroundColor: theme.colorScheme.surface,
-      appBar: AppBar(
-        backgroundColor: theme.colorScheme.surfaceContainerLow,
-        foregroundColor: theme.colorScheme.onSurface,
-        elevation: 0,
-        title: Text('Mayor ${_player.name}'),
-      ),
-      body: SafeArea(
+    return StepScaffold(
+      title: 'Mayor ${_player.name}',
+      onBack: () => Navigator.of(context).pop(),
+      hero: HeroLead(config: _player.avatar, portraitSize: 150),
+      content: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Container(
-              color: theme.colorScheme.surfaceContainerLow,
-              padding: const EdgeInsets.only(bottom: 16),
-              child: Center(
-                child: AvatarThumb(config: _player.avatar, size: 150),
-              ),
+            _Door(
+              title: 'Change my look',
+              subtitle: 'Hair, eyes, glasses and more',
+              onTap: _editLook,
             ),
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  _Door(
-                    title: 'Change my look',
-                    subtitle: 'Hair, eyes, glasses and more',
-                    onTap: _editLook,
-                  ),
-                  const SizedBox(height: 10),
-                  _Door(
-                    title: 'Change my name',
-                    subtitle: 'The town will use the new one',
-                    onTap: _editName,
-                  ),
-                  const SizedBox(height: 10),
-                  _Door(
-                    title: 'Change my grade',
-                    subtitle:
-                        '${_gradeName(_player.gradeLevel)} · '
-                        'restarts your lessons',
-                    onTap: _editGrade,
-                  ),
-                ],
-              ),
+            const SizedBox(height: 10),
+            _Door(
+              title: 'Change my name',
+              subtitle: 'The town will use the new one',
+              onTap: _editName,
             ),
-            const Spacer(),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
-              child: SizedBox(
-                height: 56,
-                child: FilledButton.tonal(
-                  onPressed: () => Navigator.of(context).pop(),
-                  style: FilledButton.styleFrom(
-                    backgroundColor: theme.colorScheme.surfaceContainerHigh,
-                    foregroundColor: palette.brandTealDeep,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18),
-                    ),
-                    textStyle: theme.textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  child: const Text('Done'),
-                ),
-              ),
+            const SizedBox(height: 10),
+            _Door(
+              title: 'Change my grade',
+              subtitle:
+                  '${_gradeName(_player.gradeLevel)} · '
+                  'restarts your lessons',
+              onTap: _editGrade,
             ),
           ],
+        ),
+      ),
+      footer: SizedBox(
+        width: double.infinity,
+        height: 52,
+        child: FilledButton.tonal(
+          onPressed: () => Navigator.of(context).pop(),
+          style: FilledButton.styleFrom(
+            backgroundColor: theme.colorScheme.surfaceContainerHigh,
+            foregroundColor: palette.brandTealDeep,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(18),
+            ),
+            textStyle: theme.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          child: const Text('Done'),
         ),
       ),
     );

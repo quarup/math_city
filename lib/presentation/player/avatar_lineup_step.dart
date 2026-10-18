@@ -26,55 +26,54 @@ class AvatarLineupStep extends StatelessWidget {
     return StepScaffold(
       step: 1,
       onBack: onBack,
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const SizedBox(height: 4),
-            const StepTitle(
-              title: 'Pick a mayor',
-              hint: Text('You can change anything next.'),
-            ),
-            const SizedBox(height: 14),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  final cell = (constraints.maxWidth - 12) / 2;
-                  return Wrap(
-                    spacing: 12,
-                    runSpacing: 12,
-                    children: [
-                      for (final (i, face) in faces.indexed)
-                        OptionCell(
-                          size: cell,
-                          selected: false,
-                          semanticLabel: 'Mayor ${i + 1}',
-                          onTap: () => onPick(face),
-                          child: AvatarThumb(
-                            config: face,
-                            size: cell - 28,
-                            background: theme.colorScheme.surfaceContainerLow,
-                          ),
+      title: 'Pick a mayor',
+      hint: const Text('You can change anything next.'),
+      content: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: LayoutBuilder(
+          builder: (context, c) {
+            // As many faces across as gives the biggest cells that still
+            // all fit: two columns upright, three or six on a side.
+            final (cols, cell) = fitSquareGrid(
+              count: faces.length,
+              width: c.maxWidth,
+              height: c.maxHeight - 16,
+              gap: 12,
+              maxCell: 220,
+            );
+            return Center(
+              child: SizedBox(
+                width: cols * cell + (cols - 1) * 12,
+                child: Wrap(
+                  spacing: 12,
+                  runSpacing: 12,
+                  children: [
+                    for (final (i, face) in faces.indexed)
+                      OptionCell(
+                        size: cell,
+                        selected: false,
+                        semanticLabel: 'Mayor ${i + 1}',
+                        onTap: () => onPick(face),
+                        child: AvatarThumb(
+                          config: face,
+                          size: cell - 24,
+                          background: theme.colorScheme.surfaceContainerLow,
                         ),
-                    ],
-                  );
-                },
+                      ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 14),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: RowButton(
-                label: 'Show me more',
-                icon: Icons.shuffle_rounded,
-                onPressed: onMore,
-              ),
-            ),
-            const SizedBox(height: 16),
-          ],
+            );
+          },
         ),
       ),
+      actions: [
+        RowButton(
+          label: 'Show me more',
+          icon: Icons.shuffle_rounded,
+          onPressed: onMore,
+        ),
+      ],
     );
   }
 }

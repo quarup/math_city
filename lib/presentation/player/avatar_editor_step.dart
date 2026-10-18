@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:math_city/domain/avatar/adventurer_catalog.dart';
 import 'package:math_city/domain/avatar/adventurer_composer.dart';
@@ -13,6 +15,8 @@ import 'package:math_city/presentation/theme/app_palette.dart';
 ///
 /// Blush and freckles are one choice (plain, blush or freckles): the two
 /// marks never combine, even though the config stores them separately.
+/// The thumbnails take whatever size lets the tab's rows fit without
+/// scrolling, on a phone upright or on its side.
 class AvatarEditorStep extends StatefulWidget {
   const AvatarEditorStep({
     required this.initial,
@@ -63,46 +67,18 @@ class _AvatarEditorStepState extends State<AvatarEditorStep> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final palette = theme.extension<AppPalette>()!;
     return StepScaffold(
       step: widget.step,
       onBack: widget.onBack,
-      trailing: IconButton(
-        onPressed: () => _set(AdventurerConfig.random()),
-        tooltip: 'Surprise me',
-        style: IconButton.styleFrom(
-          backgroundColor: theme.colorScheme.surfaceContainerLow,
-          foregroundColor: palette.brandTealDeep,
-        ),
-        icon: const Icon(Icons.casino_outlined),
-      ),
-      body: Column(
+      title: 'Make your mayor',
+      hero: HeroLead(config: _config),
+      content: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Container(
-            color: theme.colorScheme.surfaceContainerLow,
-            padding: const EdgeInsets.only(top: 4, bottom: 12),
-            child: Center(
-              child: AvatarThumb(config: _config, size: 196),
-            ),
-          ),
-          const SizedBox(height: 14),
-          const StepTitle(title: 'Make your mayor'),
-          const SizedBox(height: 10),
-          _TabRow(
-            current: _tab,
-            onSelect: (t) => setState(() => _tab = t),
-          ),
-          const SizedBox(height: 14),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: _panel(),
-              ),
-            ),
-          ),
+          const SizedBox(height: 6),
+          _TabRow(current: _tab, onSelect: (t) => setState(() => _tab = t)),
+          const SizedBox(height: 12),
+          Expanded(child: _panel()),
         ],
       ),
       footer: PrimaryButton(
@@ -112,15 +88,14 @@ class _AvatarEditorStepState extends State<AvatarEditorStep> {
     );
   }
 
-  List<Widget> _panel() {
+  Widget _panel() {
     final c = _config;
     switch (_tab) {
       case _Tab.skin:
         final plain = c.copyWith(blush: false, freckles: false);
-        return [
-          _OptionRow(
-            label: 'Tone',
-            options: [
+        return _Sections(
+          sections: [
+            _Section('Tone', [
               for (var i = 0; i < kSkinColors.length; i++)
                 _Option(
                   config: c.copyWith(skinColorIndex: i),
@@ -129,11 +104,8 @@ class _AvatarEditorStepState extends State<AvatarEditorStep> {
                   label: kSkinColorLabels[i],
                   onTap: () => _set(c.copyWith(skinColorIndex: i)),
                 ),
-            ],
-          ),
-          _OptionRow(
-            label: 'Cheeks',
-            options: [
+            ]),
+            _Section('Cheeks', [
               _Option(
                 config: plain,
                 crop: AvatarCrop.face,
@@ -155,13 +127,13 @@ class _AvatarEditorStepState extends State<AvatarEditorStep> {
                 label: 'Freckles',
                 onTap: () => _set(plain.copyWith(freckles: true)),
               ),
-            ],
-          ),
-        ];
+            ]),
+          ],
+        );
       case _Tab.hair:
-        return [
-          _OptionRow(
-            options: [
+        return _Sections(
+          sections: [
+            _Section(null, [
               for (var i = 0; i < kHairStyles.length; i++)
                 _Option(
                   config: c.copyWith(hairIndex: i),
@@ -170,9 +142,9 @@ class _AvatarEditorStepState extends State<AvatarEditorStep> {
                   label: kHairStyleLabels[i],
                   onTap: () => _set(c.copyWith(hairIndex: i)),
                 ),
-            ],
-          ),
-          _SwatchRow(
+            ]),
+          ],
+          trailer: _SwatchRow(
             label: 'Color',
             count: kHairColors.length,
             swatch: hairColorSwatch,
@@ -180,12 +152,11 @@ class _AvatarEditorStepState extends State<AvatarEditorStep> {
             selectedIndex: c.hairColorIndex,
             onSelect: (i) => _set(c.copyWith(hairColorIndex: i)),
           ),
-        ];
+        );
       case _Tab.eyes:
-        return [
-          _OptionRow(
-            label: 'Eyes',
-            options: [
+        return _Sections(
+          sections: [
+            _Section('Eyes', [
               for (var i = 0; i < kEyeVariants.length; i++)
                 _Option(
                   config: c.copyWith(eyesIndex: i),
@@ -194,11 +165,8 @@ class _AvatarEditorStepState extends State<AvatarEditorStep> {
                   label: 'Eyes ${i + 1}',
                   onTap: () => _set(c.copyWith(eyesIndex: i)),
                 ),
-            ],
-          ),
-          _OptionRow(
-            label: 'Glasses',
-            options: [
+            ]),
+            _Section('Glasses', [
               for (var i = 0; i < kGlassesOptions.length; i++)
                 _Option(
                   config: c.copyWith(glassesIndex: i),
@@ -207,13 +175,13 @@ class _AvatarEditorStepState extends State<AvatarEditorStep> {
                   label: i == 0 ? 'No glasses' : 'Glasses $i',
                   onTap: () => _set(c.copyWith(glassesIndex: i)),
                 ),
-            ],
-          ),
-        ];
+            ]),
+          ],
+        );
       case _Tab.mouth:
-        return [
-          _OptionRow(
-            options: [
+        return _Sections(
+          sections: [
+            _Section(null, [
               for (var i = 0; i < kMouthVariants.length; i++)
                 _Option(
                   config: c.copyWith(mouthIndex: i),
@@ -222,20 +190,18 @@ class _AvatarEditorStepState extends State<AvatarEditorStep> {
                   label: 'Mouth ${i + 1}',
                   onTap: () => _set(c.copyWith(mouthIndex: i)),
                 ),
-            ],
-          ),
-        ];
+            ]),
+          ],
+        );
       case _Tab.ears:
         if (hairCoversEars(c.hairIndex)) {
-          return [
-            _CoveredEarsNote(
-              onChangeHair: () => setState(() => _tab = _Tab.hair),
-            ),
-          ];
+          return _CoveredEarsNote(
+            onChangeHair: () => setState(() => _tab = _Tab.hair),
+          );
         }
-        return [
-          _OptionRow(
-            options: [
+        return _Sections(
+          sections: [
+            _Section(null, [
               for (var i = 0; i < kEarringsOptions.length; i++)
                 _Option(
                   config: c.copyWith(earringsIndex: i),
@@ -244,9 +210,9 @@ class _AvatarEditorStepState extends State<AvatarEditorStep> {
                   label: i == 0 ? 'No earrings' : 'Earrings $i',
                   onTap: () => _set(c.copyWith(earringsIndex: i)),
                 ),
-            ],
-          ),
-        ];
+            ]),
+          ],
+        );
     }
   }
 }
@@ -317,7 +283,7 @@ class _TabRow extends StatelessWidget {
               child: InkWell(
                 onTap: () => onSelect(t),
                 child: Container(
-                  height: 48,
+                  height: 44,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     border: Border(
@@ -363,61 +329,168 @@ class _Option {
   final VoidCallback onTap;
 }
 
-/// A labelled row of thumbnail cells, five across, wrapping as needed.
-class _OptionRow extends StatelessWidget {
-  const _OptionRow({required this.options, this.label});
+class _Section {
+  const _Section(this.label, this.options);
 
-  final List<_Option> options;
   final String? label;
+  final List<_Option> options;
+}
 
-  static const _columns = 5;
+/// A tab's rows of thumbnails, sized to fit the space they are given.
+///
+/// Labels sit above their row when the panel is upright and to its left
+/// when the panel is wide, so a side layout spends its height on the
+/// thumbnails. One column count serves every section of the tab.
+class _Sections extends StatelessWidget {
+  const _Sections({required this.sections, this.trailer});
+
+  final List<_Section> sections;
+
+  /// A fixed-height row under the sections (the hair colour swatches).
+  final Widget? trailer;
+
   static const _gap = 10.0;
+  static const _labelH = 24.0;
+  static const _labelW = 68.0;
+  static const _sectionGap = 10.0;
+  static const _trailerH = 48.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: LayoutBuilder(
+        builder: (context, c) {
+          // Labels beside the rows only when the panel is a wide side
+          // pane; an upright phone's panel is wider than tall too.
+          final inline = c.maxWidth > 1.6 * c.maxHeight;
+          final labelled = sections.where((s) => s.label != null).length;
+          final gridWidth = c.maxWidth - (inline ? _labelW : 0);
+          final fixed =
+              _sectionGap * (sections.length - 1) +
+              (inline ? 0 : _labelH * labelled) +
+              (trailer == null ? 0 : _trailerH);
+          // Biggest cells that fit, capped; once cells are a comfortable
+          // size, fewer rows beat bigger cells.
+          const maxCell = 80.0;
+          const comfortable = 56.0;
+          var bestCols = 3;
+          var best = 0.0;
+          var bestRows = 1 << 20;
+          for (var cols = 3; cols <= 8; cols++) {
+            var rows = 0;
+            for (final s in sections) {
+              rows += (s.options.length / cols).ceil();
+            }
+            final byWidth = (gridWidth - _gap * (cols - 1)) / cols;
+            final byHeight =
+                (c.maxHeight - fixed - _gap * (rows - sections.length)) / rows;
+            final cell = min(min(byWidth, byHeight), maxCell);
+            final better = best < comfortable
+                ? cell > best
+                : cell >= comfortable &&
+                      (rows < bestRows || (rows == bestRows && cell > best));
+            if (better) {
+              best = cell;
+              bestCols = cols;
+              bestRows = rows;
+            }
+          }
+          final cell = best;
+          final gridSpan = bestCols * cell + (bestCols - 1) * _gap;
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              for (final (i, s) in sections.indexed) ...[
+                if (i > 0) const SizedBox(height: _sectionGap),
+                _SectionView(
+                  section: s,
+                  cell: cell,
+                  gridSpan: gridSpan,
+                  inline: inline,
+                ),
+              ],
+              if (trailer != null) ...[
+                const SizedBox(height: _sectionGap),
+                SizedBox(height: _trailerH - _sectionGap, child: trailer),
+              ],
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _SectionView extends StatelessWidget {
+  const _SectionView({
+    required this.section,
+    required this.cell,
+    required this.gridSpan,
+    required this.inline,
+  });
+
+  final _Section section;
+  final double cell;
+  final double gridSpan;
+  final bool inline;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    final label = section.label == null
+        ? null
+        : Text(
+            section.label!,
+            style: theme.textTheme.labelLarge?.copyWith(
+              fontWeight: FontWeight.w800,
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          );
+    final grid = SizedBox(
+      width: gridSpan,
+      child: Wrap(
+        spacing: _Sections._gap,
+        runSpacing: _Sections._gap,
         children: [
-          if (label != null)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 6),
-              child: Text(
-                label!,
-                style: theme.textTheme.labelLarge?.copyWith(
-                  fontWeight: FontWeight.w800,
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
+          for (final o in section.options)
+            OptionCell(
+              size: cell,
+              selected: o.selected,
+              semanticLabel: o.label,
+              onTap: o.onTap,
+              child: AvatarThumb(
+                config: o.config,
+                size: cell - 12,
+                crop: o.crop,
               ),
             ),
-          LayoutBuilder(
-            builder: (context, constraints) {
-              final cell =
-                  (constraints.maxWidth - _gap * (_columns - 1)) / _columns;
-              return Wrap(
-                spacing: _gap,
-                runSpacing: _gap,
-                children: [
-                  for (final o in options)
-                    OptionCell(
-                      size: cell,
-                      selected: o.selected,
-                      semanticLabel: o.label,
-                      onTap: o.onTap,
-                      child: AvatarThumb(
-                        config: o.config,
-                        size: cell - 12,
-                        crop: o.crop,
-                      ),
-                    ),
-                ],
-              );
-            },
-          ),
         ],
       ),
+    );
+    if (inline) {
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: _Sections._labelW,
+            height: cell,
+            child: Align(alignment: Alignment.centerLeft, child: label),
+          ),
+          grid,
+        ],
+      );
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (label != null)
+          SizedBox(
+            height: _Sections._labelH,
+            child: Align(alignment: Alignment.centerLeft, child: label),
+          ),
+        grid,
+      ],
     );
   }
 }
@@ -443,52 +516,49 @@ class _SwatchRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final palette = theme.extension<AppPalette>()!;
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 44,
-            child: Text(
-              label,
-              style: theme.textTheme.labelLarge?.copyWith(
-                fontWeight: FontWeight.w800,
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
+    return Row(
+      children: [
+        SizedBox(
+          width: 44,
+          child: Text(
+            label,
+            style: theme.textTheme.labelLarge?.copyWith(
+              fontWeight: FontWeight.w800,
+              color: theme.colorScheme.onSurfaceVariant,
             ),
           ),
-          for (var i = 0; i < count; i++)
-            Padding(
-              padding: const EdgeInsets.only(right: 10),
-              child: Semantics(
-                button: true,
-                selected: i == selectedIndex,
-                label: labels[i],
-                child: GestureDetector(
-                  onTap: () => onSelect(i),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 120),
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: swatch(i),
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        width: 3,
-                        color: i == selectedIndex
-                            ? palette.brandTealDeep
-                            : Colors.white,
-                      ),
-                      boxShadow: const [
-                        BoxShadow(color: Color(0x22000000), blurRadius: 3),
-                      ],
+        ),
+        for (var i = 0; i < count; i++)
+          Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: Semantics(
+              button: true,
+              selected: i == selectedIndex,
+              label: labels[i],
+              child: GestureDetector(
+                onTap: () => onSelect(i),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 120),
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    color: swatch(i),
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      width: 3,
+                      color: i == selectedIndex
+                          ? palette.brandTealDeep
+                          : Colors.white,
                     ),
+                    boxShadow: const [
+                      BoxShadow(color: Color(0x22000000), blurRadius: 3),
+                    ],
                   ),
                 ),
               ),
             ),
-        ],
-      ),
+          ),
+      ],
     );
   }
 }
