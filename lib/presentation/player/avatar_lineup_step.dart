@@ -4,24 +4,28 @@ import 'package:math_city/presentation/player/avatar_thumb.dart';
 import 'package:math_city/presentation/player/creation_chrome.dart';
 
 /// Step 1 of creating a player: six random faces to pick from. Tapping
-/// one is the whole action; the editor opens on that face next.
+/// one is the whole action; the editor opens on that face next. [onBack]
+/// leaves the flow without creating anyone.
 class AvatarLineupStep extends StatelessWidget {
   const AvatarLineupStep({
     required this.faces,
     required this.onPick,
     required this.onMore,
+    this.onBack,
     super.key,
   });
 
   final List<AdventurerConfig> faces;
   final ValueChanged<AdventurerConfig> onPick;
   final VoidCallback onMore;
+  final VoidCallback? onBack;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return StepScaffold(
       step: 1,
+      onBack: onBack,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,

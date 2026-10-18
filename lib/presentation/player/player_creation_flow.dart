@@ -85,6 +85,7 @@ class _PlayerCreationFlowState extends ConsumerState<PlayerCreationFlow> {
       _Step.lineup => AvatarLineupStep(
         key: const ValueKey('lineup'),
         faces: _faces,
+        onBack: _back,
         onMore: () => setState(() => _faces = _newFaces()),
         onPick: (face) {
           _config = face;

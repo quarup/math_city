@@ -16,7 +16,9 @@ const kPlayerNameMaxLength = 20;
 /// What the finished button says once a name is chosen.
 typedef NameDoneLabel = String Function(String name);
 
-String meetMayorLabel(String name) => 'Meet Mayor $name!';
+/// Creating a player: the button walks straight into the city, so it
+/// says where it goes rather than greeting the mayor.
+String buildMyCityLabel(String name) => 'Build my city!';
 
 /// Step 3: five famous mathematicians to borrow a surname from, a speaker
 /// to hear each one, *More names* for another hand, and *Type my own
@@ -29,7 +31,7 @@ class NameStep extends ConsumerStatefulWidget {
     this.initial,
     this.onBack,
     this.step = 3,
-    this.doneLabel = meetMayorLabel,
+    this.doneLabel = buildMyCityLabel,
     super.key,
   });
 
@@ -76,8 +78,9 @@ class _NameStepState extends ConsumerState<NameStep> {
 
   void _hear(String name) {
     // A tapped speaker bypasses the auto-read preference, like the
-    // speaker buttons on the question screen.
-    unawaited(_tts.speak('Mayor $name', owner: this));
+    // speaker buttons on the question screen. Just the name: saying
+    // "Mayor" too confused kids, since it is not what the button shows.
+    unawaited(_tts.speak(name, owner: this));
   }
 
   @override
@@ -285,7 +288,7 @@ class TypeNameStep extends StatefulWidget {
     required this.onCancel,
     this.initial,
     this.step = 3,
-    this.doneLabel = meetMayorLabel,
+    this.doneLabel = buildMyCityLabel,
     super.key,
   });
 

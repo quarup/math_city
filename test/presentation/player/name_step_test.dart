@@ -51,7 +51,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Mayor ${first.first}'), findsOneWidget);
     await tester.tap(
-      find.widgetWithText(FilledButton, 'Meet Mayor ${first.first}!'),
+      find.widgetWithText(FilledButton, 'Build my city!'),
     );
     expect(chosen, first.first);
 
@@ -86,7 +86,7 @@ void main() {
     );
     await tester.enterText(find.byType(TextField), '  Zed ');
     await tester.pumpAndSettle();
-    await tester.tap(find.widgetWithText(FilledButton, 'Meet Mayor Zed!'));
+    await tester.tap(find.widgetWithText(FilledButton, 'Build my city!'));
     expect(chosen, 'Zed');
   });
 }
