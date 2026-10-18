@@ -89,6 +89,36 @@ void main() {
       );
     });
 
+    test('optional slots follow the DiceBear Adventurer default odds', () {
+      final r = Random(3);
+      const n = 20000;
+      var glasses = 0;
+      var earrings = 0;
+      var blush = 0;
+      var freckles = 0;
+      for (var i = 0; i < n; i++) {
+        final c = AdventurerConfig.random(random: r);
+        if (c.glassesIndex != 0) glasses++;
+        if (c.earringsIndex != 0) earrings++;
+        if (c.blush) blush++;
+        if (c.freckles) freckles++;
+        // A feature is one cheek mark, never both.
+        expect(c.blush && c.freckles, isFalse);
+      }
+      expect(glasses / n, closeTo(AdventurerConfig.kGlassesProbability, 0.01));
+      expect(
+        earrings / n,
+        closeTo(AdventurerConfig.kEarringsProbability, 0.01),
+      );
+      expect(
+        (blush + freckles) / n,
+        closeTo(AdventurerConfig.kFeatureProbability, 0.01),
+      );
+      // Both marks get a share of the feature odds.
+      expect(blush, greaterThan(0));
+      expect(freckles, greaterThan(0));
+    });
+
     test('round-trips through JSON', () {
       final c = AdventurerConfig.random(random: Random(99));
       expect(AdventurerConfig.fromJsonString(c.toJsonString()), equals(c));
