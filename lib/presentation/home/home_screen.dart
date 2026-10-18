@@ -10,7 +10,8 @@ import 'package:math_city/presentation/city/city_screen.dart';
 import 'package:math_city/presentation/debug/concept_debug_screen.dart';
 import 'package:math_city/presentation/home/player_sticker.dart';
 import 'package:math_city/presentation/home/tile_patch.dart';
-import 'package:math_city/presentation/player/player_creation_screen.dart';
+import 'package:math_city/presentation/player/player_creation_flow.dart';
+import 'package:math_city/presentation/player/player_edit_hub.dart';
 import 'package:math_city/presentation/theme/app_palette.dart';
 import 'package:math_city/services/debug_harness.dart';
 import 'package:math_city/state/player_provider.dart';
@@ -327,7 +328,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   void _openCreation(BuildContext context) {
     unawaited(
       Navigator.of(context).push(
-        MaterialPageRoute<void>(builder: (_) => const PlayerCreationScreen()),
+        MaterialPageRoute<void>(builder: (_) => const PlayerCreationFlow()),
       ),
     );
   }
@@ -336,7 +337,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     unawaited(
       Navigator.of(context).push(
         MaterialPageRoute<void>(
-          builder: (_) => PlayerCreationScreen(initialPlayer: player),
+          builder: (_) => PlayerEditHub(player: player),
         ),
       ),
     );

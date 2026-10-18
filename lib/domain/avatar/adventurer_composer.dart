@@ -14,6 +14,13 @@ const _kEarringBlockedStyles = {
   'long26',
 };
 
+/// Whether the hair style at [hairIndex] hangs over the ears, hiding any
+/// earrings. The editor uses it to say so instead of showing seven
+/// identical thumbnails.
+bool hairCoversEars(int hairIndex) => _kEarringBlockedStyles.contains(
+  kHairStyles[hairIndex.clamp(0, kHairStyles.length - 1)],
+);
+
 String composeAdventurer(AdventurerConfig config) {
   final hairStyle =
       kHairStyles[config.hairIndex.clamp(0, kHairStyles.length - 1)];
