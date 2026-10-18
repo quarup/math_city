@@ -123,8 +123,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     // window can be shorter than that (it stops above the navigation bar
     // unless the app is edge-to-edge), so the display, not the window,
     // gives the launch icon's centre; the window starts at the display's top.
+    // iOS reports the display in its native portrait orientation even when
+    // the app is in landscape, so the side running the window's height is
+    // whichever one matches the window's orientation.
     final display = View.of(context).display;
-    final displayHeight = display.size.height / display.devicePixelRatio;
+    final displaySize = display.size / display.devicePixelRatio;
+    final windowSize = MediaQuery.sizeOf(context);
+    final displayHeight =
+        (displaySize.width > displaySize.height) ==
+            (windowSize.width > windowSize.height)
+        ? displaySize.height
+        : displaySize.width;
 
     return Scaffold(
       body: DecoratedBox(
@@ -348,9 +357,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   void _openEdit(BuildContext context, Player player) {
     unawaited(
       Navigator.of(context).push(
-        MaterialPageRoute<void>(
-          builder: (_) => PlayerEditHub(player: player),
-        ),
+        MaterialPageRoute<void>(builder: (_) => PlayerEditHub(player: player)),
       ),
     );
   }
