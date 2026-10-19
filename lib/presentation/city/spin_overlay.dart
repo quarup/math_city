@@ -208,7 +208,20 @@ class _SpinOverlayState extends ConsumerState<SpinOverlay> {
             top: 0,
             bottom: 0,
             width: _wheelColumnFraction * (_viewport(context).width),
-            child: GameWidget(game: _game!),
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                GameWidget(game: _game!),
+                // The fling hand sweeps across the upper part of the
+                // wheel, well clear of the hub (the wheel's centre sits
+                // at 46 % of the column's height).
+                if (showFlingHint && celebrating == null)
+                  const Align(
+                    alignment: Alignment(0, -0.62),
+                    child: CoachHand(mode: CoachHandMode.fling, size: 60),
+                  ),
+              ],
+            ),
           ),
           if (recap != null)
             Positioned(
@@ -225,12 +238,13 @@ class _SpinOverlayState extends ConsumerState<SpinOverlay> {
               Expanded(child: GameWidget(game: _game!)),
             ],
           ),
-        if (_game != null && showFlingHint && celebrating == null)
-          Align(
-            alignment: widget.side
-                ? const Alignment(0.55, -0.15)
-                : const Alignment(0, -0.45),
-            child: const CoachHand(mode: CoachHandMode.fling, size: 60),
+        if (_game != null &&
+            !widget.side &&
+            showFlingHint &&
+            celebrating == null)
+          const Align(
+            alignment: Alignment(0, -0.45),
+            child: CoachHand(mode: CoachHandMode.fling, size: 60),
           ),
         if (_game != null && celebrating != null)
           NewConceptCelebration(
