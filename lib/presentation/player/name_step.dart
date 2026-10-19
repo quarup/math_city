@@ -401,10 +401,12 @@ class MayorBadge extends StatelessWidget {
 }
 
 /// The keyboard screen behind *Type my own name*: the badge, one text
-/// box and *Cancel*. It never saves: Enter, or its button, hands the name
-/// back to the list, where it is chosen and can still be swapped for a
-/// mathematician. The keyboard covers the bottom rather than squeezing
-/// the screen, since the box sits at the top of its pane.
+/// box, and *Cancel* / *Use name* right by it, so both stay above the
+/// keyboard: under the box upright, beside it on a side, where the
+/// keyboard leaves only a strip. It never saves: Enter, or *Use name*,
+/// hands the name back to the list, where it is chosen and can still be
+/// swapped for a mathematician. The keyboard covers the bottom rather
+/// than squeezing the screen.
 class TypeNameStep extends StatefulWidget {
   const TypeNameStep({
     required this.avatar,
@@ -462,10 +464,11 @@ class _TypeNameStepState extends State<TypeNameStep> {
         behavior: HitTestBehavior.opaque,
         onTap: () => FocusScope.of(context).unfocus(),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 14, 20, 0),
-          child: Column(
-            children: [
-              TextField(
+          padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+          child: LayoutBuilder(
+            builder: (context, c) {
+              final wide = c.maxWidth > c.maxHeight;
+              final field = TextField(
                 controller: _controller,
                 autofocus: true,
                 textCapitalization: TextCapitalization.words,
@@ -483,7 +486,7 @@ class _TypeNameStepState extends State<TypeNameStep> {
                   fillColor: Colors.white,
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 16,
-                    vertical: 16,
+                    vertical: 12,
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
@@ -500,25 +503,77 @@ class _TypeNameStepState extends State<TypeNameStep> {
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 8),
-              TextButton(
-                onPressed: widget.onCancel,
-                style: TextButton.styleFrom(
-                  foregroundColor: palette.brandTealDeep,
-                  textStyle: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w800,
+              );
+              final cancel = SizedBox(
+                height: 48,
+                child: OutlinedButton(
+                  onPressed: widget.onCancel,
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: palette.brandTealDeep,
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    side: BorderSide(
+                      color: theme.colorScheme.surfaceContainerHigh,
+                      width: 2,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    textStyle: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
+                  child: const Text('Cancel'),
                 ),
-                child: const Text('Cancel'),
-              ),
-            ],
+              );
+              final use = SizedBox(
+                height: 48,
+                child: FilledButton(
+                  onPressed: typed.isEmpty ? null : _submit,
+                  style: FilledButton.styleFrom(
+                    backgroundColor: palette.brandTealDeep,
+                    disabledBackgroundColor:
+                        theme.colorScheme.surfaceContainerHigh,
+                    disabledForegroundColor: theme.colorScheme.onSurfaceVariant,
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    textStyle: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  child: const Text('Use name'),
+                ),
+              );
+              if (wide) {
+                // One row: the keyboard leaves little height on a side.
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(child: field),
+                    const SizedBox(width: 10),
+                    cancel,
+                    const SizedBox(width: 10),
+                    use,
+                  ],
+                );
+              }
+              return Column(
+                children: [
+                  field,
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Expanded(child: cancel),
+                      const SizedBox(width: 10),
+                      Expanded(child: use),
+                    ],
+                  ),
+                ],
+              );
+            },
           ),
         ),
-      ),
-      footer: PrimaryButton(
-        label: typed.isEmpty ? 'Type a name' : 'Use this name',
-        onPressed: typed.isEmpty ? null : _submit,
       ),
     );
   }

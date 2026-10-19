@@ -69,7 +69,7 @@ void main() {
     expect(find.text('Type your name'), findsOneWidget);
     await tester.enterText(find.byType(TextField), 'Zed');
     await tester.pumpAndSettle();
-    await tester.tap(find.widgetWithText(FilledButton, 'Use this name'));
+    await tester.tap(find.widgetWithText(FilledButton, 'Use name'));
     await tester.pumpAndSettle();
 
     // Back on the list: badge filled, button shows the name, no save yet.
@@ -100,14 +100,14 @@ void main() {
     expect(
       tester
           .widget<FilledButton>(
-            find.widgetWithText(FilledButton, 'Type a name'),
+            find.widgetWithText(FilledButton, 'Use name'),
           )
           .onPressed,
       isNull,
     );
     await tester.enterText(find.byType(TextField), '  Zed ');
     await tester.pumpAndSettle();
-    await tester.tap(find.widgetWithText(FilledButton, 'Use this name'));
+    await tester.tap(find.widgetWithText(FilledButton, 'Use name'));
     expect(chosen, 'Zed');
   });
 }
