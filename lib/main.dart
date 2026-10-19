@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:math_city/app.dart';
@@ -10,6 +11,12 @@ import 'package:math_city/state/player_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // The game owns the whole screen: no status bar, no navigation bar (a
+  // swipe from an edge brings them back for a moment). Set before the
+  // first frame so the home screen's intro is laid out for the full
+  // display from the start.
+  await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
   // Debug-only UX-sweep control port. No-op in release builds.
   if (kDebugMode) {

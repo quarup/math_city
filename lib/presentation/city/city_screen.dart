@@ -1738,17 +1738,6 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     return '${type.id}_v$variant.png';
   }
 
-  /// The parent-facing guide skip, while chapter one runs.
-  Widget _skipGuideMenu() => PopupMenuButton<String>(
-    onSelected: (_) => unawaited(ref.read(cityActionsProvider).skipGuide()),
-    itemBuilder: (_) => const [
-      PopupMenuItem(
-        value: 'skip',
-        child: Text('Skip the guide (for grown-ups)'),
-      ),
-    ],
-  );
-
   @override
   Widget build(BuildContext context) {
     final playerAsync = ref.watch(activePlayerProvider);
@@ -2399,33 +2388,8 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
         }
       },
       child: Scaffold(
-        // On a side the bar's contents float over the map instead.
-        appBar: side
-            ? null
-            : AppBar(
-                title: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    AdventurerAvatarWidget(
-                      config: player?.avatar ?? const AdventurerConfig(),
-                      size: 32,
-                    ),
-                    const SizedBox(width: 8),
-                    Text('${player?.name ?? ''}’s city'),
-                  ],
-                ),
-                // Credit from cancelled sites, only while there is any;
-                // the parent-facing guide skip only while chapter one
-                // runs.
-                actions: [
-                  if (credit > 0)
-                    Padding(
-                      padding: const EdgeInsets.only(right: 12),
-                      child: _CreditChip(key: _creditChipKey, amount: credit),
-                    ),
-                  if (chapterOne) _skipGuideMenu(),
-                ],
-              ),
+        // No app bar: back, the mayor and the name float over the map as
+        // one chip, with the credit pill beside it.
         body: _game == null
             ? const Center(child: CircularProgressIndicator())
             : LayoutBuilder(
@@ -2444,10 +2408,9 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                         ),
                       ),
                     ),
-                    // On a side: back, the mayor and the name as one chip
-                    // in the top-left corner, with the credit pill and
-                    // the guide skip beside it.
-                    if (side && !zoomed)
+                    // Back, the mayor and the name as one chip in the
+                    // top-left corner, with the credit pill beside it.
+                    if (!zoomed)
                       Positioned(
                         top: 12,
                         left: 12,
@@ -2466,7 +2429,6 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                                   amount: credit,
                                 ),
                               ],
-                              if (chapterOne) _skipGuideMenu(),
                             ],
                           ),
                         ),
@@ -2475,8 +2437,8 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                     // town clock top-right.
                     if (!zoomed)
                       Positioned(
-                        top: side ? 58 : 8,
-                        left: side ? 12 : 8,
+                        top: 58,
+                        left: 12,
                         child: SafeArea(
                           child: _PopulationChip(
                             population: city?.population ?? 0,
@@ -2485,8 +2447,8 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                       ),
                     if (!zoomed)
                       Positioned(
-                        top: side ? 12 : 8,
-                        right: railUp ? _kRailWidth + 12 : 8,
+                        top: 12,
+                        right: railUp ? _kRailWidth + 12 : 12,
                         child: SafeArea(
                           child: _ClockChip(
                             minuteOfDay: _game!.minuteOfDay,
