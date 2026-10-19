@@ -48,6 +48,7 @@ import 'package:math_city/presentation/theme/app_palette.dart';
 import 'package:math_city/presentation/widgets/coach_hand.dart';
 import 'package:math_city/presentation/widgets/coin_flight.dart';
 import 'package:math_city/presentation/widgets/coin_icon.dart';
+import 'package:math_city/presentation/widgets/on_side.dart';
 import 'package:math_city/presentation/widgets/site_progress_bar.dart';
 import 'package:math_city/state/city_provider.dart';
 import 'package:math_city/state/game_session_provider.dart';
@@ -123,6 +124,10 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
   /// height is handed to the game as [IsoCityGame.bottomInset].
   final GlobalKey _barKey = GlobalKey();
   double _barHeight = 0;
+
+  /// A phone or tablet on its side: no app bar, the catalog as a rail,
+  /// the other bars floating, the wheel beside the site.
+  bool get _onSide => sizeIsOnSide(MediaQuery.sizeOf(context));
 
   /// The block the current wheel follows, shown as a recap card above it;
   /// null for the first wheel after *Build!*.
@@ -668,15 +673,19 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted || _game == null) return;
       final (col, row, w, h) = _footprintOf(site.goal);
+      final side = _onSide;
       _game!.focusOnFootprint(
         col: col - _window!.minCol,
         row: row - _window!.minRow,
         width: w,
         height: h,
-        // Low in the strip the wheel leaves free: the sprite rises well
-        // above its footprint, and at 0.82 the roof met the wheel.
-        anchorY: 0.9,
-        widthFraction: 0.42,
+        // On a side the site takes the left column and the wheel the
+        // right. Upright: low in the strip the wheel leaves free — the
+        // sprite rises well above its footprint, and at 0.82 the roof met
+        // the wheel.
+        anchorX: side ? 0.26 : 0.5,
+        anchorY: side ? 0.66 : 0.9,
+        widthFraction: side ? 0.3 : 0.42,
         onDone: () {
           if (mounted && _mode == _CityMode.siteZoomed) _showWheel();
         },
@@ -1330,12 +1339,16 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     final origin = (window.minCol, window.minRow);
 
     if (_game == null) {
-      _game = IsoCityGame(grid: grid, onTileTapped: _onTileTapped)
-        // The catalog bar is up for the first fit, before it has been
-        // measured: seed its height so the fit centres above it.
-        ..bottomInset = _barHeight > 0
+      _game = IsoCityGame(grid: grid, onTileTapped: _onTileTapped);
+      // The catalog is up for the first fit, before it has been measured:
+      // seed what it covers so the fit centres in the rest.
+      if (_onSide) {
+        _game!.rightInset = _kRailWidth;
+      } else {
+        _game!.bottomInset = _barHeight > 0
             ? _barHeight
             : _kCatalogBarHeight + MediaQuery.paddingOf(context).bottom;
+      }
       _game!.updateLand(
         newGrid: grid,
         ownedLocalTiles: ownedLocal,
@@ -1724,6 +1737,17 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
     final variant = slot % type.numVariants + 1;
     return '${type.id}_v$variant.png';
   }
+
+  /// The parent-facing guide skip, while chapter one runs.
+  Widget _skipGuideMenu() => PopupMenuButton<String>(
+    onSelected: (_) => unawaited(ref.read(cityActionsProvider).skipGuide()),
+    itemBuilder: (_) => const [
+      PopupMenuItem(
+        value: 'skip',
+        child: Text('Skip the guide (for grown-ups)'),
+      ),
+    ],
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -2161,6 +2185,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
             paid: celebratingSite?.paidCoins ?? liveZoomed?.site.paidCoins,
             price: celebratingSite?.price ?? liveZoomed?.site.price,
             onBack: _mode == _CityMode.celebrating ? null : _zoomOut,
+            floating: _onSide,
           )
         : _landProposal != null
         ? _StakeLandBar(
@@ -2293,6 +2318,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
             }),
           )
         : _BuildBar(
+            vertical: _onSide,
             catalog: catalog,
             sites: sites,
             requested: requested,
@@ -2343,12 +2369,18 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
             },
           );
 
+    final side = _onSide;
+    final railUp = side && bar is _BuildBar;
     // Measure the bar once it has laid out; a height change re-renders the
-    // overlays that sit above it and tells the game how much it covers.
+    // overlays that sit above it and tells the game how much it covers. On
+    // a side the catalog rail covers the right edge instead, and a
+    // floating card covers its own height plus its margin.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       final box = _barKey.currentContext?.findRenderObject() as RenderBox?;
-      final h = box != null && box.hasSize ? box.size.height : 0.0;
+      final measured = box != null && box.hasSize ? box.size.height : 0.0;
+      final h = railUp ? 0.0 : (side ? measured + 12 : measured);
+      _game?.rightInset = railUp ? _kRailWidth : 0;
       if ((h - _barHeight).abs() < 0.5) return;
       _game?.bottomInset = h;
       setState(() => _barHeight = h);
@@ -2367,39 +2399,33 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
         }
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              AdventurerAvatarWidget(
-                config: player?.avatar ?? const AdventurerConfig(),
-                size: 32,
-              ),
-              const SizedBox(width: 8),
-              Text('${player?.name ?? ''}’s city'),
-            ],
-          ),
-          // Credit from cancelled sites, only while there is any; the
-          // parent-facing guide skip only while chapter one runs.
-          actions: [
-            if (credit > 0)
-              Padding(
-                padding: const EdgeInsets.only(right: 12),
-                child: _CreditChip(key: _creditChipKey, amount: credit),
-              ),
-            if (chapterOne)
-              PopupMenuButton<String>(
-                onSelected: (_) =>
-                    unawaited(ref.read(cityActionsProvider).skipGuide()),
-                itemBuilder: (_) => const [
-                  PopupMenuItem(
-                    value: 'skip',
-                    child: Text('Skip the guide (for grown-ups)'),
-                  ),
+        // On a side the bar's contents float over the map instead.
+        appBar: side
+            ? null
+            : AppBar(
+                title: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    AdventurerAvatarWidget(
+                      config: player?.avatar ?? const AdventurerConfig(),
+                      size: 32,
+                    ),
+                    const SizedBox(width: 8),
+                    Text('${player?.name ?? ''}’s city'),
+                  ],
+                ),
+                // Credit from cancelled sites, only while there is any;
+                // the parent-facing guide skip only while chapter one
+                // runs.
+                actions: [
+                  if (credit > 0)
+                    Padding(
+                      padding: const EdgeInsets.only(right: 12),
+                      child: _CreditChip(key: _creditChipKey, amount: credit),
+                    ),
+                  if (chapterOne) _skipGuideMenu(),
                 ],
               ),
-          ],
-        ),
         body: _game == null
             ? const Center(child: CircularProgressIndicator())
             : LayoutBuilder(
@@ -2418,12 +2444,39 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                         ),
                       ),
                     ),
+                    // On a side: back, the mayor and the name as one chip
+                    // in the top-left corner, with the credit pill and
+                    // the guide skip beside it.
+                    if (side && !zoomed)
+                      Positioned(
+                        top: 12,
+                        left: 12,
+                        child: SafeArea(
+                          child: Row(
+                            children: [
+                              _NameChip(
+                                avatar: player?.avatar,
+                                name: player?.name ?? '',
+                                onBack: () => Navigator.of(context).maybePop(),
+                              ),
+                              if (credit > 0) ...[
+                                const SizedBox(width: 8),
+                                _CreditChip(
+                                  key: _creditChipKey,
+                                  amount: credit,
+                                ),
+                              ],
+                              if (chapterOne) _skipGuideMenu(),
+                            ],
+                          ),
+                        ),
+                      ),
                     // Population counter, top-left over the city; the
                     // town clock top-right.
                     if (!zoomed)
                       Positioned(
-                        top: 8,
-                        left: 8,
+                        top: side ? 58 : 8,
+                        left: side ? 12 : 8,
                         child: SafeArea(
                           child: _PopulationChip(
                             population: city?.population ?? 0,
@@ -2432,8 +2485,8 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                       ),
                     if (!zoomed)
                       Positioned(
-                        top: 8,
-                        right: 8,
+                        top: side ? 12 : 8,
+                        right: railUp ? _kRailWidth + 12 : 8,
                         child: SafeArea(
                           child: _ClockChip(
                             minuteOfDay: _game!.minuteOfDay,
@@ -2450,6 +2503,129 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                           row: moveHintHome.gridY - window.minRow,
                         ),
                       ),
+                    // The wheel over the blurred city, above the site pinned at
+                    // the bottom (of the area the bar leaves visible). Fades in
+                    // once the camera has landed; stays in the tree (faded
+                    // out) while a question route is on top.
+                    if (_mode == _CityMode.siteZoomed)
+                      Positioned(
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        // On a side the overlay owns the whole screen and
+                        // lays itself out beside the site; upright it is
+                        // the band above it.
+                        height: side
+                            ? constraints.maxHeight
+                            : (constraints.maxHeight - _barHeight) *
+                                  (1 - kSpinOverlayBottomFraction),
+                        child: IgnorePointer(
+                          ignoring: !_wheelVisible,
+                          child: AnimatedOpacity(
+                            opacity: _wheelVisible ? 1 : 0,
+                            duration: const Duration(milliseconds: 450),
+                            child: _wheelVisible
+                                ? SpinOverlay(
+                                    key: ValueKey(_wheelGeneration),
+                                    onBlockStart: _startBlock,
+                                    recap: _recapBlock,
+                                    side: side,
+                                    bottomClear: _barHeight,
+                                  )
+                                : const SizedBox.expand(),
+                          ),
+                        ),
+                      ),
+                    // The wheel is reached through a site's Build! — there is
+                    // no free-floating "play" entry (city_builder.md §8.3).
+                    // Parked above the tallest bar so no bar ever covers it.
+                    if (kDebugMode && !zoomed && letterBeat == null)
+                      Positioned(
+                        right: side ? null : 16,
+                        left: side ? 12 : null,
+                        bottom: side ? 12 : _kDebugFabBottom,
+                        child: FloatingActionButton.small(
+                          heroTag: 'cityDebugFab',
+                          onPressed: _openDebugSheet,
+                          backgroundColor: Colors.deepPurple,
+                          foregroundColor: Colors.white,
+                          child: const Icon(Icons.bug_report_rounded),
+                        ),
+                      ),
+                    // The bottom bar, over the game rather than beside it.
+                    if (!side)
+                      Positioned(
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        child: SizedBox(key: _barKey, child: bar),
+                      )
+                    // On a side: the catalog as a rail down the right
+                    // edge; any other bar a card floating over the map,
+                    // centred, that slides to the bottom left when the
+                    // site it belongs to is zoomed onto.
+                    else if (railUp)
+                      Positioned(
+                        top: 0,
+                        right: 0,
+                        bottom: 0,
+                        width: _kRailWidth,
+                        child: bar,
+                      )
+                    else
+                      Positioned.fill(
+                        bottom: 12,
+                        child: AnimatedAlign(
+                          alignment: zoomed
+                              ? Alignment.bottomLeft
+                              : Alignment.bottomCenter,
+                          duration: const Duration(milliseconds: 500),
+                          curve: Curves.easeInOutCubic,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                            ),
+                            child: SizedBox(
+                              key: _barKey,
+                              width: zoomed
+                                  ? _kZoomedBarWidth
+                                  : _kFloatingBarWidth,
+                              child: _FloatingBar(child: bar),
+                            ),
+                          ),
+                        ),
+                      ),
+                    // Beside the zoomed site's card: the way back out
+                    // (the celebration's Done owns it meanwhile).
+                    if (side && zoomed && _mode != _CityMode.celebrating)
+                      Positioned(
+                        left: 12 + _kZoomedBarWidth + 12,
+                        bottom: 18,
+                        child: _CityChip(onTap: _zoomOut),
+                      ),
+                    // Pointing at the first card in the bar: with no
+                    // sites in chapter one, that is the request.
+                    if (showRequestHint && !side && _barHeight > 0)
+                      Positioned(
+                        left: _kBarPadding,
+                        width: _kBarCardWidth,
+                        bottom: _barHeight - 6,
+                        child: const Center(
+                          child: CoachHand(mode: CoachHandMode.tap),
+                        ),
+                      ),
+                    if (showRequestHint && railUp)
+                      const Positioned(
+                        right: _kBarPadding - 4,
+                        width: _kBarCardWidth,
+                        top: 36,
+                        child: Center(
+                          child: CoachHand(mode: CoachHandMode.tap),
+                        ),
+                      ),
+                    // The letters and the celebration sit above every
+                    // bar: a modal card is never half hidden under the
+                    // catalog strip or the rail.
                     // The front page on screen.
                     if (!zoomed && letterBeat != null && letterIsTimes)
                       Positioned.fill(
@@ -2521,33 +2697,6 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                           },
                         ),
                       ),
-                    // The wheel over the blurred city, above the site pinned at
-                    // the bottom (of the area the bar leaves visible). Fades in
-                    // once the camera has landed; stays in the tree (faded
-                    // out) while a question route is on top.
-                    if (_mode == _CityMode.siteZoomed)
-                      Positioned(
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        height:
-                            (constraints.maxHeight - _barHeight) *
-                            (1 - kSpinOverlayBottomFraction),
-                        child: IgnorePointer(
-                          ignoring: !_wheelVisible,
-                          child: AnimatedOpacity(
-                            opacity: _wheelVisible ? 1 : 0,
-                            duration: const Duration(milliseconds: 450),
-                            child: _wheelVisible
-                                ? SpinOverlay(
-                                    key: ValueKey(_wheelGeneration),
-                                    onBlockStart: _startBlock,
-                                    recap: _recapBlock,
-                                  )
-                                : const SizedBox.expand(),
-                          ),
-                        ),
-                      ),
                     if (celebratingSite != null)
                       Positioned.fill(
                         child: CelebrationOverlay(
@@ -2574,39 +2723,6 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                           cardKey: _celebrationCardKey,
                         ),
                       ),
-                    // The wheel is reached through a site's Build! — there is
-                    // no free-floating "play" entry (city_builder.md §8.3).
-                    // Parked above the tallest bar so no bar ever covers it.
-                    if (kDebugMode && !zoomed && letterBeat == null)
-                      Positioned(
-                        right: 16,
-                        bottom: _kDebugFabBottom,
-                        child: FloatingActionButton.small(
-                          heroTag: 'cityDebugFab',
-                          onPressed: _openDebugSheet,
-                          backgroundColor: Colors.deepPurple,
-                          foregroundColor: Colors.white,
-                          child: const Icon(Icons.bug_report_rounded),
-                        ),
-                      ),
-                    // The bottom bar, over the game rather than beside it.
-                    Positioned(
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      child: SizedBox(key: _barKey, child: bar),
-                    ),
-                    // Pointing down at the first card in the bar: with no
-                    // sites in chapter one, that is the request.
-                    if (showRequestHint && _barHeight > 0)
-                      Positioned(
-                        left: _kBarPadding,
-                        width: _kBarCardWidth,
-                        bottom: _barHeight - 6,
-                        child: const Center(
-                          child: CoachHand(mode: CoachHandMode.tap),
-                        ),
-                      ),
                   ],
                 ),
               ),
@@ -2627,6 +2743,14 @@ const double _kCatalogBarHeight = 120;
 const double _kBarPadding = 12;
 const double _kBarCardWidth = 88;
 
+/// On a phone on its side the catalog is a rail down the right edge, this
+/// wide, and every other bar is a card floating over the map: centred
+/// under it, or at the bottom left (narrower) while zoomed onto a site so
+/// the wheel keeps the right.
+const double _kRailWidth = 104;
+const double _kFloatingBarWidth = 440;
+const double _kZoomedBarWidth = 370;
+
 /// Where the debug FAB sits: clear of the tallest bottom bar.
 const double _kDebugFabBottom = 176;
 
@@ -2642,6 +2766,7 @@ class _ZoomedBar extends StatelessWidget {
     required this.paid,
     required this.price,
     required this.onBack,
+    this.floating = false,
   });
 
   final String name;
@@ -2650,6 +2775,10 @@ class _ZoomedBar extends StatelessWidget {
 
   /// Null while the celebration owns the exit (its Done button).
   final VoidCallback? onBack;
+
+  /// A card floating beside the site (a phone on its side): the City
+  /// button stands outside it as a chip of its own.
+  final bool floating;
 
   @override
   Widget build(BuildContext context) {
@@ -2670,11 +2799,114 @@ class _ZoomedBar extends StatelessWidget {
                     ? SiteProgressBar(paid: paid!, price: price!, name: name)
                     : Text(name, style: theme.textTheme.titleSmall),
               ),
-              const SizedBox(width: 12),
-              FilledButton.tonalIcon(
-                onPressed: onBack,
-                icon: const Icon(Icons.zoom_out_map_rounded),
-                label: const Text('City'),
+              if (!floating) ...[
+                const SizedBox(width: 12),
+                FilledButton.tonalIcon(
+                  onPressed: onBack,
+                  icon: const Icon(Icons.zoom_out_map_rounded),
+                  label: const Text('City'),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// A bar as a card floating over the map (a phone on its side): rounded,
+/// and without the bottom padding a bar along the screen edge keeps for
+/// the system's gesture area.
+class _FloatingBar extends StatelessWidget {
+  const _FloatingBar({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => Material(
+    elevation: 8,
+    borderRadius: BorderRadius.circular(18),
+    clipBehavior: Clip.antiAlias,
+    color: Theme.of(context).colorScheme.surfaceContainer,
+    child: MediaQuery.removePadding(
+      context: context,
+      removeBottom: true,
+      child: child,
+    ),
+  );
+}
+
+/// The way out of a zoomed site on a side: a glass chip beside the site's
+/// floating card.
+class _CityChip extends StatelessWidget {
+  const _CityChip({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) => Material(
+    color: Colors.white.withValues(alpha: 0.88),
+    shape: const StadiumBorder(),
+    elevation: 4,
+    child: InkWell(
+      customBorder: const StadiumBorder(),
+      onTap: onTap,
+      child: const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.zoom_out_map_rounded, size: 20),
+            SizedBox(width: 8),
+            Text('City', style: TextStyle(fontWeight: FontWeight.w600)),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+/// Back, the mayor and the name of the city, as one chip over the map's
+/// top-left corner (a phone on its side has no app bar).
+class _NameChip extends StatelessWidget {
+  const _NameChip({
+    required this.avatar,
+    required this.name,
+    required this.onBack,
+  });
+
+  final AdventurerConfig? avatar;
+  final String name;
+  final VoidCallback onBack;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Material(
+      color: Colors.white.withValues(alpha: 0.88),
+      shape: const StadiumBorder(),
+      elevation: 2,
+      child: InkWell(
+        customBorder: const StadiumBorder(),
+        onTap: onBack,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(10, 4, 14, 4),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.arrow_back_rounded, size: 22),
+              const SizedBox(width: 8),
+              AdventurerAvatarWidget(
+                config: avatar ?? const AdventurerConfig(),
+                size: 28,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                '$name’s city',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ],
           ),
@@ -3981,6 +4213,7 @@ class _BuildBar extends StatelessWidget {
     required this.onExpand,
     required this.onOpenLetter,
     required this.onSelect,
+    this.vertical = false,
   });
 
   final List<BuildingType> catalog;
@@ -4017,6 +4250,10 @@ class _BuildBar extends StatelessWidget {
   final void Function(OpenBeat) onOpenLetter;
   final void Function(BuildingType) onSelect;
 
+  /// A rail down the right edge (a phone on its side) instead of a strip
+  /// along the bottom: the same cards, stacked.
+  final bool vertical;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -4031,7 +4268,7 @@ class _BuildBar extends StatelessWidget {
         _NextBuildingChip(type: next, onDismiss: onDismissNext),
       if (sites.isNotEmpty &&
           (asked.isNotEmpty || eventAsks.isNotEmpty || rest.isNotEmpty))
-        const _ZoneDivider(),
+        _ZoneDivider(horizontal: vertical),
       for (final (i, b) in asked.indexed)
         _Nudge(
           active: nudge && i == 0,
@@ -4056,7 +4293,7 @@ class _BuildBar extends StatelessWidget {
       if (chapterOne)
         const SizedBox.shrink()
       else if ((asked.isNotEmpty || eventAsks.isNotEmpty) && rest.isNotEmpty)
-        const _ZoneDivider(),
+        _ZoneDivider(horizontal: vertical),
       if (chapterOne)
         const SizedBox.shrink()
       else if (folder == null) ...[
@@ -4084,6 +4321,37 @@ class _BuildBar extends StatelessWidget {
       ],
     ];
 
+    if (vertical) {
+      return Material(
+        elevation: 8,
+        color: theme.colorScheme.surfaceContainer,
+        child: cards.isEmpty
+            ? Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Text(
+                    'No buildings yet — keep playing math!',
+                    style: theme.textTheme.bodySmall,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              )
+            : ListView.separated(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: (_kRailWidth - _kBarCardWidth) / 2,
+                  vertical: 12,
+                ),
+                itemCount: cards.length,
+                separatorBuilder: (_, _) => const SizedBox(height: 8),
+                // Each slot is as tall as the strip's cards: the cards
+                // size their contents to it.
+                itemBuilder: (context, i) => SizedBox(
+                  height: _kCatalogBarHeight - 24,
+                  child: Center(child: cards[i]),
+                ),
+              ),
+      );
+    }
     return Material(
       elevation: 8,
       color: theme.colorScheme.surfaceContainer,
@@ -4158,17 +4426,25 @@ class _NudgeState extends State<_Nudge> with SingleTickerProviderStateMixin {
 
 /// A thin vertical rule between the bar's zones.
 class _ZoneDivider extends StatelessWidget {
-  const _ZoneDivider();
+  const _ZoneDivider({this.horizontal = false});
+
+  /// Across a rail rather than down a strip.
+  final bool horizontal;
 
   @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 2),
-    child: VerticalDivider(
-      width: 1,
-      thickness: 1,
-      color: Theme.of(context).colorScheme.outlineVariant,
-    ),
-  );
+  Widget build(BuildContext context) {
+    final color = Theme.of(context).colorScheme.outlineVariant;
+    if (horizontal) {
+      return SizedBox(
+        width: _kBarCardWidth,
+        child: Divider(height: 1, thickness: 1, color: color),
+      );
+    }
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 2),
+      child: VerticalDivider(width: 1, thickness: 1, color: color),
+    );
+  }
 }
 
 /// The shared card frame: fixed width, tinted, optional selected border.

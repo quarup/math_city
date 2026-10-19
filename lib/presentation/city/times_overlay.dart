@@ -205,7 +205,11 @@ class TimesOverlay extends ConsumerWidget {
                 ),
                 const Spacer(),
                 Flexible(
-                  child: FittedBox(fit: BoxFit.scaleDown, child: actions),
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerRight,
+                    child: actions,
+                  ),
                 ),
               ],
             );
@@ -216,7 +220,7 @@ class TimesOverlay extends ConsumerWidget {
               // photo on the right, the masthead across the top.
               content = SizedBox(
                 width: 720,
-                height: (c.maxHeight - 40).clamp(240.0, 380.0),
+                height: (c.maxHeight - 40).clamp(240.0, 330.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [

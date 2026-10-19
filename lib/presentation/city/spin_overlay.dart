@@ -57,7 +57,13 @@ List<WheelSegment> _buildSegments(
 ///
 /// Give each fresh wheel a new [key] — the widget builds its game once.
 class SpinOverlay extends ConsumerStatefulWidget {
-  const SpinOverlay({required this.onBlockStart, this.recap, super.key});
+  const SpinOverlay({
+    required this.onBlockStart,
+    this.recap,
+    this.side = false,
+    this.bottomClear = 0,
+    super.key,
+  });
 
   final void Function(
     String conceptId,
@@ -67,6 +73,15 @@ class SpinOverlay extends ConsumerStatefulWidget {
   onBlockStart;
 
   final QuestionBlock? recap;
+
+  /// A phone on its side: the overlay covers the whole screen, the site
+  /// stays sharp in the left column, the wheel takes the right, and the
+  /// recap card sits in the top-left corner.
+  final bool side;
+
+  /// On a side, the height the site's card takes at the bottom left: the
+  /// recap column stops above it.
+  final double bottomClear;
 
   @override
   ConsumerState<SpinOverlay> createState() => _SpinOverlayState();
@@ -164,31 +179,58 @@ class _SpinOverlayState extends ConsumerState<SpinOverlay> {
     // cut off by a line. Only that layer is feathered: the wheel, its reveal
     // pill and the recap card sit above it at full opacity (the pill lands
     // in the feather band and used to fade with it).
+    final recap = widget.recap == null
+        ? null
+        : IgnorePointer(
+            child: AnimatedOpacity(
+              opacity: _recapVisible ? 1 : 0,
+              duration: const Duration(milliseconds: 300),
+              child: Padding(
+                padding: widget.side
+                    ? const EdgeInsets.fromLTRB(12, 12, 12, 0)
+                    : const EdgeInsets.fromLTRB(16, 10, 16, 2),
+                child: BlockRecapCard(block: widget.recap!),
+              ),
+            ),
+          );
     return Stack(
       fit: StackFit.expand,
       children: [
-        _FeatheredSpinBlur(intensity: _game?.spinIntensity),
-        if (_game != null)
+        _FeatheredSpinBlur(
+          intensity: _game?.spinIntensity,
+          axis: widget.side ? Axis.horizontal : Axis.vertical,
+        ),
+        if (_game != null && widget.side) ...[
+          // The wheel in the right half; the recap in the left column,
+          // above the site's card.
+          Positioned(
+            right: 0,
+            top: 0,
+            bottom: 0,
+            width: _wheelColumnFraction * (_viewport(context).width),
+            child: GameWidget(game: _game!),
+          ),
+          if (recap != null)
+            Positioned(
+              left: 0,
+              top: 0,
+              bottom: widget.bottomClear,
+              width: (1 - _wheelColumnFraction) * _viewport(context).width,
+              child: Align(alignment: Alignment.topLeft, child: recap),
+            ),
+        ] else if (_game != null)
           Column(
             children: [
-              if (widget.recap != null)
-                IgnorePointer(
-                  child: AnimatedOpacity(
-                    opacity: _recapVisible ? 1 : 0,
-                    duration: const Duration(milliseconds: 300),
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 10, 16, 2),
-                      child: BlockRecapCard(block: widget.recap!),
-                    ),
-                  ),
-                ),
+              ?recap,
               Expanded(child: GameWidget(game: _game!)),
             ],
           ),
         if (_game != null && showFlingHint && celebrating == null)
-          const Align(
-            alignment: Alignment(0, -0.45),
-            child: CoachHand(mode: CoachHandMode.fling, size: 60),
+          Align(
+            alignment: widget.side
+                ? const Alignment(0.55, -0.15)
+                : const Alignment(0, -0.45),
+            child: const CoachHand(mode: CoachHandMode.fling, size: 60),
           ),
         if (_game != null && celebrating != null)
           NewConceptCelebration(
@@ -200,6 +242,11 @@ class _SpinOverlayState extends ConsumerState<SpinOverlay> {
     );
   }
 }
+
+/// Share of the width the wheel takes on a side; the site keeps the rest.
+const double _wheelColumnFraction = 0.52;
+
+Size _viewport(BuildContext context) => MediaQuery.sizeOf(context);
 
 /// Runs [action] after the wheel's reveal has had its beat, without holding
 /// a `BuildContext` across the gap.
@@ -217,9 +264,17 @@ Future<void> afterBeat(VoidCallback action) =>
 /// all. Instead the band is [_featherSteps] strips whose blur steps down to
 /// nothing, and the dim is a gradient.
 class _FeatheredSpinBlur extends StatelessWidget {
-  const _FeatheredSpinBlur({required this.intensity});
+  const _FeatheredSpinBlur({required this.intensity, required this.axis});
 
   final ValueListenable<double>? intensity;
+
+  /// Vertical: the band along the bottom fades out (the site under the
+  /// wheel). Horizontal: the left column is clear and the blur fades in
+  /// across the middle (the site beside the wheel).
+  final Axis axis;
+
+  /// On a side, the share of the width left clear on the left.
+  static const double _clearFraction = 0.40;
 
   static const double _restSigma = 2.5;
   static const double _spinSigma = 10;
@@ -237,10 +292,9 @@ class _FeatheredSpinBlur extends StatelessWidget {
           valueListenable: speed,
           builder: (context, k, _) => LayoutBuilder(
             builder: (context, box) {
-              final band = box.maxHeight * _featherFraction;
-              final stripH = band / _featherSteps;
-              Widget blurred(double height, double scale) => SizedBox(
-                height: height,
+              Widget blurred(double extent, double scale) => SizedBox(
+                height: axis == Axis.vertical ? extent : null,
+                width: axis == Axis.horizontal ? extent : null,
                 child: ClipRect(
                   child: BackdropFilter(
                     filter: ImageFilter.blur(
@@ -252,6 +306,21 @@ class _FeatheredSpinBlur extends StatelessWidget {
                   ),
                 ),
               );
+              if (axis == Axis.horizontal) {
+                final clear = box.maxWidth * _clearFraction;
+                final band = box.maxWidth * _featherFraction;
+                final stripW = band / _featherSteps;
+                return Row(
+                  children: [
+                    SizedBox(width: clear),
+                    for (var i = 0; i < _featherSteps; i++)
+                      blurred(stripW, (i + 1) / (_featherSteps + 1)),
+                    blurred(box.maxWidth - clear - band, 1),
+                  ],
+                );
+              }
+              final band = box.maxHeight * _featherFraction;
+              final stripH = band / _featherSteps;
               return Column(
                 children: [
                   blurred(box.maxHeight - band, 1),
@@ -264,16 +333,29 @@ class _FeatheredSpinBlur extends StatelessWidget {
         ),
         DecoratedBox(
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Colors.black.withValues(alpha: _dim),
-                Colors.black.withValues(alpha: _dim),
-                Colors.transparent,
-              ],
-              stops: const [0, 1 - _featherFraction, 1],
-            ),
+            gradient: axis == Axis.horizontal
+                ? LinearGradient(
+                    colors: [
+                      Colors.transparent,
+                      Colors.black.withValues(alpha: _dim),
+                      Colors.black.withValues(alpha: _dim),
+                    ],
+                    stops: const [
+                      _clearFraction,
+                      _clearFraction + _featherFraction,
+                      1,
+                    ],
+                  )
+                : LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.black.withValues(alpha: _dim),
+                      Colors.black.withValues(alpha: _dim),
+                      Colors.transparent,
+                    ],
+                    stops: const [0, 1 - _featherFraction, 1],
+                  ),
           ),
         ),
       ],

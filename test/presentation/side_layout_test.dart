@@ -13,6 +13,7 @@ import 'package:math_city/domain/questions/answer_check.dart';
 import 'package:math_city/domain/questions/diagram_spec.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
 import 'package:math_city/presentation/city/celebration_overlay.dart';
+import 'package:math_city/presentation/city/city_screen.dart';
 import 'package:math_city/presentation/city/letter_overlay.dart';
 import 'package:math_city/presentation/city/times_overlay.dart';
 import 'package:math_city/presentation/home/home_screen.dart';
@@ -254,6 +255,23 @@ void main() {
         expect(tester.takeException(), isNull);
         expect(find.text('Congratulations!'), findsOneWidget);
         expect(find.text('Thanks!'), findsOneWidget);
+      });
+
+      testWidgets('city fits', (tester) async {
+        final scope = await container();
+        final players = await scope.read(appDatabaseProvider).getAllPlayers();
+        scope.read(activePlayerIdProvider.notifier).selected = players.first.id;
+        await pump(
+          tester,
+          size,
+          const CityScreen(),
+          scope: scope,
+          settle: false,
+        );
+        expect(tester.takeException(), isNull);
+        expect(find.text('Sam’s city'), findsOneWidget);
+        // The catalog is up, as a strip or a rail.
+        expect(find.text('Single home'), findsWidgets);
       });
 
       testWidgets('home fits with six players', (tester) async {

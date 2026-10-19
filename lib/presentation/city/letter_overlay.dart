@@ -164,7 +164,7 @@ class LetterOverlay extends ConsumerWidget {
               // keeps both columns bounded without intrinsic measuring.
               content = SizedBox(
                 width: 680,
-                height: (c.maxHeight - 40).clamp(200.0, 340.0),
+                height: (c.maxHeight - 40).clamp(200.0, 300.0),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [

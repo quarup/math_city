@@ -15,8 +15,15 @@ class CityBackdrop extends PositionComponent {
   final Color skyTop;
   final Color skyBottom;
 
-  /// `assets/images/math_city_bottom.png` is 2170×420.
+  /// Fallback aspect until the strip has loaded (the file was 2170×420);
+  /// once it has, the image's own size rules, so a wider painting needs
+  /// no change here.
   static const double stripAspect = 2170 / 420;
+
+  double get _aspect {
+    final strip = _strip;
+    return strip == null ? stripAspect : strip.width / strip.height;
+  }
 
   /// The strip is drawn wider than the screen so it can crop at the sides
   /// without ever cropping at the bottom (and so the blur has real city to
@@ -32,7 +39,7 @@ class CityBackdrop extends PositionComponent {
   /// Top edge of the strip in game coordinates, for laying out the wheel.
   double get stripTop => size.y - stripHeight;
   double get stripWidth => size.x * (1 + 2 * stripOverhang);
-  double get stripHeight => stripWidth / stripAspect;
+  double get stripHeight => stripWidth / _aspect;
 
   @override
   Future<void> onLoad() async {

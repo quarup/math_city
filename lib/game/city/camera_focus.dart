@@ -58,6 +58,8 @@ double suggestionZoom({
 /// [bottomInset] is how many viewport pixels a bar drawn over the bottom
 /// edge covers: [anchorY] is then a fraction of the *visible* height above
 /// it, so an anchor of 1.0 sits on the bar's top edge, not under it.
+/// [rightInset] is the same for a rail drawn over the right edge (a phone
+/// on its side): [anchorX] is a fraction of the visible width left of it.
 (double, double) cameraCenterFor({
   required double targetX,
   required double targetY,
@@ -67,8 +69,9 @@ double suggestionZoom({
   required double anchorX,
   required double anchorY,
   double bottomInset = 0,
+  double rightInset = 0,
 }) => (
-  targetX - (anchorX - 0.5) * viewportWidth / zoom,
+  targetX - (anchorX * (viewportWidth - rightInset) - viewportWidth / 2) / zoom,
   targetY -
       (anchorY * (viewportHeight - bottomInset) - viewportHeight / 2) / zoom,
 );
