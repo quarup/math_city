@@ -38,6 +38,16 @@ void main() {
       expect(spokenForm('10:15 at night is ___'), '10:15 at night is blank');
     });
 
+    test('a blank numerator', () {
+      // On its own line it only shows the answer's shape: silent.
+      expect(
+        spokenForm('What fraction of the bar is shaded?\n___/2'),
+        'What fraction of the bar is shaded',
+      );
+      expect(spokenForm('2/3 = ___/6'), '2 thirds equals how many sixths');
+      expect(spokenForm('3/8 = ___/24'), '3 eighths equals what over 24');
+    });
+
     test('fractions and mixed numbers', () {
       expect(
         spokenForm('3/4 × 3/4 = ?'),

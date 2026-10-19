@@ -72,7 +72,16 @@ SpokenText spokenFormOf(String display) {
   String? previous;
   for (final m in RegExp(r'\S+').allMatches(display)) {
     final raw = m.group(0)!;
-    final spoken = _spokenToken(raw, previous: previous);
+    // "___/6" on a line of its own only shows the answer's shape under a
+    // question already asked ("What fraction is shaded?"): it says nothing.
+    final lineStart = display.lastIndexOf('\n', m.start) + 1;
+    final lineEnd = display.indexOf('\n', m.end);
+    final alone =
+        display.substring(lineStart, lineEnd < 0 ? null : lineEnd).trim() ==
+        raw;
+    final spoken = alone && _blankFraction.hasMatch(raw)
+        ? ''
+        : _spokenToken(raw, previous: previous);
     if (spoken.isNotEmpty && out.isNotEmpty) out.write(' ');
     tokens.add(
       SpokenToken(
@@ -143,6 +152,7 @@ final _degrees = RegExp(r'^([\d.,]+)°$');
 final _absolute = RegExp(r'^\|(.+)\|$');
 final _negative = RegExp(r'^[−-](?=[\d(])');
 final _blank = RegExp(r'^_{2,}$');
+final _blankFraction = RegExp(r'^_{2,}/(\d+)$');
 final _leadingPunct = RegExp(r'^[(\[{"“•]+');
 final _trailingPunct = RegExp(r'[)\]}.,;:!"”]+$');
 
@@ -165,6 +175,13 @@ String _spokenToken(String raw, {String? previous}) {
 
 String _spokenCore(String core, {String? previous}) {
   if (_blank.hasMatch(core)) return 'blank';
+  // "2/3 = ___/6" is "2 thirds equals how many sixths".
+  final blankFraction = _blankFraction.firstMatch(core);
+  if (blankFraction != null) {
+    final d = int.parse(blankFraction.group(1)!);
+    final names = _denominators[d];
+    return names == null ? 'what over $d' : 'how many ${names.$2}';
+  }
   if (core == '%') return 'percent';
   if (core == '°') return 'degrees';
   final abs = _absolute.firstMatch(core);
