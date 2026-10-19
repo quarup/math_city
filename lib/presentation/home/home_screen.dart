@@ -13,6 +13,7 @@ import 'package:math_city/presentation/home/tile_patch.dart';
 import 'package:math_city/presentation/player/player_creation_flow.dart';
 import 'package:math_city/presentation/player/player_edit_hub.dart';
 import 'package:math_city/presentation/theme/app_palette.dart';
+import 'package:math_city/presentation/widgets/on_side.dart';
 import 'package:math_city/services/debug_harness.dart';
 import 'package:math_city/state/player_provider.dart';
 
@@ -45,6 +46,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   /// Flat sky behind the OS launch icon; the top of the sky gradient.
   static const _launchSky = Color(0xFF5DB7E8);
+
+  /// Height of the painted city band along the bottom edge. On a side the
+  /// band is low and the painting shows end to end; upright it is taller
+  /// and the painting's middle fills it.
+  static const double kSideStripHeight = 92;
+  static const double kUprightStripHeight = 150;
 
   late final AnimationController _intro;
 
@@ -147,6 +154,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         child: LayoutBuilder(
           builder: (context, constraints) {
             final size = constraints.biggest;
+            final onSide = isOnSide(constraints);
             // Frame zero: the patch's centre box sits where the OS drew the
             // launch icon, the middle of the screen. It then glides towards
             // the bottom edge, shrinking and fading, and hands the ground
@@ -162,16 +170,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             return Stack(
               clipBehavior: Clip.none,
               children: [
+                // The painted city is a fixed-height band — low on a
+                // phone on its side, taller upright — and the image fills
+                // it from its bottom edge, so a wider painting shows more
+                // buildings rather than growing taller.
                 Positioned(
                   left: 0,
                   right: 0,
                   bottom: 0,
+                  height: onSide ? kSideStripHeight : kUprightStripHeight,
                   child: FadeTransition(
                     opacity: _strip,
                     child: Image.asset(
                       'assets/images/math_city_bottom.png',
-                      width: double.infinity,
-                      fit: BoxFit.fitWidth,
+                      fit: BoxFit.cover,
+                      alignment: Alignment.bottomCenter,
                     ),
                   ),
                 ),
@@ -209,61 +222,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                 ),
                 SafeArea(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 24,
+                    padding: EdgeInsets.fromLTRB(
+                      24,
+                      onSide ? 16 : 24,
+                      24,
+                      onSide ? kSideStripHeight + 8 : 24,
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        SlideTransition(
-                          position: Tween(
-                            begin: const Offset(0, -0.6),
-                            end: Offset.zero,
-                          ).animate(_lockup),
-                          child: FadeTransition(
-                            opacity: _lockup,
-                            child: const _Lockup(),
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        Expanded(
-                          child: AnimatedBuilder(
-                            animation: _cards,
-                            builder: (context, child) => IgnorePointer(
-                              ignoring: _cards.value < 1,
-                              child: Opacity(
-                                opacity: _cards.value,
-                                child: child,
-                              ),
-                            ),
-                            child: allAsync.when(
-                              loading: () => const Center(
-                                child: CircularProgressIndicator(),
-                              ),
-                              error: (e, _) => Center(child: Text('Error: $e')),
-                              // Scales the block down rather than overflow
-                              // when the screen is short (a phone on its
-                              // side): no scrolling, no stripes.
-                              data: (players) => LayoutBuilder(
-                                builder: (context, c) => FittedBox(
-                                  fit: BoxFit.scaleDown,
-                                  alignment: Alignment.topCenter,
-                                  child: SizedBox(
-                                    width: c.maxWidth,
-                                    child: _buildPlayersAndSpin(
-                                      theme,
-                                      players,
-                                      activeId,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                    child: onSide
+                        ? _onSide(theme, allAsync, activeId)
+                        : _upright(theme, allAsync, activeId),
                   ),
                 ),
               ],
@@ -274,29 +241,133 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     );
   }
 
+  Widget _lockupIn() => SlideTransition(
+    position: Tween(
+      begin: const Offset(0, -0.6),
+      end: Offset.zero,
+    ).animate(_lockup),
+    child: FadeTransition(opacity: _lockup, child: const _Lockup()),
+  );
+
+  /// The player block, faded in after the lockup, scaled down rather than
+  /// overflowing when the space is short: no scrolling, no stripes.
+  Widget _cardsIn(
+    ThemeData theme,
+    AsyncValue<List<Player>> allAsync,
+    int? activeId, {
+    required bool onSide,
+  }) => AnimatedBuilder(
+    animation: _cards,
+    builder: (context, child) => IgnorePointer(
+      ignoring: _cards.value < 1,
+      child: Opacity(opacity: _cards.value, child: child),
+    ),
+    child: allAsync.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text('Error: $e')),
+      data: (players) => LayoutBuilder(
+        builder: (context, c) => FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: onSide ? Alignment.center : Alignment.topCenter,
+          child: SizedBox(
+            width: c.maxWidth,
+            child: _buildPlayersAndSpin(
+              theme,
+              players,
+              activeId,
+              onSide: onSide,
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+
+  /// Upright: the lockup, then the title and the stickers under it.
+  Widget _upright(
+    ThemeData theme,
+    AsyncValue<List<Player>> allAsync,
+    int? activeId,
+  ) => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      _lockupIn(),
+      const SizedBox(height: 20),
+      Expanded(child: _cardsIn(theme, allAsync, activeId, onSide: false)),
+    ],
+  );
+
+  /// On a side: the lockup and the title in a narrow left column, the
+  /// stickers wrapping in the rest.
+  Widget _onSide(
+    ThemeData theme,
+    AsyncValue<List<Player>> allAsync,
+    int? activeId,
+  ) {
+    final palette = theme.extension<AppPalette>()!;
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        SizedBox(
+          width: 230,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _lockupIn(),
+              const SizedBox(height: 16),
+              FadeTransition(
+                opacity: _cards,
+                child: Text(
+                  'Who is playing?',
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: palette.tileInk,
+                  ),
+                ),
+              ),
+              if (kDebugMode) ...[
+                const SizedBox(height: 8),
+                FadeTransition(
+                  opacity: _cards,
+                  child: _DebugButton(onPressed: () => _openDebug(context)),
+                ),
+              ],
+            ],
+          ),
+        ),
+        const SizedBox(width: 24),
+        Expanded(child: _cardsIn(theme, allAsync, activeId, onSide: true)),
+      ],
+    );
+  }
+
   Widget _buildPlayersAndSpin(
     ThemeData theme,
     List<Player> players,
-    int? activeId,
-  ) {
+    int? activeId, {
+    required bool onSide,
+  }) {
     final palette = theme.extension<AppPalette>()!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
-          'Who is playing?',
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w700,
-            color: palette.tileInk,
+        if (!onSide) ...[
+          Text(
+            'Who is playing?',
+            style: theme.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w700,
+              color: palette.tileInk,
+            ),
           ),
-        ),
-        const SizedBox(height: 14),
+          const SizedBox(height: 14),
+        ],
         if (players.isEmpty)
           SizedBox(
             height: 130,
             child: _EmptyPlayerPrompt(
               onAdd: () => _openCreation(context),
-              onDebug: kDebugMode ? () => _openDebug(context) : null,
+              onDebug: kDebugMode && !onSide ? () => _openDebug(context) : null,
             ),
           )
         else ...[
@@ -315,19 +386,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               AddPlayerSticker(onTap: () => _openCreation(context)),
             ],
           ),
-          if (kDebugMode) ...[
+          if (kDebugMode && !onSide) ...[
             const SizedBox(height: 10),
-            Center(
-              child: TextButton.icon(
-                onPressed: () => _openDebug(context),
-                icon: const Icon(Icons.bug_report_rounded, size: 16),
-                label: const Text('Debug'),
-                style: TextButton.styleFrom(
-                  foregroundColor: theme.colorScheme.onSurfaceVariant,
-                  visualDensity: VisualDensity.compact,
-                ),
-              ),
-            ),
+            Center(child: _DebugButton(onPressed: () => _openDebug(context))),
           ],
         ],
       ],
@@ -390,35 +451,54 @@ class _HouseTile extends StatelessWidget {
   }
 }
 
+class _DebugButton extends StatelessWidget {
+  const _DebugButton({required this.onPressed});
+
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) => TextButton.icon(
+    onPressed: onPressed,
+    icon: const Icon(Icons.bug_report_rounded, size: 16),
+    label: const Text('Debug'),
+    style: TextButton.styleFrom(
+      foregroundColor: Theme.of(context).colorScheme.onSurfaceVariant,
+      visualDensity: VisualDensity.compact,
+    ),
+  );
+}
+
 class _Lockup extends StatelessWidget {
   const _Lockup();
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        // The tile's box carries empty margin around the house (it is the
-        // icon's canvas); show it through a narrower slot so the house sits
-        // close to the wordmark.
-        const SizedBox(
-          width: 66,
-          height: 88,
-          child: OverflowBox(
-            maxWidth: 88,
-            maxHeight: 88,
-            child: _HouseTile(size: 88),
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // The tile's box carries empty margin around the house (it is the
+          // icon's canvas); show it through a narrower slot so the house sits
+          // close to the wordmark.
+          const SizedBox(
+            width: 66,
+            height: 88,
+            child: OverflowBox(
+              maxWidth: 88,
+              maxHeight: 88,
+              child: _HouseTile(size: 88),
+            ),
           ),
-        ),
-        const SizedBox(width: 2),
-        Flexible(
-          child: Image.asset(
+          const SizedBox(width: 2),
+          Image.asset(
             'assets/images/math_city_wordmark.png',
             height: 58,
             fit: BoxFit.contain,
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

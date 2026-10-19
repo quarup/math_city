@@ -8,6 +8,7 @@ import 'package:math_city/domain/city/building_type.dart';
 import 'package:math_city/domain/city/story_beat.dart';
 import 'package:math_city/presentation/city/letter_overlay.dart';
 import 'package:math_city/presentation/player/adventurer_avatar_widget.dart';
+import 'package:math_city/presentation/widgets/on_side.dart';
 import 'package:math_city/state/tts_provider.dart';
 
 /// A front page of the Math City Times (city_builder.md §10.2): how
@@ -95,126 +96,220 @@ class TimesOverlay extends ConsumerWidget {
             child: ColoredBox(color: Colors.black.withValues(alpha: 0.45)),
           ),
         ),
-        Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 420),
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Material(
-                color: paper,
-                elevation: 12,
-                borderRadius: BorderRadius.circular(6),
-                clipBehavior: Clip.antiAlias,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
+        LayoutBuilder(
+          builder: (context, c) {
+            final side = isOnSide(c);
+            final masthead = Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  'THE MATH CITY TIMES',
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                    color: ink,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 1.5,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                const Divider(color: ink, thickness: 2, height: 2),
+                const Divider(color: ink, thickness: 0.8, height: 6),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'THE MATH CITY TIMES',
-                        textAlign: TextAlign.center,
-                        style: theme.textTheme.headlineSmall?.copyWith(
-                          color: ink,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 1.5,
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      const Divider(color: ink, thickness: 2, height: 2),
-                      const Divider(color: ink, thickness: 0.8, height: 6),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 4),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              cityName.toUpperCase(),
-                              style: theme.textTheme.labelSmall?.copyWith(
-                                color: ink,
-                                letterSpacing: 1,
-                              ),
-                            ),
-                            Text(
-                              badNews ? 'CITY DESK' : 'FRONT PAGE',
-                              style: theme.textTheme.labelSmall?.copyWith(
-                                color: ink,
-                                letterSpacing: 1,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const Divider(color: ink, thickness: 0.8, height: 8),
-                      const SizedBox(height: 10),
-                      Text(
-                        '${beat.emoji}  ${beat.shortLabel.toUpperCase()}',
-                        style: theme.textTheme.labelLarge?.copyWith(
-                          color: badNews
-                              ? const Color(0xFFB3261E)
-                              : const Color(0xFF2F6FA8),
-                          letterSpacing: 1.2,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        _story,
-                        style: theme.textTheme.titleLarge?.copyWith(
-                          color: ink,
-                          fontWeight: FontWeight.w800,
-                          height: 1.25,
-                        ),
-                      ),
-                      if (photoPanel.hasPhoto) ...[
-                        const SizedBox(height: 12),
-                        photoPanel,
-                      ],
-                      const SizedBox(height: 14),
-                      Row(
-                        children: [
-                          IconButton(
-                            tooltip: 'Read it again',
-                            onPressed: () =>
-                                unawaited(speakIfEnabled(ref, spokenText)),
-                            icon: const Icon(Icons.volume_up_rounded),
+                      Flexible(
+                        child: Text(
+                          cityName.toUpperCase(),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.labelSmall?.copyWith(
                             color: ink,
+                            letterSpacing: 1,
                           ),
-                          const Spacer(),
-                          if (_isAsk) ...[
-                            TextButton(
-                              onPressed: onClose,
-                              style: TextButton.styleFrom(
-                                foregroundColor: ink,
-                                textStyle: theme.textTheme.titleMedium
-                                    ?.copyWith(fontWeight: FontWeight.bold),
-                              ),
-                              child: const Text('Later'),
-                            ),
-                            if (onBuild != null) ...[
-                              const SizedBox(width: 8),
-                              _InkButton(
-                                ink: ink,
-                                paper: paper,
-                                onPressed: onBuild!,
-                                child: const Text('Build it!'),
-                              ),
-                            ],
-                          ] else
-                            _InkButton(
-                              ink: ink,
-                              paper: paper,
-                              onPressed: onClose,
-                              child: Text(badNews ? 'On it' : 'Hooray!'),
-                            ),
-                        ],
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        badNews ? 'CITY DESK' : 'FRONT PAGE',
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: ink,
+                          letterSpacing: 1,
+                        ),
                       ),
                     ],
                   ),
                 ),
+                const Divider(color: ink, thickness: 0.8, height: 8),
+              ],
+            );
+            final kicker = Text(
+              '${beat.emoji}  ${beat.shortLabel.toUpperCase()}',
+              style: theme.textTheme.labelLarge?.copyWith(
+                color: badNews
+                    ? const Color(0xFFB3261E)
+                    : const Color(0xFF2F6FA8),
+                letterSpacing: 1.2,
+                fontWeight: FontWeight.bold,
               ),
-            ),
-          ),
+            );
+            final headline = Text(
+              _story,
+              style: theme.textTheme.titleLarge?.copyWith(
+                color: ink,
+                fontWeight: FontWeight.w800,
+                height: 1.25,
+              ),
+            );
+            final actions = Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (_isAsk) ...[
+                  TextButton(
+                    onPressed: onClose,
+                    style: TextButton.styleFrom(
+                      foregroundColor: ink,
+                      textStyle: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    child: const Text('Later'),
+                  ),
+                  if (onBuild != null) ...[
+                    const SizedBox(width: 8),
+                    _InkButton(
+                      ink: ink,
+                      paper: paper,
+                      onPressed: onBuild!,
+                      child: const Text('Build it!'),
+                    ),
+                  ],
+                ] else
+                  _InkButton(
+                    ink: ink,
+                    paper: paper,
+                    onPressed: onClose,
+                    child: Text(badNews ? 'On it' : 'Hooray!'),
+                  ),
+              ],
+            );
+            // The actions shrink before they overflow a narrow page.
+            final buttons = Row(
+              children: [
+                IconButton(
+                  tooltip: 'Read it again',
+                  onPressed: () => unawaited(speakIfEnabled(ref, spokenText)),
+                  icon: const Icon(Icons.volume_up_rounded),
+                  color: ink,
+                ),
+                const Spacer(),
+                Flexible(
+                  child: FittedBox(fit: BoxFit.scaleDown, child: actions),
+                ),
+              ],
+            );
+
+            final Widget content;
+            if (side) {
+              // The page turns broadsheet: the story on the left, the
+              // photo on the right, the masthead across the top.
+              content = SizedBox(
+                width: 720,
+                height: (c.maxHeight - 40).clamp(240.0, 380.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    masthead,
+                    const SizedBox(height: 10),
+                    Expanded(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                kicker,
+                                const SizedBox(height: 6),
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    child: headline,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          if (photoPanel.hasPhoto) ...[
+                            const SizedBox(width: 16),
+                            // Scaled down rather than clipped when the
+                            // caption wraps more than the row allows.
+                            SizedBox(
+                              width: 250,
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                alignment: Alignment.topCenter,
+                                child: SizedBox(width: 250, child: photoPanel),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    buttons,
+                  ],
+                ),
+              );
+            } else {
+              // The story scrolls between the masthead and the buttons
+              // if a small phone cannot show it all.
+              content = ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 420),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    masthead,
+                    const SizedBox(height: 10),
+                    Flexible(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            kicker,
+                            const SizedBox(height: 6),
+                            headline,
+                            if (photoPanel.hasPhoto) ...[
+                              const SizedBox(height: 12),
+                              photoPanel,
+                            ],
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    buttons,
+                  ],
+                ),
+              );
+            }
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Material(
+                  color: paper,
+                  elevation: 12,
+                  borderRadius: BorderRadius.circular(6),
+                  clipBehavior: Clip.antiAlias,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
+                    child: content,
+                  ),
+                ),
+              ),
+            );
+          },
         ),
       ],
     );

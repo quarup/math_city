@@ -10,15 +10,22 @@ import 'package:flutter/material.dart';
 /// above the digit grid. Pass an empty list (the default) to keep the pad
 /// digits-only — important so younger players doing pure arithmetic don't
 /// see symbols that don't belong to their question type.
+///
+/// [fill] is the pad for a phone on its side: it takes the height it is
+/// given instead of its natural 4 × 60 dp, and the extra characters stand
+/// in a column beside the digits rather than in a row above them, so a
+/// 340 dp pane holds the whole pad with keys a thumb can hit.
 class NumberPadWidget extends StatefulWidget {
   const NumberPadWidget({
     required this.onSubmit,
     this.extraChars = const [],
+    this.fill = false,
     super.key,
   });
 
   final void Function(String value) onSubmit;
   final List<String> extraChars;
+  final bool fill;
 
   @override
   State<NumberPadWidget> createState() => _NumberPadWidgetState();
@@ -53,6 +60,7 @@ class _NumberPadWidgetState extends State<NumberPadWidget> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    if (widget.fill) return _fillLayout(theme);
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -63,6 +71,74 @@ class _NumberPadWidgetState extends State<NumberPadWidget> {
           const SizedBox(height: 4),
         ],
         _PadGrid(onDigit: _append, onBackspace: _backspace, onSubmit: _submit),
+      ],
+    );
+  }
+
+  /// The side layout: the display on top, then four rows that share the
+  /// rest of the height — digits in three columns, the extra characters
+  /// in one more column (two when there are more than four).
+  Widget _fillLayout(ThemeData theme) {
+    final extras = widget.extraChars;
+    final symbolColumns = extras.isEmpty ? 0 : (extras.length > 4 ? 2 : 1);
+    final symbolStyle = theme.textTheme.headlineMedium?.copyWith(
+      fontWeight: FontWeight.bold,
+    );
+
+    Widget cell(Widget child) => Expanded(
+      child: Padding(padding: const EdgeInsets.all(4), child: child),
+    );
+    Widget symbol(int i) {
+      if (i >= extras.length) return const SizedBox.shrink();
+      final c = extras[i];
+      return _DigitButton(
+        label: c == ' ' ? 'and' : c,
+        onTap: () => _append(c),
+        textStyle: symbolStyle,
+        expand: true,
+      );
+    }
+
+    Widget row(List<Widget> keys, int r) => Expanded(
+      child: Row(
+        children: [
+          for (final k in keys) cell(k),
+          for (var c = 0; c < symbolColumns; c++) cell(symbol(r + 4 * c)),
+        ],
+      ),
+    );
+
+    const rows = [
+      ['7', '8', '9'],
+      ['4', '5', '6'],
+      ['1', '2', '3'],
+    ];
+    return Column(
+      children: [
+        _InputDisplay(input: _input, theme: theme, height: 52),
+        const SizedBox(height: 4),
+        for (final (r, digits) in rows.indexed)
+          row([
+            for (final d in digits)
+              _DigitButton(label: d, onTap: () => _append(d), expand: true),
+          ], r),
+        row([
+          _ActionButton(
+            icon: Icons.backspace_outlined,
+            color: theme.colorScheme.errorContainer,
+            iconColor: theme.colorScheme.onErrorContainer,
+            onTap: _backspace,
+            expand: true,
+          ),
+          _DigitButton(label: '0', onTap: () => _append('0'), expand: true),
+          _ActionButton(
+            icon: Icons.check_rounded,
+            color: theme.colorScheme.primaryContainer,
+            iconColor: theme.colorScheme.onPrimaryContainer,
+            onTap: _submit,
+            expand: true,
+          ),
+        ], 3),
       ],
     );
   }
@@ -113,15 +189,20 @@ class _ExtraCharsRow extends StatelessWidget {
 // ---------------------------------------------------------------------------
 
 class _InputDisplay extends StatelessWidget {
-  const _InputDisplay({required this.input, required this.theme});
+  const _InputDisplay({
+    required this.input,
+    required this.theme,
+    this.height = 64,
+  });
 
   final String input;
   final ThemeData theme;
+  final double height;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 64,
+      height: height,
       decoration: BoxDecoration(
         color: theme.colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(12),
@@ -239,17 +320,22 @@ class _DigitButton extends StatelessWidget {
     required this.label,
     required this.onTap,
     this.textStyle,
+    this.expand = false,
   });
 
   final String label;
   final VoidCallback onTap;
   final TextStyle? textStyle;
 
+  /// Fill the cell the pad gives it instead of the standard 60 dp.
+  final bool expand;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return SizedBox(
-      height: 60,
+      height: expand ? double.infinity : 60,
+      width: expand ? double.infinity : null,
       child: OutlinedButton(
         onPressed: onTap,
         style: OutlinedButton.styleFrom(
@@ -268,17 +354,20 @@ class _ActionButton extends StatelessWidget {
     required this.color,
     required this.iconColor,
     required this.onTap,
+    this.expand = false,
   });
 
   final IconData icon;
   final Color color;
   final Color iconColor;
   final VoidCallback onTap;
+  final bool expand;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 60,
+      height: expand ? double.infinity : 60,
+      width: expand ? double.infinity : null,
       child: ElevatedButton(
         onPressed: onTap,
         style: ElevatedButton.styleFrom(

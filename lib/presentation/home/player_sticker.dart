@@ -100,16 +100,7 @@ class PlayerSticker extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 6),
-          Text(
-            player.name,
-            style: theme.textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.w700,
-              color: palette.tileInk,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
-          ),
+          NamePill(player.name),
         ],
       ),
     );
@@ -155,13 +146,7 @@ class AddPlayerSticker extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 6),
-          Text(
-            'Add',
-            style: theme.textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.w700,
-              color: palette.brandTealDeep,
-            ),
-          ),
+          const NamePill('Add'),
         ],
       ),
     );
@@ -251,4 +236,42 @@ class _DashedRingPainter extends CustomPainter {
   @override
   bool shouldRepaint(_DashedRingPainter oldDelegate) =>
       oldDelegate.color != color;
+}
+
+/// A name under a sticker: on a white pill, so it reads on the sky and on
+/// the painted city alike.
+class NamePill extends StatelessWidget {
+  const NamePill(this.text, {super.key});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final palette = theme.extension<AppPalette>()!;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 1),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.95),
+        borderRadius: BorderRadius.circular(999),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x33000000),
+            blurRadius: 3,
+            offset: Offset(0, 1),
+          ),
+        ],
+      ),
+      child: Text(
+        text,
+        style: theme.textTheme.titleSmall?.copyWith(
+          fontWeight: FontWeight.w700,
+          color: palette.tileInk,
+        ),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
 }

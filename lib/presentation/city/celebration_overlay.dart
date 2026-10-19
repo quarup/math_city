@@ -51,14 +51,10 @@ class CelebrationOverlay extends StatelessWidget {
           left: 16,
           right: 16,
           child: SafeArea(
-            child: Material(
-              key: cardKey,
-              elevation: 8,
-              borderRadius: BorderRadius.circular(20),
-              color: theme.colorScheme.surface,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 18, 20, 16),
-                child: Column(
+            child: LayoutBuilder(
+              builder: (context, c) {
+                final side = c.maxWidth > 700;
+                final headline = Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
@@ -77,30 +73,77 @@ class CelebrationOverlay extends StatelessWidget {
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    if (reply != null && replyFrom != null) ...[
-                      const SizedBox(height: 14),
-                      _ReplyNote(
+                  ],
+                );
+                final note = reply != null && replyFrom != null
+                    ? _ReplyNote(
                         beat: reply!,
                         from: replyFrom!,
                         playerName: playerName,
-                      ),
-                    ],
-                    const SizedBox(height: 14),
-                    FilledButton(
-                      onPressed: onDone,
-                      style: FilledButton.styleFrom(
-                        backgroundColor: palette.successGreenDeep,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 36,
-                          vertical: 14,
-                        ),
-                        textStyle: theme.textTheme.titleMedium,
-                      ),
-                      child: Text(reply == null ? 'Done' : 'Thanks!'),
+                      )
+                    : null;
+                final button = FilledButton(
+                  onPressed: onDone,
+                  style: FilledButton.styleFrom(
+                    backgroundColor: palette.successGreenDeep,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 36,
+                      vertical: 14,
                     ),
-                  ],
-                ),
-              ),
+                    textStyle: theme.textTheme.titleMedium,
+                  ),
+                  child: Text(reply == null ? 'Done' : 'Thanks!'),
+                );
+                // On a side the card is a wide band: the headline and the
+                // button on the left, the thank-you note on the right, so
+                // it stays short and the building has the height below.
+                final Widget content = side
+                    ? Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                headline,
+                                const SizedBox(height: 14),
+                                button,
+                              ],
+                            ),
+                          ),
+                          if (note != null) ...[
+                            const SizedBox(width: 20),
+                            Expanded(flex: 2, child: note),
+                          ],
+                        ],
+                      )
+                    : Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          headline,
+                          if (note != null) ...[
+                            const SizedBox(height: 14),
+                            note,
+                          ],
+                          const SizedBox(height: 14),
+                          button,
+                        ],
+                      );
+                return Center(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(maxWidth: side ? 760 : 600),
+                    child: Material(
+                      key: cardKey,
+                      elevation: 8,
+                      borderRadius: BorderRadius.circular(20),
+                      color: theme.colorScheme.surface,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(20, 18, 20, 16),
+                        child: content,
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
           ),
         ),

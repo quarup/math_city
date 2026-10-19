@@ -11,6 +11,7 @@ import 'package:math_city/presentation/diagrams/diagram_renderer.dart';
 import 'package:math_city/presentation/question/question_screen.dart';
 import 'package:math_city/presentation/theme/app_palette.dart';
 import 'package:math_city/presentation/widgets/math_text.dart';
+import 'package:math_city/presentation/widgets/on_side.dart';
 import 'package:math_city/presentation/widgets/speech.dart';
 import 'package:math_city/presentation/widgets/speech_toggle_button.dart';
 import 'package:math_city/services/debug_harness.dart';
@@ -135,6 +136,63 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
     final isCorrect = widget.outcome != AnswerOutcome.wrong;
     final isEquivalentNonCanonical =
         widget.outcome == AnswerOutcome.equivalentNonCanonical;
+    final ink = isCorrect ? palette.successGreenDeep : palette.errorRedDeep;
+
+    // The verdict is a title row, not a billboard: a 30 dp icon and the
+    // words between the stop button and the read-aloud toggle. The colour
+    // of the whole screen already says it.
+    final titleRow = SizedBox(
+      height: 52,
+      child: Row(
+        children: [
+          IconButton(
+            icon: const Icon(Icons.close_rounded),
+            tooltip: 'Stop',
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  isCorrect ? Icons.check_circle_rounded : Icons.cancel_rounded,
+                  size: 30,
+                  color: ink,
+                ),
+                const SizedBox(width: 10),
+                Flexible(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      isCorrect ? 'Correct!' : 'Not quite…',
+                      style: theme.textTheme.headlineSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: ink,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Keeps the title centred on the green screen too.
+          if (isCorrect)
+            const SizedBox(width: 48)
+          else
+            const SpeechToggleIconButton(),
+        ],
+      ),
+    );
+
+    final button = FilledButton(
+      onPressed: _onNext,
+      style: FilledButton.styleFrom(
+        padding: const EdgeInsets.symmetric(vertical: 18),
+        textStyle: theme.textTheme.titleLarge,
+      ),
+      child: Text(_buttonLabel),
+    );
+
     return Scaffold(
       backgroundColor: isCorrect
           ? palette.successGreenSoft
@@ -143,82 +201,171 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
         service: _tts,
         owner: this,
         child: SafeArea(
-          child: Stack(
-            children: [
-              // Stop answering: pops the chain back to the wheel over the
-              // site (a debug question just returns to the concept list).
-              Positioned(
-                top: 4,
-                left: 4,
-                child: IconButton(
-                  icon: const Icon(Icons.close_rounded),
-                  tooltip: 'Stop',
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-              ),
-              if (!isCorrect)
-                const Positioned(
-                  top: 4,
-                  right: 4,
-                  child: SpeechToggleIconButton(),
-                ),
-              Padding(
-                padding: const EdgeInsets.all(32),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const Spacer(),
-                    Icon(
-                      isCorrect
-                          ? Icons.check_circle_rounded
-                          : Icons.cancel_rounded,
-                      size: 80,
-                      color: isCorrect
-                          ? palette.successGreenDeep
-                          : palette.errorRedDeep,
+          child: LayoutBuilder(
+            builder: (context, c) {
+              final side = isOnSide(c);
+              final Widget body;
+              if (!isCorrect) {
+                body = side ? _wrongOnSide(button) : _wrongUpright(button);
+              } else {
+                body = _correct(
+                  theme,
+                  ink,
+                  button,
+                  side: side,
+                  nudge: isEquivalentNonCanonical,
+                );
+              }
+              return Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(4, 4, 4, 0),
+                    child: titleRow,
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(
+                        side ? 24 : 20,
+                        4,
+                        side ? 24 : 20,
+                        side ? 14 : 16,
+                      ),
+                      child: body,
                     ),
-                    const SizedBox(height: 16),
-                    Text(
-                      isCorrect ? 'Correct!' : 'Not quite…',
-                      style: theme.textTheme.headlineLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: isCorrect
-                            ? palette.successGreenDeep
-                            : palette.errorRedDeep,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    if (isEquivalentNonCanonical) ...[
-                      const SizedBox(height: 16),
-                      EquivalentNudgeCard(
-                        playerAnswer: widget.selectedAnswer,
-                        canonical: widget.question.correctAnswer,
-                      ),
-                    ],
-                    if (!isCorrect) ...[
-                      const SizedBox(height: 24),
-                      _ExplanationCard(
-                        selectedAnswer: widget.selectedAnswer,
-                        explanation: widget.question.explanation,
-                        diagram: widget.question.explanationDiagram,
-                        speechItems: _speechItems,
-                      ),
-                    ],
-                    const Spacer(),
-                    FilledButton(
-                      onPressed: _onNext,
-                      style: FilledButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 18),
-                        textStyle: theme.textTheme.titleLarge,
-                      ),
-                      child: Text(_buttonLabel),
-                    ),
-                    const SizedBox(height: 12),
-                  ],
-                ),
-              ),
-            ],
+                  ),
+                ],
+              );
+            },
           ),
+        ),
+      ),
+    );
+  }
+
+  /// The explanation, scrolling. The speaker on its corner pokes above it,
+  /// so the scroll view keeps a little headroom and does not clip.
+  Widget get _explanation => SingleChildScrollView(
+    clipBehavior: Clip.none,
+    padding: const EdgeInsets.only(top: 14, right: 10),
+    child: _ExplanationCard(
+      selectedAnswer: widget.selectedAnswer,
+      explanation: widget.question.explanation,
+      diagram: widget.question.explanationDiagram,
+      speechItems: _speechItems,
+    ),
+  );
+
+  Widget get _answerTile => _AnswerTile(answer: widget.question.correctAnswer);
+
+  /// On a side: the explanation on the left, the answer at the top of the
+  /// right pane and Next at its bottom.
+  Widget _wrongOnSide(Widget button) => Row(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      Expanded(flex: 2, child: _explanation),
+      const SizedBox(width: 24),
+      Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 14),
+              child: _answerTile,
+            ),
+            const Spacer(),
+            button,
+          ],
+        ),
+      ),
+    ],
+  );
+
+  /// Upright: the answer under the title, the explanation scrolling in
+  /// the middle, Next pinned at the bottom.
+  Widget _wrongUpright(Widget button) => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      _answerTile,
+      Expanded(child: _explanation),
+      const SizedBox(height: 12),
+      button,
+    ],
+  );
+
+  /// The green screen (debug mode only in real play): the equivalence
+  /// nudge if there is one, Next at the bottom right on a side and across
+  /// the bottom upright.
+  Widget _correct(
+    ThemeData theme,
+    Color ink,
+    Widget button, {
+    required bool side,
+    required bool nudge,
+  }) => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      Expanded(
+        child: Center(
+          child: nudge
+              ? ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 560),
+                  child: EquivalentNudgeCard(
+                    playerAnswer: widget.selectedAnswer,
+                    canonical: widget.question.correctAnswer,
+                  ),
+                )
+              : Icon(Icons.check_circle_rounded, size: 96, color: ink),
+        ),
+      ),
+      const SizedBox(height: 12),
+      if (side)
+        Align(
+          alignment: Alignment.centerRight,
+          child: SizedBox(width: 280, child: button),
+        )
+      else
+        button,
+    ],
+  );
+}
+
+/// The right answer, stated once, big and green, so a child who skims the
+/// explanation still leaves with it.
+class _AnswerTile extends StatelessWidget {
+  const _AnswerTile({required this.answer});
+
+  final String answer;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final palette = theme.extension<AppPalette>()!;
+    return Card(
+      color: theme.colorScheme.surfaceContainerLowest,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        child: Wrap(
+          alignment: WrapAlignment.center,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 14,
+          runSpacing: 2,
+          children: [
+            Text(
+              'THE ANSWER',
+              style: theme.textTheme.labelMedium?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+                letterSpacing: 1,
+              ),
+            ),
+            MathText(
+              answer,
+              textAlign: TextAlign.center,
+              style: theme.textTheme.headlineMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: palette.successGreenDeep,
+              ),
+            ),
+          ],
         ),
       ),
     );

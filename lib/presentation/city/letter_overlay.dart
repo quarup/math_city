@@ -8,6 +8,7 @@ import 'package:math_city/domain/city/building_type.dart';
 import 'package:math_city/domain/city/citizen.dart';
 import 'package:math_city/domain/city/story_beat.dart';
 import 'package:math_city/presentation/player/adventurer_avatar_widget.dart';
+import 'package:math_city/presentation/widgets/on_side.dart';
 import 'package:math_city/state/tts_provider.dart';
 
 /// A letter from a citizen (city_builder.md §10.2): the unit of story. Drawn
@@ -58,136 +59,214 @@ class LetterOverlay extends ConsumerWidget {
             child: ColoredBox(color: Colors.black.withValues(alpha: 0.45)),
           ),
         ),
-        Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 400),
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Material(
-                color: scheme.surface,
-                elevation: 12,
-                borderRadius: BorderRadius.circular(20),
-                clipBehavior: Clip.antiAlias,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 18, 20, 16),
+        LayoutBuilder(
+          builder: (context, c) {
+            final side = isOnSide(c);
+            final who = Row(
+              children: [
+                if (isTown)
+                  const _CastRow(size: 40)
+                else
+                  AdventurerAvatarWidget(config: citizen.face, size: 52),
+                const SizedBox(width: 12),
+                Expanded(
                   child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        children: [
-                          if (isTown)
-                            const _CastRow(size: 40)
-                          else
-                            AdventurerAvatarWidget(
-                              config: citizen.face,
-                              size: 52,
-                            ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  citizen.name,
-                                  style: theme.textTheme.titleMedium?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Text(
-                                  askLine,
-                                  style: theme.textTheme.bodyMedium?.copyWith(
-                                    color: scheme.onSurfaceVariant,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          IconButton(
-                            tooltip: 'Read it again',
-                            onPressed: () =>
-                                unawaited(speakIfEnabled(ref, spokenText)),
-                            icon: const Icon(Icons.volume_up_rounded),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 14),
                       Text(
-                        'Dear Mayor $playerName,',
-                        style: theme.textTheme.bodyLarge?.copyWith(
-                          fontWeight: FontWeight.w600,
+                        citizen.name,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 4),
-                      Text(beat.longText, style: theme.textTheme.bodyLarge),
-                      if (target != null) ...[
-                        const SizedBox(height: 14),
-                        _PicturePanel(building: target!, onTap: onBuild),
-                      ],
-                      const SizedBox(height: 16),
-                      // Primary action on the right, like every other row in
-                      // the app (site bar, front page, refund dialog) and the
-                      // Android / iOS convention this ships on.
-                      Row(
-                        children: [
-                          if (onBuild != null) ...[
-                            Expanded(
-                              flex: 2,
-                              child: OutlinedButton(
-                                onPressed: onClose,
-                                style: OutlinedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 14,
-                                  ),
-                                ),
-                                child: const Text('Later'),
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              flex: 3,
-                              child: FilledButton(
-                                onPressed: onBuild,
-                                style: FilledButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 14,
-                                  ),
-                                  textStyle: theme.textTheme.titleMedium
-                                      ?.copyWith(fontWeight: FontWeight.bold),
-                                ),
-                                child: const Text('Build it!'),
-                              ),
-                            ),
-                          ] else
-                            Expanded(
-                              child: FilledButton(
-                                onPressed: onClose,
-                                style: FilledButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 14,
-                                  ),
-                                  textStyle: theme.textTheme.titleMedium
-                                      ?.copyWith(fontWeight: FontWeight.bold),
-                                ),
-                                child: Text(
-                                  beat.kind == BeatKind.praise
-                                      ? 'Thanks!'
-                                      : 'Got it',
-                                ),
-                              ),
-                            ),
-                        ],
+                      Text(
+                        askLine,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: scheme.onSurfaceVariant,
+                        ),
                       ),
                     ],
                   ),
                 ),
+                if (!side) _speaker(ref),
+              ],
+            );
+            final salutation = Text(
+              'Dear Mayor $playerName,',
+              style: theme.textTheme.bodyLarge?.copyWith(
+                fontWeight: FontWeight.w600,
               ),
-            ),
-          ),
+            );
+            final body = Text(beat.longText, style: theme.textTheme.bodyLarge);
+            // Primary action on the right, like every other row in the
+            // app (site bar, front page, refund dialog) and the Android /
+            // iOS convention this ships on.
+            final buttons = Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                if (onBuild != null) ...[
+                  Expanded(
+                    flex: side ? 0 : 2,
+                    child: SizedBox(
+                      width: side ? 120 : null,
+                      child: OutlinedButton(
+                        onPressed: onClose,
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                        ),
+                        child: const Text('Later'),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    flex: side ? 0 : 3,
+                    child: SizedBox(
+                      width: side ? 200 : null,
+                      child: FilledButton(
+                        onPressed: onBuild,
+                        style: FilledButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          textStyle: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        child: const Text('Build it!'),
+                      ),
+                    ),
+                  ),
+                ] else
+                  Expanded(
+                    flex: side ? 0 : 1,
+                    child: SizedBox(
+                      width: side ? 220 : null,
+                      child: FilledButton(
+                        onPressed: onClose,
+                        style: FilledButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          textStyle: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        child: Text(
+                          beat.kind == BeatKind.praise ? 'Thanks!' : 'Got it',
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            );
+
+            final Widget content;
+            if (side) {
+              // Two columns: who it is from and the picture on the left,
+              // the words and the buttons on the right. A fixed height
+              // keeps both columns bounded without intrinsic measuring.
+              content = SizedBox(
+                width: 680,
+                height: (c.maxHeight - 40).clamp(200.0, 340.0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    SizedBox(
+                      width: 210,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          who,
+                          const SizedBox(height: 14),
+                          Expanded(
+                            child: target == null
+                                ? const SizedBox.shrink()
+                                : _PicturePanel(
+                                    building: target!,
+                                    onTap: onBuild,
+                                    fill: true,
+                                  ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 20),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(child: salutation),
+                              _speaker(ref),
+                            ],
+                          ),
+                          const SizedBox(height: 4),
+                          Expanded(child: SingleChildScrollView(child: body)),
+                          const SizedBox(height: 12),
+                          buttons,
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            } else {
+              content = ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 400),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    who,
+                    const SizedBox(height: 14),
+                    // Scrolls on a small phone rather than pushing the
+                    // buttons off the card.
+                    Flexible(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            salutation,
+                            const SizedBox(height: 4),
+                            body,
+                            if (target != null) ...[
+                              const SizedBox(height: 14),
+                              _PicturePanel(building: target!, onTap: onBuild),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    buttons,
+                  ],
+                ),
+              );
+            }
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Material(
+                  color: scheme.surface,
+                  elevation: 12,
+                  borderRadius: BorderRadius.circular(20),
+                  clipBehavior: Clip.antiAlias,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 18, 20, 16),
+                    child: content,
+                  ),
+                ),
+              ),
+            );
+          },
         ),
       ],
     );
   }
+
+  Widget _speaker(WidgetRef ref) => IconButton(
+    tooltip: 'Read it again',
+    onPressed: () => unawaited(speakIfEnabled(ref, spokenText)),
+    icon: const Icon(Icons.volume_up_rounded),
+  );
 
   /// What the voice reads: the salutation, then the sentence.
   String get spokenText => 'Dear Mayor $playerName, ${beat.longText}';
@@ -197,10 +276,13 @@ class LetterOverlay extends ConsumerWidget {
 /// as a fallback while the asset is missing. Tapping it does what *Build
 /// it!* does ([onTap]; null when the letter has nothing to build).
 class _PicturePanel extends StatelessWidget {
-  const _PicturePanel({required this.building, this.onTap});
+  const _PicturePanel({required this.building, this.onTap, this.fill = false});
 
   final BuildingType building;
   final VoidCallback? onTap;
+
+  /// Take the height given (a column on a side) instead of 120 dp.
+  final bool fill;
 
   @override
   Widget build(BuildContext context) {
@@ -208,7 +290,7 @@ class _PicturePanel extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: 120,
+        height: fill ? null : 120,
         decoration: BoxDecoration(
           color: scheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(12),
