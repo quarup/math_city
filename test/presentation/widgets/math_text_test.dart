@@ -60,5 +60,33 @@ void main() {
       expect(segs, hasLength(1));
       expect((segs.single as PlainSegment).text, 'the √ symbol');
     });
+
+    test('a blank becomes a box segment', () {
+      final segs = parseMathSegments('7 + ___ = 12');
+      expect(segs, hasLength(3));
+      final blank = segs[1] as BlankSegment;
+      expect((blank.start, blank.end), (4, 7));
+      expect((segs[2] as PlainSegment).start, 7);
+    });
+
+    test('a blank numerator stacks, with the other fractions', () {
+      final segs = parseMathSegments('2/3 = ___/6');
+      final fractions = segs.whereType<FractionSegment>().toList();
+      expect(fractions.map((f) => (f.numerator, f.denominator)), [
+        ('2', '3'),
+        (null, '6'),
+      ]);
+      expect((fractions[1].start, fractions[1].end), (6, 11));
+    });
+
+    test('fractions stay inline without a blank numerator', () {
+      final segs = parseMathSegments('3/4 × 3/4 = ?');
+      expect(segs.single, isA<PlainSegment>());
+    });
+
+    test('a decimal over a number is not a fraction', () {
+      final segs = parseMathSegments('___/6 vs 1.5/2');
+      expect(segs.whereType<FractionSegment>(), hasLength(1));
+    });
   });
 }

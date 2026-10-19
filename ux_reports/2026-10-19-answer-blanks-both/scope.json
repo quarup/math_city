@@ -1,0 +1,14 @@
+{
+  "scope": "fraction_a_over_b,equivalent_fractions_compute,fraction_denom_10_100,missing_addend_within_20,skip_count_2,commutative_mult,associative_mult",
+  "band": "both",
+  "limit": 0,
+  "ids": [
+    "fraction_a_over_b",
+    "equivalent_fractions_compute",
+    "fraction_denom_10_100",
+    "missing_addend_within_20",
+    "skip_count_2",
+    "commutative_mult",
+    "associative_mult"
+  ]
+}
