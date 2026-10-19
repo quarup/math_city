@@ -70,7 +70,35 @@ Details: [.claude/skills/ux-sweep/SKILL.md](.claude/skills/ux-sweep/SKILL.md).
 
 ## Licensing
 
-Every art/audio/font asset is CC0, CC-BY, or equivalent; every math dataset
-is MIT / Apache 2.0 / CC-BY / CC0. `CC-BY-NC` and `CC-BY-NC-SA` are excluded
-because app-store distribution carries non-zero commercial-use risk. Sources
-are tracked in [LICENSES_THIRD_PARTY.md](LICENSES_THIRD_PARTY.md).
+**Code: Apache License 2.0.** The source code in this repository is
+licensed under the [Apache License, Version 2.0](LICENSE): `lib/`,
+`test/`, `tools/`, the `android/` and `ios/` projects, and the build
+configuration.
+
+**Original artwork: all rights reserved.** The following is
+© 2026 quarup and is *not* covered by the Apache license:
+
+- the building and vehicle sprites (`assets/buildings/`, `assets/vehicles/`)
+  and their unprocessed source images (`tools/sprite_pipeline/raw/`,
+  `tools/sprite_pipeline/raw_sheets/`);
+- the wordmark, home-screen art and tile art (`assets/images/`);
+- the app icon and launch images under `android/app/src/main/res/` and
+  `ios/Runner/Assets.xcassets/`, and the drawing in
+  [tools/app_icon/build_icon.py](tools/app_icon/build_icon.py) that
+  produces them and the tile art;
+- any add-on art packs, which are not published in this repository.
+
+Screenshots of that artwork (for example under `ux_reports/`) are reserved
+the same way.
+
+**Name and logo.** "Math City", its wordmark and its icon identify this
+project. As section 6 of the Apache license says, the license grants no
+right to use them. A fork must use its own name and icon.
+
+**Third-party content keeps its own licence.** The bundled question
+datasets and the avatar art (DiceBear's *Adventurer* style) are listed with
+their licences and required credits in
+[LICENSES_THIRD_PARTY.md](LICENSES_THIRD_PARTY.md). Every third-party asset
+or dataset must be CC0, CC-BY, MIT, Apache 2.0 or equivalent; `CC-BY-NC` and
+`CC-BY-NC-SA` are excluded because app-store distribution carries
+non-zero commercial-use risk.
