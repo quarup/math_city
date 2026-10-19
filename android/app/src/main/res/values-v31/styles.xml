@@ -5,11 +5,16 @@
          home screen's intro (flat sky, the icon's house in the middle), so
          the hand-over is invisible. -->
     <style name="LaunchTheme" parent="@android:style/Theme.Light.NoTitleBar">
+        <!-- Same as NormalTheme, so the launch frame matches the first one. -->
+        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
         <item name="android:windowSplashScreenBackground">@color/launch_sky</item>
         <item name="android:windowSplashScreenAnimatedIcon">@drawable/launch_icon</item>
         <item name="android:windowBackground">@drawable/launch_background</item>
     </style>
     <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar">
         <item name="android:windowBackground">?android:colorBackground</item>
+        <!-- With the system bars hidden the window still draws into the
+             camera cutout's strip (otherwise it is letterboxed black). -->
+        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
     </style>
 </resources>
