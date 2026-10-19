@@ -264,7 +264,7 @@ All third-party content, assets, and libraries must be compatible with free non-
 - **Music & sound effects:** CC0 or royalty-free with no attribution required (e.g. OpenGameArt.org, Freesound.org with appropriate licenses).
 - **Fonts:** OFL (SIL Open Font License) or equivalent.
 - **Libraries/frameworks:** MIT, Apache 2.0, BSD, or similar permissive licenses.
-- **Math City's own licence:** the code is Apache 2.0; the original artwork, the name and the icon are reserved (README *Licensing*). This keeps paid add-on art packs possible later, though v1 stays free with no in-app purchases.
+- **Math City's own licence:** the code is Apache 2.0 and the base game's art is CC BY 4.0, so others may reuse both with credit. The name, wordmark and icon are reserved, and so is any paid add-on art (README *Licensing*). v1 stays free with no in-app purchases.
 
 ---
 

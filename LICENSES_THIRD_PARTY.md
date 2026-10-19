@@ -63,7 +63,7 @@ CC-BY-NC, CC-BY-NC-SA, and unclear-provenance content are excluded.
 - **Used in:** the player and citizen faces, embedded as path data in
   [lib/domain/avatar/adventurer_svg_data.dart](lib/domain/avatar/adventurer_svg_data.dart).
   That file and the art in it stay under these licences, not the
-  project's Apache 2.0 licence or its reserved-art terms.
+  project's own Apache 2.0 (code) or CC BY 4.0 (art) licences.
 - **Attribution owed:** CC BY 4.0 requires crediting the design to its
   author wherever the app is distributed. The app has no credits screen
   yet, so this needs one (or a credit in the store description) before

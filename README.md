@@ -75,25 +75,31 @@ licensed under the [Apache License, Version 2.0](LICENSE): `lib/`,
 `test/`, `tools/`, the `android/` and `ios/` projects, and the build
 configuration.
 
-**Original artwork: all rights reserved.** The following is
-© 2026 quarup and is *not* covered by the Apache license:
+**Original artwork: Creative Commons Attribution 4.0.** The game's own
+art is licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/):
+reuse it, change it, even sell it, as long as you credit
+"Math City (github.com/quarup/math_city)". That covers:
 
 - the building and vehicle sprites (`assets/buildings/`, `assets/vehicles/`)
   and their unprocessed source images (`tools/sprite_pipeline/raw/`,
   `tools/sprite_pipeline/raw_sheets/`);
-- the wordmark, home-screen art and tile art (`assets/images/`);
-- the app icon and launch images under `android/app/src/main/res/` and
-  `ios/Runner/Assets.xcassets/`, and the drawing in
-  [tools/app_icon/build_icon.py](tools/app_icon/build_icon.py) that
-  produces them and the tile art;
-- any add-on art packs, which are not published in this repository.
+- the home-screen art and the intro's tile art (`assets/images/`), except
+  the items reserved below;
+- screenshots of that art (for example under `ux_reports/`).
 
-Screenshots of that artwork (for example under `ux_reports/`) are reserved
-the same way.
+**Name and icon: reserved.** "Math City", the wordmark
+(`assets/images/math_city_wordmark.png`) and the app icon are © 2026 quarup,
+all rights reserved, and are not covered by either licence. The icon includes
+the house tile it is drawn from (`assets/images/tiles/house.svg`), the
+launcher icons and launch images under `android/app/src/main/res/` and
+`ios/Runner/Assets.xcassets/`, and the icon drawing in
+[tools/app_icon/build_icon.py](tools/app_icon/build_icon.py). As section 6
+of the Apache license and section 2(b)(2) of CC BY 4.0 both say, neither
+licence grants trademark rights. A fork or a game reusing the art must use
+its own name and icon.
 
-**Name and logo.** "Math City", its wordmark and its icon identify this
-project. As section 6 of the Apache license says, the license grants no
-right to use them. A fork must use its own name and icon.
+**Add-on packs.** Any paid art packs are separate, all rights reserved,
+and are not published in this repository.
 
 **Third-party content keeps its own licence.** The bundled question
 datasets and the avatar art (DiceBear's *Adventurer* style) are listed with
