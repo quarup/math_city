@@ -47,11 +47,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   /// Flat sky behind the OS launch icon; the top of the sky gradient.
   static const _launchSky = Color(0xFF5DB7E8);
 
-  /// Height of the painted city band along the bottom edge. On a side the
-  /// band is low and the painting shows end to end; upright it is taller
-  /// and the painting's middle fills it.
-  static const double kSideStripHeight = 92;
-  static const double kUprightStripHeight = 150;
+  /// The painted city's width over its height, read from the image once
+  /// it has resolved (the shipped file's ratio until then). The band
+  /// along the bottom edge is sized from it: on a side the painting shows
+  /// end to end; upright the band shows [kUprightStripFraction] of it,
+  /// the middle part, so it stays low and the stickers keep the sky.
+  double _stripAspect = 5000 / 420;
+  static const double kUprightStripFraction = 0.45;
+
+  double stripHeightFor(Size size, {required bool onSide}) => onSide
+      ? (size.width / _stripAspect).clamp(60.0, 110.0)
+      : (size.width / (kUprightStripFraction * _stripAspect)).clamp(
+          60.0,
+          150.0,
+        );
 
   late final AnimationController _intro;
 
@@ -94,6 +103,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     super.initState();
     // Tells the UX-sweep harness a question can be pushed now.
     DebugHarness.instance.markHomeReady();
+    _resolveStripAspect();
     _intro = AnimationController(
       vsync: this,
       duration: _introDuration,
@@ -111,6 +121,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     await WidgetsBinding.instance.waitUntilFirstFrameRasterized;
     await Future<void>.delayed(const Duration(milliseconds: 250));
     if (mounted) await _intro.forward();
+  }
+
+  /// Reads the painting's size so the band can follow its aspect.
+  void _resolveStripAspect() {
+    final stream = const AssetImage(
+      'assets/images/math_city_bottom.png',
+    ).resolve(ImageConfiguration.empty);
+    late final ImageStreamListener listener;
+    listener = ImageStreamListener((info, _) {
+      stream.removeListener(listener);
+      final image = info.image;
+      final aspect = image.width / image.height;
+      image.dispose();
+      if (mounted && aspect != _stripAspect) {
+        setState(() => _stripAspect = aspect);
+      }
+    }, onError: (_, _) => stream.removeListener(listener));
+    stream.addListener(listener);
   }
 
   @override
@@ -155,6 +183,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           builder: (context, constraints) {
             final size = constraints.biggest;
             final onSide = isOnSide(constraints);
+            final stripHeight = stripHeightFor(size, onSide: onSide);
             // Frame zero: the patch's centre box sits where the OS drew the
             // launch icon, the middle of the screen. It then glides towards
             // the bottom edge, shrinking and fading, and hands the ground
@@ -178,7 +207,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                   left: 0,
                   right: 0,
                   bottom: 0,
-                  height: onSide ? kSideStripHeight : kUprightStripHeight,
+                  height: stripHeight,
                   child: FadeTransition(
                     opacity: _strip,
                     child: Image.asset(
@@ -226,7 +255,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                       24,
                       onSide ? 16 : 24,
                       24,
-                      onSide ? kSideStripHeight + 8 : 24,
+                      onSide ? stripHeight + 8 : 24,
                     ),
                     child: onSide
                         ? _onSide(theme, allAsync, activeId)

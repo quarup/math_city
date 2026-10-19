@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
-/// How the hand moves: a tap bobs in place; a fling slides across and
+/// How the hand moves: a tap bobs in place, pointing down at the thing
+/// below it or sideways at the thing beside it; a fling slides across and
 /// fades, over and over.
-enum CoachHandMode { tap, fling }
+enum CoachHandMode { tap, tapRight, fling }
 
 /// The one-time gesture hint of city_builder.md §10.4: an animated hand
 /// that shows the kid what to do — tap here, fling this — instead of a
@@ -22,9 +23,9 @@ class _CoachHandState extends State<CoachHand>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller = AnimationController(
     vsync: this,
-    duration: widget.mode == CoachHandMode.tap
-        ? const Duration(milliseconds: 900)
-        : const Duration(milliseconds: 1400),
+    duration: widget.mode == CoachHandMode.fling
+        ? const Duration(milliseconds: 1400)
+        : const Duration(milliseconds: 900),
   )..repeat();
 
   @override
@@ -35,9 +36,14 @@ class _CoachHandState extends State<CoachHand>
 
   @override
   Widget build(BuildContext context) {
-    // A tap points down at the thing below it; a fling sweeps sideways.
+    // A tap points down at the thing below it (or right, at the thing
+    // beside it); a fling sweeps sideways.
     final hand = Text(
-      widget.mode == CoachHandMode.tap ? '👇' : '👆',
+      switch (widget.mode) {
+        CoachHandMode.tap => '👇',
+        CoachHandMode.tapRight => '👉',
+        CoachHandMode.fling => '👆',
+      },
       style: TextStyle(
         fontSize: widget.size,
         shadows: const [Shadow(blurRadius: 8, color: Colors.black54)],
@@ -48,13 +54,18 @@ class _CoachHandState extends State<CoachHand>
         animation: _controller,
         builder: (context, child) {
           final t = _controller.value;
-          if (widget.mode == CoachHandMode.tap) {
-            // Press down and lift: a dip with a small squash at the bottom.
+          if (widget.mode != CoachHandMode.fling) {
+            // Press and lift: a dip towards the target with a small
+            // squash at the end — downwards, or sideways for a thing
+            // beside the hand.
             final dip = Curves.easeInOut.transform(
               t < 0.5 ? t * 2 : (1 - t) * 2,
             );
+            final offset = widget.mode == CoachHandMode.tap
+                ? Offset(0, 14 * dip)
+                : Offset(14 * dip, 0);
             return Transform.translate(
-              offset: Offset(0, 14 * dip),
+              offset: offset,
               child: Transform.scale(scale: 1 - 0.12 * dip, child: child),
             );
           }

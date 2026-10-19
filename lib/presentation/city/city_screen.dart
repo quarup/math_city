@@ -2614,14 +2614,13 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                           child: CoachHand(mode: CoachHandMode.tap),
                         ),
                       ),
+                    // On a side the card is in the rail: the hand stands
+                    // beside it, pointing right.
                     if (showRequestHint && railUp)
                       const Positioned(
-                        right: _kBarPadding - 4,
-                        width: _kBarCardWidth,
-                        top: 36,
-                        child: Center(
-                          child: CoachHand(mode: CoachHandMode.tap),
-                        ),
+                        right: _kRailWidth + 2,
+                        top: 12 + (_kCatalogBarHeight - 24) / 2 - 26,
+                        child: CoachHand(mode: CoachHandMode.tapRight),
                       ),
                     // The letters and the celebration sit above every
                     // bar: a modal card is never half hidden under the
@@ -2783,9 +2782,7 @@ class _ZoomedBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Material(
-      elevation: 8,
-      color: theme.colorScheme.surfaceContainer,
+    return _BarSurface(
       child: SafeArea(
         top: false,
         child: Padding(
@@ -2818,23 +2815,42 @@ class _ZoomedBar extends StatelessWidget {
 /// A bar as a card floating over the map (a phone on its side): rounded,
 /// and without the bottom padding a bar along the screen edge keeps for
 /// the system's gesture area.
-class _FloatingBar extends StatelessWidget {
-  const _FloatingBar({required this.child});
+class _FloatingBar extends InheritedWidget {
+  const _FloatingBar({required super.child});
+
+  /// Whether the bar being built floats (rounded corners) rather than
+  /// running along the screen edge.
+  static bool of(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<_FloatingBar>() != null;
+
+  @override
+  bool updateShouldNotify(_FloatingBar oldWidget) => false;
+}
+
+/// Every bar's surface: elevated, in the container colour; rounded when
+/// it floats. Never clipped, so a coach hand standing above a button can
+/// poke out over the bar's top edge.
+class _BarSurface extends StatelessWidget {
+  const _BarSurface({required this.child});
 
   final Widget child;
 
   @override
-  Widget build(BuildContext context) => Material(
-    elevation: 8,
-    borderRadius: BorderRadius.circular(18),
-    clipBehavior: Clip.antiAlias,
-    color: Theme.of(context).colorScheme.surfaceContainer,
-    child: MediaQuery.removePadding(
-      context: context,
-      removeBottom: true,
-      child: child,
-    ),
-  );
+  Widget build(BuildContext context) {
+    final floating = _FloatingBar.of(context);
+    return Material(
+      elevation: 8,
+      color: Theme.of(context).colorScheme.surfaceContainer,
+      borderRadius: floating ? BorderRadius.circular(18) : null,
+      child: floating
+          ? MediaQuery.removePadding(
+              context: context,
+              removeBottom: true,
+              child: child,
+            )
+          : child,
+    );
+  }
 }
 
 /// The way out of a zoomed site on a side: a glass chip beside the site's
@@ -3326,9 +3342,7 @@ class _BuildingBar extends StatelessWidget {
     final detail = pop > 0
         ? 'Room for $pop ${pop == 1 ? 'person' : 'people'}'
         : type.category.displayName;
-    return Material(
-      elevation: 8,
-      color: theme.colorScheme.surfaceContainer,
+    return _BarSurface(
       child: SafeArea(
         top: false,
         child: Padding(
@@ -3448,9 +3462,7 @@ class _GrowBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final price = upgradeDeltaPrice(source: source, target: target);
-    return Material(
-      elevation: 8,
-      color: theme.colorScheme.surfaceContainer,
+    return _BarSurface(
       child: SafeArea(
         top: false,
         child: Padding(
@@ -3541,9 +3553,7 @@ class _MoveModeBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Material(
-      elevation: 8,
-      color: theme.colorScheme.surfaceContainer,
+    return _BarSurface(
       child: SafeArea(
         top: false,
         child: Padding(
@@ -3599,9 +3609,7 @@ class _ChooseLocationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Material(
-      elevation: 8,
-      color: theme.colorScheme.surfaceContainer,
+    return _BarSurface(
       child: SafeArea(
         top: false,
         child: Padding(
@@ -3661,9 +3669,7 @@ class _PlaceHereBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Material(
-      elevation: 8,
-      color: theme.colorScheme.surfaceContainer,
+    return _BarSurface(
       child: SafeArea(
         top: false,
         child: Padding(
@@ -3755,9 +3761,7 @@ class _StakeLandBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Material(
-      elevation: 8,
-      color: theme.colorScheme.surfaceContainer,
+    return _BarSurface(
       child: SafeArea(
         top: false,
         child: Padding(
@@ -3803,9 +3807,7 @@ class _ExpandBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Material(
-      elevation: 8,
-      color: theme.colorScheme.surfaceContainer,
+    return _BarSurface(
       child: SafeArea(
         top: false,
         child: Padding(
@@ -3934,9 +3936,7 @@ class _StartLandSiteBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Material(
-      elevation: 8,
-      color: theme.colorScheme.surfaceContainer,
+    return _BarSurface(
       child: SafeArea(
         top: false,
         child: Padding(
@@ -4022,9 +4022,7 @@ class _SiteBar extends StatelessWidget {
     final palette = theme.extension<AppPalette>()!;
     final usable = credit < site.site.remaining ? credit : site.site.remaining;
     final paid = site.site.paidCoins;
-    return Material(
-      elevation: 8,
-      color: theme.colorScheme.surfaceContainer,
+    return _BarSurface(
       child: SafeArea(
         top: false,
         child: Padding(
@@ -4322,9 +4320,7 @@ class _BuildBar extends StatelessWidget {
     ];
 
     if (vertical) {
-      return Material(
-        elevation: 8,
-        color: theme.colorScheme.surfaceContainer,
+      return _BarSurface(
         child: cards.isEmpty
             ? Center(
                 child: Padding(
@@ -4352,9 +4348,7 @@ class _BuildBar extends StatelessWidget {
               ),
       );
     }
-    return Material(
-      elevation: 8,
-      color: theme.colorScheme.surfaceContainer,
+    return _BarSurface(
       child: SafeArea(
         top: false,
         child: SizedBox(
