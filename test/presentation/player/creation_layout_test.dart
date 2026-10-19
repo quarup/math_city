@@ -84,11 +84,7 @@ void main() {
         await pump(
           tester,
           size,
-          NameStep(
-            avatar: const AdventurerConfig(),
-            onNext: (_) {},
-            onType: () {},
-          ),
+          NameStep(avatar: const AdventurerConfig(), onNext: (_) {}),
         );
         expect(tester.takeException(), isNull);
         expect(find.text('Type my own name'), findsOneWidget);

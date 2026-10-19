@@ -10,7 +10,7 @@ import 'package:math_city/presentation/player/grade_step.dart';
 import 'package:math_city/presentation/player/name_step.dart';
 import 'package:math_city/state/player_provider.dart';
 
-enum _Step { lineup, look, grade, name, typeName }
+enum _Step { lineup, look, grade, name }
 
 /// Creating a new player, one question per screen: pick a face from a
 /// lineup and tune it, say your school grade, choose a name. The avatar
@@ -51,8 +51,6 @@ class _PlayerCreationFlowState extends ConsumerState<PlayerCreationFlow> {
         _go(_Step.look);
       case _Step.name:
         _go(_Step.grade);
-      case _Step.typeName:
-        _go(_Step.name);
     }
   }
 
@@ -115,13 +113,6 @@ class _PlayerCreationFlowState extends ConsumerState<PlayerCreationFlow> {
         key: const ValueKey('name'),
         avatar: _config,
         onBack: _back,
-        onType: () => _go(_Step.typeName),
-        onNext: _create,
-      ),
-      _Step.typeName => TypeNameStep(
-        key: const ValueKey('typeName'),
-        avatar: _config,
-        onCancel: _back,
         onNext: _create,
       ),
     };

@@ -227,6 +227,7 @@ class HeroLead extends StatelessWidget {
     required this.config,
     this.portraitSize = 196,
     this.badge,
+    this.reserveBadge = false,
     super.key,
   });
 
@@ -234,15 +235,23 @@ class HeroLead extends StatelessWidget {
   final double portraitSize;
   final Widget? badge;
 
+  /// Keep the badge's room when [badge] is null, so nothing jumps when
+  /// it appears.
+  final bool reserveBadge;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final band = theme.colorScheme.surfaceContainerLow;
+    final hasBadge = badge != null || reserveBadge;
     Widget stacked(double size) => Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         AvatarThumb(config: config, size: size),
-        if (badge != null) ...[const SizedBox(height: 8), badge!],
+        if (hasBadge) ...[
+          const SizedBox(height: 8),
+          SizedBox(height: 36, child: Center(child: badge)),
+        ],
       ],
     );
     return LayoutBuilder(
@@ -265,9 +274,9 @@ class HeroLead extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 8),
           child: LayoutBuilder(
             builder: (context, b) {
-              final reserve = badge == null ? 0.0 : 48.0;
+              final reserve = hasBadge ? 48.0 : 0.0;
               final fit = min(b.maxWidth - 40, b.maxHeight - 16 - reserve);
-              if (fit >= 56 || badge == null) {
+              if (fit >= 56 || !hasBadge) {
                 return Center(child: stacked(fit.clamp(40.0, 260.0)));
               }
               final side = (b.maxHeight - 16).clamp(0.0, 80.0);
@@ -279,7 +288,7 @@ class HeroLead extends StatelessWidget {
                       AvatarThumb(config: config, size: side),
                       const SizedBox(width: 12),
                     ],
-                    badge!,
+                    SizedBox(height: 36, child: Center(child: badge)),
                   ],
                 ),
               );

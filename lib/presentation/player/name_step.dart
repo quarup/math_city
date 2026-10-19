@@ -21,13 +21,15 @@ String buildMyCityLabel(String name) => 'Build my city!';
 
 /// Step 3: five famous mathematicians to borrow a surname from, a speaker
 /// to hear each one, *More names* for another hand, and *Type my own
-/// name* for the kid who wants their own.
+/// name*, which opens the keyboard screen and comes back here with the
+/// typed name chosen: the button itself then shows the name, ringed like
+/// a chosen tile, until a mathematician is tapped instead. The gold badge
+/// under the face appears once a name is chosen.
 class NameStep extends ConsumerStatefulWidget {
   const NameStep({
     required this.avatar,
     required this.onNext,
-    required this.onType,
-    this.initial,
+    this.initialName,
     this.onBack,
     this.step = 3,
     this.doneLabel = buildMyCityLabel,
@@ -36,10 +38,10 @@ class NameStep extends ConsumerStatefulWidget {
 
   final AdventurerConfig avatar;
 
-  /// A name to show as already chosen (editing an existing player).
-  final String? initial;
+  /// The player's current name when editing; shown on the own-name
+  /// button, already chosen.
+  final String? initialName;
   final ValueChanged<String> onNext;
-  final VoidCallback onType;
   final VoidCallback? onBack;
   final int? step;
   final NameDoneLabel doneLabel;
@@ -51,10 +53,16 @@ class NameStep extends ConsumerStatefulWidget {
 class _NameStepState extends ConsumerState<NameStep> {
   static const _handSize = 5;
   static const _gap = 8.0;
+  static const _buttonH = 46.0;
 
   final _deck = NameDeck();
   late List<MathematicianName> _hand = _deck.next(_handSize);
-  late String? _picked = widget.initial;
+
+  /// The name the kid typed, if any; kept to prefill the keyboard.
+  late String? _typed = widget.initialName;
+
+  /// The chosen name: a tile from the hand, or [_typed].
+  late String? _chosen = widget.initialName;
 
   // Read once: `ref` is off limits in dispose.
   late final TtsService _tts;
@@ -73,7 +81,8 @@ class _NameStepState extends ConsumerState<NameStep> {
 
   void _more() => setState(() {
     _hand = _deck.next(_handSize);
-    _picked = null;
+    // A chosen mathematician leaves with the hand; a typed name stays.
+    if (_chosen != _typed) _chosen = null;
   });
 
   void _hear(String name) {
@@ -83,11 +92,31 @@ class _NameStepState extends ConsumerState<NameStep> {
     unawaited(_tts.speak(name, owner: this));
   }
 
+  /// Opens the keyboard screen; Enter (or its button) comes back here
+  /// with the typed name chosen, Cancel comes back unchanged.
+  Future<void> _type() async {
+    final typed = await Navigator.of(context).push<String>(
+      MaterialPageRoute(
+        builder: (context) => TypeNameStep(
+          avatar: widget.avatar,
+          initial: _typed,
+          step: widget.step,
+          onNext: (name) => Navigator.of(context).pop(name),
+          onCancel: () => Navigator.of(context).pop(),
+        ),
+      ),
+    );
+    if (typed == null || !mounted) return;
+    setState(() {
+      _typed = typed;
+      _chosen = typed;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final palette = theme.extension<AppPalette>()!;
-    final picked = _picked;
+    final chosen = _chosen;
+    final typed = _typed;
     return StepScaffold(
       step: widget.step,
       onBack: widget.onBack,
@@ -95,149 +124,247 @@ class _NameStepState extends ConsumerState<NameStep> {
       hero: HeroLead(
         config: widget.avatar,
         portraitSize: 88,
-        badge: MayorBadge(name: picked),
+        badge: chosen == null ? null : MayorBadge(name: chosen),
+        reserveBadge: true,
       ),
       content: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+        padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
         child: LayoutBuilder(
           builder: (context, c) {
-            final rowH =
-                ((c.maxHeight - _gap * (_handSize - 1) - 6) / _handSize).clamp(
-                  40.0,
+            final wide = c.maxWidth > c.maxHeight;
+            final rows = _hand.length;
+            // The two buttons sit under the list: side by side on a wide
+            // panel, stacked on a narrow one.
+            final buttonsH = wide ? _buttonH : _buttonH * 2 + _gap;
+            final gap = wide ? 6.0 : _gap;
+            final rowH = ((c.maxHeight - buttonsH - gap * rows - 6) / rows)
+                .clamp(
+                  34.0,
                   60.0,
                 );
+            final more = RowButton(
+              label: 'More names',
+              icon: Icons.shuffle_rounded,
+              onPressed: _more,
+            );
+            final ownChosen = typed != null && chosen == typed;
+            final type = ownChosen
+                ? _ChosenOwnName(name: typed, onPressed: _type)
+                : RowButton(
+                    label: 'Type my own name',
+                    icon: Icons.keyboard_alt_outlined,
+                    onPressed: _type,
+                  );
             return Column(
               children: [
                 for (final (i, n) in _hand.indexed) ...[
-                  if (i > 0) const SizedBox(height: _gap),
+                  if (i > 0) SizedBox(height: gap),
                   SizedBox(
                     height: rowH,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: _NameTile(
-                            name: n,
-                            showFact: rowH >= 50,
-                            selected: picked == n.name,
-                            onTap: () => setState(() => _picked = n.name),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        SizedBox(
-                          width: 48,
-                          child: OutlinedButton(
-                            onPressed: () => _hear(n.name),
-                            style: OutlinedButton.styleFrom(
-                              padding: EdgeInsets.zero,
-                              foregroundColor: palette.brandTealDeep,
-                              side: BorderSide(
-                                color: theme.colorScheme.surfaceContainerHigh,
-                                width: 2,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14),
-                              ),
-                            ),
-                            child: Semantics(
-                              label: 'Hear ${n.name}',
-                              child: const Icon(
-                                Icons.volume_up_rounded,
-                                size: 20,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                    child: _NameRow(
+                      name: n,
+                      selected: chosen == n.name,
+                      showFact: rowH >= 44,
+                      onTap: () => setState(() => _chosen = n.name),
+                      onHear: () => _hear(n.name),
                     ),
                   ),
+                ],
+                SizedBox(height: gap),
+                if (wide)
+                  Row(
+                    children: [
+                      Expanded(child: more),
+                      const SizedBox(width: _gap),
+                      Expanded(child: type),
+                    ],
+                  )
+                else ...[
+                  more,
+                  const SizedBox(height: _gap),
+                  type,
                 ],
               ],
             );
           },
         ),
       ),
-      actions: [
-        RowButton(
-          label: 'More names',
-          icon: Icons.shuffle_rounded,
-          onPressed: _more,
-        ),
-        RowButton(
-          label: 'Type my own name',
-          icon: Icons.keyboard_alt_outlined,
-          onPressed: widget.onType,
-        ),
-      ],
       footer: PrimaryButton(
-        label: picked == null ? 'Choose a name' : widget.doneLabel(picked),
-        onPressed: picked == null ? null : () => widget.onNext(picked),
+        label: chosen == null ? 'Choose a name' : widget.doneLabel(chosen),
+        onPressed: chosen == null ? null : () => widget.onNext(chosen),
       ),
     );
   }
 }
 
-class _NameTile extends StatelessWidget {
-  const _NameTile({
-    required this.name,
-    required this.showFact,
+/// A name tile with its side button (a speaker, or a pencil for the
+/// typed name).
+class _Tile extends StatelessWidget {
+  const _Tile({
+    required this.title,
+    required this.subtitle,
     required this.selected,
     required this.onTap,
+    required this.sideIcon,
+    required this.sideLabel,
+    required this.onSide,
+  });
+
+  final String title;
+  final Widget? subtitle;
+  final bool selected;
+  final VoidCallback onTap;
+  final IconData sideIcon;
+  final String sideLabel;
+  final VoidCallback onSide;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final palette = theme.extension<AppPalette>()!;
+    return Row(
+      children: [
+        Expanded(
+          child: Semantics(
+            button: true,
+            selected: selected,
+            label: title,
+            child: GestureDetector(
+              onTap: onTap,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 120),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 2,
+                ),
+                decoration: BoxDecoration(
+                  color: selected
+                      ? theme.colorScheme.primaryContainer
+                      : Colors.white,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    width: 3,
+                    color: selected
+                        ? palette.brandTealDeep
+                        : theme.colorScheme.surfaceContainerHigh,
+                  ),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w800,
+                        height: 1.1,
+                      ),
+                    ),
+                    ?subtitle,
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(width: 8),
+        SizedBox(
+          width: 48,
+          height: double.infinity,
+          child: OutlinedButton(
+            onPressed: onSide,
+            style: OutlinedButton.styleFrom(
+              padding: EdgeInsets.zero,
+              foregroundColor: palette.brandTealDeep,
+              side: BorderSide(
+                color: theme.colorScheme.surfaceContainerHigh,
+                width: 2,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
+            ),
+            child: Semantics(label: sideLabel, child: Icon(sideIcon, size: 20)),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _NameRow extends StatelessWidget {
+  const _NameRow({
+    required this.name,
+    required this.selected,
+    required this.showFact,
+    required this.onTap,
+    required this.onHear,
   });
 
   final MathematicianName name;
-  final bool showFact;
   final bool selected;
+  final bool showFact;
   final VoidCallback onTap;
+  final VoidCallback onHear;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return _Tile(
+      title: name.name,
+      // Lighter on purpose: a hook for the kid who reads it, easy to
+      // skip for the one who doesn't.
+      subtitle: showFact
+          ? Text(
+              name.fact,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.outline,
+                fontWeight: FontWeight.w600,
+              ),
+            )
+          : null,
+      selected: selected,
+      onTap: onTap,
+      sideIcon: Icons.volume_up_rounded,
+      sideLabel: 'Hear ${name.name}',
+      onSide: onHear,
+    );
+  }
+}
+
+/// The *Type my own name* button while the typed name is the chosen
+/// one: ringed and tinted like a chosen tile, showing the name. Tapping
+/// it reopens the keyboard with the name to change.
+class _ChosenOwnName extends StatelessWidget {
+  const _ChosenOwnName({required this.name, required this.onPressed});
+
+  final String name;
+  final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final palette = theme.extension<AppPalette>()!;
-    return Semantics(
-      button: true,
-      selected: selected,
-      label: name.name,
-      child: GestureDetector(
-        onTap: onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 120),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
-          decoration: BoxDecoration(
-            color: selected ? theme.colorScheme.primaryContainer : Colors.white,
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(
-              width: 3,
-              color: selected
-                  ? palette.brandTealDeep
-                  : theme.colorScheme.surfaceContainerHigh,
-            ),
+    return SizedBox(
+      width: double.infinity,
+      height: 46,
+      child: OutlinedButton.icon(
+        onPressed: onPressed,
+        icon: const Icon(Icons.keyboard_alt_outlined, size: 20),
+        label: Text(name, overflow: TextOverflow.ellipsis),
+        style: OutlinedButton.styleFrom(
+          backgroundColor: theme.colorScheme.primaryContainer,
+          foregroundColor: theme.colorScheme.onSurface,
+          side: BorderSide(color: palette.brandTealDeep, width: 3),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                name.name,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w800,
-                  height: 1.1,
-                ),
-              ),
-              // Lighter on purpose: a hook for the kid who reads it, easy to
-              // skip for the one who doesn't.
-              if (showFact)
-                Text(
-                  name.fact,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.outline,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-            ],
+          textStyle: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.w800,
           ),
         ),
       ),
@@ -245,17 +372,16 @@ class _NameTile extends StatelessWidget {
   }
 }
 
-/// The gold "Mayor …" badge ("Mayor ?" until a name is chosen).
+/// The gold "Mayor …" badge.
 class MayorBadge extends StatelessWidget {
   const MayorBadge({required this.name, super.key});
 
-  final String? name;
+  final String name;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final palette = theme.extension<AppPalette>()!;
-    final shown = name == null || name!.trim().isEmpty ? '?' : name!.trim();
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 5),
       decoration: BoxDecoration(
@@ -264,7 +390,7 @@ class MayorBadge extends StatelessWidget {
         border: Border.all(color: palette.coinGoldDeep, width: 2),
       ),
       child: Text(
-        'Mayor $shown',
+        'Mayor ${name.trim()}',
         style: theme.textTheme.titleMedium?.copyWith(
           fontWeight: FontWeight.w800,
           color: palette.tileInk,
@@ -274,11 +400,11 @@ class MayorBadge extends StatelessWidget {
   }
 }
 
-/// The typing screen behind *Type my own name*: just the badge, one text
-/// box and *Cancel*. Kept apart from the name list so the two ways of
-/// choosing never share a screen. The keyboard covers the bottom of the
-/// screen rather than squeezing it: the box sits at the top of its pane,
-/// and the keyboard's own done key submits.
+/// The keyboard screen behind *Type my own name*: the badge, one text
+/// box and *Cancel*. It never saves: Enter, or its button, hands the name
+/// back to the list, where it is chosen and can still be swapped for a
+/// mathematician. The keyboard covers the bottom rather than squeezing
+/// the screen, since the box sits at the top of its pane.
 class TypeNameStep extends StatefulWidget {
   const TypeNameStep({
     required this.avatar,
@@ -286,7 +412,6 @@ class TypeNameStep extends StatefulWidget {
     required this.onCancel,
     this.initial,
     this.step = 3,
-    this.doneLabel = buildMyCityLabel,
     super.key,
   });
 
@@ -295,7 +420,6 @@ class TypeNameStep extends StatefulWidget {
   final ValueChanged<String> onNext;
   final VoidCallback onCancel;
   final int? step;
-  final NameDoneLabel doneLabel;
 
   @override
   State<TypeNameStep> createState() => _TypeNameStepState();
@@ -331,7 +455,8 @@ class _TypeNameStepState extends State<TypeNameStep> {
       hero: HeroLead(
         config: widget.avatar,
         portraitSize: 110,
-        badge: MayorBadge(name: typed),
+        badge: typed.isEmpty ? null : MayorBadge(name: typed),
+        reserveBadge: true,
       ),
       content: GestureDetector(
         behavior: HitTestBehavior.opaque,
@@ -392,7 +517,7 @@ class _TypeNameStepState extends State<TypeNameStep> {
         ),
       ),
       footer: PrimaryButton(
-        label: typed.isEmpty ? 'Type a name' : widget.doneLabel(typed),
+        label: typed.isEmpty ? 'Type a name' : 'Use this name',
         onPressed: typed.isEmpty ? null : _submit,
       ),
     );

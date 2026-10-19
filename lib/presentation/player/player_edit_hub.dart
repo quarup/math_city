@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_city/data/database.dart';
-import 'package:math_city/domain/avatar/adventurer_config.dart';
 import 'package:math_city/presentation/player/avatar_editor_step.dart';
 import 'package:math_city/presentation/player/creation_chrome.dart';
 import 'package:math_city/presentation/player/grade_step.dart';
@@ -69,10 +68,13 @@ class _PlayerEditHubState extends ConsumerState<PlayerEditHub> {
     }
 
     await _push(
-      _NameEditor(
+      NameStep(
         avatar: _player.avatar,
-        initial: _player.name,
-        onSave: save,
+        initialName: _player.name,
+        step: null,
+        doneLabel: (_) => 'Save',
+        onBack: () => Navigator.of(context).pop(),
+        onNext: save,
       ),
     );
     await _reload();
@@ -186,50 +188,6 @@ class _PlayerEditHubState extends ConsumerState<PlayerEditHub> {
           child: const Text('Done'),
         ),
       ),
-    );
-  }
-}
-
-/// The name screen and its typing screen, as one route that swaps
-/// between them, so *Cancel* on the keyboard screen returns to the list.
-class _NameEditor extends StatefulWidget {
-  const _NameEditor({
-    required this.avatar,
-    required this.initial,
-    required this.onSave,
-  });
-
-  final AdventurerConfig avatar;
-  final String initial;
-  final ValueChanged<String> onSave;
-
-  @override
-  State<_NameEditor> createState() => _NameEditorState();
-}
-
-class _NameEditorState extends State<_NameEditor> {
-  bool _typing = false;
-
-  @override
-  Widget build(BuildContext context) {
-    String save(String _) => 'Save';
-    if (_typing) {
-      return TypeNameStep(
-        avatar: widget.avatar,
-        initial: widget.initial,
-        step: null,
-        doneLabel: save,
-        onCancel: () => setState(() => _typing = false),
-        onNext: widget.onSave,
-      );
-    }
-    return NameStep(
-      avatar: widget.avatar,
-      step: null,
-      doneLabel: save,
-      onBack: () => Navigator.of(context).pop(),
-      onType: () => setState(() => _typing = true),
-      onNext: widget.onSave,
     );
   }
 }
