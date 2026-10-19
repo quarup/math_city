@@ -60,10 +60,15 @@ class SpinOverlay extends ConsumerStatefulWidget {
   const SpinOverlay({
     required this.onBlockStart,
     this.recap,
+    this.onLeave,
     this.side = false,
     this.bottomClear = 0,
     super.key,
   });
+
+  /// A tap beside the wheel (on its canvas, off the disc): the player
+  /// wants out. Taps on the city itself reach the city and leave too.
+  final VoidCallback? onLeave;
 
   final void Function(
     String conceptId,
@@ -157,6 +162,7 @@ class _SpinOverlayState extends ConsumerState<SpinOverlay> {
         skyTop: palette.skyGradientStart,
         skyBottom: palette.skyGradientEnd,
         showBackdrop: false,
+        onTapOutside: widget.onLeave,
         onThrow: () {
           if (mounted && _recapVisible) setState(() => _recapVisible = false);
           // The first real fling retires the hand for good.

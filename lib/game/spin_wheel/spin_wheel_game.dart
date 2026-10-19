@@ -29,7 +29,7 @@ import 'package:math_city/game/spin_wheel/spin_wheel_component.dart';
 ///     [_minBoostVelocity]) but no concept is selected — prevents "cheating"
 ///     by nudging the wheel to a desired segment.
 ///   - Throws above [_maxAngularVelocity] are clamped.
-class SpinWheelGame extends FlameGame with DragCallbacks {
+class SpinWheelGame extends FlameGame with DragCallbacks, TapCallbacks {
   SpinWheelGame({
     required this.onConceptSelected,
     required List<WheelSegment> segments,
@@ -37,6 +37,7 @@ class SpinWheelGame extends FlameGame with DragCallbacks {
     required this.skyBottom,
     this.showBackdrop = true,
     this.onThrow,
+    this.onTapOutside,
     math.Random? random,
   }) : _segments = segments,
        _random = random ?? math.Random();
@@ -46,6 +47,10 @@ class SpinWheelGame extends FlameGame with DragCallbacks {
   /// Fired when a throw is strong enough to select — the host can clear
   /// anything sitting over the wheel before the spin effect kicks in.
   final VoidCallback? onThrow;
+
+  /// A tap on the canvas that misses the wheel: the host treats it as
+  /// "I'm done here" and leaves. Not while a selecting spin is running.
+  final VoidCallback? onTapOutside;
   final List<WheelSegment> _segments;
   final math.Random _random;
   final Color skyTop;
@@ -184,6 +189,21 @@ class SpinWheelGame extends FlameGame with DragCallbacks {
   /// True when the wheel can't be touched: a selecting spin is under way,
   /// or the wheel has already landed on its concept.
   bool get _spinLocked => _landed || (_wheel.isSpinning && _wheel.willSelect);
+
+  /// Whether a canvas point is on the wheel (its disc plus the pointer
+  /// above it), as opposed to the empty canvas around it.
+  bool isOnWheel(Vector2 canvasPoint) {
+    final d = canvasPoint - _wheel.wheelCenter;
+    final r = _wheel.radius * 1.12;
+    return d.x * d.x + d.y * d.y <= r * r;
+  }
+
+  @override
+  void onTapUp(TapUpEvent event) {
+    super.onTapUp(event);
+    if (_spinLocked || isOnWheel(event.canvasPosition)) return;
+    onTapOutside?.call();
+  }
 
   @override
   void onDragStart(DragStartEvent event) {

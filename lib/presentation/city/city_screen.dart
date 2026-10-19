@@ -2529,6 +2529,7 @@ class _CityScreenState extends ConsumerState<CityScreen> with RouteAware {
                                     key: ValueKey(_wheelGeneration),
                                     onBlockStart: _startBlock,
                                     recap: _recapBlock,
+                                    onLeave: _zoomOut,
                                     side: side,
                                     bottomClear: _barHeight,
                                   )
