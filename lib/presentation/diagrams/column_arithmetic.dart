@@ -5,12 +5,15 @@ import 'package:math_city/domain/questions/diagram_spec.dart';
 /// layout: operands right-aligned, operator symbol left of the last
 /// operand, horizontal rule, then the result. Small carry/borrow
 /// annotations sit above each column when [ColumnArithmeticSpec.carries]
-/// has a non-zero entry for that column.
+/// has a non-zero entry for that column. Division is drawn as the
+/// long-division house instead: `divisor ⟌ dividend` with the quotient
+/// (or nothing) above the bar.
 ///
-/// Used both as the question itself for multi-digit ± (result null, so
-/// the answer row shows `?`) and on the explanation screen afterwards,
+/// Used both as the question itself for multi-digit ± × ÷ (result null, so
+/// the answer row is left blank) and on the explanation screen afterwards,
 /// where the filled-in result and the carry marks show the
-/// column-by-column regrouping.
+/// column-by-column regrouping. On the scratch pad the same spec is drawn
+/// by `PaperFigure`, aligned to the paper's squares.
 class ColumnArithmetic extends StatelessWidget {
   const ColumnArithmetic({required this.spec, super.key});
 
@@ -34,6 +37,9 @@ class ColumnArithmetic extends StatelessWidget {
       height: 1.1,
       color: theme.colorScheme.onSurface,
     );
+    if (spec.op == ColumnArithmeticOp.div) {
+      return _house(theme, monoStyle, digitSize);
+    }
     final carryStyle = monoStyle.copyWith(
       fontSize: digitSize / 2,
       color: theme.colorScheme.primary,
@@ -46,7 +52,12 @@ class ColumnArithmetic extends StatelessWidget {
       ?result,
     ].map((v) => v.toString().length).reduce((a, b) => a > b ? a : b);
     final columnCount = maxDigits + 1; // +1 column for the operator gutter
-    final opChar = spec.op == ColumnArithmeticOp.add ? '+' : '−';
+    final opChar = switch (spec.op) {
+      ColumnArithmeticOp.add => '+',
+      ColumnArithmeticOp.sub => '−',
+      ColumnArithmeticOp.mul => '×',
+      ColumnArithmeticOp.div => '÷',
+    };
 
     Widget cell(String text, TextStyle style) => SizedBox(
       width: cellWidth,
@@ -124,4 +135,74 @@ class ColumnArithmetic extends StatelessWidget {
       ),
     );
   }
+
+  /// `68 ⟌ 5372`: the divisor, a curved bracket, the dividend under a bar,
+  /// and the quotient (when known) right-aligned above the bar.
+  Widget _house(ThemeData theme, TextStyle mono, double digitSize) {
+    final dividend = '${spec.operands[0]}';
+    final divisor = '${spec.operands[1]}';
+    final result = spec.result;
+    final ink = theme.colorScheme.onSurface;
+    final rowHeight = digitSize * 1.15;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Text(divisor, style: mono),
+          SizedBox(width: digitSize * 0.15),
+          CustomPaint(
+            painter: _BracketPainter(color: ink, width: digitSize * 0.08),
+            child: SizedBox(width: digitSize * 0.5, height: rowHeight),
+          ),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              SizedBox(
+                height: rowHeight,
+                child: result == null ? null : Text('$result', style: mono),
+              ),
+              Container(
+                height: digitSize * 0.08,
+                width: dividend.length * digitSize * 0.68 + digitSize * 0.3,
+                color: ink,
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: digitSize * 0.15),
+                child: Text(dividend, style: mono),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// The curve of a long-division bracket, from the bar's left end down and
+/// slightly outward to the baseline.
+class _BracketPainter extends CustomPainter {
+  const _BracketPainter({required this.color, required this.width});
+
+  final Color color;
+  final double width;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = width
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
+    final path = Path()
+      ..moveTo(size.width, 0)
+      ..quadraticBezierTo(0, size.height * 0.4, size.width * 0.55, size.height);
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(_BracketPainter old) =>
+      old.color != color || old.width != width;
 }

@@ -9,6 +9,7 @@ import 'package:math_city/domain/questions/generated_question.dart';
 import 'package:math_city/presentation/block/block_recap.dart';
 import 'package:math_city/presentation/diagrams/diagram_renderer.dart';
 import 'package:math_city/presentation/question/question_screen.dart';
+import 'package:math_city/presentation/question/scratch_pad.dart';
 import 'package:math_city/presentation/theme/app_palette.dart';
 import 'package:math_city/presentation/widgets/math_text.dart';
 import 'package:math_city/presentation/widgets/on_side.dart';
@@ -31,11 +32,17 @@ class ResultScreen extends ConsumerStatefulWidget {
     required this.outcome,
     this.block,
     this.debugMode = false,
+    this.ink,
     super.key,
   }) : assert(debugMode || block != null, 'real play always runs in a block');
 
   final GeneratedQuestion question;
   final String selectedAnswer;
+
+  /// What the player wrote on the scratch pad, shown beside the
+  /// explanation on the red screen so they can find where it went wrong.
+  /// Null when the question had no pad or nothing was written.
+  final ScratchInk? ink;
 
   /// Three-way classification of [selectedAnswer] vs the question's
   /// canonical answer (see `answer_check.dart`). `canonical` and
@@ -257,40 +264,63 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
 
   Widget get _answerTile => _AnswerTile(answer: widget.question.correctAnswer);
 
+  Widget? get _work => widget.ink == null ? null : _WorkCard(ink: widget.ink!);
+
   /// On a side: the explanation on the left, the answer at the top of the
-  /// right pane and Next at its bottom.
-  Widget _wrongOnSide(Widget button) => Row(
-    crossAxisAlignment: CrossAxisAlignment.stretch,
-    children: [
-      Expanded(flex: 2, child: _explanation),
-      const SizedBox(width: 24),
-      Expanded(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 14),
-              child: _answerTile,
-            ),
-            const Spacer(),
-            button,
-          ],
+  /// right pane and Next at its bottom — with the player's work filling the
+  /// right pane between them when there is any.
+  Widget _wrongOnSide(Widget button) {
+    final work = _work;
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Expanded(flex: 2, child: _explanation),
+        const SizedBox(width: 24),
+        Expanded(
+          flex: work == null ? 1 : 2,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 14),
+                child: _answerTile,
+              ),
+              if (work == null)
+                const Spacer()
+              else ...[
+                const SizedBox(height: 10),
+                Expanded(child: work),
+                const SizedBox(height: 12),
+              ],
+              button,
+            ],
+          ),
         ),
-      ),
-    ],
-  );
+      ],
+    );
+  }
 
   /// Upright: the answer under the title, the explanation scrolling in
-  /// the middle, Next pinned at the bottom.
-  Widget _wrongUpright(Widget button) => Column(
-    crossAxisAlignment: CrossAxisAlignment.stretch,
-    children: [
-      _answerTile,
-      Expanded(child: _explanation),
-      const SizedBox(height: 12),
-      button,
-    ],
-  );
+  /// the middle, Next pinned at the bottom. With the player's work, the
+  /// explanation takes what it needs (up to half) and the work the rest.
+  Widget _wrongUpright(Widget button) {
+    final work = _work;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _answerTile,
+        if (work == null)
+          Expanded(child: _explanation)
+        else ...[
+          Flexible(child: _explanation),
+          const SizedBox(height: 10),
+          Expanded(child: work),
+        ],
+        const SizedBox(height: 12),
+        button,
+      ],
+    );
+  }
 
   /// The green screen (debug mode only in real play): the equivalence
   /// nudge if there is one, Next at the bottom right on a side and across
@@ -327,6 +357,50 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
         button,
     ],
   );
+}
+
+/// The player's own scratch-pad page, scaled to fit, so the working can be
+/// compared with the explanation line by line.
+class _WorkCard extends StatelessWidget {
+  const _WorkCard({required this.ink});
+
+  final ScratchInk ink;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Card(
+      color: theme.colorScheme.surfaceContainerLowest,
+      margin: EdgeInsets.zero,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(8, 6, 8, 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 6, bottom: 4),
+              child: Text(
+                'YOUR WORK',
+                style: theme.textTheme.labelMedium?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                  letterSpacing: 1,
+                ),
+              ),
+            ),
+            Expanded(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: CustomPaint(
+                  painter: InkPainter(ink: ink),
+                  child: const SizedBox.expand(),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 /// The right answer, stated once, big and green, so a child who skims the

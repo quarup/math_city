@@ -741,7 +741,7 @@ These eight widgets unlock ~70% of all non-arithmetic K–8 content.
 
 ### 6.3 Deferred / out-of-scope
 
-- Long-division "house" layout — text-only step-by-step is sufficient for v1.
+- ~~Long-division "house" layout~~ — built 2026-10-19 as `ColumnArithmeticOp.div` (and `mul` for stacked multiplication) inside the `ColumnArithmetic` widget; the scratch pad prints both on its squared paper (prd.md *Scratch pad*).
 - Compass-and-straightedge constructions (7.G) — `construct_triangle_given` flagged `deferred` in §3.
 - Animated transformations — static before/after coordinate planes are sufficient.
 

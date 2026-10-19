@@ -9,10 +9,12 @@ import 'package:math_city/domain/economy/question_block.dart';
 import 'package:math_city/domain/proficiency/proficiency_band.dart';
 import 'package:math_city/domain/questions/answer_check.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
+import 'package:math_city/domain/questions/scratch_pad.dart';
 import 'package:math_city/domain/questions/spoken_text.dart';
 import 'package:math_city/presentation/block/block_recap.dart';
 import 'package:math_city/presentation/diagrams/diagram_renderer.dart';
 import 'package:math_city/presentation/question/number_pad_widget.dart';
+import 'package:math_city/presentation/question/scratch_pad.dart';
 import 'package:math_city/presentation/result/result_screen.dart';
 import 'package:math_city/presentation/theme/app_palette.dart';
 import 'package:math_city/presentation/widgets/coin_icon.dart';
@@ -92,6 +94,20 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
   List<String> _shuffledChoices = const [];
   bool _useNumberPad = false;
   bool _answered = false;
+
+  /// The scratch pad, for concepts whose questions are minutes of written
+  /// work (`usesScratchPad`): squared paper between the question and the
+  /// answer, the keypad folded into an Answer button that slides it up.
+  late final bool _usesPad = usesScratchPad(widget.conceptId);
+  final ScratchPadController _pad = ScratchPadController();
+  bool _sheetOpen = false;
+
+  /// How far the paper has slid to keep the last ink clear of the open
+  /// keypad (see [scratchSlideDistance]).
+  Offset _paperShift = Offset.zero;
+  final GlobalKey _padBodyKey = GlobalKey();
+  final GlobalKey _paperKey = GlobalKey();
+  final GlobalKey _sheetKey = GlobalKey();
 
   /// Cached in `initState`: `ref` is unsafe once the widget has been
   /// deactivated, so `dispose` cannot look the service up itself.
@@ -201,7 +217,15 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
       e.remove();
     }
     _pulseCtrl.dispose();
+    _pad.dispose();
     super.dispose();
+  }
+
+  /// The ink to hand the red screen: what the player wrote, or nothing.
+  ScratchInk? get _inkForResult {
+    if (!_usesPad) return null;
+    final ink = _pad.ink;
+    return ink.isEmpty ? null : ink;
   }
 
   /// Keypad eligibility is gated by band (plus, in real play, the block's
@@ -240,6 +264,7 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
               selectedAnswer: answer,
               outcome: outcome,
               debugMode: true,
+              ink: _inkForResult,
             ),
           ),
         ),
@@ -273,6 +298,7 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
               selectedAnswer: answer,
               outcome: outcome,
               block: block,
+              ink: _inkForResult,
             ),
           ),
         ),
@@ -461,7 +487,9 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
             service: _tts,
             owner: this,
             child: SafeArea(
-              child: side
+              child: _usesPad
+                  ? _padBody(question, side: side, constraints: c)
+                  : side
                   ? _sideBody(question, promptPane)
                   : _uprightBody(question, promptPane),
             ),
@@ -570,6 +598,308 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
       ),
     );
   }
+
+  // -------------------------------------------------------------------------
+  // Scratch pad layouts
+  // -------------------------------------------------------------------------
+
+  /// The question with its scratch pad. Upright: the prompt card, the
+  /// paper, then the Answer button (keypad) or the choices in a 2 × 2 grid.
+  /// On a side: the paper takes the left pane and the answers the right,
+  /// as on every other question — except the keypad on a phone, where the
+  /// paper is only ~290 dp tall and gets the full width instead, with the
+  /// Answer button floating on it and the keypad sliding in from the right.
+  /// A column figure (long + − × ÷) is printed on the paper itself and its
+  /// one-word prompt is left out.
+  Widget _padBody(
+    GeneratedQuestion question, {
+    required bool side,
+    required BoxConstraints constraints,
+  }) {
+    final showCard = !isPaperFigure(question.diagram);
+    final card = showCard
+        ? _PromptCard(prompt: question.prompt, compact: true)
+        : null;
+    // An iPad on its side has room for the keypad beside the paper.
+    final roomy = constraints.maxHeight >= 600;
+    final floatingAnswer = side && _useNumberPad && !roomy;
+
+    final paper = ScratchPaper(
+      key: _paperKey,
+      controller: _pad,
+      figure: question.diagram,
+      toolsOnLeft: floatingAnswer,
+      corner: floatingAnswer ? _answerButton(compact: true) : null,
+    );
+    // Slides up (or left) while the keypad is open; clipped so the slid
+    // part never paints over the card.
+    final slidingPaper = ClipRect(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.easeOut,
+        transform: Matrix4.translationValues(
+          _paperShift.dx,
+          _paperShift.dy,
+          0,
+        ),
+        child: paper,
+      ),
+    );
+    final cardThenPaper = Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (card != null) ...[card, const SizedBox(height: 12)],
+        Expanded(child: slidingPaper),
+      ],
+    );
+
+    // Clipped: the slid-away keypad is translated at paint time, past the
+    // Stack's bounds, and would otherwise show in the safe-area inset.
+    if (!side) {
+      return ClipRect(
+        child: Stack(
+          key: _padBodyKey,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 14, 20, 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(child: cardThenPaper),
+                  const SizedBox(height: 12),
+                  if (_useNumberPad) _answerButton() else _choiceGrid(question),
+                ],
+              ),
+            ),
+            if (_useNumberPad) _keypadSheet(question, side: false),
+          ],
+        ),
+      );
+    }
+
+    if (floatingAnswer) {
+      return ClipRect(
+        child: Stack(
+          key: _padBodyKey,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 10, 20, 12),
+              child: cardThenPaper,
+            ),
+            _keypadSheet(question, side: true),
+          ],
+        ),
+      );
+    }
+
+    final Widget answers;
+    if (_useNumberPad) {
+      answers = NumberPadWidget(
+        onSubmit: _onAnswerSubmitted,
+        extraChars: _extraCharsFor(question),
+        fill: true,
+      );
+    } else {
+      final n = _shuffledChoices.length;
+      answers = Column(
+        children: [
+          for (var i = 0; i < n; i++)
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                child: _ChoiceButton(
+                  label: _shuffledChoices[i],
+                  itemId: 'choice:$i',
+                  speakerSlot: _shuffledChoices.any(hasReadableWords),
+                  onTap: () => _onAnswerSubmitted(_shuffledChoices[i]),
+                  expand: true,
+                ),
+              ),
+            ),
+        ],
+      );
+    }
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 10, 20, 12),
+      child: Row(
+        children: [
+          Expanded(flex: 11, child: cardThenPaper),
+          const SizedBox(width: 24),
+          Expanded(flex: 8, child: answers),
+        ],
+      ),
+    );
+  }
+
+  /// Opens the keypad. One button in the keypad's own light green; the
+  /// keypad itself only appears when asked, so the paper keeps the room.
+  Widget _answerButton({bool compact = false}) {
+    final theme = Theme.of(context);
+    return FilledButton(
+      onPressed: () => _openSheet(side: compact),
+      style: FilledButton.styleFrom(
+        backgroundColor: theme.colorScheme.primaryContainer,
+        foregroundColor: theme.colorScheme.onPrimaryContainer,
+        padding: EdgeInsets.symmetric(
+          vertical: compact ? 12 : 15,
+          horizontal: compact ? 26 : 20,
+        ),
+        textStyle: theme.textTheme.titleLarge,
+        elevation: compact ? 2 : 0,
+      ),
+      child: const Text('Answer'),
+    );
+  }
+
+  /// Four choices in two rows of two: half the height of the stack, which
+  /// is what buys the paper its room. The longest choice among the padded
+  /// concepts is twelve characters, which fits a half-width button.
+  Widget _choiceGrid(GeneratedQuestion question) {
+    final speaker = _shuffledChoices.any(hasReadableWords);
+    Widget choice(int i) => Expanded(
+      child: _ChoiceButton(
+        label: _shuffledChoices[i],
+        itemId: 'choice:$i',
+        speakerSlot: speaker,
+        onTap: () => _onAnswerSubmitted(_shuffledChoices[i]),
+        expand: true,
+      ),
+    );
+    final n = _shuffledChoices.length;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        for (var r = 0; r < n; r += 2)
+          Padding(
+            padding: EdgeInsets.only(top: r == 0 ? 0 : 10),
+            child: SizedBox(
+              height: 54,
+              child: Row(
+                children: [
+                  choice(r),
+                  const SizedBox(width: 10),
+                  if (r + 1 < n) choice(r + 1) else const Spacer(),
+                ],
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
+  /// The keypad, slid in from the bottom (or the right on a phone on its
+  /// side) over the paper, with a button to put it away again. Built even
+  /// while closed so its size is known the moment Answer is tapped.
+  Widget _keypadSheet(GeneratedQuestion question, {required bool side}) {
+    final theme = Theme.of(context);
+    final hide = IconButton(
+      icon: Icon(
+        side ? Icons.chevron_right_rounded : Icons.expand_more_rounded,
+      ),
+      tooltip: 'Hide keypad',
+      onPressed: _closeSheet,
+    );
+    final sheet = Material(
+      key: _sheetKey,
+      color: theme.colorScheme.surface,
+      elevation: 10,
+      borderRadius: side
+          ? const BorderRadius.horizontal(left: Radius.circular(18))
+          : const BorderRadius.vertical(top: Radius.circular(18)),
+      child: side
+          ? Padding(
+              padding: const EdgeInsets.fromLTRB(12, 4, 12, 12),
+              child: Column(
+                children: [
+                  Align(alignment: Alignment.centerRight, child: hide),
+                  Expanded(
+                    child: NumberPadWidget(
+                      onSubmit: _onAnswerSubmitted,
+                      extraChars: _extraCharsFor(question),
+                      fill: true,
+                    ),
+                  ),
+                ],
+              ),
+            )
+          : Padding(
+              padding: const EdgeInsets.fromLTRB(20, 2, 20, 16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Align(alignment: Alignment.centerRight, child: hide),
+                  NumberPadWidget(
+                    onSubmit: _onAnswerSubmitted,
+                    extraChars: _extraCharsFor(question),
+                  ),
+                ],
+              ),
+            ),
+    );
+    return Positioned(
+      left: side ? null : 0,
+      right: 0,
+      top: side ? 0 : null,
+      bottom: 0,
+      width: side ? 320 : null,
+      child: IgnorePointer(
+        ignoring: !_sheetOpen,
+        child: AnimatedSlide(
+          offset: _sheetOpen
+              ? Offset.zero
+              : side
+              ? const Offset(1.05, 0)
+              : const Offset(0, 1.05),
+          duration: const Duration(milliseconds: 250),
+          curve: Curves.easeOut,
+          child: sheet,
+        ),
+      ),
+    );
+  }
+
+  /// Slides the keypad in and the paper out of its way by the K2 rule:
+  /// just far enough that the most recent stroke stays in view.
+  void _openSheet({required bool side}) {
+    var shift = Offset.zero;
+    final body = _padBodyKey.currentContext?.findRenderObject() as RenderBox?;
+    final paper = _paperKey.currentContext?.findRenderObject() as RenderBox?;
+    final sheet = _sheetKey.currentContext?.findRenderObject() as RenderBox?;
+    if (body != null && paper != null && sheet != null) {
+      final origin = paper.localToGlobal(Offset.zero, ancestor: body);
+      final ink = _pad.ink;
+      if (side) {
+        final covered =
+            origin.dx + paper.size.width - (body.size.width - sheet.size.width);
+        final d = scratchSlideDistance(
+          lastInk: ink.lastInkRight,
+          paperExtent: paper.size.width,
+          covered: covered,
+        );
+        shift = Offset(-d, 0);
+      } else {
+        final covered =
+            origin.dy +
+            paper.size.height -
+            (body.size.height - sheet.size.height);
+        final d = scratchSlideDistance(
+          lastInk: ink.lastInkBottom,
+          paperExtent: paper.size.height,
+          covered: covered,
+        );
+        shift = Offset(0, -d);
+      }
+    }
+    setState(() {
+      _sheetOpen = true;
+      _paperShift = shift;
+    });
+  }
+
+  void _closeSheet() => setState(() {
+    _sheetOpen = false;
+    _paperShift = Offset.zero;
+  });
 
   /// The prompt card, with the diagram above it when there is one.
   ///

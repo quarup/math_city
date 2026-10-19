@@ -205,11 +205,9 @@ void main() {
       final answerRe = RegExp(r'^(\d+)R(\d+)$');
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'div_with_remainder', i);
-        // Strip the keypad-format hint line before parsing the equation.
-        final equation = q.prompt.split('\n').first;
-        final parts = equation.replaceAll(' = ?', '').split(' ÷ ');
-        final dividend = int.parse(parts[0]);
-        final divisor = int.parse(parts[1]);
+        // The sum is printed on the scratch pad as a division house.
+        expect(q.prompt, 'Divide.');
+        final (dividend, divisor) = _houseOperands(q);
         final m = answerRe.firstMatch(q.correctAnswer);
         expect(m, isNotNull, reason: 'answer "${q.correctAnswer}" not qRr');
         final quotient = int.parse(m!.group(1)!);
@@ -224,9 +222,8 @@ void main() {
     test('mult_4digit_by_1digit: a∈[1000,9999], b∈[2,9], product correct', () {
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'mult_4digit_by_1digit', i);
-        final parts = q.prompt.replaceAll(' = ?', '').split(' × ');
-        final a = int.parse(parts[0]);
-        final b = int.parse(parts[1]);
+        expect(q.prompt, 'Multiply.');
+        final (a, b) = _columnOperands(q, ColumnArithmeticOp.mul);
         expect(a, inInclusiveRange(1000, 9999));
         expect(b, inInclusiveRange(2, 9));
         expect(a * b, int.parse(q.correctAnswer));
@@ -237,9 +234,8 @@ void main() {
     test('mult_2digit_by_2digit: a, b ∈ [10,99], product correct', () {
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'mult_2digit_by_2digit', i);
-        final parts = q.prompt.replaceAll(' = ?', '').split(' × ');
-        final a = int.parse(parts[0]);
-        final b = int.parse(parts[1]);
+        expect(q.prompt, 'Multiply.');
+        final (a, b) = _columnOperands(q, ColumnArithmeticOp.mul);
         expect(a, inInclusiveRange(10, 99));
         expect(b, inInclusiveRange(10, 99));
         expect(a * b, int.parse(q.correctAnswer));
@@ -250,9 +246,8 @@ void main() {
     test('mult_multidigit_standard_alg: shape mix, product correct', () {
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'mult_multidigit_standard_alg', i);
-        final parts = q.prompt.replaceAll(' = ?', '').split(' × ');
-        final a = int.parse(parts[0]);
-        final b = int.parse(parts[1]);
+        expect(q.prompt, 'Multiply.');
+        final (a, b) = _columnOperands(q, ColumnArithmeticOp.mul);
         // Both operands ≥ 2 digits so this never collapses to a "facts" case.
         expect(a, greaterThanOrEqualTo(10));
         expect(b, greaterThanOrEqualTo(10));
@@ -264,9 +259,8 @@ void main() {
     test('div_4digit_by_1digit: exact, dividend 4-digit, divisor ∈ [2,9]', () {
       for (var i = 0; i < _iterations; i++) {
         final q = _gen(registry, 'div_4digit_by_1digit', i);
-        final parts = q.prompt.replaceAll(' = ?', '').split(' ÷ ');
-        final dividend = int.parse(parts[0]);
-        final divisor = int.parse(parts[1]);
+        expect(q.prompt, 'Divide.');
+        final (dividend, divisor) = _houseOperands(q);
         final quotient = int.parse(q.correctAnswer);
         expect(dividend, inInclusiveRange(1000, 9999));
         expect(divisor, inInclusiveRange(2, 9));
@@ -280,9 +274,8 @@ void main() {
       () {
         for (var i = 0; i < _iterations; i++) {
           final q = _gen(registry, 'div_4digit_by_2digit', i);
-          final parts = q.prompt.replaceAll(' = ?', '').split(' ÷ ');
-          final dividend = int.parse(parts[0]);
-          final divisor = int.parse(parts[1]);
+          expect(q.prompt, 'Divide.');
+          final (dividend, divisor) = _houseOperands(q);
           final quotient = int.parse(q.correctAnswer);
           expect(dividend, inInclusiveRange(1000, 9999));
           expect(divisor, inInclusiveRange(11, 99));
@@ -761,3 +754,15 @@ void main() {
     });
   });
 }
+
+/// The two operands of a question laid out as a stacked column of [op].
+(int, int) _columnOperands(GeneratedQuestion q, ColumnArithmeticOp op) {
+  final d = q.diagram! as ColumnArithmeticSpec;
+  expect(d.op, op);
+  expect(d.operands, hasLength(2));
+  return (d.operands[0], d.operands[1]);
+}
+
+/// Dividend and divisor of a question laid out as a long-division house.
+(int, int) _houseOperands(GeneratedQuestion q) =>
+    _columnOperands(q, ColumnArithmeticOp.div);

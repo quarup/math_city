@@ -1040,7 +1040,10 @@ class ShapeSpec extends DiagramSpec {
 
 /// Operation supported by [ColumnArithmeticSpec]. Subtraction renders
 /// borrows below the relevant column instead of carries above it.
-enum ColumnArithmeticOp { add, sub }
+/// Multiplication stacks the two factors like a sum; division draws the
+/// long-division "house" (`divisor ⟌ dividend`, operands in that order:
+/// dividend first, divisor second) with the quotient row above it.
+enum ColumnArithmeticOp { add, sub, mul, div }
 
 /// Stacked multi-digit arithmetic in column form, with optional small
 /// carry / borrow digits above each column. Serves two roles:

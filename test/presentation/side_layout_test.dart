@@ -18,6 +18,7 @@ import 'package:math_city/presentation/city/letter_overlay.dart';
 import 'package:math_city/presentation/city/times_overlay.dart';
 import 'package:math_city/presentation/home/home_screen.dart';
 import 'package:math_city/presentation/question/question_screen.dart';
+import 'package:math_city/presentation/question/scratch_pad.dart';
 import 'package:math_city/presentation/result/result_screen.dart';
 import 'package:math_city/presentation/theme/app_theme.dart';
 import 'package:math_city/state/player_provider.dart';
@@ -66,6 +67,50 @@ const _numeric = GeneratedQuestion(
   explanation: ['3 rows of 3 is 9.'],
   diagram: AreaGridSpec(rows: 3, cols: 3, shadedRows: 3, shadedCols: 3),
 );
+
+/// A padded concept (long multiplication) with its column figure, which is
+/// printed on the paper with no prompt card.
+final _longMult = GeneratedQuestion(
+  conceptId: 'mult_multidigit_standard_alg',
+  prompt: 'Multiply.',
+  correctAnswer: '45066',
+  distractors: const ['45065', '45070', '45061'],
+  explanation: const ['609 × 74 = 45066'],
+  diagram: ColumnArithmeticSpec(
+    operands: [609, 74],
+    op: ColumnArithmeticOp.mul,
+    result: null,
+  ),
+);
+
+/// A padded concept with a diagram the paper carries at its top and a
+/// prompt card above the paper.
+final _mad = GeneratedQuestion(
+  conceptId: 'mad',
+  prompt: 'Find the mean absolute deviation of the data shown.',
+  correctAnswer: '5',
+  distractors: const ['6', '10', '0'],
+  explanation: const [
+    'The mean is 10.',
+    'The deviations are 8, 4, 4, 0, 4, 4, 8.',
+  ],
+  diagram: DotPlotSpec(
+    title: 'Data',
+    axisLabel: 'Value',
+    values: [2, 6, 6, 10, 14, 14, 18],
+    minX: 0,
+    maxX: 20,
+  ),
+);
+
+ScratchInk _someInk() {
+  final c = ScratchPadController()
+    ..paperSize = const Size(320, 480)
+    ..begin(const Offset(40, 60))
+    ..extend(const Offset(120, 140))
+    ..end();
+  return c.ink;
+}
 
 void main() {
   setUp(() {
@@ -157,6 +202,84 @@ void main() {
         await tester.tap(find.text('9'));
         await tester.pump();
         expect(find.text('9'), findsNWidgets(2));
+      });
+
+      testWidgets('padded question with the keypad fits, open and shut', (
+        tester,
+      ) async {
+        await pump(
+          tester,
+          size,
+          QuestionScreen(
+            conceptId: _longMult.conceptId,
+            band: ProficiencyBand.comfortable,
+            debugMode: true,
+            question: _longMult,
+          ),
+          scope: await container(),
+          settle: false,
+        );
+        expect(tester.takeException(), isNull);
+        expect(find.byType(ScratchPaper), findsOneWidget);
+        // The one-word prompt is left out: the figure says it.
+        expect(find.text('Multiply.'), findsNothing);
+        // Phones fold the keypad behind Answer; an iPad on its side keeps
+        // it beside the paper.
+        final answer = find.text('Answer');
+        if (answer.evaluate().isNotEmpty) {
+          await tester.tap(answer);
+          await tester.pump();
+          await tester.pump(const Duration(milliseconds: 300));
+          expect(tester.takeException(), isNull);
+          await tester.tap(find.text('9'));
+          await tester.pump();
+          expect(find.text('9'), findsNWidgets(2));
+          await tester.tap(find.byTooltip('Hide keypad'));
+          await tester.pump();
+          await tester.pump(const Duration(milliseconds: 300));
+          expect(tester.takeException(), isNull);
+        } else {
+          expect(find.text('7'), findsOneWidget);
+        }
+      });
+
+      testWidgets('padded question with choices fits', (tester) async {
+        await pump(
+          tester,
+          size,
+          QuestionScreen(
+            conceptId: _mad.conceptId,
+            band: ProficiencyBand.challenging,
+            debugMode: true,
+            question: _mad,
+          ),
+          scope: await container(),
+          settle: false,
+        );
+        expect(tester.takeException(), isNull);
+        expect(find.byType(ScratchPaper), findsOneWidget);
+        expect(find.textContaining('mean absolute deviation'), findsOneWidget);
+        expect(find.text('10'), findsOneWidget);
+        expect(find.text('0'), findsOneWidget);
+      });
+
+      testWidgets("red result with the player's work fits", (tester) async {
+        await pump(
+          tester,
+          size,
+          ResultScreen(
+            question: _longMult,
+            selectedAnswer: '45065',
+            outcome: AnswerOutcome.wrong,
+            debugMode: true,
+            ink: _someInk(),
+          ),
+          scope: await container(),
+          settle: false,
+        );
+        expect(tester.takeException(), isNull);
+        expect(find.text('YOUR WORK'), findsOneWidget);
+        expect(find.text('THE ANSWER'), findsOneWidget);
       });
 
       testWidgets('red result fits', (tester) async {

@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:math_city/domain/questions/column_form.dart';
 import 'package:math_city/domain/questions/distractors.dart';
 import 'package:math_city/domain/questions/generated_question.dart';
 
@@ -56,21 +57,23 @@ GeneratedQuestion divWithRemainder(Random rand) {
   final list = pool.toList()..shuffle(rand);
   final distractors = list.take(3).toList();
 
-  return GeneratedQuestion(
-    conceptId: 'div_with_remainder',
-    // The answer format is stated up front — on the keypad nothing else
-    // says the expected shape is "quotient R remainder". The example is
-    // picked to never equal this question's own answer.
-    prompt:
-        '$dividend ÷ $divisor = ?\n'
-        '(Answer like ${quotient == 3 && remainder == 1 ? "4R2" : "3R1"}.)',
-    correctAnswer: correct,
-    distractors: distractors,
-    explanation: [
-      '$divisor × $quotient = ${divisor * quotient}',
-      '$dividend $_minus ${divisor * quotient} = $remainder',
-      'So $dividend ÷ $divisor = $quotient with remainder $remainder.',
-    ],
+  return columnForm(
+    GeneratedQuestion(
+      conceptId: 'div_with_remainder',
+      // The answer format is stated up front — on the keypad nothing else
+      // says the expected shape is "quotient R remainder". The example is
+      // picked to never equal this question's own answer.
+      prompt:
+          '$dividend ÷ $divisor = ?\n'
+          '(Answer like ${quotient == 3 && remainder == 1 ? "4R2" : "3R1"}.)',
+      correctAnswer: correct,
+      distractors: distractors,
+      explanation: [
+        '$divisor × $quotient = ${divisor * quotient}',
+        '$dividend $_minus ${divisor * quotient} = $remainder',
+        'So $dividend ÷ $divisor = $quotient with remainder $remainder.',
+      ],
+    ),
   );
 }
 
@@ -79,12 +82,14 @@ GeneratedQuestion mult4digitBy1digit(Random rand) {
   final a = rand.nextInt(9000) + 1000; // 1000..9999
   final b = rand.nextInt(8) + 2; // 2..9
   final correct = a * b;
-  return GeneratedQuestion(
-    conceptId: 'mult_4digit_by_1digit',
-    prompt: '$a × $b = ?',
-    correctAnswer: correct.toString(),
-    distractors: integerDistractors(correct, rand),
-    explanation: ['$a × $b = $correct'],
+  return columnForm(
+    GeneratedQuestion(
+      conceptId: 'mult_4digit_by_1digit',
+      prompt: '$a × $b = ?',
+      correctAnswer: correct.toString(),
+      distractors: integerDistractors(correct, rand),
+      explanation: ['$a × $b = $correct'],
+    ),
   );
 }
 
@@ -98,16 +103,18 @@ GeneratedQuestion mult2digitBy2digit(Random rand) {
   final partOnes = a * bOnes;
   final partTens = a * bTens * 10;
   final correct = a * b;
-  return GeneratedQuestion(
-    conceptId: 'mult_2digit_by_2digit',
-    prompt: '$a × $b = ?',
-    correctAnswer: correct.toString(),
-    distractors: integerDistractors(correct, rand),
-    explanation: [
-      '$a × $bOnes = $partOnes',
-      '$a × ${bTens * 10} = $partTens',
-      '$partOnes + $partTens = $correct',
-    ],
+  return columnForm(
+    GeneratedQuestion(
+      conceptId: 'mult_2digit_by_2digit',
+      prompt: '$a × $b = ?',
+      correctAnswer: correct.toString(),
+      distractors: integerDistractors(correct, rand),
+      explanation: [
+        '$a × $bOnes = $partOnes',
+        '$a × ${bTens * 10} = $partTens',
+        '$partOnes + $partTens = $correct',
+      ],
+    ),
   );
 }
 
@@ -125,12 +132,14 @@ GeneratedQuestion multMultidigitStandardAlg(Random rand) {
   final a = _randomNDigit(aDigits, rand);
   final b = _randomNDigit(bDigits, rand);
   final correct = a * b;
-  return GeneratedQuestion(
-    conceptId: 'mult_multidigit_standard_alg',
-    prompt: '$a × $b = ?',
-    correctAnswer: correct.toString(),
-    distractors: integerDistractors(correct, rand),
-    explanation: ['$a × $b = $correct'],
+  return columnForm(
+    GeneratedQuestion(
+      conceptId: 'mult_multidigit_standard_alg',
+      prompt: '$a × $b = ?',
+      correctAnswer: correct.toString(),
+      distractors: integerDistractors(correct, rand),
+      explanation: ['$a × $b = $correct'],
+    ),
   );
 }
 
@@ -142,15 +151,17 @@ GeneratedQuestion div4digitBy1digit(Random rand) {
   final qHi = 9999 ~/ divisor;
   final quotient = qLo + rand.nextInt(qHi - qLo + 1);
   final dividend = divisor * quotient;
-  return GeneratedQuestion(
-    conceptId: 'div_4digit_by_1digit',
-    prompt: '$dividend ÷ $divisor = ?',
-    correctAnswer: quotient.toString(),
-    distractors: integerDistractors(quotient, rand),
-    explanation: [
-      '$dividend ÷ $divisor = $quotient',
-      'Check: $quotient × $divisor = $dividend',
-    ],
+  return columnForm(
+    GeneratedQuestion(
+      conceptId: 'div_4digit_by_1digit',
+      prompt: '$dividend ÷ $divisor = ?',
+      correctAnswer: quotient.toString(),
+      distractors: integerDistractors(quotient, rand),
+      explanation: [
+        '$dividend ÷ $divisor = $quotient',
+        'Check: $quotient × $divisor = $dividend',
+      ],
+    ),
   );
 }
 
@@ -165,15 +176,17 @@ GeneratedQuestion div4digitBy2digit(Random rand) {
   final qHi = 9999 ~/ divisor;
   final quotient = qLo + rand.nextInt(qHi - qLo + 1);
   final dividend = divisor * quotient;
-  return GeneratedQuestion(
-    conceptId: 'div_4digit_by_2digit',
-    prompt: '$dividend ÷ $divisor = ?',
-    correctAnswer: quotient.toString(),
-    distractors: integerDistractors(quotient, rand),
-    explanation: [
-      '$dividend ÷ $divisor = $quotient',
-      'Check: $quotient × $divisor = $dividend',
-    ],
+  return columnForm(
+    GeneratedQuestion(
+      conceptId: 'div_4digit_by_2digit',
+      prompt: '$dividend ÷ $divisor = ?',
+      correctAnswer: quotient.toString(),
+      distractors: integerDistractors(quotient, rand),
+      explanation: [
+        '$dividend ÷ $divisor = $quotient',
+        'Check: $quotient × $divisor = $dividend',
+      ],
+    ),
   );
 }
 
