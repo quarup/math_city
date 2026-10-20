@@ -158,7 +158,10 @@ It builds the App Store IPA with the commit count as the build number (each
 upload must be higher than the last) and uploads it with the App Store
 Connect API key. The key and its IDs live only on the release Mac
 (`~/.appstoreconnect/`); **never commit them** — this repo is public. Apple
-processes a build for 5–30 minutes before testers can install it. Before
+processes a build for 5–30 minutes before testers can install it. The
+testers' description and review notes live in
+[tools/release/listing/](tools/release/listing/); keep them in step with
+App Store Connect. Before
 any release, apply the rules in *Preserving player data across updates*:
 testers' progress must survive the update.
 

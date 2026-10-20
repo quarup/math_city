@@ -1,0 +1,23 @@
+Build a whole city by solving math problems! In Math City, every correct answer earns coins, and coins turn a single little house into a busy town: shops, schools, parks and streets that light up at night. Townspeople send letters asking for what they need next, and it's up to you to build it.
+
+Made for kids aged 6 to 14, the questions adapt to each child. There are over 300 skills from kindergarten to grade 8, including counting, addition and subtraction, times tables, fractions, decimals, measurement, geometry and early algebra. New topics appear as earlier ones are mastered. Questions can be read aloud, and longer ones come with a scratch pad for working out.
+
+Several kids can share one iPad or iPhone, each with their own player, avatar and city. The game works offline, has no ads or purchases, and collects no data. Everything stays on the device.
+
+WHAT TO TRY
+- Create a player for your child and pick their grade.
+- Play for 10 to 15 minutes: spin the wheel, answer questions, build and grow the city.
+- If you can, let your child play on their own and watch what they do.
+
+WHAT WE'D LOVE TO HEAR
+- Questions that seemed wrong, unclear, too easy or too hard (a screenshot helps a lot).
+- Moments your child got stuck, confused or bored, and the moments they loved.
+- Anything that crashed, froze or looked broken.
+- Your child's age and grade, so we can tell whether the difficulty is right.
+
+HOW TO SEND FEEDBACK
+Take a screenshot while playing and tap "Share Beta Feedback", or open the TestFlight app, choose Math City and tap "Send Beta Feedback".
+
+New versions arrive through TestFlight, and your child's city and progress carry over between updates. This is an early version, so thank you for helping us make it better.
+
+Avatar art: "Adventurer" by Lisa Wischofsky, CC BY 4.0.
