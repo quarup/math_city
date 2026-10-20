@@ -240,4 +240,4 @@ This is a hobby project being built in small sessions. Optimize for "next sessio
 - Don't propose Firebase / Supabase / a custom backend for save data. We use platform cloud save (`games_services`).
 - Don't add complexity for hypothetical future features.
 - Don't write defensive code for impossible inputs in internal APIs.
-- Don't create new top-level docs without discussion. `prd.md`, `plan.md`, `curriculum.md`, and this file are the canonical set.
+- Don't create new top-level docs without discussion. `prd.md`, `plan.md`, `curriculum.md`, and this file are the canonical set. `PRIVACY.md` is the app's public privacy policy (linked from App Store Connect): **any change that stores or sends new data must update it first.**
