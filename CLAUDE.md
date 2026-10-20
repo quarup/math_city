@@ -144,6 +144,24 @@ Known gaps against these rules are tracked in plan.md under Phase 13
 (*Preserving player data*). Check them before changing the schema or
 renaming content.
 
+## Releasing to TestFlight
+
+Beta builds reach testers through TestFlight (Apple Developer Program,
+team `8J29BRZXY3`, bundle ID `com.quarup.mathCity`). From a clean, pushed
+`main` on the release Mac:
+
+```sh
+tools/release/testflight.sh
+```
+
+It builds the App Store IPA with the commit count as the build number (each
+upload must be higher than the last) and uploads it with the App Store
+Connect API key. The key and its IDs live only on the release Mac
+(`~/.appstoreconnect/`); **never commit them** — this repo is public. Apple
+processes a build for 5–30 minutes before testers can install it. Before
+any release, apply the rules in *Preserving player data across updates*:
+testers' progress must survive the update.
+
 ## App icon, launch screens and the home-screen tile art
 
 The launcher icon, the Android/iOS launch-screen images and the six tile
