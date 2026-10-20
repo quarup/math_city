@@ -1,7 +1,7 @@
 <h1 align="center">Math City</h1>
 
 <p align="center"><b>Build a whole city by solving math problems.</b><br>
-A free math practice game for kids aged 6 to 14, for iPad, iPhone and Android.</p>
+Available on iPad, iPhone and Android for kids aged 6 to 14.</p>
 
 <p align="center">
   <a href="https://github.com/quarup/math_city/actions/workflows/ci.yml"><img src="https://github.com/quarup/math_city/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
