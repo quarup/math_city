@@ -21,6 +21,9 @@ void main() {
         'solve_one_step_eq_addition',
         'evaluate_expression',
         'expand_linear_expression',
+        // a number line to annotate
+        'decimal_on_number_line',
+        'fraction_on_number_line',
       ]) {
         expect(usesScratchPad(id), isTrue, reason: id);
       }

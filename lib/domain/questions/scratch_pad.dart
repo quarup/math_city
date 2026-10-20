@@ -30,7 +30,9 @@ const int kScratchPadFromSeconds = 40;
 /// them: unlike-denominator fractions (find the common denominator, scale,
 /// add), decimal multiplication and division (long × or ÷ with a point to
 /// place), the median (sort the list first), order of operations (rewrite
-/// line by line).
+/// line by line); and the questions whose figure is a number line to read,
+/// where the work *is* annotating the line — counting the ticks between
+/// the labels, writing their values in, marking the halfway point.
 const Set<String> scratchPadAlways = {
   'add_fractions_unlike_denom', // 35 s
   'sub_fractions_unlike_denom', // 35 s
@@ -40,6 +42,11 @@ const Set<String> scratchPadAlways = {
   'median', // 30 s
   'order_of_operations_no_exp', // 30 s
   'nested_grouping', // 30 s
+  // a number line to read, drawn on the paper so it can be annotated
+  'decimal_on_number_line', // 20 s
+  'fraction_on_number_line', // 14 s
+  'integers_on_number_line', // 14 s
+  'double_number_line', // 28 s
 };
 
 /// Padded by the rule but answered by reading a figure or a list, not by
