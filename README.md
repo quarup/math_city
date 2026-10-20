@@ -19,6 +19,14 @@ little house into a busy town: shops, schools, parks and streets that light
 up at night. Townspeople send letters asking for what they need next, and
 it's up to you to build it.
 
+<p align="center">
+  <img src="docs/readme/q_clock.png" width="19%" alt="What time is it? An analogue clock showing 3:15, with four choices">
+  <img src="docs/readme/q_protractor.png" width="19%" alt="Measure the angle with a protractor">
+  <img src="docs/readme/q_fraction.png" width="19%" alt="Equal fractions, with a shaded fraction bar">
+  <img src="docs/readme/q_scratchpad.png" width="19%" alt="A two-step word problem with working written on the squared-paper scratch pad">
+  <img src="docs/readme/q_wrong.png" width="19%" alt="A wrong answer: the right answer and a one-line explanation">
+</p>
+
 The questions adapt to each child. There are over 350 skills from
 kindergarten to grade 8, including counting, addition and subtraction, times
 tables, fractions, decimals, measurement, geometry and early algebra. New
@@ -28,14 +36,6 @@ longer ones come with a scratch pad for working out.
 Several kids can share one device, each with their own player, avatar and
 city. The game works offline, has no ads or purchases, and collects no data.
 Everything stays on the device ([privacy policy](PRIVACY.md)).
-
-<p align="center">
-  <img src="docs/readme/q_clock.png" width="19%" alt="What time is it? An analogue clock showing 3:15, with four choices">
-  <img src="docs/readme/q_protractor.png" width="19%" alt="Measure the angle with a protractor">
-  <img src="docs/readme/q_fraction.png" width="19%" alt="Equal fractions, with a shaded fraction bar">
-  <img src="docs/readme/q_scratchpad.png" width="19%" alt="A two-step word problem with working written on the squared-paper scratch pad">
-  <img src="docs/readme/q_wrong.png" width="19%" alt="A wrong answer: the right answer and a one-line explanation">
-</p>
 
 ## Status
 
