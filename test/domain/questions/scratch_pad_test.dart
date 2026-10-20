@@ -16,6 +16,11 @@ void main() {
         'word_problem_two_step_eq',
         'mad',
         'sub_mixed_unlike_denom',
+        // pre-algebra at any length
+        'solve_one_step_eq_mult',
+        'solve_one_step_eq_addition',
+        'evaluate_expression',
+        'expand_linear_expression',
       ]) {
         expect(usesScratchPad(id), isTrue, reason: id);
       }
@@ -27,9 +32,11 @@ void main() {
         'add_within_10',
         'count_to_20',
         'even_odd',
-        'tell_time_to_hour', // may not exist; guarded below
+        // pre-algebra vocabulary and recall
+        'missing_addend_within_20',
+        'identify_parts_expression',
+        'qualitative_graph_features',
       ]) {
-        if (!expectedSecondsByConcept.containsKey(id)) continue;
         expect(usesScratchPad(id), isFalse, reason: id);
       }
     });
@@ -44,10 +51,12 @@ void main() {
         expect(usesScratchPad(id), isTrue, reason: id);
       }
       for (final id in scratchPadNever) {
+        final slow = expectedSecondsByConcept[id]! >= kScratchPadFromSeconds;
+        final algebra = findConceptById(id)!.categoryId == kScratchPadCategory;
         expect(
-          expectedSecondsByConcept[id],
-          greaterThanOrEqualTo(kScratchPadFromSeconds),
-          reason: '$id is already under the threshold; drop it from the list',
+          slow || algebra,
+          isTrue,
+          reason: '$id would not be padded anyway; drop it from the list',
         );
         expect(usesScratchPad(id), isFalse, reason: id);
       }
@@ -66,7 +75,19 @@ void main() {
 
     test('roughly a quarter of the catalogue is paper work', () {
       final padded = allConcepts.where((c) => usesScratchPad(c.id)).length;
-      expect(padded, inInclusiveRange(60, 110), reason: '$padded padded');
+      expect(padded, inInclusiveRange(70, 120), reason: '$padded padded');
+    });
+
+    test('pre-algebra is padded at any length, bar the never list', () {
+      for (final c in allConcepts.where(
+        (c) => c.categoryId == kScratchPadCategory,
+      )) {
+        expect(
+          usesScratchPad(c.id),
+          !scratchPadNever.contains(c.id),
+          reason: c.id,
+        );
+      }
     });
   });
 }

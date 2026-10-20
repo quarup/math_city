@@ -345,19 +345,19 @@ class _ToolPill extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               _ToolButton(
-                icon: Icons.edit_outlined,
+                icon: const Icon(Icons.edit_outlined),
                 tooltip: 'Pen',
                 selected: controller.tool == InkTool.pen,
                 onTap: () => controller.tool = InkTool.pen,
               ),
               _ToolButton(
-                icon: Icons.cleaning_services_outlined,
+                icon: const EraserIcon(),
                 tooltip: 'Eraser',
                 selected: controller.tool == InkTool.eraser,
                 onTap: () => controller.tool = InkTool.eraser,
               ),
               _ToolButton(
-                icon: Icons.undo_rounded,
+                icon: const Icon(Icons.undo_rounded),
                 tooltip: 'Undo',
                 selected: false,
                 onTap: controller.canUndo ? controller.undo : null,
@@ -378,7 +378,7 @@ class _ToolButton extends StatelessWidget {
     required this.onTap,
   });
 
-  final IconData icon;
+  final Widget icon;
   final String tooltip;
   final bool selected;
   final VoidCallback? onTap;
@@ -387,7 +387,7 @@ class _ToolButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     return IconButton(
-      icon: Icon(icon),
+      icon: icon,
       tooltip: tooltip,
       onPressed: onTap,
       isSelected: selected,
@@ -400,6 +400,66 @@ class _ToolButton extends StatelessWidget {
       ),
     );
   }
+}
+
+/// An eraser: a block tilted at 45° with its sleeve line, on a baseline.
+/// Flutter's icon font has no eraser glyph (its nearest is a brush, which
+/// playtesters read as a paint tool), so this is drawn as paths, the same
+/// on every platform. Takes its colour and size from the ambient
+/// [IconTheme] like any icon.
+class EraserIcon extends StatelessWidget {
+  const EraserIcon({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = IconTheme.of(context);
+    final size = theme.size ?? 24;
+    return SizedBox.square(
+      dimension: size,
+      child: CustomPaint(
+        painter: _EraserPainter(
+          color: (theme.color ?? Colors.black).withValues(
+            alpha: theme.opacity ?? 1,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _EraserPainter extends CustomPainter {
+  const _EraserPainter({required this.color});
+
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final k = size.width / 24;
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2 * k
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+    Offset p(double x, double y) => Offset(x * k, y * k);
+    // The block: a rounded rectangle lying at 45°, long axis lower-left to
+    // upper-right.
+    final block = Path()
+      ..moveTo(p(3, 15).dx, p(3, 15).dy)
+      ..lineTo(p(12.5, 5.5).dx, p(12.5, 5.5).dy)
+      ..lineTo(p(18.5, 11.5).dx, p(18.5, 11.5).dy)
+      ..lineTo(p(9, 21).dx, p(9, 21).dy)
+      ..close();
+    canvas
+      ..drawPath(block, paint)
+      // The sleeve: the line between the rubber and the holder.
+      ..drawLine(p(7.5, 10.5), p(13.5, 16.5), paint)
+      // The baseline it has just rubbed along.
+      ..drawLine(p(11, 21), p(21, 21), paint);
+  }
+
+  @override
+  bool shouldRepaint(_EraserPainter old) => old.color != color;
 }
 
 /// 5 mm squares.

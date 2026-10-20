@@ -1,3 +1,4 @@
+import 'package:math_city/domain/concepts/concept_registry.dart';
 import 'package:math_city/domain/economy/expected_seconds.dart';
 
 /// Which questions come with the scratch pad: a sheet of squared paper the
@@ -13,12 +14,14 @@ import 'package:math_city/domain/economy/expected_seconds.dart';
 ///
 /// The signal is the concept's expected seconds
 /// ([expectedSecondsByConcept], the same estimate that prices the coins):
-/// at [kScratchPadFromSeconds] or more a question is paper work. The
+/// at [kScratchPadFromSeconds] or more a question is paper work. Every
+/// pre-algebra concept gets one too, whatever its estimate: solving even
+/// `9x = 36` is done by writing the next line, not in the head. The
 /// estimates are hand-tuned and a few sit oddly, so two lists adjust the
-/// threshold by eye: [scratchPadAlways] for arithmetic rated just under it
-/// that is written out column by column all the same, and
-/// [scratchPadNever] for slow questions that are read off a figure rather
-/// than worked out.
+/// rule by eye: [scratchPadAlways] for arithmetic rated just under the
+/// threshold that is written out column by column all the same, and
+/// [scratchPadNever] for questions the rule would pad that are read off a
+/// figure or a list rather than worked out.
 ///
 /// Keep the lists short and keep the reasons next to the ids.
 const int kScratchPadFromSeconds = 40;
@@ -39,20 +42,38 @@ const Set<String> scratchPadAlways = {
   'nested_grouping', // 30 s
 };
 
-/// Rated at or over the threshold but answered by reading a figure, not by
+/// Padded by the rule but answered by reading a figure or a list, not by
 /// working: which point is missing from the scatter plot, the slope of a
-/// line already drawn, what a box plot says. Paper adds nothing.
+/// line already drawn, what a box plot says; and the pre-algebra
+/// vocabulary and recall questions (which term is the constant, is this a
+/// function, a missing addend within 20). Paper adds nothing.
 const Set<String> scratchPadNever = {
   'scatter_plot_construct', // 40 s
   'informal_line_of_fit', // 40 s
   'interpret_slope_intercept_data', // 40 s
   'box_plot', // 45 s
+  // pre-algebra, read or recalled rather than worked
+  'missing_addend_within_20', // 7 s, K–1 number bond
+  'missing_factor', // 10 s, a times-table fact
+  'dependent_independent_vars', // 18 s, vocabulary
+  'identify_parts_expression', // 18 s, vocabulary
+  'function_definition_check', // 22 s, scan a list for a repeated x
+  'inequality_one_var_intro', // 22 s, pick the true one
+  'qualitative_graph_features', // 25 s, read a graph
+  'write_expression_from_words', // 25 s, match words to symbols
 };
+
+/// Category whose every concept is padded unless listed in
+/// [scratchPadNever]: algebra is written down line by line at any length.
+const String kScratchPadCategory = 'prealgebra';
 
 /// Whether [conceptId]'s questions show the scratch pad.
 bool usesScratchPad(String conceptId) {
   if (scratchPadNever.contains(conceptId)) return false;
   if (scratchPadAlways.contains(conceptId)) return true;
+  if (findConceptById(conceptId)?.categoryId == kScratchPadCategory) {
+    return true;
+  }
   final secs = expectedSecondsByConcept[conceptId];
   return secs != null && secs >= kScratchPadFromSeconds;
 }
