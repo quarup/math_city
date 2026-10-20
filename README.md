@@ -1,4 +1,4 @@
-<h1 align="center">Math City</h1>
+<p align="center"><img src="docs/readme/lockup.png" width="440" alt="Math City"></p>
 
 <p align="center"><b>Build a whole city by solving math problems.</b><br>
 Available on iPad, iPhone and Android for kids aged 6 to 14.</p>
@@ -10,14 +10,14 @@ Available on iPad, iPhone and Android for kids aged 6 to 14.</p>
 </p>
 
 <p align="center">
-  <img src="docs/readme/city_day.png" width="48%" alt="A player's city by day: homes, shops, a town hall and a fairground around a loop of roads">
+  <img src="docs/readme/city_day.png" width="48%" alt="A player's town by day: homes, shops and a town hall around a loop of roads, the fairground at the edge">
   <img src="docs/readme/city_night.png" width="48%" alt="The same city at 8 pm, windows and street lamps lit">
 </p>
 
-In Math City, every correct answer earns coins, and coins turn a single
-little house into a busy town: shops, schools, parks and streets that light
-up at night. Townspeople send letters asking for what they need next, and
-it's up to you to build it.
+In Math City, kids build their own town by answering math questions: a
+first little house, then shops, schools, parks and streets that light up at
+night. Townspeople send letters asking for what they need next, and it's up
+to you to build it.
 
 <p align="center">
   <img src="docs/readme/q_clock.png" width="19%" alt="What time is it? An analogue clock showing 3:15, with four choices">
@@ -36,6 +36,8 @@ longer ones come with a scratch pad for working out.
 Several kids can share one device, each with their own player, avatar and
 city. The game works offline, has no ads or purchases, and collects no data.
 Everything stays on the device ([privacy policy](PRIVACY.md)).
+
+<p align="center"><sub>Ages 6 to 14 · iPad or iPhone · Free, no ads · Works offline · Collects no data · Several kids per device</sub></p>
 
 ## Status
 
@@ -74,7 +76,7 @@ questions directly. Release builds don't.
   A player starts at their grade; mastering a concept unlocks the ones that
   build on it, and outgrown ones retire from the wheel.
 - **The city is the reward loop.** Placing a building starts a construction
-  site; answering questions pays it down; buildings unlock more buildings,
+  site; every correct answer earns coins that pay it down; buildings unlock more buildings,
   and the townspeople's letters nudge the player toward what the city needs
   ([city_builder.md](city_builder.md)).
 
