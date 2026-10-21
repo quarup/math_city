@@ -48,3 +48,4 @@ app.*.map.json
 # committed; per-user local overrides stay untracked.
 .claude/settings.local.json
 .claude/local/
+docs/readme/raw/

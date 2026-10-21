@@ -10,7 +10,7 @@ Available on iPad, iPhone and Android for kids aged 6 to 14.</p>
 </p>
 
 <p align="center">
-  <img src="docs/readme/city_day.png" width="48%" alt="A player's town by day: homes, shops and a town hall around a loop of roads, the fairground at the edge">
+  <img src="docs/readme/city_day.png" width="48%" alt="A player's town by day: a fire station, town hall, school, shops and homes around a loop of roads">
   <img src="docs/readme/city_night.png" width="48%" alt="The same city at 8 pm, windows and street lamps lit">
 </p>
 
