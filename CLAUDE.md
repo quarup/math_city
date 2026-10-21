@@ -165,6 +165,26 @@ App Store Connect. Before
 any release, apply the rules in *Preserving player data across updates*:
 testers' progress must survive the update.
 
+## Releasing to Google Play testing tracks
+
+Android testers get builds through the Play Console's internal and closed
+testing tracks (application ID `com.quarup.math_city`). From a clean, pushed
+`main` on the release Mac:
+
+```sh
+tools/release/play_bundle.sh
+```
+
+It builds a release App Bundle signed with the **upload key**, numbered by
+commit count like the iOS build, and the bundle is uploaded in the Play
+Console. The keystore and its passwords live only on the release Mac
+(`~/.appsigning/`); `android/key.properties` is a git-ignored symlink to
+them and **nothing from there is ever committed**. Without that file the
+Gradle build silently falls back to the debug key (so CI and `flutter run
+--release` work), and a debug-signed build must never be distributed:
+Android refuses to update an app whose signing key changed, which would
+cost testers their progress. The same no-wipe rules apply as for iOS.
+
 ## App icon, launch screens and the home-screen tile art
 
 The launcher icon, the Android/iOS launch-screen images and the six tile
