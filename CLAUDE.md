@@ -161,7 +161,8 @@ Connect API key. The key and its IDs live only on the release Mac
 processes a build for 5–30 minutes before testers can install it. The
 testers' description and review notes live in
 [tools/release/listing/](tools/release/listing/); keep them in step with
-App Store Connect. Before
+App Store Connect. The app's public contact email is **quarup.mc@gmail.com**; it is the
+address in PRIVACY.md, the README, the flyer and every store listing field. Before
 any release, apply the rules in *Preserving player data across updates*:
 testers' progress must survive the update.
 

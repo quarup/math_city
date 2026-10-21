@@ -67,5 +67,6 @@ change the date at the top.
 
 ## Contact
 
-Questions about this policy can be raised on the project's
+Questions about this policy, or about the app, go to **quarup.mc@gmail.com**. You can
+also open an issue on the project's
 [GitHub issues page](https://github.com/quarup/math_city/issues).

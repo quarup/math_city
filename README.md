@@ -44,7 +44,8 @@ Everything stays on the device ([privacy policy](PRIVACY.md)).
 Math City is in beta. Friends and family test it through TestFlight on iOS;
 the Android build runs on the emulator and on devices. It is not on the App
 Store or Google Play yet. Bugs and ideas go in
-[GitHub issues](https://github.com/quarup/math_city/issues).
+[GitHub issues](https://github.com/quarup/math_city/issues), or by email to
+quarup.mc@gmail.com.
 
 ## Build it yourself
 
