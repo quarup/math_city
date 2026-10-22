@@ -8,6 +8,9 @@ paste it there too (TestFlight → Test Information, or the Play Console release
 |---|---|
 | `testflight_beta_description.txt` | Beta App Description (4000 characters max) |
 | `testflight_review_notes.txt` | Beta App Review Information → Review Notes |
+| `play_short_description.txt` | Play Console → Main store listing → Short description (80 characters max) |
+| `play_full_description.txt` | Play Console → Main store listing → Full description (4000 characters max) |
+| `play/` | Play Console → Main store listing graphics: `icon_512.png` (app icon), `feature_1024x500.png` (feature graphic), `phone_1–5.png` (phone screenshots, 1080×1920) |
 | `play_release_notes.txt` | Play Console → the testing track's release → Release notes (500 characters max, keep the `<en-US>` tags; rewrite the body per build) |
 
 Keep the claims true of the current build. In particular, "progress carries
