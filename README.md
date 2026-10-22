@@ -1,7 +1,8 @@
-<p align="center"><img src="docs/readme/lockup.png" width="440" alt="Math City"></p>
+<p align="center"><a href="https://quarup.github.io/math_city/"><img src="docs/readme/lockup.png" width="440" alt="Math City"></a></p>
 
 <p align="center"><b>Build a whole city by solving math problems.</b><br>
-Available on iPad, iPhone and Android for kids aged 6 to 14.</p>
+Available on iPad, iPhone and Android for kids aged 6 to 14.<br>
+<a href="https://quarup.github.io/math_city/">quarup.github.io/math_city</a> · <a href="https://quarup.github.io/math_city/privacy/">privacy policy</a></p>
 
 <p align="center">
   <a href="https://github.com/quarup/math_city/actions/workflows/ci.yml"><img src="https://github.com/quarup/math_city/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
