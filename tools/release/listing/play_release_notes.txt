@@ -1,5 +1,5 @@
 <en-US>
-Build your own town by answering math questions: over 350 skills from kindergarten to grade 8, with pictures, read-aloud and a scratch pad. Several kids can share one device. Works offline, no ads, no data collection.
+Build a whole city by solving math problems: over 350 skills from kindergarten to grade 8, with pictures, read-aloud and a scratch pad. Several kids can share one device. Works offline, no ads, no data collection.
 
 This is an early test build. Please tell us about questions that are too easy, too hard or look wrong, and anything that crashes: quarup.mc@gmail.com
 </en-US>

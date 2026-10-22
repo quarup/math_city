@@ -14,8 +14,8 @@ Available on iPad, iPhone and Android for kids aged 6 to 14.</p>
   <img src="docs/readme/city_night.png" width="48%" alt="The same city at 8 pm, windows and street lamps lit">
 </p>
 
-In Math City, kids build their own town by answering math questions: a
-first little house, then shops, schools, parks and streets that light up at
+In Math City, every math problem a kid solves builds their city: a first
+little house, then shops, schools, parks and streets that light up at
 night. Townspeople send letters asking for what they need next, and it's up
 to you to build it.
 
