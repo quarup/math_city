@@ -41,6 +41,8 @@ Everything stays on the device ([privacy policy](PRIVACY.md)).
 
 ## Status
 
+The website for parents is **[quarup.github.io/math_city](https://quarup.github.io/math_city/)**.
+
 Math City is in beta. Friends and family test it through TestFlight on iOS;
 the Android build runs on the emulator and on devices. It is not on the App
 Store or Google Play yet. Bugs and ideas go in

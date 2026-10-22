@@ -23,3 +23,9 @@ The app's public contact address is **quarup.mc@gmail.com**: use it for every
 store field a tester or parent can see (App Store Connect feedback and
 support email, Play Console contact email, the flyer, PRIVACY.md). Apple's
 reviewer contact can stay personal.
+
+For store fields that ask for a website, marketing or privacy-policy URL, use
+the public website: **https://quarup.github.io/math_city/** (website,
+marketing and support URL) and **https://quarup.github.io/math_city/privacy/**
+(privacy policy URL). The privacy page is rendered from PRIVACY.md on each
+deploy, so it always matches the repo.

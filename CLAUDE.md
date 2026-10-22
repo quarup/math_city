@@ -144,6 +144,17 @@ Known gaps against these rules are tracked in plan.md under Phase 13
 (*Preserving player data*). Check them before changing the schema or
 renaming content.
 
+## The public website
+
+https://quarup.github.io/math_city/ is a one-page site for parents, built
+from `site/` by [.github/workflows/pages.yml](.github/workflows/pages.yml) on
+every push to `main` that touches `site/`, `PRIVACY.md` or `docs/readme/`.
+`site/build.py` copies the images from `docs/readme/` (don't duplicate them
+in `site/`) and renders `PRIVACY.md` into `/privacy/`, so **edit the policy in
+PRIVACY.md only**; the page follows on the next deploy. Plain HTML and CSS,
+no JavaScript, no analytics or tracking. **Never put beta invite links
+(TestFlight, Play testing) on the site**: those are shared privately.
+
 ## Releasing to TestFlight
 
 Beta builds reach testers through TestFlight (Apple Developer Program,
