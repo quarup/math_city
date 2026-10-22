@@ -2,12 +2,13 @@
 
 The text pasted into App Store Connect, kept here so it has history and one
 place to edit. App Store Connect is the live copy: after changing a file,
-paste it there too (TestFlight → Test Information).
+paste it there too (TestFlight → Test Information, or the Play Console release).
 
 | file | App Store Connect field |
 |---|---|
 | `testflight_beta_description.txt` | Beta App Description (4000 characters max) |
 | `testflight_review_notes.txt` | Beta App Review Information → Review Notes |
+| `play_release_notes.txt` | Play Console → the testing track's release → Release notes (500 characters max, keep the `<en-US>` tags; rewrite the body per build) |
 
 Keep the claims true of the current build. In particular, "progress carries
 over between updates" holds only while every release follows CLAUDE.md
