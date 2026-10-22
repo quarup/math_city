@@ -719,6 +719,9 @@ Each phase ends with something demonstrable. We do **not** start a phase until t
 - [ ] App icon, screenshots (Android + iOS at multiple sizes), feature graphic, store description copy
 - [ ] Privacy policy (minimal — we collect ~nothing — but COPPA-aware language; either template-based or briefly legal-reviewed)
 - [ ] TestFlight (iOS) testing — first build (1.0.0 build 1) uploaded 2026-10-20; app record, API key and `tools/release/testflight.sh` in place. Still to do: test information, an external testers group, first Beta App Review, and a credits line for the DiceBear avatar art (CC BY 4.0) before the public link goes out
+- [ ] Google Play testing — internal track live 2026-10-22 (build 499, signed with the upload key). Next: a closed "Friends" track whose tester list is a self-join Google Group (no email lists), kept running with ≥12 testers for 14 days, which Google requires before a personal account's first production release
+- [ ] At the Play production release: opt in to the **Teacher Approved** program (Play Console → App content → Target audience and content); declined during setup because only published apps are reviewed. Target age bands 6–8, 9–12, 13–15 (no 18+, to avoid mixed-audience rules)
+- [ ] When add-on packs ship: retake the Play content-rating questionnaire (digital purchases → Yes; adds an "In-app purchases" label, rating unchanged), switch both stores' trader declarations, add a parental gate before purchases
 - [ ] Play Console internal-testing channel
 - [ ] Iterate on real beta feedback (1–2 cycles)
 - [ ] Submit to stores; respond to reviewer feedback
