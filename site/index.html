@@ -27,8 +27,8 @@
     <h1><img class="wordmark" src="img/lockup.png" alt="Math City"></h1>
     <p class="pitch">Build a whole city by solving math problems</p>
     <div class="cards">
-      <img src="img/city_day.png" alt="A kid's town by day: a fire station, town hall, school, shops and homes around a loop of roads">
-      <img src="img/city_night.png" alt="The same town at night, windows and street lamps lit">
+      <img class="zoom" data-full="img/full/city_day.jpg" src="img/city_day.png" alt="A kid's town by day: a fire station, town hall, school, shops and homes around a loop of roads">
+      <img class="zoom" data-full="img/full/city_night.jpg" src="img/city_night.png" alt="The same town at night, windows and street lamps lit">
     </div>
   </div>
   <div class="body">
@@ -44,11 +44,11 @@
     </div>
 
     <h2>What playing looks like</h2>
-    <figure class="wide"><img src="img/city_play.jpg" width="1400" height="672" loading="lazy" alt="Newton's city on a phone held sideways: the town, its population, the clock, and the rail of buildings to add next"><figcaption><b>Your own city</b>Pick the next building; the townspeople's letters tell you what the city needs.</figcaption></figure>
+    <figure class="wide"><img class="zoom" src="img/city_play.jpg" width="1400" height="672" loading="lazy" alt="Newton's city on a phone held sideways: the town, its population, the clock, and the rail of buildings to add next"><figcaption><b>Your own city</b>Pick the next building; the townspeople's letters tell you what the city needs.</figcaption></figure>
     <div class="shots">
-      <figure><img src="img/q_protractor.png" alt="Measure an angle with a protractor"><figcaption><b>Real diagrams</b>Clocks, protractors, number lines, graphs.</figcaption></figure>
-      <figure><img src="img/q_fraction.png" alt="Equal fractions, with a shaded fraction bar"><figcaption><b>Pictures first</b>The picture carries the idea, then the numbers.</figcaption></figure>
-      <figure><img src="img/q_scratchpad.png" alt="A two-step word problem with working written on squared paper"><figcaption><b>A scratch pad</b>Longer problems get paper to work on.</figcaption></figure>
+      <figure><img class="zoom" data-full="img/full/q_protractor.jpg" src="img/q_protractor.png" alt="Measure an angle with a protractor"><figcaption><b>Real diagrams</b>Clocks, protractors, number lines, graphs.</figcaption></figure>
+      <figure><img class="zoom" data-full="img/full/q_fraction.jpg" src="img/q_fraction.png" alt="Equal fractions, with a shaded fraction bar"><figcaption><b>Pictures first</b>The picture carries the idea, then the numbers.</figcaption></figure>
+      <figure><img class="zoom" data-full="img/full/q_scratchpad.jpg" src="img/q_scratchpad.png" alt="A two-step word problem with working written on squared paper"><figcaption><b>A scratch pad</b>Longer problems get paper to work on.</figcaption></figure>
     </div>
 
     <div class="mini"><p><b>Open source.</b> The code and the artwork are on GitHub.</p><a class="btn" href="https://github.com/quarup/math_city"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" width="20" height="20"><path fill="currentColor" d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.8c-2.8.6-3.4-1.2-3.4-1.2-.4-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.6 2.4 1.1 3 .9.1-.7.4-1.1.6-1.4-2.2-.3-4.6-1.1-4.6-5 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.8 1a9.6 9.6 0 0 1 5 0c1.9-1.3 2.8-1 2.8-1 .5 1.4.2 2.4.1 2.7.6.7 1 1.6 1 2.7 0 3.9-2.4 4.7-4.6 5 .4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5A10 10 0 0 0 12 2z"/></svg>See the code on GitHub</a></div>
@@ -82,6 +82,21 @@
     var fallback=function(){var r=document.createRange();r.selectNodeContents(el);var sel=getSelection();sel.removeAllRanges();sel.addRange(r);};
     if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(addr).then(done,fallback);}else{fallback();}
   });
+})();
+</script>
+<div class="lb" id="lb" hidden><img alt=""></div>
+<script>
+(function(){
+  var lb=document.getElementById('lb'), im=lb.querySelector('img');
+  function open(el){im.src=el.dataset.full||el.currentSrc||el.src;im.alt=el.alt||'';lb.hidden=false;document.body.style.overflow='hidden';}
+  function close(){lb.hidden=true;im.removeAttribute('src');document.body.style.overflow='';}
+  document.querySelectorAll('img.zoom').forEach(function(el){
+    el.setAttribute('tabindex','0'); el.setAttribute('role','button');
+    el.addEventListener('click',function(){open(el);});
+    el.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();open(el);}});
+  });
+  lb.addEventListener('click',close);
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!lb.hidden)close();});
 })();
 </script>
 </body>

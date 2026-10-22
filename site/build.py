@@ -41,6 +41,9 @@ def main() -> None:
         shutil.copy2(SITE / name, OUT / name)
     for name in IMAGES:
         shutil.copy2(REPO / "docs" / "readme" / name, OUT / "img" / name)
+    (OUT / "img" / "full").mkdir()
+    for full in (REPO / "docs" / "readme" / "full").glob("*.jpg"):
+        shutil.copy2(full, OUT / "img" / "full" / full.name)
 
     body = markdown.markdown((REPO / "PRIVACY.md").read_text(encoding="utf-8"))
     template = (SITE / "privacy.html").read_text(encoding="utf-8")

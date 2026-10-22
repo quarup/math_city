@@ -325,3 +325,8 @@ body.landing main{padding:0 16px}
 .a .wide img{border-radius:12px;width:100%;border:1px solid #e6e1d3}
 .a .wide figcaption{font-size:14px;line-height:1.35;margin-top:8px}
 .a .wide figcaption b{display:block;font-size:15px}
+
+.lb{position:fixed;inset:0;background:rgba(10,14,20,.88);display:grid;place-items:center;padding:24px;z-index:50;cursor:zoom-out}
+.lb img{max-width:min(96vw,1400px);max-height:92vh;width:auto;height:auto;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+img.zoom{cursor:zoom-in}
+img.zoom:focus-visible{outline:3px solid #f0a21b;outline-offset:3px}
