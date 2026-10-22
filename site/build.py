@@ -27,6 +27,7 @@ IMAGES = [
     "q_protractor.png",
     "q_fraction.png",
     "q_scratchpad.png",
+    "city_play.jpg",
 ]
 
 

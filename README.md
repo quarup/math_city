@@ -147,7 +147,7 @@ reuse it, change it, even sell it, as long as you credit
   `docs/readme/`).
 
 **Name and icon: reserved.** "Math City", the wordmark
-(`assets/images/math_city_wordmark.png`) and the app icon are © 2026 quarup,
+(`assets/images/math_city_wordmark.png`) and the app icon are © 2026 Quarup Barreirinhas,
 all rights reserved, and are not covered by either licence. The icon includes
 the house tile it is drawn from (`assets/images/tiles/house.svg`), the
 launcher icons and launch images under `android/app/src/main/res/` and

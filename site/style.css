@@ -212,3 +212,116 @@ a:focus-visible {
 @media (prefers-reduced-motion: reduce) {
   * { scroll-behavior: auto !important; }
 }
+
+
+/* ---------- Landing page: the postcard flyer look ---------- */
+.flyer{--sky:#5db7e8;--sky-deep:#2f8fc9;--teal:#1f8f7c;--coin:#f0a21b;--coin-deep:#c77f05;--ink:#1b2730;--paper:#fffdf7;--muted:#5c6b75;--fg:#1b2730;
+  font-family:Nunito,system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.5}
+.flyer *{box-sizing:border-box}
+.flyer a{color:inherit}
+.flyer img{max-width:100%;display:block}
+.flyer h1,.flyer h2,.flyer h3{text-wrap:balance;margin:0}
+.flyer p{margin:0}
+.flyer ul,.flyer ol{margin:0}
+
+/* Layout: one postcard-style flyer, a single column up to 760px, designed
+   for a phone. The flyer commits to its own sunny look; only the page
+   ground follows the viewer's theme. */
+.flyer{max-width:760px;margin:16px auto 0;overflow:hidden}
+.copy{display:flex;gap:8px;align-items:stretch;min-width:0}
+.copy code{flex:1;min-width:0;overflow:auto;white-space:nowrap;font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;padding:10px 12px;border-radius:10px}
+.copy button{font:inherit;font-weight:700;font-size:14px;padding:0 14px;border-radius:10px;border:0;cursor:pointer}
+.copy button:focus-visible{outline:3px solid var(--sky);outline-offset:2px}
+.shots{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.shots figure{margin:0;min-width:0}
+.shots img{border-radius:10px;width:100%;aspect-ratio:9/20;object-fit:cover}
+.shots figcaption{font-size:13px;line-height:1.35;margin-top:8px}
+.shots figcaption b{display:block;font-size:14px}
+@media (max-width:560px){.shots{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:10px;padding-bottom:4px;margin-inline:-4px;padding-inline:4px}.shots figure{flex:0 0 68%;scroll-snap-align:start}}
+.steps{list-style:none;padding:0;margin:0;display:grid;gap:12px;counter-reset:s}
+.steps li{display:grid;grid-template-columns:36px 1fr;gap:12px;align-items:start;min-width:0}
+.steps li::before{counter-increment:s;content:counter(s);width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:16px}
+.steps li::before{grid-row:1/span 2}
+.steps li>b,.steps li>small,.steps li>.join{grid-column:2}
+.join{display:grid;gap:10px;min-width:0}
+.platforms{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.plat{display:grid;gap:10px;align-content:start;min-width:0;padding:16px;border-radius:14px;background:#eef4ec}
+.plat h3{font-family:Fredoka,Nunito,sans-serif;font-weight:600;font-size:19px;color:#15384d}
+.plat p{font-size:15px}
+.plat .btn{justify-self:stretch;text-align:center}
+.plat .steps{gap:14px}
+.plat .steps li::before{background:var(--coin);color:#3a2a00}
+.plat .steps li>.join{margin-top:8px}
+.btn .ic{width:22px;height:22px;flex:0 0 auto}
+@media (max-width:560px){.platforms{grid-template-columns:1fr}}
+
+.join .btn{justify-self:center}
+.steps b{display:block}
+.steps small{display:block;font-size:14px;line-height:1.4;margin-top:2px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:800;text-decoration:none;border-radius:999px;padding:14px 22px;font-size:17px}
+.btn:focus-visible{outline:3px solid var(--sky);outline-offset:3px}
+.facts{display:flex;flex-wrap:wrap;gap:8px;padding:0;margin:0;list-style:none}
+.facts li{font-size:13px;font-weight:700;padding:6px 10px;border-radius:999px}
+.foot{font-size:13px;line-height:1.5}
+.foot a{text-decoration:underline}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+
+/* ---------- A · Postcard ---------- */
+.a{background:var(--paper);color:var(--ink);border-radius:20px;border:1px solid #e6e1d3}
+.a .hero{background:linear-gradient(180deg,#5db7e8 0%,#8ccbe9 70%,#b9e0bf 100%);padding:28px 20px 24px;text-align:center}
+.a .hero h1 .wordmark{width:min(100%,460px);margin:0 auto;filter:drop-shadow(0 3px 6px rgba(21,56,77,.25))}
+.a .hero .pitch{font-family:Fredoka,Nunito,sans-serif;font-weight:600;font-size:22px;line-height:1.2;color:#15384d;margin-top:10px}
+.a .cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:22px auto 0;max-width:640px}
+.a .cards img{border-radius:8px;border:6px solid #fff;box-shadow:0 10px 24px rgba(21,56,77,.25);aspect-ratio:66/53;object-fit:cover}
+.a .cards img:first-child{transform:rotate(-2.5deg)}
+.a .cards img:last-child{transform:rotate(2deg)}
+.a .body{padding:22px 20px 26px;display:grid;gap:22px}
+.a .body>p{font-size:17px}
+.a .facts li{background:#eef4ec;color:#2a4a2f}
+.a h2{font-family:Fredoka,Nunito,sans-serif;font-weight:600;font-size:22px;color:#15384d}
+.a .steps li::before{background:var(--coin);color:#3a2a00}
+.a .btn{background:var(--coin);color:#2b1d00;box-shadow:0 4px 0 var(--coin-deep)}
+.a .copy code{background:#f1efe6;color:#2a3a45}
+.a .copy button{background:#15384d;color:#fff}
+.a .foot{color:#5b6b74}
+
+
+/* Print / Save as PDF: keep the colours, drop what makes no sense on paper. */
+@page{size:A4;margin:10mm}
+@media print{
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  body{background:#fff!important;padding-block:0;font-size:14px}
+  .flyer{max-width:none;margin:0;border-radius:12px;border:1px solid #e6e1d3;box-shadow:none}
+  .a .hero{padding:20px 18px 18px}
+  .a .cards{max-width:520px;margin-top:16px}
+  .a .cards img{box-shadow:none;border-width:4px}
+  .a .body{padding:18px 18px 20px;gap:16px}
+  .a .body>p{font-size:15px}
+  .shots{grid-template-columns:repeat(3,1fr)}
+  .shots figure,.steps li,.join,.plat{break-inside:avoid}
+  .btn{box-shadow:none;border:2px solid var(--coin-deep)}
+  .copy button{display:none}
+  .copy code{overflow:visible;white-space:normal;word-break:break-all}
+  a[href^="http"]{color:inherit}
+}
+
+.a .card{background:#fff;border:1px solid #e6e1d3;border-radius:14px;padding:18px 20px;display:grid;gap:10px}
+.a .card p{font-size:16px}
+.a .email{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:17px;font-weight:700;color:#15384d;word-break:break-all}
+.a .inline{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center}
+.a .mini{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center;justify-content:space-between;background:#eef4ec;border-radius:14px;padding:14px 18px}
+.a .mini p{font-size:15px;color:#2a4a2f}
+.a .mini .btn{padding:10px 18px;font-size:15px;background:#15384d;color:#fff;box-shadow:none}
+.a .about{display:grid;gap:12px}
+.a .about p{font-size:16px}
+.a .about h3{font-family:Fredoka,Nunito,sans-serif;font-weight:600;font-size:18px;color:#15384d;margin-top:6px}
+.a .foot{border-top:1px solid #e6e1d3;padding-top:14px}
+
+body.landing{background:#f3f5f2;margin:0;padding:0 0 48px}
+body.landing main{padding:0 16px}
+.a button.btn{-webkit-appearance:none;appearance:none;border:0;font:inherit;font-weight:800;font-size:15px;padding:10px 18px;border-radius:999px;background:#15384d;color:#fff;box-shadow:none;cursor:pointer}
+.a button.btn:hover{background:#1f4a66}
+.a .wide{margin:0 0 4px}
+.a .wide img{border-radius:12px;width:100%;border:1px solid #e6e1d3}
+.a .wide figcaption{font-size:14px;line-height:1.35;margin-top:8px}
+.a .wide figcaption b{display:block;font-size:15px}
