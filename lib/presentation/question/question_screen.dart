@@ -552,8 +552,8 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
   );
 
   /// On a side: what to read on the left, what to tap on the right. The
-  /// answers share the right pane's height — four buttons grow to fill it
-  /// and shrink to fit it — and the keypad fills it outright.
+  /// answers share the right pane's height — the choices up to their cap
+  /// ([_sideChoices]) — and the keypad fills it outright.
   Widget _sideBody(GeneratedQuestion question, Widget promptPane) {
     final Widget answers;
     if (_useNumberPad) {
@@ -563,29 +563,7 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
         fill: true,
       );
     } else {
-      final n = _shuffledChoices.length;
-      answers = Center(
-        child: ConstrainedBox(
-          constraints: BoxConstraints(maxHeight: n * 78.0),
-          child: Column(
-            children: [
-              for (var i = 0; i < n; i++)
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 5),
-                    child: _ChoiceButton(
-                      label: _shuffledChoices[i],
-                      itemId: 'choice:$i',
-                      speakerSlot: _shuffledChoices.any(hasReadableWords),
-                      onTap: () => _onAnswerSubmitted(_shuffledChoices[i]),
-                      expand: true,
-                    ),
-                  ),
-                ),
-            ],
-          ),
-        ),
-      );
+      answers = _sideChoices();
     }
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 10, 20, 12),
@@ -595,6 +573,46 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
           const SizedBox(width: 24),
           Expanded(flex: 8, child: answers),
         ],
+      ),
+    );
+  }
+
+  /// The choices on a side, with or without the paper: one column that
+  /// shares the right pane's height — four buttons grow to fill it and
+  /// shrink to fit it — up to [kMaxSideChoiceHeight] each and
+  /// [kMaxSideChoiceWidth] across, where they hold that size and sit
+  /// centred in the pane. A phone's 358 × 345 dp pane is under the width
+  /// cap and a touch over the height cap, so its buttons are the upright
+  /// layout's 68 dp; a tablet's 512 × 734 dp pane no longer stretches each
+  /// one into a 174 dp pill around a 24 sp label (issue #137). The label
+  /// keeps that 24 sp: the height cap is the upright button's own height
+  /// (18 dp of padding around one 32 dp line), so there is nothing to
+  /// scale up, unlike the keypad's digits.
+  Widget _sideChoices() {
+    final n = _shuffledChoices.length;
+    return Center(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxWidth: kMaxSideChoiceWidth,
+          maxHeight: n * (kMaxSideChoiceHeight + 2 * _sideChoiceGap),
+        ),
+        child: Column(
+          children: [
+            for (var i = 0; i < n; i++)
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: _sideChoiceGap),
+                  child: _ChoiceButton(
+                    label: _shuffledChoices[i],
+                    itemId: 'choice:$i',
+                    speakerSlot: _shuffledChoices.any(hasReadableWords),
+                    onTap: () => _onAnswerSubmitted(_shuffledChoices[i]),
+                    expand: true,
+                  ),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -700,24 +718,7 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
         fill: true,
       );
     } else {
-      final n = _shuffledChoices.length;
-      answers = Column(
-        children: [
-          for (var i = 0; i < n; i++)
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 5),
-                child: _ChoiceButton(
-                  label: _shuffledChoices[i],
-                  itemId: 'choice:$i',
-                  speakerSlot: _shuffledChoices.any(hasReadableWords),
-                  onTap: () => _onAnswerSubmitted(_shuffledChoices[i]),
-                  expand: true,
-                ),
-              ),
-            ),
-        ],
-      );
+      answers = _sideChoices();
     }
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 10, 20, 12),
@@ -966,6 +967,16 @@ class _QuestionScreenState extends ConsumerState<QuestionScreen>
     );
   }
 }
+
+/// The largest a choice button gets in a side layout, so a tablet's pane
+/// holds a column of pills like a phone's rather than four rings with a
+/// label lost in each. The height is one button; the width is the whole
+/// stack, speaker slot included, before the [_sideChoiceGap] above and
+/// below each button.
+const double kMaxSideChoiceHeight = 68;
+const double kMaxSideChoiceWidth = 480;
+
+const double _sideChoiceGap = 5;
 
 /// Whether the on-screen number pad can produce a valid answer for this
 /// format. `string` and `commaList` are text-shaped (English words,

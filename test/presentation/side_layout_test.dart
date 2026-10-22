@@ -26,7 +26,7 @@ import 'package:math_city/state/player_provider.dart';
 /// Every screen with a side layout must fit without overflow on each of
 /// these (logical pixels left after the system bars): a small Android
 /// phone, an iPhone, a Pixel 7 upright and on its side (no status bar on
-/// a side), an iPad both ways.
+/// a side), an iPad both ways, a Pixel Tablet on its side.
 const _sizes = <String, Size>{
   'small phone': Size(360, 616),
   'iPhone': Size(390, 763),
@@ -35,6 +35,7 @@ const _sizes = <String, Size>{
   'iPhone on its side': Size(844, 390),
   'iPad': Size(820, 1100),
   'iPad on its side': Size(1180, 740),
+  'Pixel Tablet on its side': Size(1280, 800),
 };
 
 const _question = GeneratedQuestion(
