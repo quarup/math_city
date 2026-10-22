@@ -1,0 +1,214 @@
+/* Math City website: the beta flyer's "postcard" look. */
+:root {
+  --sky-1: #5db7e8;
+  --sky-2: #8ccbe9;
+  --sky-3: #b9e0bf;
+  --paper: #fffdf7;
+  --ink: #1b2730;
+  --ink-soft: #3d4f5c;
+  --heading: #15384d;
+  --coin: #f0a21b;
+  --coin-deep: #c77f05;
+  --line: #eadfc8;
+  --heading-font: "Fredoka", "Trebuchet MS", "Avenir Next Rounded", system-ui, sans-serif;
+  --body-font: "Nunito", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--body-font);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+img { max-width: 100%; height: auto; display: block; }
+
+.wrap {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+h1, h2, h3 {
+  font-family: var(--heading-font);
+  color: var(--heading);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+h2 { font-size: 1.75rem; margin: 2.5rem 0 1rem; text-align: center; }
+
+a { color: var(--heading); text-decoration-color: var(--coin); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+a:hover { color: var(--coin-deep); }
+a:focus-visible {
+  outline: 3px solid var(--coin);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Hero ------------------------------------------------------------------ */
+.hero {
+  background: linear-gradient(180deg, var(--sky-1) 0%, var(--sky-2) 55%, var(--sky-3) 100%);
+  text-align: center;
+  padding: 48px 0 56px;
+  border-bottom: 6px solid var(--coin);
+}
+.lockup { margin: 0 auto; max-width: 460px; }
+.pitch {
+  font-family: var(--heading-font);
+  font-weight: 600;
+  color: var(--heading);
+  font-size: clamp(1.5rem, 5vw, 2.25rem);
+  line-height: 1.2;
+  margin: 1.25rem 0 0.5rem;
+}
+.subline { margin: 0; font-size: 1.15rem; font-weight: 700; color: var(--heading); }
+
+.hero-small { padding: 28px 0 32px; }
+.home-link { display: inline-block; max-width: 300px; border-radius: 8px; }
+
+/* Intro and facts ------------------------------------------------------- */
+.intro { margin-top: 2.25rem; }
+.intro p { margin: 0 0 1rem; }
+
+.facts {
+  list-style: none;
+  padding: 0;
+  margin: 1.75rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+.facts li {
+  background: #fff3d6;
+  border: 2px solid var(--coin);
+  color: var(--heading);
+  border-radius: 999px;
+  padding: 4px 14px;
+  font-weight: 800;
+  font-size: 0.95rem;
+}
+
+/* Postcards ------------------------------------------------------------- */
+.postcards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  padding: 8px 4px 16px;
+}
+.postcard {
+  margin: 0;
+  background: #fff;
+  padding: 10px 10px 6px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(27, 39, 48, 0.12), 0 10px 24px rgba(27, 39, 48, 0.16);
+}
+.postcard img { border-radius: 2px; }
+.postcard figcaption {
+  font-family: var(--heading-font);
+  color: var(--ink-soft);
+  text-align: center;
+  padding-top: 6px;
+}
+.tilt-left { transform: rotate(-2.5deg); }
+.tilt-right { transform: rotate(2deg); }
+@media (prefers-reduced-motion: no-preference) {
+  .postcard { transition: transform 0.25s ease; }
+  .postcard:hover { transform: rotate(0deg) scale(1.02); }
+}
+
+/* Screenshots ----------------------------------------------------------- */
+.shots {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.shots img {
+  border-radius: 14px;
+  border: 3px solid var(--heading);
+  background: #fff;
+}
+.shots p { margin: 0.6rem 0 0; font-size: 0.98rem; text-align: center; }
+.shots strong {
+  display: block;
+  font-family: var(--heading-font);
+  font-weight: 600;
+  color: var(--heading);
+  font-size: 1.1rem;
+}
+
+/* Cards ----------------------------------------------------------------- */
+.card {
+  background: #fff;
+  border: 2px solid var(--line);
+  border-radius: 16px;
+  padding: 8px 24px 20px;
+  margin: 2.5rem 0;
+  text-align: center;
+}
+.card h2 { margin-top: 1.25rem; }
+.soon { font-size: 1.2rem; font-weight: 800; color: var(--coin-deep); }
+.email { font-weight: 800; user-select: all; overflow-wrap: anywhere; }
+
+/* Privacy prose --------------------------------------------------------- */
+.prose { text-align: left; }
+.prose h1 { font-size: 2rem; margin: 1.25rem 0 0.5rem; }
+.prose h2 { text-align: left; font-size: 1.35rem; margin: 2rem 0 0.5rem; }
+.prose ul { padding-left: 1.25rem; }
+.prose li { margin-bottom: 0.4rem; }
+.prose strong { color: var(--heading); }
+
+/* Footer ---------------------------------------------------------------- */
+.site-footer {
+  margin-top: 3rem;
+  padding: 28px 0 36px;
+  background: #f6efdf;
+  border-top: 2px solid var(--line);
+  text-align: center;
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+}
+.site-footer nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 24px;
+  margin-bottom: 0.75rem;
+  font-weight: 800;
+}
+.site-footer p { margin: 0.25rem 0; }
+
+/* Narrow screens -------------------------------------------------------- */
+@media (max-width: 600px) {
+  body { font-size: 1rem; }
+  .hero { padding: 32px 0 40px; }
+  .postcards { gap: 14px; padding: 6px 2px 12px; }
+  .postcard { padding: 6px 6px 2px; }
+  .postcard figcaption { font-size: 0.9rem; padding-top: 2px; }
+  .shots {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 16px;
+    margin: 0 -16px;
+    padding: 0 16px 12px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .shots li { flex: 0 0 62%; scroll-snap-align: center; }
+  .card { padding: 4px 16px 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { scroll-behavior: auto !important; }
+}
