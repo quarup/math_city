@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 /// On-screen number pad for numeric answer entry.
@@ -14,7 +16,10 @@ import 'package:flutter/material.dart';
 /// [fill] is the pad for a phone on its side: it takes the height it is
 /// given instead of its natural 4 × 60 dp, and the extra characters stand
 /// in a column beside the digits rather than in a row above them, so a
-/// 340 dp pane holds the whole pad with keys a thumb can hit.
+/// 340 dp pane holds the whole pad with keys a thumb can hit. Given more
+/// room than that (a tablet on its side), it stops growing at
+/// [kMaxFillKeyWidth] × [kMaxFillKeyHeight] per key and sits centred in
+/// the pane instead, with digits that grow with the key.
 class NumberPadWidget extends StatefulWidget {
   const NumberPadWidget({
     required this.onSubmit,
@@ -78,71 +83,152 @@ class _NumberPadWidgetState extends State<NumberPadWidget> {
   /// The side layout: the display on top, then four rows that share the
   /// rest of the height — digits in three columns, the extra characters
   /// in one more column (two when there are more than four).
+  ///
+  /// The pad takes the whole pane up to [kMaxFillKeyWidth] ×
+  /// [kMaxFillKeyHeight] per key, then holds that size and centres itself:
+  /// a phone's 320 dp sheet is under the cap, so it is laid out exactly
+  /// as if there were none, while a tablet's ~500 × 700 dp pane no longer
+  /// stretches each key into a 160 dp ring around a 24 sp digit. The
+  /// display shares the pad's width, so it is capped with it.
   Widget _fillLayout(ThemeData theme) {
     final extras = widget.extraChars;
     final symbolColumns = extras.isEmpty ? 0 : (extras.length > 4 ? 2 : 1);
-    final symbolStyle = theme.textTheme.headlineMedium?.copyWith(
-      fontWeight: FontWeight.bold,
-    );
+    final columns = 3 + symbolColumns;
 
-    Widget cell(Widget child) => Expanded(
-      child: Padding(padding: const EdgeInsets.all(4), child: child),
-    );
-    Widget symbol(int i) {
-      if (i >= extras.length) return const SizedBox.shrink();
-      final c = extras[i];
-      return _DigitButton(
-        label: c == ' ' ? 'and' : c,
-        onTap: () => _append(c),
-        textStyle: symbolStyle,
-        expand: true,
-      );
-    }
-
-    Widget row(List<Widget> keys, int r) => Expanded(
-      child: Row(
-        children: [
-          for (final k in keys) cell(k),
-          for (var c = 0; c < symbolColumns; c++) cell(symbol(r + 4 * c)),
-        ],
-      ),
-    );
-
-    const rows = [
-      ['7', '8', '9'],
-      ['4', '5', '6'],
-      ['1', '2', '3'],
-    ];
-    return Column(
-      children: [
-        _InputDisplay(input: _input, theme: theme, height: 52),
-        const SizedBox(height: 4),
-        for (final (r, digits) in rows.indexed)
-          row([
-            for (final d in digits)
-              _DigitButton(label: d, onTap: () => _append(d), expand: true),
-          ], r),
-        row([
-          _ActionButton(
-            icon: Icons.backspace_outlined,
-            color: theme.colorScheme.errorContainer,
-            iconColor: theme.colorScheme.onErrorContainer,
-            onTap: _backspace,
-            expand: true,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final padWidth = min(
+          constraints.maxWidth,
+          columns * (kMaxFillKeyWidth + 2 * _fillKeyPadding),
+        );
+        final padHeight = min(
+          constraints.maxHeight,
+          _fillDisplayHeight +
+              _fillDisplayGap +
+              _fillRows * (kMaxFillKeyHeight + 2 * _fillKeyPadding),
+        );
+        final keyHeight =
+            (padHeight - _fillDisplayHeight - _fillDisplayGap) / _fillRows -
+            2 * _fillKeyPadding;
+        // A phone's keys are 54 dp tall under a 24 sp digit; bigger keys
+        // get a bigger digit in that proportion, never a smaller one.
+        final scale = max<double>(1, keyHeight / _phoneFillKeyHeight);
+        final digitStyle = _scaled(theme.textTheme.headlineSmall, scale);
+        final symbolStyle = _scaled(
+          theme.textTheme.headlineMedium?.copyWith(
+            fontWeight: FontWeight.bold,
           ),
-          _DigitButton(label: '0', onTap: () => _append('0'), expand: true),
-          _ActionButton(
-            icon: Icons.check_rounded,
-            color: theme.colorScheme.primaryContainer,
-            iconColor: theme.colorScheme.onPrimaryContainer,
-            onTap: _submit,
-            expand: true,
+          scale,
+        );
+        final iconSize = scale == 1.0 ? null : _phoneFillIconSize * scale;
+
+        Widget cell(Widget child) => Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(_fillKeyPadding),
+            child: child,
           ),
-        ], 3),
-      ],
+        );
+        Widget symbol(int i) {
+          if (i >= extras.length) return const SizedBox.shrink();
+          final c = extras[i];
+          return _DigitButton(
+            label: c == ' ' ? 'and' : c,
+            onTap: () => _append(c),
+            textStyle: symbolStyle,
+            expand: true,
+          );
+        }
+
+        Widget row(List<Widget> keys, int r) => Expanded(
+          child: Row(
+            children: [
+              for (final k in keys) cell(k),
+              for (var c = 0; c < symbolColumns; c++) cell(symbol(r + 4 * c)),
+            ],
+          ),
+        );
+
+        const rows = [
+          ['7', '8', '9'],
+          ['4', '5', '6'],
+          ['1', '2', '3'],
+        ];
+        return Center(
+          child: SizedBox(
+            width: padWidth,
+            height: padHeight,
+            child: Column(
+              children: [
+                _InputDisplay(
+                  input: _input,
+                  theme: theme,
+                  height: _fillDisplayHeight,
+                ),
+                const SizedBox(height: _fillDisplayGap),
+                for (final (r, digits) in rows.indexed)
+                  row([
+                    for (final d in digits)
+                      _DigitButton(
+                        label: d,
+                        onTap: () => _append(d),
+                        textStyle: digitStyle,
+                        expand: true,
+                      ),
+                  ], r),
+                row([
+                  _ActionButton(
+                    icon: Icons.backspace_outlined,
+                    color: theme.colorScheme.errorContainer,
+                    iconColor: theme.colorScheme.onErrorContainer,
+                    iconSize: iconSize,
+                    onTap: _backspace,
+                    expand: true,
+                  ),
+                  _DigitButton(
+                    label: '0',
+                    onTap: () => _append('0'),
+                    textStyle: digitStyle,
+                    expand: true,
+                  ),
+                  _ActionButton(
+                    icon: Icons.check_rounded,
+                    color: theme.colorScheme.primaryContainer,
+                    iconColor: theme.colorScheme.onPrimaryContainer,
+                    iconSize: iconSize,
+                    onTap: _submit,
+                    expand: true,
+                  ),
+                ], 3),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
+
+  static TextStyle? _scaled(TextStyle? style, double scale) {
+    final size = style?.fontSize;
+    if (scale == 1.0 || size == null) return style;
+    return style!.copyWith(fontSize: size * scale);
+  }
 }
+
+/// The largest a key gets in the [NumberPadWidget.fill] layout, so a
+/// tablet's pane holds a pad of pills like a phone's rather than a grid
+/// of rings. Width × height, before the 4 dp of padding on every side.
+const double kMaxFillKeyWidth = 104;
+const double kMaxFillKeyHeight = 72;
+
+const double _fillKeyPadding = 4;
+const double _fillDisplayHeight = 52;
+const double _fillDisplayGap = 4;
+const int _fillRows = 4;
+
+/// What a Pixel 7's 320 dp keypad sheet gives each key: the reference
+/// height for the digit's 24 sp, which grows with the key above this.
+const double _phoneFillKeyHeight = 54;
+const double _phoneFillIconSize = 24;
 
 // ---------------------------------------------------------------------------
 // Extra-chars row (only shown when needed)
@@ -354,6 +440,7 @@ class _ActionButton extends StatelessWidget {
     required this.color,
     required this.iconColor,
     required this.onTap,
+    this.iconSize,
     this.expand = false,
   });
 
@@ -361,6 +448,9 @@ class _ActionButton extends StatelessWidget {
   final Color color;
   final Color iconColor;
   final VoidCallback onTap;
+
+  /// Null keeps the icon theme's size.
+  final double? iconSize;
   final bool expand;
 
   @override
@@ -374,7 +464,7 @@ class _ActionButton extends StatelessWidget {
           backgroundColor: color,
           padding: EdgeInsets.zero,
         ),
-        child: Icon(icon, color: iconColor),
+        child: Icon(icon, color: iconColor, size: iconSize),
       ),
     );
   }
